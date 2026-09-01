@@ -1,4 +1,59 @@
 -- New fluids introduced by Space Age Extended.
--- Populated phase by phase; see design/vulcanus-fulgora.md.
+-- See design/vulcanus-fulgora.md §1-6. All follow the vanilla
+-- molten-metal pattern (auto_barrel = false -- these never need to
+-- leave Fulgora, so they don't need space-platform fluid logistics).
 
-data:extend({})
+data:extend({
+  {
+    type = "fluid",
+    name = "sae-molten-scrap",
+    icon = "__space-age-extended__/graphics/icons/fluid/molten-scrap.png",
+    icon_size = 64,
+    subgroup = "fulgora-processes",
+    order = "e[sae]-a[molten-scrap]",
+    default_temperature = 1200,
+    base_color = { 0.28, 0.25, 0.22 },
+    flow_color = { 0.55, 0.5, 0.45 },
+    draw_as_glow = true,
+    auto_barrel = false,
+  },
+  {
+    type = "fluid",
+    name = "sae-molten-ferrous-metal",
+    icon = "__space-age-extended__/graphics/icons/fluid/molten-ferrous-metal.png",
+    icon_size = 64,
+    subgroup = "fulgora-processes",
+    order = "e[sae]-b[molten-ferrous-metal]",
+    default_temperature = 1300,
+    base_color = { 0.35, 0.38, 0.43 },
+    flow_color = { 0.6, 0.66, 0.75 },
+    draw_as_glow = true,
+    auto_barrel = false,
+  },
+  {
+    type = "fluid",
+    name = "sae-molten-non-ferrous-metal",
+    icon = "__space-age-extended__/graphics/icons/fluid/molten-non-ferrous-metal.png",
+    icon_size = 64,
+    subgroup = "fulgora-processes",
+    order = "e[sae]-c[molten-non-ferrous-metal]",
+    default_temperature = 1300,
+    base_color = { 0.62, 0.35, 0.15 },
+    flow_color = { 0.85, 0.55, 0.3 },
+    draw_as_glow = true,
+    auto_barrel = false,
+  },
+  {
+    type = "fluid",
+    name = "sae-holmium-rich-residue",
+    icon = "__space-age-extended__/graphics/icons/fluid/holmium-rich-residue.png",
+    icon_size = 64,
+    subgroup = "fulgora-processes",
+    order = "e[sae]-d[holmium-rich-residue]",
+    default_temperature = 60,
+    base_color = { 0.45, 0.25, 0.55 },
+    flow_color = { 0.65, 0.45, 0.75 },
+    draw_as_glow = false,
+    auto_barrel = false,
+  },
+})

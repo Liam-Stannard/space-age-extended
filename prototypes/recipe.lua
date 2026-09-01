@@ -1,4 +1,136 @@
 -- New recipes introduced by Space Age Extended.
--- Populated phase by phase; see design/vulcanus-fulgora.md.
+-- See design/vulcanus-fulgora.md §1-6.
+--
+-- "Heat" in the design doc's ingredient lists is not a literal Factorio
+-- ingredient (Foundry has no heat-network input) -- it's represented by
+-- each recipe's energy_required draw against the crafting building's
+-- normal electric energy source, same as any vanilla Foundry recipe.
+--
+-- All amounts below are v0.1 placeholders (design doc §16 "Open Balancing
+-- Questions"), sized off the vanilla casting-iron/casting-copper ratios so
+-- the chain is internally consistent; real tuning happens during playtesting.
 
-data:extend({})
+data:extend({
+  -- Section 1: Scrap Remelting (Foundry, Fulgora)
+  {
+    type = "recipe",
+    name = "sae-scrap-remelting",
+    categories = { "metallurgy" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-a[scrap-remelting]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "scrap", amount = 25 },
+      { type = "item", name = "calcite", amount = 10 },
+    },
+    results = {
+      { type = "fluid", name = "sae-molten-scrap", amount = 50 },
+    },
+    energy_required = 3.2,
+    allow_decomposition = false,
+  },
+
+  -- Section 2: Ferrous / Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
+  {
+    type = "recipe",
+    name = "sae-separate-molten-scrap",
+    icon = "__space-age-extended__/graphics/icons/separate-molten-scrap.png",
+    icon_size = 64,
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-b[separate-molten-scrap]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "sae-molten-scrap", amount = 50 },
+    },
+    results = {
+      { type = "fluid", name = "sae-molten-ferrous-metal", amount = 30 },
+      { type = "fluid", name = "sae-molten-non-ferrous-metal", amount = 20 },
+    },
+    energy_required = 2,
+  },
+
+  -- Section 3: Ferrous Refinement (Foundry, Fulgora)
+  -- Deliberately 1:1 into vanilla molten-iron -- the "surplus" comes from
+  -- how little of it downstream recipes actually consume, not from an
+  -- inflated yield here (design doc §3).
+  {
+    type = "recipe",
+    name = "sae-ferrous-refinement",
+    categories = { "metallurgy" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-c[ferrous-refinement]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "sae-molten-ferrous-metal", amount = 30 },
+    },
+    results = {
+      { type = "fluid", name = "molten-iron", amount = 30 },
+    },
+    energy_required = 3.2,
+    allow_decomposition = false,
+  },
+
+  -- Section 4: Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
+  -- 95/5 copper/holmium split -- Holmium is a deliberate trickle, not a
+  -- primary output (design doc §4).
+  {
+    type = "recipe",
+    name = "sae-non-ferrous-separation",
+    icon = "__space-age-extended__/graphics/icons/non-ferrous-separation.png",
+    icon_size = 64,
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-d[non-ferrous-separation]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "sae-molten-non-ferrous-metal", amount = 20 },
+    },
+    results = {
+      { type = "fluid", name = "molten-copper", amount = 19 },
+      { type = "fluid", name = "sae-holmium-rich-residue", amount = 1 },
+    },
+    energy_required = 4,
+  },
+
+  -- Section 5: Holmium Extraction (Electromagnetic Plant, Fulgora)
+  -- Deliberately slow/low-yield -- supplementary recovery only, not a
+  -- replacement for Fulgora's existing Holmium production (design doc §5).
+  {
+    type = "recipe",
+    name = "sae-holmium-extraction",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-e[holmium-extraction]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "sae-holmium-rich-residue", amount = 5 },
+    },
+    results = {
+      { type = "item", name = "holmium-ore", amount = 1 },
+    },
+    energy_required = 8,
+  },
+
+  -- Section 6: Copper Foil (Foundry, Fulgora)
+  -- Copper-skewed with a small Iron kicker -- gives the Section 3 iron
+  -- surplus a genuine, partial consumer (design doc §6).
+  {
+    type = "recipe",
+    name = "sae-copper-foil",
+    categories = { "metallurgy" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-f[copper-foil]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "molten-copper", amount = 15 },
+      { type = "fluid", name = "molten-iron", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "sae-copper-foil", amount = 10 },
+    },
+    energy_required = 3.2,
+    allow_decomposition = false,
+    auto_recycle = false,
+  },
+})
