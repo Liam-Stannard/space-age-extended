@@ -1,0 +1,12 @@
+{
+  "name": "vulcanus-fulgora-integration",
+  "version": "0.1.0",
+  "title": "Vulcanus ↔ Fulgora: Cross-Planet Industrial Integration",
+  "author": "Liam Stannard",
+  "factorio_version": "2.0",
+  "dependencies": [
+    "base >= 2.0.0",
+    "space-age >= 2.0.0"
+  ],
+  "description": "Adds a two-way industrial loop between Vulcanus and Fulgora: Fulgora recovers and refines its scrap using imported Vulcanus Calcite, and its refined Catalyst Rod unlocks a Vulcanus-only lava process. The chain terminates in a space platform power source that fills the gap between solar and Aquilo-locked fusion. See design/vulcanus-fulgora.md for the full design doc."
+}
