@@ -1,0 +1,3 @@
+-- Reserved for edits to vanilla prototypes, if any become necessary.
+-- Currently unused: every Phase 1-3 recipe is a new prototype rather than
+-- a modification of an existing one.
