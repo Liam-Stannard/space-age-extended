@@ -133,4 +133,68 @@ data:extend({
     allow_decomposition = false,
     auto_recycle = false,
   },
+
+  -- Section 7: Electromagnetic circuit alt-recipes (Electromagnetic Plant, Fulgora)
+  -- Output the literal vanilla item -- no new circuit tier. Copper Foil
+  -- substitutes only the copper-cable slot of each vanilla recipe (design
+  -- doc §7's substitution rule); everything else stays identical to vanilla.
+  {
+    type = "recipe",
+    name = "sae-electromagnetic-electronic-circuit",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-g[electromagnetic-electronic-circuit]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-copper-foil", amount = 1 }, -- replaces 3 Copper Cable
+      { type = "item", name = "iron-plate", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "electronic-circuit", amount = 1 },
+    },
+    energy_required = 0.5,
+    allow_productivity = true,
+  },
+  {
+    type = "recipe",
+    name = "sae-electromagnetic-advanced-circuit",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-h[electromagnetic-advanced-circuit]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-copper-foil", amount = 1 }, -- replaces 4 Copper Cable
+      { type = "item", name = "electronic-circuit", amount = 2 },
+      { type = "item", name = "plastic-bar", amount = 2 },
+    },
+    results = {
+      { type = "item", name = "advanced-circuit", amount = 1 },
+    },
+    energy_required = 6,
+    allow_productivity = true,
+  },
+  {
+    -- Processing Unit has no direct copper ingredient in vanilla -- its
+    -- copper is embedded inside the Electronic Circuit input. Reducing
+    -- that count and substituting Copper Foil directly also implicitly
+    -- discounts the Iron Plate each removed circuit carried; this is
+    -- accepted deliberately (design doc §7.3 balancing note).
+    type = "recipe",
+    name = "sae-electromagnetic-processing-unit",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-i[electromagnetic-processing-unit]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-copper-foil", amount = 5 },
+      { type = "item", name = "electronic-circuit", amount = 15 }, -- reduced from vanilla's 20
+      { type = "item", name = "advanced-circuit", amount = 2 },
+      { type = "fluid", name = "sulfuric-acid", amount = 5 },
+    },
+    results = {
+      { type = "item", name = "processing-unit", amount = 1 },
+    },
+    energy_required = 10,
+    allow_productivity = true,
+  },
 })
