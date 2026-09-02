@@ -34,9 +34,13 @@ A tree succeeds when it creates a **choice** the player didn't have before — "
 - **No unnecessary intermediate-item bloat.** Every new item needs a mechanical reason to exist as a distinct item (usually: it needs to be a fluid for pipe/tank logistics, or it needs to be shippable/storable independent of its neighbors in the chain). "Feels like more content" is not a justification.
 - **No building-placement gimmicks.** No recipe is ever restricted to "must be built on planet X" as an arbitrary rule. Every planet lock in every tree comes from a resource that is unconditionally exclusive to that planet (an ore, a fluid, a raw material) — never from a rule bolted onto the recipe itself.
 
-### 2.4 Optional, not mandatory
+### 2.4 Required for the mod's endgame
 
-A player must be able to finish the game, including reaching Aquilo and any endgame content, using only vanilla planetary tech trees. Every cross-planet tree is a strictly optional layer that makes certain problems easier or certain outcomes better, never a hard gate. The "vanilla-only" playstyle must remain fully viable throughout.
+**Required for the mod's endgame.** The Core (Section 4.4) is the mod's own destination, and there is no reason the mod's endgame should be reachable without the mod's content. Reaching it requires the platform capabilities the trees produce, and it requires them because the corridor is physically impassable otherwise — not because a recipe demands a token. That corridor only starts past the point where a vanilla platform already turns back; vanilla's own Shattered Planet approach is untouched.
+
+The line is the vanilla win condition. Everything up to it is optional. Everything past it is the mod, and the mod may ask for its own tools.
+
+**The cost of this, stated plainly.** Every mandatory tree becomes a single point of failure: if one of them is tedious, it blocks the endgame instead of being skipped. So the mandatory set must be kept small — five — with the remaining trees adding depth that makes the corridor *cheaper* rather than *possible*. The mandatory five must also be the first trees playtested, because there is no longer an escape hatch if one of them is not fun.
 
 ### 2.5 Each planet keeps its identity
 
@@ -56,8 +60,9 @@ Every tree the mod adds should be describable in this shape:
 2. **A forcing anchor in each direction.** At least one recipe that can only be completed by importing a resource that is exclusively native to the other planet (Section 2.1). Trees may be one-way (only one planet exports) or round-trip (material physically returns, e.g. a depleted catalyst); round-trip loops create more sustained logistics pressure and are preferred where the mechanic naturally supports it.
 3. **A processing chain on each planet**, built from existing specialized buildings, that turns the imported resource plus local materials into something meaningful — ideally reusing an existing production concern on that planet (e.g. feeding into Fulgora's existing electronics chain, or Vulcanus's existing metallurgy chain) rather than creating a fully parallel economy.
 4. **A shared capstone**, where each planet is responsible for producing one half, and the two halves combine (usually via a recipe craftable anywhere) into a single top-tier item. Neither half is useful without the other — the capstone is the proof that the player actually built out both sides.
-5. **A platform-facing payoff** (Section 4) — the capstone item unlocks a space-platform technology that improves one platform subsystem. This is what turns a self-contained regional loop into a contribution to the mod's overall endgame.
-6. **A completed technology progression** that gates each stage sensibly, ending in the platform technology, with cross-dependencies made explicit where a step genuinely needs both halves of the chain (as Vulcanus↔Fulgora Technology 3 requires both Technology 1 and Technology 2).
+5. **A platform-facing payoff** (Section 4) — the capstone item unlocks a space-platform technology that improves one platform subsystem **and answers one corridor hazard that no other tree answers** (Section 4.4). This is what turns a self-contained regional loop into a contribution to the mod's overall endgame.
+6. **Interaction with the existing capabilities** (Section 4.5). A capability that can be installed without changing how any other capability is used is a shopping-list item, not a payoff.
+7. **A completed technology progression** that gates each stage sensibly, ending in the platform technology, with cross-dependencies made explicit where a step genuinely needs both halves of the chain (as Vulcanus↔Fulgora Technology 3 requires both Technology 1 and Technology 2).
 
 A tree proposal should be checked against this template before any recipe numbers are tuned. If a proposed tree can't fill in items 1–5 above, it isn't ready.
 
@@ -78,21 +83,49 @@ To keep trees from competing for the same payoff, each tree claims a distinct pl
 | Subsystem | Description | Status |
 |---|---|---|
 | Power | Electricity generation aboard a platform | **Claimed — Vulcanus↔Fulgora** (Thermionic Generator, Section 9 of that doc) |
-| Thrust | Engine output, fuel efficiency, or maneuverability | Open |
-| Asteroid processing | Improvements to how platforms capture, sort, or process asteroid chunks | Open |
-| Cargo / logistics | Storage density, transfer speed, or automation of platform cargo | Open |
-| Defence | Weapons, shielding, or damage mitigation against asteroids and threats | Open |
-| Structure | Hull integrity, platform size limits, or foundation mechanics | Open |
+| Thrust | Engine output, fuel efficiency, or maneuverability | Open — mandatory |
+| Asteroid processing | Improvements to how platforms capture, sort, or process asteroid chunks | Open — mandatory |
+| Defence | Weapons, shielding, or damage mitigation against asteroids and threats | Open — mandatory |
+| Structure | Hull integrity, platform size limits, or foundation mechanics | Open — mandatory |
+| Cargo / logistics | Storage density, transfer speed, or automation of platform cargo | **Not a tree slot** — met by vanilla platform-to-platform transfer plus a depot buildout using existing buildings (endgame doc §3), not by a new capstone chain |
 
 This list is a starting carve-up, not a fixed ceiling — if a future tree's natural payoff doesn't fit any open slot cleanly, the list should be revisited rather than forcing a fit. What matters is that two trees should not both claim the same subsystem; the point of the pattern is one coherent platform upgrade per tree, not a pile of competing power generators.
+
+**The mandatory five, named.** Power, Structure, Thrust, Asteroid processing, and Defence — one tree each, one corridor band each (endgame doc §2a). Cargo/logistics sits outside this count because it isn't gated behind a capstone; the corridor itself is built from mechanics vanilla already provides. Any future subsystem beyond these five defaults to the optional tier (Section 4.4) unless a specific new corridor hazard is designed for it.
+
+**No redundancy among the mandatory trees.** An earlier draft of this document deliberately gave every corridor hazard two answers from different pairs, so that no single tree became mandatory. Section 2.4 now says the opposite, and the two positions cannot both hold: redundancy is exactly what makes a tree skippable. For any hazard on the mandatory path there is **one** answer, from **one** tree. Trees outside the mandatory set may overlap freely, since their job is to make the corridor cheaper rather than passable.
+
+**One power source.** A platform runs a single generator type, so the Thermionic Generator's numbers set the exchange rate for every other capability's power cost. Its tuning cannot be finalised in isolation from the capabilities that draw on it.
 
 ### 4.3 Capstone shippability requirement
 
 Every tree's capstone item (Section 3.4) must be **a clean, self-contained, freely shippable end product** with no planet-locked properties, fluid state, or decay mechanic of its own. This is what makes forward compatibility possible: a later mega-technology can consume one capstone item from each implemented tree without needing to know how any of them were produced. Vulcanus↔Fulgora's Thermionic Assembly is the reference example — it is craftable anywhere precisely because both of its own inputs are already planet-locked by their own production, so the assembly step itself carries no lock.
 
-### 4.4 The eventual endgame
+### 4.4 The endgame: the Core
 
-Once multiple trees exist, a final technology should require **several trees' platform capabilities simultaneously** — for example, a platform configuration that can only survive a route or destination that breaks a conventionally-equipped platform. This is intentionally deferred: it should be designed once there are at least two or three implemented trees to draw on, not speculatively designed around trees that don't exist yet.
+Vanilla's Shattered Planet is not a destination. It no longer exists as a planet; a platform travels toward it, takes escalating damage, and eventually turns back or dies. Roughly halfway out the usable asteroids stop and are replaced by promethium chunks that crush into nothing, so a flying factory can no longer feed itself. Speed is punished, so it cannot be outrun.
+
+The mod's endgame finishes that sentence: **the Core**, the intact metallic heart of the destroyed world, still out there past the point where every vanilla platform turns around. It is the first planet in the game that cannot be bootstrapped — metal and vacuum, no water, no oil, no biology, no lava — so everything arrives down a corridor the player has to build and then maintain.
+
+**Gating is by traversal, not by ingredients.** A final technology that simply consumes one capstone from each tree is a checklist: the player looks up what is missing and grinds it. Instead, each distance band of the corridor removes a specific vanilla crutch, and the tree that answers it is the only thing that restores it. The corridor teaches its own requirements by killing platforms in legible, specific ways, and degradation-not-destruction means the player limps home knowing what to build.
+
+Full hazard-to-tree mapping is in the endgame design document ([design/endgame.md](endgame.md)); what the capstones are spent on once a player arrives is in [design/core.md](core.md). The framework-level rules are:
+
+- Each mandatory tree answers exactly one band (Section 4.2).
+- Each band's failure must be **specific and legible** — a platform that dies out there should die of one identifiable thing.
+- Nothing on the corridor may be brute-forced with quantity. Every gate is qualitative, or players will simply carry more railguns.
+
+### 4.5 Capabilities must interact
+
+Six trees each bolting an independent upgrade onto a platform produces a shopping list, not a system. The capabilities are bound together by making them compete for and feed the same five resources: **electricity, heat, ice, weight, and consumables.** Adding any one changes the arithmetic of the others.
+
+Rules for any new capability:
+
+1. Draw on at least one shared resource and feed at least one other capability.
+2. No flat multipliers — a multiplier cannot be traded against anything.
+3. Degrade, don't destroy; the player should be able to see the mistake and correct it.
+4. Every capability must have a wrong platform to install it on.
+5. Never relieve two of the five at once.
 
 ---
 
@@ -106,7 +139,7 @@ Once multiple trees exist, a final technology should require **several trees' pl
 
 ### 5.2 Open slots
 
-Thrust, asteroid processing, cargo/logistics, defence, and structure are all unclaimed. No specific planet pair is committed to any of these yet — per the scope of this document, that design work is deliberately left for when each tree is actually proposed, so that the anchor resources (Section 2.1) and planet-identity contributions (Section 2.5) can be worked out concretely rather than assumed in the abstract.
+Thrust, asteroid processing, defence, and structure are all unclaimed. (Cargo/logistics is not a tree slot — see Section 4.2.) No specific planet pair is committed to any of these yet — per the scope of this document, that design work is deliberately left for when each tree is actually proposed, so that the anchor resources (Section 2.1) and planet-identity contributions (Section 2.5) can be worked out concretely rather than assumed in the abstract.
 
 ---
 
@@ -117,7 +150,9 @@ Before a new cross-planet tree proposal is accepted, it should be able to answer
 - Does every cross-planet shipment trace to a recipe that literally cannot be completed without an exclusively-local resource from the other planet (Section 2.1)?
 - Does the tree avoid new Quality mechanics, redundant building tiers, and more than one new building (Section 2.3)?
 - Is every new item mechanically justified (fluid logistics, independent shippability) rather than existing purely for "more content" (Section 2.3)?
-- Can a player ignore the tree entirely and still complete the game (Section 2.4)?
+- Can a player ignore the tree entirely and still reach the vanilla win condition (Section 2.4)?
+- If the tree is on the mandatory path, is it the *only* answer to its corridor hazard, and is that hazard qualitative rather than a quantity check (Sections 4.2, 4.4)?
+- Does its capability draw on at least one shared platform resource and feed at least one other capability, rather than standing alone (Section 4.5)?
 - Does each planet contribute something the other could not replicate by relocating buildings (Section 2.5)?
 - Does every byproduct have at least two existing-system outlets (Section 2.6)?
 - Does the tree fit the template in Section 3 — two planets, a forcing anchor, per-planet chains, a shared capstone, a platform payoff, a coherent tech progression?
@@ -133,4 +168,6 @@ A tree that fails any of these should be reworked before recipe-level balancing 
 1. Finish implementing and playtesting the Vulcanus↔Fulgora tree in full (its own four-phase plan is in Section 17 of that document).
 2. Use what that playtesting reveals — which mechanics felt satisfying, which byproducts were tedious versus interesting, whether the shipping loop held up at scale — to refine this framework before starting a second tree.
 3. Pick the second tree's planet pair and subsystem deliberately: prefer a pairing and subsystem combination that exercises a different kind of anchor resource (e.g. a perishable/spoiling resource from Gleba, rather than another bulk-fluid anchor like Lava) so the mod's trees stay mechanically distinct from each other rather than reskinning the same shape.
-4. Only after at least two trees are implemented, begin designing the multi-capability endgame technology described in Section 4.4.
+4. **Build and playtest the mandatory five before anything else.** Under Section 2.4 these have no escape hatch — a tree that is tedious now blocks the endgame rather than being skipped — so any tree on the mandatory path must prove it is fun before optional depth is added anywhere.
+5. Tune the Thermionic Generator only once several capabilities exist to draw on it, since it sets the power exchange rate for all of them (Section 4.2).
+6. Design the Core and the corridor bands last, when the capabilities they gate on are known quantities rather than sketches.

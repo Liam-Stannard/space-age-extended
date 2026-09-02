@@ -4,6 +4,8 @@ A Factorio: Space Age mod adding deeper, optional industrial relationships betwe
 
 - Overall pattern and roadmap: [design/framework.md](design/framework.md)
 - First implemented tree — Vulcanus ↔ Fulgora: Cross-Planet Industrial Integration: [design/vulcanus-fulgora.md](design/vulcanus-fulgora.md)
+- The mod's endgame — the corridor, the mandatory five trees, and why: [design/endgame.md](design/endgame.md)
+- What's actually on the Core once a player arrives: [design/core.md](design/core.md)
 
 ## Status
 
