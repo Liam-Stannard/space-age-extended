@@ -82,4 +82,29 @@ data:extend({
       time = 30,
     },
   },
+  {
+    type = "technology",
+    name = "sae-resonant-electromagnetics",
+    icon = "__space-age-extended__/graphics/technology/resonant-electromagnetics.png",
+    icon_size = 256,
+    effects = {
+      { type = "unlock-recipe", recipe = "sae-catalyst-rod" },
+      { type = "unlock-recipe", recipe = "sae-resonant-circuit" },
+      { type = "unlock-recipe", recipe = "sae-purify-contaminated-sulfuric-acid" },
+      { type = "unlock-recipe", recipe = "sae-magmatic-core" },
+      { type = "unlock-recipe", recipe = "sae-depleted-catalyst-rod-reprocessing" },
+      { type = "unlock-recipe", recipe = "sae-thermionic-assembly" },
+    },
+    -- The capstone requires both circuit-tier technologies (design doc §14,
+    -- Technology 5).
+    prerequisites = { "sae-electromagnetic-metallurgy", "sae-integrated-electronics" },
+    unit = {
+      count = 350,
+      ingredients = {
+        { "metallurgic-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 },
+      },
+      time = 45,
+    },
+  },
 })

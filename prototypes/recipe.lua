@@ -197,4 +197,127 @@ data:extend({
     energy_required = 10,
     allow_productivity = true,
   },
+
+  -- Section 8: Capstone: Resonant Electromagnetics (design doc §8)
+  {
+    type = "recipe",
+    name = "sae-catalyst-rod",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-j[catalyst-rod]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "holmium-ore", amount = 1 },
+      { type = "item", name = "sae-copper-foil", amount = 2 },
+      { type = "item", name = "iron-plate", amount = 5 },
+    },
+    results = {
+      { type = "item", name = "sae-catalyst-rod", amount = 1 },
+    },
+    energy_required = 10,
+  },
+  {
+    -- The Catalyst Rod is consumed as a normal ingredient here -- Factorio
+    -- has no native "wears down with use" item, so the one-time-use feel is
+    -- achieved with a standard multi-output recipe (design doc §8.2).
+    type = "recipe",
+    name = "sae-resonant-circuit",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-k[resonant-circuit]",
+    enabled = false,
+    main_product = "sae-resonant-circuit",
+    ingredients = {
+      { type = "item", name = "processing-unit", amount = 1 },
+      { type = "item", name = "sae-copper-foil", amount = 2 },
+      { type = "item", name = "sae-catalyst-rod", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "sae-resonant-circuit", amount = 1 },
+      { type = "item", name = "sae-depleted-catalyst-rod", amount = 1 },
+      { type = "fluid", name = "sae-contaminated-sulfuric-acid", amount = 20 },
+    },
+    energy_required = 15,
+  },
+  {
+    -- Mirrors vanilla's acid-neutralisation recipe, but runs on Fulgora
+    -- under normal atmosphere -- deliberately no surface_conditions gate
+    -- (design doc §8.3).
+    type = "recipe",
+    name = "sae-purify-contaminated-sulfuric-acid",
+    categories = { "chemistry" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-l[purify-contaminated-sulfuric-acid]",
+    enabled = false,
+    main_product = "sulfuric-acid",
+    ingredients = {
+      { type = "fluid", name = "sae-contaminated-sulfuric-acid", amount = 20 },
+      { type = "item", name = "calcite", amount = 1 },
+    },
+    results = {
+      { type = "fluid", name = "sulfuric-acid", amount = 15 },
+      { type = "fluid", name = "steam", amount = 50, temperature = 500 },
+    },
+    energy_required = 1,
+    allow_decomposition = false,
+  },
+  {
+    -- The Vulcanus half of the capstone -- Lava forces this recipe onto
+    -- Vulcanus, Catalyst Rod forces the Fulgora dependency (design doc §8.4).
+    type = "recipe",
+    name = "sae-magmatic-core",
+    categories = { "metallurgy" },
+    subgroup = "vulcanus-processes",
+    order = "e[sae]-m[magmatic-core]",
+    enabled = false,
+    main_product = "sae-magmatic-core",
+    ingredients = {
+      { type = "fluid", name = "lava", amount = 500 },
+      { type = "item", name = "tungsten-plate", amount = 5 },
+      { type = "item", name = "sae-catalyst-rod", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "sae-magmatic-core", amount = 1 },
+      { type = "item", name = "sae-depleted-catalyst-rod", amount = 1 },
+    },
+    energy_required = 16,
+    allow_decomposition = false,
+  },
+  {
+    -- Depleted-rod counterpart to sae-holmium-extraction (design doc §5,
+    -- "Variant recipe: Depleted Catalyst Rod reprocessing") -- closes the
+    -- Catalyst Rod loop, but deliberately at a reduced yield versus fresh
+    -- Holmium-rich Residue extraction.
+    type = "recipe",
+    name = "sae-depleted-catalyst-rod-reprocessing",
+    categories = { "electromagnetics" },
+    subgroup = "fulgora-processes",
+    order = "e[sae]-n[depleted-catalyst-rod-reprocessing]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-depleted-catalyst-rod", amount = 3 },
+    },
+    results = {
+      { type = "item", name = "holmium-ore", amount = 1 },
+    },
+    energy_required = 8,
+  },
+  {
+    -- Craftable anywhere -- both inputs are already location-locked by
+    -- their own production (design doc §8.5).
+    type = "recipe",
+    name = "sae-thermionic-assembly",
+    categories = { "crafting" },
+    subgroup = "intermediate-product",
+    order = "e[sae]-o[thermionic-assembly]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-resonant-circuit", amount = 1 },
+      { type = "item", name = "sae-magmatic-core", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "sae-thermionic-assembly", amount = 1 },
+    },
+    energy_required = 10,
+  },
 })

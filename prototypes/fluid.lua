@@ -56,4 +56,17 @@ data:extend({
     draw_as_glow = false,
     auto_barrel = false,
   },
+  {
+    type = "fluid",
+    name = "sae-contaminated-sulfuric-acid",
+    icon = "__space-age-extended__/graphics/icons/fluid/contaminated-sulfuric-acid.png",
+    icon_size = 64,
+    subgroup = "fulgora-processes",
+    order = "e[sae]-e[contaminated-sulfuric-acid]",
+    default_temperature = 25,
+    base_color = { 0.45, 0.42, 0.12 },
+    flow_color = { 0.6, 0.55, 0.2 },
+    draw_as_glow = false,
+    auto_barrel = false,
+  },
 })
