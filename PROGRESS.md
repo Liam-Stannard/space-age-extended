@@ -25,6 +25,17 @@ it survives independently of local Claude state.
   `sae-electromagnetic-metallurgy`, `sae-integrated-electronics`.
   Data-stage + 60-tick benchmark verified; not yet user-playtested.
 
+- **Phase 3 — Capstone** (design doc §8; Tech 5 `sae-resonant-electromagnetics`),
+  on branch `phase-3-capstone`, not yet merged to `master`. Catalyst Rod,
+  Resonant Circuit (+ Depleted Catalyst Rod + Contaminated Sulfuric Acid
+  byproducts), Purify Contaminated Sulfuric Acid, Magmatic Core (Vulcanus
+  side — Lava + Tungsten + Catalyst Rod), Depleted Catalyst Rod
+  reprocessing (feeds back into Holmium Extraction), Thermionic Assembly.
+  5 new items, 1 new fluid, 6 new recipes. One technology,
+  `sae-resonant-electromagnetics`, requiring both
+  `sae-electromagnetic-metallurgy` and `sae-integrated-electronics`.
+  Data-stage verified; not yet user-playtested.
+
 One real bug found and fixed along the way: the mod's internal `name` in
 `info.json` didn't match the `__space-age-extended__` prefix already used
 in every graphics path, so it failed to load. Renamed the mod (and its
@@ -55,14 +66,6 @@ fast-forward into `master`, push, delete the branch.
 
 ## Not started yet
 
-- **Phase 3 — Capstone** (design doc §8; Tech 5 `sae-resonant-electromagnetics`).
-  Catalyst Rod, Resonant Circuit (+ Depleted Catalyst Rod + Contaminated
-  Sulfuric Acid byproducts), Purify Contaminated Sulfuric Acid, Magmatic
-  Core (Vulcanus side — Lava + Tungsten + Catalyst Rod), Depleted Catalyst
-  Rod reprocessing (feeds back into Holmium Extraction), Thermionic
-  Assembly. Testable state per the plan: simulate shipping via console
-  item-insertion between a Vulcanus and Fulgora surface rather than real
-  rockets.
 - **Phase 4 — Thermionic Generator** (design doc §9; Tech 6
   `sae-thermionic-power`). The hard one — needs real `control.lua` runtime
   logic since no stock Factorio entity type gives a self-heating,

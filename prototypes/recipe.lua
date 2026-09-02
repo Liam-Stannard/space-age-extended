@@ -215,6 +215,7 @@ data:extend({
       { type = "item", name = "sae-catalyst-rod", amount = 1 },
     },
     energy_required = 10,
+    auto_recycle = false,
   },
   {
     -- The Catalyst Rod is consumed as a normal ingredient here -- Factorio
@@ -319,5 +320,6 @@ data:extend({
       { type = "item", name = "sae-thermionic-assembly", amount = 1 },
     },
     energy_required = 10,
+    auto_recycle = false,
   },
 })
