@@ -5,21 +5,32 @@
 --
 -- Visible generator: `electric-energy-interface`, script-driven (see
 -- scripts/thermionic-generator.lua). Visuals reuse vanilla nuclear
--- reactor's real static body/shadow sprite files directly (plain Sprite
--- layers, not reactor's own heat-pipe-glow or connection-graphics
+-- reactor's real static body/shadow/pipes sprite files directly (plain
+-- Sprite layers, not reactor's own heat-pipe-*glow* or connection-graphics
 -- machinery, which are base-mod-internal and reactor-type-specific) --
 -- thematically closer to a heat-driven generator than the accumulator
 -- placeholder this used to borrow from, and no new art pipeline needed
--- since reactor.png/reactor-shadow.png are just plain static layers, same
--- shape as accumulator's were. Deliberately NOT using reactor's
--- reactor-pipes.png/reactor-pipes-heated.png lower-layer graphics -- those
--- read visually as literal heat-pipe plumbing across the reactor's face,
--- which would be misleading given this entity has NO heat-pipe interface
--- of its own (design doc §9.2, and see the energy_source comment below).
+-- since reactor.png/reactor-shadow.png/reactor-pipes.png are just plain
+-- static layers, same shape as accumulator's were. The static
+-- reactor-pipes.png lower-layer is now honest -- the entity has a real
+-- heat-pipe connection via its paired hidden heat-interface below.
+-- Deliberately NOT using reactor-pipes-heated.png (the heat-reactive glow
+-- variant) -- that requires reactor-type-specific heat_lower_layer_picture
+-- machinery this entity, an electric-energy-interface, doesn't have; a
+-- static pipes layer is enough for this pass.
 --
 -- Hidden hopper: a 2-slot `container`, spawned/paired 1:1 with the visible
 -- generator at runtime, filtered to Magmatic Core / Ice. Never placed by
 -- the player directly -- not in any item's place_result, no icon needed.
+--
+-- Hidden heat-interface: a `heat-interface`-type entity, also spawned/
+-- paired 1:1 with the visible generator at runtime (see
+-- scripts/thermionic-generator.lua), giving the generator a real,
+-- script-driven heat-pipe connection (design doc §9.2/§9.3 -- reversed
+-- from the original "electricity only" design once it was established
+-- that Factorio's heat network is strictly surface-local and can never
+-- bridge a space platform into a planet's own heat network regardless of
+-- orbit, so the original Aquilo-trivialisation concern doesn't apply).
 
 data:extend({
   {
@@ -52,6 +63,20 @@ data:extend({
     -- rather than via base's internal heat-pipe-glow/connection-graphics
     -- helpers, which are reactor-type-specific and not something a
     -- dependent mod should rely on.
+    -- lower_layer_picture: vanilla reactor's own real heat-pipe stub
+    -- graphics (reactor-pipes.png), verified directly against base's own
+    -- "reactor" entity prototype (base/prototypes/entity/entities.lua) --
+    -- width/height/scale/shift copied from its lower_layer_picture field
+    -- exactly (shift there is `util.by_pixel(-1, -5)`, i.e. {-1/32, -5/32}
+    -- = {-0.03125, -0.15625}, reproduced as a literal here to match this
+    -- file's existing style rather than pulling in the util lib).
+    lower_layer_picture = {
+      filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes.png",
+      width = 320,
+      height = 316,
+      scale = 0.5,
+      shift = { -0.03125, -0.15625 },
+    },
     picture = {
       layers = {
         {
@@ -71,13 +96,16 @@ data:extend({
         },
       },
     },
-    -- Electricity-only output, driven entirely by script (see
-    -- scripts/thermionic-generator.lua) -- energy_production/energy_usage
-    -- are deliberately left at their defaults (0) since power_production
-    -- is set every update interval instead of being a fixed rate.
-    -- Deliberately NO heat energy source and NO heat-pipe connection of
-    -- any kind (design doc §9.2) -- this must never become a way to dump
-    -- heat near Aquilo.
+    -- Electricity remains the primary output, driven entirely by script
+    -- (see scripts/thermionic-generator.lua) -- energy_production/
+    -- energy_usage are deliberately left at their defaults (0) since
+    -- power_production is set every update interval instead of being a
+    -- fixed rate. This entity itself still has NO heat energy source of
+    -- its own (an electric-energy-interface can't have one) -- the real
+    -- heat-pipe connection lives entirely on the paired hidden
+    -- sae-thermionic-generator-heat-interface below, as a secondary
+    -- cooling avenue alongside Ice, not a second power channel
+    -- (design doc §9.2).
     energy_source = {
       type = "electric",
       usage_priority = "secondary-output",
@@ -127,6 +155,82 @@ data:extend({
       priority = "extra-high",
       width = 1,
       height = 1,
+    },
+  },
+  {
+    type = "heat-interface",
+    name = "sae-thermionic-generator-heat-interface",
+    -- Never player-placed and never independently selectable -- spawned/
+    -- despawned in lockstep with the visible generator by
+    -- scripts/thermionic-generator.lua, exactly mirroring the hidden
+    -- hopper above. gui_mode = "admins" matches vanilla's own
+    -- heat-interface entity (base/prototypes/entity/entities.lua) --
+    -- players never interact with this directly, it only needs to
+    -- physically exist so nearby heat pipes can connect to it.
+    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
+    hidden = true,
+    hidden_in_factoriopedia = true,
+    selectable_in_game = false,
+    gui_mode = "admins",
+    max_health = 300,
+    -- collision_box deliberately matches the visible generator's own real
+    -- footprint (not a degenerate {0,0} box the way the hidden hopper
+    -- above uses) -- verified in-engine that a heat-interface with a
+    -- zero-size collision_box silently drops any heat_buffer connection
+    -- whose `position` isn't exactly {0,0}, which would make the edge
+    -- connections below inert. collision_mask stays empty so this never
+    -- actually blocks anything physically -- it only exists to give the
+    -- connection math a real footprint to anchor to.
+    collision_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
+    selection_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
+    collision_mask = { layers = {} },
+    heat_buffer = {
+      -- Provisional placeholders (design doc §9.4), same tone as
+      -- scripts/thermionic-curve.lua's own balance constants -- not
+      -- final-tuned. Chosen to be a meaningful heat sink, not a trivial
+      -- instant dump (that would make Ice pointless): max_temperature
+      -- comfortably covers the abstract efficiency curve's overheat range
+      -- once mapped to Celsius (see
+      -- scripts/thermionic-curve.lua's abstract_temperature_to_heat_buffer_celsius),
+      -- specific_heat is an order of magnitude below vanilla's own
+      -- heat-interface/reactor (1MJ vs 10MJ) so a connected network's
+      -- draw is actually visible in observable temperature swings within
+      -- a normal play session rather than vanishing into a huge thermal
+      -- reservoir, and max_transfer (10MW) is a real throughput cap, not
+      -- vanilla's effectively-unlimited 10GW, so "hotter drains faster"
+      -- is a genuine consequence of temperature-gradient-driven
+      -- conduction against a finite pipe, not a free pass.
+      max_temperature = 2000,
+      specific_heat = "1MJ",
+      max_transfer = "10MW",
+      default_temperature = 0,
+      min_working_temperature = 0,
+      -- Connection points cover the edges of the *visible* generator's
+      -- real 3x3-tile footprint (verified in-engine: tile_width/
+      -- tile_height = 3, centered on the shared spawn position), not a
+      -- single position = {0,0} point the way vanilla's own tiny 1-tile
+      -- heat-interface does -- {0,0} alone would place the only
+      -- connection point on the generator's own center tile, which the
+      -- visible generator's collision box already occupies, so no real
+      -- heat pipe could ever physically reach it. This instead lets a
+      -- heat pipe connect from any tile touching any of the generator's
+      -- four sides, mirroring how vanilla's own (5-wide) reactor lays its
+      -- connection points around its actual footprint rather than at a
+      -- single central point.
+      connections = {
+        { position = { -1, -1 }, direction = defines.direction.north },
+        { position = { 0, -1 }, direction = defines.direction.north },
+        { position = { 1, -1 }, direction = defines.direction.north },
+        { position = { 1, -1 }, direction = defines.direction.east },
+        { position = { 1, 0 }, direction = defines.direction.east },
+        { position = { 1, 1 }, direction = defines.direction.east },
+        { position = { 1, 1 }, direction = defines.direction.south },
+        { position = { 0, 1 }, direction = defines.direction.south },
+        { position = { -1, 1 }, direction = defines.direction.south },
+        { position = { -1, 1 }, direction = defines.direction.west },
+        { position = { -1, 0 }, direction = defines.direction.west },
+        { position = { -1, -1 }, direction = defines.direction.west },
+      },
     },
   },
 })
