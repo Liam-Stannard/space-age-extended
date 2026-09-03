@@ -205,6 +205,50 @@ its machine. The fluid's base_color/flow_color were changed to match.
 
 **Still owed:** a client playtest -- nothing here has been played.
 
+Further gotchas, all found the hard way while spiking Reactive Edge
+Plating (each one cost a run that looked like a genuine negative result):
+
+- **`/c` must share a line with the first statement.** A scenario file
+  sent as `/c\n<lua>` makes the server parse `c` plus the next word as a
+  command name and reply `Unknown command "c local"`. Prefix with `"/c "`
+  and `lstrip()` the file.
+- **Asteroids must be created on the `enemy` force.** On `neutral` — the
+  obvious guess — turrets simply ignore them: a vanilla gun turret with
+  10 magazines loaded sat at `damage_dealt = 0` and let the asteroid hit
+  it. Turrets only engage forces their own force is `is_enemy()` with,
+  and `player` vs `neutral` is false. **Always put a vanilla control
+  turret in the rig**; that is the only reason this was caught as a rig
+  bug rather than recorded as "the new entity doesn't shoot".
+- **An inserter's `direction` is the side it picks up FROM**, not the
+  side it drops on. `direction = north` gives `pickup_position` one tile
+  north and `drop_position` one tile south.
+- **`automated_ammo_count` is the count an inserter fills a turret up
+  to**, not just a logistics-request number — measured against a vanilla
+  gun turret side by side, both stopping exactly at their prototype's
+  value, well below the ammo stack size.
+- **Not every API method takes a table.** `LuaSpacePlatform::repair_tile`
+  and `LuaSurface::set_tiles` take positional args while their neighbours
+  don't; `runtime-api.json`'s per-method `format.takes_table` is the
+  authority. That file (plus `prototype-api.json`) ships with the install
+  at `<factorio>/doc-html/` and is far faster to consult than guessing.
+- **`LuaEntityPrototype` has no `max_health`** — read `max_health` off
+  the `LuaEntity`.
+- **Resolve a platform by scanning `game.surfaces` for a valid
+  `.platform`.** `force.get_space_platforms(planet)` stops finding it the
+  moment it departs, and the surface is not always `platform-1` (a
+  destroyed platform's replacement is `platform-2`, …).
+- **Killing the hub deletes the whole platform**, and every later
+  measurement then errors on a nil platform. Pin
+  `platform.hub.destructible = false` in any rig that lets asteroids
+  through, and keep test lanes off `x = 0`.
+- **Platform mass is hub weight + Σ tile weight, and nothing else.**
+  Entities and their cargo contribute zero; `weight` as a mass
+  contribution exists only on `TilePrototype` and
+  `SpacePlatformHubPrototype`.
+- Asteroids drift at ~0.0197 tiles/tick **even when the platform's own
+  speed is 0**, so single-asteroid tests need no thrusters at all. Only
+  the S5-style exposure runs need the platform genuinely under way.
+
 ## Not started yet
 
 - **Playtest** the Quench Turbine, then merge `quench-turbine` into `master`.
