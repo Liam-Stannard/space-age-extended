@@ -73,7 +73,9 @@ local function cleanup_by_generator_unit_number(generator_unit_number)
   end
   storage.sae_thermionic_generators[generator_unit_number] = nil
   storage.sae_thermionic_containers[link.container_unit_number] = nil
-  storage.sae_thermionic_heat_interfaces[link.heat_interface_unit_number] = nil
+  if link.heat_interface_unit_number then
+    storage.sae_thermionic_heat_interfaces[link.heat_interface_unit_number] = nil
+  end
   if link.container and link.container.valid then
     spill_container_contents(link.container)
     link.container.destroy()
@@ -92,7 +94,9 @@ local function cleanup_by_container_unit_number(container_unit_number)
   storage.sae_thermionic_containers[container_unit_number] = nil
   storage.sae_thermionic_generators[generator_unit_number] = nil
   if link then
-    storage.sae_thermionic_heat_interfaces[link.heat_interface_unit_number] = nil
+    if link.heat_interface_unit_number then
+      storage.sae_thermionic_heat_interfaces[link.heat_interface_unit_number] = nil
+    end
     spill_container_contents(link.container)
     if link.generator and link.generator.valid then
       link.generator.destroy()
