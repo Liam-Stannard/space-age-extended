@@ -118,18 +118,30 @@ function M.heat_removed_by_ice(ice_consumed)
 end
 
 --- How many whole units of Ice are actually useful to consume this
---- interval, given `current_temperature` (before this interval's step) and
---- `heat_in` (heat this interval's fuel burn is about to add). Temperature
---- never needs to go below AMBIENT_TEMPERATURE (`next_temperature` floors
---- there), so there is no thermal benefit to removing more heat than is
---- actually present above ambient plus what's about to arrive -- consuming
---- ice beyond that point would be pure waste. Never negative.
-function M.max_useful_ice(current_temperature, heat_in)
+--- interval, given `current_temperature` (before this interval's step),
+--- `heat_in` (heat this interval's fuel burn is about to add), and
+--- `heat_out_network` (heat a connected heat-pipe network is already
+--- removing this interval -- see M.heat_removed_by_network -- optional,
+--- defaults to 0 for callers with no heat-pipe network to account for).
+--- Temperature never needs to go below AMBIENT_TEMPERATURE
+--- (`next_temperature` floors there), so there is no thermal benefit to
+--- removing more heat than is actually present above ambient, plus what's
+--- about to arrive from fuel, minus what the network is already removing
+--- (or plus what it's pushing in, if `heat_out_network` is negative) --
+--- consuming ice beyond that point would be pure waste, which is exactly
+--- the gap this closes: without this term, Ice would keep draining at a
+--- pre-network rate even when an attached heat-pipe network is already
+--- handling some/all of the needed cooling (design doc §9.3's "player
+--- controls fuel rate and cooling rate independently" -- the two channels
+--- should interact here, not double up on removing the same heat). Never
+--- negative.
+function M.max_useful_ice(current_temperature, heat_in, heat_out_network)
+  heat_out_network = heat_out_network or 0
   local heat_above_ambient = current_temperature - M.AMBIENT_TEMPERATURE
   if heat_above_ambient < 0 then
     heat_above_ambient = 0
   end
-  local removable_heat = heat_above_ambient + heat_in
+  local removable_heat = heat_above_ambient + heat_in - heat_out_network
   if removable_heat <= 0 then
     return 0
   end
@@ -282,17 +294,36 @@ end
 --    streams are genuinely independent, per §9.2):
 --      curve.power_output(0, 700) --> 0  (no fuel, no output, regardless of temperature)
 --
--- 9. Idle at ambient with no fuel (don't burn ice for zero thermal
---    benefit, §9.3's ice-throughput tunable):
---      curve.max_useful_ice(curve.AMBIENT_TEMPERATURE, curve.heat_from_fuel(0)) --> 0
---      -- heat_above_ambient = 0; heat_in = 0; removable_heat = 0 --> 0 ice useful
+-- 9. Idle at ambient with no fuel, no network contribution (don't burn
+--    ice for zero thermal benefit, §9.3's ice-throughput tunable):
+--      curve.max_useful_ice(curve.AMBIENT_TEMPERATURE, curve.heat_from_fuel(0), 0) --> 0
+--      -- heat_above_ambient = 0; heat_in = 0; heat_out_network = 0;
+--      -- removable_heat = 0 --> 0 ice useful
 --
--- 10. Warm and still fuelled (some ice still useful, capped below the
---     2/interval rate cap by what's actually there to remove):
---      curve.max_useful_ice(30, curve.heat_from_fuel(1)) --> 2
---      -- heat_above_ambient = 30; heat_in = 50; removable_heat = 80;
---      -- floor(80/40) = 2 (still gets clamped further by the 2/interval
---      -- rate cap in scripts/thermionic-generator.lua, so no change here)
+-- 10. Warm and still fuelled, no network contribution (some ice still
+--     useful, capped below the 2/interval rate cap by what's actually
+--     there to remove):
+--      curve.max_useful_ice(30, curve.heat_from_fuel(1), 0) --> 2
+--      -- heat_above_ambient = 30; heat_in = 50; heat_out_network = 0;
+--      -- removable_heat = 80; floor(80/40) = 2 (still gets clamped
+--      -- further by the 2/interval rate cap in
+--      -- scripts/thermionic-generator.lua, so no change here)
+--
+-- 10a. Same warm+fuelled case, but a heat-pipe network is already
+--      removing 20 heat this interval (heat_out_network=20) -- ice draw
+--      shrinks from 2 down to 1, since burning ice to remove heat the
+--      network is already removing would be pure waste (this is the
+--      fix 3 gap -- previously this term didn't exist, so ice always
+--      drew as if heat_out_network were 0):
+--        curve.max_useful_ice(30, curve.heat_from_fuel(1), 20) --> 1
+--        -- removable_heat = 30 + 50 - 20 = 60; floor(60/40) = 1
+--
+-- 10b. Network pushing heat *in* instead (heat_out_network negative, e.g.
+--      -20, per M.heat_removed_by_network's own sign convention) leaves
+--      more useful ice, not less, since there's now more heat to remove:
+--        curve.max_useful_ice(30, curve.heat_from_fuel(1), -20) --> 2
+--        -- removable_heat = 30 + 50 - (-20) = 100; floor(100/40) = 2
+--        -- (still clamped to the 2/interval rate cap either way)
 --
 -- 11. Abstract-to-Celsius mapping, mid-range (1:1, within bounds):
 --       curve.abstract_temperature_to_heat_buffer_celsius(700) --> 700
