@@ -5,12 +5,13 @@ current flat-shape placeholders (`graphics/icons/`, `graphics/icons/fluid/`,
 `graphics/technology/`). Written for pasting into an AI image-generation tool one
 entry at a time — each entry below is a self-contained prompt.
 
-This covers the 20 **flat 2D icon** files only (items, fluids, recipe icons,
-technology icons). It does **not** cover the Thermionic Generator's in-world
-entity sprite (the animated object placed on the map) — that's a different,
-more technical asset (multi-layer, shadow-separated, engine-scale) outside
-what a general image-generation tool can produce directly, and is out of scope
-for this document.
+This covers the 21 **flat 2D icon** files only (items, fluids, recipe icons,
+technology icons). It does **not** cover the Quench Turbine's in-world entity
+sprite (the animated object placed on the map) — that's a different, more
+technical asset (multi-layer, shadow-separated, 8-frame animation,
+engine-scale) outside what a general image-generation tool can produce
+directly, and is out of scope for this document. That sprite is currently
+vanilla's steam turbine recoloured by `tools/recolour-turbine.py`.
 
 ---
 
@@ -164,26 +165,25 @@ purple energy arc.
 
 ---
 
-### Thermionic Generator — `thermionic-generator.png`
+### Quench Turbine — `quench-turbine.png`
 
-**What it is:** The item that places the platform-mounted Thermionic
-Generator entity — burns Magmatic Core as fuel, uses Ice as coolant, outputs
-electricity only, with a self-heating/overheat mechanic. The icon should hint
-at both halves of that: heat/fuel going in (amber/red) and electricity coming
-out (blue-white), plus a cooling cue (a touch of icy blue-white) since coolant
-throughput is the whole balancing act of the entity.
+**What it is:** The item that places the platform-mounted Quench Turbine —
+a generator that runs on Quench Vapour and converts it to electricity, clipping
+any vapour hotter than it can use. It is the *cold* machine in a hot process,
+so it should not read as a furnace: think cryogenic turbomachinery, not a
+boiler.
 
-**Current placeholder:** a flat placeholder shape (not yet given a bespoke
-rendered design).
+**Current placeholder:** vanilla's steam-turbine icon, recoloured to a
+cryogenic teal by `tools/recolour-turbine.py`. Good enough to play with, but
+it is derived art rather than drawn art.
 
 **Prompt:**
-> A compact industrial power-generation module: a dark metal housing with a
-> glowing amber-orange core visible through a vented window (representing
-> heat/fuel), a small cluster of blue-white electrical arc/spark motifs along
-> one edge (representing power output), and a thin rim of pale icy-blue frost
-> or crystalline coolant fins along another edge (representing active
-> cooling). All three elements should be legible as separate but connected —
-> heat in, power out, cooling holding it steady. [+ global style guide]
+> A compact industrial turbine module seen three-quarter on: a bladed turbine
+> rotor visible through a circular housing opening, heavy pipework and
+> flanges around it, painted in cool cyan-teal accents over dark grey-green
+> metal, with pale frost or condensation gathering on the intake side. It
+> should read as a precision cryogenic turbine, cold and machined, not as a
+> furnace or boiler. No flame, no orange glow. [+ global style guide]
 
 ---
 
@@ -277,6 +277,26 @@ contamination flecks and small bubbles.
 > as a dirtied, hazardous version of an ordinary chemical fluid rather than
 > something exotic. [+ global style guide, but flatter/more liquid-surface
 > than a solid object]
+
+---
+
+### Quench Vapour — `fluid/quench-vapour.png`
+
+**What it is:** What comes off a Magmatic Core when it is quenched with Ice —
+the Quench Turbine's working fluid. Hot in fiction, but drawn cold: the whole
+fluid set already has two saturated oranges and an olive, and cyan-teal is the
+only hue left that stays legible at 16px. It also deliberately matches the
+turbine that consumes it.
+
+**Current placeholder:** a sibling fluid drop gradient-mapped to teal by
+`tools/derive-vapour-icon.py`.
+
+**Prompt:**
+> A luminous cyan-teal vapour or gas — a soft, glowing volume of pale
+> blue-green mist with a bright near-white core, wisping at the edges rather
+> than holding a hard liquid outline. It should read as an energetic gas under
+> pressure, not as a liquid drop and not as steam. Keep the silhouette compact
+> and centred so it stays legible at 16px. [+ global style guide]
 
 ---
 
