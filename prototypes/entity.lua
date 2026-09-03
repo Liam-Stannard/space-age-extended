@@ -192,16 +192,37 @@ data:extend({
       -- comfortably covers the abstract efficiency curve's overheat range
       -- once mapped to Celsius (see
       -- scripts/thermionic-curve.lua's abstract_temperature_to_heat_buffer_celsius),
-      -- specific_heat is an order of magnitude below vanilla's own
-      -- heat-interface/reactor (1MJ vs 10MJ) so a connected network's
-      -- draw is actually visible in observable temperature swings within
-      -- a normal play session rather than vanishing into a huge thermal
-      -- reservoir, and max_transfer (10MW) is a real throughput cap, not
-      -- vanilla's effectively-unlimited 10GW, so "hotter drains faster"
-      -- is a genuine consequence of temperature-gradient-driven
-      -- conduction against a finite pipe, not a free pass.
+      -- and max_transfer (10MW) is a real throughput cap, not vanilla's
+      -- effectively-unlimited 10GW, so "hotter drains faster" is a genuine
+      -- consequence of temperature-gradient-driven conduction against a
+      -- finite pipe, not a free pass.
+      --
+      -- specific_heat = 3MJ is *higher* than vanilla's own heat-pipe (1MJ)
+      -- -- deliberately, and re-verified in-engine (headless RCON A/B
+      -- test, see the commit that introduced this value): at 1MJ (matching
+      -- a single heat-pipe segment's own thermal mass 1:1), even a handful
+      -- of directly-touching heat pipes made this interface's own thermal
+      -- inertia negligible next to the attached network's, so the network
+      -- dominated the exchange and held the generator at full efficiency
+      -- indefinitely on fuel alone -- heat pipes alone fully solved
+      -- cooling with no meaningful investment, which contradicts the
+      -- design intent (design doc §9.2/§9.3: heat pipes are a genuine but
+      -- *additional* cooling avenue, not a substitute that trivialises
+      -- Ice). Raising specific_heat makes the interface's own thermal mass
+      -- dominant relative to a small/partial pipe attachment (touching
+      -- only one or two of the twelve connection points below), so a
+      -- minimal hookup barely helps; only wiring up most/all of the
+      -- generator's exposed sides (using most/all twelve connection
+      -- points) meaningfully slows the temperature climb -- and even then,
+      -- it delays overheat rather than preventing it outright, since
+      -- nothing downstream of this interface actually consumes/dissipates
+      -- the heat it receives (plain heat pipes only redistribute it, they
+      -- don't remove it) -- so a heat-pipe hookup, however large, is
+      -- always a finite buffer, never a permanent substitute for Ice's
+      -- real per-interval heat removal (scripts/thermionic-curve.lua's
+      -- M.heat_removed_by_ice).
       max_temperature = 2000,
-      specific_heat = "1MJ",
+      specific_heat = "3MJ",
       max_transfer = "10MW",
       default_temperature = 0,
       min_working_temperature = 0,
