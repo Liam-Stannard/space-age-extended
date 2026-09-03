@@ -299,7 +299,7 @@ data:extend({
       { type = "item", name = "sae-depleted-catalyst-rod", amount = 3 },
     },
     results = {
-      { type = "item", name = "holmium-ore", amount = 1 },
+      { type = "item", name = "holmium-ore", amount = 1, independent_probability = 0.5 },
     },
     energy_required = 8,
   },
