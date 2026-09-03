@@ -65,8 +65,8 @@ Git flow used so far: one branch per phase, commit, verify, merge
 fast-forward into `master`, push, delete the branch.
 
 - **Phase 4 — Thermionic Generator** (design doc §9; Tech 6
-  `sae-thermionic-power`), on branch `thermionic-reactor-rework`, not yet
-  merged. Went through three architectures in one day:
+  `sae-thermionic-power`), merged to `master` (`cdcd0be`, docs `5ba70b5`).
+  Went through three architectures in one day:
   1. `electric-energy-interface` + hidden filtered-container hopper
      (original spike). Playtest: fuel read as a chest slot, not fuel.
   2. Hidden `furnace` with an unreachable recipe category as a fake fuel
