@@ -73,6 +73,12 @@ data:extend({
     stack_size = 50,
     fuel_category = "sae-thermionic-fuel",
     fuel_value = "800MJ",
+    -- Magma orange. The Thermionic Generator sets use_fuel_glow_color, so
+    -- this tints its working-light overlay and colours its light while a
+    -- core burns (prototypes/entity.lua) -- vanilla's reactor light sprite
+    -- is uranium green, and this is what replaces that. Same value as the
+    -- generator's default_fuel_glow_color and `light` colour, deliberately.
+    fuel_glow_color = { r = 1, g = 0.45, b = 0.1 },
   },
   {
     type = "item",

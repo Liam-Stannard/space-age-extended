@@ -143,6 +143,12 @@ fast-forward into `master`, push, delete the branch.
      connections moved from the collision-box edge (±2) to the edge
      tiles' centres (±1.5), matching every vanilla precedent and the
      once-verified 3x3 layout.
+  4. **Magma glow, not uranium green.** Vanilla's working-light sprite
+     has green baked into its pixels, so the generator script also
+     writes `lights-mask.png` (neutral luminance, L = max(R,G,B), A =
+     255) and the reactor tints it via `use_fuel_glow_color` from
+     Magmatic Core's new `fuel_glow_color = {1, 0.45, 0.1}` (same value
+     on `default_fuel_glow_color` and the reactor's new `light`).
 
   Engine-verified: data stage only (`tools/check-data-stage.sh` —
   prototype parsing; it does not render sprites). Needs in-client eyes:

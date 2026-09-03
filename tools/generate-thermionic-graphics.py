@@ -18,6 +18,17 @@ sprites for the generator's body, but two things can't be used as-is.
    [corner, mid, mid, corner] columns for that side -- 1-based vanilla
    columns 1,2,2,3 / 4,5,5,6 / 7,8,8,9 / 10,11,11,12 -- for both rows.
 
+2. The working-light overlay. Vanilla's reactor-lights-color.png is an
+   RGB image whose lit pixels are baked-in uranium green (mean RGB about
+   0.2/2.5/0.1, peaks like (45, 255, 55)); a reactor's working_light_picture
+   is tinted by the burning fuel's fuel_glow_color, and tinting near-pure
+   green orange just multiplies it dark. So this script writes
+   lights-mask.png, a neutral-luminance RGBA copy where each pixel is
+   (L, L, L, 255) with L = max(R, G, B) of the source, which the entity
+   then tints magma orange via Magmatic Core's fuel_glow_color. Alpha is a
+   flat 255 because the sprite is drawn additively, where black is already
+   transparent.
+
 The generated files are committed to graphics/entity/thermionic-generator/
 so the mod doesn't need this script at load time; re-run it if the
 mapping or the source sprites change.
@@ -32,7 +43,7 @@ path tools/check-data-stage.sh also looks in). Requires Pillow.
 import os
 import sys
 
-from PIL import Image
+from PIL import Image, ImageChops
 
 DEFAULT_DATA_DIR = os.path.expanduser(
     "~/.steam/debian-installation/steamapps/common/Factorio/data"
@@ -61,6 +72,17 @@ def build_patch_sheet(src_path, dst_path):
     print(f"wrote {dst_path} {dst.size}")
 
 
+def build_lights_mask(src_path, dst_path):
+    src = Image.open(src_path).convert("RGB")
+    r, g, b = src.split()
+    # Per-pixel max(R, G, B): ImageChops.lighter is the channel-wise max.
+    luminance = ImageChops.lighter(ImageChops.lighter(r, g), b)
+    alpha = Image.new("L", src.size, 255)
+    dst = Image.merge("RGBA", (luminance, luminance, luminance, alpha))
+    dst.save(dst_path, optimize=True)
+    print(f"wrote {dst_path} {dst.size}")
+
+
 def main():
     data_dir = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_DATA_DIR
     reactor_dir = os.path.join(data_dir, "base", "graphics", "entity", "nuclear-reactor")
@@ -74,6 +96,10 @@ def main():
     build_patch_sheet(
         os.path.join(reactor_dir, "reactor-connect-patches-heated.png"),
         os.path.join(OUT_DIR, "connect-patches-heated.png"),
+    )
+    build_lights_mask(
+        os.path.join(reactor_dir, "reactor-lights-color.png"),
+        os.path.join(OUT_DIR, "lights-mask.png"),
     )
 
 
