@@ -194,8 +194,16 @@ leaves neutral metal alone, so all of vanilla's shading survives. Teal because
 the building is the *cold* half of the mechanic; orange would have been
 indistinguishable from the source sprite. Shadows are copied unrecoloured.
 
-**Still owed:** a client playtest (nothing here has been played), and the
-Quench Vapour fluid icon, still a recoloured vanilla steam drop.
+The Quench Vapour icon is built by `tools/derive-vapour-icon.py`, which
+gradient-maps an existing drop (hue rotation can't colour a source that has no
+saturation). Two false starts worth not repeating: vanilla's steam icon is a
+lumpy cloud that reads as popcorn once warmed, and at 46% frame coverage it
+was chunkier than the set's 31-35%; and a warm amber vapour measured at hue
+0-20, colliding with molten non-ferrous, while pale gold collided with
+contaminated acid. Teal is the set's one free hue, and it pairs the fluid with
+its machine. The fluid's base_color/flow_color were changed to match.
+
+**Still owed:** a client playtest -- nothing here has been played.
 
 ## Not started yet
 
