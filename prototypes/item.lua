@@ -61,7 +61,7 @@ data:extend({
     -- should last at least as long as the fuel it's the platform-side
     -- analogue of. This only governs how often the slot needs refilling --
     -- the generator's heating *rate* is set independently by
-    -- consumption / specific_heat (10°/s at full draw, prototypes/entity.lua)
+    -- consumption / specific_heat (100°/s at full draw, prototypes/entity.lua)
     -- and is unaffected by how much energy one item holds.
     type = "item",
     name = "sae-magmatic-core",

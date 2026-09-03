@@ -75,7 +75,8 @@ fast-forward into `master`, push, delete the branch.
   3. **Current:** the visible generator *is* a real `reactor`. Engine
      genuinely burns Magmatic Core (custom `sae-thermionic-fuel` category,
      800MJ = 200s/core, matching the uranium fuel cell); its own
-     `heat_buffer` is the temperature (10°/s at full draw) and its
+     `heat_buffer` is the temperature (100°/s at full draw since the
+     playtest-feedback round below; 10°/s as merged) and its
      `connections` are the real heat-pipe interface — the old bespoke
      heat-interface entity is gone. A hidden `electric-energy-interface`
      injects the curve-computed power (`render_no_power_icon = false`);
@@ -94,7 +95,8 @@ fast-forward into `master`, push, delete the branch.
   the prototype's `output_flow_limit`.
 
   Verified headlessly (see workflow below): real ignition/`no_fuel`
-  status, 200s burn (to the MJ), 10.0°/s heating, Ice cooling to the
+  status, 200s burn (to the MJ), 10.0°/s heating (at the then-400kJ
+  `specific_heat`), Ice cooling to the
   degree, steady idle (fuel byte-identical across samples) and resume on
   a 300kW load, teardown. **Not yet user-playtested** in this form — the
   relative-GUI panel and the rescaled 16-point heat-pipe connection
@@ -107,6 +109,24 @@ fast-forward into `master`, push, delete the branch.
   split 95/5→90/10 (holmium trickle was *below* recycling's 1%),
   `specific_heat` 80kJ→400kJ (16s→80s to overheat; holding needs
   0.25 Ice/s not 1.25), coolant tank 1→2 slots.
+
+- **Playtest feedback round 1** (branch `thermionic-playtest-feedback`,
+  not yet merged). First user playtest of the reactor form. Changes:
+  1. **Heats up much faster** — `specific_heat` 400kJ→40kJ, i.e. 100°/s
+     at the 4MW draw: 6s cold→600 (top of optimal band), 8s→800
+     (overheat). Ice caps at 2 × 40° = 80°/s, so under full load Ice only
+     slows the climb (net +20°/s, ~40s to overheat, 100-Ice tank lasts
+     50s at the cap) and can never hold the band by itself; the heat-pipe
+     channel (10MW, 2.5× input; each vanilla heat pipe adds 1MJ of
+     thermal mass, 25× the generator's buffer) is the only avenue that
+     can. Feedback verbatim: "it should heat up a lot faster — so the
+     thermal block is useful"; at 400kJ Ice trivially held it and pipes
+     were pointless.
+
+  Engine-verified: data stage only (`tools/check-data-stage.sh`). Needs
+  in-client eyes: whether a heat-pipe block actually holds the optimal
+  band at 100°/s, and the 16-point connection layout against real pipe
+  placement.
 
 ## Headless RCON verification (how this was actually tested)
 

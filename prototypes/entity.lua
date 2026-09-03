@@ -129,7 +129,7 @@ data:extend({
     -- with Magmatic Core's fuel_value (800MJ, prototypes/item.lua) this
     -- gives a 200s burn per core -- the same as vanilla's uranium fuel
     -- cell. Together with specific_heat below it also sets the heating
-    -- rate (consumption / specific_heat = 10°/s at full draw).
+    -- rate (consumption / specific_heat = 100°/s at full draw).
     consumption = "4MW",
     -- Keep fuel rate and cooling rate genuinely independent (design doc
     -- §9.2) -- without this, vanilla reactor behaviour throttles fuel
@@ -140,18 +140,31 @@ data:extend({
     heat_buffer = {
       -- max_temperature/max_transfer are the values the old heat-interface
       -- entity used, still provisional (design doc §9.4). specific_heat
-      -- sets the heating *rate*: consumption / specific_heat = 4MW / 400kJ
-      -- = 10°/s at full draw (verified in-engine: heat_buffer really is a
-      -- linear ΔT = energy / specific_heat, to the degree). From cold
-      -- that's ~60s to the top of the optimal band (600) and ~80s to the
-      -- overheat threshold (800), and holding temperature needs 0.25 Ice/s
-      -- (scripts/thermionic-curve.lua's HEAT_REMOVED_PER_ICE_UNIT = 40) --
-      -- a rate a platform's asteroid capture can realistically sustain.
-      -- An earlier 80kJ value (50°/s) overheated in ~16s and needed
-      -- 1.25 Ice/s just to hold, against a 200s core burn -- far too
-      -- twitchy relative to how long one core lasts.
+      -- sets the heating *rate*: consumption / specific_heat = 4MW / 40kJ
+      -- = 100°/s at full draw (heat_buffer was verified in-engine, at the
+      -- earlier 400kJ, to be exactly linear: ΔT = energy / specific_heat,
+      -- to the degree). From cold that's 6s to the top of the optimal band
+      -- (600) and 8s to the overheat threshold (800).
+      --
+      -- That is deliberately faster than Ice alone can hold. Ice removes at
+      -- most MAX_ICE_PER_INTERVAL (2) x HEAT_REMOVED_PER_ICE_UNIT (40°) =
+      -- 80°/s (scripts/thermionic-curve.lua), so under full load Ice can
+      -- only *slow* the climb: net +20°/s at the 2 Ice/s cap, ~40s from
+      -- cold to overheat with the tank draining flat out, and the 100-Ice
+      -- coolant tank below lasts 50s at that rate. It can never hold the
+      -- optimal band under full load by itself. The reactor's own heat-pipe
+      -- channel (max_transfer 10MW, 2.5x the 4MW input) is the only cooling
+      -- avenue that can -- and attached heat pipes also add their own
+      -- thermal mass (vanilla heat pipe specific_heat = 1MJ each, 25x this
+      -- buffer), so a connected network slows the climb enormously on top
+      -- of whatever it dissipates. That is the point: the thermal block is
+      -- the way to run this at full load (playtest feedback: "it should
+      -- heat up a lot faster, so the thermal block is useful"). The
+      -- previous 400kJ (10°/s: ~80s to overheat, 0.25 Ice/s to hold) was
+      -- rejected in play -- it heated so slowly that Ice trivially held it
+      -- and heat pipes were pointless.
       max_temperature = 2000,
-      specific_heat = "400kJ",
+      specific_heat = "40kJ",
       max_transfer = "10MW",
       default_temperature = 0,
       min_working_temperature = 0,
@@ -250,9 +263,11 @@ data:extend({
     collision_box = { { 0, 0 }, { 0, 0 } },
     selection_box = { { 0, 0 }, { 0, 0 } },
     collision_mask = { layers = {} },
-    -- Two Ice stacks (100) = 400s of cooling at the 0.25/s equilibrium
-    -- draw, or 50s at the 2/s cap -- enough buffer that a brief gap in
-    -- asteroid capture doesn't immediately start a temperature climb. A
+    -- Two Ice stacks (100) = 50s at the 2/s cap. Under full load that cap
+    -- is the rate the tank actually drains at (Ice can't hold the 100°/s
+    -- climb, see the reactor's heat_buffer comment, so a hot generator
+    -- always draws Ice flat out) -- 50s is enough that a brief gap in
+    -- asteroid capture doesn't remove Ice's contribution outright. A
     -- single slot (50 Ice) was 25s at the cap.
     inventory_size = 2,
     inventory_type = "with_filters_and_bar",
