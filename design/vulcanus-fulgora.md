@@ -649,9 +649,7 @@ These are **not** combined into a fuel item. They are consumed separately by the
 
 ### Output
 
-- Electricity only.
-
-**No heat-pipe interface.** This is deliberate. A generator that emitted heat would be shipped to Aquilo and become a trivial answer to that planet's defining challenge. Electricity-only output makes that impossible by construction.
+**Electricity (primary) plus rejected heat via a real heat-pipe interface (secondary — a cooling avenue, not an independent power source).** Earlier drafts of this design excluded any heat-pipe interface, reasoning that a generator emitting heat could be shipped to Aquilo and trivialize that planet's defining challenge. That concern doesn't hold: the Thermionic Generator can only ever be built on a space platform (surface-gated via `surface_conditions`), and Factorio's heat-pipe network is strictly surface-local — a platform's heat pipes can never connect into a planet's own heat network, including while in Aquilo's orbit. The heat-pipe interface is therefore exposed as an additional, optional cooling avenue alongside Ice: connecting real heat pipes lets a thermal bus pull heat away, and because heat conduction scales with temperature difference, a hotter/less-efficient generator drains faster automatically — this falls directly out of real heat-network physics, not a separate hand-authored mechanic. This does not change the generator's electricity-only *power* output; heat exposure draws down the same internal temperature the efficiency curve already tracks, it isn't a second, independent power channel.
 
 ## 9.3 The thermal mechanic
 
@@ -660,16 +658,16 @@ Nothing in vanilla has a temperature-dependent efficiency curve for a generator.
 **Behaviour:**
 
 1. The generator **self-heats** as it produces power.
-2. **Ice consumption removes heat.**
+2. **Ice consumption removes heat**, and so does a connected heat-pipe network if the player builds one (§9.2) — the two cooling avenues are independent and stack; a real heat-pipe network draws harder the hotter the generator runs, since heat conduction scales with temperature difference, which is real Factorio heat-network physics rather than a second hand-authored curve.
 3. As temperature rises above the optimal band, efficiency **declines gradually**.
 4. Past an **overheat threshold**, output drops **sharply** — the machine keeps running but is barely worth its footprint until it cools.
-5. Equilibrium temperature is a function of load versus ice throughput.
+5. Equilibrium temperature is a function of load versus total cooling throughput (ice plus whatever a connected heat-pipe network draws).
 
 ### Why this shape
 
 - **Gradual decline is a warning the player can act on.** The cliff punishes ignoring it.
-- **Degradation, not destruction.** A platform that stops catching oxide asteroids limps rather than dies — it can still make port.
-- **Cooling throughput becomes the scaling decision**, not generator count. Run lean and accept lower steady-state output, or oversize the ice supply to hold peak efficiency.
+- **Degradation, not destruction.** A platform that stops catching oxide asteroids limps rather than dies — it can still make port, and a heat-pipe network gives it a second way to recover if one is built.
+- **Cooling throughput becomes the scaling decision**, not generator count. Run lean and accept lower steady-state output, or oversize the ice supply (and/or the heat-pipe network) to hold peak efficiency.
 - **Viability scales with asteroid capture**, which is already the core platform gameplay loop.
 
 ### Why Magmatic Core as the ongoing fuel
@@ -684,6 +682,10 @@ This makes the Vulcanus leg **permanently load-bearing**. Magmatic Core stops be
 - Magmatic Core burn rate versus realistic Vulcanus export capacity.
 - Footprint versus an equivalent nuclear setup (should be smaller, or the earlier availability is its only advantage).
 - Whether an orbital production step should be added later. Currently the platform imports Magmatic Cores and catches ice with no manufacturing step of its own; the location constraint is already real, since Magmatic Core can only be made on Vulcanus.
+- The heat-interface's `heat_buffer` numbers (`max_temperature` 2000, `specific_heat` 1MJ, `max_transfer` 10MW) are provisional placeholders, same tone as everything else in this list — chosen to be a meaningful heat sink a player has to actually build infrastructure for, not a trivial instant dump that would make Ice pointless, but not tuned against any real target throughput.
+- The abstract-temperature-to-Celsius mapping used to drive that heat-interface (`scripts/thermionic-curve.lua`'s `abstract_temperature_to_heat_buffer_celsius`, currently a simple 1:1 clamp) is likewise provisional — it was picked so the existing curve's own landmarks (the 600 optimal-band edge, the 800 overheat threshold) read as plausible real degrees Celsius, not against any measured target.
+
+**Note for future trees:** this generator is now a real source of usable rejected heat on any platform running it, in addition to electricity. Per `framework.md` §4.5 rule 5 ("never relieve two of the five shared resources at once"), any future platform capability that wants to consume heat as an input should treat this generator's waste heat as an existing baseline already present on Power-tree platforms, not a resource this generator is competing to provide — flagged here for whoever designs the Thrust/Structure/Asteroid/Defence trees.
 
 ---
 

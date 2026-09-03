@@ -127,6 +127,8 @@ Rules for any new capability:
 4. Every capability must have a wrong platform to install it on.
 5. Never relieve two of the five at once.
 
+**Note:** the Thermionic Generator (Vulcanus↔Fulgora's Power capability) now exposes real, usable rejected heat via a heat-pipe interface, in addition to its electricity output — see [vulcanus-fulgora.md §9.2](vulcanus-fulgora.md#92-thermionic-generator) for why (Factorio's heat network is strictly surface-local, so this can't reach a planet's own network). Any future tree whose capability wants to consume heat as an input should account for this existing baseline on Power-tree platforms rather than treat heat as a resource it's introducing from scratch.
+
 ---
 
 ## 5. Status
