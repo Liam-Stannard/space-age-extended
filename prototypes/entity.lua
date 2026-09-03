@@ -4,10 +4,18 @@
 -- temperature-dependent efficiency curve nothing else in the game has).
 --
 -- Visible generator: `electric-energy-interface`, script-driven (see
--- scripts/thermionic-generator.lua). Placeholder visuals reuse vanilla
--- accumulator's actual sprite files directly (not its charge/discharge
--- animation machinery, which is base-mod-internal) -- no new art pipeline
--- yet, matching this repo's established convention.
+-- scripts/thermionic-generator.lua). Visuals reuse vanilla nuclear
+-- reactor's real static body/shadow sprite files directly (plain Sprite
+-- layers, not reactor's own heat-pipe-glow or connection-graphics
+-- machinery, which are base-mod-internal and reactor-type-specific) --
+-- thematically closer to a heat-driven generator than the accumulator
+-- placeholder this used to borrow from, and no new art pipeline needed
+-- since reactor.png/reactor-shadow.png are just plain static layers, same
+-- shape as accumulator's were. Deliberately NOT using reactor's
+-- reactor-pipes.png/reactor-pipes-heated.png lower-layer graphics -- those
+-- read visually as literal heat-pipe plumbing across the reactor's face,
+-- which would be misleading given this entity has NO heat-pipe interface
+-- of its own (design doc §9.2, and see the energy_source comment below).
 --
 -- Hidden hopper: a 2-slot `container`, spawned/paired 1:1 with the visible
 -- generator at runtime, filtered to Magmatic Core / Ice. Never placed by
@@ -33,28 +41,28 @@ data:extend({
     -- Placeholder collision/selection box, reused from vanilla accumulator.
     collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
     selection_box = { { -1, -1 }, { 1, 1 } },
-    -- Placeholder visuals: vanilla accumulator's own sprite files, used
-    -- directly as a plain Sprite rather than via base's internal
-    -- charge/discharge animation helpers (those are local functions in
-    -- base's entities.lua, not something a dependent mod should rely on).
+    -- Visuals: vanilla nuclear reactor's own body/shadow sprite files,
+    -- used directly as plain Sprite layers (values verified against
+    -- base/prototypes/entity/entities.lua's own "reactor" picture field)
+    -- rather than via base's internal heat-pipe-glow/connection-graphics
+    -- helpers, which are reactor-type-specific and not something a
+    -- dependent mod should rely on.
     picture = {
       layers = {
         {
-          filename = "__base__/graphics/entity/accumulator/accumulator.png",
-          priority = "high",
-          width = 130,
-          height = 189,
-          shift = { 0, -0.34375 },
+          filename = "__base__/graphics/entity/nuclear-reactor/reactor.png",
+          width = 302,
+          height = 318,
           scale = 0.5,
+          shift = { -0.15625, -0.21875 },
         },
         {
-          filename = "__base__/graphics/entity/accumulator/accumulator-shadow.png",
-          priority = "high",
-          width = 234,
-          height = 106,
-          shift = { 0.90625, 0.1875 },
-          draw_as_shadow = true,
+          filename = "__base__/graphics/entity/nuclear-reactor/reactor-shadow.png",
+          width = 525,
+          height = 323,
           scale = 0.5,
+          shift = { 1.625, 0 },
+          draw_as_shadow = true,
         },
       },
     },
