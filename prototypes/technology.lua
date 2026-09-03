@@ -107,4 +107,25 @@ data:extend({
       time = 45,
     },
   },
+  {
+    -- Technology 6 (design doc §9). Named for the subsystem it claims
+    -- (framework.md §4.2, "Power") rather than a literal transliteration
+    -- of the doc's section title, matching this mod's tech-naming pattern.
+    type = "technology",
+    name = "sae-thermionic-power",
+    icon = "__space-age-extended__/graphics/technology/thermionic-power.png",
+    icon_size = 256,
+    effects = {
+      { type = "unlock-recipe", recipe = "sae-thermionic-generator" },
+    },
+    prerequisites = { "sae-resonant-electromagnetics" },
+    unit = {
+      count = 500,
+      ingredients = {
+        { "metallurgic-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 },
+      },
+      time = 60,
+    },
+  },
 })

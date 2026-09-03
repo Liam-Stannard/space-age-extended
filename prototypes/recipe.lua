@@ -322,4 +322,27 @@ data:extend({
     energy_required = 10,
     auto_recycle = false,
   },
+
+  -- Section 9: Thermionic Generator (design doc §9.2). Craftable anywhere,
+  -- same as Thermionic Assembly itself -- the recipe has no planet lock of
+  -- its own; only the resulting *entity's placement* is platform-restricted,
+  -- via surface_conditions on the entity prototype (framework.md §2.3, "no
+  -- building-placement gimmicks" -- that rule is about recipes, not a real
+  -- surface-property gate on the entity).
+  {
+    type = "recipe",
+    name = "sae-thermionic-generator",
+    categories = { "crafting" },
+    subgroup = "energy",
+    order = "e[sae]-p[thermionic-generator]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-thermionic-assembly", amount = 2 },
+    },
+    results = {
+      { type = "item", name = "sae-thermionic-generator", amount = 1 },
+    },
+    energy_required = 10,
+    auto_recycle = false,
+  },
 })

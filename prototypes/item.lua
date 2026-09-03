@@ -56,4 +56,17 @@ data:extend({
     order = "e[sae]-j[thermionic-assembly]",
     stack_size = 50,
   },
+  {
+    -- Verified: solar-panel/accumulator/fusion-generator all use the
+    -- vanilla "energy" subgroup -- reuse it rather than inventing a new
+    -- one (design doc §9.2, "no new building tiers" convention).
+    type = "item",
+    name = "sae-thermionic-generator",
+    icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
+    icon_size = 64,
+    subgroup = "energy",
+    order = "e[sae]-k[thermionic-generator]",
+    place_result = "sae-thermionic-generator",
+    stack_size = 10,
+  },
 })
