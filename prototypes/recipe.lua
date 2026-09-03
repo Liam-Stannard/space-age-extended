@@ -347,24 +347,121 @@ data:extend({
     auto_recycle = false,
   },
 
-  -- Section 9: Thermionic Generator (design doc §9.2). Craftable anywhere,
-  -- same as Thermionic Assembly itself -- the recipe has no planet lock of
-  -- its own; only the resulting *entity's placement* is platform-restricted,
-  -- via surface_conditions on the entity prototype (framework.md §2.3, "no
-  -- building-placement gimmicks" -- that rule is about recipes, not a real
-  -- surface-property gate on the entity).
+  -- Section 9: the Quench Turbine and its recipe ladder (design doc §9).
+  --
+  -- A quench recipe turns one Magmatic Core plus Ice into Quench Vapour at a
+  -- temperature the recipe fixes. The turbine clips anything above 315
+  -- degrees (prototypes/entity.lua), so a recipe that makes a little very hot
+  -- vapour throws most of the core away and one that makes a lot of vapour at
+  -- exactly the cap wastes nothing. Electricity per core is therefore set by
+  -- which recipe the player can run, and the efficient ones sit behind later
+  -- technologies -- that is the whole gate (design doc §9.3).
+  --
+  -- Arithmetic, per craft, against the turbine's 1.5MJ per unit at the cap:
+  --   tier 1  60 vapour at 900, clipped to 315 ->  60 * 1.5MJ =  90MJ/core
+  --   tier 2 400 vapour at 315, nothing wasted -> 400 * 1.5MJ = 600MJ/core
+  -- Both are 10s crafts, so a chemical plant at speed 1 runs 6 cores/min:
+  -- 9MW of turbine feed on tier 1, 60MW on tier 2.
+  --
+  -- allow_productivity = false on both: a productivity module on a recipe
+  -- whose output is energy would mint electricity from nothing.
   {
+    -- Tier 1, unlocked with the turbine itself. Deliberately the *only*
+    -- pre-Aquilo option and deliberately wasteful -- ~11 plants and 67
+    -- cores/min for 100MW, so a platform can be powered before Aquilo but
+    -- only by running the Vulcanus/Fulgora line hard enough to hurt.
     type = "recipe",
-    name = "sae-thermionic-generator",
+    name = "sae-lean-quench",
+    categories = { "chemistry" },
+    subgroup = "energy",
+    order = "e[sae]-q[lean-quench]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-magmatic-core", amount = 1 },
+      { type = "item", name = "ice", amount = 10 },
+    },
+    results = {
+      { type = "fluid", name = "sae-quench-vapour", amount = 60, temperature = 900 },
+    },
+    energy_required = 10,
+    allow_productivity = false,
+    allow_decomposition = false,
+    auto_recycle = false,
+  },
+  {
+    -- Tier 2, gated on Aquilo via vanilla's own cryogenic-plant technology
+    -- and, more importantly, via Fluoroketone -- which only Aquilo can make.
+    -- The fluoroketone is a closed loop, not a consumable: it comes back out
+    -- hot and sae-radiative-fluoroketone-cooling below returns it to cold on
+    -- the platform itself. What Aquilo actually supplies is the technology
+    -- plus an initial fill shipped up in barrels.
+    type = "recipe",
+    name = "sae-cryogenic-quench",
+    categories = { "chemistry" },
+    subgroup = "energy",
+    order = "e[sae]-r[cryogenic-quench]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "sae-magmatic-core", amount = 1 },
+      { type = "item", name = "ice", amount = 40 },
+      { type = "fluid", name = "fluoroketone-cold", amount = 100 },
+    },
+    results = {
+      { type = "fluid", name = "sae-quench-vapour", amount = 400, temperature = 315 },
+      { type = "fluid", name = "fluoroketone-hot", amount = 100 },
+    },
+    main_product = "sae-quench-vapour",
+    energy_required = 10,
+    allow_productivity = false,
+    allow_decomposition = false,
+    auto_recycle = false,
+  },
+  {
+    -- Closes the fluoroketone loop in space. Vanilla re-cools fluoroketone in
+    -- a cryogenic plant, which cannot be built on a platform (its
+    -- surface_conditions demand pressure >= 10), so without this a platform
+    -- would fill up with hot fluoroketone and stall. Vacuum radiates, hence
+    -- the surface condition -- a real physical property, the same gate
+    -- vanilla's thruster uses, not a planet-name rule (framework.md §2.3).
+    -- On a planet the vanilla cryogenic recipe remains the only way.
+    --
+    -- 10s for 10 fluid means ~10 chemical plants radiating per quench plant:
+    -- that footprint is the visible cost of the tier-2 density.
+    type = "recipe",
+    name = "sae-radiative-fluoroketone-cooling",
+    categories = { "chemistry" },
+    subgroup = "energy",
+    order = "e[sae]-s[radiative-fluoroketone-cooling]",
+    enabled = false,
+    surface_conditions = {
+      { property = "pressure", min = 0, max = 0 },
+    },
+    ingredients = {
+      { type = "fluid", name = "fluoroketone-hot", amount = 10, ignored_by_stats = 10 },
+    },
+    results = {
+      { type = "fluid", name = "fluoroketone-cold", amount = 10, temperature = -150, ignored_by_stats = 10 },
+    },
+    energy_required = 10,
+    allow_productivity = false,
+    allow_decomposition = false,
+    auto_recycle = false,
+  },
+  {
+    -- Craftable anywhere, same as Thermionic Assembly itself -- the recipe
+    -- has no planet lock of its own; only the resulting *entity's placement*
+    -- is platform-restricted, via surface_conditions on the entity prototype.
+    type = "recipe",
+    name = "sae-quench-turbine",
     categories = { "crafting" },
     subgroup = "energy",
-    order = "e[sae]-p[thermionic-generator]",
+    order = "e[sae]-p[quench-turbine]",
     enabled = false,
     ingredients = {
       { type = "item", name = "sae-thermionic-assembly", amount = 2 },
     },
     results = {
-      { type = "item", name = "sae-thermionic-generator", amount = 1 },
+      { type = "item", name = "sae-quench-turbine", amount = 1 },
     },
     energy_required = 10,
     auto_recycle = false,

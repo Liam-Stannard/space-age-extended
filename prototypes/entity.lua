@@ -1,266 +1,188 @@
 -- New entities introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §9 -- the Thermionic Generator, the mod's
--- one new building (justified per design/framework.md §2.3 by a
--- temperature-dependent efficiency curve nothing else in the game has).
+-- See design/vulcanus-fulgora.md §9 -- the Quench Turbine, the mod's one new
+-- building (justified per design/framework.md §2.3: its output per shipped
+-- Magmatic Core is a *recipe choice*, since the turbine clips vapour hotter
+-- than it can use, and nothing in the game trades fuel value against a
+-- recipe tier that way).
 --
--- Visible generator: a real `reactor`-type entity (`sae-thermionic-generator`).
--- Magmatic Core burns in its genuine burner fuel slot -- the engine itself
--- ignites/consumes it, exactly like vanilla's nuclear reactor -- giving
--- real status, tooltip, and fuel-gauge animation for free, instead of the
--- earlier "furnace with an unreachable recipe category" hack that faked
--- fuel removal via script and left the entity permanently misreporting
--- itself as broken (confirmed in real play: a stuck "no fuel"-style alert
--- and a burn gauge that never animated). `scale_energy_usage = false` so
--- the reactor always draws fuel at its full declared `consumption` rate
--- regardless of current heat -- keeping fuel rate and cooling rate
--- genuinely independent (design doc §9.2's explicit rule), rather than
--- vanilla reactor's own "throttle down near max temperature" behaviour.
--- The reactor's real heat_buffer *is* the temperature now (no separate
--- abstract number in `storage` to keep in sync) -- scripts/
--- thermionic-generator.lua subtracts from it directly for Ice cooling,
--- the same way it used to write to the old heat-interface's `.temperature`.
--- Its `connections` below are a real heat-pipe interface natively -- the
--- old hidden `sae-thermionic-generator-heat-interface` entity and its
--- bespoke 12-point connection math are gone entirely; a reactor's own
--- heat_buffer already does this.
+-- This replaces the earlier Thermionic Generator, a `reactor`-type entity
+-- with a scripted temperature/efficiency curve, two hidden paired entities
+-- (a power interface and a filtered coolant container) and ~750 lines of
+-- control-stage Lua. That design was abandoned because it could not survive
+-- contact with vanilla's heat network: a reactor's heat_buffer feeds every
+-- consumer attached to it, and vanilla heat exchangers plus steam turbines
+-- would have converted its waste heat into roughly as much electricity again,
+-- making the generator's own output irrelevant. The only native fix was to
+-- run the whole heat network below the heat exchanger's 500-degree
+-- min_working_temperature, which works but leaves the temperature scale and
+-- the efficiency curve fighting each other. The Quench Turbine reaches the
+-- same design goal -- output per core is a decision the player tunes, not a
+-- constant -- with no heat network, no hidden entities and no runtime script
+-- at all. See the plan at ~/.claude/plans/quench-turbine.md.
 --
--- A reactor has no electric energy_source of its own (same as vanilla
--- nuclear reactor -- it produces heat, not power), so it still can't push
--- electricity onto the grid by itself. That job stays on a hidden, paired
--- `electric-energy-interface` (`sae-thermionic-generator-power-interface`)
--- exactly as before, with `render_no_power_icon = false` -- confirmed via
--- Factorio's own prototype docs (`BaseEnergySource.render_no_power_icon`)
--- that this is the flag governing the "no power"/"no fuel" alert icon;
--- since this hidden interface's `power_production` is entirely
--- script-driven per interval rather than a fixed declared rate, leaving
--- the default on made it misreport as constantly underpowered even while
--- correctly producing (this is what the red flashing icon in real play
--- turned out to be).
---
--- Visuals still reuse vanilla nuclear reactor's own body/shadow/pipes
--- sprite files directly (plain Sprite layers) -- now honestly, since the
--- entity really is a reactor-type building.
---
--- Hidden coolant tank: a 1-slot filtered `container`, spawned/paired 1:1
--- with the visible generator, holding Ice. Never opened directly by a
--- player -- reached via an "Insert Ice" button in the generator's info
--- panel (see scripts/thermionic-generator.lua), since reactor has no
--- second item slot to hold a filtered coolant item natively.
---
--- Neither hidden entity is placed by the player directly -- not in any
--- item's place_result, no icon needed for either.
+-- The turbine is a real `generator`: the engine computes its power from
+-- fluid flow, the fluid's heat_capacity and its temperature, and clips
+-- anything above maximum_temperature. That clipping *is* the mechanic, so it
+-- must stay native -- a script that faked it would lose the tooltip and the
+-- native "insufficient fluid" status the player reads while tuning.
+
+-- Base's own helpers. `pipecovers` defines the global pipecoverspictures();
+-- `sounds` is a plain module return. A mod has to require both by absolute
+-- path -- vanilla's entities.lua reaches them by relative path, which only
+-- resolves inside base itself.
+require("__base__.prototypes.entity.pipecovers")
+local sounds = require("__base__.prototypes.entity.sounds")
 
 data:extend({
   {
-    type = "fuel-category",
-    name = "sae-thermionic-fuel",
-  },
-  {
-    type = "reactor",
-    name = "sae-thermionic-generator",
-    icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
+    type = "generator",
+    name = "sae-quench-turbine",
+    icon = "__space-age-extended__/graphics/icons/quench-turbine.png",
     icon_size = 64,
     icon_mipmaps = 4,
-    flags = { "placeable-neutral", "placeable-player", "player-creation" },
-    minable = { mining_time = 0.2, result = "sae-thermionic-generator" },
+    flags = { "placeable-neutral", "player-creation" },
+    minable = { mining_time = 0.3, result = "sae-quench-turbine" },
     max_health = 300,
-    fast_replaceable_group = "sae-thermionic-generator",
-    -- Space-platform-only placement via a genuine physical surface
-    -- property (zero pressure/vacuum), exactly mirroring vanilla's own
-    -- `thruster` -- not an arbitrary planet-name check, so it doesn't run
-    -- afoul of framework.md §2.3's "no building-placement gimmicks" rule.
+    fast_replaceable_group = "sae-quench-turbine",
+    -- Space-platform-only placement via a genuine physical surface property
+    -- (zero pressure/vacuum), exactly mirroring vanilla's own `thruster` --
+    -- not an arbitrary planet-name check, so it doesn't run afoul of
+    -- framework.md §2.3's "no building-placement gimmicks" rule. Kept from
+    -- the Thermionic Generator, which used the same gate for the same reason.
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },
-    -- 4x4 tile footprint (larger than the rendered body sprite below,
-    -- which is closer to 2.4x2.5 tiles at its current scale -- the extra
-    -- room is deliberate footprint, not a sprite-fit calculation, per
-    -- explicit request). Even-width box, so the entity snaps to grid
-    -- intersections rather than tile centers.
-    collision_box = { { -2, -2 }, { 2, 2 } },
-    selection_box = { { -2.1, -2.1 }, { 2.1, 2.1 } },
-    -- Visuals: vanilla nuclear reactor's own body/shadow sprite files,
-    -- used directly as plain Sprite layers (values verified against
-    -- base/prototypes/entity/entities.lua's own "reactor" picture field)
-    -- rather than via base's internal heat-pipe-glow/connection-graphics
-    -- helpers, which are reactor-type-specific rendering machinery a
-    -- dependent mod shouldn't rely on staying stable.
-    lower_layer_picture = {
-      filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes.png",
-      width = 320,
-      height = 316,
-      scale = 0.5,
-      shift = { -0.03125, -0.15625 },
+    -- Power = fluid_usage_per_tick * 60 * heat_capacity * (T - default_temperature),
+    -- clipped at maximum_temperature. With Quench Vapour's 5kJ/degree
+    -- (prototypes/fluid.lua) and default_temperature 15:
+    --   0.2 fluid/tick = 12 fluid/s
+    --   12 * 5kJ * (315 - 15) = 18MW at the cap.
+    -- maximum_temperature 315 is the clip point every quench recipe is
+    -- balanced against: the lean tier-1 recipe makes a small volume of
+    -- 900-degree vapour and throws away roughly two thirds of it here, while
+    -- the tier-2 recipe makes far more vapour at exactly 315 and wastes
+    -- nothing. That difference *is* the tech ladder (design doc §9.3).
+    effectivity = 1,
+    fluid_usage_per_tick = 0.2,
+    maximum_temperature = 315,
+    -- Vapour is consumed as a fluid whose temperature carries the energy, not
+    -- burned as a fuel -- the same relationship vanilla's steam turbine has
+    -- with steam. burns_fluid = true would read fuel_value instead and ignore
+    -- temperature entirely, which would delete the whole mechanic.
+    burns_fluid = false,
+    -- Deliberately no scale_fluid_usage: the turbine draws only what the grid
+    -- demands, so a platform sitting idle at a waypoint consumes no vapour
+    -- and therefore no Magmatic Core. Beating nuclear's idle burn was an
+    -- explicit goal of §9.1 and it now falls out of the entity type for free.
+    resistances = {
+      { type = "fire", percent = 70 },
     },
-    picture = {
-      layers = {
-        {
-          filename = "__base__/graphics/entity/nuclear-reactor/reactor.png",
-          width = 302,
-          height = 318,
-          scale = 0.5,
-          shift = { -0.15625, -0.21875 },
-        },
-        {
-          filename = "__base__/graphics/entity/nuclear-reactor/reactor-shadow.png",
-          width = 525,
-          height = 323,
-          scale = 0.5,
-          shift = { 1.625, 0 },
-          draw_as_shadow = true,
-        },
+    -- Vanilla steam turbine's footprint (3x5 / 5x3). two_direction_only
+    -- below means it only rotates between those two.
+    collision_box = { { -1.25, -2.35 }, { 1.25, 2.35 } },
+    selection_box = { { -1.5, -2.5 }, { 1.5, 2.5 } },
+    fluid_box = {
+      volume = 200,
+      pipe_covers = pipecoverspictures(),
+      pipe_connections = {
+        { flow_direction = "input-output", direction = defines.direction.south, position = { 0, 2 } },
+        { flow_direction = "input-output", direction = defines.direction.north, position = { 0, -2 } },
       },
+      production_type = "input",
+      filter = "sae-quench-vapour",
+      -- Below this the fluid is treated as unusable rather than feeding the
+      -- turbine at a trickle. 100 matches vanilla's steam turbine; it also
+      -- means a line that has sat cooling doesn't quietly produce almost
+      -- nothing while looking like it works.
+      minimum_temperature = 100.0,
     },
-    -- Real burner fuel slot -- the engine itself ignites/consumes
-    -- Magmatic Core, giving a real fuel gauge, status, and tooltip.
-    -- fuel_categories restricted to our own category (not vanilla
-    -- "chemical") so this can't burn ordinary fuel and vanilla burners
-    -- can't burn Magmatic Core.
-    energy_source = {
-      type = "burner",
-      fuel_categories = { "sae-thermionic-fuel" },
-      fuel_inventory_size = 1,
-      effectivity = 1,
-      emissions_per_minute = { pollution = 0 },
-    },
-    -- Real energy draw, matching the 4MW peak electrical output
-    -- (scripts/thermionic-curve.lua's PEAK_POWER_W) so full-load fuel
-    -- energy in equals peak electricity out at 100% efficiency. Together
-    -- with Magmatic Core's fuel_value (800MJ, prototypes/item.lua) this
-    -- gives a 200s burn per core -- the same as vanilla's uranium fuel
-    -- cell. Together with specific_heat below it also sets the heating
-    -- rate (consumption / specific_heat = 10°/s at full draw).
-    consumption = "4MW",
-    -- Keep fuel rate and cooling rate genuinely independent (design doc
-    -- §9.2) -- without this, vanilla reactor behaviour throttles fuel
-    -- draw down as heat_buffer nears max_temperature, which would make
-    -- Ice's cooling *increase* fuel consumption by freeing up thermal
-    -- headroom, backwards from the intended relationship.
-    scale_energy_usage = false,
-    heat_buffer = {
-      -- max_temperature/max_transfer are the values the old heat-interface
-      -- entity used, still provisional (design doc §9.4). specific_heat
-      -- sets the heating *rate*: consumption / specific_heat = 4MW / 400kJ
-      -- = 10°/s at full draw (verified in-engine: heat_buffer really is a
-      -- linear ΔT = energy / specific_heat, to the degree). From cold
-      -- that's ~60s to the top of the optimal band (600) and ~80s to the
-      -- overheat threshold (800), and holding temperature needs 0.25 Ice/s
-      -- (scripts/thermionic-curve.lua's HEAT_REMOVED_PER_ICE_UNIT = 40) --
-      -- a rate a platform's asteroid capture can realistically sustain.
-      -- An earlier 80kJ value (50°/s) overheated in ~16s and needed
-      -- 1.25 Ice/s just to hold, against a 200s core burn -- far too
-      -- twitchy relative to how long one core lasts.
-      max_temperature = 2000,
-      specific_heat = "400kJ",
-      max_transfer = "10MW",
-      default_temperature = 0,
-      min_working_temperature = 0,
-      -- Rescaled from the original 3x3-footprint version's 12-point
-      -- pattern (3 points per side) to this entity's new 4x4 footprint (4
-      -- points per side, at the quarter/three-quarter positions along
-      -- each edge) -- same shape, one more point per side to match the
-      -- extra tile of edge length. NOT yet re-verified in-engine the way
-      -- the original 3x3 layout was (that one was confirmed against real
-      -- heat-pipe placement before being trusted) -- needs the same
-      -- verification pass after the footprint change.
-      connections = {
-        { position = { -1.5, -2 }, direction = defines.direction.north },
-        { position = { -0.5, -2 }, direction = defines.direction.north },
-        { position = { 0.5, -2 }, direction = defines.direction.north },
-        { position = { 1.5, -2 }, direction = defines.direction.north },
-        { position = { 2, -1.5 }, direction = defines.direction.east },
-        { position = { 2, -0.5 }, direction = defines.direction.east },
-        { position = { 2, 0.5 }, direction = defines.direction.east },
-        { position = { 2, 1.5 }, direction = defines.direction.east },
-        { position = { 1.5, 2 }, direction = defines.direction.south },
-        { position = { 0.5, 2 }, direction = defines.direction.south },
-        { position = { -0.5, 2 }, direction = defines.direction.south },
-        { position = { -1.5, 2 }, direction = defines.direction.south },
-        { position = { -2, 1.5 }, direction = defines.direction.west },
-        { position = { -2, 0.5 }, direction = defines.direction.west },
-        { position = { -2, -0.5 }, direction = defines.direction.west },
-        { position = { -2, -1.5 }, direction = defines.direction.west },
-      },
-    },
-    -- No neighbour_bonus -- stacking generators together isn't part of
-    -- this design (unlike vanilla nuclear reactors, which reward
-    -- clustering). Deliberately no meltdown_action either: framework.md
-    -- §4.5 rule 3 is "degrade, don't destroy" -- this building must never
-    -- explode, only run at reduced efficiency (scripts/thermionic-curve.lua's
-    -- MIN_EFFICIENCY floor).
-    neighbour_bonus = 0,
-  },
-  {
-    type = "electric-energy-interface",
-    name = "sae-thermionic-generator-power-interface",
-    -- Never player-placed and never independently selectable -- spawned/
-    -- despawned in lockstep with the visible generator by
-    -- scripts/thermionic-generator.lua, which sets destructible = false
-    -- and drives `power_production` every interval from the efficiency
-    -- curve. gui_mode = "admins" matches vanilla's own hidden
-    -- electric-energy-interface entities -- players never interact with
-    -- this directly.
-    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
-    hidden = true,
-    hidden_in_factoriopedia = true,
-    selectable_in_game = false,
-    gui_mode = "admins",
-    max_health = 300,
-    collision_box = { { 0, 0 }, { 0, 0 } },
-    selection_box = { { 0, 0 }, { 0, 0 } },
-    collision_mask = { layers = {} },
     energy_source = {
       type = "electric",
       usage_priority = "secondary-output",
-      -- Peak output; see scripts/thermionic-curve.lua's PEAK_POWER_W
-      -- comment for the full justification (meaningfully below fusion's
-      -- 50MW, per design doc §9.1/§9.4).
-      output_flow_limit = "4MW",
-      -- Sized so one interval's peak output (4MW x 1s = 4MJ) fits without
-      -- clamping: scripts/thermionic-generator.lua zeroes this buffer each
-      -- interval and reads back what's left to measure exactly how much
-      -- the grid actually drew -- the signal for its idle guard (design
-      -- doc §9.1's "no idle waste"). 2x margin over the 4MJ minimum.
-      buffer_capacity = "8MJ",
-      -- Since `power_production` is entirely script-driven per interval
-      -- rather than a fixed declared rate, Factorio's own "not producing
-      -- at capacity" alert logic doesn't apply meaningfully here -- left
-      -- on, this rendered a permanent "no power" icon even while this
-      -- interface was correctly producing (confirmed via
-      -- prototypes:BaseEnergySource.render_no_power_icon, and by real
-      -- play -- this is what the flashing red icon turned out to be).
-      render_no_power_icon = false,
     },
-  },
-  {
-    type = "container",
-    name = "sae-thermionic-generator-coolant-tank",
-    -- Ice's own hidden storage -- see the file header for why this is a
-    -- separate entity rather than a slot on the reactor. Never opened
-    -- directly by a player -- unlike the earlier furnace-based fuel tank
-    -- this design replaced, nothing ever redirects a player's click here,
-    -- so this entity doesn't need a window title of its own; it's reached
-    -- only via the "Insert Ice" button scripts/thermionic-generator.lua
-    -- adds to the generator's own (now entirely native) info panel.
-    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
-    hidden = true,
-    hidden_in_factoriopedia = true,
-    selectable_in_game = false,
-    max_health = 300,
-    collision_box = { { 0, 0 }, { 0, 0 } },
-    selection_box = { { 0, 0 }, { 0, 0 } },
-    collision_mask = { layers = {} },
-    -- Two Ice stacks (100) = 400s of cooling at the 0.25/s equilibrium
-    -- draw, or 50s at the 2/s cap -- enough buffer that a brief gap in
-    -- asteroid capture doesn't immediately start a temperature climb. A
-    -- single slot (50 Ice) was 25s at the cap.
-    inventory_size = 2,
-    inventory_type = "with_filters_and_bar",
-    picture = {
-      filename = "__core__/graphics/empty.png",
-      priority = "extra-high",
-      width = 1,
-      height = 1,
+    two_direction_only = true,
+    -- Visuals: vanilla steam turbine's own sprite files, tinted warm so the
+    -- building doesn't read as a vanilla steam turbine on the platform. This
+    -- is a placeholder pending real art (graphics/icon-prompts.md) -- the
+    -- tint value in particular needs in-client eyes, since tinting multiplies
+    -- and can read muddy on an already-dark sprite. Frame counts, shifts and
+    -- scales are vanilla's, with util.by_pixel shifts pre-divided by 32.
+    pictures = {
+      north = {
+        animation = {
+          layers = {
+            {
+              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-V.png",
+              width = 217,
+              height = 374,
+              frame_count = 8,
+              line_length = 4,
+              shift = { 0.148438, 0.0 },
+              run_mode = "backward",
+              scale = 0.5,
+              tint = { r = 1.0, g = 0.82, b = 0.62 },
+            },
+            {
+              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-V-shadow.png",
+              width = 302,
+              height = 260,
+              repeat_count = 8,
+              line_length = 1,
+              draw_as_shadow = true,
+              shift = { 1.234375, 0.765625 },
+              run_mode = "backward",
+              scale = 0.5,
+            },
+          },
+        },
+      },
+      east = {
+        animation = {
+          layers = {
+            {
+              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-H.png",
+              width = 320,
+              height = 245,
+              frame_count = 8,
+              line_length = 4,
+              shift = { 0.0, -0.085938 },
+              run_mode = "backward",
+              scale = 0.5,
+              tint = { r = 1.0, g = 0.82, b = 0.62 },
+            },
+            {
+              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-H-shadow.png",
+              width = 435,
+              height = 150,
+              repeat_count = 8,
+              line_length = 1,
+              draw_as_shadow = true,
+              shift = { 0.890625, 0.5625 },
+              run_mode = "backward",
+              scale = 0.5,
+            },
+          },
+        },
+      },
     },
+    -- No `smoke` block: vanilla's steam turbine vents turbine-smoke, and a
+    -- sealed platform machine venting exhaust into vacuum would be wrong.
+    impact_category = "metal-large",
+    open_sound = sounds.machine_open,
+    close_sound = sounds.machine_close,
+    working_sound = {
+      sound = {
+        filename = "__base__/sound/steam-turbine.ogg",
+        volume = 0.49,
+        speed_smoothing_window_size = 60,
+        advanced_volume_control = { attenuation = "exponential" },
+        audible_distance_modifier = 0.8,
+      },
+      match_speed_to_activity = true,
+      max_sounds_per_prototype = 3,
+      fade_in_ticks = 4,
+      fade_out_ticks = 20,
+    },
+    perceived_performance = { minimum = 0.25, performance_to_activity_rate = 2.0 },
   },
 })

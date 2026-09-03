@@ -43,26 +43,14 @@ data:extend({
     stack_size = 100,
   },
   {
-    -- A real fuel item (design/vulcanus-fulgora.md §9.2's "fuel, shipped up
-    -- from Vulcanus") -- burned by the Thermionic Generator's own real
-    -- burner fuel slot, genuinely ignited/consumed by the engine itself
-    -- exactly like a nuclear reactor's fuel cell (prototypes/entity.lua --
-    -- the generator is a real `reactor`-type entity), not held in a
-    -- filtered chest slot and not drained by script. fuel_category is a
-    -- dedicated "sae-thermionic-fuel" category rather than vanilla
-    -- "chemical", so Magmatic Core can't be burned in ordinary furnaces/
-    -- vehicles and vanilla fuel can't be burned in the generator.
-    -- fuel_value is functionally load-bearing, not just flavour: paired
-    -- with the generator's own `consumption` (4MW, prototypes/entity.lua),
-    -- one core burns for fuel_value / consumption = 800MJ / 4MW = 200s --
-    -- deliberately matching vanilla's uranium fuel cell exactly (8GJ at the
-    -- nuclear reactor's 40MW = 200s), since a Magmatic Core is a
-    -- catalyst-gated, cross-planet-shipped item (design doc §8.4) and
-    -- should last at least as long as the fuel it's the platform-side
-    -- analogue of. This only governs how often the slot needs refilling --
-    -- the generator's heating *rate* is set independently by
-    -- consumption / specific_heat (10°/s at full draw, prototypes/entity.lua)
-    -- and is unaffected by how much energy one item holds.
+    -- The Vulcanus half of the capstone, shipped up to platforms (design
+    -- doc §9.2). No fuel_category/fuel_value: a Magmatic Core is an
+    -- *ingredient* of the quench recipes, not a fuel item. The earlier Thermionic
+    -- Generator burned it in a real burner slot; the Quench Turbine consumes
+    -- the vapour a quench recipe makes from it instead, which is what lets
+    -- the recipe tier -- not the item -- decide how much electricity one core
+    -- is worth. Leaving the fuel fields on would also let any future burner
+    -- with a matching category burn cores directly and bypass the ladder.
     type = "item",
     name = "sae-magmatic-core",
     icon = "__space-age-extended__/graphics/icons/magmatic-core.png",
@@ -71,8 +59,6 @@ data:extend({
     subgroup = "vulcanus-processes",
     order = "e[sae]-i[magmatic-core]",
     stack_size = 50,
-    fuel_category = "sae-thermionic-fuel",
-    fuel_value = "800MJ",
   },
   {
     type = "item",
@@ -89,13 +75,13 @@ data:extend({
     -- vanilla "energy" subgroup -- reuse it rather than inventing a new
     -- one (design doc §9.2, "no new building tiers" convention).
     type = "item",
-    name = "sae-thermionic-generator",
-    icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
+    name = "sae-quench-turbine",
+    icon = "__space-age-extended__/graphics/icons/quench-turbine.png",
     icon_size = 64,
     icon_mipmaps = 4,
     subgroup = "energy",
-    order = "e[sae]-k[thermionic-generator]",
-    place_result = "sae-thermionic-generator",
+    order = "e[sae]-k[quench-turbine]",
+    place_result = "sae-quench-turbine",
     stack_size = 10,
   },
 })

@@ -1,0 +1,8 @@
+{
+  "item": [
+    ["sae-thermionic-generator", "sae-quench-turbine"]
+  ],
+  "recipe": [
+    ["sae-thermionic-generator", "sae-quench-turbine"]
+  ]
+}

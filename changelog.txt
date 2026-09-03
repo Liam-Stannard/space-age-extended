@@ -1,4 +1,32 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2026-09-03
+  Major Features:
+    - Quench Turbine: a space-platform generator burning Quench Vapour, replacing the Thermionic
+      Generator. Magmatic Core is now an ingredient rather than a fuel: a quench recipe turns one
+      core plus Ice into vapour at a temperature the recipe fixes, and the turbine clips anything
+      hotter than it can use. Electricity per shipped core is therefore set by which quench recipe
+      you can run, not by the item.
+    - Lean Quench (unlocked with the turbine): 90MJ per core, most of it thrown away at the clip.
+    - Cryogenic Quench (new technology, gated behind Aquilo's cryogenic plant and its Fluoroketone):
+      600MJ per core, roughly seven times the lean recipe.
+    - Radiative Fluoroketone Cooling: closes the Fluoroketone loop in space. A cryogenic plant
+      cannot be built on a platform, so without this the Cryogenic Quench would stall on its own
+      hot output. Vacuum-only, via a real surface condition.
+  Changes:
+    - The Thermionic Generator, its scripted temperature/efficiency curve, its two hidden paired
+      entities and its custom GUI are all removed; control.lua is now empty. The old design could
+      not survive vanilla's heat network, which would have converted its waste heat into roughly as
+      much electricity again through heat exchangers and steam turbines.
+    - Magmatic Core is no longer a fuel item and the sae-thermionic-fuel category is gone.
+  Bugfixes:
+    - none
+  Info:
+    - Migrating a save: stockpiled Thermionic Generators and any assembler set to its recipe become
+      Quench Turbines. Generators already PLACED on a platform cannot be recovered -- the engine
+      removes entities whose prototype is gone before any migration runs -- so the two Thermionic
+      Assemblies each one cost are lost. Deconstruct them before updating if that matters.
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2026-09-01
   Info:

@@ -122,7 +122,8 @@ data:extend({
     icon_size = 256,
     icon_mipmaps = 4,
     effects = {
-      { type = "unlock-recipe", recipe = "sae-thermionic-generator" },
+      { type = "unlock-recipe", recipe = "sae-quench-turbine" },
+      { type = "unlock-recipe", recipe = "sae-lean-quench" },
     },
     prerequisites = { "sae-resonant-electromagnetics" },
     unit = {
@@ -130,6 +131,37 @@ data:extend({
       ingredients = {
         { "metallurgic-science-pack", 1 },
         { "electromagnetic-science-pack", 1 },
+      },
+      time = 60,
+    },
+  },
+  {
+    -- Technology 7 (design doc §9.3). The efficient quench recipe, gated on
+    -- Aquilo: its prerequisite is vanilla's own cryogenic-plant technology,
+    -- and its recipe needs Fluoroketone, which only Aquilo produces. Power
+    -- therefore cannot be solved cheaply before Aquilo -- tier 1 works, but
+    -- at roughly a seventh of the electricity per shipped Magmatic Core.
+    --
+    -- This also unlocks the radiative cooling recipe that closes the
+    -- fluoroketone loop in space; without it the tier-2 quench would stall
+    -- on its own hot output, since a cryogenic plant can't be built on a
+    -- platform.
+    type = "technology",
+    name = "sae-cryogenic-quenching",
+    icon = "__space-age-extended__/graphics/technology/thermionic-power.png",
+    icon_size = 256,
+    icon_mipmaps = 4,
+    effects = {
+      { type = "unlock-recipe", recipe = "sae-cryogenic-quench" },
+      { type = "unlock-recipe", recipe = "sae-radiative-fluoroketone-cooling" },
+    },
+    prerequisites = { "sae-thermionic-power", "cryogenic-plant" },
+    unit = {
+      count = 750,
+      ingredients = {
+        { "metallurgic-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 },
+        { "cryogenic-science-pack", 1 },
       },
       time = 60,
     },
