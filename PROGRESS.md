@@ -64,19 +64,80 @@ fast-research, e.g.:
 Git flow used so far: one branch per phase, commit, verify, merge
 fast-forward into `master`, push, delete the branch.
 
+- **Phase 4 — Thermionic Generator** (design doc §9; Tech 6
+  `sae-thermionic-power`), on branch `thermionic-reactor-rework`, not yet
+  merged. Went through three architectures in one day:
+  1. `electric-energy-interface` + hidden filtered-container hopper
+     (original spike). Playtest: fuel read as a chest slot, not fuel.
+  2. Hidden `furnace` with an unreachable recipe category as a fake fuel
+     slot. Playtest: engine never ignites fuel it doesn't drain itself, so
+     status/tooltip/gauge all misreported ("stuck red icon").
+  3. **Current:** the visible generator *is* a real `reactor`. Engine
+     genuinely burns Magmatic Core (custom `sae-thermionic-fuel` category,
+     800MJ = 200s/core, matching the uranium fuel cell); its own
+     `heat_buffer` is the temperature (10°/s at full draw) and its
+     `connections` are the real heat-pipe interface — the old bespoke
+     heat-interface entity is gone. A hidden `electric-energy-interface`
+     injects the curve-computed power (`render_no_power_icon = false`);
+     a hidden 2-slot filtered container holds Ice, reached via an
+     "Insert Ice" button on a small `player.gui.relative` panel anchored
+     to the reactor's own native window. `scale_energy_usage = false`
+     keeps fuel rate independent of heat; an idle guard in
+     `step_generator` pauses the reactor (`disabled_by_script`) when the
+     grid draws <5% of full output, restoring §9.1's "no idle waste".
+     Footprint 4x4.
+
+  Two engine facts learned the hard way, both now commented at the site:
+  `LuaEntity.active` is read-only (use `disabled_by_script`), and
+  `LuaEntity.power_production` is **joules per tick**, not watts — the
+  original spike wrote watts (60x too much), masked from the grid only by
+  the prototype's `output_flow_limit`.
+
+  Verified headlessly (see workflow below): real ignition/`no_fuel`
+  status, 200s burn (to the MJ), 10.0°/s heating, Ice cooling to the
+  degree, steady idle (fuel byte-identical across samples) and resume on
+  a 300kW load, teardown. **Not yet user-playtested** in this form — the
+  relative-GUI panel and the rescaled 16-point heat-pipe connection
+  layout for the 4x4 footprint need in-client eyes.
+
+- **Balance pass** (same branch), against vanilla numbers from the
+  installed engine: Copper Foil 10→1 per craft (was a ~10x copper
+  discount; now value-neutral per §7.1), Scrap Remelting 50→100 molten
+  scrap and calcite 10→2 (was ~5x below recycling on iron), non-ferrous
+  split 95/5→90/10 (holmium trickle was *below* recycling's 1%),
+  `specific_heat` 80kJ→400kJ (16s→80s to overheat; holding needs
+  0.25 Ice/s not 1.25), coolant tank 1→2 slots.
+
+## Headless RCON verification (how this was actually tested)
+
+`tools/check-data-stage.sh` only covers the data stage. Runtime logic was
+verified with a headless server driven over RCON — no client needed, but
+two gotchas: `~/.factorio/.lock` means the real client must be closed,
+and with no client connected the server free-runs far faster than
+real-time, so **always measure against `game.tick` deltas, never
+wall-clock `sleep`**. Rig: symlink the repo into a scratch `mods/` dir
+with a `mod-list.json`, `factorio --create fresh.zip --mod-directory
+mods`, then `--start-server fresh.zip --rcon-port N --rcon-password X
+--server-settings settings.json` (with `allow_commands: "true"`) and a
+20-line Source-RCON Python client sending `/c ... rcon.print(...)`.
+Setup per run: `force.create_space_platform{starter_pack=...}`,
+`apply_starter_pack()`, `create_entity` on `platform-1` with
+`raise_built=true`. Note `create_entity` fires `script_raised_built`, so
+`on_generator_built` runs; the first RCON call after startup tends to
+return blank — send a warm-up.
+
 ## Not started yet
 
-- **Phase 4 — Thermionic Generator** (design doc §9; Tech 6
-  `sae-thermionic-power`). The hard one — needs real `control.lua` runtime
-  logic since no stock Factorio entity type gives a self-heating,
-  coolant-driven efficiency curve with electricity-only output for free
-  (confirmed by reading the actual `fusion-generator`/`reactor`/`generator`
-  prototypes in the installed engine). The plan calls for a time-boxed
-  technical spike first — default approach: a visible
-  `electric-energy-interface` (script sets `.power_production` per tick)
-  paired with a hidden 2-slot `container` fuel/coolant hopper, linked via
-  `unit_number` in `storage`. Fallback: `burner-generator` with Magmatic
-  Core as a custom fuel category. See the plan file for full detail.
+- **Design doc sync.** `design/vulcanus-fulgora.md` §9.2/§9.4 still
+  describe the abstract-temperature model, the old heat-interface entity,
+  and the 20s-to-floor timing; §16 lists several questions this branch
+  answered (calcite burden, foil value, holmium yield, acid loop runs at
+  3x surplus). Update once the branch is playtested and merged.
+- **Playtest + merge** of `thermionic-reactor-rework`, then delete the
+  branch (see git flow above).
+- **Trees 2+** — see the parked brainstorm in Claude's memory
+  (`project_space_age_extended_future_trees`) and framework.md §4.2's
+  open slots.
 
 ## To resume
 

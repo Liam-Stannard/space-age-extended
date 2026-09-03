@@ -19,12 +19,22 @@ data:extend({
     subgroup = "fulgora-processes",
     order = "e[sae]-a[scrap-remelting]",
     enabled = false,
+    -- 25 scrap -> 100 molten scrap (-> 60 molten iron + 38 molten copper
+    -- via Sections 2-4 = ~0.24 iron plate + 0.15 copper plate per scrap).
+    -- Recycling yields ~0.6 iron-equivalent per scrap plus circuits/LDS,
+    -- so this is still less material-efficient than recycling -- its niche
+    -- is *deterministic bulk plate* for a Fulgora base drowning in gears,
+    -- not a recycling replacement (design doc §1, §16). An earlier
+    -- 50-molten-scrap version was ~5x below recycling on iron alone, too
+    -- low to serve even that niche. Calcite is the chain's Vulcanus import
+    -- burden (§16): 2 per 100 molten metal sits well above vanilla
+    -- lava-casting's 1 per 250 but no longer dwarfs the metal it flux-es.
     ingredients = {
       { type = "item", name = "scrap", amount = 25 },
-      { type = "item", name = "calcite", amount = 10 },
+      { type = "item", name = "calcite", amount = 2 },
     },
     results = {
-      { type = "fluid", name = "sae-molten-scrap", amount = 50 },
+      { type = "fluid", name = "sae-molten-scrap", amount = 100 },
     },
     energy_required = 3.2,
     allow_decomposition = false,
@@ -73,8 +83,13 @@ data:extend({
   },
 
   -- Section 4: Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
-  -- 95/5 copper/holmium split -- Holmium is a deliberate trickle, not a
-  -- primary output (design doc §4).
+  -- 90/10 copper/holmium split -- Holmium is a deliberate trickle, not a
+  -- primary output (design doc §4). At 2 residue per craft the chain lands
+  -- at ~0.016 holmium ore per scrap (via Section 5's 5-residue-per-ore
+  -- extraction), just above vanilla recycling's 1% -- a genuine
+  -- supplement. An earlier 95/5 version yielded ~0.008/scrap, *below*
+  -- recycling, which made the holmium path add nothing over the
+  -- alternative that also gives everything else.
   {
     type = "recipe",
     name = "sae-non-ferrous-separation",
@@ -89,8 +104,8 @@ data:extend({
       { type = "fluid", name = "sae-molten-non-ferrous-metal", amount = 20 },
     },
     results = {
-      { type = "fluid", name = "molten-copper", amount = 19 },
-      { type = "fluid", name = "sae-holmium-rich-residue", amount = 1 },
+      { type = "fluid", name = "molten-copper", amount = 18 },
+      { type = "fluid", name = "sae-holmium-rich-residue", amount = 2 },
     },
     energy_required = 4,
   },
@@ -117,6 +132,13 @@ data:extend({
   -- Section 6: Copper Foil (Foundry, Fulgora)
   -- Copper-skewed with a small Iron kicker -- gives the Section 3 iron
   -- surplus a genuine, partial consumer (design doc §6).
+  -- One foil = 15 molten copper = 1.5 copper plate = exactly the 3 Copper
+  -- Cable it replaces in Electronic Circuit (design doc §7.1, "value-
+  -- neutral substitution"). This is the single copper-equivalent tunable
+  -- for all three circuit alt recipes (design doc §16) -- an earlier
+  -- 10-foil-per-craft version made each foil worth 0.15 plate, a ~10x
+  -- copper discount that made the alt recipes universally dominant
+  -- rather than "better only when committed" (§7).
   {
     type = "recipe",
     name = "sae-copper-foil",
@@ -129,7 +151,7 @@ data:extend({
       { type = "fluid", name = "molten-iron", amount = 1 },
     },
     results = {
-      { type = "item", name = "sae-copper-foil", amount = 10 },
+      { type = "item", name = "sae-copper-foil", amount = 1 },
     },
     energy_required = 3.2,
     allow_decomposition = false,

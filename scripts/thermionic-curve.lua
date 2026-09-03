@@ -1,8 +1,7 @@
 -- Pure thermal/efficiency math for the Thermionic Generator.
--- See design/vulcanus-fulgora.md §9.3 for the five behaviours this module
--- must reproduce (self-heating, ice-driven cooling, gradual decline above
--- the optimal band, a sharp-but-non-fatal drop past overheat, and a load-
--- vs-cooling equilibrium).
+-- See design/vulcanus-fulgora.md §9.3 for the behaviours this module must
+-- reproduce (gradual efficiency decline above the optimal band, a sharp-
+-- but-non-fatal drop past overheat, and a load-vs-cooling equilibrium).
 --
 -- Zero dependency on `game`/`script`/`storage`/any Factorio API -- this file
 -- must be `require`-able and callable from a plain Lua 5.2+ REPL outside the
@@ -10,14 +9,20 @@
 -- established substitute, see PROGRESS.md). scripts/thermionic-generator.lua
 -- is the only thing that wires this into actual entities/events.
 --
--- "Temperature" here is an abstract internal scale, NOT itself a Factorio
--- heat-network degree value -- it remains the single source of truth for
--- the efficiency curve (design doc §9.2/§9.3), even though the generator
--- now also has a real heat-pipe interface (see
--- M.abstract_temperature_to_heat_buffer_celsius below, and
--- scripts/thermionic-generator.lua) that maps this scale onto a real
--- heat_buffer temperature for a connected network to draw on. 0 represents
--- cold/idle; larger numbers are hotter.
+-- "Temperature" here is the real temperature of the Thermionic Generator's
+-- own heat_buffer (it's a genuine `reactor`-type entity, prototypes/
+-- entity.lua) -- unlike an earlier version of this module, there's no
+-- separate abstract number kept in `storage` to translate to/from real
+-- degrees anymore. Self-heating from burning Magmatic Core, and heat-pipe
+-- network exchange, both now happen for real via the reactor's own native
+-- physics (the engine ignites/consumes fuel itself, and its heat_buffer's
+-- `connections` are genuine heat-pipe connection points) -- this module
+-- only still needs to (a) apply Ice's cooling directly against that real
+-- temperature, and (b) turn a temperature + fuel-availability reading into
+-- an efficiency multiplier and an electrical output figure for the paired
+-- power-interface entity to actually push onto the grid, since a reactor
+-- cannot emit electricity itself. 0 represents cold/idle; larger numbers
+-- are hotter.
 
 local M = {}
 
@@ -51,43 +56,22 @@ M.OVERHEAT_THRESHOLD = 800
 M.OVERHEAT_FLOOR_EFFICIENCY = 0.5 -- efficiency right at OVERHEAT_THRESHOLD, end of the gradual decline
 M.MIN_EFFICIENCY = 0.08 -- the "barely worth its footprint" floor -- never destroyed, never zero (design doc §9.3 point 4; framework.md §4.5 rule 3, "degrade, don't destroy")
 
--- A soft ceiling on stored temperature, purely so an unattended generator
--- left burning fuel with no ice for a very long time doesn't accumulate an
--- unbounded number in `storage`. It has no effect on the efficiency curve
--- itself, which already saturates at MIN_EFFICIENCY well before this.
-M.MAX_TEMPERATURE = 5000
 M.AMBIENT_TEMPERATURE = 0
 
--- Ceiling of the abstract-temperature-to-Celsius mapping used to drive the
--- paired heat-interface entity's real heat_buffer (design doc §9.2/§9.4 --
--- the heat-pipe interface added once it was established Factorio's heat
--- network is strictly surface-local, so a platform generator's waste heat
--- can never reach a planet's own network regardless of orbit). Matches
--- prototypes/entity.lua's sae-thermionic-generator-heat-interface
--- heat_buffer.max_temperature exactly -- kept in sync by comment, not by
--- sharing code across the data/control stage boundary (data.lua can't
--- require this control-stage file). 2000 sits comfortably above
--- OVERHEAT_THRESHOLD (800) and the sharp-decline zone, so the whole
--- gameplay-relevant range of the efficiency curve maps to plausible
--- real-world thermionic-converter operating temperatures (real thermionic
--- cathodes commonly run in the many-hundreds-to-low-thousands °C range)
--- before this ceiling starts clipping.
-M.HEAT_INTERFACE_MAX_CELSIUS = 2000
-
--- Heat added per unit of Magmatic Core consumed, and heat removed per unit
--- of Ice consumed, in one update interval.
-M.HEAT_PER_FUEL_UNIT = 50
+-- Heat removed per unit of Ice consumed, in one update interval. (Heat
+-- added per unit of fuel is no longer a constant this module tracks --
+-- the reactor's real heat_buffer accumulates that natively from actual
+-- fuel combustion; see prototypes/entity.lua's `consumption`/
+-- `specific_heat` for the values that now govern it.)
 M.HEAT_REMOVED_PER_ICE_UNIT = 40
 
--- Maximum whole units of each input the generator can draw from its hopper
+-- Maximum whole units of Ice the generator can draw from its coolant tank
 -- in a single update interval (scripts/thermionic-generator.lua calls
--- M.consume against the hopper's actual contents each interval, so an
--- undersupplied hopper naturally throttles below these caps). At the
--- default 60-tick (1 second) update interval this is roughly a 1 Magmatic
--- Core/sec fuel burn and a 2 Ice/sec coolant draw -- fast enough to be
--- observable within a short playtest, explicitly not tuned against real
--- Vulcanus export throughput (§9.4 open question).
-M.MAX_FUEL_PER_INTERVAL = 1
+-- M.consume against the tank's actual contents each interval, so an
+-- undersupplied tank naturally throttles below this cap). At the default
+-- 60-tick (1 second) update interval this is roughly a 2 Ice/sec coolant
+-- draw -- fast enough to be observable within a short playtest, explicitly
+-- not tuned against real Vulcanus export throughput (§9.4 open question).
 M.MAX_ICE_PER_INTERVAL = 2
 
 -- ---------------------------------------------------------------------
@@ -95,20 +79,13 @@ M.MAX_ICE_PER_INTERVAL = 2
 -- ---------------------------------------------------------------------
 
 --- How many whole units of an input can actually be drawn this interval,
---- given how many are sitting in the hopper right now. Never more than the
+--- given how many are sitting in the tank right now. Never more than the
 --- available amount and never more than the per-interval cap.
 function M.consume(available, max_rate)
   if available < max_rate then
     return available
   end
   return max_rate
-end
-
---- Heat contributed by burning `fuel_consumed` units of Magmatic Core this
---- interval (design doc §9.3 point 1, "the generator self-heats as it
---- produces power").
-function M.heat_from_fuel(fuel_consumed)
-  return fuel_consumed * M.HEAT_PER_FUEL_UNIT
 end
 
 --- Heat removed by consuming `ice_consumed` units of Ice this interval
@@ -118,24 +95,22 @@ function M.heat_removed_by_ice(ice_consumed)
 end
 
 --- How many whole units of Ice are actually useful to consume this
---- interval, given `current_temperature` (before this interval's step),
---- `heat_in` (heat this interval's fuel burn is about to add), and
---- `heat_out_network` (heat a connected heat-pipe network is already
---- removing this interval -- see M.heat_removed_by_network -- optional,
---- defaults to 0 for callers with no heat-pipe network to account for).
---- Temperature never needs to go below AMBIENT_TEMPERATURE
---- (`next_temperature` floors there), so there is no thermal benefit to
---- removing more heat than is actually present above ambient, plus what's
---- about to arrive from fuel, minus what the network is already removing
---- (or plus what it's pushing in, if `heat_out_network` is negative) --
---- consuming ice beyond that point would be pure waste, which is exactly
---- the gap this closes: without this term, Ice would keep draining at a
---- pre-network rate even when an attached heat-pipe network is already
---- handling some/all of the needed cooling (design doc §9.3's "player
---- controls fuel rate and cooling rate independently" -- the two channels
---- should interact here, not double up on removing the same heat). Never
---- negative.
+--- interval, given `current_temperature` (the reactor's real temperature,
+--- already reflecting any real fuel-burn heating and real heat-pipe
+--- network exchange since last interval). `heat_in`/`heat_out_network` are
+--- accepted for callers that still have a nonzero figure for either (kept
+--- as parameters rather than dropped so the formula stays self-documenting
+--- and this function stays testable in isolation) -- scripts/
+--- thermionic-generator.lua currently always passes 0 for both, since
+--- both effects are now already baked into `current_temperature` by the
+--- time this runs. Temperature never needs to go below AMBIENT_TEMPERATURE,
+--- so there is no thermal benefit to removing more heat than is actually
+--- present above ambient, plus what's about to arrive from fuel, minus
+--- what the network is already removing (or plus what it's pushing in, if
+--- `heat_out_network` is negative) -- consuming ice beyond that point
+--- would be pure waste. Never negative.
 function M.max_useful_ice(current_temperature, heat_in, heat_out_network)
+  heat_in = heat_in or 0
   heat_out_network = heat_out_network or 0
   local heat_above_ambient = current_temperature - M.AMBIENT_TEMPERATURE
   if heat_above_ambient < 0 then
@@ -146,72 +121,6 @@ function M.max_useful_ice(current_temperature, heat_in, heat_out_network)
     return 0
   end
   return math.floor(removable_heat / M.HEAT_REMOVED_PER_ICE_UNIT)
-end
-
---- Step the stored temperature forward by exactly one interval's worth of
---- physics, using only the previously-stored temperature and this
---- interval's heat in/out. Deliberately takes no notion of elapsed real
---- time or game.tick -- the caller is responsible for calling this once
---- per interval from storage-persisted state, which is what makes it
---- save/reload-safe (see the correctness rule in the phase 4 plan).
----
---- `heat_out_network` is the third heat-loss term contributed by the
---- paired heat-interface's real heat-pipe connection (see
---- M.heat_removed_by_network below) -- it can be negative (the connected
---- network pushed heat *in* rather than drawing it out, e.g. something
---- hotter was on the same pipe run), in which case it increases the
---- result exactly like a negative loss should; this is deliberately not
---- special-cased away (design doc §9.2/§9.3), since it's a real,
---- physically-grounded consequence of exposing the generator to a shared
---- heat network rather than something to guard against.
-function M.next_temperature(current_temperature, heat_in, heat_out, heat_out_network)
-  local next_temperature = current_temperature + heat_in - heat_out - heat_out_network
-  if next_temperature < M.AMBIENT_TEMPERATURE then
-    next_temperature = M.AMBIENT_TEMPERATURE
-  elseif next_temperature > M.MAX_TEMPERATURE then
-    next_temperature = M.MAX_TEMPERATURE
-  end
-  return next_temperature
-end
-
---- Maps the abstract internal temperature scale onto a real degrees-
---- Celsius value suitable for writing to the paired heat-interface
---- entity's `temperature` (a genuine Factorio heat_buffer value, unlike
---- the abstract scale everywhere else in this file). Deliberately the
---- simplest possible mapping -- 1 abstract unit = 1°C -- clamped to
---- [AMBIENT_TEMPERATURE, HEAT_INTERFACE_MAX_CELSIUS] so the result always
---- fits the heat-interface prototype's own heat_buffer bounds (the engine
---- would silently clamp on write anyway, but doing it here keeps this
---- function's output well-defined and independently testable). The
---- abstract scale's own landmarks (OPTIMAL_MAX=600, OVERHEAT_THRESHOLD=
---- 800) therefore read as plausible real operating temperatures directly,
---- with no separate mental model needed.
-function M.abstract_temperature_to_heat_buffer_celsius(abstract_temperature)
-  local celsius = abstract_temperature
-  if celsius < M.AMBIENT_TEMPERATURE then
-    celsius = M.AMBIENT_TEMPERATURE
-  elseif celsius > M.HEAT_INTERFACE_MAX_CELSIUS then
-    celsius = M.HEAT_INTERFACE_MAX_CELSIUS
-  end
-  return celsius
-end
-
---- How much abstract heat a connected heat-pipe network effectively
---- removed this interval, derived by comparing what was pushed onto the
---- heat-interface last interval (`previous_heat_interface_temperature`,
---- already in Celsius via M.abstract_temperature_to_heat_buffer_celsius)
---- against what the interface's real temperature reads back as *now*
---- (`current_heat_interface_temperature`, read by the caller immediately
---- before this interval's push -- see scripts/thermionic-generator.lua).
---- Since the abstract-to-Celsius mapping is 1:1, a Celsius delta is
---- exactly an abstract-unit delta, so no further conversion is needed.
---- Positive means the network drew heat out (the normal case, feeding
---- M.next_temperature's `heat_out_network` term); negative means the
---- network pushed heat *in* instead (some other, hotter heat-buffer
---- shared the same pipe run) -- returned as-is, not floored at zero,
---- because M.next_temperature is explicitly designed to accept that.
-function M.heat_removed_by_network(previous_heat_interface_temperature, current_heat_interface_temperature)
-  return previous_heat_interface_temperature - current_heat_interface_temperature
 end
 
 --- The efficiency multiplier (0, 1] for a given stored temperature.
@@ -241,19 +150,20 @@ function M.efficiency_for_temperature(temperature)
   end
 end
 
---- Electrical output for this interval. `load_fraction` is how much of the
---- maximum fuel draw was actually available (0..1) -- a starved generator
---- produces proportionally less regardless of temperature, and a
---- fuel-starved generator (load_fraction 0) produces nothing at all,
---- matching "determines power output" (§9.2).
+--- Electrical output for this interval. `load_fraction` is whether the
+--- reactor is actually burning fuel right now (1 if its real status is
+--- "working", 0 if it's genuinely out of fuel -- see
+--- scripts/thermionic-generator.lua) -- a fuel-starved generator produces
+--- nothing at all, regardless of temperature, matching "determines power
+--- output" (§9.2).
 function M.power_output(load_fraction, temperature)
   return M.PEAK_POWER_W * load_fraction * M.efficiency_for_temperature(temperature)
 end
 
 -- ---------------------------------------------------------------------
--- Worked examples (sanity-checked by eye, and via a real Lua interpreter --
--- see the phase 4 verification report for the actual run). Load this file
--- in a plain `lua` REPL and evaluate these to check the curve by hand:
+-- Worked examples (sanity-checked by eye, and via a real Lua interpreter).
+-- Load this file in a plain `lua` REPL and evaluate these to check the
+-- curve by hand:
 --
 --   local curve = require("scripts.thermionic-curve")
 --
@@ -276,77 +186,23 @@ end
 --      curve.efficiency_for_temperature(1200) --> 0.08 (MIN_EFFICIENCY floor)
 --      -- degrees_over = 400; decayed = 0.5 * 0.5^4 = 0.03125 < 0.08, so floored
 --
--- 6. Equilibrium/self-heating check, full fuel + full ice, no heat-pipe
---    network attached (oversized cooling holds the generator cool and at
---    full efficiency):
---      curve.next_temperature(500, curve.heat_from_fuel(1), curve.heat_removed_by_ice(2), 0)
---      --> 500 + 50 - 80 - 0 = 470  (temperature falls, plateaus near
---          ambient over repeated intervals -- an oversized ice supply wins)
+-- 6. Fuel-starved (no fuel, no output, regardless of temperature):
+--      curve.power_output(0, 700) --> 0
 --
--- 7. Full fuel, lean ice, no heat-pipe network attached (heat wins,
---    temperature climbs each interval -- a lean platform settles at a
---    lower steady-state *output*, not necessarily a stable temperature,
---    matching §9.3 point 5):
---      curve.next_temperature(500, curve.heat_from_fuel(1), curve.heat_removed_by_ice(1), 0)
---      --> 500 + 50 - 40 - 0 = 510
+-- 7. Full output at optimal temperature:
+--      curve.power_output(1, 500) --> 4000000  (PEAK_POWER_W, full efficiency)
 --
--- 8. Fuel-starved (no heat generated, ice still cools if fed -- the two
---    streams are genuinely independent, per §9.2):
---      curve.power_output(0, 700) --> 0  (no fuel, no output, regardless of temperature)
+-- 8. Idle at ambient with nothing to cool (don't burn ice for zero
+--    thermal benefit, §9.3's ice-throughput tunable):
+--      curve.max_useful_ice(curve.AMBIENT_TEMPERATURE, 0, 0) --> 0
+--      -- heat_above_ambient = 0; removable_heat = 0 --> 0 ice useful
 --
--- 9. Idle at ambient with no fuel, no network contribution (don't burn
---    ice for zero thermal benefit, §9.3's ice-throughput tunable):
---      curve.max_useful_ice(curve.AMBIENT_TEMPERATURE, curve.heat_from_fuel(0), 0) --> 0
---      -- heat_above_ambient = 0; heat_in = 0; heat_out_network = 0;
---      -- removable_heat = 0 --> 0 ice useful
---
--- 10. Warm and still fuelled, no network contribution (some ice still
---     useful, capped below the 2/interval rate cap by what's actually
---     there to remove):
---      curve.max_useful_ice(30, curve.heat_from_fuel(1), 0) --> 2
---      -- heat_above_ambient = 30; heat_in = 50; heat_out_network = 0;
---      -- removable_heat = 80; floor(80/40) = 2 (still gets clamped
---      -- further by the 2/interval rate cap in
+-- 9. Warm reactor, some ice still useful (capped below the 2/interval
+--    rate cap by what's actually there to remove):
+--      curve.max_useful_ice(90, 0, 0) --> 2
+--      -- heat_above_ambient = 90; removable_heat = 90; floor(90/40) = 2
+--      -- (still clamped further by the 2/interval rate cap in
 --      -- scripts/thermionic-generator.lua, so no change here)
---
--- 10a. Same warm+fuelled case, but a heat-pipe network is already
---      removing 20 heat this interval (heat_out_network=20) -- ice draw
---      shrinks from 2 down to 1, since burning ice to remove heat the
---      network is already removing would be pure waste (this is the
---      fix 3 gap -- previously this term didn't exist, so ice always
---      drew as if heat_out_network were 0):
---        curve.max_useful_ice(30, curve.heat_from_fuel(1), 20) --> 1
---        -- removable_heat = 30 + 50 - 20 = 60; floor(60/40) = 1
---
--- 10b. Network pushing heat *in* instead (heat_out_network negative, e.g.
---      -20, per M.heat_removed_by_network's own sign convention) leaves
---      more useful ice, not less, since there's now more heat to remove:
---        curve.max_useful_ice(30, curve.heat_from_fuel(1), -20) --> 2
---        -- removable_heat = 30 + 50 - (-20) = 100; floor(100/40) = 2
---        -- (still clamped to the 2/interval rate cap either way)
---
--- 11. Abstract-to-Celsius mapping, mid-range (1:1, within bounds):
---       curve.abstract_temperature_to_heat_buffer_celsius(700) --> 700
---
--- 12. Abstract-to-Celsius mapping, clamped at the heat-interface's own
---     real ceiling (deep unattended overheat, well past where the
---     efficiency curve already floors out):
---       curve.abstract_temperature_to_heat_buffer_celsius(3500) --> 2000
---       -- HEAT_INTERFACE_MAX_CELSIUS = 2000, so 3500 clamps down to it
---
--- 13. Heat-pipe network drew heat out since last interval's push (the
---     normal case -- a connected network cooled the interface down):
---       curve.heat_removed_by_network(700, 620) --> 80
---
--- 14. Heat-pipe network pushed heat *in* since last interval's push
---     (something hotter shared the same pipe run) -- negative, and
---     deliberately not floored at zero (see M.next_temperature above):
---       curve.heat_removed_by_network(700, 740) --> -40
---
--- 15. Full worked interval with a heat-pipe network attached and drawing
---     hard (network draw is the dominant loss term, on top of ice):
---       curve.next_temperature(700, curve.heat_from_fuel(1), curve.heat_removed_by_ice(1), curve.heat_removed_by_network(700, 620))
---       --> 700 + 50 - 40 - 80 = 630
 -- ---------------------------------------------------------------------
 
 return M

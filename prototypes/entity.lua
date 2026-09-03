@@ -3,38 +3,60 @@
 -- one new building (justified per design/framework.md §2.3 by a
 -- temperature-dependent efficiency curve nothing else in the game has).
 --
--- Visible generator: `electric-energy-interface`, script-driven (see
--- scripts/thermionic-generator.lua). Visuals reuse vanilla nuclear
--- reactor's real static body/shadow/pipes sprite files directly (plain
--- Sprite layers, not reactor's own heat-pipe-*glow* or connection-graphics
--- machinery, which are base-mod-internal and reactor-type-specific) --
--- thematically closer to a heat-driven generator than the accumulator
--- placeholder this used to borrow from, and no new art pipeline needed
--- since reactor.png/reactor-shadow.png/reactor-pipes.png are just plain
--- static layers, same shape as accumulator's were. The static
--- reactor-pipes.png lower-layer is now honest -- the entity has a real
--- heat-pipe connection via its paired hidden heat-interface below.
--- Deliberately NOT using reactor-pipes-heated.png (the heat-reactive glow
--- variant) -- that requires reactor-type-specific heat_lower_layer_picture
--- machinery this entity, an electric-energy-interface, doesn't have; a
--- static pipes layer is enough for this pass.
+-- Visible generator: a real `reactor`-type entity (`sae-thermionic-generator`).
+-- Magmatic Core burns in its genuine burner fuel slot -- the engine itself
+-- ignites/consumes it, exactly like vanilla's nuclear reactor -- giving
+-- real status, tooltip, and fuel-gauge animation for free, instead of the
+-- earlier "furnace with an unreachable recipe category" hack that faked
+-- fuel removal via script and left the entity permanently misreporting
+-- itself as broken (confirmed in real play: a stuck "no fuel"-style alert
+-- and a burn gauge that never animated). `scale_energy_usage = false` so
+-- the reactor always draws fuel at its full declared `consumption` rate
+-- regardless of current heat -- keeping fuel rate and cooling rate
+-- genuinely independent (design doc §9.2's explicit rule), rather than
+-- vanilla reactor's own "throttle down near max temperature" behaviour.
+-- The reactor's real heat_buffer *is* the temperature now (no separate
+-- abstract number in `storage` to keep in sync) -- scripts/
+-- thermionic-generator.lua subtracts from it directly for Ice cooling,
+-- the same way it used to write to the old heat-interface's `.temperature`.
+-- Its `connections` below are a real heat-pipe interface natively -- the
+-- old hidden `sae-thermionic-generator-heat-interface` entity and its
+-- bespoke 12-point connection math are gone entirely; a reactor's own
+-- heat_buffer already does this.
 --
--- Hidden hopper: a 2-slot `container`, spawned/paired 1:1 with the visible
--- generator at runtime, filtered to Magmatic Core / Ice. Never placed by
--- the player directly -- not in any item's place_result, no icon needed.
+-- A reactor has no electric energy_source of its own (same as vanilla
+-- nuclear reactor -- it produces heat, not power), so it still can't push
+-- electricity onto the grid by itself. That job stays on a hidden, paired
+-- `electric-energy-interface` (`sae-thermionic-generator-power-interface`)
+-- exactly as before, with `render_no_power_icon = false` -- confirmed via
+-- Factorio's own prototype docs (`BaseEnergySource.render_no_power_icon`)
+-- that this is the flag governing the "no power"/"no fuel" alert icon;
+-- since this hidden interface's `power_production` is entirely
+-- script-driven per interval rather than a fixed declared rate, leaving
+-- the default on made it misreport as constantly underpowered even while
+-- correctly producing (this is what the red flashing icon in real play
+-- turned out to be).
 --
--- Hidden heat-interface: a `heat-interface`-type entity, also spawned/
--- paired 1:1 with the visible generator at runtime (see
--- scripts/thermionic-generator.lua), giving the generator a real,
--- script-driven heat-pipe connection (design doc §9.2/§9.3 -- reversed
--- from the original "electricity only" design once it was established
--- that Factorio's heat network is strictly surface-local and can never
--- bridge a space platform into a planet's own heat network regardless of
--- orbit, so the original Aquilo-trivialisation concern doesn't apply).
+-- Visuals still reuse vanilla nuclear reactor's own body/shadow/pipes
+-- sprite files directly (plain Sprite layers) -- now honestly, since the
+-- entity really is a reactor-type building.
+--
+-- Hidden coolant tank: a 1-slot filtered `container`, spawned/paired 1:1
+-- with the visible generator, holding Ice. Never opened directly by a
+-- player -- reached via an "Insert Ice" button in the generator's info
+-- panel (see scripts/thermionic-generator.lua), since reactor has no
+-- second item slot to hold a filtered coolant item natively.
+--
+-- Neither hidden entity is placed by the player directly -- not in any
+-- item's place_result, no icon needed for either.
 
 data:extend({
   {
-    type = "electric-energy-interface",
+    type = "fuel-category",
+    name = "sae-thermionic-fuel",
+  },
+  {
+    type = "reactor",
     name = "sae-thermionic-generator",
     icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
     icon_size = 64,
@@ -50,26 +72,19 @@ data:extend({
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },
-    -- Collision/selection box sized to match the actual rendered body
-    -- sprite below (vanilla reactor.png, 302x318 at scale 0.5 = 151x159px
-    -- = ~2.36x2.48 tiles at 64px/tile) -- previously these were still
-    -- sized for the old, much smaller vanilla-accumulator sprite this
-    -- entity used before, so the reactor art overhung its own footprint.
-    collision_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
-    selection_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
+    -- 4x4 tile footprint (larger than the rendered body sprite below,
+    -- which is closer to 2.4x2.5 tiles at its current scale -- the extra
+    -- room is deliberate footprint, not a sprite-fit calculation, per
+    -- explicit request). Even-width box, so the entity snaps to grid
+    -- intersections rather than tile centers.
+    collision_box = { { -2, -2 }, { 2, 2 } },
+    selection_box = { { -2.1, -2.1 }, { 2.1, 2.1 } },
     -- Visuals: vanilla nuclear reactor's own body/shadow sprite files,
     -- used directly as plain Sprite layers (values verified against
     -- base/prototypes/entity/entities.lua's own "reactor" picture field)
     -- rather than via base's internal heat-pipe-glow/connection-graphics
-    -- helpers, which are reactor-type-specific and not something a
-    -- dependent mod should rely on.
-    -- lower_layer_picture: vanilla reactor's own real heat-pipe stub
-    -- graphics (reactor-pipes.png), verified directly against base's own
-    -- "reactor" entity prototype (base/prototypes/entity/entities.lua) --
-    -- width/height/scale/shift copied from its lower_layer_picture field
-    -- exactly (shift there is `util.by_pixel(-1, -5)`, i.e. {-1/32, -5/32}
-    -- = {-0.03125, -0.15625}, reproduced as a literal here to match this
-    -- file's existing style rather than pulling in the util lib).
+    -- helpers, which are reactor-type-specific rendering machinery a
+    -- dependent mod shouldn't rely on staying stable.
     lower_layer_picture = {
       filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes.png",
       width = 320,
@@ -96,16 +111,104 @@ data:extend({
         },
       },
     },
-    -- Electricity remains the primary output, driven entirely by script
-    -- (see scripts/thermionic-generator.lua) -- energy_production/
-    -- energy_usage are deliberately left at their defaults (0) since
-    -- power_production is set every update interval instead of being a
-    -- fixed rate. This entity itself still has NO heat energy source of
-    -- its own (an electric-energy-interface can't have one) -- the real
-    -- heat-pipe connection lives entirely on the paired hidden
-    -- sae-thermionic-generator-heat-interface below, as a secondary
-    -- cooling avenue alongside Ice, not a second power channel
-    -- (design doc §9.2).
+    -- Real burner fuel slot -- the engine itself ignites/consumes
+    -- Magmatic Core, giving a real fuel gauge, status, and tooltip.
+    -- fuel_categories restricted to our own category (not vanilla
+    -- "chemical") so this can't burn ordinary fuel and vanilla burners
+    -- can't burn Magmatic Core.
+    energy_source = {
+      type = "burner",
+      fuel_categories = { "sae-thermionic-fuel" },
+      fuel_inventory_size = 1,
+      effectivity = 1,
+      emissions_per_minute = { pollution = 0 },
+    },
+    -- Real energy draw, matching the 4MW peak electrical output
+    -- (scripts/thermionic-curve.lua's PEAK_POWER_W) so full-load fuel
+    -- energy in equals peak electricity out at 100% efficiency. Together
+    -- with Magmatic Core's fuel_value (800MJ, prototypes/item.lua) this
+    -- gives a 200s burn per core -- the same as vanilla's uranium fuel
+    -- cell. Together with specific_heat below it also sets the heating
+    -- rate (consumption / specific_heat = 10°/s at full draw).
+    consumption = "4MW",
+    -- Keep fuel rate and cooling rate genuinely independent (design doc
+    -- §9.2) -- without this, vanilla reactor behaviour throttles fuel
+    -- draw down as heat_buffer nears max_temperature, which would make
+    -- Ice's cooling *increase* fuel consumption by freeing up thermal
+    -- headroom, backwards from the intended relationship.
+    scale_energy_usage = false,
+    heat_buffer = {
+      -- max_temperature/max_transfer are the values the old heat-interface
+      -- entity used, still provisional (design doc §9.4). specific_heat
+      -- sets the heating *rate*: consumption / specific_heat = 4MW / 400kJ
+      -- = 10°/s at full draw (verified in-engine: heat_buffer really is a
+      -- linear ΔT = energy / specific_heat, to the degree). From cold
+      -- that's ~60s to the top of the optimal band (600) and ~80s to the
+      -- overheat threshold (800), and holding temperature needs 0.25 Ice/s
+      -- (scripts/thermionic-curve.lua's HEAT_REMOVED_PER_ICE_UNIT = 40) --
+      -- a rate a platform's asteroid capture can realistically sustain.
+      -- An earlier 80kJ value (50°/s) overheated in ~16s and needed
+      -- 1.25 Ice/s just to hold, against a 200s core burn -- far too
+      -- twitchy relative to how long one core lasts.
+      max_temperature = 2000,
+      specific_heat = "400kJ",
+      max_transfer = "10MW",
+      default_temperature = 0,
+      min_working_temperature = 0,
+      -- Rescaled from the original 3x3-footprint version's 12-point
+      -- pattern (3 points per side) to this entity's new 4x4 footprint (4
+      -- points per side, at the quarter/three-quarter positions along
+      -- each edge) -- same shape, one more point per side to match the
+      -- extra tile of edge length. NOT yet re-verified in-engine the way
+      -- the original 3x3 layout was (that one was confirmed against real
+      -- heat-pipe placement before being trusted) -- needs the same
+      -- verification pass after the footprint change.
+      connections = {
+        { position = { -1.5, -2 }, direction = defines.direction.north },
+        { position = { -0.5, -2 }, direction = defines.direction.north },
+        { position = { 0.5, -2 }, direction = defines.direction.north },
+        { position = { 1.5, -2 }, direction = defines.direction.north },
+        { position = { 2, -1.5 }, direction = defines.direction.east },
+        { position = { 2, -0.5 }, direction = defines.direction.east },
+        { position = { 2, 0.5 }, direction = defines.direction.east },
+        { position = { 2, 1.5 }, direction = defines.direction.east },
+        { position = { 1.5, 2 }, direction = defines.direction.south },
+        { position = { 0.5, 2 }, direction = defines.direction.south },
+        { position = { -0.5, 2 }, direction = defines.direction.south },
+        { position = { -1.5, 2 }, direction = defines.direction.south },
+        { position = { -2, 1.5 }, direction = defines.direction.west },
+        { position = { -2, 0.5 }, direction = defines.direction.west },
+        { position = { -2, -0.5 }, direction = defines.direction.west },
+        { position = { -2, -1.5 }, direction = defines.direction.west },
+      },
+    },
+    -- No neighbour_bonus -- stacking generators together isn't part of
+    -- this design (unlike vanilla nuclear reactors, which reward
+    -- clustering). Deliberately no meltdown_action either: framework.md
+    -- §4.5 rule 3 is "degrade, don't destroy" -- this building must never
+    -- explode, only run at reduced efficiency (scripts/thermionic-curve.lua's
+    -- MIN_EFFICIENCY floor).
+    neighbour_bonus = 0,
+  },
+  {
+    type = "electric-energy-interface",
+    name = "sae-thermionic-generator-power-interface",
+    -- Never player-placed and never independently selectable -- spawned/
+    -- despawned in lockstep with the visible generator by
+    -- scripts/thermionic-generator.lua, which sets destructible = false
+    -- and drives `power_production` every interval from the efficiency
+    -- curve. gui_mode = "admins" matches vanilla's own hidden
+    -- electric-energy-interface entities -- players never interact with
+    -- this directly.
+    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
+    hidden = true,
+    hidden_in_factoriopedia = true,
+    selectable_in_game = false,
+    gui_mode = "admins",
+    max_health = 300,
+    collision_box = { { 0, 0 }, { 0, 0 } },
+    selection_box = { { 0, 0 }, { 0, 0 } },
+    collision_mask = { layers = {} },
     energy_source = {
       type = "electric",
       usage_priority = "secondary-output",
@@ -113,33 +216,32 @@ data:extend({
       -- comment for the full justification (meaningfully below fusion's
       -- 50MW, per design doc §9.1/§9.4).
       output_flow_limit = "4MW",
+      -- Sized so one interval's peak output (4MW x 1s = 4MJ) fits without
+      -- clamping: scripts/thermionic-generator.lua zeroes this buffer each
+      -- interval and reads back what's left to measure exactly how much
+      -- the grid actually drew -- the signal for its idle guard (design
+      -- doc §9.1's "no idle waste"). 2x margin over the 4MJ minimum.
+      buffer_capacity = "8MJ",
+      -- Since `power_production` is entirely script-driven per interval
+      -- rather than a fixed declared rate, Factorio's own "not producing
+      -- at capacity" alert logic doesn't apply meaningfully here -- left
+      -- on, this rendered a permanent "no power" icon even while this
+      -- interface was correctly producing (confirmed via
+      -- prototypes:BaseEnergySource.render_no_power_icon, and by real
+      -- play -- this is what the flashing red icon turned out to be).
+      render_no_power_icon = false,
     },
-    -- electric-energy-interface's gui_mode defaults to "none" (no GUI opens
-    -- on click at all), which silently broke the on_gui_opened redirect in
-    -- scripts/thermionic-generator.lua that sends the player into the
-    -- hidden hopper's inventory to load fuel/coolant -- headless RCON
-    -- testing missed this because it forces player.opened directly,
-    -- bypassing the click-driven gui_mode gate entirely. Must be "all" so a
-    -- real player's click actually opens something for on_gui_opened to
-    -- catch.
-    gui_mode = "all",
   },
   {
     type = "container",
-    name = "sae-thermionic-generator-hopper",
-    -- Never player-placed (no item has this as place_result) and never
-    -- independently selectable -- spawned/despawned in lockstep with the
-    -- visible generator by scripts/thermionic-generator.lua, which also
-    -- sets destructible = false at runtime.
-    -- scripts/thermionic-generator.lua's on_gui_opened redirects the
-    -- player's GUI to open this hopper directly, so it needs a real
-    -- window title -- borrow the visible generator's own locale string
-    -- rather than adding a new one, same pattern as vanilla's
-    -- hidden-electric-energy-interface borrowing item-name.solar-panel.
-    localised_name = { "entity-name.sae-thermionic-generator" },
-    icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
-    icon_size = 64,
-    icon_mipmaps = 4,
+    name = "sae-thermionic-generator-coolant-tank",
+    -- Ice's own hidden storage -- see the file header for why this is a
+    -- separate entity rather than a slot on the reactor. Never opened
+    -- directly by a player -- unlike the earlier furnace-based fuel tank
+    -- this design replaced, nothing ever redirects a player's click here,
+    -- so this entity doesn't need a window title of its own; it's reached
+    -- only via the "Insert Ice" button scripts/thermionic-generator.lua
+    -- adds to the generator's own (now entirely native) info panel.
     flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
     hidden = true,
     hidden_in_factoriopedia = true,
@@ -148,6 +250,10 @@ data:extend({
     collision_box = { { 0, 0 }, { 0, 0 } },
     selection_box = { { 0, 0 }, { 0, 0 } },
     collision_mask = { layers = {} },
+    -- Two Ice stacks (100) = 400s of cooling at the 0.25/s equilibrium
+    -- draw, or 50s at the 2/s cap -- enough buffer that a brief gap in
+    -- asteroid capture doesn't immediately start a temperature climb. A
+    -- single slot (50 Ice) was 25s at the cap.
     inventory_size = 2,
     inventory_type = "with_filters_and_bar",
     picture = {
@@ -155,103 +261,6 @@ data:extend({
       priority = "extra-high",
       width = 1,
       height = 1,
-    },
-  },
-  {
-    type = "heat-interface",
-    name = "sae-thermionic-generator-heat-interface",
-    -- Never player-placed and never independently selectable -- spawned/
-    -- despawned in lockstep with the visible generator by
-    -- scripts/thermionic-generator.lua, exactly mirroring the hidden
-    -- hopper above. gui_mode = "admins" matches vanilla's own
-    -- heat-interface entity (base/prototypes/entity/entities.lua) --
-    -- players never interact with this directly, it only needs to
-    -- physically exist so nearby heat pipes can connect to it.
-    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },
-    hidden = true,
-    hidden_in_factoriopedia = true,
-    selectable_in_game = false,
-    gui_mode = "admins",
-    max_health = 300,
-    -- collision_box deliberately matches the visible generator's own real
-    -- footprint (not a degenerate {0,0} box the way the hidden hopper
-    -- above uses) -- verified in-engine that a heat-interface with a
-    -- zero-size collision_box silently drops any heat_buffer connection
-    -- whose `position` isn't exactly {0,0}, which would make the edge
-    -- connections below inert. collision_mask stays empty so this never
-    -- actually blocks anything physically -- it only exists to give the
-    -- connection math a real footprint to anchor to.
-    collision_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
-    selection_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
-    collision_mask = { layers = {} },
-    heat_buffer = {
-      -- Provisional placeholders (design doc §9.4), same tone as
-      -- scripts/thermionic-curve.lua's own balance constants -- not
-      -- final-tuned. Chosen to be a meaningful heat sink, not a trivial
-      -- instant dump (that would make Ice pointless): max_temperature
-      -- comfortably covers the abstract efficiency curve's overheat range
-      -- once mapped to Celsius (see
-      -- scripts/thermionic-curve.lua's abstract_temperature_to_heat_buffer_celsius),
-      -- and max_transfer (10MW) is a real throughput cap, not vanilla's
-      -- effectively-unlimited 10GW, so "hotter drains faster" is a genuine
-      -- consequence of temperature-gradient-driven conduction against a
-      -- finite pipe, not a free pass.
-      --
-      -- specific_heat = 3MJ is *higher* than vanilla's own heat-pipe (1MJ)
-      -- -- deliberately, and re-verified in-engine (headless RCON A/B
-      -- test, see the commit that introduced this value): at 1MJ (matching
-      -- a single heat-pipe segment's own thermal mass 1:1), even a handful
-      -- of directly-touching heat pipes made this interface's own thermal
-      -- inertia negligible next to the attached network's, so the network
-      -- dominated the exchange and held the generator at full efficiency
-      -- indefinitely on fuel alone -- heat pipes alone fully solved
-      -- cooling with no meaningful investment, which contradicts the
-      -- design intent (design doc §9.2/§9.3: heat pipes are a genuine but
-      -- *additional* cooling avenue, not a substitute that trivialises
-      -- Ice). Raising specific_heat makes the interface's own thermal mass
-      -- dominant relative to a small/partial pipe attachment (touching
-      -- only one or two of the twelve connection points below), so a
-      -- minimal hookup barely helps; only wiring up most/all of the
-      -- generator's exposed sides (using most/all twelve connection
-      -- points) meaningfully slows the temperature climb -- and even then,
-      -- it delays overheat rather than preventing it outright, since
-      -- nothing downstream of this interface actually consumes/dissipates
-      -- the heat it receives (plain heat pipes only redistribute it, they
-      -- don't remove it) -- so a heat-pipe hookup, however large, is
-      -- always a finite buffer, never a permanent substitute for Ice's
-      -- real per-interval heat removal (scripts/thermionic-curve.lua's
-      -- M.heat_removed_by_ice).
-      max_temperature = 2000,
-      specific_heat = "3MJ",
-      max_transfer = "10MW",
-      default_temperature = 0,
-      min_working_temperature = 0,
-      -- Connection points cover the edges of the *visible* generator's
-      -- real 3x3-tile footprint (verified in-engine: tile_width/
-      -- tile_height = 3, centered on the shared spawn position), not a
-      -- single position = {0,0} point the way vanilla's own tiny 1-tile
-      -- heat-interface does -- {0,0} alone would place the only
-      -- connection point on the generator's own center tile, which the
-      -- visible generator's collision box already occupies, so no real
-      -- heat pipe could ever physically reach it. This instead lets a
-      -- heat pipe connect from any tile touching any of the generator's
-      -- four sides, mirroring how vanilla's own (5-wide) reactor lays its
-      -- connection points around its actual footprint rather than at a
-      -- single central point.
-      connections = {
-        { position = { -1, -1 }, direction = defines.direction.north },
-        { position = { 0, -1 }, direction = defines.direction.north },
-        { position = { 1, -1 }, direction = defines.direction.north },
-        { position = { 1, -1 }, direction = defines.direction.east },
-        { position = { 1, 0 }, direction = defines.direction.east },
-        { position = { 1, 1 }, direction = defines.direction.east },
-        { position = { 1, 1 }, direction = defines.direction.south },
-        { position = { 0, 1 }, direction = defines.direction.south },
-        { position = { -1, 1 }, direction = defines.direction.south },
-        { position = { -1, 1 }, direction = defines.direction.west },
-        { position = { -1, 0 }, direction = defines.direction.west },
-        { position = { -1, -1 }, direction = defines.direction.west },
-      },
     },
   },
 })
