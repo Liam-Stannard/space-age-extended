@@ -7,6 +7,7 @@ data:extend({
     name = "sae-metallurgical-recovery",
     icon = "__space-age-extended__/graphics/technology/metallurgical-recovery.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-scrap-remelting" },
       { type = "unlock-recipe", recipe = "sae-separate-molten-scrap" },
@@ -27,6 +28,7 @@ data:extend({
     name = "sae-advanced-material-recovery",
     icon = "__space-age-extended__/graphics/technology/advanced-material-recovery.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-non-ferrous-separation" },
       { type = "unlock-recipe", recipe = "sae-holmium-extraction" },
@@ -46,6 +48,7 @@ data:extend({
     name = "sae-electromagnetic-metallurgy",
     icon = "__space-age-extended__/graphics/technology/electromagnetic-metallurgy.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-copper-foil" },
       { type = "unlock-recipe", recipe = "sae-electromagnetic-electronic-circuit" },
@@ -69,6 +72,7 @@ data:extend({
     name = "sae-integrated-electronics",
     icon = "__space-age-extended__/graphics/technology/integrated-electronics.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-electromagnetic-processing-unit" },
     },
@@ -87,6 +91,7 @@ data:extend({
     name = "sae-resonant-electromagnetics",
     icon = "__space-age-extended__/graphics/technology/resonant-electromagnetics.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-catalyst-rod" },
       { type = "unlock-recipe", recipe = "sae-resonant-circuit" },
@@ -115,6 +120,7 @@ data:extend({
     name = "sae-thermionic-power",
     icon = "__space-age-extended__/graphics/technology/thermionic-power.png",
     icon_size = 256,
+    icon_mipmaps = 4,
     effects = {
       { type = "unlock-recipe", recipe = "sae-thermionic-generator" },
     },
