@@ -73,6 +73,15 @@ data:extend({
       -- 50MW, per design doc §9.1/§9.4).
       output_flow_limit = "4MW",
     },
+    -- electric-energy-interface's gui_mode defaults to "none" (no GUI opens
+    -- on click at all), which silently broke the on_gui_opened redirect in
+    -- scripts/thermionic-generator.lua that sends the player into the
+    -- hidden hopper's inventory to load fuel/coolant -- headless RCON
+    -- testing missed this because it forces player.opened directly,
+    -- bypassing the click-driven gui_mode gate entirely. Must be "all" so a
+    -- real player's click actually opens something for on_gui_opened to
+    -- catch.
+    gui_mode = "all",
   },
   {
     type = "container",
