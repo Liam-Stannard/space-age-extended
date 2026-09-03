@@ -709,7 +709,7 @@ Measured on a headless server over RCON, not derived by hand:
 - Whether tier 1 at 90 MJ/core is *expensive* or *impossible* in play: 100 MW needs roughly 11 chemical plants and 67 cores/min. If it reads as impossible, raise tier 1 toward 150 MJ/core before touching anything else — the ratio between tiers (about 1 : 6.7) is the thing to preserve, not the absolute numbers.
 - The radiator ratio (currently ~10 plants per quench plant) has not been playtested for how it *feels* to lay out.
 - Tier 3's asteroid-derived resource, deferred to the endgame design.
-- Turbine and vapour art are placeholders derived from vanilla's steam turbine and steam.
+- The turbine's art is derived from vanilla's steam turbine, recoloured to a cryogenic teal (`tools/recolour-turbine.py`); the Quench Vapour fluid icon is still a recoloured vanilla steam drop.
 
 ---
 

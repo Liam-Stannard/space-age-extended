@@ -184,9 +184,18 @@ was confirmed against vanilla's own gravity-0 `space-science-pack`, which
 behaves the same way on Nauvis. The vacuum-only radiative recipe is correct as
 written — do not "fix" it.
 
-**Still owed:** a client playtest (nothing here has been played), and real art
-— the turbine entity/item and the Quench Vapour fluid icon are placeholders
-derived from vanilla's steam turbine and steam.
+**Art:** the turbine's sheets and icon are this mod's own, built from
+vanilla's steam turbine by `tools/recolour-turbine.py`. Not a `tint` on
+vanilla's files -- a tint multiplies, and vanilla's turbine is already brass
+and rust (saturated pixels at hue 15-45 degrees, ~16% of the opaque area), so
+tinting it warm changed almost nothing and muddied the greys. The script
+rotates just those accents to a cryogenic teal at their original lightness and
+leaves neutral metal alone, so all of vanilla's shading survives. Teal because
+the building is the *cold* half of the mechanic; orange would have been
+indistinguishable from the source sprite. Shadows are copied unrecoloured.
+
+**Still owed:** a client playtest (nothing here has been played), and the
+Quench Vapour fluid icon, still a recoloured vanilla steam drop.
 
 ## Not started yet
 

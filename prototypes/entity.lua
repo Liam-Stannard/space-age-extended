@@ -101,18 +101,32 @@ data:extend({
       usage_priority = "secondary-output",
     },
     two_direction_only = true,
-    -- Visuals: vanilla steam turbine's own sprite files, tinted warm so the
-    -- building doesn't read as a vanilla steam turbine on the platform. This
-    -- is a placeholder pending real art (graphics/icon-prompts.md) -- the
-    -- tint value in particular needs in-client eyes, since tinting multiplies
-    -- and can read muddy on an already-dark sprite. Frame counts, shifts and
-    -- scales are vanilla's, with util.by_pixel shifts pre-divided by 32.
+    -- Visuals: this mod's own recoloured sheets, built from vanilla's steam
+    -- turbine by tools/recolour-turbine.py. Deliberately not a `tint` on
+    -- vanilla's files: a tint multiplies, and vanilla's turbine is already
+    -- brass and rust (its saturated pixels sit at hue 15-45 degrees, only
+    -- ~16% of the opaque area), so a warm tint changed almost nothing and
+    -- muddied the greys. The script instead rotates just those warm accents
+    -- to a cryogenic teal at their original lightness, leaving the neutral
+    -- metal alone, so every bit of vanilla's shading and ambient occlusion
+    -- survives and only the hue reads differently.
+    --
+    -- Teal rather than the mod's magma orange on purpose: this building is
+    -- the *cold* half of the mechanic (Ice, and Fluoroketone at -150C), and
+    -- orange would have been indistinguishable from the sprite it started
+    -- from. Still placeholder-grade in the sense that it's derived art, not
+    -- drawn art, but it now reads as its own machine on a platform.
+    --
+    -- Shadows are pure alpha silhouettes, so the script copies them across
+    -- unrecoloured rather than leaving the entity straddling two mods'
+    -- directories. Frame counts, shifts and scales are vanilla's, with
+    -- util.by_pixel shifts pre-divided by 32.
     pictures = {
       north = {
         animation = {
           layers = {
             {
-              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-V.png",
+              filename = "__space-age-extended__/graphics/entity/quench-turbine/quench-turbine-V.png",
               width = 217,
               height = 374,
               frame_count = 8,
@@ -120,10 +134,9 @@ data:extend({
               shift = { 0.148438, 0.0 },
               run_mode = "backward",
               scale = 0.5,
-              tint = { r = 1.0, g = 0.82, b = 0.62 },
             },
             {
-              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-V-shadow.png",
+              filename = "__space-age-extended__/graphics/entity/quench-turbine/quench-turbine-V-shadow.png",
               width = 302,
               height = 260,
               repeat_count = 8,
@@ -140,7 +153,7 @@ data:extend({
         animation = {
           layers = {
             {
-              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-H.png",
+              filename = "__space-age-extended__/graphics/entity/quench-turbine/quench-turbine-H.png",
               width = 320,
               height = 245,
               frame_count = 8,
@@ -148,10 +161,9 @@ data:extend({
               shift = { 0.0, -0.085938 },
               run_mode = "backward",
               scale = 0.5,
-              tint = { r = 1.0, g = 0.82, b = 0.62 },
             },
             {
-              filename = "__base__/graphics/entity/steam-turbine/steam-turbine-H-shadow.png",
+              filename = "__space-age-extended__/graphics/entity/quench-turbine/quench-turbine-H-shadow.png",
               width = 435,
               height = 150,
               repeat_count = 8,
