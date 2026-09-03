@@ -642,14 +642,14 @@ It should **not** compete with fusion on density — fusion remains the endgame 
 
 ### Operating inputs — two independent streams
 
-- **Magmatic Core** — fuel, shipped up from Vulcanus. Determines power output.
+- **Magmatic Core** — fuel, shipped up from Vulcanus. Determines power output. A real burner fuel item in its own fuel category (so nothing else burns it and it burns nowhere else), consumed by the generator exactly as a nuclear reactor consumes a fuel cell — and sized to last exactly as long as one: 800MJ against the generator's 4MW draw is 200 seconds per core, the uranium fuel cell's own figure (8GJ at 40MW).
 - **Ice** — coolant, gathered locally from oxide asteroids. Determines how much of that output survives the efficiency curve.
 
 These are **not** combined into a fuel item. They are consumed separately by the running generator, which is what makes the thermal mechanic tunable: the player controls fuel rate and cooling rate independently.
 
 ### Output
 
-**Electricity (primary) plus rejected heat via a real heat-pipe interface (secondary — a cooling avenue, not an independent power source).** Earlier drafts of this design excluded any heat-pipe interface, reasoning that a generator emitting heat could be shipped to Aquilo and trivialize that planet's defining challenge. That concern doesn't hold: the Thermionic Generator can only ever be built on a space platform (surface-gated via `surface_conditions`), and Factorio's heat-pipe network is strictly surface-local — a platform's heat pipes can never connect into a planet's own heat network, including while in Aquilo's orbit. The heat-pipe interface is therefore exposed as an additional, optional cooling avenue alongside Ice: connecting real heat pipes lets a thermal bus pull heat away, and because heat conduction scales with temperature difference, a hotter/less-efficient generator drains faster automatically — this falls directly out of real heat-network physics, not a separate hand-authored mechanic. This does not change the generator's electricity-only *power* output; heat exposure draws down the same internal temperature the efficiency curve already tracks, it isn't a second, independent power channel.
+**Electricity (primary) plus rejected heat via a real heat-pipe interface (secondary — a cooling avenue, not an independent power source).** Earlier drafts of this design excluded any heat-pipe interface, reasoning that a generator emitting heat could be shipped to Aquilo and trivialize that planet's defining challenge. That concern doesn't hold: the Thermionic Generator can only ever be built on a space platform (surface-gated via `surface_conditions`), and Factorio's heat-pipe network is strictly surface-local — a platform's heat pipes can never connect into a planet's own heat network, including while in Aquilo's orbit. The heat-pipe interface is therefore exposed as an additional, optional cooling avenue alongside Ice: connecting real heat pipes lets a thermal bus pull heat away, and because heat conduction scales with temperature difference, a hotter/less-efficient generator drains faster automatically — this falls directly out of real heat-network physics, not a separate hand-authored mechanic. (The generator is itself a real `reactor`-type entity, so this is literally its own heat buffer and connection points: the temperature the efficiency curve reads and the temperature a heat pipe sees are the same number. Electricity is injected by a paired hidden interface, since a reactor cannot emit power itself — the same split vanilla nuclear makes between reactor and turbine, collapsed into one building.) This does not change the generator's electricity-only *power* output; heat exposure draws down the same internal temperature the efficiency curve already tracks, it isn't a second, independent power channel.
 
 ## 9.3 The thermal mechanic
 
@@ -662,6 +662,7 @@ Nothing in vanilla has a temperature-dependent efficiency curve for a generator.
 3. As temperature rises above the optimal band, efficiency **declines gradually**.
 4. Past an **overheat threshold**, output drops **sharply** — the machine keeps running but is barely worth its footprint until it cools.
 5. Equilibrium temperature is a function of load versus total cooling throughput (ice plus whatever a connected heat-pipe network draws).
+6. When nothing on the grid is drawing power, the generator **pauses** rather than burning fuel into nothing — the "no idle waste" advantage §9.1 claims over nuclear, made real. It resumes the moment demand returns; standby loads below ~5% of peak are covered without burning fuel at all. Fuel rate is otherwise fixed while running — it is deliberately *not* throttled by demand or by temperature, keeping fuel and cooling the two independent player-controlled inputs of §9.2.
 
 ### Why this shape
 
@@ -682,8 +683,8 @@ This makes the Vulcanus leg **permanently load-bearing**. Magmatic Core stops be
 - Magmatic Core burn rate versus realistic Vulcanus export capacity.
 - Footprint versus an equivalent nuclear setup (should be smaller, or the earlier availability is its only advantage).
 - Whether an orbital production step should be added later. Currently the platform imports Magmatic Cores and catches ice with no manufacturing step of its own; the location constraint is already real, since Magmatic Core can only be made on Vulcanus.
-- The heat-interface's `heat_buffer` numbers (`max_temperature` 2000, `specific_heat` 3MJ, `max_transfer` 10MW) are provisional placeholders, same tone as everything else in this list — chosen to be a meaningful heat sink a player has to actually build infrastructure for, not a trivial instant dump that would make Ice pointless, but not tuned against any real target throughput. `specific_heat` was raised from an initial 1MJ after a headless in-engine A/B test showed 1MJ let even a minimal handful of directly-touching heat pipes fully solve cooling and hold a fuel-only, zero-ice generator at full efficiency indefinitely — the opposite of the intended "heat pipes are a genuine but additional avenue, not a substitute for Ice" design. At 3MJ, a small/partial pipe hookup (touching only a few of the interface's twelve connection points) is only marginally helpful, and even a full hookup (all twelve points, still just directly-touching pipes, no distribution network) only delays overheat rather than preventing it, since nothing downstream of the interface actually dissipates the heat it receives — it only redistributes it, so any heat-pipe hookup is a finite buffer, never a permanent substitute for Ice's real per-interval removal. Independently measured (headless in-engine, fuel-only, zero ice): the maximum possible 12-point hookup holds full power for roughly ~50–55s before efficiency starts declining, then reaches MIN_EFFICIENCY (fully floored) by roughly ~100–105s total; with no heat pipes at all, the same fuel-only generator floors in roughly ~20–22s. These are approximate and illustrative, not exact guarantees — they will shift if `specific_heat`/`max_transfer` or the abstract curve's own constants are retuned later — but they're the actual measured numbers for the current constants, superseding this rebalance's own original estimate.
-- The abstract-temperature-to-Celsius mapping used to drive that heat-interface (`scripts/thermionic-curve.lua`'s `abstract_temperature_to_heat_buffer_celsius`, currently a simple 1:1 clamp) is likewise provisional — it was picked so the existing curve's own landmarks (the 600 optimal-band edge, the 800 overheat threshold) read as plausible real degrees Celsius, not against any measured target.
+- The generator's `heat_buffer` numbers (`max_temperature` 2000, `specific_heat` 400kJ, `max_transfer` 10MW) are provisional. `specific_heat` against the 4MW fuel draw sets the heating rate at 10°/s (verified in-engine as exactly linear, ΔT = energy / specific_heat): roughly 60s from cold to the top of the optimal band, 80s to the overheat threshold, and 0.25 Ice/s to hold temperature — a rate a platform's asteroid capture can realistically sustain. An earlier 80kJ value (50°/s: ~16s to overheat, 1.25 Ice/s to hold) was far too twitchy against a 200s core. The heat-pipe channel remains a finite buffer, not a substitute for Ice — plain pipes redistribute heat without dissipating it — but its contribution at these numbers has not been re-measured since the reactor rework; the earlier 12-point measurements (~50–55s to decline, ~100–105s to floor, against the old 3MJ/50°/s figures) no longer apply and the 4x4 footprint's 16-point connection layout has not yet been verified against real pipe placement.
+- Temperature is real degrees on a real reactor `heat_buffer` — there is no longer a separate abstract scale or a mapping to keep in sync. The curve's landmarks (600 optimal-band edge, 800 overheat threshold) are the literal temperatures a connected heat pipe sees.
 
 **Note for future trees:** this generator is now a real source of usable rejected heat on any platform running it, in addition to electricity. Per `framework.md` §4.5 rule 5 ("never relieve two of the five shared resources at once"), any future platform capability that wants to consume heat as an input should treat this generator's waste heat as an existing baseline already present on Power-tree platforms, not a resource this generator is competing to provide — flagged here for whoever designs the Thrust/Structure/Asteroid/Defence trees.
 
@@ -1004,41 +1005,42 @@ Three times over — chaotic Scrap composition, surplus Molten Iron, spent rods 
 - ~~Should Holmium Extraction require Sulfuric Acid?~~ **No.**
 - ~~How much Holmium should be recovered?~~ **A deliberate trickle; supplementary only.**
 - ~~Are the circuit recipes alternatives or parallel options?~~ **Alt recipes, toggled per-machine, no separate unlock tech.**
+- ~~How much Calcite is consumed?~~ **2 per 25 Scrap (per 100 Molten Scrap).** Well above lava-casting's 1 per 250 molten metal, so the import is still real, but no longer dwarfing the metal it fluxes (an earlier 10 did).
+- ~~Is remelting more or less material-efficient than recycling?~~ **Less, deliberately.** ~0.24 iron + 0.15 copper plate per Scrap against recycling's ~0.6 iron-equivalent plus circuits/LDS. Its niche is *deterministic bulk plate* for a base drowning in gears, not a recycling replacement. (An earlier 50-molten-scrap version was ~5x below recycling on iron alone — too low to serve even that niche.)
+- ~~Copper Foil's copper-equivalent value~~ **1 Foil = 15 molten copper = 1.5 copper plate = exactly the 3 Copper Cable it replaces.** Electronic Circuit is value-neutral, Advanced gets a ~25% copper edge, Processing Unit carries only the deliberate iron discount of §7.3. (An earlier 10-foil-per-craft version made each foil worth 0.15 plate — a ~10x discount that made the alt recipes universally dominant.)
+- ~~Contaminated Sulfuric Acid volume vs. Processing Unit demand~~ **Runs at ~3x surplus** — 15 acid recovered per Resonant Circuit against 5 consumed per Processing Unit.
+- Holmium yield, made concrete: **~0.016 ore per Scrap** via a 90/10 non-ferrous split, just above recycling's 1% — a genuine supplement. (An earlier 95/5 split landed at ~0.008, *below* recycling, so the path added nothing.)
 
 ### Still open
 
 **Scrap Remelting**
 
-- How much Scrap produces one unit of Molten Scrap?
-- How much Calcite is consumed? (This sets the whole chain's import burden.)
-- Is the process more or less material-efficient than recycling?
 - Should remelting produce any waste?
+- Whether 25 Scrap → 100 Molten Scrap is the right *absolute* throughput once real Fulgora scrap rates are playtested — the ratio to recycling above is settled, the volume is not.
 
 **Ferrous / Non-Ferrous separation**
 
 - Should the split be deterministic?
 - Should there be a small waste stream?
-- Exactly how large should the iron surplus be? Large enough to be a real problem, small enough not to be crippling.
+- Exactly how large the iron surplus ends up. With Copper Foil at one per craft, copper is now the chain's bottleneck and the iron surplus is correspondingly larger — is it "a real problem" or crippling?
 
 **Copper Foil**
 
-- Copper-equivalent value (the single tunable for all three circuit alt recipes).
-- Molten Iron ratio — must stay heavily copper-skewed.
+- Molten Iron ratio — 15:1 copper-skewed today; must stay so.
 - Should the Foundry's existing productivity apply normally?
 
 **Circuit recipes**
 
-Compare against vanilla on raw resource consumption, machine count, power consumption, intermediate item count, throughput, and space. The integrated chain should be **strong in the right circumstances**, not universally optimal.
+Compare against vanilla on raw resource consumption, machine count, power consumption, intermediate item count, throughput, and space. The integrated chain should be **strong in the right circumstances**, not universally optimal. Copper value is now neutral, so this comparison is about the *molten-iron* substitution and machine count, not copper.
 
 **Capstone**
 
-- Catalyst Rod cost vs. how many crafts it should feel worth.
-- Magmatic Core lava/tungsten volumes.
-- Contaminated Sulfuric Acid volume vs. Processing Unit demand — should purification roughly close the loop, or run at a deficit?
+- Catalyst Rod cost (1 Holmium Ore + 2 Foil + 5 Iron Plate) vs. how many crafts it should feel worth — cheap in ingredients, gated purely by holmium.
+- Magmatic Core lava/tungsten volumes (500 lava + 5 Tungsten Plate) — unchanged and unevaluated. Now also the ongoing fuel: one generator burns ~18 cores/hour, i.e. ~18 holmium ore + ~360 tungsten ore per hour.
 
 **Thermionic Generator**
 
-See Section 9.4 for the full list — temperature band, overheat threshold, gradient steepness, ice per unit heat, peak MW versus fusion, footprint, and whether an orbital production step is added later.
+See Section 9.4 — the temperature/heat-pipe numbers are reasoned and engine-verified but not yet playtested, the idle-guard threshold (5% of peak served unfuelled) needs a call on whether it's a feature or too generous, and peak MW versus footprint (4MW in 4x4, no water/turbines — per tile about half a full nuclear setup) may want raising to 6MW if it feels weak.
 
 ---
 
