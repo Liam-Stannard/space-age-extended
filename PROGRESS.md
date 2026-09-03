@@ -84,9 +84,9 @@ fast-forward into `master`, push, delete the branch.
      "Insert Ice" button on a small `player.gui.relative` panel anchored
      to the reactor's own native window. `scale_energy_usage = false`
      keeps fuel rate independent of heat; an idle guard in
-     `step_generator` pauses the reactor (`disabled_by_script`) when the
-     grid draws <5% of full output, restoring §9.1's "no idle waste".
-     Footprint 4x4.
+     `step_generator` paused the reactor (`disabled_by_script`) when the
+     grid drew <5% of full output (removed in the playtest-feedback round
+     below — it's a thermal reaction, it shouldn't idle). Footprint 4x4.
 
   Two engine facts learned the hard way, both now commented at the site:
   `LuaEntity.active` is read-only (use `disabled_by_script`), and
@@ -96,8 +96,8 @@ fast-forward into `master`, push, delete the branch.
 
   Verified headlessly (see workflow below): real ignition/`no_fuel`
   status, 200s burn (to the MJ), 10.0°/s heating (at the then-400kJ
-  `specific_heat`), Ice cooling to the
-  degree, steady idle (fuel byte-identical across samples) and resume on
+  `specific_heat`), Ice cooling to the degree, the since-removed idle
+  guard's steady idle (fuel byte-identical across samples) and resume on
   a 300kW load, teardown. **Not yet user-playtested** in this form — the
   relative-GUI panel and the rescaled 16-point heat-pipe connection
   layout for the 4x4 footprint need in-client eyes.
@@ -122,6 +122,13 @@ fast-forward into `master`, push, delete the branch.
      can. Feedback verbatim: "it should heat up a lot faster — so the
      thermal block is useful"; at 400kJ Ice trivially held it and pipes
      were pointless.
+  2. **Idle guard removed.** Feedback: "it shouldn't idle when there is
+     no power draw, this is a thermal reaction." `step_generator` no
+     longer measures demand or toggles `disabled_by_script`/
+     `custom_status`; it just reads the burner for fuel and writes the
+     curve's output. The power interface's `buffer_capacity` (only there
+     for the demand measurement) and the `status-idle` locale string are
+     gone; design doc §9.1/§9.3/§16 no longer claim "no idle waste".
 
   Engine-verified: data stage only (`tools/check-data-stage.sh`). Needs
   in-client eyes: whether a heat-pipe block actually holds the optimal

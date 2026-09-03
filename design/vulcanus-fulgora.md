@@ -628,7 +628,7 @@ The hole is the stretch between **"solar stops working"** and **"you have reache
 
 **The Thermionic Generator fills exactly that gap.** It arrives before Aquilo and solves the problem that currently blocks players from reaching it.
 
-It should **not** compete with fusion on density — fusion remains the endgame king. Its advantages are availability, no idle waste, and no water requirement; its cost is a lower peak output and an active cooling requirement.
+It should **not** compete with fusion on density — fusion remains the endgame king. Its advantages are availability before Aquilo, no water requirement, and a temperature-dependent efficiency curve that is a tunable rather than a fixed system; its cost is a lower peak output and an active cooling requirement. It is a thermal reaction and burns fuel like a reactor whether or not the grid draws — it does *not* avoid nuclear's idle-burn weakness.
 
 ## 9.2 Thermionic Generator
 
@@ -662,7 +662,7 @@ Nothing in vanilla has a temperature-dependent efficiency curve for a generator.
 3. As temperature rises above the optimal band, efficiency **declines gradually**.
 4. Past an **overheat threshold**, output drops **sharply** — the machine keeps running but is barely worth its footprint until it cools.
 5. Equilibrium temperature is a function of load versus total cooling throughput (ice plus whatever a connected heat-pipe network draws).
-6. When nothing on the grid is drawing power, the generator **pauses** rather than burning fuel into nothing — the "no idle waste" advantage §9.1 claims over nuclear, made real. It resumes the moment demand returns; standby loads below ~5% of peak are covered without burning fuel at all. Fuel rate is otherwise fixed while running — it is deliberately *not* throttled by demand or by temperature, keeping fuel and cooling the two independent player-controlled inputs of §9.2.
+6. Fuel rate is fixed while running — it is deliberately *not* throttled by demand or by temperature, keeping fuel and cooling the two independent player-controlled inputs of §9.2. It is a thermal reaction: like a nuclear reactor it burns whether or not anything draws power.
 
 ### Why this shape
 
@@ -1040,7 +1040,7 @@ Compare against vanilla on raw resource consumption, machine count, power consum
 
 **Thermionic Generator**
 
-See Section 9.4 — the temperature/heat-pipe numbers are reasoned and engine-verified but not yet playtested, the idle-guard threshold (5% of peak served unfuelled) needs a call on whether it's a feature or too generous, and peak MW versus footprint (4MW in 4x4, no water/turbines — per tile about half a full nuclear setup) may want raising to 6MW if it feels weak.
+See Section 9.4 — the temperature/heat-pipe numbers are reasoned and engine-verified but not yet playtested, and peak MW versus footprint (4MW in 4x4, no water/turbines — per tile about half a full nuclear setup) may want raising to 6MW if it feels weak.
 
 ---
 

@@ -51,19 +51,6 @@ local GENERATOR_NAME = "sae-thermionic-generator"
 local POWER_INTERFACE_NAME = "sae-thermionic-generator-power-interface"
 local COOLANT_TANK_NAME = "sae-thermionic-generator-coolant-tank"
 
--- Idle guard (see step_generator): if the grid drew less than
--- IDLE_DEMAND_THRESHOLD of *full* output last interval, the reactor is
--- paused rather than burning fuel into nothing. While paused,
--- IDLE_PROBE_FRACTION of full output is still offered so returning demand
--- can register -- the probe must exceed the threshold, or a real load
--- could never draw enough to trip it. Consequence, deliberate: loads
--- under the threshold (~200kW at the 4MW peak -- a docked platform's
--- standby draw) are served by the unfuelled probe indefinitely. That's
--- exactly the standby case §9.1 says shouldn't cost a core, and it's
--- bounded at 5% of peak.
-local IDLE_DEMAND_THRESHOLD = 0.05
-local IDLE_PROBE_FRACTION = 0.10
-
 local INFO_FRAME_NAME = "sae_thermionic_generator_info"
 local ICE_INSERT_BUTTON_NAME = "sae_thermionic_generator_insert_ice"
 
@@ -434,7 +421,13 @@ end
 --- really accumulates heat from that (design doc §9.3 point 1), so this
 --- only has two jobs left: apply Ice's cooling directly to the reactor's
 --- real temperature, and drive the paired power interface's electrical
---- output from the resulting efficiency.
+--- output from the resulting efficiency. Nothing here looks at grid
+--- demand: this is a thermal reaction, and like vanilla's reactor it
+--- burns fuel at its fixed rate whether or not anything draws power
+--- (design doc §9.3 point 6). An earlier idle guard that paused the
+--- reactor via `disabled_by_script` when demand fell below 5% of peak was
+--- removed on playtest feedback -- it made the generator idle when there
+--- was no draw, which isn't what a thermal reaction does.
 local function step_generator(link)
   local ice_inventory = link.coolant_tank.get_inventory(defines.inventory.chest)
   local ice_available = ice_inventory.get_item_count("ice")
@@ -465,72 +458,23 @@ local function step_generator(link)
   local power_interface = link.power_interface
 
   -- Fuel availability is read directly from the burner rather than via
-  -- `status` -- the idle guard below leaves status reading "disabled by
-  -- script" even with a full fuel slot, and a paused-but-fuelled
-  -- generator must still advertise its output (see IDLE_PROBE_FRACTION).
+  -- `status` -- it's the direct question "is this reactor heating right
+  -- now?", independent of whatever wording `status` happens to carry.
+  -- Fuel-starved means no output at all, regardless of temperature
+  -- (design doc §9.2, "determines power output").
   local burner = generator.burner
   local has_fuel = burner.remaining_burning_fuel > 0
     or not generator.get_inventory(defines.inventory.fuel).is_empty()
 
-  -- Idle guard (design doc §9.1's "no idle waste" advantage over nuclear).
-  -- `scale_energy_usage = false` on the prototype keeps fuel draw
-  -- independent of *heat* -- but on its own it would also burn a core
-  -- every 200s with nothing drawing power, exactly the docked-platform
-  -- waste §9.1 holds against fuel cells. So measure real demand: the
-  -- power interface's buffer was zeroed last interval, so whatever the
-  -- engine added since (last interval's power_production x 1s) minus
-  -- what's still sitting there is what the grid actually took -- exact,
-  -- since the buffer (prototypes/entity.lua, 8MJ) can't clamp within one
-  -- interval at <=4MW. Pause the reactor when (almost) nothing was drawn;
-  -- resume when demand returns. Deliberately on/off, not proportional --
-  -- fuel rate is meant to be player-controlled (§9.2), not
-  -- demand-throttled; this only stops it running into nothing.
-  local interval_seconds = UPDATE_INTERVAL / 60
-  local load_fraction = has_fuel and 1 or 0
-  local full_watts = curve.power_output(load_fraction, next_temperature)
+  local power_watts = curve.power_output(has_fuel and 1 or 0, next_temperature)
 
-  -- `offered` is what was actually put on the grid last interval (full
-  -- output, or just the probe while idle) -- that's what the buffer
-  -- received, so it's the right baseline for `drawn`. But the *decision*
-  -- compares `drawn` against what full output would have been, not
-  -- against `offered`: measured relative to a 40kW probe, a platform
-  -- hub's few-kW standby draw read as ">5% demand" and flipped the
-  -- reactor back to full burn every other interval (caught in the
-  -- headless test as fuel still creeping down while "idle"). Relative to
-  -- the full 4MJ/interval, that same standby draw is ~0.1% and stays
-  -- idle, while a real 300kW consumer is 7.5% and resumes.
-  local offered = (link.last_power_production or 0) * interval_seconds
-  local drawn = offered - power_interface.energy
-  power_interface.energy = 0
-  local demand_fraction = 0
-  if full_watts > 0 then
-    demand_fraction = drawn / (full_watts * interval_seconds)
-  end
-  local idle = has_fuel and demand_fraction < IDLE_DEMAND_THRESHOLD
-  -- `disabled_by_script`, not `active` -- `active` is read-only in the 2.x
-  -- API (verified against runtime-api.json; writing it crashed the
-  -- headless test). A reactor is an UpdatableEntity, so it honours this.
-  generator.disabled_by_script = idle
-  if idle then
-    generator.custom_status = {
-      diode = defines.entity_status_diode.yellow,
-      label = { "sae-thermionic-generator-gui.status-idle" },
-    }
-  else
-    generator.custom_status = nil
-  end
-
-  local power_watts = full_watts
-  if idle then
-    power_watts = full_watts * IDLE_PROBE_FRACTION
-  end
   -- `power_production` is joules per *tick*, not watts (verified in-engine:
   -- writing 40,000 filled the buffer by exactly 2,400,000J over 60 ticks).
-  -- Everything else in this file -- the curve, `offered` above, the info
-  -- panel -- works in watts, so `link.last_power_production` keeps the
-  -- watt figure and only the write here converts. An earlier version
-  -- wrote watts directly, i.e. 60x too much, silently masked from the
-  -- grid by the prototype's 4MW output_flow_limit.
+  -- Everything else in this file -- the curve, the info panel -- works in
+  -- watts, so `link.last_power_production` keeps the watt figure and only
+  -- the write here converts. An earlier version wrote watts directly,
+  -- i.e. 60x too much, silently masked from the grid by the prototype's
+  -- 4MW output_flow_limit.
   power_interface.power_production = power_watts / 60
   link.last_power_production = power_watts
 end

@@ -229,12 +229,6 @@ data:extend({
       -- comment for the full justification (meaningfully below fusion's
       -- 50MW, per design doc §9.1/§9.4).
       output_flow_limit = "4MW",
-      -- Sized so one interval's peak output (4MW x 1s = 4MJ) fits without
-      -- clamping: scripts/thermionic-generator.lua zeroes this buffer each
-      -- interval and reads back what's left to measure exactly how much
-      -- the grid actually drew -- the signal for its idle guard (design
-      -- doc §9.1's "no idle waste"). 2x margin over the 4MJ minimum.
-      buffer_capacity = "8MJ",
       -- Since `power_production` is entirely script-driven per interval
       -- rather than a fixed declared rate, Factorio's own "not producing
       -- at capacity" alert logic doesn't apply meaningfully here -- left
