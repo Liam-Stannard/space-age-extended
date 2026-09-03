@@ -150,13 +150,21 @@ fast-forward into `master`, push, delete the branch.
      Magmatic Core's new `fuel_glow_color = {1, 0.45, 0.1}` (same value
      on `default_fuel_glow_color` and the reactor's new `light`).
 
-  Engine-verified: data stage only (`tools/check-data-stage.sh` —
-  prototype parsing; it does not render sprites). Needs in-client eyes:
-  whether a heat-pipe block actually holds the optimal band at 100°/s,
-  the tile-centre connection points against real pipe placement, and how
-  the glow/working-light animation actually looks (including whether the
-  heat glow reads dim in the 400–600 band, since `max_temperature` is
-  2000 vs vanilla's 1000).
+  Engine-verified (data stage, then a headless RCON run by the round's
+  tester — the lock was free): heating measured at exactly 100.0°/s
+  (615° at 6.15s, 801.7° at 8.02s); fuel burned continuously at 4.000MW
+  with nothing drawing power (idle guard confirmed gone); Ice consumed at
+  exactly 2 per interval for a net +20°/s climb under full load; and all
+  16 tile-centre heat-pipe connections conducted while pipes on the four
+  diagonal corner tiles (which touch no connection) stayed at ambient.
+  The round's reviewer never ran (session rate limit); the diff was
+  reviewed by hand afterwards instead. Still needs in-client eyes:
+  whether a heat-pipe block actually *holds* the optimal band at 100°/s
+  (only the rate and the connections were measured, not a full network's
+  equilibrium), and how the glow/working-light animation actually looks
+  (`check-data-stage.sh` parses prototypes, it doesn't render — including
+  whether the heat glow reads dim in the 400–600 band, since
+  `max_temperature` is 2000 vs vanilla's 1000).
 
 ## Headless RCON verification (how this was actually tested)
 
@@ -178,13 +186,9 @@ return blank — send a warm-up.
 
 ## Not started yet
 
-- **Design doc sync.** `design/vulcanus-fulgora.md` §9.2/§9.4 still
-  describe the abstract-temperature model, the old heat-interface entity,
-  and the 20s-to-floor timing; §16 lists several questions this branch
-  answered (calcite burden, foil value, holmium yield, acid loop runs at
-  3x surplus). Update once the branch is playtested and merged.
-- **Playtest + merge** of `thermionic-reactor-rework`, then delete the
-  branch (see git flow above).
+- **Playtest + merge** of `thermionic-playtest-feedback` (the round
+  above), then delete the branch (see git flow above). The design doc is
+  already in sync with it.
 - **Trees 2+** — see the parked brainstorm in Claude's memory
   (`project_space_age_extended_future_trees`) and framework.md §4.2's
   open slots.

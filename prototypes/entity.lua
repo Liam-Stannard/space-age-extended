@@ -284,9 +284,11 @@ data:extend({
       -- connection position) straddling the boundary. Corners carry two
       -- connections facing different directions, like vanilla. Order is
       -- N,N,N,N,E,E,E,E,S,S,S,S,W,W,W,W, and the connection-patch sheets
-      -- below are laid out in this same order. This tile-centre layout is
-      -- still NOT verified against real heat-pipe placement in-engine --
-      -- a tester will try it.
+      -- below are laid out in this same order. Verified in-engine
+      -- (headless, playtest-feedback round): heat pipes placed on all 16
+      -- edge tiles conducted, while pipes on the four diagonal corner
+      -- tiles -- which touch no connection -- stayed at ambient, so the
+      -- layout is exactly the 16 intended points and nothing else.
       connections = {
         { position = { -1.5, -1.5 }, direction = defines.direction.north },
         { position = { -0.5, -1.5 }, direction = defines.direction.north },
