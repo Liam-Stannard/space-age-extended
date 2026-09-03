@@ -29,7 +29,7 @@ The design rule: **gate on qualitative impossibilities, not on quantity.** Anyth
 | No usable chunks past the midpoint | Platforms are flying factories; out there the feedstock is promethium, which crushes into nothing. Carrying everything caps range at cargo capacity | **Asteroid processing** — orbital lixiviation makes promethium yield fuel, oxidiser and ammunition |
 | Damage scales with speed | You cannot go fast, so the journey takes an enormous time, which multiplies every consumption rate | **Structure** — ablative hull raises the safe speed ceiling |
 | A raised ceiling is useless without power to exploit it | Chemical thrust needs oxidiser you can no longer make | **Thrust** — electric propulsion, fed by the residue from lixiviation |
-| Solar is nil; nuclear is heavy and weight costs speed | Power density per tonne becomes the constraint over a two-million-kilometre run | **Power** — the Thermionic Generator, tree 1's claim, becomes literally load-bearing |
+| Solar is nil; nuclear is heavy and weight costs speed | Power density per tonne becomes the constraint over a two-million-kilometre run | **Power** — the Quench Turbine, tree 1's claim, becomes literally load-bearing |
 | Promethium asteroids arrive in overwhelming volume | Ammunition consumption exceeds what any hold can carry | **Defence** — and the ammunition is made from the asteroids themselves |
 
 Nothing being resupplied from a planet isn't its own hazard-tree row: it's answered by mechanics vanilla already has (platform-to-platform transfer at non-planet locations, reduced damage while stationary — §3), not by a new capstone chain. That is what makes the forward-depot corridor possible in the first place, but it doesn't count toward the mandatory five below.
@@ -53,7 +53,7 @@ A final technology consuming one capstone from each tree is a checklist: the pla
 | **1 — past the Edge** | Impact rate outruns bot repair; hulls lose structure faster than they can be patched | **Ablative hull** (V↔A) — Structure |
 | **2 — the midpoint** | Usable chunks vanish; the flying factory starves | **Electrode Array** (F↔A) — Asteroid processing |
 | **3 — post-midpoint** | A raised speed ceiling is useless if exploiting it means burning chemical oxidiser you can no longer resupply | **Electric propulsion** (pair TBD), fed by the residue lixiviation already leaves behind — Thrust |
-| **4 — deep field** | Solar is dead, and refining heat compounds on top of generation heat | **Thermionic Generator + Thermal Bus** (tree 1, and V↔A's second stage) — Power |
+| **4 — deep field** | Solar is dead, and refining heat compounds on top of generation heat | **Quench Turbine + Thermal Bus** (tree 1, and V↔A's second stage) — Power |
 | **5 — dense field** | Chaff density exceeds any ammunition economy a hold can carry | **Deflector Field** (N↔F), with the rail battery for what the field cannot stop — Defence |
 | **6 — duration** | The run is now long enough that the egg clock, floor space and the ice contest each bite | **Cryostat, Growth Chamber, Enriched Oxidiser** — the cheapening tier; **Bulk Crusher** answers floor space specifically, folding the platform's existing asteroid-crushing chain into one building so the mandatory trees' own new mechanics have room to be built |
 

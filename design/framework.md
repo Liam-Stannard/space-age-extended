@@ -30,7 +30,7 @@ A tree succeeds when it creates a **choice** the player didn't have before — "
 
 - **No Quality changes.** Quality stays the existing module-driven system across every tree. No quality-gated recipes, no new quality tiers.
 - **No redundant building tiers.** No "Mk II" versions of Foundry, Electromagnetic Plant, Chemical Plant, Recycler, or any other existing building. New behavior comes from new recipes on existing buildings, not new buildings that do what an existing one already does.
-- **One new building per tree, at most, and only with a specific justification.** A new building is acceptable only when it introduces a genuine mechanic that no existing building has (see Vulcanus↔Fulgora's Thermionic Generator, justified by a temperature-dependent efficiency curve that nothing else in the game has). If the new behavior can be expressed as a recipe on an existing building, it must be.
+- **One new building per tree, at most, and only with a specific justification.** A new building is acceptable only when it introduces a genuine mechanic that no existing building has (see Vulcanus↔Fulgora's Quench Turbine, justified by an output-per-shipped-item that a recipe tier sets rather than the item, which nothing else in the game does). If the new behavior can be expressed as a recipe on an existing building, it must be.
 - **No unnecessary intermediate-item bloat.** Every new item needs a mechanical reason to exist as a distinct item (usually: it needs to be a fluid for pipe/tank logistics, or it needs to be shippable/storable independent of its neighbors in the chain). "Feels like more content" is not a justification.
 - **No building-placement gimmicks.** No recipe is ever restricted to "must be built on planet X" as an arbitrary rule. Every planet lock in every tree comes from a resource that is unconditionally exclusive to that planet (an ore, a fluid, a raw material) — never from a rule bolted onto the recipe itself.
 
@@ -82,7 +82,7 @@ To keep trees from competing for the same payoff, each tree claims a distinct pl
 
 | Subsystem | Description | Status |
 |---|---|---|
-| Power | Electricity generation aboard a platform | **Claimed — Vulcanus↔Fulgora** (Thermionic Generator, Section 9 of that doc) |
+| Power | Electricity generation aboard a platform | **Claimed — Vulcanus↔Fulgora** (Quench Turbine, Section 9 of that doc) |
 | Thrust | Engine output, fuel efficiency, or maneuverability | Open — mandatory |
 | Asteroid processing | Improvements to how platforms capture, sort, or process asteroid chunks | Open — mandatory |
 | Defence | Weapons, shielding, or damage mitigation against asteroids and threats | Open — mandatory |
@@ -95,7 +95,7 @@ This list is a starting carve-up, not a fixed ceiling — if a future tree's nat
 
 **No redundancy among the mandatory trees.** An earlier draft of this document deliberately gave every corridor hazard two answers from different pairs, so that no single tree became mandatory. Section 2.4 now says the opposite, and the two positions cannot both hold: redundancy is exactly what makes a tree skippable. For any hazard on the mandatory path there is **one** answer, from **one** tree. Trees outside the mandatory set may overlap freely, since their job is to make the corridor cheaper rather than passable.
 
-**One power source.** A platform runs a single generator type, so the Thermionic Generator's numbers set the exchange rate for every other capability's power cost. Its tuning cannot be finalised in isolation from the capabilities that draw on it.
+**One power source.** A platform runs a single generator type, so the Quench Turbine's numbers set the exchange rate for every other capability's power cost. Its tuning cannot be finalised in isolation from the capabilities that draw on it.
 
 ### 4.3 Capstone shippability requirement
 
@@ -127,7 +127,7 @@ Rules for any new capability:
 4. Every capability must have a wrong platform to install it on.
 5. Never relieve two of the five at once.
 
-**Note:** the Thermionic Generator (Vulcanus↔Fulgora's Power capability) now exposes real, usable rejected heat via a heat-pipe interface, in addition to its electricity output — see [vulcanus-fulgora.md §9.2](vulcanus-fulgora.md#92-thermionic-generator) for why (Factorio's heat network is strictly surface-local, so this can't reach a planet's own network). Any future tree whose capability wants to consume heat as an input should account for this existing baseline on Power-tree platforms rather than treat heat as a resource it's introducing from scratch.
+**Note on heat:** Vulcanus↔Fulgora's Power capability deliberately exposes **no** usable waste heat. An earlier draft made it a `reactor` with a real heat-pipe interface; that was abandoned because vanilla heat exchangers and steam turbines would have converted its rejected heat into roughly as much electricity again, which relieves Power twice over and breaks rule 5. The Quench Turbine has no heat network at all. Any future tree whose capability wants heat as an input must therefore introduce it, not assume a baseline — see [vulcanus-fulgora.md §9.2](vulcanus-fulgora.md#92-the-quench-turbine).
 
 ---
 
@@ -137,7 +137,7 @@ Rules for any new capability:
 
 | Tree | Planets | Subsystem claimed | Capstone | Status |
 |---|---|---|---|---|
-| Cross-Planet Industrial Integration | Vulcanus ↔ Fulgora | Power (Thermionic Generator) | Thermionic Assembly | Design complete, see [Vulcanus ↔ Fulgora: Cross-Planet Industrial Integration](vulcanus-fulgora.md) |
+| Cross-Planet Industrial Integration | Vulcanus ↔ Fulgora | Power (Quench Turbine) | Thermionic Assembly | Implemented, engine-verified, not yet playtested — see [Vulcanus ↔ Fulgora: Cross-Planet Industrial Integration](vulcanus-fulgora.md) |
 
 ### 5.2 Open slots
 
@@ -171,5 +171,5 @@ A tree that fails any of these should be reworked before recipe-level balancing 
 2. Use what that playtesting reveals — which mechanics felt satisfying, which byproducts were tedious versus interesting, whether the shipping loop held up at scale — to refine this framework before starting a second tree.
 3. Pick the second tree's planet pair and subsystem deliberately: prefer a pairing and subsystem combination that exercises a different kind of anchor resource (e.g. a perishable/spoiling resource from Gleba, rather than another bulk-fluid anchor like Lava) so the mod's trees stay mechanically distinct from each other rather than reskinning the same shape.
 4. **Build and playtest the mandatory five before anything else.** Under Section 2.4 these have no escape hatch — a tree that is tedious now blocks the endgame rather than being skipped — so any tree on the mandatory path must prove it is fun before optional depth is added anywhere.
-5. Tune the Thermionic Generator only once several capabilities exist to draw on it, since it sets the power exchange rate for all of them (Section 4.2).
+5. Tune the Quench Turbine only once several capabilities exist to draw on it, since it sets the power exchange rate for all of them (Section 4.2).
 6. Design the Core and the corridor bands last, when the capabilities they gate on are known quantities rather than sketches.

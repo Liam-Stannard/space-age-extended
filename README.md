@@ -9,7 +9,7 @@ A Factorio: Space Age mod adding deeper, optional industrial relationships betwe
 
 ## Status
 
-Design phase. No prototypes implemented yet.
+All six technologies implemented and verified against the real engine; not yet playtested in a client.
 
 ## Planned structure
 
@@ -19,14 +19,14 @@ prototypes/
   fluid.lua
   recipe.lua
   technology.lua
-  entity.lua        -- Thermionic Generator
+  entity.lua        -- Quench Turbine
 locale/
   en/
     strings.cfg
 graphics/
 data.lua
 data-updates.lua
-control.lua          -- thermal efficiency mechanic for Thermionic Generator
+control.lua          -- empty; the mod is entirely prototype-driven
 info.json
 ```
 
@@ -37,4 +37,4 @@ See [design doc §17](design/vulcanus-fulgora.md#17-recommended-implementation-p
 1. **Phase 1** — Scrap refining chain (Foundry/EM Plant recipes, Molten Scrap → Copper Foil)
 2. **Phase 2** — Electromagnetic circuit alt-recipes
 3. **Phase 3** — Capstone (Catalyst Rod, Resonant Circuit, Magmatic Core, Thermionic Assembly)
-4. **Phase 4** — Thermionic Generator (space platform power)
+4. **Phase 4** — Quench Turbine and its quench recipe ladder (space platform power)

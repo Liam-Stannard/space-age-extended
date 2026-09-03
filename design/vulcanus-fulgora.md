@@ -596,11 +596,11 @@ The name reflects its composition: thermionic emission is heat-driven electron f
 
 Each future cross-planet tree is intended to terminate in its own capstone, with a later mega-technology consuming one of each. The Thermionic Assembly is therefore designed as a **clean, self-contained, shippable end product**: with no fragile or planet-locked properties.
 
-Within this tree it has exactly one use — Technology 6's Thermionic Generator (Section 9).
+Within this tree it has exactly one use — Technology 6's Quench Turbine (Section 9).
 
 ---
 
-# 9. Technology 6: The Thermionic Generator
+# 9. Technology 6: The Quench Turbine
 
 ## Design premise: every cross-planet tree improves space platforms
 
@@ -612,8 +612,6 @@ To keep the trees from competing, each should improve a **different platform sub
 
 **Vulcanus/Fulgora takes power.** Fulgora is the game's power-identity planet and Vulcanus supplies the thermal half, so the pairing is natural.
 
-The eventual endgame should require several trees' platform capabilities simultaneously — for example a platform that can only survive conditions or reach a destination that breaks a conventionally-equipped one. That design is deferred until more trees exist.
-
 ## 9.1 The gap this fills
 
 Platform power currently has three options, and a hole between them:
@@ -624,69 +622,94 @@ Platform power currently has three options, and a hole between them:
 | Unlocked | early | mid | very late (Aquilo) |
 | Platform weakness | fails on outer routes (0.42 kW/panel at Aquilo) | bulky; fuel cells burn while platforms idle awaiting request conditions | none — but you must already have reached Aquilo |
 
-The hole is the stretch between **"solar stops working"** and **"you have reached Aquilo."** Today that gap is bridged only by nuclear, which players actively dislike on platforms, and solar-only platforms routinely strand themselves in Aquilo orbit.
+The hole is the stretch between **"solar stops working"** and **"you have reached Aquilo."**
 
-**The Thermionic Generator fills exactly that gap.** It arrives before Aquilo and solves the problem that currently blocks players from reaching it.
+The Quench Turbine spans that gap, but deliberately **does not close it cheaply**. Before Aquilo the only quench recipe available is the lean one, which throws most of each Magmatic Core away; a platform can be powered, but only by running the Vulcanus/Fulgora line hard enough to hurt. Reaching Aquilo unlocks the recipe that makes the same core worth nearly seven times as much. Power is therefore something the player *improves* across the mid-game rather than solves once.
 
-It should **not** compete with fusion on density — fusion remains the endgame king. Its advantages are availability, no idle waste, and no water requirement; its cost is a lower peak output and an active cooling requirement.
+Its standing advantage over nuclear is that it genuinely does not idle: a `generator` draws fluid only when the grid asks for it, and the quench recipe stalls when its output backs up, so a platform parked at a waypoint consumes no cores at all. That is measured, not asserted (§9.5).
 
-## 9.2 Thermionic Generator
+## 9.2 The Quench Turbine
 
 ### Location
 
-**Space platforms.**
+**Space platforms**, gated by a real surface property (`pressure = 0`) exactly as vanilla gates its own thruster — not by a planet-name rule (framework.md §2.3).
 
 ### Crafted from
 
-- Thermionic Assembly
+Two Thermionic Assemblies.
 
-### Operating inputs — two independent streams
+### Operating input
 
-- **Magmatic Core** — fuel, shipped up from Vulcanus. Determines power output. A real burner fuel item in its own fuel category (so nothing else burns it and it burns nowhere else), consumed by the generator exactly as a nuclear reactor consumes a fuel cell — and sized to last exactly as long as one: 800MJ against the generator's 4MW draw is 200 seconds per core, the uranium fuel cell's own figure (8GJ at 40MW).
-- **Ice** — coolant, gathered locally from oxide asteroids. Determines how much of that output survives the efficiency curve.
+**Quench Vapour**, made on the platform by a quench recipe on an ordinary chemical plant. The turbine itself is a plain `generator`: the engine computes its output from flow, the fluid's heat capacity and its temperature, and **clips anything above `maximum_temperature`**.
 
-These are **not** combined into a fuel item. They are consumed separately by the running generator, which is what makes the thermal mechanic tunable: the player controls fuel rate and cooling rate independently.
+### Why Magmatic Core stopped being a fuel
 
-### Output
+Because a fuel item has exactly one value. An *ingredient* can be worth different amounts depending on the recipe that consumes it, and that is the entire mechanic — see §9.3. Magmatic Core therefore has no `fuel_value` and no fuel category at all, so nothing can burn it directly and bypass the ladder.
 
-**Electricity (primary) plus rejected heat via a real heat-pipe interface (secondary — a cooling avenue, not an independent power source).** Earlier drafts of this design excluded any heat-pipe interface, reasoning that a generator emitting heat could be shipped to Aquilo and trivialize that planet's defining challenge. That concern doesn't hold: the Thermionic Generator can only ever be built on a space platform (surface-gated via `surface_conditions`), and Factorio's heat-pipe network is strictly surface-local — a platform's heat pipes can never connect into a planet's own heat network, including while in Aquilo's orbit. The heat-pipe interface is therefore exposed as an additional, optional cooling avenue alongside Ice: connecting real heat pipes lets a thermal bus pull heat away, and because heat conduction scales with temperature difference, a hotter/less-efficient generator drains faster automatically — this falls directly out of real heat-network physics, not a separate hand-authored mechanic. (The generator is itself a real `reactor`-type entity, so this is literally its own heat buffer and connection points: the temperature the efficiency curve reads and the temperature a heat pipe sees are the same number. Electricity is injected by a paired hidden interface, since a reactor cannot emit power itself — the same split vanilla nuclear makes between reactor and turbine, collapsed into one building.) This does not change the generator's electricity-only *power* output; heat exposure draws down the same internal temperature the efficiency curve already tracks, it isn't a second, independent power channel.
+### What this replaced, and why
 
-## 9.3 The thermal mechanic
+Earlier drafts made the generator a `reactor` with a scripted temperature/efficiency curve, a hidden power interface, a hidden coolant container and a custom GUI. That design could not survive vanilla's heat network. A reactor's heat buffer feeds *every* consumer attached to it, and heat exchangers plus steam turbines would have turned its waste heat into roughly as much electricity again, making the generator's own output irrelevant. The one native fix was to hold the whole network below the heat exchanger's 500-degree `min_working_temperature`, which works but leaves the temperature scale fighting the efficiency curve, and still needs a script to remove heat.
 
-Nothing in vanilla has a temperature-dependent efficiency curve for a generator. Nuclear has heat but as a fixed system; fusion has none.
+The Quench Turbine reaches the same goal — output per shipped core is a decision the player tunes — with no heat network, no hidden entities, and no runtime script at all. `control.lua` is now empty.
 
-**Behaviour:**
+## 9.3 The mechanic: clipping, not a curve
 
-1. The generator **self-heats** as it produces power.
-2. **Ice consumption removes heat**, and so does a connected heat-pipe network if the player builds one (§9.2) — the two cooling avenues are independent and stack; a real heat-pipe network draws harder the hotter the generator runs, since heat conduction scales with temperature difference, which is real Factorio heat-network physics rather than a second hand-authored curve.
-3. As temperature rises above the optimal band, efficiency **declines gradually**.
-4. Past an **overheat threshold**, output drops **sharply** — the machine keeps running but is barely worth its footprint until it cools.
-5. Equilibrium temperature is a function of load versus total cooling throughput (ice plus whatever a connected heat-pipe network draws).
-6. When nothing on the grid is drawing power, the generator **pauses** rather than burning fuel into nothing — the "no idle waste" advantage §9.1 claims over nuclear, made real. It resumes the moment demand returns; standby loads below ~5% of peak are covered without burning fuel at all. Fuel rate is otherwise fixed while running — it is deliberately *not* throttled by demand or by temperature, keeping fuel and cooling the two independent player-controlled inputs of §9.2.
+A quench recipe fixes the temperature of the vapour it makes. The turbine cannot use vapour hotter than 315°C, so:
 
-### Why this shape
+- a recipe that makes **a little very hot** vapour wastes most of the core, and
+- a recipe that makes **a lot at exactly the cap** wastes nothing.
 
-- **Gradual decline is a warning the player can act on.** The cliff punishes ignoring it.
-- **Degradation, not destruction.** A platform that stops catching oxide asteroids limps rather than dies — it can still make port, and a heat-pipe network gives it a second, genuine cooling channel that measurably slows the slide toward overheat and can meaningfully extend how long it holds strong output. That channel alone doesn't reach a stable equilibrium or "recover" the generator the way a properly-supplied Ice setup does (§9.4) — it's a real delay, not a substitute — but more/better-distributed pipes still help, and it's never nothing.
-- **Cooling throughput becomes the scaling decision**, not generator count. Run lean and accept lower steady-state output, or oversize the ice supply (and/or the heat-pipe network) to hold peak efficiency.
-- **Viability scales with asteroid capture**, which is already the core platform gameplay loop.
+Efficiency per core is thus a property of the recipe the player can run, enforced by the engine's own generator arithmetic rather than by a hand-authored curve. The ladder:
 
-### Why Magmatic Core as the ongoing fuel
+| Tier | Technology | Per craft | Vapour | Electricity per core |
+|---|---|---|---|---|
+| 1 — Lean Quench | `sae-thermionic-power` | 1 Core + 10 Ice | 60 at 900°C | **90 MJ** (clipped) |
+| 2 — Cryogenic Quench | `sae-cryogenic-quenching` | 1 Core + 40 Ice + 100 Fluoroketone-cold | 400 at 315°C | **600 MJ** |
+| 3 — corridor tier | deferred | tier 2 plus a new asteroid-derived resource | — | designed with the endgame |
 
-This makes the Vulcanus leg **permanently load-bearing**. Magmatic Core stops being a one-time capstone ingredient and becomes a consumable, so any player running Thermionic Generators must keep the Catalyst Rod → Vulcanus → Magmatic Core → Depleted Rod loop running indefinitely rather than dismantling it after crafting the capstone once.
+Both are 10-second crafts, so one chemical plant at speed 1 consumes 6 cores/min: **9 MW** of turbine feed on tier 1, **60 MW** on tier 2. One turbine converts **18 MW**.
 
-## 9.4 Open questions for this technology
+Tier 2 is gated twice over: on vanilla's own `cryogenic-plant` technology, and on Fluoroketone, which only Aquilo can make.
 
-- Optimal temperature band, overheat threshold, and the steepness of the gradient.
-- Ice consumed per unit of heat removed.
-- Peak MW output — must sit meaningfully below fusion's 50–125 MW per generator.
-- Magmatic Core burn rate versus realistic Vulcanus export capacity.
-- Footprint versus an equivalent nuclear setup (should be smaller, or the earlier availability is its only advantage).
-- Whether an orbital production step should be added later. Currently the platform imports Magmatic Cores and catches ice with no manufacturing step of its own; the location constraint is already real, since Magmatic Core can only be made on Vulcanus.
-- The generator's `heat_buffer` numbers (`max_temperature` 2000, `specific_heat` 400kJ, `max_transfer` 10MW) are provisional. `specific_heat` against the 4MW fuel draw sets the heating rate at 10°/s (verified in-engine as exactly linear, ΔT = energy / specific_heat): roughly 60s from cold to the top of the optimal band, 80s to the overheat threshold, and 0.25 Ice/s to hold temperature — a rate a platform's asteroid capture can realistically sustain. An earlier 80kJ value (50°/s: ~16s to overheat, 1.25 Ice/s to hold) was far too twitchy against a 200s core. The heat-pipe channel remains a finite buffer, not a substitute for Ice — plain pipes redistribute heat without dissipating it — but its contribution at these numbers has not been re-measured since the reactor rework; the earlier 12-point measurements (~50–55s to decline, ~100–105s to floor, against the old 3MJ/50°/s figures) no longer apply and the 4x4 footprint's 16-point connection layout has not yet been verified against real pipe placement.
-- Temperature is real degrees on a real reactor `heat_buffer` — there is no longer a separate abstract scale or a mapping to keep in sync. The curve's landmarks (600 optimal-band edge, 800 overheat threshold) are the literal temperatures a connected heat pipe sees.
+### The Fluoroketone loop is closed, not consumed
 
-**Note for future trees:** this generator is now a real source of usable rejected heat on any platform running it, in addition to electricity. Per `framework.md` §4.5 rule 5 ("never relieve two of the five shared resources at once"), any future platform capability that wants to consume heat as an input should treat this generator's waste heat as an existing baseline already present on Power-tree platforms, not a resource this generator is competing to provide — flagged here for whoever designs the Thrust/Structure/Asteroid/Defence trees.
+The tier-2 recipe returns its Fluoroketone hot. A cryogenic plant cannot be built on a platform (it requires pressure ≥ 10), so **Radiative Fluoroketone Cooling** — a vacuum-only chemical-plant recipe — returns it to cold in space. Fluoroketone is therefore an *initial fill* shipped up in barrels, not an ongoing import; what Aquilo permanently supplies is the technology and that fill. Roughly ten radiating plants per quench plant is the footprint cost of tier-2 density.
+
+**Note on how vacuum-only recipes behave.** Recipe `surface_conditions` are a player-facing selection filter: the recipe does not appear in a machine's recipe list on a surface that doesn't match. They are *not* a runtime crafting block — a recipe forced onto a wrong-surface machine by script or console will happily craft. This was verified against vanilla's own gravity-0 `space-science-pack`, which behaves identically on Nauvis when set by script. Nothing is wrong with the mod's recipe; this is simply what the mechanism is.
+
+## 9.4 Why this shape
+
+- **Degradation, not destruction.** Running the lean recipe is expensive, never fatal (framework.md §4.5 rule 3). There is no meltdown and no failure state, only a worse exchange rate.
+- **Cooling throughput is still the scaling decision**, now expressed as Ice throughput per core rather than as a coolant tank. Viability still scales with asteroid capture, which is already the core platform loop.
+- **The Vulcanus leg stays permanently load-bearing.** Magmatic Core is a consumable, so the Catalyst Rod → Vulcanus → Magmatic Core → Depleted Rod loop must keep running indefinitely.
+- **There is a wrong platform to install it on** (rule 4): one with no oxide asteroids for Ice, or no room for the radiator field tier 2 needs.
+
+Versus fusion, the honest comparison is no longer "meaningfully below 50 MW". One turbine is 18 MW and one tier-2 quench plant feeds three of them, so a quench installation is **denser than fusion per building and far larger per installation** once the chemical plants and radiators are counted — and unlike fusion it depends on a supply line that can be cut.
+
+## 9.5 Verified against the engine
+
+Measured on a headless server over RCON, not derived by hand:
+
+| Check | Result |
+|---|---|
+| Turbine at the 315°C cap | 18.000 MW |
+| Vapour at 900°C | 18.000 MW — clipped, not 53 MW |
+| Vapour at 200°C | 11.100 MW — output is linear in temperature, so the clip is real |
+| Vapour below the fluid box minimum | 0 MW |
+| No electrical demand | 0 MW, no vapour consumed |
+| ~3 MW demand | 3.000 MW, 1.97 vapour/s of the 12/s maximum |
+| Lean Quench | 60 vapour per core |
+| Cryogenic Quench | 400 vapour per core, 100 Fluoroketone returned hot |
+| Radiative cooling | hot Fluoroketone → cold, on a platform |
+| Technology gating | tier-2 recipes disabled until `sae-cryogenic-quenching` |
+| Placement | builds on a platform, refused on Nauvis |
+
+## 9.6 Open questions
+
+- Whether tier 1 at 90 MJ/core is *expensive* or *impossible* in play: 100 MW needs roughly 11 chemical plants and 67 cores/min. If it reads as impossible, raise tier 1 toward 150 MJ/core before touching anything else — the ratio between tiers (about 1 : 6.7) is the thing to preserve, not the absolute numbers.
+- The radiator ratio (currently ~10 plants per quench plant) has not been playtested for how it *feels* to lay out.
+- Tier 3's asteroid-derived resource, deferred to the endgame design.
+- Turbine and vapour art are placeholders derived from vanilla's steam turbine and steam.
 
 ---
 
@@ -883,7 +906,7 @@ New material concepts, all functional:
 
 ### One new building, with a justification
 
-The **Thermionic Generator** is the design's only new building. It is not a tier of anything — it is a power source with a mechanic (temperature-dependent efficiency) that no existing building has, filling a documented gap in platform power between solar and Aquilo-locked fusion. See Section 9.
+The **Quench Turbine** is the design's only new building. It is not a tier of anything — it is a power source whose output per shipped Magmatic Core is set by which quench recipe the player has unlocked, which no existing building does, filling a documented gap in platform power between solar and Aquilo-locked fusion. Every other part of the mechanic runs on ordinary chemical plants. See Section 9.
 
 ---
 
@@ -959,7 +982,8 @@ The **Thermionic Generator** is the design's only new building. It is not a tier
 
 **Unlocks:**
 
-- **Thermionic Generator** — space platform building, crafted from Thermionic Assembly
+- **Quench Turbine** — space platform building, crafted from Thermionic Assembly
+- **Lean Quench** — the tier-1 quench recipe that feeds it
 
 This is the tree's platform contribution under the pattern described in Section 9: every cross-planet tree ends in a technology that improves a different platform subsystem. This tree takes **power**.
 
@@ -1036,11 +1060,11 @@ Compare against vanilla on raw resource consumption, machine count, power consum
 **Capstone**
 
 - Catalyst Rod cost (1 Holmium Ore + 2 Foil + 5 Iron Plate) vs. how many crafts it should feel worth — cheap in ingredients, gated purely by holmium.
-- Magmatic Core lava/tungsten volumes (500 lava + 5 Tungsten Plate) — unchanged and unevaluated. Now also the ongoing fuel: one generator burns ~18 cores/hour, i.e. ~18 holmium ore + ~360 tungsten ore per hour.
+- Magmatic Core lava/tungsten volumes (500 lava + 5 Tungsten Plate) — unchanged and unevaluated. Now also the ongoing consumable: one chemical plant quenching flat out consumes 360 cores/hour, i.e. ~360 holmium ore + ~1800 tungsten ore per hour, feeding 9MW on tier 1 or 60MW on tier 2.
 
-**Thermionic Generator**
+**Quench Turbine**
 
-See Section 9.4 — the temperature/heat-pipe numbers are reasoned and engine-verified but not yet playtested, the idle-guard threshold (5% of peak served unfuelled) needs a call on whether it's a feature or too generous, and peak MW versus footprint (4MW in 4x4, no water/turbines — per tile about half a full nuclear setup) may want raising to 6MW if it feels weak.
+See Section 9.6 — every number is engine-verified but none is playtested. The open call is whether tier 1 at 90MJ per core is expensive or simply impossible (100MW needs ~11 chemical plants and 67 cores/min), and whether the tier-2 radiator field (~10 plants per quench plant) is a satisfying layout problem or just floor space.
 
 ---
 
@@ -1072,8 +1096,8 @@ See Section 9.4 — the temperature/heat-pipe numbers are reasoned and engine-ve
 
 ### Phase 4 — platform power
 
-16. Thermionic Generator
-17. Temperature/efficiency mechanic and ice cooling
+16. Quench Turbine and Quench Vapour
+17. The quench recipe ladder (Lean, then Cryogenic) and the radiative Fluoroketone loop
 18. Magmatic Core export logistics at sustained consumption rates
 
 Test after each phase whether the resulting production loops actually create interesting factory layouts. If they do, further expansion should focus on **deepening these interactions**, not adding more resources or more buildings.
@@ -1086,7 +1110,7 @@ The strongest version of the Vulcanus/Fulgora relationship is not a new machine 
 
 It is a **closed industrial loop** built from existing systems, in which every cross-planet shipment is forced by resource locality rather than by artificial building restrictions:
 
-> **Calcite → Scrap Remelting → Separation → Copper Foil → Circuits → Catalyst Rod → (ship) → Lava + Tungsten → Magmatic Core → (ship back) → Thermionic Assembly → Thermionic Generator**
+> **Calcite → Scrap Remelting → Separation → Copper Foil → Circuits → Catalyst Rod → (ship) → Lava + Tungsten → Magmatic Core → (ship back) → Thermionic Assembly → Quench Turbine**
 
 Fulgora provides recycling, electromagnetic processing, and the catalyst.
 

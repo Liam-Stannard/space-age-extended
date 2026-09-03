@@ -31,7 +31,7 @@ The escape is to **run the Thermal Bus backwards.** The same fluoroketone loop t
 
 That single reversal is the stage-one objective and should be the first genuinely satisfying moment on the surface.
 
-**Capstones spent:** Thermal-Shock Composite for anything built on the surface; Thermal Bus for the ground loop; Thermionic Generators to bridge the gap.
+**Capstones spent:** Thermal-Shock Composite for anything built on the surface; Thermal Bus for the ground loop; Quench Turbines to bridge the gap.
 
 ---
 

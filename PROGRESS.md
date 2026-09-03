@@ -126,22 +126,81 @@ Setup per run: `force.create_space_platform{starter_pack=...}`,
 `on_generator_built` runs; the first RCON call after startup tends to
 return blank — send a warm-up.
 
+## Phase 4 rebuilt: the Quench Turbine (branch `quench-turbine`)
+
+The Thermionic Generator is **gone**, replaced by the Quench Turbine. The
+reason is worth keeping: a `reactor`'s heat buffer feeds every consumer on its
+network, so vanilla heat exchangers plus steam turbines would have converted
+the generator's waste heat into roughly as much electricity again, making its
+own output irrelevant. The only native fix was to hold the whole network below
+the heat exchanger's 500-degree `min_working_temperature` — which works, but
+leaves the temperature scale fighting the efficiency curve and still needs a
+script to remove heat at all.
+
+The replacement reaches the same design goal — output per shipped Magmatic
+Core is a decision the player tunes — with **no heat network, no hidden
+entities and no runtime script**. `control.lua` is now empty and `scripts/` is
+deleted, along with the reactor, its hidden power interface, its hidden
+coolant container, the custom GUI and the `sae-thermionic-fuel` category.
+
+Magmatic Core stopped being a fuel and became an ingredient. A quench recipe
+on an ordinary chemical plant turns one core plus Ice into Quench Vapour at a
+temperature the recipe fixes; the Quench Turbine is a plain `generator` and
+clips vapour above 315°C. A recipe making a little very hot vapour throws most
+of the core away; one making a lot at exactly the cap wastes nothing. That
+difference is the tech ladder, enforced by the engine rather than by script.
+
+- **Lean Quench** (with `sae-thermionic-power`): 90MJ/core, 9MW per plant.
+- **Cryogenic Quench** (new `sae-cryogenic-quenching`, needs vanilla
+  `cryogenic-plant` **and** Fluoroketone): 600MJ/core, 60MW per plant.
+- **Radiative Fluoroketone Cooling**: vacuum-only chemical-plant recipe
+  closing the Fluoroketone loop in space, since a cryogenic plant cannot be
+  built on a platform. Fluoroketone is an initial fill, not an import.
+- Tier 3 deliberately deferred to the endgame design (a corridor-gated
+  asteroid resource).
+
+Migration: a JSON rename handles stockpiled items and set recipes; a two-line
+Lua migration re-runs technology effects. Generators already *placed* cannot
+be recovered — the engine removes them before migrations run.
+
+### Verified over headless RCON (rig above)
+
+| Check | Result |
+|---|---|
+| Turbine at the 315°C cap | 18.000 MW |
+| Vapour at 900°C | 18.000 MW — clipped, not 53 MW |
+| Vapour at 200°C | 11.100 MW — linear, so the clip is real |
+| No electrical demand | 0 MW, no vapour consumed (no idle burn) |
+| ~3 MW demand | 3.000 MW, 1.97 vapour/s of the 12/s maximum |
+| Lean / Cryogenic Quench | 60 / 400 vapour per core |
+| Radiative cooling | hot Fluoroketone → cold, on a platform |
+| Technology gating | tier-2 recipes disabled until researched |
+| Placement | builds on a platform, refused on Nauvis |
+
+**Engine fact learned, worth not re-discovering:** recipe `surface_conditions`
+are a *player-facing selection filter*, not a runtime crafting block. A recipe
+forced onto a wrong-surface machine by script or console crafts happily. This
+was confirmed against vanilla's own gravity-0 `space-science-pack`, which
+behaves the same way on Nauvis. The vacuum-only radiative recipe is correct as
+written — do not "fix" it.
+
+**Still owed:** a client playtest (nothing here has been played), and real art
+— the turbine entity/item and the Quench Vapour fluid icon are placeholders
+derived from vanilla's steam turbine and steam.
+
 ## Not started yet
 
-- **Design doc sync.** `design/vulcanus-fulgora.md` §9.2/§9.4 still
-  describe the abstract-temperature model, the old heat-interface entity,
-  and the 20s-to-floor timing; §16 lists several questions this branch
-  answered (calcite burden, foil value, holmium yield, acid loop runs at
-  3x surplus). Update once the branch is playtested and merged.
-- **Playtest + merge** of `thermionic-reactor-rework`, then delete the
-  branch (see git flow above).
+- **Playtest** the Quench Turbine, then merge `quench-turbine` into `master`.
+- **`thermionic-playtest-feedback` is kept, deliberately not merged.** It
+  refines the Thermionic Generator this work deletes; kept so the old design
+  can be revisited if the Quench Turbine does not survive playtesting.
 - **Trees 2+** — see the parked brainstorm in Claude's memory
   (`project_space_age_extended_future_trees`) and framework.md §4.2's
   open slots.
 
 ## To resume
 
-Say "start phase 3" (or 4). Everything needed — design doc, framework doc,
+Say "playtest the quench turbine". Everything needed — design doc, framework doc,
 this file, the plan file, and the verified local Factorio 2.1.17 install
 at `~/.steam/debian-installation/steamapps/common/Factorio` — is already
 in place.
