@@ -81,6 +81,12 @@ data:extend({
     -- independently selectable -- spawned/despawned in lockstep with the
     -- visible generator by scripts/thermionic-generator.lua, which also
     -- sets destructible = false at runtime.
+    -- scripts/thermionic-generator.lua's on_gui_opened redirects the
+    -- player's GUI to open this hopper directly, so it needs a real
+    -- window title -- borrow the visible generator's own locale string
+    -- rather than adding a new one, same pattern as vanilla's
+    -- hidden-electric-energy-interface borrowing item-name.solar-panel.
+    localised_name = { "entity-name.sae-thermionic-generator" },
     icon = "__space-age-extended__/graphics/icons/thermionic-generator.png",
     icon_size = 64,
     flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "hide-alt-info", "no-copy-paste" },

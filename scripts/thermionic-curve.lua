@@ -97,6 +97,25 @@ function M.heat_removed_by_ice(ice_consumed)
   return ice_consumed * M.HEAT_REMOVED_PER_ICE_UNIT
 end
 
+--- How many whole units of Ice are actually useful to consume this
+--- interval, given `current_temperature` (before this interval's step) and
+--- `heat_in` (heat this interval's fuel burn is about to add). Temperature
+--- never needs to go below AMBIENT_TEMPERATURE (`next_temperature` floors
+--- there), so there is no thermal benefit to removing more heat than is
+--- actually present above ambient plus what's about to arrive -- consuming
+--- ice beyond that point would be pure waste. Never negative.
+function M.max_useful_ice(current_temperature, heat_in)
+  local heat_above_ambient = current_temperature - M.AMBIENT_TEMPERATURE
+  if heat_above_ambient < 0 then
+    heat_above_ambient = 0
+  end
+  local removable_heat = heat_above_ambient + heat_in
+  if removable_heat <= 0 then
+    return 0
+  end
+  return math.floor(removable_heat / M.HEAT_REMOVED_PER_ICE_UNIT)
+end
+
 --- Step the stored temperature forward by exactly one interval's worth of
 --- physics, using only the previously-stored temperature and this
 --- interval's heat in/out. Deliberately takes no notion of elapsed real
@@ -190,6 +209,18 @@ end
 -- 8. Fuel-starved (no heat generated, ice still cools if fed -- the two
 --    streams are genuinely independent, per §9.2):
 --      curve.power_output(0, 700) --> 0  (no fuel, no output, regardless of temperature)
+--
+-- 9. Idle at ambient with no fuel (don't burn ice for zero thermal
+--    benefit, §9.3's ice-throughput tunable):
+--      curve.max_useful_ice(curve.AMBIENT_TEMPERATURE, curve.heat_from_fuel(0)) --> 0
+--      -- heat_above_ambient = 0; heat_in = 0; removable_heat = 0 --> 0 ice useful
+--
+-- 10. Warm and still fuelled (some ice still useful, capped below the
+--     2/interval rate cap by what's actually there to remove):
+--      curve.max_useful_ice(30, curve.heat_from_fuel(1)) --> 2
+--      -- heat_above_ambient = 30; heat_in = 50; removable_heat = 80;
+--      -- floor(80/40) = 2 (still gets clamped further by the 2/interval
+--      -- rate cap in scripts/thermionic-generator.lua, so no change here)
 -- ---------------------------------------------------------------------
 
 return M

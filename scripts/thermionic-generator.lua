@@ -33,6 +33,30 @@ local function init_storage()
   storage.sae_thermionic_containers = storage.sae_thermionic_containers or {}
 end
 
+--- Spills whatever Magmatic Core / Ice is still sitting in a hopper's
+--- inventory onto the ground at its position, so destroying a generator
+--- (and its paired hopper) with it doesn't silently discard stored fuel/
+--- coolant. No-op if the container is already invalid -- nothing left to
+--- read a position or inventory from at that point.
+local function spill_container_contents(container)
+  if not (container and container.valid) then
+    return
+  end
+  local inventory = container.get_inventory(defines.inventory.chest)
+  if not inventory then
+    return
+  end
+  local surface = container.surface
+  local position = container.position
+  for _, item in pairs(inventory.get_contents()) do
+    surface.spill_item_stack({
+      position = position,
+      stack = { name = item.name, count = item.count, quality = item.quality },
+      allow_belts = false,
+    })
+  end
+end
+
 local function cleanup_by_generator_unit_number(generator_unit_number)
   local link = storage.sae_thermionic_generators[generator_unit_number]
   if not link then
@@ -41,6 +65,7 @@ local function cleanup_by_generator_unit_number(generator_unit_number)
   storage.sae_thermionic_generators[generator_unit_number] = nil
   storage.sae_thermionic_containers[link.container_unit_number] = nil
   if link.container and link.container.valid then
+    spill_container_contents(link.container)
     link.container.destroy()
   end
 end
@@ -53,8 +78,11 @@ local function cleanup_by_container_unit_number(container_unit_number)
   local link = storage.sae_thermionic_generators[generator_unit_number]
   storage.sae_thermionic_containers[container_unit_number] = nil
   storage.sae_thermionic_generators[generator_unit_number] = nil
-  if link and link.generator and link.generator.valid then
-    link.generator.destroy()
+  if link then
+    spill_container_contents(link.container)
+    if link.generator and link.generator.valid then
+      link.generator.destroy()
+    end
   end
 end
 
@@ -155,7 +183,14 @@ local function step_generator(link)
   local ice_available = inventory.get_item_count("ice")
 
   local fuel_consumed = curve.consume(fuel_available, curve.MAX_FUEL_PER_INTERVAL)
-  local ice_consumed = curve.consume(ice_available, curve.MAX_ICE_PER_INTERVAL)
+  local heat_in = curve.heat_from_fuel(fuel_consumed)
+
+  -- Don't draw more ice than can actually still have a cooling effect
+  -- this interval -- e.g. an idle generator already floored at
+  -- AMBIENT_TEMPERATURE with no fuel has nothing left to cool, so burning
+  -- ice for it would be pure waste (design doc §9.3/§9.4).
+  local ice_rate_cap = math.min(curve.MAX_ICE_PER_INTERVAL, curve.max_useful_ice(link.temperature, heat_in))
+  local ice_consumed = curve.consume(ice_available, ice_rate_cap)
 
   if fuel_consumed > 0 then
     inventory.remove({ name = "sae-magmatic-core", count = fuel_consumed })
@@ -164,7 +199,6 @@ local function step_generator(link)
     inventory.remove({ name = "ice", count = ice_consumed })
   end
 
-  local heat_in = curve.heat_from_fuel(fuel_consumed)
   local heat_out = curve.heat_removed_by_ice(ice_consumed)
   link.temperature = curve.next_temperature(link.temperature, heat_in, heat_out)
 
@@ -198,7 +232,10 @@ script.on_configuration_changed(on_configuration_changed)
 script.on_event(defines.events.on_built_entity, function(event) on_generator_built(event.entity) end)
 script.on_event(defines.events.on_robot_built_entity, function(event) on_generator_built(event.entity) end)
 script.on_event(defines.events.script_raised_built, function(event) on_generator_built(event.entity) end)
+script.on_event(defines.events.script_raised_revive, function(event) on_generator_built(event.entity) end)
 script.on_event(defines.events.on_space_platform_built_entity, function(event) on_generator_built(event.entity) end)
+-- Note: on_entity_cloned's new-entity field is `destination`, not `entity`.
+script.on_event(defines.events.on_entity_cloned, function(event) on_generator_built(event.destination) end)
 
 script.on_event(defines.events.on_player_mined_entity, on_generator_removed)
 script.on_event(defines.events.on_robot_mined_entity, on_generator_removed)
