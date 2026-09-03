@@ -129,11 +129,28 @@ fast-forward into `master`, push, delete the branch.
      curve's output. The power interface's `buffer_capacity` (only there
      for the demand measurement) and the `status-idle` locale string are
      gone; design doc §9.1/§9.3/§16 no longer claim "no idle waste".
+  3. **Animations play.** The entity only had vanilla's static
+     body/pipes sprites; it now has the reactor-type animated fields —
+     `heat_lower_layer_picture`, `heat_buffer.heat_picture`,
+     `minimum_glow_temperature = 350`, `working_light_picture`, the
+     burner's `light_flicker`, and all four connection-patch sheets —
+     with vanilla's base-internal `apply_heat_pipe_glow` output inlined
+     (tinted layer + `draw_as_light` copy). Vanilla's 12-column patch
+     sheets can't serve 16 connections (`variation_count` must be ≥
+     `#connections`), so `tools/generate-thermionic-graphics.py` builds
+     16-column sheets from them into
+     `graphics/entity/thermionic-generator/` (committed). Heat
+     connections moved from the collision-box edge (±2) to the edge
+     tiles' centres (±1.5), matching every vanilla precedent and the
+     once-verified 3x3 layout.
 
-  Engine-verified: data stage only (`tools/check-data-stage.sh`). Needs
-  in-client eyes: whether a heat-pipe block actually holds the optimal
-  band at 100°/s, and the 16-point connection layout against real pipe
-  placement.
+  Engine-verified: data stage only (`tools/check-data-stage.sh` —
+  prototype parsing; it does not render sprites). Needs in-client eyes:
+  whether a heat-pipe block actually holds the optimal band at 100°/s,
+  the tile-centre connection points against real pipe placement, and how
+  the glow/working-light animation actually looks (including whether the
+  heat glow reads dim in the 400–600 band, since `max_temperature` is
+  2000 vs vanilla's 1000).
 
 ## Headless RCON verification (how this was actually tested)
 

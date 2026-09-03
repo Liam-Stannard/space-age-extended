@@ -37,9 +37,15 @@
 -- correctly producing (this is what the red flashing icon in real play
 -- turned out to be).
 --
--- Visuals still reuse vanilla nuclear reactor's own body/shadow/pipes
--- sprite files directly (plain Sprite layers) -- now honestly, since the
--- entity really is a reactor-type building.
+-- Visuals reuse vanilla nuclear reactor's own sprite files -- honestly,
+-- since the entity really is a reactor-type building -- and use the
+-- reactor-type animated fields (heat glow, working light, connection
+-- patches) so they actually play, not just the static body. Vanilla
+-- builds its glow layers through a base-internal local helper
+-- (`apply_heat_pipe_glow` in base/prototypes/entity/entities.lua) that a
+-- dependent mod can't call; its output is inlined here instead. The
+-- connection-patch sheets are this mod's own, generated from vanilla's by
+-- tools/generate-thermionic-graphics.py (see the comment at the field).
 --
 -- Hidden coolant tank: a 1-slot filtered `container`, spawned/paired 1:1
 -- with the visible generator, holding Ice. Never opened directly by a
@@ -79,18 +85,43 @@ data:extend({
     -- intersections rather than tile centers.
     collision_box = { { -2, -2 }, { 2, 2 } },
     selection_box = { { -2.1, -2.1 }, { 2.1, 2.1 } },
-    -- Visuals: vanilla nuclear reactor's own body/shadow sprite files,
-    -- used directly as plain Sprite layers (values verified against
-    -- base/prototypes/entity/entities.lua's own "reactor" picture field)
-    -- rather than via base's internal heat-pipe-glow/connection-graphics
-    -- helpers, which are reactor-type-specific rendering machinery a
-    -- dependent mod shouldn't rely on staying stable.
+    -- Visuals: vanilla nuclear reactor's own sprite files, with every
+    -- value copied from base/prototypes/entity/entities.lua's
+    -- "nuclear-reactor" block (util.by_pixel shifts pre-divided by 32).
+    -- The heated/glow layers are what vanilla's base-internal
+    -- `apply_heat_pipe_glow` helper produces, written out longhand: the
+    -- sprite tinted {0.5, 0.4, 0.3, 0.5}, plus a copy of it with
+    -- draw_as_light = true and tint {1, 1, 1, 1} -- a mod can't call that
+    -- local helper, so the shape is inlined rather than depended on.
     lower_layer_picture = {
       filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes.png",
       width = 320,
       height = 316,
       scale = 0.5,
       shift = { -0.03125, -0.15625 },
+    },
+    -- Drawn over lower_layer_picture as the pipes heat up (the engine
+    -- fades it in from heat_buffer.minimum_glow_temperature).
+    heat_lower_layer_picture = {
+      layers = {
+        {
+          filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes-heated.png",
+          width = 320,
+          height = 316,
+          scale = 0.5,
+          shift = { -0.015625, -0.140625 },
+          tint = { 0.5, 0.4, 0.3, 0.5 },
+        },
+        {
+          filename = "__base__/graphics/entity/nuclear-reactor/reactor-pipes-heated.png",
+          width = 320,
+          height = 316,
+          scale = 0.5,
+          shift = { -0.015625, -0.140625 },
+          tint = { 1, 1, 1, 1 },
+          draw_as_light = true,
+        },
+      },
     },
     picture = {
       layers = {
@@ -111,6 +142,19 @@ data:extend({
         },
       },
     },
+    -- The "running" light overlay, drawn (additively, as glow) while the
+    -- burner is lit and pulsed by energy_source.light_flicker below --
+    -- this is what makes vanilla's reactor visibly run. Vanilla's own
+    -- sprite, whose lit pixels are uranium green.
+    working_light_picture = {
+      filename = "__base__/graphics/entity/nuclear-reactor/reactor-lights-color.png",
+      blend_mode = "additive",
+      draw_as_glow = true,
+      width = 320,
+      height = 320,
+      scale = 0.5,
+      shift = { -0.03125, -0.1875 },
+    },
     -- Real burner fuel slot -- the engine itself ignites/consumes
     -- Magmatic Core, giving a real fuel gauge, status, and tooltip.
     -- fuel_categories restricted to our own category (not vanilla
@@ -122,6 +166,14 @@ data:extend({
       fuel_inventory_size = 1,
       effectivity = 1,
       emissions_per_minute = { pollution = 0 },
+      -- Vanilla reactor's values. This is what pulses working_light_picture
+      -- while burning; the black colour means the burner itself casts no
+      -- light of its own -- the visible glow is the working light.
+      light_flicker = {
+        color = { 0, 0, 0 },
+        minimum_intensity = 0.7,
+        maximum_intensity = 0.95,
+      },
     },
     -- Real energy draw, matching the 4MW peak electrical output
     -- (scripts/thermionic-curve.lua's PEAK_POWER_W) so full-load fuel
@@ -168,31 +220,146 @@ data:extend({
       max_transfer = "10MW",
       default_temperature = 0,
       min_working_temperature = 0,
-      -- Rescaled from the original 3x3-footprint version's 12-point
-      -- pattern (3 points per side) to this entity's new 4x4 footprint (4
-      -- points per side, at the quarter/three-quarter positions along
-      -- each edge) -- same shape, one more point per side to match the
-      -- extra tile of edge length. NOT yet re-verified in-engine the way
-      -- the original 3x3 layout was (that one was confirmed against real
-      -- heat-pipe placement before being trusted) -- needs the same
-      -- verification pass after the footprint change.
+      -- Vanilla's value: the temperature the heated sprites
+      -- (heat_lower_layer_picture, heat_picture, the heated connection
+      -- patches) start fading in at. Presumably the glow ramps from here
+      -- up toward max_temperature -- which is 2000 here against vanilla's
+      -- 1000 -- so it may read dimmer in the 400-600 optimal band than
+      -- vanilla's reactor does at the same temperature. Unverified; to be
+      -- judged in-client.
+      minimum_glow_temperature = 350,
+      -- The heated body overlay, glow-wrapped exactly like
+      -- heat_lower_layer_picture above.
+      heat_picture = {
+        layers = {
+          {
+            filename = "__base__/graphics/entity/nuclear-reactor/reactor-heated.png",
+            width = 216,
+            height = 256,
+            scale = 0.5,
+            shift = { 0.09375, -0.203125 },
+            tint = { 0.5, 0.4, 0.3, 0.5 },
+          },
+          {
+            filename = "__base__/graphics/entity/nuclear-reactor/reactor-heated.png",
+            width = 216,
+            height = 256,
+            scale = 0.5,
+            shift = { 0.09375, -0.203125 },
+            tint = { 1, 1, 1, 1 },
+            draw_as_light = true,
+          },
+        },
+      },
+      -- Four connection points per side of the 4x4 footprint, one per edge
+      -- tile, each at that tile's *centre* (±0.5, ±1.5): every vanilla
+      -- precedent puts heat connections at tile centres (the 5x5 nuclear
+      -- reactor at ±2 with its edge at ±2.5; the 3x2 heat exchanger at
+      -- {0, 0.5}), and this entity's earlier 3x3 layout -- the only one
+      -- confirmed against real heat-pipe placement -- used ±1, also tile
+      -- centres. The previous 4x4 layout put them at ±2, on the
+      -- collision-box edge itself, which no precedent does and which
+      -- would also have put the 1-tile connection patch (drawn at the
+      -- connection position) straddling the boundary. Corners carry two
+      -- connections facing different directions, like vanilla. Order is
+      -- N,N,N,N,E,E,E,E,S,S,S,S,W,W,W,W, and the connection-patch sheets
+      -- below are laid out in this same order. This tile-centre layout is
+      -- still NOT verified against real heat-pipe placement in-engine --
+      -- a tester will try it.
       connections = {
-        { position = { -1.5, -2 }, direction = defines.direction.north },
-        { position = { -0.5, -2 }, direction = defines.direction.north },
-        { position = { 0.5, -2 }, direction = defines.direction.north },
-        { position = { 1.5, -2 }, direction = defines.direction.north },
-        { position = { 2, -1.5 }, direction = defines.direction.east },
-        { position = { 2, -0.5 }, direction = defines.direction.east },
-        { position = { 2, 0.5 }, direction = defines.direction.east },
-        { position = { 2, 1.5 }, direction = defines.direction.east },
-        { position = { 1.5, 2 }, direction = defines.direction.south },
-        { position = { 0.5, 2 }, direction = defines.direction.south },
-        { position = { -0.5, 2 }, direction = defines.direction.south },
-        { position = { -1.5, 2 }, direction = defines.direction.south },
-        { position = { -2, 1.5 }, direction = defines.direction.west },
-        { position = { -2, 0.5 }, direction = defines.direction.west },
-        { position = { -2, -0.5 }, direction = defines.direction.west },
-        { position = { -2, -1.5 }, direction = defines.direction.west },
+        { position = { -1.5, -1.5 }, direction = defines.direction.north },
+        { position = { -0.5, -1.5 }, direction = defines.direction.north },
+        { position = { 0.5, -1.5 }, direction = defines.direction.north },
+        { position = { 1.5, -1.5 }, direction = defines.direction.north },
+        { position = { 1.5, -1.5 }, direction = defines.direction.east },
+        { position = { 1.5, -0.5 }, direction = defines.direction.east },
+        { position = { 1.5, 0.5 }, direction = defines.direction.east },
+        { position = { 1.5, 1.5 }, direction = defines.direction.east },
+        { position = { 1.5, 1.5 }, direction = defines.direction.south },
+        { position = { 0.5, 1.5 }, direction = defines.direction.south },
+        { position = { -0.5, 1.5 }, direction = defines.direction.south },
+        { position = { -1.5, 1.5 }, direction = defines.direction.south },
+        { position = { -1.5, 1.5 }, direction = defines.direction.west },
+        { position = { -1.5, 0.5 }, direction = defines.direction.west },
+        { position = { -1.5, -0.5 }, direction = defines.direction.west },
+        { position = { -1.5, -1.5 }, direction = defines.direction.west },
+      },
+    },
+    -- Per-connection patch sprites, one variation per heat_buffer
+    -- connection *in the same order* (the engine requires variation_count
+    -- >= #connections). Vanilla's sheets are 12 columns for its 12
+    -- connections, so they can't be used for 16; these are this mod's own
+    -- 16-column (1024x128) sheets, generated from vanilla's by
+    -- tools/generate-thermionic-graphics.py -- each side's four
+    -- connections map onto vanilla's [corner, mid, mid, corner] patches
+    -- for that side. Row 0 (y = 0) is connected, row 1 (y = 64) is
+    -- disconnected; the heated sheets are drawn over these as the buffer
+    -- warms, glow-wrapped like the other heated sprites.
+    connection_patches_connected = {
+      sheet = {
+        filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches.png",
+        width = 64,
+        height = 64,
+        variation_count = 16,
+        scale = 0.5,
+      },
+    },
+    connection_patches_disconnected = {
+      sheet = {
+        filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches.png",
+        width = 64,
+        height = 64,
+        variation_count = 16,
+        y = 64,
+        scale = 0.5,
+      },
+    },
+    heat_connection_patches_connected = {
+      sheet = {
+        layers = {
+          {
+            filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches-heated.png",
+            width = 64,
+            height = 64,
+            variation_count = 16,
+            scale = 0.5,
+            tint = { 0.5, 0.4, 0.3, 0.5 },
+          },
+          {
+            filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches-heated.png",
+            width = 64,
+            height = 64,
+            variation_count = 16,
+            scale = 0.5,
+            tint = { 1, 1, 1, 1 },
+            draw_as_light = true,
+          },
+        },
+      },
+    },
+    heat_connection_patches_disconnected = {
+      sheet = {
+        layers = {
+          {
+            filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches-heated.png",
+            width = 64,
+            height = 64,
+            variation_count = 16,
+            y = 64,
+            scale = 0.5,
+            tint = { 0.5, 0.4, 0.3, 0.5 },
+          },
+          {
+            filename = "__space-age-extended__/graphics/entity/thermionic-generator/connect-patches-heated.png",
+            width = 64,
+            height = 64,
+            variation_count = 16,
+            y = 64,
+            scale = 0.5,
+            tint = { 1, 1, 1, 1 },
+            draw_as_light = true,
+          },
+        },
       },
     },
     -- No neighbour_bonus -- stacking generators together isn't part of
