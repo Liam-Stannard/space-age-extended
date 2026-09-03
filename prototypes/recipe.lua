@@ -467,3 +467,45 @@ data:extend({
     auto_recycle = false,
   },
 })
+
+-- Reactive Edge Plating (Phase 0 feasibility spike).
+--
+-- PLACEHOLDER INGREDIENTS. The real chain that is meant to feed this
+-- (Fluoride Flux -> Refractory Panel -> Thermal-Shock Composite) does not
+-- exist yet; these recipes exist only so the spike subject is craftable and
+-- reachable in a real game. Steel and tungsten stand in for whatever the
+-- real inputs turn out to be. Do not read balance intent into them.
+data:extend({
+  {
+    type = "recipe",
+    name = "sae-reactive-charge",
+    categories = { "crafting" },
+    subgroup = "ammo",
+    order = "e[sae]-a[reactive-charge]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "steel-plate", amount = 1 },
+      { type = "item", name = "explosives", amount = 1 },
+    },
+    results = {
+      { type = "item", name = "sae-reactive-charge", amount = 2 },
+    },
+    energy_required = 2,
+  },
+  {
+    type = "recipe",
+    name = "sae-reactive-edge-plating",
+    categories = { "crafting" },
+    subgroup = "defensive-structure",
+    order = "e[sae]-a[reactive-edge-plating]",
+    enabled = false,
+    ingredients = {
+      { type = "item", name = "steel-plate", amount = 10 },
+      { type = "item", name = "tungsten-plate", amount = 5 },
+    },
+    results = {
+      { type = "item", name = "sae-reactive-edge-plating", amount = 1 },
+    },
+    energy_required = 5,
+  },
+})

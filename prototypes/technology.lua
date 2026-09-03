@@ -167,3 +167,37 @@ data:extend({
     },
   },
 })
+
+-- Reactive Edge Plating (Phase 0 feasibility spike).
+--
+-- TEMPORARY unlock. This exists so the spike subject is reachable in a real
+-- game without console cheats; it is not the technology the finished feature
+-- will hang off, and its prerequisites/cost are placeholders. Icon is
+-- vanilla's own space-platform tech icon, borrowed as placeholder art.
+data:extend({
+  {
+    type = "technology",
+    name = "sae-reactive-edge-plating",
+    icon = "__space-age__/graphics/technology/space-platform.png",
+    icon_size = 256,
+    icon_mipmaps = 4,
+    effects = {
+      { type = "unlock-recipe", recipe = "sae-reactive-charge" },
+      { type = "unlock-recipe", recipe = "sae-reactive-edge-plating" },
+    },
+    -- Tungsten plate is a placeholder ingredient, so Vulcanus is a
+    -- placeholder prerequisite alongside the platform tech that makes a rim
+    -- exist to plate in the first place.
+    prerequisites = { "space-platform", "tungsten-steel" },
+    unit = {
+      count = 100,
+      ingredients = {
+        { "automation-science-pack", 1 },
+        { "logistic-science-pack", 1 },
+        { "chemical-science-pack", 1 },
+        { "space-science-pack", 1 },
+      },
+      time = 30,
+    },
+  },
+})

@@ -198,3 +198,200 @@ data:extend({
     perceived_performance = { minimum = 0.25, performance_to_activity_rate = 2.0 },
   },
 })
+
+-- Reactive Edge Plating (Phase 0 feasibility spike).
+--
+-- A perimeter plate that does NOT absorb impacts: it spends one loaded
+-- charge to destroy an incoming asteroid at contact range. Implemented as a
+-- real `ammo-turret` with a 1-slot ammo inventory, so that inserters load it
+-- with exactly the native code path that loads a gun turret -- no
+-- control-stage logic at all. The whole point of the spike is that this
+-- shape is entirely data-stage; every line below is either measured against
+-- the running engine or explicitly flagged as a placeholder.
+--
+-- Placement restriction (the void-adjacency rule) uses vanilla's own
+-- `tile_buildability_rules`, the same mechanism `asteroid-collector` and
+-- `thruster` use to require open space in front of them. Two rules, ANDed:
+-- solid foundation under the plate, and void in the single tile the plate
+-- faces. The rules rotate with the entity's direction, which is why this is
+-- a rotatable 1x1 rather than a direction-less one -- there is no way to
+-- express "void on ANY of my four sides" natively, so instead the plate is
+-- oriented outward and each rim face gets its own rotation. That is the same
+-- ergonomics vanilla already asks of the asteroid collector.
+--
+-- Visuals are placeholder: vanilla gun turret's own base sprite, scaled down
+-- to roughly a tile.
+--
+-- What the Phase 0 spike actually measured, on a headless server over RCON
+-- (all numbers from real runs, not from reading docs):
+--
+--   * Inserter loading works, identically to a gun turret. A burner inserter
+--     between a chest of charges and a plate filled it unattended, tracking a
+--     vanilla gun-turret control tick for tick: both at 8 after 600 ticks,
+--     both at 10 after 1200. See automated_ammo_count below for the one
+--     surprise that fell out of this.
+--   * The custom ammo-category isolates completely, both directions and
+--     through the inserter path, not just the insert API: firearm-magazine
+--     and railgun-ammo into a plate both inserted 0; a Reactive Charge into a
+--     vanilla gun turret inserted 0; and an inserter sat next to a gun turret
+--     with a chest of 20 charges moved none of them in 900 ticks.
+--   * A plated rim genuinely saves the platform. Same route, same thrust,
+--     3600 ticks: an UNPLATED 20x20 platform lost 400 of 400 foundation tiles
+--     and all 12 interior witness chests (it was gone by tick ~2400). The
+--     PLATED one -- 64 plates, one per buildable perimeter tile, 20 charges
+--     each -- finished at 400/400 tiles, 12/12 witnesses at full health,
+--     64/64 plates alive, having spent 44 of 1280 charges (3.4%).
+--   * Asteroid class is naturally distinguishable without any script, purely
+--     through the charge's damage vs. vanilla's per-size resistances: the
+--     same plate with the same load cleared a `big` asteroid and its entire
+--     cascade with zero tile loss, but against a `huge` ran its 10 charges
+--     dry and leaked 8 foundation tiles.
+data:extend({
+  {
+    -- Dedicated ammo-category so a plate can be fed nothing but a Reactive
+    -- Charge, and a Reactive Charge fits nothing but a plate. Mirrors the
+    -- `sae-thermionic-fuel` fuel-category above.
+    type = "ammo-category",
+    name = "sae-reactive-charge",
+  },
+  {
+    type = "ammo-turret",
+    name = "sae-reactive-edge-plating",
+    icon = "__base__/graphics/icons/gun-turret.png",
+    icon_size = 64,
+    icon_mipmaps = 4,
+    flags = { "placeable-player", "player-creation" },
+    minable = { mining_time = 0.2, result = "sae-reactive-edge-plating" },
+    max_health = 200,
+    -- The plate is one tile of rim. Slightly under-sized collision box so it
+    -- sits inside its tile without fighting neighbouring plates.
+    collision_box = { { -0.4, -0.4 }, { 0.4, 0.4 } },
+    selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
+    -- Platform-only, via the same genuine surface property the Thermionic
+    -- Generator and vanilla's own thruster use (vacuum), not a planet-name
+    -- check (design/framework.md §2.3).
+    surface_conditions = {
+      { property = "pressure", min = 0, max = 0 },
+    },
+    -- The void-adjacency rule. Rule 1: the plate's own tile must be real
+    -- platform foundation. Rule 2: the tile immediately in front of it (its
+    -- facing direction; -Y when facing north) must be empty space. Both
+    -- areas rotate with the entity, so one prototype covers all four rim
+    -- faces by rotation. `remove_on_collision` lets a blueprint/ghost drop
+    -- the entity rather than block, matching asteroid-collector.
+    --
+    -- MEASURED against a 20x20 platform, every rim face x every rotation,
+    -- through both can_place_entity and a real create_entity (they agreed in
+    -- every cell), and through blueprint_ghost as well as manual placement
+    -- (identical results -- so a rim blueprint obeys the same rule):
+    --
+    --              N     E     S     W
+    --   north rim  YES   no    no    no
+    --   south rim  no    no    YES   no
+    --   west rim   no    no    no    YES
+    --   east rim   no    YES   no    no
+    --   NW corner  YES   no    no    YES
+    --   SE corner  no    YES   YES   no
+    --   interior   no    no    no    no
+    --   1 in from  no    no    no    no
+    --
+    -- A perfect diagonal: enforcement is entirely native, exact on all four
+    -- faces, correct on corners (both outward directions allowed), and
+    -- rejects every interior tile in every rotation. No on_built rejection
+    -- handler is needed, and control.lua stays untouched by this feature.
+    tile_buildability_rules = {
+      { area = { { -0.4, -0.4 }, { 0.4, 0.4 } }, required_tiles = { layers = { ground_tile = true } }, colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
+      { area = { { -0.4, -1.4 }, { 0.4, -0.6 } }, required_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
+    },
+    -- NOTE: there is deliberately no `weight` here. MEASURED: a space
+    -- platform's mass is exactly its hub's weight plus the sum of its tiles'
+    -- weights, and nothing else -- placing 20 plates, loading 200 charges
+    -- into them, and adding a chest of 200 loose charges all left
+    -- LuaSpacePlatform::weight byte-identical at 80000, while 20 more
+    -- foundation tiles moved it to 84000 (= 20 x the tile's own weight of
+    -- 200). `weight` as "mass contributed to a platform" exists only on
+    -- TilePrototype and SpacePlatformHubPrototype; on any other entity the
+    -- key is simply ignored. So a plate cannot be given a mass cost, and
+    -- cannot be balanced against platform speed. (Confirmed in flight too:
+    -- see the note on the item's weight in prototypes/item.lua.)
+    turret_base_has_direction = true,
+    -- No warm-up: a plate that has to unfold before firing loses the race
+    -- against anything already at contact range.
+    rotation_speed = 1,
+    preparing_speed = 1,
+    folding_speed = 1,
+    attacking_speed = 1,
+    prepare_with_no_ammo = false,
+    alert_when_attacking = true,
+    -- Mandatory on turret prototypes (the engine refuses to load without
+    -- it). Matched to the plate's own contact range rather than gun
+    -- turret's 40 -- a plate calls for help over its own tile, not across
+    -- the platform.
+    call_for_help_radius = 4,
+    inventory_size = 1,
+    -- MEASURED, and not what the name suggests: `automated_ammo_count` is the
+    -- count an *inserter* fills the turret up to and then stops at -- it is
+    -- not only a logistics-request number. Spiked side by side against a
+    -- vanilla gun-turret on an identical inserter+chest rig: the gun turret
+    -- settled at exactly 10 (its own automated_ammo_count) and the plate at
+    -- exactly whatever this field said, in both cases far below the ammo
+    -- item's stack size, so it is this field and not a stack limit. Set to
+    -- 10 to match gun-turret. Anything lower silently caps how deep a plate
+    -- can be stocked, which on a platform -- where there are no construction
+    -- robots to top anything up (space-age/base-data-updates.lua puts
+    -- roboports behind pressure >= 10) -- is the difference between a plate
+    -- that survives an asteroid wave and one that runs dry mid-wave.
+    automated_ammo_count = 10,
+    attack_parameters = {
+      type = "projectile",
+      ammo_category = "sae-reactive-charge",
+      -- Placeholder. One charge per shot, a short cooldown so a plate that
+      -- fails to kill something can try again before impact.
+      cooldown = 15,
+      projectile_creation_distance = 0.4,
+      projectile_center = { 0, 0 },
+      -- "Contact range". Deliberately far shorter than gun turret's 18 or
+      -- railgun turret's 40 -- this is the number the whole design hangs on.
+      --
+      -- MEASURED and sufficient: with range 4, a plate on the rim killed an
+      -- inbound asteroid with the plate itself still at 200/200 and a witness
+      -- entity one tile behind it still at 350/350, and zero tile damage, for
+      -- every class up to and including `big`. An identical plate with an
+      -- empty ammo slot, same tile, same asteroid, was destroyed outright.
+      --
+      -- Range 4 is, however, the limit on the plate's LATERAL coverage too,
+      -- and that turns out to matter more than the head-on case: when a large
+      -- asteroid is killed it spawns children with an x-offset spread of up
+      -- to ~4.5 tiles (asteroid.lua's dying_trigger_effect uses
+      -- offsets +/- collision_radius*0.5 with an equal offset_deviation), so
+      -- some children of a `huge` land outside a single plate's reach. A lone
+      -- plate therefore leaks; a continuous rim of them does not (see the
+      -- 3600-tick exposure result in the file header).
+      range = 4,
+      -- Copied from both vanilla gun-turret and railgun-turret: a negative
+      -- penalty makes the turret *prefer* threatening asteroids over any
+      -- other target. Without it a plate would happily ignore the thing
+      -- about to hit it.
+      threatening_asteroid_penalty = -20,
+      health_penalty = 10,
+    },
+    graphics_set = {
+      base_visualisation = {
+        animation = {
+          filename = "__base__/graphics/entity/gun-turret/gun-turret-base.png",
+          priority = "high",
+          width = 150,
+          height = 118,
+          scale = 0.25,
+        },
+      },
+    },
+    folded_animation = {
+      filename = "__base__/graphics/entity/gun-turret/gun-turret-base.png",
+      priority = "high",
+      width = 150,
+      height = 118,
+      scale = 0.25,
+    },
+  },
+})
