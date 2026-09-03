@@ -38,9 +38,13 @@ data:extend({
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },
-    -- Placeholder collision/selection box, reused from vanilla accumulator.
-    collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
-    selection_box = { { -1, -1 }, { 1, 1 } },
+    -- Collision/selection box sized to match the actual rendered body
+    -- sprite below (vanilla reactor.png, 302x318 at scale 0.5 = 151x159px
+    -- = ~2.36x2.48 tiles at 64px/tile) -- previously these were still
+    -- sized for the old, much smaller vanilla-accumulator sprite this
+    -- entity used before, so the reactor art overhung its own footprint.
+    collision_box = { { -1.1, -1.1 }, { 1.1, 1.1 } },
+    selection_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
     -- Visuals: vanilla nuclear reactor's own body/shadow sprite files,
     -- used directly as plain Sprite layers (values verified against
     -- base/prototypes/entity/entities.lua's own "reactor" picture field)
