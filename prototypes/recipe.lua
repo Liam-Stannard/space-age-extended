@@ -147,7 +147,7 @@ data:extend({
     enabled = false,
     ingredients = {
       { type = "item", name = "sae-copper-foil", amount = 1 }, -- replaces 3 Copper Cable
-      { type = "item", name = "iron-plate", amount = 1 },
+      { type = "fluid", name = "molten-iron", amount = 10 }, -- replaces 1 Iron Plate, vanilla's own casting-iron ratio (20 molten-iron -> 2 iron-plate)
     },
     results = {
       { type = "item", name = "electronic-circuit", amount = 1 },

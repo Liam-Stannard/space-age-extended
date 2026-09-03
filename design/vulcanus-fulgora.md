@@ -402,7 +402,7 @@ Because the player toggles rather than runs both simultaneously in one building,
 
 ### Substitution rule
 
-**Copper Foil substitutes only for the copper content of each vanilla recipe.** All non-copper inputs (Iron Plate, Plastic, Sulfuric Acid) stay identical to vanilla. This keeps balancing to a single tunable variable: Copper Foil's copper-equivalent value.
+**Copper Foil substitutes only for the copper content of each vanilla recipe.** Non-copper, non-iron inputs (Plastic, Sulfuric Acid) stay identical to vanilla, keeping balancing to a single tunable variable: Copper Foil's copper-equivalent value. Electronic Circuit's Iron Plate input is the one exception — see §7.1 — substituted for Molten Iron at vanilla's own casting-iron ratio, since the Electromagnetic Plant already sits downstream of this mod's own molten-iron chain and skipping the cast is a value-neutral efficiency, not a balance change.
 
 ### Vanilla baselines
 
@@ -423,13 +423,13 @@ Because the player toggles rather than runs both simultaneously in one building,
 ### Inputs
 
 - Copper Foil *(replaces 3 Copper Cable)*
-- Iron Plate ×1 *(unchanged)*
+- Molten Iron ×10 *(replaces 1 Iron Plate, at vanilla's own casting-iron ratio — skips the cast entirely rather than requiring the player to cast Molten Iron to Iron Plate and back)*
 
 ### Output
 
 - Electronic Circuit
 
-Clean 1:1 substitution against the vanilla recipe.
+Value-neutral substitution against the vanilla recipe on both inputs now — copper by Copper Foil, iron by the same ratio vanilla's own casting-iron recipe already uses.
 
 ---
 
