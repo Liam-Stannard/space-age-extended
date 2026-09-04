@@ -59,3 +59,7 @@ if [ $STATUS -ne 0 ] || grep -qE '^ *[0-9.]+ Error' "$LOG_FILE"; then
 fi
 
 echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
+
+# The data stage never opens image files, so a mod with broken icon paths passes
+# here and is then refused outright by a client. Check them too.
+"$REPO_ROOT/tools/check-graphics.sh" || exit 1

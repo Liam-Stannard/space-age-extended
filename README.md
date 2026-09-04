@@ -52,8 +52,13 @@ info.json
 ## Verifying a change
 
 ```
-./tools/check-data-stage.sh     # loads the mod against the real engine
+./tools/check-data-stage.sh     # loads the mod against the real engine,
+                                # then verifies every referenced image exists
 ```
+
+The second half matters: the data stage never opens image files, so a mod whose
+icons all point at nothing loads cleanly here and is then refused outright by a
+client. `tools/check-graphics.sh` runs on its own too.
 
 Behavioural checks run on a headless server driven over RCON — see
 [design/spikes.md](design/spikes.md#the-rig) for the harness, including the two

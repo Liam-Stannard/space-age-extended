@@ -14,7 +14,7 @@ data:extend({
   {
     type = "item",
     name = "sae-whisker-bed",
-    icon = "__base__/graphics/icons/stone-path.png",
+    icon = "__base__/graphics/icons/stone-brick.png",
     subgroup = "terrain",
     order = "z[sae]-a[whisker-bed]",
     stack_size = 100,

@@ -10,7 +10,14 @@ data:extend({
   {
     type = "technology",
     name = "sae-core-discovery",
-    icon = "__space-age__/graphics/technology/planet-discovery-aquilo.png",
+    icons =
+    {
+      { icon = "__space-age__/graphics/technology/aquilo.png", icon_size = 256 },
+      {
+        icon = "__core__/graphics/icons/technology/constants/constant-planet.png",
+        icon_size = 128, scale = 0.5, shift = { 50, 50 }, floating = true
+      }
+    },
     icon_size = 256,
     essential = true,
     effects =
@@ -53,7 +60,7 @@ local function foothold(name, prereqs, effects)
   {
     type = "technology",
     name = name,
-    icon = "__space-age__/graphics/technology/planet-discovery-aquilo.png",
+    icon = "__space-age__/graphics/technology/aquilo.png",
     icon_size = 256,
     effects = effects,
     prerequisites = prereqs,
