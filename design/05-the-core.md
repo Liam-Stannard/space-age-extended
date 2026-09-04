@@ -27,7 +27,8 @@ body in the system.
 single value: no combustion of any kind, and no roboport networks. Note that the
 conditions live on *those specific vanilla prototypes* — a mod could add a burner
 with no conditions at all. This mod deliberately does not. Nothing burns on the
-Core, and the heat network below is why that costs the player no capability.
+Core, and it costs the player no capability: surface power comes from the arc
+storms and from steam raised off the melt (§2), neither of which needs a flame.
 
 Working at pressure 5 without any change: foundry, electromagnetic plant,
 biochamber, recycler, chemical plant, assembler, electric furnace, nuclear
@@ -64,8 +65,8 @@ metal-bearing, and **unbarrelable**, so it can never leave the planet. Rate
 declines with draw the way crude oil does, so a vent is permanent, worth building
 around, and eventually wants company.
 
-**Drawing melt costs gas.** The melt vent requires an input of **vent gas** to
-draw, the way vanilla's uranium ore requires 10 sulfuric acid per mining
+**Drawing melt costs helium-3.** The melt vent requires an input of **helium-3**
+to draw, the way vanilla's uranium ore requires 10 sulfuric acid per mining
 operation (`minable.required_fluid`). The rarer resource therefore throttles the
 abundant one, and the two vent types become a single coupled siting problem
 rather than two independent ones.
@@ -75,12 +76,12 @@ needs both an input and an output fluid box, which the mining drill prototype
 supports, but no vanilla prototype does both at once — worth a spike before this
 is depended on.
 
-**Melt has two uses, and they compete.**
-
-| Path | Product |
-|---|---|
-| Cast it | The Core's own solid — the feedstock of the final line |
-| Tap its heat | Heat into a network → exchangers → turbines → surface power |
+**Melt splits between metal and power, and the split is a recipe choice.**
+Settling comes in two forms: one yields more settled melt and a little steam, the
+other yields less melt and a great deal of steam at 500 °C, which drives ordinary
+turbines. Recipes may output a fluid at a fixed temperature — vanilla's
+`acid-neutralisation` emits steam at exactly 500 — so this needs no heat network,
+no heat pipes and nothing borrowed from Aquilo.
 
 Every megawatt is metal not cast, and the final line needs both. That competition
 for one sited, rate-limited resource is the Core's central factory problem, and
@@ -88,11 +89,17 @@ nothing in vanilla poses it.
 
 ### Gas vents — volatiles, rare
 
-**Vent gas**: the planet's trapped volatiles, and the only source of pressure and
-oxidiser on an airless world. Rarer than melt, and now doubly load-bearing, since
-melt cannot be drawn without it. Refined into **oxygen** for everything that
-needs an oxidiser, and compressed for sealed processes — including the sealed
-roboport (§9).
+**Helium-3**: primordial gas trapped since the planet formed, which is genuinely
+what a planetary interior holds. Inert, cryogenic and precious — a scarce reagent
+rather than a bulk utility, which is the right character for the rarer of the two
+vents.
+
+It is doubly load-bearing: melt cannot be drawn without it, so the rare resource
+throttles the abundant one. Beyond that it is the atmosphere for sealed processes
+(including the sealed roboport, §9) and an ingredient in the science pack.
+
+**What it is not** is a source of oxygen. The Core has no oxidiser of its own,
+and nothing there burns.
 
 ### What the Core never has
 
@@ -157,10 +164,10 @@ built anywhere else.
 **The five capstone products are inputs to it, not parts of the goal.** Each
 arrives from its own pair of planets and is *consumed* to make an intermediate
 that only the Core can produce, because every intermediate also needs something
-local: the melt, the heat, the volatiles, or a step that only runs in orbit.
+local: the melt, the whiskers, the helium-3, or a step that only runs in orbit.
 
 ```
-five capstone products            core melt · heat · volatiles · orbit steps
+five capstone products         molten kamacite · whiskers · helium-3 · orbit
         \                                 /
          +-------- intermediates --------+        (stage 1: each capstone
                         |                          consumed with a local input)
@@ -184,12 +191,25 @@ Three consequences worth being explicit about:
 - **The chain spans surface and orbit** at more than one stage (§4), so both
   halves are live for the whole endgame rather than at a single hand-off.
 
+### Metal carbonyl — the chemistry that arrives later
+
+Metals dissolve into carbon monoxide as a gas and deposit again as ultra-pure
+powder when it decomposes. It is real industrial chemistry, and mechanically it
+is the most interesting thing available to the Core: **metal that travels
+through pipes.**
+
+It cannot be a vent product, because forming it needs carbon and the Core has
+none — so it is an intermediate unlocked later and built from **imported
+carbon**. That is a feature rather than an obstacle: it gives the corridor a
+permanent cargo that has nothing to do with the capstones, and it means the
+Core's best chemistry is paid for with freight from home.
+
 ## 6. The sixth tech tree
 
 The Core carries the mod's **sixth technology tree** — at least ten technologies,
 and the only tree whose research currency is manufactured on site.
 
-### Telluric science
+### Geodynamic science
 
 A new science pack, crafted from the **intermediates** of the Core's own line
 (§5) — the same intermediates the end products need.
@@ -197,13 +217,38 @@ A new science pack, crafted from the **intermediates** of the Core's own line
 > Research and construction draw on one supply. **Every pack burned is a segment
 > delayed.**
 
-That is the endgame's central decision, one layer above the melt's cast-or-heat
-split, and it is why the pack's cost is the most important number in the tree.
+That is the endgame's central decision, one layer above the melt's
+metal-or-steam split, and it is why the pack's cost is the most important number
+in the tree.
 Start it deliberately expensive and tune down: if the pack is cheap, research is
 a formality and the endgame collapses into a segment grind.
 
-*Telluric* because telluric currents are the real electrical currents that run
-through a planet's crust — precisely what the Ignition Array exists to restart.
+*Geodynamic* after geodynamics, the study of planetary interiors and the fields
+they generate — which is precisely what the Ignition Array exists to restart. It
+also matches vanilla's habit of naming a pack after a field of study:
+metallurgic, electromagnetic, agricultural, cryogenic.
+
+### The recipe
+
+**Geodynamic science pack** — 20 s, in an assembler, recipe locked to pressure
+1–9. One recipe, not five alternates.
+
+| Ingredient | Why it is there |
+|---|---|
+| **Two fixed intermediates** | The competition with construction: every pack is a Field Coil Segment delayed |
+| **Kamacite whiskers** | Ties research rate to growing *area*, so knowledge costs ground |
+| **Homogenised alloy** | Made in orbit only, so the lift is load-bearing from the first technology |
+| **Helium-3** | From the rarer vent, which already throttles the melt |
+
+**Two intermediates rather than five.** Research opens once two specific trees
+are delivering, while the Field Coil Segment still needs all five. That keeps the
+goal maximally demanding without letting one lagging tree freeze the entire Core
+tech tree — and it means the two trees named here are the ones a player is
+pushed to finish first.
+
+The pack touches three of the Core's four mechanics — settling, growth and
+orbital homogenisation — and leaves **cold welding** to the Field Coil Segment.
+Research uses the material sciences; construction uses the joining.
 
 Three rules:
 
@@ -226,9 +271,9 @@ and shaped so the endgame builds rather than arriving flat.
 
 | Tier | Technologies | Notes |
 |---|---|---|
-| **0 — Foothold** | Core Survey (melt pump, working the ore) · Melt Casting (raw billet and the aging line) · Thermal Tap (heat into a network) · Volatile Extraction (gas vent pump, compression) | Researched on packs the player already makes, since no Telluric pack exists yet |
+| **0 — Foothold** | Core Survey (vent pump, working the ore) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Helium Extraction (the gas vent) | Researched on packs the player already makes, since no geodynamic pack exists yet |
 | **1 — Integration** | Five technologies, one per capstone: each unlocks the recipe consuming that product with a local input to make an intermediate | **Researchable in any order**, so a player whose Gleba line is ahead of their Aquilo line is never blocked |
-| **2 — Telluric Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
+| **2 — Geodynamic Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
 | **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
 | **4 — The goal** | Field Coil Segment · Ignition Array | Costs escalate steeply — the Array's research alone running into thousands of packs |
 
@@ -236,7 +281,7 @@ and shaped so the endgame builds rather than arriving flat.
 
 **The pack cannot be first.** It is made from intermediates, and intermediates
 need a capstone product plus a local input — so the opening hours run on vanilla
-packs and local bootstrapping, and Telluric science arrives only once the
+packs and local bootstrapping, and geodynamic science arrives only once the
 corridor is genuinely delivering. The tree's currency is earned rather than
 granted on landing.
 
@@ -248,7 +293,7 @@ building more.
 **The five integration technologies must not be five of the same technology.**
 They share a shape — capstone plus local input yields intermediate — so what
 saves them is that each integrates through a **different local input**: one
-through the heat, one through the volatiles, one through an orbit-only step, one
+through the settling line, one through the helium, one through an orbit-only step, one
 through matured billet, one through raw melt. Then each capstone lands somewhere
 different in the Core's economy, and five reads as five.
 
@@ -372,13 +417,13 @@ into a milestone.
   stages of §5 are named but not designed.
 - **Which local input each of the five integration technologies uses** — the
   fix for them reading as one technology repeated (§6).
-- **The Telluric pack's cost**, which sets how sharply research competes with
+- **The geodynamic pack's cost**, which sets how sharply research competes with
   construction.
 - **What the promethium-space material is** — the working assumption is a
   decaying isotope that loses charge in storage whether used or not, so corridor
   power can be produced and spent but never banked.
-- **Whether vent gas has a third use** beyond oxidiser, pressurisation and
-  gating the melt draw.
+- **Which two intermediates the pack takes**, since that decides which trees a
+  player is pushed to finish first.
 - **The spike on `required_fluid` for a fluid resource** (§2).
 - **What the end products are**, and how many of them there should be.
 - **How many segments**, and how the 100 divides across the aging floor.
