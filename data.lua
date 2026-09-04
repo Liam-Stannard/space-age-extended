@@ -1,5 +1,9 @@
 -- Space Age Extended -- data stage.
 --
--- Deliberately empty. The mod is being rebuilt to the design in design/;
--- prototypes arrive with Phase 1 (the Core as a place). See
--- design/05-roadmap.md for what lands when.
+-- Phase 1: the Core as a place. Its industry arrives with Phase 2.
+
+require("prototypes.core.fluids")
+require("prototypes.core.items")
+require("prototypes.core.resources")
+require("prototypes.core.planet")
+require("prototypes.core.technology")
