@@ -180,3 +180,78 @@ data:extend({
   geodynamic("sae-ignition-array", { "sae-field-coils" }, 2500,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
 })
+
+-- Fulgora <-> Aquilo. Available once both worlds are running, which is what
+-- "after Aquilo" means in practice, and researched on packs the player already
+-- makes: this is a cross-planet tree, not Core content.
+data:extend({
+  {
+    type = "technology",
+    name = "sae-fa-cryogen",
+    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon_size = 256,
+    effects =
+    {
+      { type = "unlock-recipe", recipe = "sae-cryogen" },
+      { type = "unlock-recipe", recipe = "sae-cryogen-recovery" }
+    },
+    prerequisites = { "cryogenic-science-pack" },
+    unit =
+    {
+      count = 300,
+      ingredients =
+      {
+        { "automation-science-pack", 1 }, { "logistic-science-pack", 1 },
+        { "chemical-science-pack", 1 }, { "production-science-pack", 1 },
+        { "utility-science-pack", 1 }, { "space-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 }, { "cryogenic-science-pack", 1 }
+      },
+      time = 60
+    }
+  },
+  {
+    type = "technology",
+    name = "sae-fa-fluorinated-holmium",
+    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon_size = 256,
+    effects = { { type = "unlock-recipe", recipe = "sae-fluorinated-holmium" } },
+    prerequisites = { "sae-fa-cryogen" },
+    unit =
+    {
+      count = 400,
+      ingredients =
+      {
+        { "automation-science-pack", 1 }, { "logistic-science-pack", 1 },
+        { "chemical-science-pack", 1 }, { "production-science-pack", 1 },
+        { "utility-science-pack", 1 }, { "space-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 }, { "cryogenic-science-pack", 1 }
+      },
+      time = 60
+    }
+  },
+  {
+    type = "technology",
+    name = "sae-fa-superconducting-winding",
+    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon_size = 256,
+    essential = true,
+    effects =
+    {
+      { type = "unlock-recipe", recipe = "sae-superconducting-winding" },
+      { type = "unlock-recipe", recipe = "sae-superconducting-store" }
+    },
+    prerequisites = { "sae-fa-fluorinated-holmium" },
+    unit =
+    {
+      count = 600,
+      ingredients =
+      {
+        { "automation-science-pack", 1 }, { "logistic-science-pack", 1 },
+        { "chemical-science-pack", 1 }, { "production-science-pack", 1 },
+        { "utility-science-pack", 1 }, { "space-science-pack", 1 },
+        { "electromagnetic-science-pack", 1 }, { "cryogenic-science-pack", 1 }
+      },
+      time = 60
+    }
+  }
+})

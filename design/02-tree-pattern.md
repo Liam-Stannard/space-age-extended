@@ -167,7 +167,7 @@ that:
 | Vulcanus ↔ Fulgora | both | **Surge production** | — | **Magnetar alloy** | The coil's magnetic core | Mechanic + capstone |
 | **Vulcanus ↔ Gleba** | both | **Maturation** | — | **Cultured alloy** | The coil's frame; also ripens on the corridor run | Mechanic + capstone |
 | Fulgora ↔ Gleba | both | **The living line** | — | **Bio-polymer** | The coil's insulation | Mechanic + capstone |
-| Fulgora ↔ Aquilo | Aquilo | **The cold loop** | — | **Superconducting winding** | The coil's conductor | Mechanic + capstone |
+| **Fulgora ↔ Aquilo** | Aquilo | **The cold loop** | Fluorine and electrolyte, neither barrellable | **Superconducting winding** | The coil's conductor | **Built** — [spec](trees/fulgora-aquilo.md) |
 | Gleba ↔ Aquilo | Aquilo | **Seed stock** | — | **Cryoprotectant fluid** | The coil's coolant | Mechanic + capstone |
 
 **The capstones are one decomposition.** A field coil has five parts — conductor,

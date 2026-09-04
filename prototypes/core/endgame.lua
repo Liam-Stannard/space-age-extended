@@ -27,9 +27,9 @@ data:extend({
 -- a recipe change and a migration, not a redesign.
 --------------------------------------------------------------------------------
 
+-- Fulgora <-> Aquilo is built, so its capstone is no longer among these.
 local stub_items =
 {
-  { name = "sae-superconducting-winding", icon = "__space-age__/graphics/icons/superconductor.png",   order = "a" },
   { name = "sae-magnetar-alloy",          icon = "__space-age__/graphics/icons/tungsten-plate.png",   order = "b" },
   { name = "sae-cultured-alloy",          icon = "__space-age__/graphics/icons/bioflux.png",          order = "c" },
   { name = "sae-bio-polymer",             icon = "__base__/graphics/icons/plastic-bar.png",           order = "d" }
@@ -92,6 +92,15 @@ data:extend({
 --------------------------------------------------------------------------------
 
 data:extend({
+  {
+    type = "item",
+    name = "sae-superconducting-winding",
+    icon = "__space-age__/graphics/icons/superconductor.png",
+    subgroup = "raw-material",
+    order = "z[sae]-fa[d-winding]",
+    stack_size = 50,
+    weight = 2000
+  },
   {
     type = "item",
     name = "sae-coil-assembly",
