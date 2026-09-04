@@ -10,9 +10,16 @@ completes when material from both worlds meets in the same recipe.
 
 ---
 
+## Five pairs
+
+There are ten possible pairs across Nauvis, Vulcanus, Fulgora, Gleba and
+Aquilo. **Five of them get trees**, at least for now — enough that the endgame
+draws on the whole system, few enough that each tree can be built properly and
+actually played.
+
 ## A tree per pair
 
-Each planet pair gets a **small tree of its own**:
+Each chosen pair gets a **small tree of its own**:
 
 - **Around 4–10 technologies.** Small enough to be finished, not a second
   planetary tech tree bolted onto the first.
@@ -22,6 +29,17 @@ Each planet pair gets a **small tree of its own**:
   themed to those two planets specifically, and to the chain that leads up to
   them. What Vulcanus and Fulgora do together should not be re-skinnable onto
   another pair.
+
+## When a tree becomes available
+
+Progression follows Space Age's own. **A pair's tree opens once the player has
+completed the vanilla tech trees of both its planets.** Nothing new is gated on
+anything but the vanilla progress the player would be making anyway.
+
+That falls out naturally into an order: pairs among the early and mid planets
+become available as the player finishes each of them, and **Aquilo's pairs come
+last**, because Aquilo itself does. The mod's own content spreads across the
+back half of a normal playthrough rather than arriving all at once.
 
 ## The capstone
 
@@ -37,9 +55,13 @@ at the end.
 
 ## The endgame
 
-The endgame lies **beyond the Shattered Planet, at the Core**.
+The endgame lies **beyond the Shattered Planet, at the Core** — a real planet
+with a landable surface and its own orbit, past the point where vanilla's route
+gives out.
 
-Getting there is the journey; what happens there finishes the game. On the Core
+**The win condition moves there.** Vanilla's ending is the Solar System Edge;
+the mod's is the Core, and the game is finished by what the player builds on it.
+Getting there is the journey; the production line there is the ending. On the Core
 the player builds a **final, complex production line** — the largest in the mod —
 whose inputs are:
 
@@ -54,19 +76,43 @@ once, at the far end of the longest supply line in the game.**
 
 ---
 
-## Open questions
+## Consequences worth being clear about
 
-Not decided yet, and deliberately left open here rather than answered by
-implication:
+**Every tree built is a tree required.** Because the final production line
+consumes an item from every capstone, none of the five is skippable. That is
+what makes the pairs add up to an ending rather than a menu — and it means a
+tree that plays badly blocks the ending instead of being ignored, so each one
+has to be played before the next is designed.
 
-- **How many pairs get trees.** There are ten across Nauvis, Vulcanus, Fulgora,
-  Gleba and Aquilo. All ten, or a chosen subset?
-- **How the trees are ordered.** Whether a pair's tree is reachable as soon as
-  both planets are, or whether the trees have an intended sequence.
-- **Whether the vanilla win condition stays untouched**, and whether the mod's
-  content is optional up to it.
-- **What the capstone entities do.** "Useful during progression" is the
-  requirement; whether that means space platforms, planetside production, or a
-  mix per pair is open.
-- **Whether the Core is a landable surface at all.** This is the mod's largest
-  technical assumption and it is unverified against the engine.
+**The win condition moving is a real change to vanilla**, and the only one the
+mod makes. Everything else is additive: a player can still reach the Solar
+System Edge exactly as before, it simply is not where the game ends any more.
+
+## The engine hook for the ending
+
+Space Age's victory is not hard-coded. It fires from
+`core/lualib/space-finish-script.lua` when a space platform's
+`last_visited_space_location` matches `victory_location`, which defaults to
+`solar-system-edge` — and it exposes a remote interface to move it:
+
+```lua
+remote.call("space_finish_script", "set_victory_location", "<location>")
+```
+
+So relocating the ending to the Core is directly supported, with one caveat:
+that hook fires on **arrival in orbit**, not on finishing anything. If the
+ending is to be the final production line rather than the trip, the mod sets
+`set_no_victory(true)` and calls `game.set_game_state` itself when the line
+delivers. Which of those two the ending is remains to be decided.
+
+## Still open
+
+- **Which five pairs.** One candidate worth considering is a closed loop —
+  Nauvis↔Vulcanus, Vulcanus↔Fulgora, Fulgora↔Gleba, Gleba↔Aquilo,
+  Aquilo↔Nauvis — because every planet then appears in exactly two trees, no
+  world becomes a mere supplier, and the availability order spreads across the
+  playthrough. Not decided.
+- **What the capstone entities are.** Per-pair variety is the intent: some
+  planetside, some on platforms, whatever suits that pairing. What each one
+  actually is gets decided with its tree.
+- **Whether the ending is arrival or completion** — see above.
