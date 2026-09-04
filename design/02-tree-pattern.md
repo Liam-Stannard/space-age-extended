@@ -165,7 +165,7 @@ that:
 | Pair | Available after | Mechanic taught | Anchor | Capstone | Endgame role | Status |
 |---|---|---|---|---|---|---|
 | Vulcanus ↔ Fulgora | both | — | — | — | — | Not designed |
-| **Vulcanus ↔ Gleba** | both | **Maturation** | — | — | The Core's central process — the cast billet ages into the endgame material | Mechanic chosen |
+| **Vulcanus ↔ Gleba** | both | **Maturation** | — | — | The corridor — cargo ripens during the platform run out | Mechanic chosen |
 | Fulgora ↔ Gleba | both | — | — | — | — | Not designed |
 | Fulgora ↔ Aquilo | Aquilo | — | — | — | — | Not designed |
 | Gleba ↔ Aquilo | Aquilo | — | — | — | — | Not designed |

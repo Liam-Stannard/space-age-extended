@@ -51,17 +51,29 @@ Three things, all sited, none of them enough.
 
 ### Metal ore — rich, scattered, finite
 
-Extremely rich patches, spread widely, that genuinely run out. With no roboport
+**Kamacite ore** — the real iron-nickel alloy of meteorite cores. Extremely rich
+patches, spread widely, that genuinely run out. With no roboport
 network available at first, that makes **belts and rails** the answer, and it
 makes the Core a place the player expands across rather than a single pad they
 build on.
 
 ### Melt vents — a fluid, infinite but declining
 
-Scattered vents tapped by a dedicated pump, yielding **core melt**: hot,
+Scattered vents tapped by a **vent pump**, yielding **molten kamacite**: hot,
 metal-bearing, and **unbarrelable**, so it can never leave the planet. Rate
 declines with draw the way crude oil does, so a vent is permanent, worth building
 around, and eventually wants company.
+
+**Drawing melt costs gas.** The melt vent requires an input of **vent gas** to
+draw, the way vanilla's uranium ore requires 10 sulfuric acid per mining
+operation (`minable.required_fluid`). The rarer resource therefore throttles the
+abundant one, and the two vent types become a single coupled siting problem
+rather than two independent ones.
+
+*To verify:* vanilla only uses `required_fluid` on a solid resource. A vent pump
+needs both an input and an output fluid box, which the mining drill prototype
+supports, but no vanilla prototype does both at once — worth a spike before this
+is depended on.
 
 **Melt has two uses, and they compete.**
 
@@ -76,10 +88,11 @@ nothing in vanilla poses it.
 
 ### Gas vents — volatiles, rare
 
-The planet's trapped gas: the only source of **pressure and oxidiser** on an
-airless world. Its own siting problem, since it is rarer than melt. It is what
-makes sealed processes possible — including the pressurised roboport (below) —
-and it supplies oxidiser to anything leaving again.
+**Vent gas**: the planet's trapped volatiles, and the only source of pressure and
+oxidiser on an airless world. Rarer than melt, and now doubly load-bearing, since
+melt cannot be drawn without it. Refined into **oxygen** for everything that
+needs an oxidiser, and compressed for sealed processes — including the sealed
+roboport (§9).
 
 ### What the Core never has
 
@@ -111,12 +124,22 @@ around the Core**, not on the ground. 2.1's platform-to-platform transfer, plus
 cargo pods to and from the surface, make that a real logistics loop rather than a
 scripted hand-off.
 
-The split is enforced by the engine, exactly as vanilla enforces its own:
+**The round trip is physically motivated, not a logistics rule.** The Core has
+the highest gravity in the game and the platform above it has none, and the same
+material needs both:
+
+- **On the surface, weight separates.** Molten kamacite settles under 50g into a
+  dense fraction and dross, with no energy and no reagent.
+- **In orbit, nothing settles.** The same material alloys evenly precisely
+  because gravity cannot pull it apart again.
+
+So the player goes up to escape gravity and comes back down to use it. The split
+is enforced by the engine exactly as vanilla enforces its own:
 
 - **Orbit-only steps** take `surface_conditions` of gravity 0 — the same lock
   vanilla puts on space science, thruster fuel and promethium science.
-- **Surface-only steps** need what only the ground has: the melt, the heat, the
-  ore, the volatiles.
+- **Surface-only steps** take gravity ≥ 45, which is the Core alone (Vulcanus,
+  the next heaviest, is exactly 40).
 - The **asteroid work happens in orbit by necessity** — crushers, collectors and
   thrusters are all space-only prototypes, so anything won from promethium space
   is processed above the planet and dropped.
@@ -254,8 +277,10 @@ understands one: it accumulates parts, shows its progress, and fires once.
 forces the Core's central tension to its limit: every megawatt it takes is melt
 that was not cast into the billets it also needs.
 
-**Rate is set by maturation, not by machines.** Widen the aging floor or wait —
-the one production problem in the game that more assemblers cannot solve.
+**Rate is set by time and area, not by machines.** Settling takes as long as it
+takes, whiskers grow at the rate they grow, and cold welding cannot be hurried —
+so the answer to "faster" is more floor, not better machines. That is the one
+production problem in the game more assemblers cannot solve.
 
 ### Winning
 
@@ -271,19 +296,61 @@ consumer: windings replaced forever, which keeps all five trees and the whole
 corridor running after the credits. That is the difference between an ending and
 a switch-off.
 
-## 8. Maturation as the Core's central process
+## 8. The Core's own mechanics
 
-The one mechanic carried in from the trees. A billet cast from core melt is not
-finished when it leaves the mould — it has to **age** before it becomes the
-material the final line needs.
+Four rules that exist nowhere else in the game. Between them they give the Core a
+production identity built on **weight, vacuum, time and the absence of gravity**,
+rather than on the heat and electricity every other world runs on.
 
-Implemented with the engine's own spoilage timer pointing at a *better* item
-rather than a worse one; nothing requires the destination of `spoil_result` to be
-a downgrade.
+### Gravity settling — surface only
 
-It means the last step cannot be rushed, only widened — the player buys
-throughput with floor space and patience instead of with more machines, which is
-a different problem from every other one the game has set them.
+Molten kamacite separates into a dense fraction and dross **because it is heavy**.
+No energy, no reagent, no catalyst: a tall vessel and time. It works here because
+the Core's gravity is 50, and nowhere else because Vulcanus, the next heaviest
+world, is 40.
+
+*Implementation:* `surface_conditions` gravity ≥ 45 on the recipe. Nothing in
+vanilla uses gravity as a production condition — only as a space-or-ground
+switch.
+
+### Orbital homogenisation — orbit only
+
+The same material, taken up to the platform, alloys **evenly precisely because
+nothing settles**. Gravity is the thing being escaped.
+
+*Implementation:* `surface_conditions` gravity 0, the same lock vanilla puts on
+space science. Paired with settling, it is what makes the surface/orbit lift a
+permanent loop rather than a hand-off (§4).
+
+### Cold welding — vacuum
+
+In real vacuum, clean metal surfaces bond on contact. Joining costs almost no
+power and cannot be hurried: the machine is a clamp, not a furnace.
+
+*Implementation:* `surface_conditions` pressure ≤ 9 with a long
+`energy_required` and negligible machine energy usage. A production step whose
+cost is **place and patience** rather than throughput — the game has never had
+one.
+
+### Whisker growth — surface, on tiles
+
+Kamacite whiskers crystallise out of the melt over time on seeded plates, and are
+harvested like a crop. Growing area, not machine count, is the throughput.
+
+*Implementation:* the `plant` prototype with `growth_ticks` and a tile
+restriction, plus a harvesting tower — vanilla's agriculture machinery used for
+**mineral** growth. Gleba farms food; the Core farms metal.
+
+### Where maturation went
+
+Maturation — the Vulcanus ↔ Gleba mechanic — was previously written here as the
+Core's central process. It has moved: **its endgame home is the corridor**, where
+cargo ripens during a platform run measured in real time, so the journey pays for
+exactly one material.
+
+Two time-based material processes on one planet would have blurred into each
+other. Each now has a single home: maturation is a warehouse that ages, whisker
+growth is a field you build and harvest.
 
 ## 9. Bots are earned
 
@@ -307,7 +374,11 @@ into a milestone.
   fix for them reading as one technology repeated (§6).
 - **The Telluric pack's cost**, which sets how sharply research competes with
   construction.
-- **What the promethium-space material is**, and how it enters the chain.
-- **Whether volatiles have a third use** beyond oxidiser and pressurisation.
+- **What the promethium-space material is** — the working assumption is a
+  decaying isotope that loses charge in storage whether used or not, so corridor
+  power can be produced and spent but never banked.
+- **Whether vent gas has a third use** beyond oxidiser, pressurisation and
+  gating the melt draw.
+- **The spike on `required_fluid` for a fluid resource** (§2).
 - **What the end products are**, and how many of them there should be.
 - **How many segments**, and how the 100 divides across the aging floor.
