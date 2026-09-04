@@ -213,10 +213,10 @@ data:extend({
   },
 })
 
--- Placeholder per-direction base art for Reactive Edge Plating: frame 0 of row
--- `dir` of vanilla's 4-direction gun-turret raising sheet (130x126 per frame,
--- rows in N/E/S/W order). Scale 0.25 keeps the sprite inside the plate's 1x1
--- footprint; the shift is vanilla's -26.5px halved to match that scale.
+-- ART PENDING -- per-direction base art for Reactive Edge Plating, standing in
+-- until the real sprite exists: frame 0 of row `dir` of vanilla's 4-direction
+-- gun-turret raising sheet (130x126 per frame, rows in N/E/S/W order). This is
+-- the only stand-in in the entity; nothing numeric below depends on it.
 local function sae_plating_base_direction(dir)
   return {
     filename = "__base__/graphics/entity/gun-turret/gun-turret-raising.png",
@@ -227,25 +227,31 @@ local function sae_plating_base_direction(dir)
     y = dir * 126,
     -- Scale and shift are in step: the source sheet is 130x126 px, so 0.5
     -- draws it about two tiles across, which at least fills a 3x2 panel
-    -- instead of sitting as a one-tile dot in the middle of it. Still
-    -- placeholder -- real art is a 3x2 armour panel with its own folded /
-    -- preparing / attacking states.
+    -- instead of sitting as a one-tile dot in the middle of it. The real art
+    -- is a 3x2 armour panel with its own folded / preparing / attacking
+    -- states.
     shift = { 0, -0.82 },
     scale = 0.5,
   }
 end
 
--- Reactive Edge Plating (Phase 0 feasibility spike).
+-- Reactive Edge Plating.
 --
 -- A perimeter plate that does NOT absorb impacts: it spends one loaded
 -- charge to destroy an incoming asteroid at contact range. Implemented as a
 -- real `ammo-turret` with a 1-slot ammo inventory, so that inserters load it
 -- with exactly the native code path that loads a gun turret -- no
--- control-stage logic at all. The whole point of the spike is that this
--- shape is entirely data-stage; every line below is either measured against
--- the running engine or explicitly flagged as a placeholder. The run log for
--- those measurements lives in PROGRESS.md -- only the engine facts that
--- explain a specific line below are kept here.
+-- control-stage logic at all. The whole point is that this shape is entirely
+-- data-stage; every number below is either measured against the running
+-- engine or carries a one-line note saying what it is anchored to. The run
+-- log for those measurements lives in PROGRESS.md -- only the engine facts
+-- that explain a specific line below are kept here.
+--
+-- Two things about this capability are still open, and neither is a number:
+-- the ART (a stand-in sprite and stand-in icons -- see graphics/icon-prompts.md),
+-- and the RECIPE plus TECHNOLOGY in prototypes/recipe.lua and
+-- prototypes/technology.lua, which are the one deliberate provisional seam:
+-- their real ingredient is Thermal-Shock Composite, which does not exist yet.
 --
 -- Placement restriction (the void-adjacency rule) uses vanilla's own
 -- `tile_buildability_rules`, the same mechanism `asteroid-collector` and
@@ -306,9 +312,9 @@ end
 --     None of that is in this prototype and none of it needs script: it is
 --     the vanilla turret GUI, unlocked by having a connector at all.
 --
--- Visuals are placeholder: vanilla gun turret's own base sprite. The icon art
--- is placeholder too -- prompts for the real item/entity/technology art are
--- in graphics/icon-prompts.md.
+-- ART PENDING (and only the art): the entity sprite stands in as vanilla gun
+-- turret's own base, and so do the item/entity/technology icons. Prompts for
+-- the real art are in graphics/icon-prompts.md.
 data:extend({
   {
     -- Dedicated ammo-category so a plate can be fed nothing but a Reactive
@@ -324,8 +330,62 @@ data:extend({
     icon_size = 64,
     icon_mipmaps = 4,
     flags = { "placeable-player", "player-creation" },
+    -- Anchored to asteroid-collector, not to gun-turret: 0.2 is
+    -- asteroid-collector's own mining_time
+    -- (space-age/prototypes/entity/entities.lua:803), the other rim-line
+    -- entity that gets laid and lifted in rows, where gun-turret's 0.5 is
+    -- priced as a one-off emplacement.
     minable = { mining_time = 0.2, result = "sae-reactive-edge-plating" },
-    max_health = 200,
+    -- SURVIVABILITY -- the one genuine design choice in the numbers pass, and
+    -- it is resolved as "THE RIM IS THE ANSWER". A plate is not armour: it
+    -- destroys asteroids by fire and is consumed when it fails. HP is set so
+    -- the number is anchored rather than accidental; it is not bought as a
+    -- defence, because MEASURED it cannot be.
+    --
+    -- MEASURED (T13): the exact contact damage one leaked PROMETHIUM asteroid
+    -- does to a plate, read off a probe build whose max_health was raised to
+    -- 1,000,000 so the plate survives and the health delta IS the damage.
+    -- Empty plate (0 charges, so it never shoots and the rock always lands),
+    -- one rock, steel-chest witness one tile behind, vanilla gun-turret
+    -- control on the same foundation:
+    --
+    --      promethium small   200 damage   (witness untouched, 0 tiles)
+    --      promethium medium 1280 damage   (witness untouched, 0 tiles)
+    --      promethium big    9550 damage   (witness untouched, 1 tile)
+    --
+    -- Those are the numbers the choice has to be made against, and they make
+    -- it one-sided. Nothing above `small` can be survived by any sane hit
+    -- point total -- a `medium` is 3.2x this plate's health and a `big` 24x --
+    -- so HP cannot be the answer to a leak, and the eight loaded CONTINUOUS
+    -- RIM runs that lost zero plates, took zero plate damage and lost zero
+    -- tiles at every promethium class say what is (PROGRESS.md). The plate is
+    -- specified only as a continuous rim.
+    --
+    -- What 400 does buy, and the only reason it is not left at 200: the old
+    -- 200 sat EXACTLY on the measured `small` figure, so the cheapest rock on
+    -- the promethium route was a guaranteed plate kill and a dry rim deleted
+    -- itself to gravel. At 400 a dry plate eats one promethium `small` and
+    -- survives at 200/400, so a rim that runs out of charges degrades
+    -- gradually and visibly (`alert_when_attacking`, damaged sprite) instead
+    -- of vanishing. 400 is vanilla gun-turret's own max_health
+    -- (base/prototypes/entity/turrets.lua) -- turret-grade, not armour-grade;
+    -- railgun turret is 4000 and rocket turret 1500, and this is deliberately
+    -- neither.
+    --
+    -- NO `resistances`, and that is a decision rather than an omission.
+    -- MEASURED (T13): asteroid contact damage is `impact`, and resistances DO
+    -- apply to it -- a probe carrying a fingerprint resistance set (a distinct
+    -- percent per damage type, so the surviving ratio names the type) took
+    -- exactly 100 from the promethium `small` that deals 200 unresisted, i.e.
+    -- the 50% `impact` entry and nothing else. So an impact resistance is a
+    -- real, available lever, and taking it is precisely the thing this
+    -- capability must not do: a percent impact resistance is literally
+    -- "absorbs impacts", scaling with the size of the rock, which is the hull
+    -- armour / deflector answer another tree owes. This plate spends a charge
+    -- per impact or it dies. Leaving `resistances` unset keeps the failure
+    -- economy exactly two-tiered: cheap charges consumed per impact,
+    -- expensive plates consumed per failure.
+    max_health = 400,
     -- FOOTPRINT: 3 tiles along the rim x 2 tiles deep. Chosen over 1x1 and
     -- 2x2 on measurements, not on taste; the three were built as real
     -- prototypes and measured side by side. Rotation swaps the dimensions
@@ -572,6 +632,23 @@ data:extend({
     -- turret's 40 -- a plate calls for help over its own footprint, not across
     -- the platform.
     call_for_help_radius = 4,
+    -- THE AMMO TRIPLE. `inventory_size` here, `automated_ammo_count` below,
+    -- and the charge's `stack_size` in prototypes/item.lua are ONE decision
+    -- with three spellings, and they were chosen together against the 3x2
+    -- rim, not inherited from gun-turret.
+    --
+    -- `inventory_size = 1` so a plate's capacity is EXACTLY the charge's
+    -- stack_size and nothing else -- one number governs it, and `read_ammo`
+    -- puts a single stack on the wire instead of a sum the player has to
+    -- reason about. Every ammo turret in base and space-age uses 1.
+    --
+    -- The arithmetic the 3x2 footprint forced (all MEASURED on the rig, see
+    -- PROGRESS.md): a 20x20 platform's rim stands 24 plates, not the 76 the
+    -- 1x1 spike stood, and a 40x40's stands 48. At the old floor of 10 that
+    -- was 240 guaranteed charges on a 20x20, against 760 before -- a third of
+    -- the buffer, emptying three times faster on a supply hiccup. Against the
+    -- measured burn rate of 50 charges / 3600 ticks (0.83 charges/s) under
+    -- moderate exposure, 240 charges is 289 s of fire; 480 is 578 s.
     inventory_size = 1,
     -- MEASURED, and not what the name suggests: `automated_ammo_count` is the
     -- count an *inserter* fills the turret up to before it stops -- it is not
@@ -582,25 +659,78 @@ data:extend({
     -- with `force.inserter_stack_size_bonus` and the two entities behave
     -- identically: bonus 0 settles at 10, bonus 3 at 12, bonus 6 at 14. So
     -- this number is the guaranteed minimum stock; a researched-up force gets
-    -- more, never less. Set to 10 to match gun-turret -- lowering it would
-    -- lower that guaranteed floor, which on a platform (no construction
-    -- robots to top anything up -- space-age/base-data-updates.lua puts
-    -- roboports behind pressure >= 10) is the only stock level a design can
+    -- more, never less. On a platform there are no construction robots to top
+    -- anything up (space-age/base-data-updates.lua puts roboports behind
+    -- pressure >= 10), so this floor is the only stock level a design can
     -- actually count on.
-    automated_ammo_count = 10,
+    --
+    -- Set to 20 = the charge's stack_size = the plate's whole capacity, so an
+    -- inserter fills a plate to full and the guaranteed stock IS the capacity.
+    -- Two measurements force it off gun-turret's 10:
+    --   * a single promethium `big` or `huge` was measured to empty a
+    --     10-charge plate outright (lone-plate runs spent 8/9/10/10/emptied
+    --     and 6/6/10/10/emptied), so a floor of 10 guarantees exactly the
+    --     stock ONE encounter can consume, leaving the plate dry for the next
+    --     rock. 20 is 2x the worst measured single-plate drain, so no one
+    --     encounter can dry a plate;
+    --   * it restores the rim buffer the 3x2 footprint took away -- 24 plates
+    --     x 20 = 480 guaranteed charges on a 20x20 (578 s of measured burn),
+    --     48 x 20 = 960 on a 40x40, against 240 / 480 at a floor of 10.
+    -- Floor == capacity is vanilla precedent, not an invention: railgun
+    -- turret has inventory_size 1 and automated_ammo_count 10 against a
+    -- railgun-ammo stack_size of 10 (space-age/prototypes/entity/turrets.lua
+    -- :324-325, space-age/prototypes/item.lua:643).
+    --
+    -- VERIFIED on the rig with the shipped numbers (T14): a fast inserter fed
+    -- from a full chest settles this plate at exactly 20 and stops, with
+    -- nothing stranded in the inserter's hand -- floor == capacity does not
+    -- jam. Vanilla gun-turret on an identical rig settled at 10 in the same
+    -- run, so the rig is sound.
+    automated_ammo_count = 20,
     attack_parameters = {
       type = "projectile",
       ammo_category = "sae-reactive-charge",
-      -- Placeholder. One charge per shot, a short cooldown so a plate that
-      -- fails to kill something can try again before impact.
+      -- One charge per shot, 15 ticks between shots (4 shots/s). KEPT at 15,
+      -- and MEASURED NOT TO BE THE BINDING CONSTRAINT -- which is the only
+      -- reason it needs no further tuning.
+      --
+      -- What a plate is actually asked for is set by the cascade, not by the
+      -- parent rock: every dying asteroid above `small` spawns exactly three
+      -- of the next size down, so a promethium `huge` is 1 + 3 + 9 + 27 rocks
+      -- and costs a continuous rim 37-43 charges, a `big` 13-14, a `medium`
+      -- 4. Those are rim-wide totals spread over the plates near the impact,
+      -- and a whole encounter -- parent plus every generation of the cascade
+      -- -- was measured to resolve inside a 700-tick window. At 15 ticks one
+      -- plate can fire 46 times inside that window and empties a full
+      -- 20-charge magazine in 300 ticks, several times the worst demand ever
+      -- measured on a single plate (10, and that was magazine-capped).
+      --
+      -- Confirmed from the other direction too: the lone-plate runs that
+      -- FAILED failed with charges still loaded (6 of 10 spent, tiles lost),
+      -- i.e. they were coverage failures inside the range-4 / 180-degree
+      -- envelope, never rate failures. Shortening the cooldown would not have
+      -- saved one of them.
+      --
+      -- 15 is therefore chosen at the slow end of what the demand allows, so
+      -- the plate reads as one deliberate shot per impact rather than a
+      -- stream: gun-turret is 6 (base/prototypes/entity/turrets.lua:552),
+      -- rocket turret 120 and railgun turret 170
+      -- (space-age/prototypes/entity/turrets.lua:529, :379).
       cooldown = 15,
+      -- The muzzle offset, 0.4 tiles out from `projectile_center`. Cosmetic
+      -- only here and deliberately small: `target_type = "entity"` with an
+      -- `instant` action_delivery (prototypes/item.lua) makes the shot
+      -- hitscan, so nothing travels and this cannot affect what is hit. Kept
+      -- non-zero so the muzzle flash sits on the plate's outboard face rather
+      -- than in its middle.
       projectile_creation_distance = 0.4,
       projectile_center = { 0, 0 },
       -- "Contact range". Deliberately far shorter than gun turret's 18 or
       -- railgun turret's 40 -- this is the number the whole design hangs on.
       --
       -- MEASURED and sufficient: with range 4, a plate on the rim killed an
-      -- inbound asteroid with the plate itself still at 200/200 and a witness
+      -- inbound asteroid with the plate itself undamaged (200/200 on the
+      -- 200 hp prototype those runs were taken against) and a witness
       -- entity one tile behind it still at 350/350, and zero tile damage, for
       -- every class up to and including `big`. An identical plate with an
       -- empty ammo slot, same tile, same asteroid, was destroyed outright.
@@ -670,10 +800,20 @@ data:extend({
       -- other target. Without it a plate would happily ignore the thing
       -- about to hit it.
       threatening_asteroid_penalty = -20,
+      -- Copied verbatim from vanilla gun-turret and railgun-turret
+      -- (base/prototypes/entity/turrets.lua, space-age/.../turrets.lua).
+      -- Positive = "discourage targeting units with a higher health RATIO"
+      -- (prototype-api.json, BaseAttackParameters.health_penalty), so a plate
+      -- finishes a rock it has already wounded rather than starting a fresh
+      -- one -- which is what stops charges being wasted on half-killed
+      -- promethium `huge`s. Anchored to vanilla rather than tuned: the ladder
+      -- in prototypes/item.lua is mostly one-shot-or-not, so this only
+      -- arbitrates the multi-charge classes, and there it already does the
+      -- right thing.
       health_penalty = 10,
     },
     graphics_set = {
-      -- Placeholder art, but the DIRECTIONALITY is not placeholder. With
+      -- ART PENDING, but the DIRECTIONALITY here is not a stand-in. With
       -- `turret_base_has_direction = true` the engine looks up a per-direction
       -- entry here; handed a single Animation it draws that one for every
       -- facing, and all four rotations then render identically. Facing is

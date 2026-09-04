@@ -468,13 +468,24 @@ data:extend({
   },
 })
 
--- Reactive Edge Plating (Phase 0 feasibility spike).
+-- Reactive Edge Plating.
 --
--- PLACEHOLDER INGREDIENTS. The real chain that is meant to feed this
--- (Fluoride Flux -> Refractory Panel -> Thermal-Shock Composite) does not
--- exist yet; these recipes exist only so the spike subject is craftable and
--- reachable in a real game. Steel and tungsten stand in for whatever the
--- real inputs turn out to be. Do not read balance intent into them.
+-- TODO(thermal-shock-composite): THE ONE DELIBERATE PROVISIONAL SEAM in this
+-- capability. Everything else about Reactive Edge Plating -- the entity, the
+-- charge, the footprint, the ammo triple, the survivability call -- is
+-- measured and settled (prototypes/entity.lua, prototypes/item.lua). These
+-- two recipes and the technology in prototypes/technology.lua are NOT, and
+-- deliberately so: their real ingredient is **Thermal-Shock Composite**, the
+-- end of the Fluoride Flux -> Refractory Panel -> Thermal-Shock Composite
+-- chain, and that chain does not exist yet. The steel/tungsten/explosives
+-- below stand in only so the capability is craftable and reachable in a real
+-- game. Do not read balance intent into them, and do not substitute a
+-- different real ingredient for the composite -- the seam is meant to stay
+-- visible until the chain lands.
+--
+-- The provisional plate cost the perimeter table in PROGRESS.md is priced
+-- against is "2 Thermal-Shock Composite + 5 tungsten plate + 10 steel"; the
+-- composite line is absent below because the item is absent.
 data:extend({
   {
     type = "recipe",

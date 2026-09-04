@@ -168,12 +168,15 @@ data:extend({
   },
 })
 
--- Reactive Edge Plating (Phase 0 feasibility spike).
+-- Reactive Edge Plating.
 --
--- TEMPORARY unlock. This exists so the spike subject is reachable in a real
--- game without console cheats; it is not the technology the finished feature
--- will hang off, and its prerequisites/cost are placeholders. Icon is
--- vanilla's own space-platform tech icon, borrowed as placeholder art.
+-- TODO(thermal-shock-composite): part of THE ONE DELIBERATE PROVISIONAL SEAM
+-- described at the head of the Reactive Edge Plating block in
+-- prototypes/recipe.lua. This unlock exists so the capability is reachable in
+-- a real game without console cheats; it is not the technology the finished
+-- feature hangs off, and its prerequisites and cost move with the recipes
+-- when the Thermal-Shock Composite chain lands. Icon is vanilla's own
+-- space-platform tech icon, standing in until the real art exists.
 data:extend({
   {
     type = "technology",

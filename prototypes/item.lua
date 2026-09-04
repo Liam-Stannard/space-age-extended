@@ -86,9 +86,18 @@ data:extend({
   },
 })
 
--- Reactive Edge Plating (Phase 0 feasibility spike).
--- Throwaway-quality placeholder art and provisional numbers -- this block
--- exists to be measured against the real engine, not shipped as-is.
+-- Reactive Edge Plating.
+--
+-- Every number below is either measured on the running engine or carries a
+-- one-line note saying what it is anchored to. Two things here are still
+-- pending, and only two:
+--   * ART -- the icons are vanilla stand-ins. Prompts for the real art are in
+--     graphics/icon-prompts.md; that is its own work package.
+--   * The RECIPES and the TECHNOLOGY (prototypes/recipe.lua,
+--     prototypes/technology.lua) are the one deliberate provisional seam:
+--     their real ingredient is Thermal-Shock Composite, which does not exist
+--     yet. Nothing there is a stand-in for a number that has not been
+--     decided; it is a stand-in for an item that has not been built.
 data:extend({
   {
     -- The plate's "charge": a real `ammo` item in a dedicated ammo-category
@@ -106,8 +115,14 @@ data:extend({
     -- explosion), which is exactly why vanilla's own anti-asteroid weapon --
     -- `railgun-ammo` -- is also flat physical.
     --
-    -- 5000 physical is a deliberately chosen spike value, not a balance
-    -- decision. Against the vanilla asteroid physical resistances
+    -- 5000 physical is ANCHORED TO THE LADDER IT PRODUCES, not picked. It is
+    -- the round number just above the threshold that one-shots a metallic
+    -- `big` and comfortably below the one that would one-shot a metallic
+    -- `huge`: against decrease 2000 / percent 10 a `big` (2000 hp) needs
+    -- (D - 2000) * 0.9 >= 2000, i.e. D >= 4222; against decrease 3000 a
+    -- `huge` (5000 hp) would need D >= 8556. 5000 is the only round number in
+    -- that window, and the window is what makes `huge` the class the player
+    -- has to think about. Against the vanilla asteroid physical resistances
     -- (decrease = {0,0,0,2000,3000}, percent = {0,0,10,10,10}) it works out
     -- as: small 5000 vs 100hp, medium 4500 vs 400hp, big
     -- (5000-2000)*0.9 = 2700 vs 2000hp -- all one-charge kills -- but huge
@@ -137,8 +152,11 @@ data:extend({
     -- actually catches the cascade a lone plate lets past. Full tables, with
     -- plate/hull losses and the empty-plate controls, in PROGRESS.md.
     --
-    -- Anything that leaks also hits the plate twice as hard: a promethium
-    -- `small` destroys a 200 HP plate outright.
+    -- Anything that leaks also hits the plate hard, and MEASURED (T13, the
+    -- million-hp probe build described in prototypes/entity.lua) exactly how
+    -- hard: one promethium `small` deals 200 damage on contact, a `medium`
+    -- 1280 and a `big` 9550. That is why `max_health` is 400 and there are no
+    -- resistances -- reasoning on the entity.
     --
     -- `target_type = "entity"` with an `instant` action_delivery makes the
     -- shot hitscan -- no projectile travel time whatsoever. At the contact
@@ -146,7 +164,8 @@ data:extend({
     -- routinely lose the race against the asteroid it was fired at.
     type = "ammo",
     name = "sae-reactive-charge",
-    -- Placeholder art: vanilla railgun ammo's icon.
+    -- ART PENDING: vanilla railgun ammo's icon stands in. The real icon is
+    -- the "Reactive Charge" prompt in graphics/icon-prompts.md. Nothing numeric depends on this.
     icon = "__space-age__/graphics/icons/railgun-ammo.png",
     icon_size = 64,
     icon_mipmaps = 4,
@@ -168,6 +187,20 @@ data:extend({
     },
     subgroup = "ammo",
     order = "e[sae]-a[reactive-charge]",
+    -- One third of the ammo triple (the other two are `inventory_size` and
+    -- `automated_ammo_count` on the entity, and all three were chosen
+    -- together -- see the note there). Because the plate has
+    -- `inventory_size = 1`, this number IS a plate's magazine.
+    --
+    -- 20 because it is twice the worst single-plate drain ever measured -- a
+    -- lone plate emptied a 10-charge magazine on a promethium `big` and again
+    -- on a `huge` -- so no one encounter can dry a plate, while staying small
+    -- enough that resupply is a visible commitment rather than a rounding
+    -- error: at `weight` 10 kg below, a stack is 200 kg, one rocket's 1000 kg
+    -- lifts 100 charges, and stocking a 20x20 rim's 24 plates to full costs
+    -- 480 charges = 4.8 rockets. Vanilla's own heavy anti-asteroid round,
+    -- railgun-ammo, is stack_size 10 at 200 kg apiece
+    -- (space-age/prototypes/item.lua:643-645).
     stack_size = 20,
     -- 10 kg, in grams (literal rather than `10 * kg`, since prototypes/ files
     -- keep `data` as their only global -- see .luacheckrc). Item weight here
@@ -179,13 +212,18 @@ data:extend({
   {
     type = "item",
     name = "sae-reactive-edge-plating",
-    -- Placeholder art: vanilla gun turret's icon.
+    -- ART PENDING: vanilla gun turret's icon stands in. The real icon is
+    -- the "Reactive Edge Plating" prompt in graphics/icon-prompts.md. Nothing numeric depends on this.
     icon = "__base__/graphics/icons/gun-turret.png",
     icon_size = 64,
     icon_mipmaps = 4,
     subgroup = "defensive-structure",
     order = "e[sae]-a[reactive-edge-plating]",
     place_result = "sae-reactive-edge-plating",
+    -- 50, vanilla gun-turret's own item stack size (base/prototypes/item.lua)
+    -- and enough that one stack lays a whole 20x20 rim twice over (24 plates)
+    -- or a 40x40 rim once (48) -- both counts MEASURED on the rig, not
+    -- derived from the perimeter.
     stack_size = 50,
     -- 100 kg in grams. Rocket cargo only -- a placed plate adds nothing to
     -- the platform's mass (measured; see prototypes/entity.lua).
