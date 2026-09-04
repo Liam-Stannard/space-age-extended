@@ -132,7 +132,13 @@ that stands between them and the Core:
 | **Refining what is locally available** | Turning a local waste stream into something worth having | Nothing arrives that was not made from what is out there |
 | **Keeping material viable** | Spoilage, decay, temperature, things that expire in transit | A journey long enough that time itself is the hazard |
 
-Provisional assignment, confirmed when each tree is designed:
+**Power is a late problem.** Vanilla solves power well until Aquilo — solar
+reads 400 on Vulcanus and 100 on Nauvis, and lightning covers Fulgora. It only
+becomes hard where the sun stops, so a power capstone belongs late even if its
+tree opens earlier.
+
+Assignment is being worked out in [the problem catalogue](problems.md) and is not
+settled. Current standing:
 
 | Problem | Tree | Why that pairing |
 |---|---|---|
