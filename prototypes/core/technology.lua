@@ -43,3 +43,60 @@ data:extend({
     }
   }
 })
+
+-- Tier 0 of the Core's tree: standing the foothold up. These are researched on
+-- packs the player already makes, because the geodynamic pack cannot exist
+-- until the corridor is delivering.
+
+local function foothold(name, prereqs, effects)
+  return
+  {
+    type = "technology",
+    name = name,
+    icon = "__space-age__/graphics/technology/planet-discovery-aquilo.png",
+    icon_size = 256,
+    effects = effects,
+    prerequisites = prereqs,
+    unit =
+    {
+      count = 200,
+      ingredients =
+      {
+        { "automation-science-pack", 1 },
+        { "logistic-science-pack", 1 },
+        { "chemical-science-pack", 1 },
+        { "production-science-pack", 1 },
+        { "utility-science-pack", 1 },
+        { "space-science-pack", 1 },
+        { "promethium-science-pack", 1 }
+      },
+      time = 60
+    }
+  }
+end
+
+data:extend({
+  foothold("sae-core-survey", { "sae-core-discovery" },
+    {
+      { type = "unlock-recipe", recipe = "sae-vent-pump" },
+      { type = "unlock-recipe", recipe = "sae-kamacite-smelting" }
+    }),
+  foothold("sae-gravity-settling", { "sae-core-survey" },
+    {
+      { type = "unlock-recipe", recipe = "sae-gravity-settling" },
+      { type = "unlock-recipe", recipe = "sae-quenched-settling" },
+      { type = "unlock-recipe", recipe = "sae-dross-resettling" },
+      { type = "unlock-recipe", recipe = "sae-ingot-casting" },
+      { type = "unlock-recipe", recipe = "sae-orbital-homogenisation" }
+    }),
+  foothold("sae-whisker-beds", { "sae-gravity-settling" },
+    {
+      { type = "unlock-recipe", recipe = "sae-whisker-bed" },
+      { type = "unlock-recipe", recipe = "sae-seed-plate" },
+      { type = "unlock-recipe", recipe = "sae-bed-tender" }
+    }),
+  foothold("sae-cold-welding", { "sae-whisker-beds" },
+    {
+      { type = "unlock-recipe", recipe = "sae-cold-welding" }
+    })
+})

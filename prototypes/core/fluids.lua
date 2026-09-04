@@ -22,6 +22,20 @@ data:extend({
     auto_barrel = false
   },
   {
+    -- What gravity leaves behind once the dross has sunk out of the melt.
+    type = "fluid",
+    name = "sae-settled-melt",
+    icon = "__space-age__/graphics/icons/fluid/molten-copper.png",
+    subgroup = "fluid",
+    order = "z[sae]-c[settled-melt]",
+    default_temperature = 900,
+    max_temperature = 1200,
+    heat_capacity = "1kJ",
+    base_color = { r = 0.72, g = 0.55, b = 0.30 },
+    flow_color = { r = 0.95, g = 0.78, b = 0.50 },
+    auto_barrel = false
+  },
+  {
     type = "fluid",
     name = "sae-helium-3",
     icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
