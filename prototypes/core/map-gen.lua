@@ -15,6 +15,50 @@
 
 data:extend({
   {
+    -- Tiles choose themselves by temperature, moisture and aux, so borrowing
+    -- Aquilo's temperature expression got only Aquilo's answer: frozen ground,
+    -- whatever tile set was installed. The Core is a frozen crust over a hot
+    -- interior, so it wants warm, bone-dry ground with cold patches -- not an
+    -- ice world.
+    type = "noise-expression",
+    name = "sae_core_temperature",
+    expression = "55 + 65 * multioctave_noise{x = x,\z
+                                              y = y,\z
+                                              seed0 = map_seed,\z
+                                              seed1 = 2291,\z
+                                              octaves = 3,\z
+                                              persistence = 0.55,\z
+                                              input_scale = 1/340,\z
+                                              output_scale = 1}"
+  },
+  {
+    type = "noise-expression",
+    name = "sae_core_moisture",
+    -- Not water: on Alien Biomes' scale this is one of the axes a tile picks
+    -- itself by, and the mineral grounds want the middle of it. Measured: at
+    -- 0.06 nothing but snow qualified.
+    expression = "clamp(0.45 + 0.25 * multioctave_noise{x = x,\z
+                                                        y = y,\z
+                                                        seed0 = map_seed,\z
+                                                        seed1 = 771,\z
+                                                        octaves = 3,\z
+                                                        persistence = 0.5,\z
+                                                        input_scale = 1/260,\z
+                                                        output_scale = 1}, 0, 1)"
+  },
+  {
+    type = "noise-expression",
+    name = "sae_core_aux",
+    expression = "clamp(0.45 + 0.25 * multioctave_noise{x = x,\z
+                                                       y = y,\z
+                                                       seed0 = map_seed,\z
+                                                       seed1 = 5183,\z
+                                                       octaves = 3,\z
+                                                       persistence = 0.5,\z
+                                                       input_scale = 1/300,\z
+                                                       output_scale = 1}, 0, 1)"
+  },
+  {
     type = "noise-expression",
     name = "sae_core_elevation",
     -- Always well above zero: a crust with relief, and no coastline anywhere.
@@ -35,8 +79,12 @@ local function core_tiles()
   local wanted =
   {
     "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-orange-heat-3",
+    "volcanic-orange-heat-4",
+    "volcanic-ash-dark", "volcanic-ash-light", "volcanic-ash-flats",
+    "volcanic-ash-cracks", "volcanic-cracks", "volcanic-cracks-warm",
     "mineral-grey-dirt-1", "mineral-grey-dirt-2", "mineral-grey-dirt-3",
-    "mineral-black-dirt-1", "mineral-black-dirt-2",
+    "mineral-grey-sand-1", "mineral-grey-sand-3",
+    "mineral-black-dirt-1", "mineral-black-dirt-2", "mineral-black-dirt-3",
     "frozen-snow-0", "frozen-snow-1"
   }
   local fallback =
@@ -68,9 +116,9 @@ return function()
     property_expression_names =
     {
       elevation = "sae_core_elevation",
-      temperature = "aquilo_temperature",
-      moisture = "moisture_basic",
-      aux = "aquilo_aux",
+      temperature = "sae_core_temperature",
+      moisture = "sae_core_moisture",
+      aux = "sae_core_aux",
       cliffiness = "cliffiness_basic",
       cliff_elevation = "cliff_elevation_from_elevation"
     },
