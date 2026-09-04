@@ -199,6 +199,23 @@ data:extend({
   },
 })
 
+-- Placeholder per-direction base art for Reactive Edge Plating: frame 0 of row
+-- `dir` of vanilla's 4-direction gun-turret raising sheet (130x126 per frame,
+-- rows in N/E/S/W order). Scale 0.25 keeps the sprite inside the plate's 1x1
+-- footprint; the shift is vanilla's -26.5px halved to match that scale.
+local function sae_plating_base_direction(dir)
+  return {
+    filename = "__base__/graphics/entity/gun-turret/gun-turret-raising.png",
+    priority = "medium",
+    width = 130,
+    height = 126,
+    frame_count = 1,
+    y = dir * 126,
+    shift = { 0, -0.41 },
+    scale = 0.25,
+  }
+end
+
 -- Reactive Edge Plating (Phase 0 feasibility spike).
 --
 -- A perimeter plate that does NOT absorb impacts: it spends one loaded
@@ -466,13 +483,28 @@ data:extend({
       health_penalty = 10,
     },
     graphics_set = {
+      -- Placeholder art, but the DIRECTIONALITY is not placeholder. With
+      -- `turret_base_has_direction = true` the engine looks up a per-direction
+      -- entry here; handed a single Animation it draws that one for every
+      -- facing, and all four rotations then render identically. Facing is
+      -- load-bearing on this entity -- it drives the placement rule and the
+      -- 180-degree `turn_range` arc -- so a plate that looks the same in all
+      -- four rotations gives the player no way to see which way a placed rim
+      -- actually points. Vanilla's precedent for the table is
+      -- `railgun_turret_base()` in
+      -- space-age/prototypes/entity/railgun-turret-pictures.lua:43.
+      --
+      -- The source sheet is vanilla's gun-turret raising animation, which is
+      -- already a 4-direction sheet (direction_count = 4, frame_count = 5,
+      -- laid out one row per direction in N/E/S/W order), so frame 0 of row
+      -- `d` is that direction's idle pose. Real art replaces this wholesale
+      -- and will need folded/preparing/attacking states of its own.
       base_visualisation = {
         animation = {
-          filename = "__base__/graphics/entity/gun-turret/gun-turret-base.png",
-          priority = "high",
-          width = 150,
-          height = 118,
-          scale = 0.25,
+          north = sae_plating_base_direction(0),
+          east = sae_plating_base_direction(1),
+          south = sae_plating_base_direction(2),
+          west = sae_plating_base_direction(3),
         },
       },
     },

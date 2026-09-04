@@ -5,7 +5,7 @@ current flat-shape placeholders (`graphics/icons/`, `graphics/icons/fluid/`,
 `graphics/technology/`). Written for pasting into an AI image-generation tool one
 entry at a time — each entry below is a self-contained prompt.
 
-This covers the 23 **flat 2D icon** files only (items, fluids, recipe icons,
+This covers the 24 **flat 2D icon** files only (items, fluids, recipe icons,
 technology icons). It does **not** cover the two in-world **entity sprites** —
 the Quench Turbine's (the animated object placed on the map, currently vanilla's
 steam turbine recoloured by `tools/recolour-turbine.py`) and Reactive Edge
@@ -50,7 +50,7 @@ Technical notes for the tool/output:
   description" is given below — that's what our existing flat placeholder
   icon (already in the repo) depicts; the goal is a properly rendered version
   of the same concept, not a different concept.
-- Keep a **consistent lighting angle and rendering treatment across all 23**
+- Keep a **consistent lighting angle and rendering treatment across all 24**
   so they read as one icon set once dropped into the game together.
 
 ---
