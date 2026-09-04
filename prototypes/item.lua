@@ -147,11 +147,12 @@ data:extend({
     -- (asteroid.lua:255-278, a three-entry `offsets` list with a random
     -- offset_deviation of +/- collision_radius/2), and the plate shoots those
     -- too. Measured per encounter on the SHIPPED 3x2 rim, promethium: small 1
-    -- charge, medium 4, big a deterministic 14, huge anywhere from 20 to 41 --
-    -- `huge` did not reproduce across runs and is the one figure in this
-    -- capability that should not be planned against as a point value. (For a
-    -- LONE plate, big 8-10 and huge 6-10, but those runs ended with the
-    -- magazine empty, so 10 is the magazine and not the demand.) Full tables,
+    -- charge, medium 4, big a deterministic 14, huge 22-40 on a continuous
+    -- rim (6-46 across every gap condition measured) -- `huge` does not
+    -- reproduce across runs and is the one figure in this capability that
+    -- should not be planned against as a point value. (For a LONE plate, big
+    -- 8-10 and huge 6-10, but those runs ended with the magazine empty, so 10
+    -- is the magazine and not the demand.) Full tables,
     -- with plate/hull losses and the empty-plate controls, in PROGRESS.md --
     -- including the earlier 1x1-footprint figures, which are a different
     -- entity's numbers and are labelled as such there.

@@ -359,10 +359,13 @@ data:extend({
     -- behaviour, corner arc coverage) all favour 3x2 as well but none of them
     -- pins a number in this file; they are in PROGRESS.md. The one caveat
     -- worth carrying here, because it bounds what may be claimed for the
-    -- shape: parity gaps up to 6 tiles were measured not to leak for a
-    -- promethium `big`, but `huge` is not deterministic and leaked through a
-    -- 6-tile gap in one run of two. The rim defends by FIRE, not occupancy,
-    -- and the footprint stands on feedability, not on gap coverage.
+    -- shape: MEASURED, the 2-tile gap this footprint actually leaves when a
+    -- rim is quantised does not leak, but a 6-tile gap -- the hole one lost
+    -- plate opens -- does, in about 4 of 10 promethium `huge` runs, so rim
+    -- damage compounds. Run counts and the cascade-failure finding are in
+    -- PROGRESS.md, section 3 of the footprint write-up. The rim defends by
+    -- FIRE, not occupancy, and the footprint stands on feedability, not on
+    -- gap coverage.
     --
     -- Slightly under-sized collision box (0.1 in on every side) so plates sit
     -- inside their tiles without fighting their neighbours, exactly as the
@@ -590,14 +593,17 @@ data:extend({
       -- of the next size down, so a promethium `huge` is 1 + 3 + 9 + 27 rocks.
       -- Measured rim-wide over a fully plated 20x20, continuous and gapped
       -- runs pooled: a `medium` costs 4 charges, a `big` a deterministic 14,
-      -- and a `huge` anywhere from 20 to 41 -- `huge` did not repeat, and the
-      -- run log and the reason are in PROGRESS.md. Those are rim-wide totals
-      -- spread over the plates near the impact, and a whole encounter --
-      -- parent plus every generation of the cascade -- was measured to resolve
-      -- inside a 700-tick window. At 15 ticks one plate can fire 46 times
-      -- inside that window and empties a full 20-charge magazine in 300 ticks,
-      -- comfortably past the worst demand ever seen on a single plate (a
-      -- magazine-capped 10, so a lower bound rather than a measured peak).
+      -- and a `huge` 22-40 on a continuous rim (6-46 pooled across every gap
+      -- condition) -- `huge` does not repeat, and the run log and the reason
+      -- are in PROGRESS.md. Those are rim-wide totals spread over the plates
+      -- near the impact, and the SHOOTING is over early even though the
+      -- encounter is not: across 27 long-window runs the measured state
+      -- (charges, tiles, plates) stops changing between dt 256 and dt 1985,
+      -- while stragglers keep the near field busy out to dt 9698. At 15 ticks
+      -- one plate can fire 130 times inside dt 1985 and empties a full
+      -- 20-charge magazine in 300 ticks, comfortably past the worst demand
+      -- ever seen on a single plate (a magazine-capped 10, so a lower bound
+      -- rather than a measured peak).
       --
       -- Confirmed from the other direction too: the lone-plate runs that
       -- FAILED failed with charges still loaded (6 of 10 spent, tiles lost),
@@ -633,10 +639,13 @@ data:extend({
       -- double damage_per_hp) it does not: measured, a lone plate spends
       -- 8-10 charges on a `big` and 6-10 on a `huge`, leaks the cascade in
       -- more than half of those runs, and is itself destroyed in about one
-      -- in five. A continuous rim is what fixes that: no plate was destroyed
-      -- or even damaged in any rim run at any promethium class, and a `big`
-      -- never got a tile past it. `huge` is the one class that is not settled
-      -- -- see the note on the footprint above and the run log in PROGRESS.md.
+      -- in five. A CONTINUOUS rim is what fixes that: across every loaded
+      -- continuous-rim run at any promethium class no plate has been
+      -- destroyed, and a `big` never got a tile past it. The qualifier is
+      -- load-bearing -- a rim with a plate-sized (6-tile) hole in it leaks
+      -- `huge` about 4 times in 10 and loses further plates -- and `huge`
+      -- remains non-deterministic in COST. See the note on the footprint
+      -- above and the run log in PROGRESS.md.
       --
       -- Range 4 is, however, the limit on the plate's LATERAL coverage too,
       -- and that turns out to matter more than the head-on case: when a large

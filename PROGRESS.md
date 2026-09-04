@@ -263,7 +263,11 @@ fast-forward into `master`, push, delete the branch.
       `game.tick` frozen, every RCON call timing out, no error logged, no
       recovery. Seen three times, always on huge-promethium. Mitigated by
       short exposure windows (700 + 600 ticks rather than 900 + 900) and by
-      culling the control side between samples; not eliminated.
+      culling the control side between samples; not eliminated. **But short
+      windows are not free**: the 700 + 600 window truncated the parity-gap
+      runs (§3 of the footprint write-up), and the 27-run long-window re-run —
+      polling to quiescence, out to dt 11560, 43 minutes of wall clock — never
+      hard-spun once. Cull and poll rather than cutting the window short.
   - **A 0.5 (hemisphere) firing arc costs nothing.** A/B on the same build,
     360 degrees vs 0.5: 3600-tick plated flight 400/400 tiles, 12/12
     witnesses, 64/64 plates in both, 49 charges spent at 360 degrees vs 50
@@ -566,6 +570,16 @@ rather than an error, so check for them before believing a negative result:
   any of four conditions. If the question is "does X leak", aim an asteroid
   at X and keep an instrument check (a condition that *must* leak) in the
   run, or a flawless result means nothing.
+- **A fixed post-spawn window is not a measurement; poll to quiescence.** A
+  promethium cascade freezes the measured state anywhere from dt 256 to dt
+  1985 and leaves the near field busy out to dt 9698, so a fixed 1300-tick
+  window truncates some runs and not others and the truncation is invisible in
+  the output. Poll until nothing in a ±40 near-field box (charges, tiles,
+  plates, witness) has changed and no asteroid is left in the box, held for
+  ~1200 ticks under a hard cap, and report the settle tick. Scope the test to
+  the near field: fragments that miss keep flying at full hp far off the
+  platform (one at (46, −62) at dt 9300) and can never come back, so a
+  surface-wide wait never terminates.
 - **Clear asteroids surface-wide between scenarios, not just inside the
   setup's box.** Every setup here wipes a +/-45 tile box; after a flight
   run there are live asteroids well outside it that drift back in
@@ -610,7 +624,9 @@ Consolidated across tree 1, this branch, and tree 2's plan
 ### Reactive Edge Plating (branch `reactive-edge-plating-finish`, unmerged, ahead of `master`)
 
 Everything mechanical is now settled and measured. What is left is one art
-package, one real ingredient chain, a reference rim pattern, and a playtest.
+package, one real ingredient chain, a reference rim pattern — which now has a
+measured constraint on it, the cascade-failure finding below — and a
+playtest.
 
 - [ ] **Client playtest.** Three things headless testing cannot answer:
       whether the four stand-in facings read as different in a client,
@@ -627,6 +643,25 @@ package, one real ingredient chain, a reference rim pattern, and a playtest.
       **The earlier chamfer guidance is superseded**: chamfering the hull is
       now *optional advice* for tidying a corner, not the answer to corner
       feeding — the footprint is.
+- [ ] **Cascade failure: a damaged rim has to be repaired before the next
+      `huge` encounter.** This is measured, not predicted, and it is new. One
+      lost 3×2 plate opens a hole of **exactly 6 tiles** (2 deep × 3 wide), and
+      a 6-tile hole leaked in **4 of 10** aimed promethium `huge` runs — losing
+      2, 8, 20 and 32 foundation tiles, **destroying further plates in two of
+      them** (1 and 2), and damaging the witness behind the gap in two. So the
+      first plate lost materially raises the odds of losing the next: rim
+      damage compounds. Nothing repairs it automatically — **there are no
+      construction robots on a platform** (`roboport` sits behind
+      `surface_conditions` pressure ≥ 10 and platforms are pressure 0, noted on
+      `automated_ammo_count` in `prototypes/entity.lua`), so a player has to
+      notice and act, which is exactly what the circuit-network `read_ammo`
+      interface exists to support. **This changes no shipped number and does
+      not re-open the footprint decision** (3×2 stands on corner feedability).
+      It is an input to the two items above: the **reference rim pattern**
+      should make a lost plate easy to see and easy to replace, and should
+      probably carry a documented missing-plate / low-charge alert wiring; and
+      the **client playtest** should include flying a rim that has already lost
+      a plate. Measurement in §3 of the footprint write-up below.
 - [ ] **Replace the provisional recipe and technology** with the real
       Thermal-Shock Composite chain and its gating (the `explosives`
       prerequisite goes away with them). This is the one deliberate
@@ -645,8 +680,9 @@ package, one real ingredient chain, a reference rim pattern, and a playtest.
       dominates: lone plate `big` 8–10, `huge` 6–10 (both magazine-capped);
       continuous rim `big` 10–14, `huge` 24–48. **Those rim figures are the
       1×1-era measurement**, taken on a 78-plate rim before the footprint was
-      settled; the shipped 3×2 rim's figures are `big` 14 and `huge` 20–41,
-      below.
+      settled; the shipped 3×2 rim's figures are `big` a deterministic 14 and
+      `huge` a non-deterministic **22–40 on a continuous rim** (6–46 across
+      every gap condition measured), below.
 - [x] **Footprint settled at 3 wide × 2 deep.** Measured against 1x1 and 2x2
       built as real prototypes side by side — full write-up below.
 - [x] **Corner feeding.** Solved by the footprint, not by asking the player to
@@ -733,45 +769,87 @@ about the hole one lost plate opens — for a 2-deep plate the hole is the whole
 2×w block (4 and 6 tiles), not w. And the standing-charge figures are 720 and
 480 exactly, not "~760" and "~500".
 
-**3. Parity gaps do not leak at `big`; `huge` is not settled.** Quantising in
-3s leaves up to 2 tiles over on an arbitrary edge. Measured by aiming one
-promethium asteroid at the centre of a deliberate hole in the north band of a
-fully plated 20×20 (700 + 600 ticks). Re-run independently, with every `huge`
-case done twice:
+**3. A 2-tile parity gap is covered; a 6-tile gap is not.** Quantising in 3s
+leaves up to 2 tiles over on an arbitrary edge, so 2 is the gap size the
+footprint actually creates. Measured by aiming one promethium asteroid at the
+centre of a deliberate hole in the north band of a fully plated 20×20, with a
+steel-chest witness one tile behind the hole.
 
-| north band | medium | big | huge |
-|---|---|---|---|
-| continuous | 4 charges | **14** | 43 |
-| 2-tile hole | 4 | **14** | 33, 37 |
-| 6-tile hole | — | **14** | 20, **41 — LEAKED** |
+**The measurement was re-run properly, and the earlier figures are
+superseded.** The old runs used a fixed 700 + 600 tick window. The measured
+state actually freezes anywhere from dt 256 to dt 1985 and the near field only
+goes quiet between dt 1187 and dt 9698 — so **that window truncated some runs
+and not others**. The re-run polls to quiescence instead: zero asteroids left
+inside a **±40 near-field box** *and* no change in the measured state
+(charges, tiles, plates, witness), held for 1200 ticks, under a hard cap.
+27 runs, promethium `huge`:
 
-**`big` is deterministic at 14 charges** across three or more runs at each of
-gap 0, 2 and 6, and never let a tile past. The earlier "13, 13–14" readings
-are superseded.
+| north band | runs | charges (range, median) | leaked | plates destroyed / damaged | witness |
+|---|---|---|---|---|---|
+| continuous (gap 0) | 4 | 22–40, median 31 | **0/4** | 0 / 0 | 350/350 ×4 |
+| 2-tile hole | 10 | 15–46, median 34 | **0/10** | 0 / 1 scratched | 350/350 ×10 |
+| 6-tile hole | 10 | 6–43, median 27 | **4/10** — 2, 8, 20, 32 tiles | **1 and 2 destroyed**, in two separate runs | 290/350 in two runs |
+| gap 18 — instrument check | 3 | 360, deterministic | **3/3** — 400 tiles | **all 18 destroyed** | DESTROYED ×3 |
 
-**`huge` is not reproducible and must not be quoted as a point value.** The
-two runs at each gap size differ by up to a factor of two, and the second
-6-tile-gap run **leaked**: 6 foundation tiles lost and the witness chest
-damaged to 270/350. So the earlier claim that gaps never leak is wrong as
-stated, and the claimed 37–43 range is also wrong at the bottom — a 2-tile-gap
-run came in at 33. The honest range is roughly **20–41**.
+Every run settled well inside the cap — ticks to quiescence ranged
+**1187–9698**, i.e. 1–7× the old window, and the longest run was confirmed
+quiet out to dt 11560. The server never hard-spun across the whole 43-minute
+session.
 
-A likely cause, and a known limitation of this scenario rather than a settled
-number: **2–5 asteroids were still live on the surface at t+1900 in every
-`huge` run**, so the cascade had not fully resolved when the measurement was
-taken. A longer window is what would settle it.
+(The ±40 scope is load-bearing, not a convenience: fragments that *miss* keep
+flying and are still at full hp thousands of ticks later far off the platform —
+one sat at (46, −62) at dt 9300. The platform is parked at speed 0 so they
+cannot come back, but waiting on the surface-wide count never terminates.)
 
-What survives all of this intact: **no plate was destroyed, or even damaged,
-in any `huge` run.** The failure mode is tile and witness damage behind a gap,
-not rim failure. **The instrument is not blind:** with the north band removed
-entirely (gap 18), the same `big` promethium spent 0 charges, destroyed the
-witness and ate 90 foundation tiles with no plate firing at all.
+**Fixing the window did not rescue the old claim; it made it worse.** The
+earlier single leaked 6-tile run was not a fluke to be explained away by a
+short window — it was a sample from a real failure mode, and the long window
+shows the worst case is worse than what had been recorded: 32 tiles and a
+destroyed plate, against the 6 tiles logged before.
+
+**A 2-tile gap is covered: 0/10 leaked.** Neighbouring plates do cover a
+2-tile hole, and 2 tiles is the only gap a 3-wide plate produces when a rim is
+quantised. **So the parity-gap argument survives for the gaps the footprint
+actually creates** — and only for those.
+
+**A 6-tile gap is not covered: 4/10 leaked.** "Gaps up to 6 tiles do not leak"
+holds **only for `big`**, which is deterministic at 14 charges across three or
+more runs at each of gap 0, 2 and 6 and never let a tile past. For `huge` it is
+false, and it must not be restated.
+
+**`huge` is genuinely non-deterministic, and the residual variance is in cost,
+not outcome.** Charge spend is a wide overlapping distribution at every gap
+size (22–40, 15–46, 6–43) and the gap-size signal in the charge column is nil —
+gap 6 has the *lowest* median precisely because a leaking rock is one that is
+not being shot at. So `huge` still must not be quoted as a point value: for
+the shipped 3×2 rim it is roughly **6–46 charges, median ~30**, and the old
+"20–41" is superseded.
+
+**The instrument check is sound, and now deterministic.** With the north band
+removed entirely (gap 18) the same `huge` promethium is a total loss — 360
+charges, all 400 foundation tiles, all 18 remaining plates, witness destroyed —
+identical to the tick across three runs. The rig can definitely see a leak, so
+the clean gap-0 and gap-2 results mean something.
+
+**Where this bites elsewhere in this document:** the survivability decision's
+"no plate has been destroyed, or even damaged, in any loaded rim run" now needs
+the word *continuous* doing real work. It holds at gap 0, and at gap 2 with one
+plate scratched; behind a **6-tile** gap two runs lost plates outright. That
+paragraph has been corrected to say so.
+
+**The design consequence, and it is the one that matters: one lost 3×2 plate
+opens a hole of exactly 6 tiles** (2 deep × 3 wide — the "hole one lost plate
+opens" row in §2). The gap size that leaks about 40% of the time against `huge`
+is therefore precisely the gap a plate loss creates, and two of those leaking
+runs destroyed further plates. **Losing one plate materially raises the chance
+of losing more: rim damage compounds.** Written up as a design input in the
+outstanding-work list above.
 
 **This does not re-open the footprint decision.** 3×2 stands on corner
 feedability — 0 unfeedable against a hard floor of 4 structurally impossible
 for 1×1, independently reconfirmed at six platform sizes — not on gap
-coverage. But the parity-gap argument is weaker than it was written, and
-should not be restated as "gaps never leak".
+coverage. And no shipped number moves on this result. What it changes is what
+may be claimed for a *damaged* rim.
 
 The 3600-tick exposure flight could **not** answer this: on a Nauvis→Vulcanus
 leg at speed 0.54, none of 1x1 / 2x2 / 3x2 was touched at all (0 tiles lost,
@@ -804,9 +882,9 @@ property of the rules, not of this footprint.
 `automated_ammo_count = 10` that is a guaranteed 240 charges standing (480 at
 a 20-charge fill), against 760/1520 before. The measured encounter costs are
 unchanged — a rim spends 4 charges on a promethium `medium`, 14 on a `big` and
-20–41 on a `huge` — so at a floor of 10 a 20×20 rim's 240 standing charges are
-about 17 `big` encounters or 6–12 `huge` ones, where at 1x1 it was three times
-that.
+22–40 on a `huge` (continuous rim, not reproducible) — so at a floor of 10 a
+20×20 rim's 240 standing charges are about 17 `big` encounters or 6–10 `huge`
+ones, where at 1x1 it was three times that.
 That is the number the numbers pass has to be comfortable with; the levers are
 `inventory_size`, the charge's stack size, and the per-charge damage, not the
 footprint. **Answered below** — `automated_ammo_count` went to 20, which puts
@@ -876,7 +954,7 @@ of the Reactive Edge Plating block in `prototypes/recipe.lua`.
 |---|---|---|---|
 | `max_health` | 200 | **400** | vanilla gun-turret's own 400; survives exactly one leaked promethium `small` (measured 200 damage) and nothing above it |
 | `resistances` | none | **none, deliberately** | measured: contact damage is `impact` and resistances *do* apply — not taken, because absorbing impacts is another tree's payoff |
-| `cooldown` | 15 (placeholder) | **15** | measured not to be binding; 46 shots fit the 700-tick window a whole cascade resolves in |
+| `cooldown` | 15 (placeholder) | **15** | measured not to be binding; all firing is done by dt 1985 at the latest (27 long-window runs), and 130 shots fit inside that |
 | `inventory_size` | 1 | **1** | capacity == the charge's stack size, one number; every vanilla ammo turret uses 1 |
 | charge `stack_size` | 20 | **20** | 2× the worst measured single-plate drain (10, magazine-capped); 200 kg/stack keeps resupply a visible commitment |
 | `automated_ammo_count` | 10 | **20** | == capacity, so the guaranteed stock *is* the capacity at any research level; twice the (lower-bound) worst single-plate drain, so headroom against one encounter rather than a proof; railgun turret's own floor==capacity arrangement |
@@ -913,11 +991,15 @@ apply to it.
 **The survivability decision: the rim is the answer.** Those numbers make it
 one-sided rather than a judgement call. A `medium` is 3.2× a 400 hp plate and
 a `big` 24×, so no sane hit point total survives a leak of anything above
-`small`; HP cannot be the answer. A continuous rim is: **no plate has been
-destroyed, or even damaged, in any loaded rim run at any promethium class**,
-across both the 1×1-era runs and the 3×2 parity-gap runs. (Tiles behind a gap
-are a different matter — see §3 of the footprint write-up.) **The plate is
-specified only as a continuous rim.**
+`small`; HP cannot be the answer. A **continuous** rim is: across the 1×1-era
+runs, the 3×2 gap-0 runs and all ten 3×2 2-tile-gap runs, **no plate has ever
+been destroyed, and exactly one was damaged** — scratched, in one `huge`
+2-tile-gap run. That is why **the plate is specified only as a continuous
+rim**, and it is the whole of the claim: behind a **6-tile** gap the long-window
+re-run destroyed plates in 2 of 10 `huge` runs and lost up to 32 foundation
+tiles, so a rim with a hole in it is not covered by this sentence. See §3 of
+the footprint write-up, and the cascade-failure item in the outstanding-work
+list.
 
 400 is taken anyway, for one reason that is not "buy survivability": the old
 200 sat *exactly* on the measured `small` figure, so the cheapest rock on the
@@ -970,9 +1052,10 @@ armouring a rim to just under a third**, on top of cutting the inserter count.
 
 Both rims are feedable with no unfeedable plate at either size (0 unreachable,
 24/24 and 48/48 simultaneously matchable). The 20×20 quantises exactly; the
-40×40 leaves a 2-tile parity gap per band (16 tiles in all); parity gaps were
-measured not to leak at `big`, with `huge` unsettled — see §3 of the footprint
-write-up above.
+40×40 leaves a 2-tile parity gap per band (16 tiles in all). **A 2-tile gap is
+covered**: it never leaked in ten long-window promethium `huge` runs, nor at
+`big`. (A 6-tile gap — the hole one lost plate opens — is a different matter
+and does leak; see §3 of the footprint write-up above.)
 
 **"Doubling the ship halves the relative cost" still holds, and now exactly.**
 Plates per platform tile: 24/400 = **0.060** at 20×20, 48/1600 = **0.030** at
@@ -987,13 +1070,13 @@ charges / 3600 ticks = 0.83 charges/s** under moderate exposure:
 
 | Platform | Plates | Guaranteed standing charges | Seconds of measured burn | Encounters covered |
 |---|---|---|---|---|
-| 20 × 20 | 24 | **480** | **578 s** (9 min 38 s) | ~120 `medium`, **34** `big`, 11–24 `huge` |
-| 40 × 40 | 48 | **960** | **1157 s** (19 min 17 s) | ~240 `medium`, **68** `big`, 23–48 `huge` |
+| 20 × 20 | 24 | **480** | **578 s** (9 min 38 s) | ~120 `medium`, **34** `big`, 12–21 `huge` |
+| 40 × 40 | 48 | **960** | **1157 s** (19 min 17 s) | ~240 `medium`, **68** `big`, 24–43 `huge` |
 
 (Encounter costs are the measured rim-wide promethium figures: `medium` 4,
-`big` a deterministic 14, `huge` 20–41 and not reproducible — the `huge`
-column is a spread, not a tolerance. A single `big` encounter takes 14 of the
-480, leaving 466. A 40×40 also presents more rim to be hit, so its extra
+`big` a deterministic 14, `huge` 22–40 on a continuous rim and not
+reproducible — the `huge` column is a spread, not a tolerance. A single `big`
+encounter takes 14 of the 480, leaving 466. A 40×40 also presents more rim to be hit, so its extra
 seconds are not a free doubling of endurance.) At the old floor of 10 the
 20×20 stood 240 charges = 289 s, which is where "a supply hiccup empties it
 three times faster than the 1×1 rim did" came from; 20 puts it back.
