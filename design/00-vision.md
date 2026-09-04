@@ -126,7 +126,8 @@ Two rules settle the shape:
 - **Every planet appears in exactly two trees.** With five planets and five
   pairs that makes a closed loop, and it means no world is only ever a supplier
   to another — each one both sends and receives.
-- **No pair reuses existing work.** The five are designed fresh.
+- **Every tree is designed fresh.** No earlier design is carried forward, including
+  the one already implemented in this repository.
 
 The working set:
 
@@ -134,19 +135,20 @@ The working set:
 |---|---|---|
 | **Nauvis ↔ Vulcanus** | Vulcanus | The first cross-planet chain a player meets |
 | **Nauvis ↔ Gleba** | Gleba | Perishable material against Nauvis logistics |
-| **Fulgora ↔ Gleba** | both | Scrap electronics against biology |
-| **Vulcanus ↔ Aquilo** | Aquilo | The temperature extremes of the system |
+| **Vulcanus ↔ Fulgora** | both | Metallurgy against electromagnetics |
+| **Gleba ↔ Aquilo** | Aquilo | Living material against a world that freezes it |
 | **Fulgora ↔ Aquilo** | Aquilo | Electromagnetics against cryogenics |
 
-That gives two trees available in the early-to-mid game, one in the middle, and
-two after Aquilo — which is also where the endgame sits, so the run-up to the
-Core has content of its own.
+Every pair in that loop has a theme its two planets alone can support, which is
+the real reason for this set rather than one of the other four loops. Two trees
+open in the early-to-mid game, one in the middle, and two after Aquilo — which
+is where the endgame sits, so the run-up to the Core has content of its own.
 
-**The consequence to be explicit about:** Vulcanus ↔ Fulgora is not among them,
-and that is the pair the repository has already implemented. The existing
-technologies, recipes and the Quench Turbine fall outside the five. They are
-either deleted, or kept as a sixth tree outside the endgame requirement — that
-choice is not made here.
+**On the existing Vulcanus ↔ Fulgora work:** the pair stays, the implementation
+does not. The technologies, recipes and the Quench Turbine currently in
+`prototypes/` were built to a design that no longer applies, and this tree is
+designed from scratch like the other four. Whether any of that code is worth
+salvaging is a question for when the tree is designed, not before.
 
 ## Still open
 
