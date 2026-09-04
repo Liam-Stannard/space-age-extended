@@ -207,7 +207,9 @@ data:extend({
 -- with exactly the native code path that loads a gun turret -- no
 -- control-stage logic at all. The whole point of the spike is that this
 -- shape is entirely data-stage; every line below is either measured against
--- the running engine or explicitly flagged as a placeholder.
+-- the running engine or explicitly flagged as a placeholder. The run log for
+-- those measurements lives in PROGRESS.md -- only the engine facts that
+-- explain a specific line below are kept here.
 --
 -- Placement restriction (the void-adjacency rule) uses vanilla's own
 -- `tile_buildability_rules`, the same mechanism `asteroid-collector` and
@@ -219,33 +221,32 @@ data:extend({
 -- oriented outward and each rim face gets its own rotation. That is the same
 -- ergonomics vanilla already asks of the asteroid collector.
 --
+-- Shared-resource interaction, per design/framework.md §4.5.1 (a capability
+-- must draw on one shared resource and feed another). The plate DRAWS on the
+-- platform's consumable throughput -- charges, competing for the same
+-- inserter/belt/cargo budget as everything else aboard. What it FEEDS is
+-- negative and implicit: every asteroid a plate destroys is an asteroid the
+-- collectors never harvest, so plating the leading edge trades chunk income
+-- for hull integrity. That interaction is real, but it falls out of turret
+-- targeting on its own -- nothing in this prototype expresses it, and there
+-- is no knob here to tune it with. Recorded so the design phase knows the
+-- §4.5 obligation is currently met only emergently.
+--
+-- `weight` is permanently off the table as a balancing lever for this
+-- capability -- see the MEASURED note on the entity below. A plate can never
+-- be made to cost platform speed, so its whole cost has to live in the
+-- charge supply chain.
+--
+-- KNOWN GAP, deliberately out of scope for the spike: no circuit connector.
+-- Vanilla gun-turret carries `circuit_connector_definitions["gun-turret"]`,
+-- which is what makes its remaining ammo readable on the circuit network;
+-- this entity carries none, so a platform cannot hold at a depot until its
+-- rim is re-armed. Closing it is a prototype-only change (connector
+-- definitions plus `circuit_wire_max_distance`), not a script one.
+--
 -- Visuals are placeholder: vanilla gun turret's own base sprite, scaled down
--- to roughly a tile.
---
--- What the Phase 0 spike actually measured, on a headless server over RCON
--- (all numbers from real runs, not from reading docs):
---
---   * Inserter loading works, identically to a gun turret. A burner inserter
---     between a chest of charges and a plate filled it unattended, tracking a
---     vanilla gun-turret control tick for tick: both at 8 after 600 ticks,
---     both at 10 after 1200. See automated_ammo_count below for the one
---     surprise that fell out of this.
---   * The custom ammo-category isolates completely, both directions and
---     through the inserter path, not just the insert API: firearm-magazine
---     and railgun-ammo into a plate both inserted 0; a Reactive Charge into a
---     vanilla gun turret inserted 0; and an inserter sat next to a gun turret
---     with a chest of 20 charges moved none of them in 900 ticks.
---   * A plated rim genuinely saves the platform. Same route, same thrust,
---     3600 ticks: an UNPLATED 20x20 platform lost 400 of 400 foundation tiles
---     and all 12 interior witness chests (it was gone by tick ~2400). The
---     PLATED one -- 64 plates, one per buildable perimeter tile, 20 charges
---     each -- finished at 400/400 tiles, 12/12 witnesses at full health,
---     64/64 plates alive, having spent 44 of 1280 charges (3.4%).
---   * Asteroid class is naturally distinguishable without any script, purely
---     through the charge's damage vs. vanilla's per-size resistances: the
---     same plate with the same load cleared a `big` asteroid and its entire
---     cascade with zero tile loss, but against a `huge` ran its 10 charges
---     dry and leaked 8 foundation tiles.
+-- to roughly a tile. The icon art is placeholder too -- prompts for the real
+-- item/entity/technology art are in graphics/icon-prompts.md.
 data:extend({
   {
     -- Dedicated ammo-category so a plate can be fed nothing but a Reactive
@@ -270,6 +271,15 @@ data:extend({
     -- Platform-only, via the same genuine surface property the Thermionic
     -- Generator and vanilla's own thruster use (vacuum), not a planet-name
     -- check (design/framework.md §2.3).
+    --
+    -- The other half of "what environment does this work in" is an asymmetry
+    -- that was defaulted into rather than decided: `heating_energy` is unset
+    -- and so is 0W (prototype-api.json, EntityPrototype.heating_energy), so a
+    -- plate never freezes and needs no heat pipe on an Aquilo run -- while
+    -- vanilla's railgun and rocket turrets, the two things a rim of plates
+    -- most directly competes with, both declare "50kW"
+    -- (space-age/prototypes/entity/turrets.lua:318 and :432). Probably right
+    -- for passive hull armour, but it is a real balance edge.
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },
@@ -280,9 +290,23 @@ data:extend({
     -- faces by rotation. `remove_on_collision` lets a blueprint/ghost drop
     -- the entity rather than block, matching asteroid-collector.
     --
+    -- Shape copied from vanilla's own two users of this mechanism:
+    -- space-age/prototypes/entity/entities.lua:691-694 (asteroid-collector)
+    -- and :908-911 (thruster) -- both pair a `ground_tile` footprint rule
+    -- with an `empty_space` corridor rule exactly like this.
+    --
+    -- Rule 1's `colliding_tiles = {layers = {empty_space = true}}` is NOT
+    -- redundant with its `required_tiles = {layers = {ground_tile = true}}`,
+    -- and deleting it silently breaks the whole restriction: the
+    -- `empty-space` tile itself declares `ground_tile = true` in its own
+    -- collision_mask (space-age/prototypes/tile/tiles.lua:211-222, alongside
+    -- empty_space, water_tile, floor, object, player and the rest). A
+    -- `ground_tile` requirement alone is therefore satisfied by void, and the
+    -- plate would become placeable in mid-air. The explicit `empty_space`
+    -- exclusion is what makes rule 1 mean "real foundation".
+    --
     -- MEASURED against a 20x20 platform, every rim face x every rotation,
-    -- through both can_place_entity and a real create_entity (they agreed in
-    -- every cell), and through blueprint_ghost as well as manual placement
+    -- through `can_place_entity` and through reviving an `entity-ghost`
     -- (identical results -- so a rim blueprint obeys the same rule):
     --
     --              N     E     S     W
@@ -299,6 +323,15 @@ data:extend({
     -- faces, correct on corners (both outward directions allowed), and
     -- rejects every interior tile in every rotation. No on_built rejection
     -- handler is needed, and control.lua stays untouched by this feature.
+    --
+    -- Those two oracles are the only valid ones, and this is worth knowing
+    -- before writing any future placement test: MEASURED,
+    -- `LuaSurface.create_entity` is a scripted force-place that runs NO build
+    -- check whatsoever -- it returned a valid entity on interior tiles and on
+    -- bare void, for this plate AND for vanilla `asteroid-collector` and
+    -- `thruster`, the two entities these rules are modelled on. A
+    -- create_entity-based placement test produces a false PASS in every cell
+    -- and proves nothing about buildability.
     tile_buildability_rules = {
       { area = { { -0.4, -0.4 }, { 0.4, 0.4 } }, required_tiles = { layers = { ground_tile = true } }, colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
       { area = { { -0.4, -1.4 }, { 0.4, -0.6 } }, required_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
@@ -315,8 +348,17 @@ data:extend({
     -- cannot be balanced against platform speed. (Confirmed in flight too:
     -- see the note on the item's weight in prototypes/item.lua.)
     turret_base_has_direction = true,
-    -- No warm-up: a plate that has to unfold before firing loses the race
-    -- against anything already at contact range.
+    -- All four of these are EXPLICIT NO-OPS, kept only so the values are
+    -- visible rather than implied: `rotation_speed`, `preparing_speed` and
+    -- `folding_speed` default to `default_speed`, which itself defaults to 1,
+    -- and `attacking_speed` defaults to 1 directly (prototype-api.json,
+    -- TurretPrototype). Note also that `attacking_speed` and `folding_speed`
+    -- are animation playback rates (`1 / speed` = animation duration), not
+    -- anything to do with how fast the turret gets a shot away. The real
+    -- warm-up knob is `BaseAttackParameters.warmup` -- ticks between the
+    -- order to fire and the shot, default 0 -- correctly left unset below,
+    -- since a plate that has to spin up loses the race against anything
+    -- already at contact range.
     rotation_speed = 1,
     preparing_speed = 1,
     folding_speed = 1,
@@ -330,17 +372,19 @@ data:extend({
     call_for_help_radius = 4,
     inventory_size = 1,
     -- MEASURED, and not what the name suggests: `automated_ammo_count` is the
-    -- count an *inserter* fills the turret up to and then stops at -- it is
-    -- not only a logistics-request number. Spiked side by side against a
-    -- vanilla gun-turret on an identical inserter+chest rig: the gun turret
-    -- settled at exactly 10 (its own automated_ammo_count) and the plate at
-    -- exactly whatever this field said, in both cases far below the ammo
-    -- item's stack size, so it is this field and not a stack limit. Set to
-    -- 10 to match gun-turret. Anything lower silently caps how deep a plate
-    -- can be stocked, which on a platform -- where there are no construction
-    -- robots to top anything up (space-age/base-data-updates.lua puts
-    -- roboports behind pressure >= 10) -- is the difference between a plate
-    -- that survives an asteroid wave and one that runs dry mid-wave.
+    -- count an *inserter* fills the turret up to before it stops -- it is not
+    -- only a logistics-request number. It is a FLOOR, not a cap: the inserter
+    -- keeps swinging until the turret holds at least this many, and a whole
+    -- hand lands in the final swing. Measured side by side against a vanilla
+    -- gun-turret on identical inserter+chest rigs, the settle point scales
+    -- with `force.inserter_stack_size_bonus` and the two entities behave
+    -- identically: bonus 0 settles at 10, bonus 3 at 12, bonus 6 at 14. So
+    -- this number is the guaranteed minimum stock; a researched-up force gets
+    -- more, never less. Set to 10 to match gun-turret -- lowering it would
+    -- lower that guaranteed floor, which on a platform (no construction
+    -- robots to top anything up -- space-age/base-data-updates.lua puts
+    -- roboports behind pressure >= 10) is the only stock level a design can
+    -- actually count on.
     automated_ammo_count = 10,
     attack_parameters = {
       type = "projectile",
@@ -365,9 +409,51 @@ data:extend({
       -- to ~4.5 tiles (asteroid.lua's dying_trigger_effect uses
       -- offsets +/- collision_radius*0.5 with an equal offset_deviation), so
       -- some children of a `huge` land outside a single plate's reach. A lone
-      -- plate therefore leaks; a continuous rim of them does not (see the
-      -- 3600-tick exposure result in the file header).
+      -- plate therefore leaks -- MEASURED, a lone plate against a `huge`
+      -- loses 0-2 foundation tiles depending on where the cascade scatters --
+      -- while a continuous rim of them does not (the 3600-tick exposure run
+      -- finished 400/400 tiles; numbers in PROGRESS.md).
       range = 4,
+      -- MEASURED-CRITICAL, and the one thing this whole block gets wrong if
+      -- it is omitted. `range_mode` defaults to "center-to-center"
+      -- (prototype-api.json, BaseAttackParameters.range_mode) and vanilla
+      -- asteroids are built with collision_box = {{-r,-r},{r,r}} from
+      -- `collision_radiuses = {0.4, 0.5, 1, 2, 4.5}` (chunk/small/medium/
+      -- big/huge) -- space-age/prototypes/entity/asteroid.lua:165-172,
+      -- applied at :492. Under the default, "range 4" therefore meant 4
+      -- tiles to the rock's CENTRE: a real standoff of 3.5 tiles for a
+      -- small, 3.0 for a medium, 2.0 for a big, and -0.5 for a HUGE -- the
+      -- rock's hull was already past the plate before the plate was allowed
+      -- to fire at all, and since `prepare_range` defaults to `range` the
+      -- plate was still folded at that moment. That gave the per-class
+      -- ladder two independent causes at once (the damage-vs-resistance
+      -- arithmetic documented in prototypes/item.lua, AND an undocumented
+      -- geometry cliff at `huge`), which design/endgame.md §6 forbids.
+      -- With center-to-bounding-box, range 4 means 4 tiles from the plate to
+      -- the rock's HULL for every class, so the ladder has exactly one
+      -- cause. (Chunks alone are unaffected: asteroid.lua:492 gives a chunk
+      -- no collision_box at all, so for a chunk this degenerates back to
+      -- center-to-center.) Vanilla precedent:
+      -- space-age/prototypes/entity/turrets.lua:724 (tesla turret),
+      -- base/prototypes/entity/flying-robots.lua:773 and :856.
+      range_mode = "center-to-bounding-box",
+      -- A forward hemisphere, not the default 1 (= 360 degrees). The
+      -- placement rule already fixes which way a plate faces -- void in
+      -- front, foundation behind -- so the firing arc should match the
+      -- plate's own outward face. On the default a rim plate engages a rock
+      -- four tiles INBOARD, firing back across its own platform: that breaks
+      -- the capability's facing story (plate the leading edge and half your
+      -- journeys are naked) and is wrong for hull armour. A hemisphere still
+      -- covers everything outboard of the rim, cascade children scattering
+      -- laterally included -- MEASURED: switching from 1 to 0.5 cost nothing
+      -- on either the per-class ladder or a 3600-tick plated flight (see
+      -- PROGRESS.md). 0.5 is also the practical ceiling: the engine clamps
+      -- anything in (0.5, 1) down to 0.5, since targeting in arcs larger
+      -- than a half circle is not implemented (prototype-api.json,
+      -- BaseAttackParameters.turn_range). Vanilla precedent: railgun turret
+      -- 0.20 (space-age/prototypes/entity/turrets.lua:398), flamethrower
+      -- turret 1/3 (base/prototypes/entity/fire.lua:890).
+      turn_range = 0.5,
       -- Copied from both vanilla gun-turret and railgun-turret: a negative
       -- penalty makes the turret *prefer* threatening asteroids over any
       -- other target. Without it a plate would happily ignore the thing
