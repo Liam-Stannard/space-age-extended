@@ -202,8 +202,11 @@ data:extend({
     -- railgun-ammo, is stack_size 10 at 200 kg apiece
     -- (space-age/prototypes/item.lua:643-645).
     stack_size = 20,
-    -- 10 kg, in grams (literal rather than `10 * kg`, since prototypes/ files
-    -- keep `data` as their only global -- see .luacheckrc). Item weight here
+    -- 10 kg, in grams. Written as a literal rather than `10 * kg` because
+    -- `kg` is not among the globals .luacheckrc declares for prototypes/ files
+    -- (that entry lists `data` plus the three circuit-connector names
+    -- prototypes/entity.lua reads, and a `files` entry replaces the top-level
+    -- list rather than extending it). Item weight here
     -- governs rocket cargo capacity ONLY. MEASURED: it contributes nothing to
     -- space platform mass, whether the charges sit in a chest or inside a
     -- plate's ammo slot -- see the note on the entity in prototypes/entity.lua.
