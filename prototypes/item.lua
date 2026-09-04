@@ -119,10 +119,10 @@ data:extend({
     -- the round number just above the threshold that one-shots a metallic
     -- `big` and comfortably below the one that would one-shot a metallic
     -- `huge`: against decrease 2000 / percent 10 a `big` (2000 hp) needs
-    -- (D - 2000) * 0.9 >= 2000, i.e. D >= 4222; against decrease 3000 a
-    -- `huge` (5000 hp) would need D >= 8556. 5000 is the only round number in
-    -- that window, and the window is what makes `huge` the class the player
-    -- has to think about. Against the vanilla asteroid physical resistances
+    -- (D - 2000) * 0.9 >= 2000, i.e. D >= 4223 (4222 gives 1999.8, which is
+    -- short); against decrease 3000 a `huge` (5000 hp) would need D >= 8556.
+    -- That window is what makes `huge` the class the player has to think
+    -- about. Against the vanilla asteroid physical resistances
     -- (decrease = {0,0,0,2000,3000}, percent = {0,0,10,10,10}) it works out
     -- as: small 5000 vs 100hp, medium 4500 vs 400hp, big
     -- (5000-2000)*0.9 = 2700 vs 2000hp -- all one-charge kills -- but huge
@@ -146,11 +146,15 @@ data:extend({
     -- asteroid above `small` spawns exactly three of the next size down
     -- (asteroid.lua:255-278, a three-entry `offsets` list with a random
     -- offset_deviation of +/- collision_radius/2), and the plate shoots those
-    -- too. Measured per encounter, promethium: small 1 charge, medium 4, big
-    -- 8-10 and huge 6-10 for a LONE plate (10 being the magazine, not the
-    -- demand), and big 10-14, huge 24-48 across a CONTINUOUS RIM that
-    -- actually catches the cascade a lone plate lets past. Full tables, with
-    -- plate/hull losses and the empty-plate controls, in PROGRESS.md.
+    -- too. Measured per encounter on the SHIPPED 3x2 rim, promethium: small 1
+    -- charge, medium 4, big a deterministic 14, huge anywhere from 20 to 41 --
+    -- `huge` did not reproduce across runs and is the one figure in this
+    -- capability that should not be planned against as a point value. (For a
+    -- LONE plate, big 8-10 and huge 6-10, but those runs ended with the
+    -- magazine empty, so 10 is the magazine and not the demand.) Full tables,
+    -- with plate/hull losses and the empty-plate controls, in PROGRESS.md --
+    -- including the earlier 1x1-footprint figures, which are a different
+    -- entity's numbers and are labelled as such there.
     --
     -- Anything that leaks also hits the plate hard, and MEASURED (T13, the
     -- million-hp probe build described in prototypes/entity.lua) exactly how
@@ -192,15 +196,18 @@ data:extend({
     -- together -- see the note there). Because the plate has
     -- `inventory_size = 1`, this number IS a plate's magazine.
     --
-    -- 20 because it is twice the worst single-plate drain ever measured -- a
-    -- lone plate emptied a 10-charge magazine on a promethium `big` and again
-    -- on a `huge` -- so no one encounter can dry a plate, while staying small
-    -- enough that resupply is a visible commitment rather than a rounding
-    -- error: at `weight` 10 kg below, a stack is 200 kg, one rocket's 1000 kg
-    -- lifts 100 charges, and stocking a 20x20 rim's 24 plates to full costs
-    -- 480 charges = 4.8 rockets. Vanilla's own heavy anti-asteroid round,
-    -- railgun-ammo, is stack_size 10 at 200 kg apiece
-    -- (space-age/prototypes/item.lua:643-645).
+    -- 20 is at least twice the worst single-plate drain the runs bound: a lone
+    -- plate EMPTIED a 10-charge magazine on a promethium `big` and again on a
+    -- `huge`, so 10 is a lower bound on that encounter's demand rather than a
+    -- measurement of it, and 20 is headroom rather than a proof that no
+    -- encounter can dry a plate. What does pin the number is the entity: it
+    -- equals `automated_ammo_count`, so with `inventory_size = 1` the
+    -- guaranteed stock and the capacity are one number. 20 also keeps resupply
+    -- a visible commitment rather than a rounding error: at `weight` 10 kg
+    -- below, a stack is 200 kg, one rocket's 1000 kg lifts 100 charges, and
+    -- stocking a 20x20 rim's 24 plates to full costs 480 charges = 4.8
+    -- rockets. Vanilla's own heavy anti-asteroid round, railgun-ammo, is
+    -- stack_size 10 at 200 kg apiece (space-age/prototypes/item.lua:643-644).
     stack_size = 20,
     -- 10 kg, in grams. Written as a literal rather than `10 * kg` because
     -- `kg` is not among the globals .luacheckrc declares for prototypes/ files
