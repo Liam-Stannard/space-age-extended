@@ -58,11 +58,15 @@ Every tree names, in one sentence each:
 - **What moves the other way**, or an honest statement of why the tree is
   one-directional.
 
-*Open:* I think **no two trees should lean on the same anchor as their primary**
-— one built on an immovable fluid, one on a placement-locked building, one on a
-native process, and so on. It would keep the five from feeling like the same
-puzzle five times. But it may be a constraint that fights a good theme, in which
-case theme wins.
+**Try not to use the same anchor twice.** One tree built on an immovable fluid,
+one on a placement-locked building, one on a native process, one on a recipe
+condition — five trees leaning on four anchors will repeat one of them, but they
+should not repeat two.
+
+This is an effort, not a rule. **Where the anchor and the theme disagree, the
+theme wins**: a tree that fits its two worlds and reuses an anchor is better than
+one that reaches for an unused anchor and stops making sense. Note the
+duplication in the register and move on.
 
 ## 3. The one new mechanic
 
@@ -92,26 +96,55 @@ it is the part with rules.
 - **Made from the product**, so it cannot exist before the tree is finished.
 - **Uses the tree's materials and mechanic**, so it reads as that chain's
   conclusion rather than a generic reward.
-- **Useful when earned**, in the part of the game where that tree unlocks.
-- **Useful again in the endgame**, when the Core supply line is running —
-  ideally for a *different* reason than it was useful the first time.
 - **Never a strict upgrade** to anything vanilla provides.
 
-*Open:* the strongest version of "useful twice" I can think of is that the
-building solves a mid-game problem locally, and the same capability turns out to
-be what makes a leg of the Core supply line survivable. That gives the endgame
-its shape without a checklist. But it may push all five buildings toward
-logistics, which would make them samey.
+A capstone building has a life across the whole rest of the game, in four steps:
 
-## 5. No two trees solve the same problem
+1. **Useful in the mid-game**, where the tree unlocks, for its own sake. A player
+   who never goes near the Core should still want it.
+2. **Useful in getting to the Core** — the same capability, applied to the
+   problem of crossing a distance nothing else crosses.
+3. **Useful in surviving the Core**, where almost nothing works and everything
+   arrives from somewhere else.
+4. **Expandable out there.** A building may gain a further use on the way to or
+   on the Core — an extension, a second recipe, a mode that only makes sense at
+   the far end.
+
+Step 4 is what keeps the endgame from being a checklist: the buildings the player
+already knows become the tools they solve the Core with, rather than five
+trophies plus a new toolkit.
+
+## 5. One reserved problem per tree
 
 Five buildings that each do a different thing make a toolkit. Five that all
-improve throughput make a shopping list.
+improve throughput make a shopping list. So the problems are **reserved up
+front**, like the pairs, rather than discovered on the fourth tree when three are
+already built.
 
-Before a tree's capstone is accepted, say in one phrase what problem its building
-solves, and check that no other tree's building solves it. *Open:* it may be
-worth reserving those problems up front — the way the trees are already reserved
-to pairs — rather than discovering a collision on the fourth tree.
+Each problem is a thing the player struggles with in the mid-game *and* a thing
+that stands between them and the Core:
+
+| Problem | Mid-game version | Endgame version |
+|---|---|---|
+| **Power where the usual sources fail** | Generating where solar is poor and fuel has to be shipped | The Core has no sun worth the name and nothing burns |
+| **Moving material over distance** | The cost and friction of interplanetary freight | A supply line longer than anything in the game |
+| **Protection from what is out there** | Surviving what attacks a platform or a base | The field between the Edge and the Core |
+| **Refining what is locally available** | Turning a local waste stream into something worth having | Nothing arrives that was not made from what is out there |
+| **Keeping material viable** | Spoilage, decay, temperature, things that expire in transit | A journey long enough that time itself is the hazard |
+
+Provisional assignment, confirmed when each tree is designed:
+
+| Problem | Tree | Why that pairing |
+|---|---|---|
+| Power | Nauvis ↔ Vulcanus | Vulcanus is heat and metal; Nauvis is fuel and industry |
+| Moving material | Fulgora ↔ Aquilo | Electromagnetics and superconduction is how you throw something a long way |
+| Protection | Nauvis ↔ Gleba | Nauvis is where the player learned to be attacked; Gleba is what does the attacking best |
+| Refining locally | Vulcanus ↔ Fulgora | The system's two recycling worlds — lava casting and scrap |
+| Keeping material viable | Gleba ↔ Aquilo | The world that spoils against the world that freezes |
+
+If a tree's theme insists on a different building, **swap two slots rather than
+duplicating one**. Two trees solving the same problem is the failure this table
+exists to prevent.
 
 ## 6. What a tree owes the Core
 
@@ -127,13 +160,13 @@ that:
 
 ## 7. The register
 
-| Pair | Available after | Theme | Anchor | Mechanic | Capstone | Status |
+| Pair | Available after | Problem reserved | Anchor | Mechanic | Capstone | Status |
 |---|---|---|---|---|---|---|
-| Nauvis ↔ Vulcanus | Vulcanus | The first cross-planet chain a player meets | — | — | — | Not designed |
-| Nauvis ↔ Gleba | Gleba | Perishable material against Nauvis logistics | — | — | — | Not designed |
-| Vulcanus ↔ Fulgora | both | Metallurgy against electromagnetics | — | — | — | Not designed |
-| Gleba ↔ Aquilo | Aquilo | Living material against a world that freezes it | — | — | — | Not designed |
-| Fulgora ↔ Aquilo | Aquilo | Electromagnetics against cryogenics | — | — | — | Not designed |
+| Nauvis ↔ Vulcanus | Vulcanus | Power | — | — | — | Not designed |
+| Nauvis ↔ Gleba | Gleba | Protection | — | — | — | Not designed |
+| Vulcanus ↔ Fulgora | both | Refining locally | — | — | — | Not designed |
+| Gleba ↔ Aquilo | Aquilo | Keeping material viable | — | — | — | Not designed |
+| Fulgora ↔ Aquilo | Aquilo | Moving material | — | — | — | Not designed |
 
 Each row fills in as its tree is designed. The empty columns are the decisions
 this document exists to force: a tree is not ready while any of them is blank.
