@@ -157,6 +157,88 @@ fast-forward into `master`, push, delete the branch.
     tiles lost 0 / 2 / 2 / 2 / 1, plate health 200 / 150 / 150 / 200 / 200,
     witness 350/350 in all five. A `huge` dies to 3 charges
     ((5000-3000)*0.9 = 1800 x 3 > 5000 hp); the other 7 go on its cascade.
+
+    Re-measured later on the isolated rig geometry (below): `big` is **not**
+    deterministic either. Three runs gave 5 / 10 / 10 charges, plate 200/200
+    throughout, 0–1 tiles lost; `huge` gave 10 / 10 / (plate destroyed), 1 /
+    13 / 28 tiles. Read the metallic `big` row as **5–10, RNG**, not 5.
+  - **Per-class ladder, PROMETHIUM** — the companion to the table above, and
+    the one that matters, since the promethium route is the corridor this
+    capability exists for. Promethium asteroids carry **double `max_health`
+    and double `damage_per_hp` with identical resistances**
+    (`space-age/prototypes/entity/asteroid.lua:140-162`; health
+    200 / 800 / 4000 / 10000 for small/medium/big/huge), so the metallic
+    ladder does not describe them. Entity names `<class>-promethium-asteroid`,
+    verified against `prototypes.entity` on the running server. Same plate,
+    same rig, same `range_mode` and `turn_range`.
+
+    **The computed prediction — `big` = 2 charges, `huge` = 6 — is exactly
+    right, and is the wrong number to plan with.** It is confirmed as the
+    cost of killing the *parent rock* and nothing else: a `huge` engaged in
+    isolation reads `damage_dealt = 10800` = 6 × ((5000−3000)×0.9), a `big`
+    5400 = 2 × ((5000−2000)×0.9), both exact. What an *encounter* costs is
+    dominated by the **cascade**: every dying asteroid above `small` spawns
+    exactly three of the next size down (`asteroid.lua:255-278` — a
+    three-entry `offsets` list with a random `offset_deviation` of
+    ± collision_radius/2), and the plate shoots those too. Measured
+    per-encounter cost is **4–5× the parent cost** for `big` and up to **8×**
+    for `huge`.
+
+    Lone 10-charge plate, steel-chest witness one tile behind:
+
+    | class  | runs | charges spent            | plate after                            | witness                  | tiles lost      |
+    |--------|------|--------------------------|----------------------------------------|--------------------------|-----------------|
+    | small  | 2    | 1, 1                     | 200/200 ×2                             | 350/350 ×2               | 0, 0            |
+    | medium | 3    | 4, 4, 4                  | 200/200 ×3                             | 350/350 ×3               | 0, 0, 0         |
+    | big    | 5    | 8, 9, 10, 10, magazine emptied | 200/200 ×3, **50/200** ×1, **DESTROYED** ×1 | 350/350 ×4, DESTROYED ×1 | 0, 0, 2, 3, 4   |
+    | huge   | 5    | 6, 6, 10, 10, magazine emptied | 200/200 ×4, **DESTROYED** ×1           | 350/350 ×5               | 0, 0, 1, 2, 7   |
+
+    Continuous rim on the same hull (78 plates × 10 charges = 780 loaded),
+    same single inbound rock:
+
+    | class  | runs | charges spent (whole rim) | plates lost | plates damaged | tiles lost |
+    |--------|------|---------------------------|-------------|----------------|------------|
+    | medium | 2    | 4, 4                      | 0/78        | 0              | 0          |
+    | big    | 3    | 10, 13, 14                | 0/78        | 0              | 0          |
+    | huge   | 3    | 24, 34, 48                | 0/78        | 0              | 0          |
+
+    **A rim is not a more expensive lone plate; it is a different outcome.**
+    Eight loaded rim runs across three classes lost zero plates, took zero
+    plate damage and lost zero foundation tiles, including against `huge`.
+    The lone plate leaked in 6 of 10 `big`/`huge` runs and was destroyed in 2
+    of them. The rim spends more charges precisely *because* it catches the
+    cascade the lone plate lets past.
+
+    Empty-plate control, same rocks, 0 charges:
+
+    | class  | plate      | witness   | hull                                                        |
+    |--------|------------|-----------|-------------------------------------------------------------|
+    | small  | DESTROYED  | 350/350   | 0 tiles                                                     |
+    | medium | DESTROYED  | DESTROYED | 4 tiles                                                     |
+    | big    | DESTROYED  | DESTROYED | 30 tiles by t+700, 90 by t+1300, rock still alive at 1672/4000 |
+    | huge   | DESTROYED  | DESTROYED | 63 tiles by t+700, then **the whole platform**: see below   |
+    | big, unloaded rim  | 5 of 78 destroyed | — | 90 tiles                                  |
+    | huge, unloaded rim | 10 of 78 destroyed | — | the entire 620-tile half                 |
+
+    Note the first row. **A promethium `small` — the cheapest rock in the
+    game out there — destroys a 200 HP plate outright**, while leaving a
+    350 HP steel chest one tile behind it untouched. The plate has no
+    survivability margin at all on this route.
+
+    Two rig facts learned paying for these numbers, both now commented in
+    the scenario files:
+    - **A rampaging asteroid can delete the whole platform's foundation in
+      one step.** Once enough hull is eaten that the remainder stops being
+      connected to the hub, every foundation tile goes at once — both test
+      columns simultaneously read 0 tiles and everything destroyed. That is
+      indistinguishable from "the subject failed catastrophically" unless
+      the platform-wide tile count is sampled too, which the measure
+      scenario now does.
+    - **A `huge` promethium asteroid can hard-spin the server**: 100% CPU,
+      `game.tick` frozen, every RCON call timing out, no error logged, no
+      recovery. Seen three times, always on huge-promethium. Mitigated by
+      short exposure windows (700 + 600 ticks rather than 900 + 900) and by
+      culling the control side between samples; not eliminated.
   - **A 0.5 (hemisphere) firing arc costs nothing.** A/B on the same build,
     360 degrees vs 0.5: 3600-tick plated flight 400/400 tiles, 12/12
     witnesses, 64/64 plates in both, 49 charges spent at 360 degrees vs 50
@@ -478,19 +560,27 @@ Consolidated across tree 1, this branch, and tree 2's plan
       the four placeholder facings actually read as different in a client, and
       whether rotate-to-face-void placement is comfortable (vanilla asks the
       same of the asteroid collector).
-- [ ] **Measure the promethium ladder.** The two-charges-for-`big` and
-      six-for-`huge` figures are computed from prototype data, not measured —
-      no charge has ever been fired at a promethium asteroid.
+- [x] **Measure the promethium ladder.** Done — table above. The computed
+      2-for-`big` / 6-for-`huge` figures are confirmed exactly as *parent-kill*
+      costs and are 4–8× too low as *encounter* costs, because the cascade
+      dominates: lone plate `big` 8–10, `huge` 6–10 (both magazine-capped);
+      continuous rim `big` 10–14, `huge` 24–48.
 - [ ] **Apply the first-pass numbers** from the plan's §13. The prototypes still
       carry spike placeholders (charge = 1 steel + 1 explosives; plate = 10
       steel + 5 tungsten) and no composite appears anywhere yet.
 - [ ] **Decide the plate's own survivability** — `max_health = 200` and its
-      resistances, once promethium's doubled `damage_per_hp` is measured.
+      resistances. Promethium is now measured and the answer is stark: a
+      promethium `small` one-shots the 200 HP plate, and a lone plate that
+      leaks a `big` or `huge` cascade dies in ~20% of encounters. But eight
+      loaded *rim* runs lost no plates and took no plate damage at all, so
+      the choice is a design one — buy survivability with HP/resistances, or
+      state that the plate is only ever specified as a continuous rim.
 - [ ] **Corner feeding.** Adopt chamfered rims as stated design intent, and
       publish a reference rim pattern. It must not be a closed belt loop (a
       saturated loop deadlocked for 20,000 ticks with 44 plates dry).
-- [ ] **Circuit connector** is missing and **`heating_energy`** is unset — both
-      recorded in-line as deliberate gaps, neither decided.
+- [ ] **Circuit connector** is missing — recorded in-line as a deliberate gap,
+      not decided. (**`heating_energy`** is no longer open: unset/0W is correct
+      by construction for a vacuum-only entity — see the engine-facts list.)
 - [ ] **Real art**: the entity sprite with folded/preparing/attacking states,
       plus the three new icons in `graphics/icon-prompts.md`.
 - [ ] **Merge decision.** Rebased onto current master and purely additive, but

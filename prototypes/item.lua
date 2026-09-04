@@ -116,16 +116,29 @@ data:extend({
     -- without any control-stage logic at all.
     --
     -- CAUTION -- that ladder is for metallic/carbonic/oxide asteroids only.
-    -- PROMETHEUM asteroids carry double health with the same resistances
+    -- PROMETHIUM asteroids carry double health with the same resistances
     -- (space-age/prototypes/entity/asteroid.lua:143-144 builds them from
     -- shared_health * 2, i.e. 200/800/4000/10000) and double damage_per_hp.
-    -- So on the promethium route -- which is the whole corridor this
-    -- capability exists for -- the same charge reads: small and medium still
-    -- one-shot, big 2700 vs 4000hp is TWO charges, huge 1800 vs 10000hp is
-    -- SIX. Anything that leaks also hits the plate twice as hard. Rate the
-    -- plate on inner-system rocks and it under-performs exactly where it is
-    -- mandatory; the escalation this gives the corridor is native and wants
-    -- measuring before any charge-cost constant is tuned on top of it.
+    -- On the promethium route -- the whole corridor this capability exists
+    -- for -- the same charge reads: small and medium still one-shot, big
+    -- 2700 vs 4000hp is TWO charges, huge 1800 vs 10000hp is SIX.
+    --
+    -- MEASURED, and this is the part that matters: those two figures are
+    -- exactly right and are the wrong number to plan with. They are the cost
+    -- of killing the PARENT ROCK only -- confirmed on the rig, where a `huge`
+    -- engaged in isolation read damage_dealt = 10800 = 6 x 1800 to the unit.
+    -- What one ENCOUNTER costs is dominated by the CASCADE: every dying
+    -- asteroid above `small` spawns exactly three of the next size down
+    -- (asteroid.lua:255-278, a three-entry `offsets` list with a random
+    -- offset_deviation of +/- collision_radius/2), and the plate shoots those
+    -- too. Measured per encounter, promethium: small 1 charge, medium 4, big
+    -- 8-10 and huge 6-10 for a LONE plate (10 being the magazine, not the
+    -- demand), and big 10-14, huge 24-48 across a CONTINUOUS RIM that
+    -- actually catches the cascade a lone plate lets past. Full tables, with
+    -- plate/hull losses and the empty-plate controls, in PROGRESS.md.
+    --
+    -- Anything that leaks also hits the plate twice as hard: a promethium
+    -- `small` destroys a 200 HP plate outright.
     --
     -- `target_type = "entity"` with an `instant` action_delivery makes the
     -- shot hitscan -- no projectile travel time whatsoever. At the contact
