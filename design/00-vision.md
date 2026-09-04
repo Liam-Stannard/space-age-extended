@@ -12,10 +12,14 @@ completes when material from both worlds meets in the same recipe.
 
 ## Five pairs
 
-There are ten possible pairs across Nauvis, Vulcanus, Fulgora, Gleba and
-Aquilo. **Five of them get trees**, at least for now — enough that the endgame
-draws on the whole system, few enough that each tree can be built properly and
-actually played.
+**Nauvis is not part of the mod.** It is the world the player already knows
+inside out, and a chain that starts there is a chain about iron plates; nothing
+about pairing it with another world produces a relationship worth building. The
+mod lives among the four worlds the player travels to.
+
+That leaves six possible pairs across Vulcanus, Fulgora, Gleba and Aquilo, and
+**five of them get trees** — enough that the endgame draws on the whole system,
+few enough that each can be built properly and actually played.
 
 ## A tree per pair
 
@@ -123,26 +127,33 @@ what this design does not want.
 
 Two rules settle the shape:
 
-- **Every planet appears in exactly two trees.** With five planets and five
-  pairs that makes a closed loop, and it means no world is only ever a supplier
-  to another — each one both sends and receives.
-- **Every tree is designed fresh.** No earlier design is carried forward, including
-  the one already implemented in this repository.
+- **Every world both sends and receives.** No planet is only ever a supplier.
+- **Every tree is designed fresh.** No earlier design is carried forward,
+  including the one already implemented in this repository.
 
-The working set:
+The working set — five of the six available pairs:
 
 | Pair | Available after | Theme, in one phrase |
 |---|---|---|
-| **Nauvis ↔ Vulcanus** | Vulcanus | The first cross-planet chain a player meets |
-| **Nauvis ↔ Gleba** | Gleba | Perishable material against Nauvis logistics |
 | **Vulcanus ↔ Fulgora** | both | Metallurgy against electromagnetics |
-| **Gleba ↔ Aquilo** | Aquilo | Living material against a world that freezes it |
+| **Vulcanus ↔ Gleba** | both | The hottest world against the living one |
+| **Fulgora ↔ Gleba** | both | The world with no soil against the world with no ore |
 | **Fulgora ↔ Aquilo** | Aquilo | Electromagnetics against cryogenics |
+| **Gleba ↔ Aquilo** | Aquilo | Living material against a world that freezes it |
 
-Every pair in that loop has a theme its two planets alone can support, which is
-the real reason for this set rather than one of the other four loops. Two trees
-open in the early-to-mid game, one in the middle, and two after Aquilo — which
-is where the endgame sits, so the run-up to the Core has content of its own.
+Three trees open once the player has developed two of Vulcanus, Fulgora and
+Gleba; two more open at Aquilo, which is where the run-up to the endgame sits.
+
+**Vulcanus ↔ Aquilo is the pair left out** — heat against cold is a strong theme,
+but taking it would have put three of the five trees behind Aquilo and left the
+mid-game with almost nothing. It is the reserve if one of the five fails in
+design.
+
+**The cost of dropping Nauvis, stated plainly:** the mod now begins later. There
+is no tree a player can start on their first trip out; the earliest needs two
+developed worlds. That is the price of not building a chain about iron plates,
+and it is worth paying, but it means the first tree has to be strong enough to
+be worth the wait.
 
 **On the existing Vulcanus ↔ Fulgora work:** the pair stays, the implementation
 does not. The technologies, recipes and the Quench Turbine currently in

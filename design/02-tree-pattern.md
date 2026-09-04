@@ -136,10 +136,10 @@ Provisional assignment, confirmed when each tree is designed:
 
 | Problem | Tree | Why that pairing |
 |---|---|---|
-| Power | Nauvis ↔ Vulcanus | Vulcanus is heat and metal; Nauvis is fuel and industry |
-| Moving material | Fulgora ↔ Aquilo | Electromagnetics and superconduction is how you throw something a long way |
-| Protection | Nauvis ↔ Gleba | Nauvis is where the player learned to be attacked; Gleba is what does the attacking best |
-| Refining locally | Vulcanus ↔ Fulgora | The system's two recycling worlds — lava casting and scrap |
+| Power | Vulcanus ↔ Fulgora | The system's heat against the system's electricity |
+| Protection | Vulcanus ↔ Gleba | Tungsten and heat against the only world that fights back |
+| Refining locally | Fulgora ↔ Gleba | Two worlds that make everything out of what they already have — scrap on one, bacteria on the other |
+| Moving material | Fulgora ↔ Aquilo | Superconduction is how you throw something a long way |
 | Keeping material viable | Gleba ↔ Aquilo | The world that spoils against the world that freezes |
 
 If a tree's theme insists on a different building, **swap two slots rather than
@@ -162,11 +162,16 @@ that:
 
 | Pair | Available after | Problem reserved | Anchor | Mechanic | Capstone | Status |
 |---|---|---|---|---|---|---|
-| Nauvis ↔ Vulcanus | Vulcanus | Power | — | — | — | Not designed |
-| Nauvis ↔ Gleba | Gleba | Protection | — | — | — | Not designed |
-| Vulcanus ↔ Fulgora | both | Refining locally | — | — | — | Not designed |
-| Gleba ↔ Aquilo | Aquilo | Keeping material viable | — | — | — | Not designed |
+| Vulcanus ↔ Fulgora | both | Power | — | — | — | Not designed |
+| Vulcanus ↔ Gleba | both | Protection | — | — | — | Not designed |
+| Fulgora ↔ Gleba | both | Refining locally | — | — | — | Not designed |
 | Fulgora ↔ Aquilo | Aquilo | Moving material | — | — | — | Not designed |
+| Gleba ↔ Aquilo | Aquilo | Keeping material viable | — | — | — | Not designed |
+
+Vulcanus and Fulgora appear twice, Gleba and Fulgora three times; with four
+worlds and five pairs the even loop is not available, and Fulgora carrying three
+is the price of keeping the mid-game populated. Watch that Fulgora does not end
+up doing the same job in all three.
 
 Each row fills in as its tree is designed. The empty columns are the decisions
 this document exists to force: a tree is not ready while any of them is blank.
