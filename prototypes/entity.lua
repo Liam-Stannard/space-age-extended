@@ -33,6 +33,20 @@
 require("__base__.prototypes.entity.pipecovers")
 local sounds = require("__base__.prototypes.entity.sounds")
 
+-- Circuit-connector helpers. Unlike the two above these live in
+-- `core/lualib`, which is on every mod's data-stage Lua path already, so the
+-- plain module name is the correct spelling here -- no `__core__.` prefix,
+-- and vanilla's own space-age/prototypes/entity/turrets.lua opens with
+-- exactly this line. Requiring it defines three globals this file uses:
+-- `circuit_connector_definitions` (with `.create_single` / `.create_vector`),
+-- `universal_connector_template`, and `default_circuit_wire_max_distance`
+-- (= 9). It also pulls in core/lualib/circuit-connector-generated-definitions
+-- .lua itself, which is where `universal_connector_template` is actually
+-- defined -- a 40-frame sheet, 8 per row, so variations 0-7 are the eight
+-- compass orientations of the connector's wire pins.
+require("circuit-connector-sprites")
+local util = require("util")
+
 data:extend({
   {
     type = "generator",
@@ -254,12 +268,29 @@ end
 -- be made to cost platform speed, so its whole cost has to live in the
 -- charge supply chain.
 --
--- KNOWN GAP, deliberately out of scope for the spike: no circuit connector.
--- Vanilla gun-turret carries `circuit_connector_definitions["gun-turret"]`,
--- which is what makes its remaining ammo readable on the circuit network;
--- this entity carries none, so a platform cannot hold at a depot until its
--- rim is re-armed. Closing it is a prototype-only change (connector
--- definitions plus `circuit_wire_max_distance`), not a script one.
+-- CIRCUIT CONTROL. The connector below is the only prototype-side thing the
+-- rim's circuit behaviour needs; everything else is player configuration on
+-- the placed entity. Two capabilities were verified over RCON against this
+-- prototype:
+--
+--   * `read_ammo` puts the plate's remaining Reactive Charges on the wire, so
+--     a platform can hold at a depot until its rim is re-armed. MEASURED in
+--     all four rotations at once -- four plates, one per rim face, loaded
+--     with 3/5/7/9 charges and each on its own red network -- and every
+--     network read back exactly its own plate's count.
+--   * TARGET PRIORITY works, including from the circuit network, which makes
+--     "ignore small chunks, leave them to the collectors" an automatable
+--     decision rather than a flat income penalty for plating a mining
+--     platform. MEASURED three ways, all positive: entity-side
+--     (`set_priority_target` + `ignore_unprioritised_targets`), circuit-gated
+--     (`LuaTurretControlBehavior.set_ignore_unlisted_targets` plus
+--     `ignore_unlisted_targets_condition`), and list-from-the-wire
+--     (`set_priority_list = true`, with the target named by an ENTITY-type
+--     signal on the network). In the gated case a plate holding 20 charges
+--     let a `small` pass untouched and killed a `medium`, and flipping the
+--     one signal the condition tests made it engage the `small` again.
+--     None of that is in this prototype and none of it needs script: it is
+--     the vanilla turret GUI, unlocked by having a connector at all.
 --
 -- Visuals are placeholder: vanilla gun turret's own base sprite, scaled down
 -- to roughly a tile. The icon art is placeholder too -- prompts for the real
@@ -393,6 +424,51 @@ data:extend({
     attacking_speed = 1,
     prepare_with_no_ammo = false,
     alert_when_attacking = true,
+    -- Circuit connector. This is what makes a rim's remaining charges
+    -- readable, so a platform can hold at a depot until it is re-armed --
+    -- switch the plate's control behaviour to `read_ammo` and every plate
+    -- adds its Reactive Charge count onto the wire.
+    --
+    -- A VECTOR, one entry per direction, not `create_single`. The count is
+    -- not a style choice: prototype-api.json, TurretPrototype.circuit_connector
+    -- states it outright -- "8 elements if building-direction-8-way flag is
+    -- set, or 16 elements if building-direction-16-way flag is set, or 4
+    -- elements if turret_base_has_direction is set to true, or 1 element."
+    -- This plate sets `turret_base_has_direction = true` and carries neither
+    -- direction flag, so the engine wants exactly FOUR. (Vanilla's railgun
+    -- turret supplies 8 because it is an 8-way building; copying its list
+    -- wholesale would be wrong here.)
+    --
+    -- MEASURED, because "the docs say 4" and "the engine wants 4" are not the
+    -- same claim: throwaway clones of this prototype carrying 1 entry and 8
+    -- entries were both REFUSED at load with a hard error naming the number
+    -- -- "In circuit connector definitions expected table of 4 elements but
+    -- 1 were given" / "but 8 were given". The rule is enforced in both
+    -- directions, so this list cannot silently drift. Four entries load, and
+    -- `read_ammo` was then read back correctly in all four rotations.
+    --
+    -- `create_single` would have loaded too, and would have been wrong in
+    -- three rotations out of four: it pins the connector to one pixel offset
+    -- regardless of facing, and this entity's whole point is that it faces
+    -- outward. Vanilla's own note on rocket-turret --
+    -- "TurretPrototype takes vector" (space-age/prototypes/entity/
+    -- circuit-network.lua:95) -- is the same observation.
+    --
+    -- Variations index the 40-frame universal connector sheet, 8 per row;
+    -- row 0 is the eight compass orientations, so N/E/S/W = 0/6/4/2, matching
+    -- the order railgun-turret uses for its 8-way list. Offsets put the
+    -- connector on the plate's INBOARD edge in each facing -- the side the
+    -- wire actually comes from, since the outboard side is void.
+    circuit_connector = circuit_connector_definitions.create_vector(
+      universal_connector_template,
+      {
+        { variation = 0, main_offset = util.by_pixel( 9,  9), shadow_offset = util.by_pixel( 9,  9), show_shadow = false },
+        { variation = 6, main_offset = util.by_pixel(-9,  9), shadow_offset = util.by_pixel(-9,  9), show_shadow = false },
+        { variation = 4, main_offset = util.by_pixel(-9, -9), shadow_offset = util.by_pixel(-9, -9), show_shadow = false },
+        { variation = 2, main_offset = util.by_pixel( 9, -9), shadow_offset = util.by_pixel( 9, -9), show_shadow = false },
+      }
+    ),
+    circuit_wire_max_distance = default_circuit_wire_max_distance,
     -- Mandatory on turret prototypes (the engine refuses to load without
     -- it). Matched to the plate's own contact range rather than gun
     -- turret's 40 -- a plate calls for help over its own tile, not across
