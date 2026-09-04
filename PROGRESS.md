@@ -52,9 +52,25 @@ both already reflect the current name.
 ```
 
 Plus, per phase, an in-engine `--create` + `--benchmark --benchmark-ticks 60`
-smoke test (see git log for the exact throwaway-scratch-dir invocation used
-each time), and a manual in-game playtest using console commands to
-fast-research, e.g.:
+smoke test in a throwaway scratch dir. The invocation, written down once so it
+stops being rediscovered — `$B` is any scratch dir holding `mods/`
+(a symlink to the repo plus a `mod-list.json`) and `cfg/config.ini` with its
+own `write-data`:
+
+```
+factorio --create    $B/bench.zip --config $B/cfg/config.ini --mod-directory $B/mods
+factorio --benchmark $B/bench.zip --benchmark-ticks 60 \
+         --config $B/cfg/config.ini --mod-directory $B/mods
+```
+
+Give it its **own** `--config`/`write-data`. Another agent session's headless
+server may be holding `~/.factorio/.lock`, and anything using the default
+write-data then dies with "Is another instance already running?" — including
+`tools/check-data-stage.sh`, which takes a binary path as `$1`, so a two-line
+wrapper that `exec`s the real binary with `--config` appended gets it past the
+lock without editing the script. Never `pkill` on a bare `factorio` pattern.
+
+And a manual in-game playtest using console commands to fast-research, e.g.:
 
 ```
 /c game.player.force.technologies['sae-metallurgical-recovery'].researched = true
@@ -224,6 +240,13 @@ fast-forward into `master`, push, delete the branch.
     game out there — destroys a 200 HP plate outright**, while leaving a
     350 HP steel chest one tile behind it untouched. The plate has no
     survivability margin at all on this route.
+
+    **Every plate health figure in this section was taken against the 200 hp
+    prototype**, which is what these runs were measured on. The plate now
+    ships at 400, and the contact damage behind these deaths has since been
+    measured exactly (promethium `small` 200, `medium` 1280, `big` 9550) —
+    see "Numbers pass" below. Nothing else in these tables changes: the
+    charge counts, tile losses and the rim-vs-lone conclusion all stand.
 
     Two rig facts learned paying for these numbers, both now commented in
     the scenario files:
@@ -578,35 +601,67 @@ Consolidated across tree 1, this branch, and tree 2's plan
 - [ ] **Strip `icon_mipmaps` repo-wide** — dead key, 25 sites, own janitorial
       commit.
 
-### Reactive Edge Plating (branch `reactive-edge-plating`, 11 commits, unmerged)
+### Reactive Edge Plating (branch `reactive-edge-plating-finish`, 18 commits ahead of `master`, unmerged)
+
+Everything mechanical is now settled and measured. What is left is one art
+package, one real ingredient chain, a reference rim pattern, and a playtest.
 
 - [ ] **Client playtest.** Three things headless testing cannot answer:
-      whether the four placeholder facings read as different in a client,
+      whether the four stand-in facings read as different in a client,
       whether rotate-to-face-void placement is comfortable (vanilla asks the
       same of the asteroid collector), and whether a 3×2 panel is pleasant to
       lay along a rim by hand as opposed to by blueprint.
+- [ ] **A reference rim pattern is still owed.** The 3×2 footprint solved
+      *feedability* — every plate on a square rim has a tile an inserter can
+      stand on, at every size tested — but nobody has yet written down the
+      belt/inserter layout a player should copy. Two hard constraints on it:
+      it **must not be a closed belt loop** (a saturated loop deadlocked for
+      20,000 ticks with 44 plates dry), and every footprint's corner-owning
+      plate needs one deliberate tile (a spur, a buffer chest, or a chamfer).
+      **The earlier chamfer guidance is superseded**: chamfering the hull is
+      now *optional advice* for tidying a corner, not the answer to corner
+      feeding — the footprint is.
+- [ ] **Replace the provisional recipe and technology** with the real
+      Thermal-Shock Composite chain and its gating (the `explosives`
+      prerequisite goes away with them). This is the one deliberate
+      provisional seam in the capability and is marked
+      `TODO(thermal-shock-composite)` in `prototypes/recipe.lua`. It is
+      blocked on tree 2 building the chain; **do not substitute a different
+      real ingredient in the meantime.**
+- [ ] **Real art**: the entity sprite with folded/preparing/attacking states,
+      plus the three new icons in `graphics/icon-prompts.md`. Nothing numeric
+      depends on it.
+- [ ] **Merge decision.** Rebased onto current master and purely additive, but
+      not merged and not pushed.
 - [x] **Measure the promethium ladder.** Done — table above. The computed
       2-for-`big` / 6-for-`huge` figures are confirmed exactly as *parent-kill*
       costs and are 4–8× too low as *encounter* costs, because the cascade
       dominates: lone plate `big` 8–10, `huge` 6–10 (both magazine-capped);
       continuous rim `big` 10–14, `huge` 24–48.
-- [ ] **Apply the first-pass numbers** from the plan's §13. The prototypes still
-      carry spike placeholders (charge = 1 steel + 1 explosives; plate = 10
-      steel + 5 tungsten) and no composite appears anywhere yet.
-- [ ] **Decide the plate's own survivability** — `max_health = 200` and its
-      resistances. Promethium is now measured and the answer is stark: a
-      promethium `small` one-shots the 200 HP plate, and a lone plate that
-      leaks a `big` or `huge` cascade dies in ~20% of encounters. But eight
-      loaded *rim* runs lost no plates and took no plate damage at all, so
-      the choice is a design one — buy survivability with HP/resistances, or
-      state that the plate is only ever specified as a continuous rim.
 - [x] **Footprint settled at 3 wide × 2 deep.** Measured against 1x1 and 2x2
       built as real prototypes side by side — full write-up below.
 - [x] **Corner feeding.** Solved by the footprint, not by asking the player to
       chamfer: at 3x2 every plate on a square rim has a tile an inserter can
-      stand on, at every platform size tested. A reference rim pattern is
-      still owed, and it must not be a closed belt loop (a saturated loop
-      deadlocked for 20,000 ticks with 44 plates dry).
+      stand on, at every platform size tested (0 unreachable, 24/24 and 48/48
+      simultaneously matchable at 20×20 and 40×40).
+- [x] **Numbers pass done** — `max_health`, `resistances`, `cooldown`, the
+      ammo triple (`inventory_size` / charge `stack_size` /
+      `automated_ammo_count`), both stack sizes, `mining_time`, the charge's
+      damage and the rest are each measured or anchored in a one-line note in
+      the prototype. Write-up below; data stage clean, 60-tick benchmark
+      recorded.
+- [x] **The plate's own survivability is decided: the rim is the answer.**
+      Contact damage was measured directly (promethium `small` 200, `medium`
+      1280, `big` 9550), so nothing above `small` is survivable at any sane hit
+      point total and HP cannot be the answer to a leak. `max_health` goes
+      200 → 400 only to get off the knife edge where the cheapest rock on the
+      route was a guaranteed plate kill; `resistances` stays unset on purpose,
+      even though `impact` resistance was measured to work, because absorbing
+      impacts is another tree's payoff.
+- [x] **The perimeter table is recomputed for 3×2**, with the 40×40 plate
+      count measured rather than divided out (48, not 156/3 = 52). "Doubling
+      the ship halves the relative cost of armouring it" still holds, and at
+      3×2 it holds exactly.
 - [x] **Circuit connector** added — a per-direction vector, `read_ammo`
       verified in all four rotations. (**`heating_energy`** is no longer open
       either: unset/0W is correct by construction for a vacuum-only entity —
@@ -615,10 +670,8 @@ Consolidated across tree 1, this branch, and tree 2's plan
       "ignore small chunks and leave them to the collectors" is an
       automatable decision, not a flat income penalty for plating a mining
       platform. Details below. No `control.lua` change; none was needed.
-- [ ] **Real art**: the entity sprite with folded/preparing/attacking states,
-      plus the three new icons in `graphics/icon-prompts.md`.
-- [ ] **Merge decision.** Rebased onto current master and purely additive, but
-      not merged and not pushed.
+- [x] **`control.lua` and `scripts/` untouched.** The whole capability is
+      data-stage, and nothing in the numbers pass needed script.
 
 #### Footprint: measured, and why it is 3×2
 
@@ -723,7 +776,8 @@ and 37–43 on a `huge` — so a 20×20 rim's standing buffer is now roughly six
 `big` encounters or six `huge` ones, where at 1x1 it was three times that.
 That is the number the numbers pass has to be comfortable with; the levers are
 `inventory_size`, the charge's stack size, and the per-charge damage, not the
-footprint.
+footprint. **Answered below** — `automated_ammo_count` went to 20, which puts
+the guaranteed standing buffer back at 480.
 
 #### Circuit control (both verified over RCON)
 
@@ -775,6 +829,133 @@ plate firing at contact range kills chunks well inside the radius of any
 collector behind it. Plating a mining platform's rim used to be a flat cut in
 income; it is now a decision the player can automate.
 
+#### Numbers pass: every number measured or anchored
+
+Done on top of the 3×2 footprint. Every number on the entity and the charge
+is now either measured on the running engine or carries a one-line note in the
+prototype saying what it is anchored to. The only things left provisional in
+this capability are the **art** and the **recipe + technology**, and the second
+is deliberate: their real ingredient is Thermal-Shock Composite, which does not
+exist yet, and the seam is marked `TODO(thermal-shock-composite)` at the head
+of the Reactive Edge Plating block in `prototypes/recipe.lua`.
+
+| number | was | now | anchored to |
+|---|---|---|---|
+| `max_health` | 200 | **400** | vanilla gun-turret's own 400; survives exactly one leaked promethium `small` (measured 200 damage) and nothing above it |
+| `resistances` | none | **none, deliberately** | measured: contact damage is `impact` and resistances *do* apply — not taken, because absorbing impacts is another tree's payoff |
+| `cooldown` | 15 (placeholder) | **15** | measured not to be binding; 46 shots fit the 700-tick window a whole cascade resolves in |
+| `inventory_size` | 1 | **1** | capacity == the charge's stack size, one number; every vanilla ammo turret uses 1 |
+| charge `stack_size` | 20 | **20** | 2× the worst measured single-plate drain (10, magazine-capped); 200 kg/stack keeps resupply a visible commitment |
+| `automated_ammo_count` | 10 | **20** | == capacity, so no single encounter can dry a plate; railgun turret's own floor==capacity arrangement |
+| `minable.mining_time` | 0.2 | **0.2** | asteroid-collector's 0.2, the other rim-line entity, not gun-turret's 0.5 |
+| charge damage | 5000 physical | **5000 physical** | the ladder window: D ≥ 4222 one-shots a metallic `big`, D ≥ 8556 would one-shot a `huge` |
+| plate item `stack_size` | 50 | **50** | gun-turret's item stack; one stack lays a 20×20 rim twice or a 40×40 once |
+| `weight` (both) | — | unchanged | rocket cargo only; measured to contribute nothing to platform mass |
+
+**T13 — contact damage, measured directly.** The survivability call could not
+be made from "the 200 hp plate died", which only bounds the damage from below.
+So the plate was rebuilt with `max_health = 1000000`, which makes it *survive*
+the contact, and the health delta then **is** the damage. Empty plate (0
+charges, so it never shoots and the rock always lands), one promethium
+asteroid on the `enemy` force spawned 11 tiles out, steel-chest witness one
+tile behind, vanilla gun-turret control on the same foundation:
+
+| promethium class | damage to the plate | witness | tiles |
+|---|---|---|---|
+| small | **200** | 350/350 | 0 |
+| medium | **1280** | 350/350 | 0 |
+| big | **9550** | 350/350 | 1 |
+
+`huge` was not run: a huge promethium asteroid is the one that hard-spins the
+server, and the three rows above already settle the question.
+
+**T13b — the damage type.** A second probe carried a *fingerprint* resistance
+set — a distinct percent for every damage type, so whichever one applies is
+named by the ratio that survives (physical 90 → 20, impact 50 → 100, explosion
+25 → 150, laser 75 → 50, fire 10 → 180, acid 60 → 80, poison 80 → 40, electric
+40 → 120). The promethium `small` that deals 200 unresisted dealt exactly
+**100**. So asteroid contact damage is **`impact`**, and resistances *do*
+apply to it.
+
+**The survivability decision: the rim is the answer.** Those numbers make it
+one-sided rather than a judgement call. A `medium` is 3.2× a 400 hp plate and
+a `big` 24×, so no sane hit point total survives a leak of anything above
+`small`; HP cannot be the answer. The eight loaded continuous-rim runs that
+lost zero plates, took zero plate damage and lost zero tiles at every
+promethium class are. **The plate is specified only as a continuous rim.**
+
+400 is taken anyway, for one reason that is not "buy survivability": the old
+200 sat *exactly* on the measured `small` figure, so the cheapest rock on the
+promethium route was a guaranteed plate kill and a rim that ran dry deleted
+itself to gravel. At 400 a dry plate eats one `small` and survives at 200/400,
+so the rim degrades gradually and visibly instead of vanishing. It is
+turret-grade (gun-turret 400), not armour-grade (railgun turret 4000, rocket
+turret 1500).
+
+**`resistances` stays unset as a decision.** An `impact` resistance is a real,
+measured, available lever — and it is exactly the thing this capability must
+not do. A percent impact resistance is literally "absorbs impacts", scaling
+with the size of the rock; that is the hull-armour / deflector answer another
+tree owes. Leaving it unset keeps the failure economy two-tiered: cheap charges
+consumed **per impact**, expensive plates consumed **per failure**.
+
+**T14 — the ammo triple behaves.** With the shipped numbers, a fast inserter
+fed from a full chest settles the plate at **exactly 20** and stops, with
+nothing stranded in the inserter's hand — floor == capacity does not jam.
+Vanilla gun-turret on an identical rig settled at 10 in the same run, so the
+rig is sound. (Rig gotcha found here and worth keeping: an inserter's
+`direction` is the side it **picks up** from, not the side it drops to.)
+
+#### The perimeter table, recomputed for 3×2
+
+Plate counts are **measured** on the rig (`t7g-reach.lua` at
+`storage.fp_side = 20` and `= 40`), not divided out of the perimeter — the
+naive 156/3 = 52 for a 40×40 is wrong, the real count is 48. The rule the
+engine actually realises is 4 × ⌊(side − 2)/3⌋.
+
+| Platform | Tiles | Rim tiles | Rim as % | Plates (measured) | Plated band | Fully-plated rim cost |
+|---|---|---|---|---|---|---|
+| 20 × 20 | 400 | 76 | 19% | **24** | 144 tiles (36%) | 48 composite, 120 tungsten plate, 240 steel |
+| 40 × 40 | 1600 | 156 | 10% | **48** | 288 tiles (18%) | 96 composite, 240 tungsten plate, 480 steel |
+
+Costed at the provisional plate recipe the old table used (2 Thermal-Shock
+Composite + 5 tungsten plate + 10 steel). The composite line is *not* in the
+shipped recipe — that is the marked seam. Against the old 1×1 table the same
+rims cost 152/380/760 and 312/780/1560, so **3×2 cuts the build cost of
+armouring a rim to just under a third**, on top of cutting the inserter count.
+
+Both rims are feedable with no unfeedable plate at either size (0 unreachable,
+24/24 and 48/48 simultaneously matchable). The 20×20 quantises exactly; the
+40×40 leaves a 2-tile parity gap per band (16 tiles in all), and parity gaps
+were measured not to leak.
+
+**"Doubling the ship halves the relative cost" still holds, and now exactly.**
+Plates per platform tile: 24/400 = **0.060** at 20×20, 48/1600 = **0.030** at
+40×40 — a clean factor of two, where the 1×1 footprint gave 0.190 → 0.0975, a
+factor of 1.95. Perimeter scales with circumference and production with area,
+so compact-and-large stays cheap to armour and long-and-thin stays ruinous;
+3×2 does not blunt that argument, it sharpens it.
+
+**Standing buffer.** With `automated_ammo_count = 20` == capacity, every plate
+on a fed rim is guaranteed 20 charges. Against the measured burn rate of **50
+charges / 3600 ticks = 0.83 charges/s** under moderate exposure:
+
+| Platform | Plates | Guaranteed standing charges | Seconds of measured burn | Encounters covered |
+|---|---|---|---|---|
+| 20 × 20 | 24 | **480** | **578 s** (9 min 38 s) | ~120 `medium`, 34–37 `big`, 11–13 `huge` |
+| 40 × 40 | 48 | **960** | **1157 s** (19 min 17 s) | ~240 `medium`, 68–74 `big`, 22–26 `huge` |
+
+(Encounter costs are the measured rim-wide promethium figures: `medium` 4,
+`big` 13–14, `huge` 37–43 charges. A 40×40 also presents more rim to be hit,
+so its extra seconds are not a free doubling of endurance.) At the old floor of
+10 the 20×20 stood 240 charges = 289 s, which is where "a supply hiccup empties
+it three times faster than the 1×1 rim did" came from; 20 puts it back.
+
+**Data stage and benchmark.** `./tools/check-data-stage.sh` clean. In-engine
+60-tick benchmark on a fresh save with the mod loaded: **60 updates in 9.941
+ms — avg 0.166 ms, min 0.104 ms, max 0.322 ms** (Factorio 2.1.17, throwaway
+scratch dir with its own `--config`/`write-data`).
+
 ### Tree 2 — the rest of the tree (nothing implemented)
 
 - [ ] **Resolve the Thermal Bus contradiction first — it blocks the design doc.**
@@ -790,9 +971,11 @@ income; it is now a decision the player can automate.
 - [ ] **Build the chain** — Molten Basalt, Refractory Panel, Basalt Fibre,
       Fluoride Flux, Spent Flux, Tungsten Halide Pellet, Clad Panel,
       Thermal-Shock Composite, and the five technologies. Plan phases 2–4.
-- [ ] **Replace the placeholder recipe and technology** on the plating branch
+- [ ] **Replace the provisional recipe and technology** on the plating branch
       with the real chain and its gating (the `explosives` prerequisite goes
-      away with them).
+      away with them). Same item as the plating list above, seen from this
+      side: the plating branch is finished apart from art and this seam, and
+      the seam is blocked on Thermal-Shock Composite existing.
 - [ ] **Update `design/framework.md` §5.1/§5.2** — Structure is still listed as
       an open slot.
 
