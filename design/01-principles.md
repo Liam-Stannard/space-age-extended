@@ -8,50 +8,90 @@ can **fail** it — a principle that cannot be failed is decoration.
 
 ## 1. The crossing must be forced
 
-This is the load-bearing rule, and it exists because of one engine fact: **every
-building in Space Age can be built on any planet** once its technology is
-researched. A Foundry works on Fulgora, an Electromagnetic Plant works on
-Vulcanus.
+A cross-planet leg only exists if the player **cannot just do the work locally**.
+So it matters exactly what the engine will and will not let them move.
 
-> **Building placement never justifies shipping.** If a recipe could be run on
-> the other planet, a rational player builds the machine there instead of
-> freighting the output.
+### What is actually locked
 
-A cross-planet leg exists only where **one recipe needs two inputs that are each
-exclusive to a different world**, so one of them physically has to move. Every
-leg in every tree traces back to that.
+Almost every production building can be **placed** anywhere. The Foundry,
+Electromagnetic Plant, Cryogenic Plant, Biochamber, Recycler, Chemical Plant and
+Assembler carry no surface conditions as entities — ship one to a platform or
+another world and it works.
 
-Some materials cannot move at all, which makes them the strongest anchors
-available. Vanilla marks them `auto_barrel = false`, so there is no barrel and
-no way to put them in a rocket:
+What is locked is the **recipe that manufactures them**, by surface property:
 
-| World | Immovable fluids |
-|---|---|
-| Vulcanus | `lava`, `molten-iron`, `molten-copper` |
-| Fulgora | `holmium-solution`, `electrolyte` |
-| Aquilo | `ammoniacal-solution`, `ammonia`, `fluorine`, `lithium-brine` |
+| Building recipe | Condition | Which means |
+|---|---|---|
+| `foundry`, `big-mining-drill`, turbo belts | pressure 4000 | Vulcanus only |
+| `electromagnetic-plant`, `recycler`, `lightning-rod` | magnetic field ≥ 99 | Fulgora only |
+| `biochamber`, the soils, `pentapod-egg` | pressure 2000 | Gleba only |
+| `cryogenic-plant`, `fusion-reactor`, `fusion-generator` | pressure 100–600 | Aquilo only |
+| `biolab`, `tree-seed`, `fish-breeding` | pressure 1000 | Nauvis only |
 
-A recipe consuming one of those can only ever run on its own world. If the same
-recipe also needs something only another world produces, the crossing is
-guaranteed by physics rather than by rule — and that is the shape to reach for
-first.
+So a machine is *made* in one place and *used* anywhere. **Manufacture is not a
+crossing** — the player builds it once and ships it, and the chain then runs
+wherever they like.
 
-**Never lock a recipe to a planet by name.** No `surface_conditions` invented to
-force a location, no "craftable only on Gleba." The lock comes from the
-ingredient or it does not exist. Also worth knowing: `surface_conditions` is a
-player-facing *filter*, not a runtime block — a recipe forced onto the wrong
-surface by script still crafts.
+A few entities genuinely cannot be placed everywhere, and those are real
+constraints: `thruster`, `crusher`, `asteroid-collector` and the platform hub
+need pressure 0 or gravity 0, so they are space-only; rails, vehicles, chests,
+the rocket silo, boilers, stone and steel furnaces, roboports and burner
+inserters all need gravity or pressure above zero, so they are ground-only.
 
-## 2. Both planets send
+### The three honest anchors
 
-A pair is not a supply route. If material only ever travels one way, one planet
-is a mine and the other is the factory, and the tree could have been a single
-planet's chain with an import.
+A leg is forced when one of these is true, and only then:
 
-Every tree moves material **in both directions**. The strongest form is a round
-trip — something leaves, comes back changed, and leaves again — because it keeps
-both legs running for as long as the player uses the tree, rather than only
-while they are building it out.
+1. **An ingredient that cannot move.** Vanilla marks these `auto_barrel = false`
+   — there is no barrel, so there is no rocket:
+
+   | World | Immovable fluids |
+   |---|---|
+   | Vulcanus | `lava`, `molten-iron`, `molten-copper` |
+   | Fulgora | `holmium-solution`, `electrolyte` |
+   | Aquilo | `ammoniacal-solution`, `ammonia`, `fluorine`, `lithium-brine` |
+
+2. **A surface condition on the recipe itself**, which is how vanilla locks its
+   own processes — `acid-neutralisation` to pressure 4000, the bacteria and
+   soils to 2000, each science pack to its own world. The surface properties
+   available to separate them:
+
+   | | pressure | gravity | magnetic field | solar |
+   |---|---|---|---|---|
+   | Nauvis | 1000 | 10 | 90 | 100 |
+   | Vulcanus | 4000 | 40 | 25 | 400 |
+   | Fulgora | 800 | 8 | **99** | 20 |
+   | Gleba | 2000 | 20 | 25 | 50 |
+   | Aquilo | 300 | 15 | 10 | 1 |
+   | Platform | 0 | 0 | — | — |
+
+3. **A placement-locked entity**, where the process needs a building that only
+   works in one environment.
+
+### The rule that survives all of it
+
+> **A lock must describe a physical fact about the place, never name it.**
+
+Pressure, gravity, magnetic field, an ingredient that has no container — these
+are readable, and a player can reason about them. "Craftable only on Gleba"
+teaches nothing and is arbitrary even when it produces the same outcome. Vanilla
+never does it, and neither does this mod.
+
+## 2. Both planets sending is the default, not the law
+
+A pair should not be a supply route with a mine at one end. When material moves
+only one way, the tree is really one planet's chain with an import, and the
+partner is interchangeable.
+
+So **two-way is the default, and the strongest form is a round trip** — something
+leaves, comes back changed, and leaves again, which keeps both legs alive for as
+long as the player uses the tree rather than only while they build it.
+
+But it is not a law. Some pairings are honestly one-directional, and forcing a
+return leg onto them invents a reason to ship something back. Where a tree is
+one-way, that has to be a deliberate answer to "what does the receiving planet
+give back," not an omission — usually the answer is that it gives back the
+capstone itself, which only it can assemble.
 
 ## 3. A tree is small and finishable
 
@@ -116,25 +156,26 @@ A pair's tree opens when **both its planets' vanilla tech trees are complete**,
 and nothing else gates it. The mod never puts vanilla content behind mod
 content, and never asks the player to detour before they would naturally arrive.
 
-## 8. Capstone products must survive the journey
+## 8. The capstone product has to reach the Core
 
-The endgame consumes one product from every capstone, on the Core, at the far
-end of the longest supply line in the game. That imposes a hard shape on all
-five:
+The endgame consumes a product from every capstone, on a planet at the far end
+of the longest supply line in the game. That does not dictate what the product
+*is* — it dictates that **getting it there is part of the tree's design, not an
+afterthought**.
 
-- **A plain item.** No fluid-only capstone; it has to sit in a rocket and a
-  cargo bay.
-- **No spoil clock.** Spoilage keeps running in transit, so a perishable
-  capstone would be undeliverable however good the logistics.
-- **No planet-locked property** — nothing that only functions where it was made.
-- **An explicit `weight`.** The engine derives weight from the recipe when it is
-  not set, and the default is 100 against a rocket's 1,000,000 lift, i.e.
-  10,000 per rocket. Fluid-heavy recipes derive absurdly cheap freight this way.
-  Every capstone product sets its weight deliberately, because that number *is*
-  the cost of the endgame's supply line.
+A product that spoils is allowed, and may well be the point: a perishable
+capstone turns its delivery into a race and gives its tree a character none of
+the others have. What is not allowed is designing one without deciding how it
+survives the trip. If it spoils, the tree owns that problem — a preserved form,
+a cold chain, a shorter-lived intermediate refreshed at a depot, or a Core line
+that accepts the spoiled result as a legitimate input.
 
-A tree may use spoilage, fluids and locked materials as much as it likes
-internally. The constraint applies to the one item that has to reach the Core.
+The one thing to get right mechanically is **weight**. The engine derives it
+from the recipe when it is not set, and the default is 100 against a rocket's
+1,000,000 lift — 10,000 items per rocket. A fluid-heavy recipe derives freight
+that is nearly free, which quietly deletes the logistics the tree exists to
+create. Every capstone product sets its weight deliberately, because that number
+*is* the cost of the endgame's supply line.
 
 ## 9. The player can see why
 
@@ -153,8 +194,10 @@ Before a tree's recipes are worth tuning, it should answer yes to all of these.
 
 - [ ] Does every crossing trace to a recipe that cannot be completed without a
       material exclusive to the other planet? *(§1)*
-- [ ] Is any planet lock an ingredient rather than a rule? *(§1)*
-- [ ] Does material move in both directions? *(§2)*
+- [ ] Does every lock describe a physical property or an immovable ingredient,
+      rather than naming a planet? *(§1)*
+- [ ] Does material move both ways — or, if not, is the one-way shape a
+      deliberate answer rather than an omission? *(§2)*
 - [ ] Is it 4–10 technologies, with every new item mechanically justified and at
       most the one capstone building? *(§3)*
 - [ ] Can you name what each planet contributes that the other could not get by
@@ -165,7 +208,7 @@ Before a tree's recipes are worth tuning, it should answer yes to all of these.
 - [ ] Does the chain create a decision rather than a bonus, and does every
       byproduct have two outlets? *(§6)*
 - [ ] Does it open on vanilla progress alone? *(§7)*
-- [ ] Is the capstone product a plain, non-spoiling, unlocked item with an
-      explicit weight? *(§8)*
+- [ ] Does the capstone product have a decided route to the Core, including an
+      answer for spoilage if it spoils, and an explicit weight? *(§8)*
 - [ ] Could a player work out from the recipes why the crossing is necessary?
       *(§9)*
