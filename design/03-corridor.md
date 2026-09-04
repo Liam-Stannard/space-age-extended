@@ -1,6 +1,6 @@
 # The Corridor
 
-The route from the Solar System Edge to [the Core](05-the-core.md), **flown on
+The route from the Solar System Edge to [the Core](04-the-core.md), **flown on
 space platforms**. It is where the mod's cargo travels, where its one shared
 mechanic lives, and the only place the player meets the far field.
 

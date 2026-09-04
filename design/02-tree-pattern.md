@@ -172,7 +172,7 @@ that:
 
 **The capstones are one decomposition.** A field coil has five parts — conductor,
 magnetic core, insulation, coolant, frame — and there are five trees, so each
-supplies one. See [the Core](05-the-core.md#stage-1--the-five-integrations) for
+supplies one. See [the Core](04-the-core.md#stage-1--the-five-integrations) for
 how each is integrated through a different local input.
 
 Every tree now has a mechanic and a capstone product. Each still owes a
