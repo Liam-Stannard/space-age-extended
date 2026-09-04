@@ -125,7 +125,85 @@ That gives the endgame a shape no earlier part of the game has: a factory the
 player has to run in two places at once, with a lift between them, where neither
 half can complete a single item alone.
 
-## 5. Maturation as the Core's central process
+## 5. The final production line
+
+The Core has **its own tech tree** — the sixth — and its own multi-stage
+production line. This is the mod's largest chain, and the only one that cannot be
+built anywhere else.
+
+**The five capstone products are inputs to it, not parts of the goal.** Each
+arrives from its own pair of planets and is *consumed* to make an intermediate
+that only the Core can produce, because every intermediate also needs something
+local: the melt, the heat, the volatiles, or a step that only runs in orbit.
+
+```
+five capstone products            core melt · heat · volatiles · orbit steps
+        \                                 /
+         +-------- intermediates --------+        (stage 1: each capstone
+                        |                          consumed with a local input)
+                        v
+                  end products                    (stage 2: intermediates
+                        |                          combined; the Core's own goods)
+                        v
+              Field Coil Segments                 (stage 3: built only from
+                        |                          end products)
+                        v
+                 Ignition Array
+```
+
+Three consequences worth being explicit about:
+
+- **No capstone touches the segment directly.** The dependency runs through two
+  stages of local processing, so the Core is a factory rather than an assembly
+  point, and the final part is genuinely the Core's own product.
+- **Every stage is gated by a Core technology**, so arrival is the beginning of a
+  progression rather than the end of one.
+- **The chain spans surface and orbit** at more than one stage (§4), so both
+  halves are live for the whole endgame rather than at a single hand-off.
+
+## 6. The completion goal — restarting the dynamo
+
+The Core's field is dead: `magnetic-field` reads 0, and the arc storms are what a
+failing dynamo looks like. **The mod is completed by restarting it.**
+
+That is the one ending whose meaning depends on being *here*. It explains the
+hazard the player has been building against, it cannot be done anywhere else, and
+it leaves something behind that still needs feeding.
+
+### The Ignition Array
+
+A `rocket-silo`-derived structure, so it behaves the way the player already
+understands one: it accumulates parts, shows its progress, and fires once.
+
+| | Vanilla rocket silo | Ignition Array |
+|---|---|---|
+| Parts required | 50 | **100** (starting point, to tune) |
+| Part recipe | processing unit + LDS + rocket fuel, 3s | Field Coil Segment, from Core end products |
+| Power | 250 kW idle, 3.99 MW active | An order of magnitude more, deliberately |
+| Placement | pressure ≥ 1 | pressure 1–9 — the Core and nowhere else |
+
+**Power is the point of the number.** The array should draw hard enough that it
+forces the Core's central tension to its limit: every megawatt it takes is melt
+that was not cast into the billets it also needs.
+
+**Rate is set by maturation, not by machines.** Widen the aging floor or wait —
+the one production problem in the game that more assemblers cannot solve.
+
+### Winning
+
+The array launches, the mod catches `on_rocket_launched` for that entity and
+calls `game.set_game_state{game_finished = true, player_won = true,
+can_continue = true}`. Vanilla's Solar System Edge victory is disabled at init
+through the `space_finish_script` remote interface's `set_no_victory`.
+
+### What it leaves behind
+
+A restarted field **decays without upkeep**, so the array becomes a permanent
+consumer: windings replaced forever, which keeps all five trees and the whole
+corridor running after the credits. That is the difference between an ending and
+a switch-off.
+
+## 7. Maturation as the Core's central process
 
 The one mechanic carried in from the trees. A billet cast from core melt is not
 finished when it leaves the mould — it has to **age** before it becomes the
@@ -139,7 +217,7 @@ It means the last step cannot be rushed, only widened — the player buys
 throughput with floor space and patience instead of with more machines, which is
 a different problem from every other one the game has set them.
 
-## 6. Bots are earned
+## 8. Bots are earned
 
 Personal roboports work at pressure 5 — verified, the equipment carries no
 surface conditions — so the player can blueprint-build from their armour on day
@@ -152,10 +230,17 @@ pressure 1–9 and it works here and **nowhere else in the game**: not on platfo
 new building that competes with nothing, and it turns bots from an assumption
 into a milestone.
 
-## 7. Still open
+## 9. Still open
 
 - **How rich, and how scattered**, in numbers.
-- **What the final line actually produces** — the thing that ends the game.
+- **What the intermediates and end products actually are** — the two middle
+  stages of §5 are named but not designed.
+- **Whether the sixth tech tree needs its own science pack**, or researches on
+  packs the player already makes. A Core pack would fit the vision's "new items
+  found on the Core or in promethium space"; existing packs keep the footprint
+  smaller. Either way the *physical* gate is the recipe conditions, not the
+  research.
 - **What the promethium-space material is**, and how it enters the chain.
 - **Whether volatiles have a third use** beyond oxidiser and pressurisation.
-- **The technology ladder on the Core**, and what gates the pressurised roboport.
+- **What gates the pressurised roboport** within the Core tree.
+- **How many segments**, and how the 100 divides across the aging floor.
