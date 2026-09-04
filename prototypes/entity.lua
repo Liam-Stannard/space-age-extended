@@ -402,6 +402,10 @@ data:extend({
       -- entity one tile behind it still at 350/350, and zero tile damage, for
       -- every class up to and including `big`. An identical plate with an
       -- empty ammo slot, same tile, same asteroid, was destroyed outright.
+      -- Measured against metallic/carbonic/oxide asteroids only -- promethium
+      -- carries double health and double damage_per_hp, so a `big` there
+      -- costs two charges rather than one (see the ladder note on the
+      -- charge's damage in prototypes/item.lua).
       --
       -- Range 4 is, however, the limit on the plate's LATERAL coverage too,
       -- and that turns out to matter more than the head-on case: when a large

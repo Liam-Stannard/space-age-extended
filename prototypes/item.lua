@@ -115,6 +115,18 @@ data:extend({
     -- That single number is what makes the plate rateable per asteroid class
     -- without any control-stage logic at all.
     --
+    -- CAUTION -- that ladder is for metallic/carbonic/oxide asteroids only.
+    -- PROMETHEUM asteroids carry double health with the same resistances
+    -- (space-age/prototypes/entity/asteroid.lua:143-144 builds them from
+    -- shared_health * 2, i.e. 200/800/4000/10000) and double damage_per_hp.
+    -- So on the promethium route -- which is the whole corridor this
+    -- capability exists for -- the same charge reads: small and medium still
+    -- one-shot, big 2700 vs 4000hp is TWO charges, huge 1800 vs 10000hp is
+    -- SIX. Anything that leaks also hits the plate twice as hard. Rate the
+    -- plate on inner-system rocks and it under-performs exactly where it is
+    -- mandatory; the escalation this gives the corridor is native and wants
+    -- measuring before any charge-cost constant is tuned on top of it.
+    --
     -- `target_type = "entity"` with an `instant` action_delivery makes the
     -- shot hitscan -- no projectile travel time whatsoever. At the contact
     -- ranges this entity is built for, a travelling projectile would
