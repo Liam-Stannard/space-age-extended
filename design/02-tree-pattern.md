@@ -162,13 +162,21 @@ that:
 
 ## 7. The register
 
-| Pair | Available after | Mechanic taught | Anchor | Capstone | Endgame role | Status |
+| Pair | Available after | Mechanic taught | Anchor | Capstone product | Endgame role | Status |
 |---|---|---|---|---|---|---|
-| Vulcanus ↔ Fulgora | both | — | — | — | — | Not designed |
-| **Vulcanus ↔ Gleba** | both | **Maturation** | — | — | The corridor — cargo ripens during the platform run out | Mechanic chosen |
-| Fulgora ↔ Gleba | both | — | — | — | — | Not designed |
-| Fulgora ↔ Aquilo | Aquilo | — | — | — | — | Not designed |
-| Gleba ↔ Aquilo | Aquilo | — | — | — | — | Not designed |
+| Vulcanus ↔ Fulgora | both | — | — | **Magnetar alloy** | The coil's magnetic core | Capstone chosen |
+| **Vulcanus ↔ Gleba** | both | **Maturation** | — | **Cultured alloy** | The coil's frame; also ripens on the corridor run | Mechanic + capstone |
+| Fulgora ↔ Gleba | both | — | — | **Bio-polymer** | The coil's insulation | Capstone chosen |
+| Fulgora ↔ Aquilo | Aquilo | — | — | **Superconducting winding** | The coil's conductor | Capstone chosen |
+| Gleba ↔ Aquilo | Aquilo | — | — | **Cryoprotectant fluid** | The coil's coolant | Capstone chosen |
+
+**The capstones are one decomposition.** A field coil has five parts — conductor,
+magnetic core, insulation, coolant, frame — and there are five trees, so each
+supplies one. See [the Core](05-the-core.md#stage-1--the-five-integrations) for
+how each is integrated through a different local input.
+
+Each tree still owes a **building** made from its product, and a mechanic:
+four of the five mechanics are unchosen.
 
 Vulcanus and Fulgora appear twice, Gleba and Fulgora three times; with four
 worlds and five pairs the even loop is not available, and Fulgora carrying three

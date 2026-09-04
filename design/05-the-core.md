@@ -181,6 +181,41 @@ five capstone products         molten kamacite · whiskers · helium-3 · orbit
                  Ignition Array
 ```
 
+### Stage 1 — the five integrations
+
+A field coil has five parts: a conductor, a magnetic core, insulation, a coolant
+and a frame. There are five trees. **Each capstone becomes one part of the coil**,
+and each is integrated through a *different* local input, so the five
+technologies are five different problems rather than one repeated.
+
+| Tree | Capstone product | Local input | Intermediate | Coil part |
+|---|---|---|---|---|
+| Fulgora ↔ Aquilo | **Superconducting winding** | orbital homogenisation | **Field conductor** | Conductor |
+| Vulcanus ↔ Fulgora | **Magnetar alloy** | settled melt | **Magnetic core billet** | Core |
+| Vulcanus ↔ Gleba | **Cultured alloy** | whiskers | **Reinforced frame** | Frame |
+| Fulgora ↔ Gleba | **Bio-polymer** | raw molten kamacite | **Insulation sleeve** | Insulation |
+| Gleba ↔ Aquilo | **Cryoprotectant fluid** | helium-3 | **Coolant charge** | Coolant |
+
+Every capstone is therefore *visibly in the thing being built*. A player looking
+at a Field Coil Segment can trace each of its parts back to a pair of planets and
+the chain that produced it.
+
+### Stage 2 — the end products
+
+| End product | From | Made by |
+|---|---|---|
+| **Coil assembly** | field conductor + magnetic core billet + reinforced frame + insulation sleeve | **Cold welding** — joined in vacuum, slowly, at almost no power |
+| **Coolant loop** | coolant charge + kamacite plate | Ordinary assembly on the surface |
+
+Cold welding earns its place here: research uses the material sciences
+(settling, growth, homogenisation), construction uses the joining.
+
+### Stage 3 — the segment
+
+**Field Coil Segment** = coil assembly + coolant loop. Nothing else. The
+capstones are three stages below it, which is what makes the Core a factory
+rather than an assembly point.
+
 Three consequences worth being explicit about:
 
 - **No capstone touches the segment directly.** The dependency runs through two
@@ -235,16 +270,19 @@ metallurgic, electromagnetic, agricultural, cryogenic.
 
 | Ingredient | Why it is there |
 |---|---|
-| **Two fixed intermediates** | The competition with construction: every pack is a Field Coil Segment delayed |
+| **Field conductor** and **reinforced frame** | The two fixed intermediates. Every pack is a Field Coil Segment delayed |
 | **Kamacite whiskers** | Ties research rate to growing *area*, so knowledge costs ground |
 | **Homogenised alloy** | Made in orbit only, so the lift is load-bearing from the first technology |
 | **Helium-3** | From the rarer vent, which already throttles the melt |
 
-**Two intermediates rather than five.** Research opens once two specific trees
-are delivering, while the Field Coil Segment still needs all five. That keeps the
-goal maximally demanding without letting one lagging tree freeze the entire Core
-tech tree — and it means the two trees named here are the ones a player is
-pushed to finish first.
+**Two intermediates rather than five.** Research opens once Fulgora ↔ Aquilo and
+Vulcanus ↔ Gleba are delivering, while the Field Coil Segment still needs all
+five. That keeps the goal maximally demanding without letting one lagging tree
+freeze the entire Core tech tree.
+
+Those two are deliberate: the conductor and the aged metal are the mod's two most
+distinctive ideas — superconduction and maturation — so the trees a player is
+pushed to finish first are the ones that teach the most.
 
 The pack touches three of the Core's four mechanics — settling, growth and
 orbital homogenisation — and leaves **cold welding** to the Field Coil Segment.
@@ -422,8 +460,9 @@ into a milestone.
 - **What the promethium-space material is** — the working assumption is a
   decaying isotope that loses charge in storage whether used or not, so corridor
   power can be produced and spent but never banked.
-- **Which two intermediates the pack takes**, since that decides which trees a
-  player is pushed to finish first.
+- **The capstone buildings.** The products are chosen; each tree still has to
+  design the building made *from* its product, and prove it is useful when
+  earned, on the way out, and again at the Core.
 - **The spike on `required_fluid` for a fluid resource** (§2).
 - **What the end products are**, and how many of them there should be.
 - **How many segments**, and how the 100 divides across the aging floor.
