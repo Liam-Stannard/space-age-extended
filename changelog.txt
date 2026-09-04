@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2026-09-04
+  Major Features:
+    - The mod is being rebuilt from scratch. Everything below this entry belongs to an earlier
+      design -- a single Vulcanus/Fulgora tree ending in a space platform power source -- which
+      has been replaced. The new design is five cross-planet trees among Vulcanus, Fulgora, Gleba
+      and Aquilo, each ending in a capstone, with those five capstones feeding a final production
+      line on the Core of the Shattered Planet where the game is won. See design/ for the full
+      specification.
+  Changes:
+    - Removed the previous implementation: six technologies, the Quench Turbine, the scrap
+      refining chain, the electromagnetic circuit alt-recipes, and their items, fluids, recipes,
+      icons and migrations. The mod currently adds nothing; prototypes return with Phase 1.
+    - The mod was never released, so no migration path is provided from 0.2.1.
+---------------------------------------------------------------------------------------------------
 Version: 0.2.1
 Date: 2026-09-04
   Balancing:

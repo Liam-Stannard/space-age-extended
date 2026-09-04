@@ -1,6 +1,6 @@
 {
   "name": "space-age-extended",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "title": "Space Age Extended",
   "author": "Liam Stannard",
   "factorio_version": "2.1",
@@ -8,5 +8,5 @@
     "base >= 2.1.0",
     "space-age >= 2.1.0"
   ],
-  "description": "Adds a two-way industrial loop between Vulcanus and Fulgora: Fulgora recovers and refines its scrap using imported Vulcanus Calcite, and its refined Catalyst Rod unlocks a Vulcanus-only lava process. The chain terminates in a space platform power source that fills the gap between solar and Aquilo-locked fusion."
+  "description": "Cross-planet production lines between pairs of worlds -- Vulcanus, Fulgora, Gleba and Aquilo -- each ending in a capstone. The five capstones feed a final production line on the Core of the Shattered Planet, where the game is won."
 }

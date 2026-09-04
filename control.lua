@@ -1,12 +1,7 @@
--- Runtime entry point for Space Age Extended.
+-- Space Age Extended -- runtime.
 --
--- Deliberately empty. Every mechanic in the mod is now expressed in
--- prototypes: the Quench Turbine is a real `generator`, so the engine
--- itself computes its output from vapour flow, temperature and heat
--- capacity, and clips what it can't use.
---
--- The earlier Thermionic Generator needed ~750 lines here to drive a scripted
--- temperature/efficiency curve, two hidden paired entities and a custom GUI.
--- That is all gone with the entity it served; see prototypes/entity.lua for
--- why the design changed. If a future tree needs runtime logic, require its
--- module from here.
+-- Deliberately near-empty by design: everything in the mod is expressed in
+-- prototypes. The one exception, arriving with Phase 4, is the win condition:
+-- vanilla's Solar System Edge victory is disabled at init through
+-- space_finish_script's set_no_victory, and the mod calls game.set_game_state
+-- itself when the Ignition Array fires.

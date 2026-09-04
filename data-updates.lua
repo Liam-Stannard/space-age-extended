@@ -1,3 +1,5 @@
--- Reserved for edits to vanilla prototypes, if any become necessary.
--- Currently unused: every Phase 1-3 recipe is a new prototype rather than
--- a modification of an existing one.
+-- Reserved for edits to vanilla prototypes.
+--
+-- The design's rule is that the mod adds and does not alter, so this file
+-- should stay empty. The single deliberate exception -- moving the win
+-- condition -- is a runtime change in control.lua, not a prototype one.
