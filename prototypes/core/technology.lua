@@ -152,11 +152,11 @@ data:extend({
 })
 
 data:extend({
-  geodynamic("sae-integration-billet", { "sae-geodynamic-science" }, 200,
+  geodynamic("sae-integration-billet", { "sae-geodynamic-science" }, 150,
     { { type = "unlock-recipe", recipe = "sae-magnetic-core-billet" } }),
-  geodynamic("sae-integration-sleeve", { "sae-geodynamic-science" }, 200,
+  geodynamic("sae-integration-sleeve", { "sae-geodynamic-science" }, 150,
     { { type = "unlock-recipe", recipe = "sae-insulation-sleeve" } }),
-  geodynamic("sae-integration-coolant", { "sae-geodynamic-science" }, 200,
+  geodynamic("sae-integration-coolant", { "sae-geodynamic-science" }, 150,
     { { type = "unlock-recipe", recipe = "sae-coolant-charge" } })
 })
 
@@ -164,20 +164,20 @@ data:extend({
   -- The last three technologies are the climb. Every pack spent here is
   -- intermediates that did not become segments.
   geodynamic("sae-field-coils",
-    { "sae-integration-billet", "sae-integration-sleeve", "sae-integration-coolant", "sae-cold-welding" }, 1000,
+    { "sae-integration-billet", "sae-integration-sleeve", "sae-integration-coolant", "sae-cold-welding" }, 600,
     {
       { type = "unlock-recipe", recipe = "sae-coil-assembly" },
       { type = "unlock-recipe", recipe = "sae-coolant-loop" },
       { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
     }),
-  geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 400,
+  geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 300,
     {
       { type = "unlock-recipe", recipe = "sae-seed-missile" },
       { type = "unlock-recipe", recipe = "sae-radiant-crushing" },
       { type = "unlock-recipe", recipe = "sae-seeded-crushing" },
       { type = "unlock-recipe", recipe = "sae-radiant-generator" }
     }),
-  geodynamic("sae-ignition-array", { "sae-field-coils" }, 2500,
+  geodynamic("sae-ignition-array", { "sae-field-coils" }, 1200,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
 })
 

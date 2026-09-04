@@ -2,9 +2,16 @@
 --
 -- The elevation expression never dips below sea level, so no water tile can
 -- ever place -- which is how "no fluids on the surface" is enforced by the
--- terrain rather than by a rule. The tile set is vanilla's Aquilo land tiles
--- as a placeholder for the frozen crust; the mod's own tiles arrive with the
--- art pass, and nothing else depends on their names yet.
+-- terrain rather than by a rule.
+--
+-- Tiles come from Alien Biomes when it is installed, because it has volcanic
+-- and mineral ground that suits a metallic crust far better than anything
+-- vanilla ships. Without it the Core falls back to vanilla's Aquilo snow, which
+-- is a frozen crust of the wrong colour but entirely playable -- and that
+-- fallback is what runs here, so it is the branch that gets tested.
+--
+-- The tiles named below are checked against data.raw before use: an optional
+-- dependency that silently assumes its own presence is not optional.
 
 data:extend({
   {
@@ -21,6 +28,39 @@ data:extend({
                                                output_scale = 1}"
   }
 })
+
+-- Alien Biomes' names first, vanilla's second. Anything the installed game does
+-- not actually define is dropped rather than assumed.
+local function core_tiles()
+  local wanted =
+  {
+    "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-orange-heat-3",
+    "mineral-grey-dirt-1", "mineral-grey-dirt-2", "mineral-grey-dirt-3",
+    "mineral-black-dirt-1", "mineral-black-dirt-2",
+    "frozen-snow-0", "frozen-snow-1"
+  }
+  local fallback =
+  {
+    "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy",
+    "ice-rough", "ice-smooth"
+  }
+
+  local settings, found = {}, 0
+  for _, name in pairs(wanted) do
+    if data.raw.tile[name] then settings[name] = {} found = found + 1 end
+  end
+
+  -- Half the set missing means the pack is absent or has renamed everything;
+  -- either way a partial set would leave holes in the ground.
+  if found < #wanted / 2 then
+    settings = {}
+    for _, name in pairs(fallback) do
+      if data.raw.tile[name] then settings[name] = {} end
+    end
+  end
+
+  return settings
+end
 
 return function()
   return
@@ -42,18 +82,7 @@ return function()
     },
     autoplace_settings =
     {
-      ["tile"] =
-      {
-        settings =
-        {
-          ["snow-flat"] = {},
-          ["snow-crests"] = {},
-          ["snow-lumpy"] = {},
-          ["snow-patchy"] = {},
-          ["ice-rough"] = {},
-          ["ice-smooth"] = {}
-        }
-      },
+      ["tile"] = { settings = core_tiles() },
       ["decorative"] = { settings = {} },
       ["entity"] =
       {

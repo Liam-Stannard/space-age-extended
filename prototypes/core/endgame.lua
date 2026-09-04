@@ -74,7 +74,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-cryoprotectant-stub",
-    categories = { "crafting-with-fluid" },
+    categories = { "chemistry" },
     energy_required = 1,
     ingredients = { { type = "item", name = "iron-plate", amount = 1 } },
     results = { { type = "fluid", name = "sae-cryoprotectant", amount = 50 } },
@@ -140,7 +140,7 @@ data:extend({
       { type = "item", name = "sae-magnetic-core-billet", amount = 2 },
       { type = "item", name = "sae-reinforced-frame", amount = 1 },
       { type = "item", name = "sae-insulation-sleeve", amount = 2 },
-      { type = "item", name = "sae-welded-plate", amount = 4 }
+      { type = "item", name = "sae-welded-plate", amount = 2 }
     },
     results = { { type = "item", name = "sae-coil-assembly", amount = 1 } },
     surface_conditions = { { property = "pressure", max = 9 } },

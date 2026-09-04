@@ -76,7 +76,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-magnetic-core-billet",
-    categories = { "crafting-with-fluid" },
+    categories = { "chemistry" },
     energy_required = 24,
     ingredients =
     {
@@ -110,7 +110,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-insulation-sleeve",
-    categories = { "crafting-with-fluid" },
+    categories = { "metallurgy" },
     energy_required = 16,
     ingredients =
     {
@@ -126,7 +126,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-coolant-charge",
-    categories = { "crafting-with-fluid" },
+    categories = { "chemistry" },
     energy_required = 20,
     ingredients =
     {
@@ -143,6 +143,10 @@ data:extend({
   --
   -- Research uses the material sciences -- settling, growth, homogenisation.
   -- Construction uses the joining. Cold welding earns its place here.
+  --
+  -- Deliberate parity: finishing the tech tree costs roughly as many conductors
+  -- as building the array does. Every pack really is a segment delayed, and the
+  -- player feels the trade on every craft rather than at a milestone.
   {
     type = "recipe",
     name = "sae-geodynamic-science-pack",
@@ -154,7 +158,7 @@ data:extend({
       { type = "item", name = "sae-reinforced-frame", amount = 1 },
       { type = "item", name = "sae-kamacite-whiskers", amount = 4 }
     },
-    results = { { type = "item", name = "sae-geodynamic-science-pack", amount = 2 } },
+    results = { { type = "item", name = "sae-geodynamic-science-pack", amount = 5 } },
     surface_conditions = { { property = "pressure", min = 1, max = 9 } },
     allow_productivity = true,
     enabled = false

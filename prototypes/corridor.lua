@@ -74,6 +74,7 @@ data:extend({ seeded })
 
 local missile = table.deepcopy(data.raw.projectile["rocket"])
 missile.name = "sae-seed-missile"
+missile.hidden_in_factoriopedia = true
 missile.action =
 {
   type = "direct",
@@ -122,7 +123,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-seed-missile",
-    categories = { "crafting-with-fluid" },
+    categories = { "chemistry" },
     energy_required = 8,
     ingredients =
     {
@@ -180,7 +181,11 @@ data:extend({
     stack_size = 50,
     weight = 2000,
     fuel_category = "sae-radiant",
-    fuel_value = "2GJ",
+    -- 500MJ against a uranium cell's 8GJ and a fusion cell's 40GJ. Deliberately
+    -- modest: the chunk it comes from is free, so the fuel has to be consumed
+    -- fast enough that the field must actually be worked rather than sipped.
+    -- One cell is fifty seconds of a generator at full output.
+    fuel_value = "500MJ",
     fuel_emissions_multiplier = 0
   },
   {
@@ -213,6 +218,7 @@ gen.burner =
   burnt_inventory_size = 0
 }
 gen.surface_conditions = { { property = "pressure", max = 9 } }
+gen.working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_sound)
 gen.fast_replaceable_group = nil
 gen.next_upgrade = nil
 gen.hidden = false

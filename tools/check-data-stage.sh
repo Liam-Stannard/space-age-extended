@@ -63,3 +63,13 @@ echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
 # The data stage never opens image files, so a mod with broken icon paths passes
 # here and is then refused outright by a client. Check them too.
 "$REPO_ROOT/tools/check-graphics.sh" || exit 1
+
+# And a recipe can name more fluids than any machine in its category has boxes
+# for. The data stage accepts that, set_recipe accepts it, and the machine then
+# sits there doing nothing. The dump the run above produced has the answer.
+DUMP="$HOME/.factorio/script-output/data-raw-dump.json"
+if [ -f "$DUMP" ]; then
+  "$REPO_ROOT/tools/check-recipes.py" "$DUMP" || exit 1
+else
+  echo "Recipe check skipped -- no data-raw dump at $DUMP"
+fi

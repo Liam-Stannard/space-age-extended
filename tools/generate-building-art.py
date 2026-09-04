@@ -32,8 +32,10 @@ import urllib.request
 
 API = "https://api.openai.com/v1/images/generations"
 
-# Heading -> output slug. Order is generation order.
+# Heading -> output slug. Order is generation order: the concept sheet is
+# stage 0 and is approved before anything else is generated.
 SECTIONS = [
+    ("## Concept Sheet Prompt", "sheet"),
     ("## Master Concept Prompt", "master"),
     ("### North", "north"),
     ("### East", "east"),

@@ -6,6 +6,9 @@
 -- nothing settles at all. Cold welding only runs where there is no air.
 
 data:extend({
+  -- The settling line runs in a foundry: two fluid boxes in and two out, which
+  -- an assembler does not have. A recipe with more fluid connections than its
+  -- machine has boxes is accepted silently by set_recipe and then never runs.
   {
     type = "recipe",
     name = "sae-kamacite-smelting",
@@ -18,19 +21,25 @@ data:extend({
 
   -- Settling, in two forms. The same melt becomes either metal or power, and
   -- which one is a recipe the player chooses rather than a slider.
+  --
+  -- A steam turbine takes 60 steam a second at 500 degrees for 5.8MW. Quenched
+  -- settling gives 900 steam per 16-second craft -- 56 a second, near enough
+  -- one turbine per vessel -- against 150 for the metal-heavy form. So a line
+  -- run for power is roughly six times the electricity and less than half the
+  -- metal, which is a decision rather than a preference.
   {
     type = "recipe",
     name = "sae-gravity-settling",
     icon = "__space-age__/graphics/icons/fluid/molten-copper.png",
     icon_size = 64,
-    categories = { "crafting-with-fluid" },
+    categories = { "metallurgy" },
     energy_required = 16,
     ingredients = { { type = "fluid", name = "sae-molten-kamacite", amount = 100 } },
     results =
     {
       { type = "fluid", name = "sae-settled-melt", amount = 60 },
       { type = "item", name = "sae-dross", amount = 2 },
-      { type = "fluid", name = "steam", amount = 30, temperature = 500 }
+      { type = "fluid", name = "steam", amount = 150, temperature = 500 }
     },
     surface_conditions = { { property = "gravity", min = 45 } },
     allow_productivity = true,
@@ -41,14 +50,14 @@ data:extend({
     name = "sae-quenched-settling",
     icon = "__base__/graphics/icons/fluid/steam.png",
     icon_size = 64,
-    categories = { "crafting-with-fluid" },
+    categories = { "metallurgy" },
     energy_required = 16,
     ingredients = { { type = "fluid", name = "sae-molten-kamacite", amount = 100 } },
     results =
     {
       { type = "fluid", name = "sae-settled-melt", amount = 25 },
       { type = "item", name = "sae-dross", amount = 2 },
-      { type = "fluid", name = "steam", amount = 180, temperature = 500 }
+      { type = "fluid", name = "steam", amount = 900, temperature = 500 }
     },
     surface_conditions = { { property = "gravity", min = 45 } },
     enabled = false
@@ -59,7 +68,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-dross-resettling",
-    categories = { "crafting-with-fluid" },
+    categories = { "metallurgy" },
     energy_required = 12,
     ingredients =
     {
@@ -87,7 +96,7 @@ data:extend({
   {
     type = "recipe",
     name = "sae-ingot-casting",
-    categories = { "crafting-with-fluid" },
+    categories = { "metallurgy" },
     energy_required = 8,
     ingredients = { { type = "fluid", name = "sae-settled-melt", amount = 100 } },
     results = { { type = "item", name = "sae-cast-ingot", amount = 1 } },

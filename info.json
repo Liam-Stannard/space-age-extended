@@ -6,7 +6,8 @@
   "factorio_version": "2.1",
   "dependencies": [
     "base >= 2.1.0",
-    "space-age >= 2.1.0"
+    "space-age >= 2.1.0",
+    "? alien-biomes"
   ],
   "description": "Cross-planet production lines between pairs of worlds -- Vulcanus, Fulgora, Gleba and Aquilo -- each ending in a capstone. The five capstones feed a final production line on the Core of the Shattered Planet, where the game is won."
 }

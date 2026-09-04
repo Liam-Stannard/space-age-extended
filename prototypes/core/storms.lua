@@ -13,6 +13,8 @@
 
 local arc = table.deepcopy(data.raw.lightning["lightning"])
 arc.name = "sae-arc"
+-- The strike itself is machinery, not something to browse.
+arc.hidden_in_factoriopedia = true
 arc.damage = { amount = 600, type = "electric" }
 arc.energy = "4000MJ"
 data:extend({ arc })
