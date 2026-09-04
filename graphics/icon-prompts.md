@@ -289,7 +289,7 @@ only hue left that stays legible at 16px. It also deliberately matches the
 turbine that consumes it.
 
 **Current placeholder:** a sibling fluid drop gradient-mapped to teal by
-`tools/derive-vapour-icon.py`.
+`tools/derive-fluid-icons.py`.
 
 **Prompt:**
 > A luminous cyan-teal vapour or gas — a soft, glowing volume of pale

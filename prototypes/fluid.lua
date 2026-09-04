@@ -99,7 +99,7 @@ data:extend({
     max_temperature = 1000,
     heat_capacity = "5kJ",
     -- Cyan-teal, matching the Quench Turbine that consumes it and the icon
-    -- built by tools/derive-vapour-icon.py. Not the warm colour an earlier
+    -- built by tools/derive-fluid-icons.py. Not the warm colour an earlier
     -- draft used: the mod's other fluid icons already occupy hue 0-40 twice
     -- over (molten scrap, molten non-ferrous, contaminated acid), so a warm
     -- vapour was a third orange drop in the same list. Teal is the set's one

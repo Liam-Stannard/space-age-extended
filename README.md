@@ -23,7 +23,9 @@ prototypes/
 locale/
   en/
     strings.cfg
-graphics/
+graphics/            -- icons, and the turbine's entity sheets
+migrations/          -- item/recipe renames across versions
+tools/               -- data-stage check, derived-art scripts
 data.lua
 data-updates.lua
 control.lua          -- empty; the mod is entirely prototype-driven
@@ -38,3 +40,5 @@ See [design doc §17](design/vulcanus-fulgora.md#17-recommended-implementation-p
 2. **Phase 2** — Electromagnetic circuit alt-recipes
 3. **Phase 3** — Capstone (Catalyst Rod, Resonant Circuit, Magmatic Core, Thermionic Assembly)
 4. **Phase 4** — Quench Turbine and its quench recipe ladder (space platform power)
+
+All four are implemented and verified against the real engine. None has been playtested in a client.

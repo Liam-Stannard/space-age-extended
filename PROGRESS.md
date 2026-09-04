@@ -194,7 +194,7 @@ leaves neutral metal alone, so all of vanilla's shading survives. Teal because
 the building is the *cold* half of the mechanic; orange would have been
 indistinguishable from the source sprite. Shadows are copied unrecoloured.
 
-The Quench Vapour icon is built by `tools/derive-vapour-icon.py`, which
+The Quench Vapour icon is built by `tools/derive-fluid-icons.py`, which
 gradient-maps an existing drop (hue rotation can't colour a source that has no
 saturation). Two false starts worth not repeating: vanilla's steam icon is a
 lumpy cloud that reads as popcorn once warmed, and at 46% frame coverage it
