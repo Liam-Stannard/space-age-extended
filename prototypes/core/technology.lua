@@ -102,6 +102,20 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-seed-plate" },
       { type = "unlock-recipe", recipe = "sae-bed-tender" }
     }),
+  foothold("sae-sealed-roboports", { "sae-cold-welding" },
+    {
+      { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
+    }),
+  foothold("sae-field-coils", { "sae-cold-welding" },
+    {
+      { type = "unlock-recipe", recipe = "sae-coil-assembly" },
+      { type = "unlock-recipe", recipe = "sae-coolant-loop" },
+      { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
+    }),
+  foothold("sae-ignition-array", { "sae-field-coils" },
+    {
+      { type = "unlock-recipe", recipe = "sae-ignition-array" }
+    }),
   foothold("sae-arc-masts", { "sae-core-survey" },
     {
       { type = "unlock-recipe", recipe = "sae-arc-mast" }
