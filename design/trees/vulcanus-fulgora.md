@@ -2,7 +2,7 @@
 
 ## Design Intent
 
-This proposal extends the existing Factorio: Space Age mechanics by creating a deeper relationship between **Vulcanus** and **Fulgora**. It is the first tree built to the pattern set out in [the overall mod design framework](framework.md) — see that document for the design philosophy, the cross-planet tree template, and the evaluation checklist this tree is held to.
+This proposal extends the existing Factorio: Space Age mechanics by creating a deeper relationship between **Vulcanus** and **Fulgora**. It is the first tree built to the mod's repeatable pattern — see [the tree pattern](../02-tree-pattern.md) for the shape it implements, [the principles](../01-principles.md) for the rules it is held to, and [the platform system](../03-platform-system.md) for what its capability plugs into.
 
 ### The shipping principle, applied to this tree
 
@@ -608,7 +608,7 @@ Space platforms are the one context every planet pair shares, and they are the p
 
 > **Each cross-planet technology tree terminates in a technology that improves space platforms in a different way — and the accumulated platform capabilities become the mod's endgame goal.**
 
-To keep the trees from competing, each should improve a **different platform subsystem**. The available carve-up is roughly: power, thrust, asteroid processing, cargo/logistics, defence, structure.
+To keep the trees from competing, each claims a **different platform subsystem**: power, structure, asteroid processing, thrust, defence. (Cargo and logistics is deliberately not a slot — see [the platform system](../03-platform-system.md).)
 
 **Vulcanus/Fulgora takes power.** Fulgora is the game's power-identity planet and Vulcanus supplies the thermal half, so the pairing is natural.
 
@@ -632,7 +632,7 @@ Its standing advantage over nuclear is that it genuinely does not idle: a `gener
 
 ### Location
 
-**Space platforms**, gated by a real surface property (`pressure = 0`) exactly as vanilla gates its own thruster — not by a planet-name rule (framework.md §2.3).
+**Space platforms**, gated by a real surface property (`pressure = 0`) exactly as vanilla gates its own thruster — not by a planet-name rule ([principles §3](../01-principles.md)).
 
 ### Crafted from
 
@@ -675,7 +675,7 @@ Tier 2 is gated twice over: on vanilla's own `cryogenic-plant` technology, and o
 
 The cryogenic quench runs on **Quench Coolant**, a mod fluid made on Aquilo from Fluoroketone. It comes back **Spent Quench Coolant**, and a vacuum-only chemical-plant recipe, **Radiative Coolant Cooling**, returns it cold on the platform itself. Coolant is therefore an *initial fill* shipped up in barrels, not an ongoing import; what Aquilo permanently supplies is the technology and that fill. One quench plant emits 10 spent/s and a radiator returns 4 cold/s, so **2.5 radiators feed one quench plant**.
 
-**Why a mod fluid rather than Fluoroketone itself.** Vanilla deliberately gives you no way to re-cool Fluoroketone in space: its own cooling recipe is in the `cryogenics` category, and a cryogenic plant requires pressure ≥ 10, so it cannot be built on a platform. That is exactly why vanilla fusion platforms must ship coolant up in barrels. An earlier version of this tree added a vacuum-only recipe that re-cooled Fluoroketone directly — which made this mod the only in-space source of `fluoroketone-cold` and so quietly deleted vanilla fusion's coolant logistics for anyone with the mod installed. That is a plain breach of framework.md §2.3. Running the platform loop on the mod's own coolant keeps vanilla's economy untouched while still letting the loop close in space.
+**Why a mod fluid rather than Fluoroketone itself.** Vanilla deliberately gives you no way to re-cool Fluoroketone in space: its own cooling recipe is in the `cryogenics` category, and a cryogenic plant requires pressure ≥ 10, so it cannot be built on a platform. That is exactly why vanilla fusion platforms must ship coolant up in barrels. An earlier version of this tree added a vacuum-only recipe that re-cooled Fluoroketone directly — which made this mod the only in-space source of `fluoroketone-cold` and so quietly deleted vanilla fusion's coolant logistics for anyone with the mod installed. That is a plain breach of [principles §3](../01-principles.md). Running the platform loop on the mod's own coolant keeps vanilla's economy untouched while still letting the loop close in space.
 
 **Why two fluids rather than one at two temperatures.** Barrels do not preserve temperature — emptying a barrel returns its fluid at the default. A single temperature-carrying coolant could therefore be barrelled hot and emptied cold, laundering the radiator step away entirely. Two fluids make that impossible to express, which is the same reason vanilla splits Fluoroketone into hot and cold.
 
@@ -694,7 +694,7 @@ Measured against the installed game, not recalled. Shipping first, per rocket (1
 
 That ladder is the point: the lean quench is roughly uranium parity, so pre-Aquilo power is possible but never cheap, and the cryogenic quench is seven times better while still sitting well under fusion.
 
-Magmatic Core's weight is set explicitly (1000) because the engine's derived default was 100 — the recipe is mostly Lava, and fluids weigh nothing — which put **10,000 cores in a rocket** and made a rocket of them worth three times a rocket of fusion cells. Shipping was effectively free, which guts framework.md §2.1. The Catalyst Rod and its spent form are set to 2000 for the same reason: left derived, moving rods cost twenty times moving the cores they exist to make.
+Magmatic Core's weight is set explicitly (1000) because the engine's derived default was 100 — the recipe is mostly Lava, and fluids weigh nothing — which put **10,000 cores in a rocket** and made a rocket of them worth three times a rocket of fusion cells. Shipping was effectively free, which guts [principles §1](../01-principles.md). The Catalyst Rod and its spent form are set to 2000 for the same reason: left derived, moving rods cost twenty times moving the cores they exist to make.
 
 Then floor space, which is what a platform is actually short of:
 
@@ -712,7 +712,7 @@ The radiator ratio was tuned to this table. At an earlier 10 radiators per quenc
 
 ## 9.5 Why this shape
 
-- **Degradation, not destruction.** Running the lean recipe is expensive, never fatal (framework.md §4.5 rule 3). There is no meltdown and no failure state, only a worse exchange rate.
+- **Degradation, not destruction.** Running the lean recipe is expensive, never fatal ([principles §6](../01-principles.md)). There is no meltdown and no failure state, only a worse exchange rate.
 - **Cooling throughput is still the scaling decision**, now expressed as Ice throughput per core rather than as a coolant tank. Viability still scales with asteroid capture, which is already the core platform loop.
 - **The Vulcanus leg stays permanently load-bearing.** Magmatic Core is a consumable, so the Catalyst Rod → Vulcanus → Magmatic Core → Depleted Rod loop must keep running indefinitely.
 - **There is a wrong platform to install it on** (rule 4): one with no oxide asteroids for Ice, or no room for the radiator field tier 2 needs.
@@ -1030,11 +1030,13 @@ Magmatic Core becomes an ongoing consumable at this point rather than a one-time
 
 # 15. Core Design Principles
 
-## 14.1 Optional, not mandatory
+## 15.1 Optional up to the Edge
 
-The new chains should be attractive without making existing factories invalid. A player should still be able to operate a conventional Vulcanus metal factory, a conventional Fulgora recycling factory, and a conventional electronics factory without the cross-planet system.
+The new chains are attractive without making existing factories invalid: a player can still run a conventional Vulcanus metal factory, a conventional Fulgora recycling factory and a conventional electronics factory, and reach the vanilla win condition, without ever touching the cross-planet system.
 
-## 14.2 Each planet contributes something unique
+Past the Solar System Edge that changes. This tree owns the Power band of [the corridor](../04-corridor.md), so it is mandatory for the mod's own destination — and mandatory content is a single point of failure, which is why this tree is played before any other is designed.
+
+## 15.2 Each planet contributes something unique
 
 **Fulgora contributes:** Scrap, recycling, electromagnetic technology, Holmium, the Catalyst Rod.
 
@@ -1042,7 +1044,7 @@ The new chains should be attractive without making existing factories invalid. A
 
 Neither planet is merely a supplier of generic resources — and neither can substitute for the other by relocating buildings.
 
-## 14.3 The chain should create factory-design problems
+## 15.3 The chain should create factory-design problems
 
 - "Is this Scrap more valuable as manufactured components or as bulk molten metal?"
 - "How much Calcite import capacity do I need to sustain remelting?"
@@ -1050,7 +1052,7 @@ Neither planet is merely a supplier of generic resources — and neither can sub
 - "Should my electronics run the conventional chain or the Copper Foil chain?"
 - "How many Catalyst Rods per rocket, and can I keep the Depleted Rod return flowing?"
 
-## 14.4 Byproducts are the player's problem
+## 15.4 Byproducts are the player's problem
 
 Three times over — chaotic Scrap composition, surplus Molten Iron, spent rods and contaminated acid — this design hands the player something they did not ask for and does not prescribe the answer. Existing buildings always provide at least two valid outlets.
 
@@ -1101,7 +1103,7 @@ Compare against vanilla on raw resource consumption, machine count, power consum
 
 **Quench Turbine**
 
-See Section 9.7 — every number is engine-verified but none is playtested. The open call is whether tier 1 at 90MJ per core is expensive or simply impossible (100MW needs ~11 chemical plants and 67 cores/min), and whether the tier-2 radiator field (~10 plants per quench plant) is a satisfying layout problem or just floor space.
+See Section 9.7 — every number is engine-verified but none is playtested. The open call is whether tier 1 at 90MJ per core is expensive or simply impossible (100MW needs ~11 chemical plants and 67 cores/min), and whether the tier-2 radiator field (2.5 radiator plants per quench plant) is a satisfying layout problem or just floor space.
 
 ---
 

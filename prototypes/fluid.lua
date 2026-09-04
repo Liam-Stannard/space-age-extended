@@ -1,5 +1,5 @@
 -- New fluids introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §1-6 for the Fulgora refining fluids and
+-- See design/trees/vulcanus-fulgora.md §1-6 for the Fulgora refining fluids and
 -- §9 for Quench Vapour. All use auto_barrel = false: the refining fluids
 -- never need to leave Fulgora, and Quench Vapour is made and consumed on
 -- the same platform (barrelling it would let a platform import energy
@@ -121,7 +121,7 @@ data:extend({
     -- this tree added a vacuum-only recipe that re-cooled Fluoroketone itself,
     -- which made this mod the only in-space source of fluoroketone-cold and
     -- so quietly removed vanilla fusion's coolant logistics for anyone with
-    -- the mod installed -- a clear breach of framework.md §2.3.
+    -- the mod installed -- a clear breach of design/01-principles.md §3.
     --
     -- Running the platform loop on the mod's own coolant keeps vanilla's
     -- economy untouched while still letting the loop close in space, which is

@@ -1,6 +1,6 @@
 -- New entities introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §9 -- the Quench Turbine, the mod's one new
--- building (justified per design/framework.md §2.3: its output per shipped
+-- See design/trees/vulcanus-fulgora.md §9 -- the Quench Turbine, the mod's one new
+-- building (justified per design/design/01-principles.md §3: its output per shipped
 -- Magmatic Core is a *recipe choice*, since the turbine clips vapour hotter
 -- than it can use, and nothing in the game trades fuel value against a
 -- recipe tier that way).
@@ -47,7 +47,7 @@ data:extend({
     -- Space-platform-only placement via a genuine physical surface property
     -- (zero pressure/vacuum), exactly mirroring vanilla's own `thruster` --
     -- not an arbitrary planet-name check, so it doesn't run afoul of
-    -- framework.md §2.3's "no building-placement gimmicks" rule. Kept from
+    -- design/01-principles.md §3's "no building-placement gimmicks" rule. Kept from
     -- the Thermionic Generator, which used the same gate for the same reason.
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },

@@ -40,7 +40,7 @@ One real bug found and fixed along the way: the mod's internal `name` in
 `info.json` didn't match the `__space-age-extended__` prefix already used
 in every graphics path, so it failed to load. Renamed the mod (and its
 title) to **`space-age-extended`** — this also better reflects
-`design/framework.md`'s intent of one mod eventually holding multiple
+`design/02-tree-pattern.md`'s intent of one mod eventually holding multiple
 cross-planet trees, not just this one. The mods-folder symlink at
 `~/.factorio/mods/space-age-extended` and `tools/check-data-stage.sh`
 both already reflect the current name.
@@ -208,14 +208,14 @@ its machine. The fluid's base_color/flow_color were changed to match.
 ## Balance pass (branch `balance-pass`)
 
 A review against the installed game's own numbers found three problems, all
-fixed here. The measurements are in `design/vulcanus-fulgora.md` §9.4.
+fixed here. The measurements are in `design/trees/vulcanus-fulgora.md` §9.4.
 
 1. **Magmatic Core shipped 10,000 per rocket.** Its weight was never set, and
    the engine's derived default came out at 100 because the recipe is mostly
    Lava and fluids weigh nothing. A rocket of cores was worth 6TJ at the
    cryogenic quench -- three times a rocket of fusion power cells and
    seventy-five times a rocket of uranium fuel cells. Shipping was effectively
-   free, which defeats framework.md §2.1 entirely. Now an explicit 1000, so a
+   free, which defeats design/01-principles.md §1 entirely. Now an explicit 1000, so a
    rocket is 90GJ lean / 600GJ cryogenic. Catalyst Rod, its spent form and
    Copper Foil are 2000 for the same reason -- left derived, the rod loop cost
    twenty times moving the cores it exists to produce.
@@ -259,7 +259,7 @@ in-space Fluoroketone cooling recipe.
   refines the Thermionic Generator this work deletes; kept so the old design
   can be revisited if the Quench Turbine does not survive playtesting.
 - **Trees 2+** — see the parked brainstorm in Claude's memory
-  (`project_space_age_extended_future_trees`) and framework.md §4.2's
+  (`project_space_age_extended_future_trees`) and design/02-tree-pattern.md's
   open slots.
 
 ## To resume

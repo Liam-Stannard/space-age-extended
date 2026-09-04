@@ -1,5 +1,5 @@
 -- New technologies introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §14.
+-- See design/trees/vulcanus-fulgora.md §14.
 
 data:extend({
   {
@@ -114,7 +114,7 @@ data:extend({
   },
   {
     -- Technology 6 (design doc §9). Named for the subsystem it claims
-    -- (framework.md §4.2, "Power") rather than a literal transliteration
+    -- (design/03-platform-system.md, "Power") rather than a literal transliteration
     -- of the doc's section title, matching this mod's tech-naming pattern.
     type = "technology",
     name = "sae-thermionic-power",

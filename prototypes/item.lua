@@ -1,5 +1,5 @@
 -- New items introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §6.
+-- See design/trees/vulcanus-fulgora.md §6.
 
 data:extend({
   {
@@ -81,7 +81,7 @@ data:extend({
     -- against vanilla that made a rocket of cores worth 6TJ at the cryogenic
     -- quench, three times a rocket of fusion power cells (50 x 40GJ = 2TJ)
     -- and seventy-five times a rocket of uranium fuel cells (10 x 8GJ =
-    -- 80GJ). Shipping was effectively free, which guts framework.md §2.1 --
+    -- 80GJ). Shipping was effectively free, which guts design/01-principles.md §1 --
     -- the shipping principle is the whole point of a cross-planet tree.
     --
     -- 1000 puts 1000 cores in a rocket: 90GJ at the lean quench, which is

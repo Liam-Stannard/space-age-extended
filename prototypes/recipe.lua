@@ -1,5 +1,5 @@
 -- New recipes introduced by Space Age Extended.
--- See design/vulcanus-fulgora.md §1-6.
+-- See design/trees/vulcanus-fulgora.md §1-6.
 --
 -- "Heat" in the design doc's ingredient lists is not a literal Factorio
 -- ingredient (Foundry has no heat-network input) -- it's represented by
@@ -420,7 +420,7 @@ data:extend({
   {
     -- Closes the coolant loop in space. Vacuum radiates, hence the surface
     -- condition -- a real physical property, the same gate vanilla's thruster
-    -- uses, not a planet-name rule (framework.md §2.3). It deliberately works
+    -- uses, not a planet-name rule (design/01-principles.md §3). It deliberately works
     -- on this mod's own coolant and not on Fluoroketone: a vacuum-only
     -- Fluoroketone recipe would have become the only in-space source of
     -- fluoroketone-cold and quietly deleted vanilla fusion's coolant
