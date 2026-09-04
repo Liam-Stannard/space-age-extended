@@ -170,6 +170,13 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-coolant-loop" },
       { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
     }),
+  geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 400,
+    {
+      { type = "unlock-recipe", recipe = "sae-seed-missile" },
+      { type = "unlock-recipe", recipe = "sae-radiant-crushing" },
+      { type = "unlock-recipe", recipe = "sae-seeded-crushing" },
+      { type = "unlock-recipe", recipe = "sae-radiant-generator" }
+    }),
   geodynamic("sae-ignition-array", { "sae-field-coils" }, 2500,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
 })
