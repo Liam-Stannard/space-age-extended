@@ -13,17 +13,32 @@ globals = {
   "serpent",
 }
 
--- A `files` entry REPLACES the top-level `globals` list for the files it
--- matches, so every global a prototypes/ file touches has to be named here or
--- luacheck reports W113 and `luacheck .` (the lint workflow) exits non-zero.
--- `data` is assigned; the three circuit-connector names are only ever read, so
--- they go in `read_globals`. They are set by
--- core/lualib/circuit-connector-sprites.lua, which prototypes/entity.lua pulls
--- in with `require("circuit-connector-sprites")` -- the same spelling vanilla's
--- own turrets.lua uses -- for the Reactive Edge Plating connector.
+-- Globals that core/lualib modules define when a prototypes/ file `require`s
+-- them, rather than globals the engine hands us. They are read and never
+-- assigned, so they belong in `read_globals`; without them `luacheck .` -- what
+-- .github/workflows/lint.yml runs, bare -- reports W113 and exits non-zero.
+-- tools/check-data-stage.sh cannot catch this, because the engine really does
+-- define all of these at load time.
+--
+--   * `pipecoverspictures` from `require("__base__.prototypes.entity.pipecovers")`
+--     (the Quench Turbine's fluid boxes).
+--   * the three connector names from `require("circuit-connector-sprites")`,
+--     the same spelling vanilla's own turrets.lua uses (Reactive Edge Plating).
+--
+-- Declared here AND repeated on the prototypes/ entry below: the top-level
+-- declaration is what makes them visible, the repetition records where they
+-- are actually used and survives the entry being narrowed later.
+read_globals = {
+  "pipecoverspictures",
+  "circuit_connector_definitions",
+  "universal_connector_template",
+  "default_circuit_wire_max_distance",
+}
+
 files["prototypes/**/*.lua"] = {
   globals = { "data" },
   read_globals = {
+    "pipecoverspictures",
     "circuit_connector_definitions",
     "universal_connector_template",
     "default_circuit_wire_max_distance",

@@ -209,11 +209,10 @@ data:extend({
     -- rockets. Vanilla's own heavy anti-asteroid round, railgun-ammo, is
     -- stack_size 10 at 200 kg apiece (space-age/prototypes/item.lua:643-644).
     stack_size = 20,
-    -- 10 kg, in grams. Written as a literal rather than `10 * kg` because
-    -- `kg` is not among the globals .luacheckrc declares for prototypes/ files
-    -- (that entry lists `data` plus the three circuit-connector names
-    -- prototypes/entity.lua reads, and a `files` entry replaces the top-level
-    -- list rather than extending it). Item weight here
+    -- 10 kg, in grams. Written as a literal rather than `10 * kg` because `kg`
+    -- is not one of the globals .luacheckrc declares -- it lists only what
+    -- prototypes/ files actually read, and pulling in base's `kg` would mean
+    -- declaring another one for a multiplication. Item weight here
     -- governs rocket cargo capacity ONLY. MEASURED: it contributes nothing to
     -- space platform mass, whether the charges sit in a chest or inside a
     -- plate's ammo slot -- see the note on the entity in prototypes/entity.lua.
