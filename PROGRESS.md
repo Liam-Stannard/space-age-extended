@@ -108,6 +108,144 @@ fast-forward into `master`, push, delete the branch.
   `specific_heat` 80kJ→400kJ (16s→80s to overheat; holding needs
   0.25 Ice/s not 1.25), coolant tank 1→2 slots.
 
+- **Reactive Edge Plating — Phase 0 feasibility spike** (branch
+  `reactive-edge-plating`, not merged, no design-doc section yet). A
+  perimeter plate that spends one loaded charge to destroy an incoming
+  asteroid at contact range: an `ammo-turret` entity plus an `ammo` item,
+  a dedicated `ammo-category`, native `tile_buildability_rules` for the
+  void-adjacency restriction, placeholder recipes and a temporary
+  technology. **Zero control-stage Lua** — `control.lua` and `scripts/` are
+  untouched, and that is the spike's headline result.
+
+  Measured on the headless rig below; every number is from a real run.
+
+  - **Placement is fully native.** A 44-cell matrix (each rim face x each
+    rotation, plus corners, interior tiles, and one-in-from-rim) comes out
+    an exact diagonal: outward-facing rim only, both outward directions on
+    a corner, every interior cell rejected in every rotation. Identical
+    under `can_place_entity` and under reviving an `entity-ghost`, so
+    blueprints obey the same rule as manual placement. No `on_built`
+    rejection handler needed.
+  - **Inserter loading is tick-for-tick identical to a vanilla gun turret**
+    on the same chest+inserter rig: both at 8 after 600 ticks, both at 10
+    after 1200.
+  - **Ammo-category isolation is total, in both directions and through the
+    inserter path.** firearm-magazine and railgun-ammo into a plate insert
+    0; a Reactive Charge into a vanilla gun turret inserts 0; an inserter
+    beside a gun turret with a chest of 20 charges moved none in 900 ticks.
+  - **Loaded vs empty, same tile, same medium asteroid:** loaded → plate
+    200/200, witness one tile behind 350/350, 0 tiles lost; empty → plate
+    destroyed, 2 foundation tiles lost.
+  - **A plated rim saves the platform.** Same route, thrust and tick budget,
+    3600 ticks: UNPLATED lost 400 of 400 foundation tiles and all 12
+    interior witnesses (gone by dt~2700). PLATED (64 plates, one per
+    buildable perimeter tile, 20 charges each) finished 400/400 tiles, 0
+    tile damage, 12/12 witnesses at full health, 64/64 plates alive, having
+    spent 50 of 1280 charges (3.9%).
+  - **Charge consumption is strictly per-impact, never per-second.** Three
+    loaded plates with nothing to shoot held 10/10 charges at
+    `damage_dealt = 0` across 11,202 ticks, against a liveness witness
+    (burner inserter) that moved 147 items in the same window. A plate with
+    a NEUTRAL-force asteroid parked half a tile off its hull likewise sat at
+    10/10 and `damage_dealt = 0` and was destroyed by it without firing.
+  - **Per-class ladder** (loaded 10-charge plate, steel-chest witness one
+    tile behind, asteroid on the `enemy` force, `range_mode` and
+    `turn_range` as shipped): medium → plate 200/200, witness 350/350, 0
+    tiles lost, 4 charges spent. big → 200/200, 350/350, 0 tiles lost, 5
+    charges. huge → all 10 charges every run, and **the outcome is not
+    deterministic** — the dying cascade's child spread is RNG. Five runs:
+    tiles lost 0 / 2 / 2 / 2 / 1, plate health 200 / 150 / 150 / 200 / 200,
+    witness 350/350 in all five. A `huge` dies to 3 charges
+    ((5000-3000)*0.9 = 1800 x 3 > 5000 hp); the other 7 go on its cascade.
+  - **A 0.5 (hemisphere) firing arc costs nothing.** A/B on the same build,
+    360 degrees vs 0.5: 3600-tick plated flight 400/400 tiles, 12/12
+    witnesses, 64/64 plates in both, 49 charges spent at 360 degrees vs 50
+    at 0.5. `huge` x4 at 360 degrees lost 0/1/3/0 tiles against 0/2/2/2/1
+    at 0.5 — overlapping spreads, no regression. `medium` identical (4
+    charges, 0 tiles); `big` 0 tiles lost either way, but 9 charges at 360
+    degrees against 5 at 0.5, because the full circle also spends charges on
+    cascade children that have already drifted past the plate.
+
+  Engine facts this spike established, each now commented at its site:
+
+  - **`attack_parameters.range_mode` defaults to `center-to-center`.**
+    Vanilla asteroids carry `collision_box = {{-r,-r},{r,r}}` from
+    `collision_radiuses = {0.4, 0.5, 1, 2, 4.5}`
+    (`space-age/prototypes/entity/asteroid.lua:165-172`, applied at `:492`),
+    so under the default a declared `range = 4` is a real standoff of 3.5
+    tiles against a small, 3.0 against a medium, 2.0 against a big and
+    **-0.5 against a huge** — the rock's hull is already past the turret
+    before it may fire, and `prepare_range` (which defaults to `range`)
+    means it is still folded at that moment. Chunks are the exception:
+    asteroid.lua:492 gives a chunk no collision_box at all, so for a chunk
+    the two modes are the same. Anything meant to engage asteroids at a
+    stated tile distance needs
+    `range_mode = "center-to-bounding-box"` (vanilla precedent: tesla turret
+    `space-age/prototypes/entity/turrets.lua:724`, and
+    `base/prototypes/entity/flying-robots.lua:773`, `:856`).
+  - **`turn_range` defaults to 1 (a full circle)**, and the engine clamps
+    anything in (0.5, 1) down to 0.5 — targeting in arcs larger than a half
+    circle is not implemented. A turret whose placement already fixes its
+    facing therefore has exactly two useful settings: the default full
+    circle, or a hemisphere.
+  - **`LuaSurface.create_entity` runs no build check and bypasses
+    `tile_buildability_rules` entirely.** Measured returning a valid entity
+    on interior tiles and on bare void, for the plate *and* for vanilla
+    `asteroid-collector` and `thruster`. Any placement test written on
+    create_entity is a false pass in every cell. The valid oracles are
+    `can_place_entity` and reviving an `entity-ghost`.
+  - **`automated_ammo_count` is a FLOOR, not a cap.** An inserter keeps
+    swinging until the turret holds at least that many, and a whole hand
+    lands in the final swing, so the settle point scales with
+    `force.inserter_stack_size_bonus`: bonus 0 settles at 10, bonus 3 at 12,
+    bonus 6 at 14 — identically for the plate and for a vanilla gun turret.
+    The prototype value is the guaranteed minimum stock, not the stock.
+  - **The `empty-space` tile declares `ground_tile = true`** in its own
+    collision_mask (`space-age/prototypes/tile/tiles.lua:211-222`), so a
+    `tile_buildability_rules` entry with `required_tiles = {layers =
+    {ground_tile = true}}` alone happily matches void. It has to be paired
+    with `colliding_tiles = {layers = {empty_space = true}}` to mean "real
+    foundation" — which is exactly what vanilla's asteroid-collector
+    (`space-age/prototypes/entity/entities.lua:691-694`) and thruster
+    (`:908-911`) do.
+  - **`heating_energy` defaults to 0W**, so an entity that does not declare
+    it never freezes on Aquilo. Vanilla's railgun and rocket turrets both
+    declare `"50kW"` (`space-age/prototypes/entity/turrets.lua:318`,
+    `:432`), so omitting it is a real balance asymmetry, not a neutral
+    default.
+
+  Findings that are **design input, not defects** — recorded here for the
+  design phase; no fix attempted:
+
+  - **Corners are structurally unfeedable by a belt+inserter rim ring.** A
+    full concentric build — 76 plates on ring 0, inserters on ring 1, belt
+    on ring 2, power poles on ring 3 — got 63 of 63 inserter-served plates
+    to >=10 charges and held them there. But **12 of the 76 rim plates (the
+    3 tiles at each of the four corners) have no orthogonal neighbour on the
+    belt ring**, so no inserter can ever sit between belt and plate. Corners
+    are exactly where a rim is most exposed. Any answer is a design one:
+    accept unfed corners, chamfer the platform, use a second logistics
+    layer, or change the plate's feeding shape.
+  - **A closed belt loop deadlocks.** The first ring attempt saturated one
+    lane across all 60 belt tiles and froze for 20,000 ticks with 44 plates
+    permanently empty; opening the loop by a single tile fixed it entirely.
+    Any rim blueprint the design ships must not be a closed loop.
+  - **`weight` is permanently off the table for this capability.** Platform
+    mass is hub weight + sum of tile weights and nothing else (see the
+    engine fact below), so a plate can never be balanced against platform
+    speed; its whole cost has to live in the charge supply chain.
+  - **No circuit connector**, so a plate's remaining charges are not
+    readable on the circuit network and a platform cannot hold at a depot
+    until its rim is re-armed. Vanilla gun-turret carries
+    `circuit_connector_definitions["gun-turret"]`; this entity carries
+    nothing. Prototype-only to close.
+  - **The framework.md §4.5.1 interaction is emergent only.** The plate
+    draws on the platform's consumable throughput, and what it "feeds" is
+    negative and implicit: asteroids a plate destroys are asteroids the
+    collectors never harvest. Real, but it falls out of turret targeting on
+    its own — nothing in the prototype expresses it and there is no knob to
+    tune it with.
+
 ## Headless RCON verification (how this was actually tested)
 
 `tools/check-data-stage.sh` only covers the data stage. Runtime logic was
@@ -205,8 +343,9 @@ its machine. The fluid's base_color/flow_color were changed to match.
 
 **Still owed:** a client playtest -- nothing here has been played.
 
-Further gotchas, all found the hard way while spiking Reactive Edge
-Plating (each one cost a run that looked like a genuine negative result):
+Further rig-level gotchas, all found the hard way while spiking Reactive Edge
+Plating. Each of these silently produces a plausible but wrong measurement
+rather than an error, so check for them before believing a negative result:
 
 - **`/c` must share a line with the first statement.** A scenario file
   sent as `/c\n<lua>` makes the server parse `c` plus the next word as a
@@ -217,15 +356,13 @@ Plating (each one cost a run that looked like a genuine negative result):
   10 magazines loaded sat at `damage_dealt = 0` and let the asteroid hit
   it. Turrets only engage forces their own force is `is_enemy()` with,
   and `player` vs `neutral` is false. **Always put a vanilla control
-  turret in the rig**; that is the only reason this was caught as a rig
-  bug rather than recorded as "the new entity doesn't shoot".
+  turret in the rig.**
 - **An inserter's `direction` is the side it picks up FROM**, not the
   side it drops on. `direction = north` gives `pickup_position` one tile
   north and `drop_position` one tile south.
 - **`automated_ammo_count` is the count an inserter fills a turret up
-  to**, not just a logistics-request number — measured against a vanilla
-  gun turret side by side, both stopping exactly at their prototype's
-  value, well below the ammo stack size.
+  to**, not just a logistics-request number — and it is a *floor*, not a
+  cap. See the engine-facts list under Reactive Edge Plating above.
 - **Not every API method takes a table.** `LuaSpacePlatform::repair_tile`
   and `LuaSurface::set_tiles` take positional args while their neighbours
   don't; `runtime-api.json`'s per-method `format.takes_table` is the
@@ -248,6 +385,21 @@ Plating (each one cost a run that looked like a genuine negative result):
 - Asteroids drift at ~0.0197 tiles/tick **even when the platform's own
   speed is 0**, so single-asteroid tests need no thrusters at all. Only
   the S5-style exposure runs need the platform genuinely under way.
+- **A platform will not depart until the destination's
+  `planet-discovery-*` technology is researched.** Setting a schedule
+  without it leaves `platform.state = 5` (`no_path`), `speed` pinned at
+  0.00 and every thruster reporting `thrust_not_required` — a flight
+  scenario then runs its whole tick budget with zero asteroids spawned and
+  reports a flawless result. Research `planet-discovery-vulcanus` (or the
+  lot) in setup, and assert `speed > 0` before believing a flight run.
+- **Clear asteroids surface-wide between scenarios, not just inside the
+  setup's box.** Every setup here wipes a +/-45 tile box; after a flight
+  run there are live asteroids well outside it that drift back in
+  mid-measurement. Measured cost of skipping it: a `huge` ladder run
+  immediately after a flight reported the plate DESTROYED and 58 foundation
+  tiles lost, against 0-2 tiles for the same build from a clean surface.
+  Destroy `find_entities_filtered{type = "asteroid"}` over the whole
+  surface and re-park the platform first.
 
 ## Not started yet
 
@@ -255,6 +407,13 @@ Plating (each one cost a run that looked like a genuine negative result):
 - **`thermionic-playtest-feedback` is kept, deliberately not merged.** It
   refines the Thermionic Generator this work deletes; kept so the old design
   can be revisited if the Quench Turbine does not survive playtesting.
+- **Strip `icon_mipmaps`, repo-wide, in its own janitorial commit.** The key
+  does **not** exist in the Factorio 2.1 prototype API and is silently
+  ignored — verified against the shipped `doc-html/prototype-api.json`. It is
+  pre-existing at 25 sites across the whole repo, so new code has been
+  following it as house style; removing it is a single mechanical pass, not
+  something to fold into a feature branch. Recorded here so nobody re-adds it
+  or re-discovers it as a review finding.
 - **Trees 2+** — see the parked brainstorm in Claude's memory
   (`project_space_age_extended_future_trees`) and framework.md §4.2's
   open slots.
