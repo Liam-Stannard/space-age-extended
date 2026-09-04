@@ -159,6 +159,19 @@ From the S1 and S2 spikes, on a headless server running a scratch planet.
   that has to be designed for, not assumed.
 - **Recipes in 2.1 take `categories = {...}`**, not `category`. The old form is
   refused at the data stage.
+- **A vent can be gated by a fluid.** A fluid resource carrying
+  `minable.required_fluid`, drawn by a drill with both an input and an output
+  fluid box, reports `missing_required_fluid` until supplied and `working` once
+  it is — measured, with helium-3 consumed as molten kamacite accumulates.
+- **Seeding converts a rock in one shot.** A projectile action combining
+  `damage` with `create-entity` destroys an asteroid and leaves a different one
+  in its place, no script involved.
+- **Asteroid chunks are not entities.** They are their own prototype family plus
+  a matching item of the same name, and a mod chunk needs *both*. Whether a
+  seeded rock's chunks reach a collector is still unproven — the vanilla control
+  also failed under script damage, so it needs testing in a client.
+- **Asteroids only exist while a platform is travelling**, and are destroyed
+  instantly if spawned on foundation.
 
 ## Verified engine facts behind these decisions
 

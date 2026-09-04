@@ -39,8 +39,8 @@ against `game.tick` deltas, never wall-clock sleeps**.
 |---|---|
 | S1 — is the Core buildable? | **PASS**, with one required addition |
 | S2 — do the Core's conditions behave? | **PASS** on placement, growth and the sealed roboport; one gap found |
-| S3 — does seeding work? | not yet run |
-| S4 — can a vent require an input fluid? | not yet run |
+| S3 — does seeding work? | **PARTIAL** — the conversion works; the harvest half is unproven by this harness |
+| S4 — can a vent require an input fluid? | **PASS** |
 
 ### S1 — PASS
 
@@ -89,6 +89,53 @@ designed into an existing one.
 *Not re-tested:* whether recipe `surface_conditions` block crafting at runtime.
 Earlier work established they are a player-facing selection filter rather than a
 runtime block, which is sufficient — players do not set recipes by script.
+
+### S3 — PARTIAL
+
+**The conversion works, and it is the novel half.** A projectile whose action
+combines `damage` with `create-entity` destroyed a mod asteroid and left an
+infected one in its place, in a single shot, with no script. The design's central
+claim holds: you can seed a rock in flight.
+
+**The harvest half is not proven, and the harness is why.** Destroying the
+infected asteroid produced no chunk this test could see, and neither did the
+**control** — a *vanilla* small asteroid, destroyed the same way beside a powered
+collector, also yielded nothing observable. When the control fails, the
+experiment says nothing about the mod. This needs an in-client test, or a rig
+that shoots asteroids with a real turret rather than applying script damage.
+
+Four things learned along the way, all of which would have cost hours later:
+
+- **A chunk needs two prototypes.** Vanilla defines both an `asteroid-chunk`
+  *and* an `item` of the same name; copying only the former gives a chunk with no
+  item form. `prototypes.entity["metallic-asteroid-chunk"]` is `nil` — chunks are
+  not entities, which is also why `find_entities_filtered` cannot see them.
+- **`create-asteroid-chunk` is a first-class trigger effect**, and it is what
+  vanilla's small asteroids use to yield chunks. The seeding design uses exactly
+  the machinery the game already has.
+- **Asteroids spawned on platform tiles are destroyed instantly.** They only
+  survive in empty space beyond the foundation — which is where they naturally
+  are, but it invalidates a naive test.
+- **Asteroids only persist while the platform is travelling.** On a stationary
+  platform they vanish within a second, so any asteroid test has to be run under
+  way.
+
+### S4 — PASS
+
+**A fluid resource can require an input fluid, and a drill can hold both fluid
+boxes.** Measured on the Core with a vent resource carrying
+`minable.required_fluid` and a pumpjack-derived drill given the electric mining
+drill's `input_fluid_box`:
+
+| State | Result |
+|---|---|
+| No helium-3 supplied | status **`missing_required_fluid`** — the engine refuses to draw |
+| Helium-3 inserted | status **`working`**, molten kamacite accumulating (279 → 349 over five seconds), helium consumed as it goes |
+| Helium drained again | status returns to **`missing_required_fluid`** and output stops |
+
+So helium-3 gating the melt draw works exactly as designed — the rare resource
+throttles the abundant one — and the engine even provides a dedicated,
+player-legible status for the failure. No fallback needed.
 
 ### Engine change worth knowing
 
