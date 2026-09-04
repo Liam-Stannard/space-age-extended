@@ -16,8 +16,7 @@ engine. Only its first phase has been played by a human; the Quench Turbine and
 the balance pass are engine-measured and unplayed.
 
 The design documents are being reworked from scratch, so `design/` is currently
-empty. `PROGRESS.md` is the implementation status snapshot — what is built, how
-it was verified, and how to resume.
+empty. Until that lands, the code itself is the record of what the mod does.
 
 ## Structure
 

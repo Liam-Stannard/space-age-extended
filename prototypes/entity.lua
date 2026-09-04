@@ -17,7 +17,7 @@
 -- the efficiency curve fighting each other. The Quench Turbine reaches the
 -- same design goal -- output per core is a decision the player tunes, not a
 -- constant -- with no heat network, no hidden entities and no runtime script
--- at all. See the plan at ~/.claude/plans/quench-turbine.md.
+-- at all.
 --
 -- The turbine is a real `generator`: the engine computes its power from
 -- fluid flow, the fluid's heat_capacity and its temperature, and clips
