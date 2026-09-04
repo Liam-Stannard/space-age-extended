@@ -513,6 +513,30 @@ rather than an error, so check for them before believing a negative result:
   scenario then runs its whole tick budget with zero asteroids spawned and
   reports a flawless result. Research `planet-discovery-vulcanus` (or the
   lot) in setup, and assert `speed > 0` before believing a flight run.
+- **An entity with no item that places it cannot be ghosted.**
+  `create_entity{name = "entity-ghost", inner_name = X}` fails outright with
+  *"X can not be part a entity ghost"* unless some item has
+  `place_result = X`. Inside a `pcall` that reads as "the ghost oracle said
+  no" and silently zeroes the revive column of a placement matrix in every
+  cell. Give throwaway spike prototypes a throwaway placing item.
+- **`LuaWireConnector`'s methods take a dot, not a colon.**
+  `a:connect_to(b, ...)` passes the connector itself as the target, so the
+  wire is never made — and every circuit measurement after it reads an
+  unconnected network without erroring. Spell it `a.connect_to(b, ...)`.
+- **An inserter's `drop_target` is nil on the tick it is created** and only
+  resolves once the game has stepped. Census it from a measurement step, not
+  from the setup step, or a feedability count comes out 0/76.
+- **A concentric belt ring cannot feed the corner of any footprint.** The
+  corner tile of ring *k* is diagonal to the corner tile of ring *k+1*, so
+  the inserter that would serve a corner plate has no belt orthogonally
+  behind it. That is a property of concentric squares, not of the plate —
+  measure corner questions against "does a tile an inserter can stand on
+  exist at all", not against one belt layout.
+- **A 3600-tick exposure flight is not a damage instrument.** On a
+  Nauvis→Vulcanus leg at speed 0.54 a plated rim was not touched at all in
+  any of four conditions. If the question is "does X leak", aim an asteroid
+  at X and keep an instrument check (a condition that *must* leak) in the
+  run, or a flawless result means nothing.
 - **Clear asteroids surface-wide between scenarios, not just inside the
   setup's box.** Every setup here wipes a +/-45 tile box; after a flight
   run there are live asteroids well outside it that drift back in
@@ -556,10 +580,11 @@ Consolidated across tree 1, this branch, and tree 2's plan
 
 ### Reactive Edge Plating (branch `reactive-edge-plating`, 11 commits, unmerged)
 
-- [ ] **Client playtest.** Two things headless testing cannot answer: whether
-      the four placeholder facings actually read as different in a client, and
+- [ ] **Client playtest.** Three things headless testing cannot answer:
+      whether the four placeholder facings read as different in a client,
       whether rotate-to-face-void placement is comfortable (vanilla asks the
-      same of the asteroid collector).
+      same of the asteroid collector), and whether a 3×2 panel is pleasant to
+      lay along a rim by hand as opposed to by blueprint.
 - [x] **Measure the promethium ladder.** Done — table above. The computed
       2-for-`big` / 6-for-`huge` figures are confirmed exactly as *parent-kill*
       costs and are 4–8× too low as *encounter* costs, because the cascade
@@ -575,16 +600,180 @@ Consolidated across tree 1, this branch, and tree 2's plan
       loaded *rim* runs lost no plates and took no plate damage at all, so
       the choice is a design one — buy survivability with HP/resistances, or
       state that the plate is only ever specified as a continuous rim.
-- [ ] **Corner feeding.** Adopt chamfered rims as stated design intent, and
-      publish a reference rim pattern. It must not be a closed belt loop (a
-      saturated loop deadlocked for 20,000 ticks with 44 plates dry).
-- [ ] **Circuit connector** is missing — recorded in-line as a deliberate gap,
-      not decided. (**`heating_energy`** is no longer open: unset/0W is correct
-      by construction for a vacuum-only entity — see the engine-facts list.)
+- [x] **Footprint settled at 3 wide × 2 deep.** Measured against 1x1 and 2x2
+      built as real prototypes side by side — full write-up below.
+- [x] **Corner feeding.** Solved by the footprint, not by asking the player to
+      chamfer: at 3x2 every plate on a square rim has a tile an inserter can
+      stand on, at every platform size tested. A reference rim pattern is
+      still owed, and it must not be a closed belt loop (a saturated loop
+      deadlocked for 20,000 ticks with 44 plates dry).
+- [x] **Circuit connector** added — a per-direction vector, `read_ammo`
+      verified in all four rotations. (**`heating_energy`** is no longer open
+      either: unset/0W is correct by construction for a vacuum-only entity —
+      see the engine-facts list.)
+- [x] **Target priority list works, including from the circuit network.** So
+      "ignore small chunks and leave them to the collectors" is an
+      automatable decision, not a flat income penalty for plating a mining
+      platform. Details below. No `control.lua` change; none was needed.
 - [ ] **Real art**: the entity sprite with folded/preparing/attacking states,
       plus the three new icons in `graphics/icon-prompts.md`.
 - [ ] **Merge decision.** Rebased onto current master and purely additive, but
       not merged and not pushed.
+
+#### Footprint: measured, and why it is 3×2
+
+1x1, 2x2 and 3x2 were built as real prototypes on the same platform and
+measured side by side. Every number below is from the running engine.
+
+**1. Corner feedability — the measurement that decided it.** Asked
+topology-independently, so no cleverer belt layout can argue it away: for
+every plate on a fully built rim, does *any* orthogonally adjacent tile exist
+that is on the platform and is not itself under a plate (an inserter cannot
+stand diagonally), and can all the plates be satisfied *at once* (maximum
+bipartite matching between plates and free adjacent tiles)?
+
+| | 1x1 | 2x2 | 3x2 |
+|---|---|---|---|
+| Unfeedable by **any** layout | **4** (every size) | **1–4** (size-dependent) | **0** (every size) |
+| Feedable simultaneously, 20×20 | 68/76 | 32/36 | **24/24** |
+| …at sizes 10 / 21 / 22 / 31 | 28/36, 72/80, 76/84, 112/120 | 12/16, 35/36, 36/40, 55/56 | **8/8, 24/24, 24/24, 36/36** |
+
+At 1x1 the outermost corner tile's four orthogonal neighbours are all void or
+plate, so it can never be loaded; its two neighbours then contend for the one
+diagonal-interior tile, so three plates per corner go dry in a real build.
+At 2x2 the corner block is boxed in by the perpendicular band. At 3x2 the
+third tile reaches past that band. **The 12-of-76 figure measured earlier is
+confirmed as what a concrete belt ring realises; 8-of-76 is the floor no
+layout can beat.**
+
+A naive concentric belt+inserter ring realises 63/76 (1x1), 32/36 (2x2) and
+20/24 (3x2) — every footprint's corner-owning plate needs one deliberate tile
+(a spur, a buffer chest, or a chamfer), because the corner tile of ring *k* is
+diagonal to the corner tile of ring *k+1* whatever the plate looks like. The
+difference is that at 3x2 that tile exists and at 1x1 four of them cannot.
+Adding corner bump-outs to the ring does **not** help at d=1 — it costs more
+inserter-ring tiles than it buys (1x1 went 13 → 17 unfed).
+
+**2. Floor and entity count**, measured on the real build, 20×20 rim:
+
+| | 1x1 | 2x2 | 3x2 |
+|---|---|---|---|
+| Rings of floor (plate + inserter + belt) | 3 | 4 | 4 |
+| Plates on a 20×20 rim | 76 | 36 | **24** |
+| Inserters built | 63 | 55 | 55 |
+| Plates per 12 rim tiles | 12 | 6 | 4 |
+| Rim quantised in | 1 | 2 | 3 |
+| Hole opened by one lost plate | 1 tile | 4 tiles | 6 tiles |
+| Charges standing, 20×20 rim @ 20/plate | 1520 | 720 | **480** |
+
+The predicted table was right on rings, plates and quantisation; it was wrong
+about the hole one lost plate opens — for a 2-deep plate the hole is the whole
+2×w block (4 and 6 tiles), not w. And the standing-charge figures are 720 and
+480 exactly, not "~760" and "~500".
+
+**3. Parity gaps do not leak.** Quantising in 3s leaves up to 2 tiles over on
+an arbitrary edge. Measured by aiming one promethium asteroid at the centre of
+a deliberate hole in the north band of a fully plated 20×20 (700 + 600 ticks):
+
+| north band | medium | big | huge |
+|---|---|---|---|
+| continuous | 4 charges | 14 | 43 |
+| 2-tile hole | 4 | 13, 14, 14 | 37, 39 |
+| 6-tile hole | — | 13 | 20 |
+
+Zero tiles lost, zero plates damaged, witness chest intact — in every one of
+those runs. **The instrument is not blind:** with the north band removed
+entirely, the same `big` promethium destroyed the witness and ate 90
+foundation tiles with no plate firing at all. The rim defends *by fire*, and
+range 4 gives the flanking plates enough lateral overlap that even a 6-tile
+hole is covered.
+
+The 3600-tick exposure flight could **not** answer this: on a Nauvis→Vulcanus
+leg at speed 0.54, none of 1x1 / 2x2 / 3x2 was touched at all (0 tiles lost,
+0 charges spent for 1x1 and 2x2), and the only condition that lost anything
+was the unplated control — which lost the *entire platform*. Aiming the rock
+is the only way to get a signal out of this question.
+
+**4. Corner arc coverage — no hole.** Swept single asteroids through the void
+off the NW corner on a 1-tile grid and recorded which plate fired. The
+corner's western approach is engaged by the neighbouring **west**-facing
+plate, the northern approach by the **north**-facing one, and their coverage
+overlaps; nothing inside range went unengaged. (One artefact worth knowing:
+probes spawned 0.5 tiles off the hull are already in contact and destroy
+themselves against the foundation before any turret reacts — that column of
+the map is not a coverage hole.)
+
+**5. Placement still admits exactly one facing per position.** The 44-cell
+matrix was rebuilt for the rotated footprint (rotation swaps 3×2 to 2×3, so
+every cell needs its own computed centre) and comes out a perfect diagonal
+under all three valid oracles — `can_place_entity` with `manual`,
+`can_place_entity` with `blueprint_ghost`, and reviving a real `entity-ghost`
+— with `create_entity` disagreeing in every refused cell, as always. Corners
+admit both outward facings but only the **one** lateral offset that sits flush
+inside the platform; the other two would hang the plate off the edge. That is
+the pinwheel a rim wants, and it falls out of the rules rather than having to
+be taught. The same matrix was measured for 1x1 and 2x2, so the diagonal is a
+property of the rules, not of this footprint.
+
+**Input to the numbers pass.** A 20×20 rim now stands 24 plates, not 76. At
+`automated_ammo_count = 10` that is a guaranteed 240 charges standing (480 at
+a 20-charge fill), against 760/1520 before. The measured encounter costs are
+unchanged — a rim spends 4 charges on a promethium `medium`, 13–14 on a `big`
+and 37–43 on a `huge` — so a 20×20 rim's standing buffer is now roughly six
+`big` encounters or six `huge` ones, where at 1x1 it was three times that.
+That is the number the numbers pass has to be comfortable with; the levers are
+`inventory_size`, the charge's stack size, and the per-charge damage, not the
+footprint.
+
+#### Circuit control (both verified over RCON)
+
+**`read_ammo`.** Four plates, one per rim face in the one rotation the
+buildability rules allow there, loaded with 3/5/7/9 charges and each wired to
+its own red network. Every network read back exactly its own plate's count, in
+every rotation. Prototype-side this needed only `circuit_connector` and
+`circuit_wire_max_distance`.
+
+**The connector must have exactly 4 entries**, and the engine enforces it in
+both directions: throwaway clones carrying 1 and 8 entries were each refused
+at load with `In circuit connector definitions expected table of 4 elements
+but N were given`. `prototype-api.json` states the rule (8 for
+building-direction-8-way, 16 for 16-way, **4 for `turret_base_has_direction`**,
+else 1) and vanilla's railgun turret supplies 8 only because it is an 8-way
+building — copying its list would not have loaded. The helpers come from
+`core/lualib/circuit-connector-sprites.lua`, which is on every mod's
+data-stage Lua path, so the plain `require("circuit-connector-sprites")` that
+vanilla's own `turrets.lua` opens with is the correct spelling — no
+`__core__.` prefix. It defines `circuit_connector_definitions`,
+`universal_connector_template` and `default_circuit_wire_max_distance` (= 9).
+
+**Target priority list — POSITIVE, all three ways.** A plate holding 20
+charges, one `small` and one `medium` metallic asteroid probed in turn on the
+`enemy` force, with a vanilla gun turret as the control:
+
+| configuration | `small` | `medium` |
+|---|---|---|
+| defaults | engaged, killed | engaged, killed |
+| entity-side (`set_priority_target` + `ignore_unprioritised_targets`) | **ignored**, 0 damage | engaged |
+| circuit-gated, condition satisfied | **ignored**, 0 damage | engaged |
+| circuit-gated, condition *not* satisfied | engaged, killed | engaged, killed |
+| list read from the wire (`set_priority_list`) | **ignored**, 0 damage | engaged |
+
+So the acceptance criterion is met: flipping the one signal the condition
+tests switches a rim between ignoring `small` and engaging it, live. Which
+half is which:
+
+- **Prototype-side:** only the circuit connector, and only for the two
+  circuit-driven variants. The entity-side variant needs nothing at all.
+- **Player-side:** `LuaEntity.set_priority_target` /
+  `ignore_unprioritised_targets`, and on the control behaviour
+  `set_ignore_unlisted_targets` + `ignore_unlisted_targets_condition`, or
+  `set_priority_list = true` with the wanted target named by an **entity-type
+  signal** on the network. All of it is the vanilla turret GUI.
+
+This matters because `asteroid-collector` has `collection_radius = 7.5`, so a
+plate firing at contact range kills chunks well inside the radius of any
+collector behind it. Plating a mining platform's rim used to be a flat cut in
+income; it is now a decision the player can automate.
 
 ### Tree 2 — the rest of the tree (nothing implemented)
 
