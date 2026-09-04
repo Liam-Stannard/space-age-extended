@@ -1,142 +1,149 @@
 # The Problem Catalogue
 
-**Working document.** Before a tree can be assigned to a pair, we need to know
-what problems are actually worth solving. This is the raw list, sorted into
-categories, with a proposed shortlist at the end.
+Twenty problems, drawn from an end-to-end vanilla Space Age playthrough and read
+forward into the endgame. **We pick five of these** — one per tree.
 
-A problem earns a place here only if **vanilla leaves it unsolved or solves it
-expensively**. Anything Space Age already handles well is not a problem, it is a
-feature the mod would be stepping on.
+A problem qualifies only if vanilla leaves it unsolved or solves it expensively.
+Each entry names where the player meets it, why the vanilla answer is incomplete,
+and what it becomes on the way to the Core.
 
 ---
 
-## A. Freight — getting material between worlds
+## Leaving Nauvis
 
-| Problem | What vanilla does | Why it still bites |
-|---|---|---|
-| **Every shipment costs a rocket** | Rocket parts from processing units, low density structures, rocket fuel | It is a real per-trip tax on any cross-planet chain; a chain that ships continuously is paying it forever |
-| **Fluids barely travel** | Barrels — but nine fluids have none at all (`lava`, `molten-iron`, `molten-copper`, `holmium-solution`, `electrolyte`, `ammonia`, `ammoniacal-solution`, `fluorine`, `lithium-brine`) | Whole categories of material simply cannot leave their world |
-| **Bootstrapping a new world** | Ship everything until local production stands up | The most tedious hours in the game, repeated per planet, and the Core makes it permanent |
-| **Round trips are slow** | Platform flies, waits, returns | A dependency that needs material back is painful in a way a one-way export is not |
+**1. Every shipment costs a rocket, forever.**
+Rocket parts are processing units, low density structures and rocket fuel, burnt
+per launch. A one-off delivery is fine; a chain that ships *continuously* pays
+this tax for the rest of the game.
+*Endgame:* a supply line of corridor depots is continuous shipping by definition.
 
-## B. Time — things that expire
+**2. A platform has to feed itself.**
+Thruster fuel, oxidiser and ammunition all come from what the platform catches en
+route. Stop catching and the ship stops.
+*Endgame:* past the midpoint there is nothing to catch.
 
-| Problem | Numbers | Why it bites |
-|---|---|---|
-| **Spoilage does not stop for transit** | nutrients 5 min, yumako mash 3 min, jelly 4 min, pentapod egg 15 min, biter egg 30 min, yumako/jellynut 60 min, bioflux 120 min | Gleba's entire output is on a clock, and a rocket does not pause it. Anything Gleba sends must survive the trip or be sent as something else |
-| **Nothing preserves** | Freezing exists on Aquilo as a hazard, never as a tool | The game has a world that stops things and a world whose things need stopping, and never connects them |
-| **The endgame journey is long** | — | On a route measured in millions of kilometres, time itself becomes the hazard |
+**3. The route decides what you get.**
+Metallic, carbonic and oxide chunks arrive in whatever ratio the route gives.
+Reprocessing converts between them at a loss — 40% chance of keeping what you
+had, 20% each for the two alternatives.
+*Endgame:* the far field offers one chunk type, and it converts to nothing.
 
-## C. Environment — what a world forbids
+**4. Every platform tile was launched.**
+Foundation is rocket cargo. A chain that needs twenty buildings does not fit on
+anything a player is willing to pay for.
+*Endgame:* depots need to be compact enough to be worth parking.
 
-| Problem | What vanilla does | Why it bites |
-|---|---|---|
-| **Aquilo freezes everything** | Heat pipes and heating towers, fuelled from imports | Heat is a second logistics network layered on the first, and it is the reason Aquilo is hard |
-| **Space refuses most buildings** | Measured: no boiler, furnace, heating tower, roboport, chest, rocket silo, biolab or agricultural tower at pressure 0 | A platform is not a small factory; whole approaches are unavailable there |
-| **Vulcanus has no water** | Everything runs on lava, acid and calcite instead | An entire branch of vanilla chemistry is missing on the hottest world |
-| **The Core forbids nearly everything** | — | No fluids, no combustion, no biology. Whatever works there has to have been designed elsewhere |
+**5. Space refuses most of your buildings.**
+Measured at pressure 0: no boiler, no stone or steel furnace, no heating tower,
+no roboport, no chest of any kind, no rocket silo, no biolab, no agricultural
+tower. A platform is not a small factory — several standard approaches simply do
+not exist there.
+*Endgame:* every corridor structure inherits this.
 
-## D. Energy — power where it is hard
+**6. Several factories, no way to see them.**
+After the second planet the player is running parallel bases with no
+interplanetary information or control — no signals between worlds, no way to know
+a remote base has stalled until a delivery fails to arrive.
+*Endgame:* a corridor is the most remote base of all.
 
-Vanilla solves power well for most of the game: solar and nuclear on Nauvis,
-lightning on Fulgora, solar again on Vulcanus at 400. **Power is only a problem
-late**, and then it is a severe one.
+## Vulcanus
 
-| Problem | Numbers | Why it bites |
-|---|---|---|
-| **Aquilo has no sun** | solar-power 1, against Nauvis 100 and Vulcanus 400 | Solar is worthless; the answer is fission or fusion, both of which need a supply chain before they produce a watt |
-| **Nuclear in space needs water** | Ice must be captured and melted before a reactor makes anything | Power becomes a function of asteroid capture rate |
-| **Fusion is gated behind Aquilo** | Cells need ammonia, which cannot be barrelled | The best platform power source cannot exist until the hardest planet is running |
-| **Distance kills solar entirely** | — | Past the Edge there is no sun at all, and the Core cannot burn anything |
+**7. There is no water.**
+An entire branch of vanilla chemistry has no feedstock. Everything is re-derived
+through lava, calcite and acid geysers.
+*Endgame:* the Core has no fluids at all, so this is the rehearsal.
 
-## E. Threat — damage and defence
+**8. The molten metals cannot leave.**
+`lava`, `molten-iron` and `molten-copper` have no barrel. Vulcanus can only
+export value that has already been embodied in a solid.
+*Endgame:* whatever the Core receives must survive the same constraint.
 
-| Problem | What vanilla does | Why it bites |
-|---|---|---|
-| **Asteroid damage scales with distance and speed** | Guns and ammunition, shipped up | Ammunition is a consumable that must be freighted, so range is capped by cargo |
-| **Gleba fights back** | Pentapods respond to spores; stompers are genuinely dangerous | The only world where expanding production has a military cost |
-| **The promethium field** | Nothing — it is where runs end | Density exceeds any ammunition economy a hold can carry |
+**9. Calcite gates everything, and only exists here.**
+Every lava process needs it, and no other world has a grain of it.
 
-## F. Scarcity — what a world simply does not have
+## Fulgora
+
+**10. The outputs are chosen for you.**
+Scrap yields a fixed spread: holmium in a trickle, iron and concrete and
+batteries in a flood. Scaling the thing you want means drowning in the things you
+do not.
+*Endgame:* the corridor's only material yields whatever it yields.
+
+**11. Power arrives as spikes.**
+Lightning is capture and storage rather than generation, and the islands cap how
+much of either fits.
+
+**12. Nothing here ever lived.**
+No soil, no organics, no fresh water — the one world that cannot grow anything.
+
+## Gleba
+
+**13. Everything is on a clock.**
+Yumako mash 3 minutes, jelly 4, nutrients 5, pentapod eggs 15, biter eggs 30,
+fruit 60, bioflux 120 — and **transit does not pause any of it**. A rocket is not
+a fridge.
+*Endgame:* the longest journey in the game, carrying things that expire.
+
+**14. A stalled Gleba base cannot restart itself.**
+Nutrients are needed to make nutrients. Lose the loop and you are hand-feeding it
+back to life.
+*Endgame:* a depot that stalls is weeks of travel away.
+
+**15. There are no ore veins.**
+Metal comes from bacteria that spoil into ore — the only world where mining is a
+biological process on a timer.
+
+**16. Production has a military cost.**
+Spores draw pentapods, so expanding output expands the front line. It is the only
+world where building more makes the game harder immediately.
+*Endgame:* the field past the Edge is the same bargain at a larger scale.
+
+## Aquilo
+
+**17. Heat is a second logistics network.**
+Everything freezes without it, heating towers burn imported fuel, and the pipes
+have to reach every building before any of them work.
+*Endgame:* the Core is frozen over a hot interior — the same problem inverted.
+
+**18. Solar reads 1.**
+Against 400 on Vulcanus and 100 on Nauvis. Power on Aquilo requires a whole chain
+standing up before it produces a single watt.
+
+**19. Aquilo's chemistry cannot leave.**
+`ammonia`, `ammoniacal-solution`, `fluorine` and `lithium-brine` have no barrel.
+A fusion cell is 5 lithium plate + 1 holmium plate + **100 ammonia**, so cells
+can only be made there and freighted out.
+*Endgame:* powering the corridor means hauling Aquilo's output the whole way.
+
+**20. The field past the Edge is inert.**
+Promethium chunks have **no crushing recipe** — the only entry vanilla gives them
+returns 25% of the chunk and nothing else. Damage scales with speed, so it cannot
+be outrun, and promethium science runs against a 30-minute egg clock.
+*Endgame:* this is the wall the whole mod is built to get past.
+
+---
+
+## Reference: what each world lacks
 
 | World | Has | Lacks entirely |
 |---|---|---|
-| **Vulcanus** | lava, tungsten, calcite, coal, sulfuric acid geysers | water, biology, electronics feedstock |
-| **Fulgora** | scrap, and everything comes out of it | soil, biology, ore veins, fresh water |
-| **Gleba** | plants, stone, water, bacteria that yield ore | ore veins, oil, metals of its own |
-| **Aquilo** | crude oil, fluorine, lithium brine, ammonia, ice | solids of almost every kind, warmth, light |
+| Vulcanus | lava, tungsten, calcite, coal, acid geysers | water, biology, electronics feedstock |
+| Fulgora | scrap, and everything out of it | soil, biology, ore veins, fresh water |
+| Gleba | plants, stone, water, ore-bearing bacteria | ore veins, oil, metal of its own |
+| Aquilo | crude oil, fluorine, lithium brine, ammonia, ice | solids of nearly every kind, warmth, light |
 
-The two most interesting rows are Fulgora and Gleba: **the world with no soil and
-the world with no ore**, each of which manufactures what it lacks out of what it
-has.
+The sharpest row-pair is Fulgora and Gleba: **the world with no soil against the
+world with no ore.**
 
-## G. Space — floor area
+## Power is not one of the five
 
-| Problem | Why it bites |
-|---|---|
-| **Platform tiles are expensive** | Every tile is foundation the player paid to launch; a chain that needs twenty buildings does not fit |
-| **Depots and outposts** | Anything parked far away has to be compact enough to be worth building at all |
+Vanilla covers power to the Edge — solar 400 on Vulcanus, lightning on Fulgora,
+fusion for Aquilo. It only becomes hard past the Edge, where there is no sun and
+nothing burns, and problem 19 shows why the vanilla answer does not travel:
+fusion cells are made on Aquilo or not at all.
 
----
-
-## Power is not a tree problem
-
-Vanilla covers power all the way to the Edge: solar reads 400 on Vulcanus and
-100 on Nauvis, lightning covers Fulgora, and Aquilo is answered by fusion. Power
-only becomes a real problem **past the Edge**, where there is no sun at all and
-nothing burns.
-
-Two measured facts shape the answer:
-
-- **A fusion cell is 5 lithium plate + 1 holmium plate + 100 ammonia**, and
-  ammonia has no barrel. Cells can only be made on Aquilo, so powering anything
-  out on the corridor means freighting them the entire way. That is a supply
-  line, not a power source.
-- **Promethium chunks have no crushing recipe.** The only entry vanilla gives
-  them is a recycling one that returns 25% of the chunk and nothing else. The one
-  material available out there is inert by design.
-
-So power arrives **on the way to the Core**, from a **new asteroid type** found
-in the field past the Edge — a material vanilla has no use for, yielding the fuel
-for a generator that runs where nothing else does. It is endgame content, not a
-tree capstone, and it belongs in the corridor design rather than in a planet
-pair.
-
-That also gives an existing capstone a second life out there: the tree that
-handles **refining what is locally available** is the natural owner of the
-process that turns the new chunk into something burnable. Its building gains a
-recipe that only makes sense past the Edge, which is exactly the fourth step of
-the capstone contract.
-
----
-
-## Proposed shortlist
-
-Five problems, each with a form at unlock and a form at the Core, and each
-belonging to two worlds in particular. **This is the proposal to argue with, not
-a decision.**
-
-| # | Problem | At unlock | At the Core | Natural worlds |
-|---|---|---|---|---|
-| 1 | **Making a world's waste into a world's want** | Fulgora drowns in scrap output it cannot use; Gleba has no ore | The Core has one material and needs everything | Fulgora ↔ Gleba |
-| 2 | **Stopping the clock** | Gleba's output cannot survive a trip anywhere | The longest journey in the game, carrying things that expire | Gleba ↔ Aquilo |
-| 3 | **Holding ground that fights back** | Gleba's pentapods, and platforms under asteroid fire | The promethium field, where ammunition economics break | Vulcanus ↔ Gleba |
-| 4 | **Throwing material further than a rocket can** | Every cross-planet shipment costs a rocket, forever | A supply line no rocket chain can sustain | Fulgora ↔ Aquilo |
-| 5 | **Standing up production where there is nothing** | Every new world starts with hours of shipping in everything before anything local runs | The Core, where that condition is permanent rather than temporary | Vulcanus ↔ Fulgora |
-
-**Why Vulcanus ↔ Fulgora takes the last one.** With power moved to the corridor,
-this pairing needs its own problem, and it has a good claim to this one: they are
-the system's two self-starting worlds. Vulcanus bootstraps from lava — casting
-gives iron, copper and steel with no ore patch at all — and Fulgora bootstraps
-from scrap, where one input yields the entire periodic table of what you need.
-Both worlds already answer "how do you begin with almost nothing," which is the
-question the Core asks permanently.
-
-It is also the pairing whose two specialties cannot be used by the other without
-crossing: Fulgora's holmium needs Vulcanus's heat to be worth anything in bulk,
-and Vulcanus's tungsten needs Fulgora's electromagnetics.
-
-*Open:* the risk is that a capstone building for this problem drifts toward "a
-box that makes everything," which would be both a strict upgrade and dull. The
-interesting version is narrower — something that makes a *specific* hard step
-possible away from its home world, not a universal factory in a crate.
+So power is solved **on the way to the Core**, by a new asteroid type in the far
+field — a material vanilla has no use for, yielding fuel for a generator that
+runs where nothing else does. Corridor content, not a tree capstone. It also
+gives whichever tree handles local refining a second life out there, since that
+building is the natural owner of the process that makes the new chunk burnable.
