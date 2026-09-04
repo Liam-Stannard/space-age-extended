@@ -106,16 +106,6 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
     }),
-  foothold("sae-field-coils", { "sae-cold-welding" },
-    {
-      { type = "unlock-recipe", recipe = "sae-coil-assembly" },
-      { type = "unlock-recipe", recipe = "sae-coolant-loop" },
-      { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
-    }),
-  foothold("sae-ignition-array", { "sae-field-coils" },
-    {
-      { type = "unlock-recipe", recipe = "sae-ignition-array" }
-    }),
   foothold("sae-arc-masts", { "sae-core-survey" },
     {
       { type = "unlock-recipe", recipe = "sae-arc-mast" }
@@ -124,4 +114,62 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-cold-welding" }
     })
+})
+
+-- Tier 1 and up: researched on geodynamic science, which is itself made from
+-- two of the intermediates. Research and construction therefore draw on one
+-- supply, and every pack burned is a Field Coil Segment delayed.
+
+local function geodynamic(name, prereqs, count, effects)
+  return
+  {
+    type = "technology",
+    name = name,
+    icon = "__space-age__/graphics/technology/aquilo.png",
+    icon_size = 256,
+    effects = effects,
+    prerequisites = prereqs,
+    unit =
+    {
+      count = count,
+      ingredients = { { "sae-geodynamic-science-pack", 1 } },
+      time = 60
+    }
+  }
+end
+
+data:extend({
+  -- The five integrations are researchable in any order: a player whose Gleba
+  -- line is further along than their Aquilo line is never blocked. Each is
+  -- researched on the packs they already make, because the geodynamic pack
+  -- cannot exist until two of these are done.
+  foothold("sae-integration-conductor", { "sae-core-survey" },
+    { { type = "unlock-recipe", recipe = "sae-field-conductor" } }),
+  foothold("sae-integration-frame", { "sae-whisker-beds" },
+    { { type = "unlock-recipe", recipe = "sae-reinforced-frame" } }),
+  foothold("sae-geodynamic-science", { "sae-integration-conductor", "sae-integration-frame" },
+    { { type = "unlock-recipe", recipe = "sae-geodynamic-science-pack" } })
+})
+
+data:extend({
+  geodynamic("sae-integration-billet", { "sae-geodynamic-science" }, 200,
+    { { type = "unlock-recipe", recipe = "sae-magnetic-core-billet" } }),
+  geodynamic("sae-integration-sleeve", { "sae-geodynamic-science" }, 200,
+    { { type = "unlock-recipe", recipe = "sae-insulation-sleeve" } }),
+  geodynamic("sae-integration-coolant", { "sae-geodynamic-science" }, 200,
+    { { type = "unlock-recipe", recipe = "sae-coolant-charge" } })
+})
+
+data:extend({
+  -- The last three technologies are the climb. Every pack spent here is
+  -- intermediates that did not become segments.
+  geodynamic("sae-field-coils",
+    { "sae-integration-billet", "sae-integration-sleeve", "sae-integration-coolant", "sae-cold-welding" }, 1000,
+    {
+      { type = "unlock-recipe", recipe = "sae-coil-assembly" },
+      { type = "unlock-recipe", recipe = "sae-coolant-loop" },
+      { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
+    }),
+  geodynamic("sae-ignition-array", { "sae-field-coils" }, 2500,
+    { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
 })

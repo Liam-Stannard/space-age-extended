@@ -127,10 +127,10 @@ data:extend({
     energy_required = 60,
     ingredients =
     {
-      { type = "item", name = "sae-superconducting-winding", amount = 4 },
-      { type = "item", name = "sae-magnetar-alloy", amount = 4 },
-      { type = "item", name = "sae-cultured-alloy", amount = 2 },
-      { type = "item", name = "sae-bio-polymer", amount = 2 },
+      { type = "item", name = "sae-field-conductor", amount = 2 },
+      { type = "item", name = "sae-magnetic-core-billet", amount = 2 },
+      { type = "item", name = "sae-reinforced-frame", amount = 1 },
+      { type = "item", name = "sae-insulation-sleeve", amount = 2 },
       { type = "item", name = "sae-welded-plate", amount = 4 }
     },
     results = { { type = "item", name = "sae-coil-assembly", amount = 1 } },
@@ -140,13 +140,12 @@ data:extend({
   {
     type = "recipe",
     name = "sae-coolant-loop",
-    categories = { "crafting-with-fluid" },
+    categories = { "crafting" },
     energy_required = 20,
     ingredients =
     {
-      { type = "fluid", name = "sae-cryoprotectant", amount = 100 },
-      { type = "item", name = "sae-kamacite-plate", amount = 10 },
-      { type = "fluid", name = "sae-helium-3", amount = 50 }
+      { type = "item", name = "sae-coolant-charge", amount = 2 },
+      { type = "item", name = "sae-kamacite-plate", amount = 10 }
     },
     results = { { type = "item", name = "sae-coolant-loop", amount = 1 } },
     surface_conditions = { { property = "pressure", min = 1, max = 9 } },
