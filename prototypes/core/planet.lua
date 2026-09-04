@@ -38,7 +38,20 @@ data:extend({
       gravity = 50
     },
     asteroid_spawn_influence = 1,
-    asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.shattered_planet_trip, 0.8)
+    asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.shattered_planet_trip, 0.8),
+    lightning_properties =
+    {
+      -- One strike per chunk every ninety seconds: nine times rarer than
+      -- Fulgora, and six times heavier when it lands.
+      lightnings_per_chunk_per_tick = 1 / (60 * 90),
+      search_radius = 12,
+      lightning_types = { "sae-arc" },
+      priority_rules =
+      {
+        { type = "id", string = "sae-arc-mast", priority_bonus = 10000 },
+        { type = "prototype", string = "lightning-attractor", priority_bonus = 1000 }
+      }
+    }
   },
   {
     type = "space-connection",

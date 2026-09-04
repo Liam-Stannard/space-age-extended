@@ -95,6 +95,10 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-seed-plate" },
       { type = "unlock-recipe", recipe = "sae-bed-tender" }
     }),
+  foothold("sae-arc-masts", { "sae-core-survey" },
+    {
+      { type = "unlock-recipe", recipe = "sae-arc-mast" }
+    }),
   foothold("sae-cold-welding", { "sae-whisker-beds" },
     {
       { type = "unlock-recipe", recipe = "sae-cold-welding" }

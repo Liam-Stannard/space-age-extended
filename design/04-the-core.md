@@ -41,10 +41,21 @@ chests, cargo landing pad.
 
 The hazard is **arc storms** — the remnant dynamo discharging through a metallic
 crust. Damage arrives as weather rather than as an attack, and the answer is
-infrastructure, not turrets: attractors that catch a strike and **bank it as
+infrastructure, not turrets: arc masts that catch a strike and **bank it as
 power**. It is Fulgora's lesson on a world that looks nothing like Fulgora, and
 it means the thing that damages you is also the thing that runs you, once you
 have built for it.
+
+Tuned deliberately against Fulgora so it plays as a different problem: Fulgora
+takes 100 damage and 1000 MJ per strike, every ten seconds per chunk; the Core
+takes **600 damage and 4000 MJ, every ninety seconds**. A drizzle you harvest,
+against an event you survive and store.
+
+**Storage is not optional.** An attractor's buffer empties within seconds when
+nothing draws from it — measured, and vanilla's own collector does exactly the
+same. A mast standing alone loses what it caught, so accumulators come first.
+That suits the mechanic: the storms are episodic, so the grid has to swallow a
+strike and spend it slowly.
 
 ## 2. Resources
 
