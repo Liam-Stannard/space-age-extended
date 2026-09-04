@@ -68,15 +68,26 @@ theme wins**: a tree that fits its two worlds and reuses an anchor is better tha
 one that reaches for an unused anchor and stops making sense. Note the
 duplication in the register and move on.
 
-## 3. The one new mechanic
+## 3. Every tree teaches one new mechanic
 
-Each tree may introduce **one thing that is not just recipes** — a fluid that
-behaves oddly, a material that changes state in transit, a building with a
-mechanic no vanilla building has. One, not several, and it must be the thing the
-pairing suggests rather than a mechanic looking for a home.
+**The mod creates its own problems rather than borrowing vanilla's.** Each tree
+introduces exactly one new rule the player has to design around — a material that
+changes with time, a process that cannot be buffered, a resource that behaves
+unlike anything vanilla has — and that rule *is* the tree's problem.
 
-A tree with no new mechanic at all is acceptable if its chains are interesting;
-a tree with three is not a tree, it is a mod of its own.
+One per tree, and it is mandatory. A tree with no new mechanic is a set of
+recipes; a tree with three is a mod of its own.
+
+Three requirements:
+
+1. **It comes from the pairing.** The mechanic should be the thing those two
+   worlds together suggest, not a mechanic looking for a home.
+2. **It is taught alone.** The player meets it in that tree, in isolation, with
+   room to fail at it cheaply.
+3. **It is load-bearing at the end.** The Core, or the corridor to it, requires
+   it — so learning it was not a detour. The endgame is where the five combine.
+
+The mechanics themselves are in [mechanics.md](mechanics.md).
 
 ## 4. The capstone contract
 
@@ -114,42 +125,28 @@ Step 4 is what keeps the endgame from being a checklist: the buildings the playe
 already knows become the tools they solve the Core with, rather than five
 trophies plus a new toolkit.
 
-## 5. One reserved problem per tree
+## 5. One reserved mechanic per tree
 
-Five buildings that each do a different thing make a toolkit. Five that all
-improve throughput make a shopping list. So the problems are **reserved up
-front**, like the pairs, rather than discovered on the fourth tree when three are
-already built.
+Five mechanics that each teach a different lesson make a toolkit. Five that are
+variations on one idea make a theme. So mechanics are **reserved up front**, like
+the pairs, rather than discovered on the fourth tree when three are built.
 
-Each problem is a thing the player struggles with in the mid-game *and* a thing
-that stands between them and the Core:
+The test for a candidate mechanic:
 
-| Problem | Mid-game version | Endgame version |
-|---|---|---|
-| **Standing up production where there is nothing** | Every new world begins with hours of shipping everything in | On the Core that condition never ends |
-| **Moving material over distance** | The cost and friction of interplanetary freight | A supply line longer than anything in the game |
-| **Protection from what is out there** | Surviving what attacks a platform or a base | The field between the Edge and the Core |
-| **Refining what is locally available** | Turning a local waste stream into something worth having | Nothing arrives that was not made from what is out there |
-| **Keeping material viable** | Spoilage, decay, temperature, things that expire in transit | A journey long enough that time itself is the hazard |
+- **Is it a new rule, or a new recipe?** If the player's existing instincts still
+  work, it is content rather than a mechanic.
+- **Does it belong to those two worlds?** If it could be moved to another pair
+  unchanged, the pairing is doing no work.
+- **Is it implementable in prototypes?** Preferably with no control-stage script.
+- **Where does it land at the end** — on the corridor platform, or on the Core?
+  It has to be one of the two, or the tree is a side quest.
+- **Does it collide with another tree's mechanic?** If two trees teach the same
+  lesson, swap one out rather than running both.
 
-**Power is not on this list.** Vanilla covers it to the Edge and fusion answers
+**Power is not on the list.** Vanilla covers it to the Edge and fusion answers
 Aquilo; it only becomes hard past the Edge, where there is no sun and nothing
-burns. It is solved there, by a new asteroid type found in the field — corridor
-content, not a tree capstone. See [the problem catalogue](problems.md#power-is-not-a-tree-problem).
-
-Assignment, from that catalogue:
-
-| Problem | Tree | Why that pairing |
-|---|---|---|
-| Standing up production from nothing | Vulcanus ↔ Fulgora | The system's two self-starting worlds — one bootstraps from lava, the other from scrap |
-| Protection | Vulcanus ↔ Gleba | Tungsten and heat against the only world that fights back |
-| Refining locally | Fulgora ↔ Gleba | Two worlds that make everything out of what they already have — scrap on one, bacteria on the other |
-| Moving material | Fulgora ↔ Aquilo | Superconduction is how you throw something a long way |
-| Keeping material viable | Gleba ↔ Aquilo | The world that spoils against the world that freezes |
-
-If a tree's theme insists on a different building, **swap two slots rather than
-duplicating one**. Two trees solving the same problem is the failure this table
-exists to prevent.
+burns. That is solved on the corridor by a new asteroid type, not by a pair —
+see [the problem catalogue](problems.md#power-is-not-one-of-the-five).
 
 ## 6. What a tree owes the Core
 
@@ -165,13 +162,13 @@ that:
 
 ## 7. The register
 
-| Pair | Available after | Problem reserved | Anchor | Mechanic | Capstone | Status |
+| Pair | Available after | Mechanic taught | Anchor | Capstone | Endgame role | Status |
 |---|---|---|---|---|---|---|
-| Vulcanus ↔ Fulgora | both | Production from nothing | — | — | — | Not designed |
-| Vulcanus ↔ Gleba | both | Protection | — | — | — | Not designed |
-| Fulgora ↔ Gleba | both | Refining locally | — | — | — | Not designed |
-| Fulgora ↔ Aquilo | Aquilo | Moving material | — | — | — | Not designed |
-| Gleba ↔ Aquilo | Aquilo | Keeping material viable | — | — | — | Not designed |
+| Vulcanus ↔ Fulgora | both | — | — | — | — | Not designed |
+| **Vulcanus ↔ Gleba** | both | **Maturation** | — | — | The Core's central process — the cast billet ages into the endgame material | Mechanic chosen |
+| Fulgora ↔ Gleba | both | — | — | — | — | Not designed |
+| Fulgora ↔ Aquilo | Aquilo | — | — | — | — | Not designed |
+| Gleba ↔ Aquilo | Aquilo | — | — | — | — | Not designed |
 
 Vulcanus and Fulgora appear twice, Gleba and Fulgora three times; with four
 worlds and five pairs the even loop is not available, and Fulgora carrying three

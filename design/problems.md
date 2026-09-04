@@ -1,9 +1,15 @@
 # The Problem Catalogue
 
 Twenty problems, drawn from an end-to-end vanilla Space Age playthrough and read
-forward into the endgame. **We pick five of these** — one per tree.
+forward into the endgame.
 
-A problem qualifies only if vanilla leaves it unsolved or solves it expensively.
+**This is source material, not the selection list.** The mod creates its own
+problems through [new mechanics](mechanics.md) rather than borrowing these — but
+a mechanic that resonates with real friction the player already feels will land
+better than one invented in a vacuum. Read this when judging whether a candidate
+mechanic is about something.
+
+A problem is listed only if vanilla leaves it unsolved or solves it expensively.
 Each entry names where the player meets it, why the vanilla answer is incomplete,
 and what it becomes on the way to the Core.
 
