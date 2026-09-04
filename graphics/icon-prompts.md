@@ -13,6 +13,12 @@ engine-scale) outside what a general image-generation tool can produce
 directly, and is out of scope for this document. That sprite is currently
 vanilla's steam turbine recoloured by `tools/recolour-turbine.py`.
 
+Entity sprites have their own document: **[building-spec-template.md](building-spec-template.md)**
+— a blank per-building specification covering dimensions, directions, layer
+structure, animation, input/output placement, generation prompts, image
+processing and QA. Copy it to `building-spec-<name>.md` and fill it in before
+commissioning art for a new building.
+
 ---
 
 ## Global style guide — prepend or keep in mind for every prompt below
