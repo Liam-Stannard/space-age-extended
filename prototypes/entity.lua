@@ -240,37 +240,31 @@ end
 -- A perimeter plate that does NOT absorb impacts: it spends one loaded
 -- charge to destroy an incoming asteroid at contact range. Implemented as a
 -- real `ammo-turret` with a 1-slot ammo inventory, so that inserters load it
--- with exactly the native code path that loads a gun turret -- no
--- control-stage logic at all. The whole point is that this shape is entirely
--- data-stage; every number below is either measured against the running
--- engine or carries a one-line note saying what it is anchored to. The run
--- log for those measurements lives in PROGRESS.md -- only the engine facts
--- that explain a specific line below are kept here.
+-- with exactly the native code path that loads a gun turret. The whole point
+-- is that this shape is entirely data-stage: control.lua and scripts/ are
+-- untouched by it, and there is no runtime logic anywhere in the capability.
 --
--- Two things about this capability are still open, and neither is a number:
--- the ART (a stand-in sprite and stand-in icons -- see graphics/icon-prompts.md),
--- and the RECIPE plus TECHNOLOGY in prototypes/recipe.lua and
--- prototypes/technology.lua, which are the one deliberate provisional seam:
--- their real ingredient is Thermal-Shock Composite, which does not exist yet.
+-- PROGRESS.md is the system of record for the measurements -- the footprint
+-- comparison, the promethium ladder, the placement matrix, the circuit runs,
+-- the perimeter and standing-buffer tables. This file explains DECISIONS: why
+-- a given key holds a given value, and which engine facts constrain it. If a
+-- claim here and a number in PROGRESS.md ever disagree, PROGRESS.md is right
+-- and the comment has drifted.
 --
--- Placement restriction (the void-adjacency rule) uses vanilla's own
--- `tile_buildability_rules`, the same mechanism `asteroid-collector` and
--- `thruster` use to require open space in front of them. Two rules, ANDed:
--- solid foundation under the plate, and void in the single tile the plate
--- faces. The rules rotate with the entity's direction, which is why this is
--- a rotatable entity rather than a direction-less one -- there is no way to
--- express "void on ANY of my four sides" natively, so instead the plate is
--- oriented outward and each rim face gets its own rotation. That is the same
--- ergonomics vanilla already asks of the asteroid collector.
+-- Two things about the capability are still open, and neither is a number:
+-- the ART (a stand-in sprite and stand-in icons -- see
+-- graphics/icon-prompts.md; the entity sprite stands in as vanilla gun
+-- turret's own base), and the RECIPE plus TECHNOLOGY in prototypes/recipe.lua
+-- and prototypes/technology.lua, which are the one deliberate provisional
+-- seam: their real ingredient is Thermal-Shock Composite, which does not
+-- exist yet.
 --
--- The plate is 3 tiles along the rim by 2 deep. The footprint was decided by
--- measurement, not by looks -- 1x1, 2x2 and 3x2 were all built as real
--- prototypes and compared; the numbers and the reasoning are on the entity
--- below. The short version: at 1x1 the four corner tiles of a rim can never
--- be fed by an inserter under ANY belt layout, because their orthogonal
--- neighbours are all void or plate, and 2x2 boxes its corner block in the
--- same way. Only at 3 wide does the plate reach past the perpendicular band
--- to a tile an inserter can stand on.
+-- The plate is rotatable because the void-adjacency rule below is expressed
+-- in the entity's own frame: there is no native way to say "void on ANY of my
+-- four sides", so the plate is oriented outward instead and each rim face
+-- gets its own rotation. That is the same ergonomics vanilla already asks of
+-- the asteroid collector. Facing is therefore load-bearing on this entity --
+-- it drives placement, the firing arc and the connector offsets alike.
 --
 -- Shared-resource interaction, per design/framework.md §4.5.1 (a capability
 -- must draw on one shared resource and feed another). The plate DRAWS on the
@@ -281,40 +275,10 @@ end
 -- for hull integrity. That interaction is real, but it falls out of turret
 -- targeting on its own -- nothing in this prototype expresses it, and there
 -- is no knob here to tune it with. Recorded so the design phase knows the
--- §4.5 obligation is currently met only emergently.
---
--- `weight` is permanently off the table as a balancing lever for this
--- capability -- see the MEASURED note on the entity below. A plate can never
--- be made to cost platform speed, so its whole cost has to live in the
--- charge supply chain.
---
--- CIRCUIT CONTROL. The connector below is the only prototype-side thing the
--- rim's circuit behaviour needs; everything else is player configuration on
--- the placed entity. Two capabilities were verified over RCON against this
--- prototype:
---
---   * `read_ammo` puts the plate's remaining Reactive Charges on the wire, so
---     a platform can hold at a depot until its rim is re-armed. MEASURED in
---     all four rotations at once -- four plates, one per rim face, loaded
---     with 3/5/7/9 charges and each on its own red network -- and every
---     network read back exactly its own plate's count.
---   * TARGET PRIORITY works, including from the circuit network, which makes
---     "ignore small chunks, leave them to the collectors" an automatable
---     decision rather than a flat income penalty for plating a mining
---     platform. MEASURED three ways, all positive: entity-side
---     (`set_priority_target` + `ignore_unprioritised_targets`), circuit-gated
---     (`LuaTurretControlBehavior.set_ignore_unlisted_targets` plus
---     `ignore_unlisted_targets_condition`), and list-from-the-wire
---     (`set_priority_list = true`, with the target named by an ENTITY-type
---     signal on the network). In the gated case a plate holding 20 charges
---     let a `small` pass untouched and killed a `medium`, and flipping the
---     one signal the condition tests made it engage the `small` again.
---     None of that is in this prototype and none of it needs script: it is
---     the vanilla turret GUI, unlocked by having a connector at all.
---
--- ART PENDING (and only the art): the entity sprite stands in as vanilla gun
--- turret's own base, and so do the item/entity/technology icons. Prompts for
--- the real art are in graphics/icon-prompts.md.
+-- §4.5 obligation is currently met only emergently. The one thing that is NOT
+-- available as a lever is `weight`: a plate cannot be made to cost platform
+-- speed (see the note where it is deliberately absent), so its whole cost has
+-- to live in the charge supply chain.
 data:extend({
   {
     -- Dedicated ammo-category so a plate can be fed nothing but a Reactive
@@ -342,24 +306,13 @@ data:extend({
     -- the number is anchored rather than accidental; it is not bought as a
     -- defence, because MEASURED it cannot be.
     --
-    -- MEASURED (T13): the exact contact damage one leaked PROMETHIUM asteroid
-    -- does to a plate, read off a probe build whose max_health was raised to
-    -- 1,000,000 so the plate survives and the health delta IS the damage.
-    -- Empty plate (0 charges, so it never shoots and the rock always lands),
-    -- one rock, steel-chest witness one tile behind, vanilla gun-turret
-    -- control on the same foundation:
-    --
-    --      promethium small   200 damage   (witness untouched, 0 tiles)
-    --      promethium medium 1280 damage   (witness untouched, 0 tiles)
-    --      promethium big    9550 damage   (witness untouched, 1 tile)
-    --
-    -- Those are the numbers the choice has to be made against, and they make
-    -- it one-sided. Nothing above `small` can be survived by any sane hit
-    -- point total -- a `medium` is 3.2x this plate's health and a `big` 24x --
-    -- so HP cannot be the answer to a leak, and the eight loaded CONTINUOUS
-    -- RIM runs that lost zero plates, took zero plate damage and lost zero
-    -- tiles at every promethium class say what is (PROGRESS.md). The plate is
-    -- specified only as a continuous rim.
+    -- Contact damage from a leaked promethium asteroid was measured directly
+    -- (PROGRESS.md, "T13"), and the numbers make the choice one-sided: a
+    -- `small` deals 200, a `medium` 1280 and a `big` 9550, so a `medium` is
+    -- 3.2x this plate's health and a `big` 24x. No sane hit point total
+    -- survives a leak of anything above `small`; HP cannot be the answer to a
+    -- leak, and a continuous rim is. The plate is specified only as a
+    -- continuous rim.
     --
     -- What 400 does buy, and the only reason it is not left at 200: the old
     -- 200 sat EXACTLY on the measured `small` figure, so the cheapest rock on
@@ -373,72 +326,43 @@ data:extend({
     -- neither.
     --
     -- NO `resistances`, and that is a decision rather than an omission.
-    -- MEASURED (T13): asteroid contact damage is `impact`, and resistances DO
-    -- apply to it -- a probe carrying a fingerprint resistance set (a distinct
-    -- percent per damage type, so the surviving ratio names the type) took
-    -- exactly 100 from the promethium `small` that deals 200 unresisted, i.e.
-    -- the 50% `impact` entry and nothing else. So an impact resistance is a
-    -- real, available lever, and taking it is precisely the thing this
-    -- capability must not do: a percent impact resistance is literally
-    -- "absorbs impacts", scaling with the size of the rock, which is the hull
-    -- armour / deflector answer another tree owes. This plate spends a charge
-    -- per impact or it dies. Leaving `resistances` unset keeps the failure
-    -- economy exactly two-tiered: cheap charges consumed per impact,
-    -- expensive plates consumed per failure.
+    -- Asteroid contact damage was measured to be `impact`, and resistances DO
+    -- apply to it, so an impact resistance is a real available lever (the
+    -- fingerprint-probe run that established it is in PROGRESS.md). Taking it
+    -- is precisely the thing this capability must not do: a percent impact
+    -- resistance is literally "absorbs impacts", scaling with the size of the
+    -- rock, which is the hull armour / deflector answer another tree owes.
+    -- This plate spends a charge per impact or it dies. Leaving `resistances`
+    -- unset keeps the failure economy exactly two-tiered: cheap charges
+    -- consumed per impact, expensive plates consumed per failure.
     max_health = 400,
     -- FOOTPRINT: 3 tiles along the rim x 2 tiles deep. Chosen over 1x1 and
     -- 2x2 on measurements, not on taste; the three were built as real
     -- prototypes and measured side by side. Rotation swaps the dimensions
     -- (3x2 north/south becomes 2x3 east/west) and the engine handles that
-    -- for both the boxes and the buildability areas below.
+    -- for both the boxes and the buildability areas below. The measurement
+    -- tables live in PROGRESS.md, "Footprint: measured, and why it is 3x2";
+    -- what decided it, and the only part that constrains a line here:
     --
-    -- 1. CORNER FEEDABILITY -- the measurement that actually decided it, and
-    --    the one the 1x1 loses outright. Ask it topology-independently: does
-    --    a plate have ANY orthogonally adjacent tile that is on the platform
-    --    and not itself under a plate? An inserter cannot stand diagonally,
-    --    so a plate with no such tile can never be fed, by any belt layout,
-    --    any bus, any chamfer. MEASURED over a fully plated rim at platform
-    --    sizes 10, 20, 21, 22 and 31 (max-bipartite-matching between plates
-    --    and free adjacent tiles, so "all at once", not "one at a time"):
+    -- CORNER FEEDABILITY is the one measurement with a hard floor rather than
+    -- a gradient, and the one the 1x1 loses outright. An inserter cannot stand
+    -- diagonally, so a plate with no orthogonally adjacent free platform tile
+    -- can never be fed -- by any belt layout, any bus, any chamfer. At 1x1
+    -- four plates (one per corner) are unfeedable in principle at every
+    -- platform size and eight cannot be fed simultaneously; at 2x2 it is 1-4
+    -- depending on size; at 3x2 it is 0 unfeedable and a full 24/24 matching,
+    -- reconfirmed at sides 10, 20, 21, 22, 31 and 40. Three tiles is the
+    -- narrowest plate that reaches past the perpendicular corner band to a
+    -- tile an inserter can stand on, which is why the width is 3 and not 2.
     --
-    --                       unfeedable by ANY layout   feedable simultaneously
-    --      1x1                     4 (every size)        68/76 on a 20x20
-    --      2x2                     1-4 (size-dependent)  32/36
-    --      3x2                     0 (every size)        24/24
-    --
-    --    At 1x1 the outermost corner tile has four orthogonal neighbours and
-    --    all four are void or plate; its two neighbours then contend for the
-    --    single diagonal-interior tile, so three plates per corner go dry in
-    --    a real build and two per corner are impossible in principle. At 2x2
-    --    the corner block is boxed in by the perpendicular band. At 3x2 the
-    --    third tile reaches past that band, and every plate has somewhere an
-    --    inserter can stand.
-    --
-    -- 2. FLOOR AND ENTITY COUNT, on a 20x20 rim (measured build, not
-    --    arithmetic): 1x1 = 3 rings of floor (plate/inserter/belt), 76
-    --    plates, 63 inserters. 3x2 = 4 rings, 24 plates, and a third the
-    --    inserters of 2x2's 36 plates. One more ring of floor buys a
-    --    two-thirds cut in entities.
-    --
-    -- 3. PARITY GAPS DO NOT LEAK. Quantising in 3s leaves up to 2 tiles over
-    --    on an arbitrary edge. MEASURED by aiming a promethium asteroid at
-    --    the centre of a deliberate hole in the north band: a 2-tile hole
-    --    cost 4 charges at `medium`, 13-14 at `big` and 37-39 at `huge`,
-    --    against 4 / 14 / 43 for a continuous rim -- and lost zero tiles,
-    --    zero plates and zero witness in every run. So did a 6-tile hole.
-    --    The instrument is not blind: with the north band removed entirely
-    --    the same rock destroyed the witness and ate 90 foundation tiles
-    --    with no plate firing at all. The rim defends by FIRE, not by
-    --    occupancy, and range 4 gives the flanking plates enough lateral
-    --    overlap to cover the leftover.
-    --
-    -- 4. CORNER ARC. The question this shape raises: a corner tile sits
-    --    inside a north-facing plate's body but on the edge of its 180-degree
-    --    arc to the west. MEASURED by sweeping single asteroids through the
-    --    void off the NW corner and recording which plate fired: the corner's
-    --    western approach is picked up by the neighbouring west-facing plate,
-    --    the northern approach by the north-facing one, and their coverage
-    --    overlaps. No hole anywhere inside range.
+    -- The other three footprint measurements (entity counts, parity-gap leak
+    -- behaviour, corner arc coverage) all favour 3x2 as well but none of them
+    -- pins a number in this file; they are in PROGRESS.md. The one caveat
+    -- worth carrying here, because it bounds what may be claimed for the
+    -- shape: parity gaps up to 6 tiles were measured not to leak for a
+    -- promethium `big`, but `huge` is not deterministic and leaked through a
+    -- 6-tile gap in one run of two. The rim defends by FIRE, not occupancy,
+    -- and the footprint stands on feedability, not on gap coverage.
     --
     -- Slightly under-sized collision box (0.1 in on every side) so plates sit
     -- inside their tiles without fighting their neighbours, exactly as the
@@ -500,44 +424,17 @@ data:extend({
     -- plate would become placeable in mid-air. The explicit `empty_space`
     -- exclusion is what makes rule 1 mean "real foundation".
     --
-    -- MEASURED against a 20x20 platform, every rim face and corner x every
-    -- rotation, through `can_place_entity` (both `manual` and
-    -- `blueprint_ghost` build checks) and through reviving a real
-    -- `entity-ghost` -- all three oracles agreeing in every cell, so a rim
-    -- blueprint obeys exactly the same rule a hand-built one does.
+    -- What the two rules buy, over a 44-cell placement matrix tabulated in
+    -- PROGRESS.md: a perfect diagonal, and at each corner only the ONE lateral
+    -- offset that sits flush inside the platform. That is the pinwheel a rim
+    -- wants, and it falls out of the rules rather than having to be taught --
+    -- no on_built rejection handler, control.lua untouched.
     --
-    -- A cell names one ANCHOR TILE and asks "can a plate be built with that
-    -- tile in its OUTER (facing) row?" -- for this 2-deep plate the second
-    -- row is the tile immediately inboard. A 3-wide plate has three ways to
-    -- sit and still cover its anchor tile, so each cell reports how many of
-    -- those three lateral offsets the engine accepted:
-    --
-    --              N      E      S      W
-    --   north rim  YES 3  no  0  no  0  no  0
-    --   east rim   no  0  YES 3  no  0  no  0
-    --   south rim  no  0  no  0  YES 3  no  0
-    --   west rim   no  0  no  0  no  0  YES 3
-    --   NW corner  YES 1  no  0  no  0  YES 1
-    --   NE corner  YES 1  YES 1  no  0  no  0
-    --   SW corner  no  0  no  0  YES 1  YES 1
-    --   SE corner  no  0  YES 1  YES 1  no  0
-    --   interior   no  0  no  0  no  0  no  0
-    --   1 in from  no  0  no  0  no  0  no  0
-    --
-    -- Still a perfect diagonal, and the corner counts are the interesting
-    -- part: a corner admits both outward facings, but only the ONE lateral
-    -- offset that sits flush inside the platform -- the other two would hang
-    -- the plate off the edge and rule 1 refuses them. That is exactly the
-    -- pinwheel a rim wants, and it falls out of the rules rather than having
-    -- to be taught. Enforcement stays entirely native: no on_built rejection
-    -- handler, and control.lua untouched by this feature.
-    --
-    -- The identical matrix was measured for the 1x1 and 2x2 candidates during
-    -- the footprint spike, so the diagonal is a property of these rules, not
-    -- of this footprint.
-    --
-    -- Those two oracles are the only valid ones, and this is worth knowing
-    -- before writing any future placement test: MEASURED,
+    -- Three oracles agree in every cell -- `can_place_entity` with `manual`,
+    -- `can_place_entity` with `blueprint_ghost`, and reviving a real
+    -- `entity-ghost` -- so a rim blueprint obeys exactly the same rule a
+    -- hand-built one does. Those three are the only valid ones, and this is
+    -- worth knowing before writing any future placement test: MEASURED,
     -- `LuaSurface.create_entity` is a scripted force-place that runs NO build
     -- check whatsoever -- it returned a valid entity on interior tiles and on
     -- bare void, for this plate AND for vanilla `asteroid-collector` and
@@ -553,17 +450,14 @@ data:extend({
       { area = { { -1.4, -0.9 }, { 1.4, 0.9 } }, required_tiles = { layers = { ground_tile = true } }, colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
       { area = { { -1.4, -1.9 }, { 1.4, -1.1 } }, required_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
     },
-    -- NOTE: there is deliberately no `weight` here. MEASURED: a space
-    -- platform's mass is exactly its hub's weight plus the sum of its tiles'
-    -- weights, and nothing else -- placing 20 plates, loading 200 charges
-    -- into them, and adding a chest of 200 loose charges all left
-    -- LuaSpacePlatform::weight byte-identical at 80000, while 20 more
-    -- foundation tiles moved it to 84000 (= 20 x the tile's own weight of
-    -- 200). `weight` as "mass contributed to a platform" exists only on
-    -- TilePrototype and SpacePlatformHubPrototype; on any other entity the
-    -- key is simply ignored. So a plate cannot be given a mass cost, and
-    -- cannot be balanced against platform speed. (Confirmed in flight too:
-    -- see the note on the item's weight in prototypes/item.lua.)
+    -- NOTE: there is deliberately no `weight` here, and adding one would be
+    -- dead weight in both senses. `weight` as "mass contributed to a platform"
+    -- exists only on TilePrototype and SpacePlatformHubPrototype; on any other
+    -- entity the key is simply ignored, so a plate cannot be given a mass cost
+    -- and cannot be balanced against platform speed. MEASURED both ways --
+    -- plates, loaded charges and loose charges all left LuaSpacePlatform's
+    -- weight byte-identical, while adding foundation tiles moved it (numbers
+    -- in PROGRESS.md).
     turret_base_has_direction = true,
     -- All four of these are EXPLICIT NO-OPS, kept only so the values are
     -- visible rather than implied: `rotation_speed`, `preparing_speed` and
@@ -582,10 +476,12 @@ data:extend({
     attacking_speed = 1,
     prepare_with_no_ammo = false,
     alert_when_attacking = true,
-    -- Circuit connector. This is what makes a rim's remaining charges
-    -- readable, so a platform can hold at a depot until it is re-armed --
-    -- switch the plate's control behaviour to `read_ammo` and every plate
-    -- adds its Reactive Charge count onto the wire.
+    -- Circuit connector -- the ONLY prototype-side thing the rim's circuit
+    -- behaviour needs. Having one at all is what unlocks `read_ammo` (a
+    -- platform can hold at a depot until its rim is re-armed) and the target
+    -- priority list, including its circuit-driven forms; both were verified
+    -- over RCON, both are pure vanilla turret GUI, and neither needs script.
+    -- Runs in PROGRESS.md, "Circuit control".
     --
     -- A VECTOR, one entry per direction, not `create_single`. The count is
     -- not a style choice: prototype-api.json, TurretPrototype.circuit_connector
@@ -642,50 +538,45 @@ data:extend({
     -- puts a single stack on the wire instead of a sum the player has to
     -- reason about. Every ammo turret in base and space-age uses 1.
     --
-    -- The arithmetic the 3x2 footprint forced (all MEASURED on the rig, see
-    -- PROGRESS.md): a 20x20 platform's rim stands 24 plates, not the 76 the
-    -- 1x1 spike stood, and a 40x40's stands 48. At the old floor of 10 that
-    -- was 240 guaranteed charges on a 20x20, against 760 before -- a third of
-    -- the buffer, emptying three times faster on a supply hiccup. Against the
-    -- measured burn rate of 50 charges / 3600 ticks (0.83 charges/s) under
-    -- moderate exposure, 240 charges is 289 s of fire; 480 is 578 s.
+    -- What forced the other two off gun-turret's values is that the 3x2
+    -- footprint stands only 24 plates on a 20x20 rim where the 1x1 spike stood
+    -- 76, so the standing charge buffer had to be restored per plate rather
+    -- than per rim. The plate counts, the measured burn rate and the resulting
+    -- endurance table are in PROGRESS.md, "The perimeter table, recomputed for
+    -- 3x2".
     inventory_size = 1,
     -- MEASURED, and not what the name suggests: `automated_ammo_count` is the
-    -- count an *inserter* fills the turret up to before it stops -- it is not
-    -- only a logistics-request number. It is a FLOOR, not a cap: the inserter
-    -- keeps swinging until the turret holds at least this many, and a whole
-    -- hand lands in the final swing. Measured side by side against a vanilla
-    -- gun-turret on identical inserter+chest rigs, the settle point scales
-    -- with `force.inserter_stack_size_bonus` and the two entities behave
-    -- identically: bonus 0 settles at 10, bonus 3 at 12, bonus 6 at 14. So
-    -- this number is the guaranteed minimum stock; a researched-up force gets
-    -- more, never less. On a platform there are no construction robots to top
-    -- anything up (space-age/base-data-updates.lua puts roboports behind
-    -- pressure >= 10), so this floor is the only stock level a design can
-    -- actually count on.
+    -- count an *inserter* fills the turret up to before it stops -- not only a
+    -- logistics-request number. It is a FLOOR, not a cap, so on a turret with
+    -- headroom above the floor a bigger inserter hand overshoots it, and the
+    -- settle point rises with `force.inserter_stack_size_bonus` (measured
+    -- ladder in PROGRESS.md, taken while this entity's floor was still 10).
     --
-    -- Set to 20 = the charge's stack_size = the plate's whole capacity, so an
-    -- inserter fills a plate to full and the guaranteed stock IS the capacity.
-    -- Two measurements force it off gun-turret's 10:
-    --   * a single promethium `big` or `huge` was measured to empty a
-    --     10-charge plate outright (lone-plate runs spent 8/9/10/10/emptied
-    --     and 6/6/10/10/emptied), so a floor of 10 guarantees exactly the
-    --     stock ONE encounter can consume, leaving the plate dry for the next
-    --     rock. 20 is 2x the worst measured single-plate drain, so no one
-    --     encounter can dry a plate;
-    --   * it restores the rim buffer the 3x2 footprint took away -- 24 plates
-    --     x 20 = 480 guaranteed charges on a 20x20 (578 s of measured burn),
-    --     48 x 20 = 960 on a 40x40, against 240 / 480 at a floor of 10.
+    -- At 20 that overshoot cannot happen here at all: the floor equals the
+    -- 1-slot capacity, so there is no headroom to overshoot into and every
+    -- force settles at exactly 20 regardless of research. VERIFIED at
+    -- `inserter_stack_size_bonus = 6`, the case where a whole hand could
+    -- overshoot -- the plate pinned at 20 with the leftover charge stranded in
+    -- the inserter's hand, while the vanilla gun-turret control on the same
+    -- rig went 10 -> 14. Floor == capacity does not jam, it just stops. On a
+    -- platform there are no construction robots to top anything up
+    -- (space-age/base-data-updates.lua puts roboports behind pressure >= 10),
+    -- so this level is the only stock a design can count on.
+    --
+    -- Why 20 rather than gun-turret's 10. Lone-plate runs against a single
+    -- promethium `big` or `huge` ended with the magazine EMPTY, so the worst
+    -- single-plate demand is bounded only from BELOW at 10 -- those runs were
+    -- magazine-capped, not demand-capped. A floor of 10 therefore guarantees
+    -- no more than what one encounter was already seen to consume entirely,
+    -- leaving the plate dry for the next rock. 20 is at least twice that
+    -- bound and was never emptied; it is headroom, not a proof that no
+    -- encounter can dry a plate. It also restores the standing rim buffer the
+    -- 3x2 footprint took away (24 plates x 20 = 480 on a 20x20).
+    --
     -- Floor == capacity is vanilla precedent, not an invention: railgun
     -- turret has inventory_size 1 and automated_ammo_count 10 against a
     -- railgun-ammo stack_size of 10 (space-age/prototypes/entity/turrets.lua
     -- :324-325, space-age/prototypes/item.lua:643).
-    --
-    -- VERIFIED on the rig with the shipped numbers (T14): a fast inserter fed
-    -- from a full chest settles this plate at exactly 20 and stops, with
-    -- nothing stranded in the inserter's hand -- floor == capacity does not
-    -- jam. Vanilla gun-turret on an identical rig settled at 10 in the same
-    -- run, so the rig is sound.
     automated_ammo_count = 20,
     attack_parameters = {
       type = "projectile",
@@ -696,14 +587,17 @@ data:extend({
       --
       -- What a plate is actually asked for is set by the cascade, not by the
       -- parent rock: every dying asteroid above `small` spawns exactly three
-      -- of the next size down, so a promethium `huge` is 1 + 3 + 9 + 27 rocks
-      -- and costs a continuous rim 37-43 charges, a `big` 13-14, a `medium`
-      -- 4. Those are rim-wide totals spread over the plates near the impact,
-      -- and a whole encounter -- parent plus every generation of the cascade
-      -- -- was measured to resolve inside a 700-tick window. At 15 ticks one
-      -- plate can fire 46 times inside that window and empties a full
-      -- 20-charge magazine in 300 ticks, several times the worst demand ever
-      -- measured on a single plate (10, and that was magazine-capped).
+      -- of the next size down, so a promethium `huge` is 1 + 3 + 9 + 27 rocks.
+      -- Measured rim-wide over a fully plated 20x20, continuous and gapped
+      -- runs pooled: a `medium` costs 4 charges, a `big` a deterministic 14,
+      -- and a `huge` anywhere from 20 to 41 -- `huge` did not repeat, and the
+      -- run log and the reason are in PROGRESS.md. Those are rim-wide totals
+      -- spread over the plates near the impact, and a whole encounter --
+      -- parent plus every generation of the cascade -- was measured to resolve
+      -- inside a 700-tick window. At 15 ticks one plate can fire 46 times
+      -- inside that window and empties a full 20-charge magazine in 300 ticks,
+      -- comfortably past the worst demand ever seen on a single plate (a
+      -- magazine-capped 10, so a lower bound rather than a measured peak).
       --
       -- Confirmed from the other direction too: the lone-plate runs that
       -- FAILED failed with charges still loaded (6 of 10 spent, tiles lost),
@@ -739,10 +633,10 @@ data:extend({
       -- double damage_per_hp) it does not: measured, a lone plate spends
       -- 8-10 charges on a `big` and 6-10 on a `huge`, leaks the cascade in
       -- more than half of those runs, and is itself destroyed in about one
-      -- in five. A continuous rim of plates took zero damage and lost zero
-      -- tiles in every promethium run at every class. See the ladder note on
-      -- the charge's damage in prototypes/item.lua and the tables in
-      -- PROGRESS.md.
+      -- in five. A continuous rim is what fixes that: no plate was destroyed
+      -- or even damaged in any rim run at any promethium class, and a `big`
+      -- never got a tile past it. `huge` is the one class that is not settled
+      -- -- see the note on the footprint above and the run log in PROGRESS.md.
       --
       -- Range 4 is, however, the limit on the plate's LATERAL coverage too,
       -- and that turns out to matter more than the head-on case: when a large
@@ -752,8 +646,9 @@ data:extend({
       -- some children of a `huge` land outside a single plate's reach. A lone
       -- plate therefore leaks -- MEASURED, a lone plate against a `huge`
       -- loses 0-2 foundation tiles depending on where the cascade scatters --
-      -- while a continuous rim of them does not (the 3600-tick exposure run
-      -- finished 400/400 tiles; numbers in PROGRESS.md).
+      -- and the flanking plates of a rim are what cover that spread. This is
+      -- the reason the plate is specified as a continuous rim rather than as a
+      -- unit that can be placed sparsely.
       range = 4,
       -- MEASURED-CRITICAL, and the one thing this whole block gets wrong if
       -- it is omitted. `range_mode` defaults to "center-to-center"
@@ -800,16 +695,27 @@ data:extend({
       -- other target. Without it a plate would happily ignore the thing
       -- about to hit it.
       threatening_asteroid_penalty = -20,
-      -- Copied verbatim from vanilla gun-turret and railgun-turret
-      -- (base/prototypes/entity/turrets.lua, space-age/.../turrets.lua).
+      -- 10 is gun-turret's value (base/prototypes/entity/turrets.lua:567,
+      -- "Shoot things with lower health ratio"), and it is a CHOICE here
+      -- rather than a copy, because vanilla's own anti-asteroid turret does
+      -- the opposite: railgun-turret is health_penalty = -10
+      -- (space-age/prototypes/entity/turrets.lua:396, "Try to shoot things
+      -- that have a higher remaining health ratio (i.e. more healthy) to
+      -- maximize damage per shot").
+      --
       -- Positive = "discourage targeting units with a higher health RATIO"
       -- (prototype-api.json, BaseAttackParameters.health_penalty), so a plate
       -- finishes a rock it has already wounded rather than starting a fresh
-      -- one -- which is what stops charges being wasted on half-killed
-      -- promethium `huge`s. Anchored to vanilla rather than tuned: the ladder
-      -- in prototypes/item.lua is mostly one-shot-or-not, so this only
-      -- arbitrates the multi-charge classes, and there it already does the
-      -- right thing.
+      -- one. That is the right preference for THIS weapon and the wrong one
+      -- for the railgun, and the difference is entirely in the ammo: railgun
+      -- ammo scales its effect with what it hits, so spending a shot on a
+      -- full-health target extracts the most damage from it, whereas a
+      -- Reactive Charge deals a flat 5000 no matter what it lands on. With a
+      -- fixed payload the waste is OVERKILL, so a plate should spend its next
+      -- charge on the rock nearest to dying. Since the ladder in
+      -- prototypes/item.lua is mostly one-shot-or-not, this only arbitrates
+      -- the multi-charge classes (promethium `big` and `huge`) -- exactly the
+      -- ones where a half-killed rock is sitting there wasting charges.
       health_penalty = 10,
     },
     graphics_set = {
