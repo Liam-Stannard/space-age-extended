@@ -1,17 +1,16 @@
 -- New recipes introduced by Space Age Extended.
--- See design/trees/vulcanus-fulgora.md §1-6.
 --
--- "Heat" in the design doc's ingredient lists is not a literal Factorio
+-- "Heat" in the design's ingredient lists is not a literal Factorio
 -- ingredient (Foundry has no heat-network input) -- it's represented by
 -- each recipe's energy_required draw against the crafting building's
 -- normal electric energy source, same as any vanilla Foundry recipe.
 --
--- All amounts below are v0.1 placeholders (design doc §16 "Open Balancing
--- Questions"), sized off the vanilla casting-iron/casting-copper ratios so
--- the chain is internally consistent; real tuning happens during playtesting.
+-- All amounts below are v0.1 placeholders, sized off the vanilla
+-- casting-iron/casting-copper ratios so the chain is internally
+-- consistent; real tuning happens during playtesting.
 
 data:extend({
-  -- Section 1: Scrap Remelting (Foundry, Fulgora)
+  -- Scrap Remelting (Foundry, Fulgora)
   {
     type = "recipe",
     name = "sae-scrap-remelting",
@@ -24,10 +23,10 @@ data:extend({
     -- Recycling yields ~0.6 iron-equivalent per scrap plus circuits/LDS,
     -- so this is still less material-efficient than recycling -- its niche
     -- is *deterministic bulk plate* for a Fulgora base drowning in gears,
-    -- not a recycling replacement (design doc §1, §16). An earlier
+    -- not a recycling replacement. An earlier
     -- 50-molten-scrap version was ~5x below recycling on iron alone, too
     -- low to serve even that niche. Calcite is the chain's Vulcanus import
-    -- burden (§16): 2 per 100 molten metal sits well above vanilla
+    -- burden: 2 per 100 molten metal sits well above vanilla
     -- lava-casting's 1 per 250 but no longer dwarfs the metal it flux-es.
     ingredients = {
       { type = "item", name = "scrap", amount = 25 },
@@ -40,7 +39,7 @@ data:extend({
     allow_decomposition = false,
   },
 
-  -- Section 2: Ferrous / Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
+  -- Ferrous / Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
   {
     type = "recipe",
     name = "sae-separate-molten-scrap",
@@ -61,10 +60,10 @@ data:extend({
     energy_required = 2,
   },
 
-  -- Section 3: Ferrous Refinement (Foundry, Fulgora)
+  -- Ferrous Refinement (Foundry, Fulgora)
   -- Deliberately 1:1 into vanilla molten-iron -- the "surplus" comes from
   -- how little of it downstream recipes actually consume, not from an
-  -- inflated yield here (design doc §3).
+  -- inflated yield here.
   {
     type = "recipe",
     name = "sae-ferrous-refinement",
@@ -82,10 +81,10 @@ data:extend({
     allow_decomposition = false,
   },
 
-  -- Section 4: Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
+  -- Non-Ferrous Separation (Electromagnetic Plant, Fulgora)
   -- 90/10 copper/holmium split -- Holmium is a deliberate trickle, not a
-  -- primary output (design doc §4). At 2 residue per craft the chain lands
-  -- at ~0.016 holmium ore per scrap (via Section 5's 5-residue-per-ore
+  -- primary output. At 2 residue per craft the chain lands
+  -- at ~0.016 holmium ore per scrap (via Holmium Extraction's 5-residue-per-ore
   -- extraction), just above vanilla recycling's 1% -- a genuine
   -- supplement. An earlier 95/5 version yielded ~0.008/scrap, *below*
   -- recycling, which made the holmium path add nothing over the
@@ -110,9 +109,9 @@ data:extend({
     energy_required = 4,
   },
 
-  -- Section 5: Holmium Extraction (Electromagnetic Plant, Fulgora)
+  -- Holmium Extraction (Electromagnetic Plant, Fulgora)
   -- Deliberately slow/low-yield -- supplementary recovery only, not a
-  -- replacement for Fulgora's existing Holmium production (design doc §5).
+  -- replacement for Fulgora's existing Holmium production.
   {
     type = "recipe",
     name = "sae-holmium-extraction",
@@ -129,16 +128,16 @@ data:extend({
     energy_required = 8,
   },
 
-  -- Section 6: Copper Foil (Foundry, Fulgora)
-  -- Copper-skewed with a small Iron kicker -- gives the Section 3 iron
-  -- surplus a genuine, partial consumer (design doc §6).
+  -- Copper Foil (Foundry, Fulgora)
+  -- Copper-skewed with a small Iron kicker -- gives the Ferrous Refinement iron
+  -- surplus a genuine, partial consumer.
   -- One foil = 15 molten copper = 1.5 copper plate = exactly the 3 Copper
-  -- Cable it replaces in Electronic Circuit (design doc §7.1, "value-
-  -- neutral substitution"). This is the single copper-equivalent tunable
-  -- for all three circuit alt recipes (design doc §16) -- an earlier
+  -- Cable it replaces in Electronic Circuit -- a value-neutral
+  -- substitution. This is the single copper-equivalent tunable
+  -- for all three circuit alt recipes -- an earlier
   -- 10-foil-per-craft version made each foil worth 0.15 plate, a ~10x
   -- copper discount that made the alt recipes universally dominant
-  -- rather than "better only when committed" (§7).
+  -- rather than "better only when committed".
   {
     type = "recipe",
     name = "sae-copper-foil",
@@ -158,10 +157,10 @@ data:extend({
     auto_recycle = false,
   },
 
-  -- Section 7: Electromagnetic circuit alt-recipes (Electromagnetic Plant, Fulgora)
+  -- Electromagnetic circuit alt-recipes (Electromagnetic Plant, Fulgora)
   -- Output the literal vanilla item -- no new circuit tier. Copper Foil
-  -- substitutes only the copper-cable slot of each vanilla recipe (design
-  -- doc §7's substitution rule); everything else stays identical to vanilla.
+  -- substitutes only the copper-cable slot of each vanilla recipe;
+  -- everything else stays identical to vanilla.
   {
     type = "recipe",
     name = "sae-electromagnetic-electronic-circuit",
@@ -202,7 +201,7 @@ data:extend({
     -- copper is embedded inside the Electronic Circuit input. Reducing
     -- that count and substituting Copper Foil directly also implicitly
     -- discounts the Iron Plate each removed circuit carried; this is
-    -- accepted deliberately (design doc §7.3 balancing note).
+    -- accepted deliberately.
     type = "recipe",
     name = "sae-electromagnetic-processing-unit",
     categories = { "electromagnetics" },
@@ -222,7 +221,7 @@ data:extend({
     allow_productivity = true,
   },
 
-  -- Section 8: Capstone: Resonant Electromagnetics (design doc §8)
+  -- Capstone: Resonant Electromagnetics
   {
     type = "recipe",
     name = "sae-catalyst-rod",
@@ -244,7 +243,7 @@ data:extend({
   {
     -- The Catalyst Rod is consumed as a normal ingredient here -- Factorio
     -- has no native "wears down with use" item, so the one-time-use feel is
-    -- achieved with a standard multi-output recipe (design doc §8.2).
+    -- achieved with a standard multi-output recipe.
     type = "recipe",
     name = "sae-resonant-circuit",
     categories = { "electromagnetics" },
@@ -266,8 +265,7 @@ data:extend({
   },
   {
     -- Mirrors vanilla's acid-neutralisation recipe, but runs on Fulgora
-    -- under normal atmosphere -- deliberately no surface_conditions gate
-    -- (design doc §8.3).
+    -- under normal atmosphere -- deliberately no surface_conditions gate.
     type = "recipe",
     name = "sae-purify-contaminated-sulfuric-acid",
     categories = { "chemistry" },
@@ -288,7 +286,7 @@ data:extend({
   },
   {
     -- The Vulcanus half of the capstone -- Lava forces this recipe onto
-    -- Vulcanus, Catalyst Rod forces the Fulgora dependency (design doc §8.4).
+    -- Vulcanus, Catalyst Rod forces the Fulgora dependency.
     type = "recipe",
     name = "sae-magmatic-core",
     categories = { "metallurgy" },
@@ -309,8 +307,7 @@ data:extend({
     allow_decomposition = false,
   },
   {
-    -- Depleted-rod counterpart to sae-holmium-extraction (design doc §5,
-    -- "Variant recipe: Depleted Catalyst Rod reprocessing") -- closes the
+    -- Depleted-rod counterpart to sae-holmium-extraction -- closes the
     -- Catalyst Rod loop, but deliberately at a reduced yield versus fresh
     -- Holmium-rich Residue extraction.
     type = "recipe",
@@ -329,7 +326,7 @@ data:extend({
   },
   {
     -- Craftable anywhere -- both inputs are already location-locked by
-    -- their own production (design doc §8.5).
+    -- their own production.
     type = "recipe",
     name = "sae-thermionic-assembly",
     categories = { "crafting" },
@@ -347,7 +344,7 @@ data:extend({
     auto_recycle = false,
   },
 
-  -- Section 9: the Quench Turbine and its recipe ladder (design doc §9).
+  -- The Quench Turbine and its recipe ladder.
   --
   -- A quench recipe turns one Magmatic Core plus Ice into Quench Vapour at a
   -- temperature the recipe fixes. The turbine clips anything above 315
@@ -355,7 +352,7 @@ data:extend({
   -- vapour throws most of the core away and one that makes a lot of vapour at
   -- exactly the cap wastes nothing. Electricity per core is therefore set by
   -- which recipe the player can run, and the efficient ones sit behind later
-  -- technologies -- that is the whole gate (design doc §9.3).
+  -- technologies -- that is the whole gate.
   --
   -- Arithmetic, per craft, against the turbine's 1.5MJ per unit at the cap:
   --   tier 1  60 vapour at 900, clipped to 315 ->  60 * 1.5MJ =  90MJ/core
@@ -420,7 +417,7 @@ data:extend({
   {
     -- Closes the coolant loop in space. Vacuum radiates, hence the surface
     -- condition -- a real physical property, the same gate vanilla's thruster
-    -- uses, not a planet-name rule (design/01-principles.md §3). It deliberately works
+    -- uses, not a planet-name rule. It deliberately works
     -- on this mod's own coolant and not on Fluoroketone: a vacuum-only
     -- Fluoroketone recipe would have become the only in-space source of
     -- fluoroketone-cold and quietly deleted vanilla fusion's coolant

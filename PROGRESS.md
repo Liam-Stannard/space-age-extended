@@ -1,10 +1,9 @@
 # Implementation Progress
 
-Status snapshot for resuming work on the Vulcanus ↔ Fulgora tree. The full
-implementation plan (phasing, engine facts, technical approach) lives at
-`~/.claude/plans/generic-floating-waterfall.md` on this machine — this file
-is the shorter "where things stand" companion to that, kept in the repo so
-it survives independently of local Claude state.
+Status snapshot for resuming work on the Vulcanus ↔ Fulgora tree: what is
+built, how it was verified, and what is still owed. The design documents are
+being reworked from scratch, so this file is currently the only written record
+of what the implementation actually does.
 
 ## Done (on `master`, pushed to GitHub)
 
@@ -13,19 +12,19 @@ it survives independently of local Claude state.
   lint workflow, `tools/check-data-stage.sh` (local smoke test that runs
   the mod's data stage through the real Factorio 2.1 engine via
   `--dump-data`).
-- **Phase 1 — Refining chain** (design doc §1–6). Scrap Remelting →
+- **Phase 1 — Refining chain.** Scrap Remelting →
   Ferrous/Non-Ferrous Separation → Ferrous Refinement (→ vanilla
   `molten-iron`) / Non-Ferrous Separation (→ vanilla `molten-copper` +
   Holmium-rich Residue) → Holmium Extraction (→ vanilla `holmium-ore`),
   plus Copper Foil. Two technologies: `sae-metallurgical-recovery`,
   `sae-advanced-material-recovery`. User-playtested, confirmed working.
-- **Phase 2 — Electronics alt-recipes** (design doc §7). Electromagnetic
+- **Phase 2 — Electronics alt-recipes.** Electromagnetic
   Electronic/Advanced/Processing Unit alt-recipes on the EM Plant, each
   outputting the literal vanilla item. Two technologies:
   `sae-electromagnetic-metallurgy`, `sae-integrated-electronics`.
   Data-stage + 60-tick benchmark verified; not yet user-playtested.
 
-- **Phase 3 — Capstone** (design doc §8; Tech 5 `sae-resonant-electromagnetics`),
+- **Phase 3 — Capstone** (Tech 5 `sae-resonant-electromagnetics`),
   on branch `phase-3-capstone`, not yet merged to `master`. Catalyst Rod,
   Resonant Circuit (+ Depleted Catalyst Rod + Contaminated Sulfuric Acid
   byproducts), Purify Contaminated Sulfuric Acid, Magmatic Core (Vulcanus
@@ -40,8 +39,8 @@ One real bug found and fixed along the way: the mod's internal `name` in
 `info.json` didn't match the `__space-age-extended__` prefix already used
 in every graphics path, so it failed to load. Renamed the mod (and its
 title) to **`space-age-extended`** — this also better reflects
-`design/02-tree-pattern.md`'s intent of one mod eventually holding multiple
-cross-planet trees, not just this one. The mods-folder symlink at
+the intent of one mod eventually holding multiple cross-planet trees, not
+just this one. The mods-folder symlink at
 `~/.factorio/mods/space-age-extended` and `tools/check-data-stage.sh`
 both already reflect the current name.
 
@@ -64,7 +63,7 @@ fast-research, e.g.:
 Git flow used so far: one branch per phase, commit, verify, merge
 fast-forward into `master`, push, delete the branch.
 
-- **Phase 4 — Thermionic Generator** (design doc §9; Tech 6
+- **Phase 4 — Thermionic Generator** (Tech 6
   `sae-thermionic-power`), merged to `master` (`cdcd0be`, docs `5ba70b5`).
   Went through three architectures in one day:
   1. `electric-energy-interface` + hidden filtered-container hopper
@@ -84,7 +83,7 @@ fast-forward into `master`, push, delete the branch.
      to the reactor's own native window. `scale_energy_usage = false`
      keeps fuel rate independent of heat; an idle guard in
      `step_generator` pauses the reactor (`disabled_by_script`) when the
-     grid draws <5% of full output, restoring §9.1's "no idle waste".
+     grid draws <5% of full output, restoring "no idle waste".
      Footprint 4x4.
 
   Two engine facts learned the hard way, both now commented at the site:
@@ -102,7 +101,7 @@ fast-forward into `master`, push, delete the branch.
 
 - **Balance pass** (same branch), against vanilla numbers from the
   installed engine: Copper Foil 10→1 per craft (was a ~10x copper
-  discount; now value-neutral per §7.1), Scrap Remelting 50→100 molten
+  discount; now value-neutral), Scrap Remelting 50→100 molten
   scrap and calcite 10→2 (was ~5x below recycling on iron), non-ferrous
   split 95/5→90/10 (holmium trickle was *below* recycling's 1%),
   `specific_heat` 80kJ→400kJ (16s→80s to overheat; holding needs
@@ -208,14 +207,14 @@ its machine. The fluid's base_color/flow_color were changed to match.
 ## Balance pass (branch `balance-pass`)
 
 A review against the installed game's own numbers found three problems, all
-fixed here. The measurements are in `design/trees/vulcanus-fulgora.md` §9.4.
+fixed here.
 
 1. **Magmatic Core shipped 10,000 per rocket.** Its weight was never set, and
    the engine's derived default came out at 100 because the recipe is mostly
    Lava and fluids weigh nothing. A rocket of cores was worth 6TJ at the
    cryogenic quench -- three times a rocket of fusion power cells and
    seventy-five times a rocket of uranium fuel cells. Shipping was effectively
-   free, which defeats design/01-principles.md §1 entirely. Now an explicit 1000, so a
+   free, which defeats the point of shipping anything entirely. Now an explicit 1000, so a
    rocket is 90GJ lean / 600GJ cryogenic. Catalyst Rod, its spent form and
    Copper Foil are 2000 for the same reason -- left derived, the rod loop cost
    twenty times moving the cores it exists to produce.
@@ -259,12 +258,11 @@ in-space Fluoroketone cooling recipe.
   refines the Thermionic Generator this work deletes; kept so the old design
   can be revisited if the Quench Turbine does not survive playtesting.
 - **Trees 2+** — see the parked brainstorm in Claude's memory
-  (`project_space_age_extended_future_trees`) and design/02-tree-pattern.md's
-  open slots.
+  (`project_space_age_extended_future_trees`).
 
 ## To resume
 
-Say "playtest the quench turbine". Everything needed — design doc, framework doc,
-this file, the plan file, and the verified local Factorio 2.1.17 install
-at `~/.steam/debian-installation/steamapps/common/Factorio` — is already
-in place.
+Say "playtest the quench turbine". Everything needed — this file and the
+verified local Factorio 2.1.17 install at
+`~/.steam/debian-installation/steamapps/common/Factorio` — is already in
+place.

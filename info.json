@@ -8,5 +8,5 @@
     "base >= 2.1.0",
     "space-age >= 2.1.0"
   ],
-  "description": "Adds a two-way industrial loop between Vulcanus and Fulgora: Fulgora recovers and refines its scrap using imported Vulcanus Calcite, and its refined Catalyst Rod unlocks a Vulcanus-only lava process. The chain terminates in a space platform power source that fills the gap between solar and Aquilo-locked fusion. See design/vulcanus-fulgora.md for the full design doc."
+  "description": "Adds a two-way industrial loop between Vulcanus and Fulgora: Fulgora recovers and refines its scrap using imported Vulcanus Calcite, and its refined Catalyst Rod unlocks a Vulcanus-only lava process. The chain terminates in a space platform power source that fills the gap between solar and Aquilo-locked fusion."
 }

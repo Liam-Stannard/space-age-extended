@@ -1,5 +1,4 @@
 -- New technologies introduced by Space Age Extended.
--- See design/trees/vulcanus-fulgora.md §14.
 
 data:extend({
   {
@@ -56,7 +55,7 @@ data:extend({
     },
     -- Copper Foil needs both the Ferrous and Non-Ferrous output halves of
     -- the chain, so this explicitly requires both prior technologies
-    -- (design doc §14, Technology 3).
+    -- (Technology 3).
     prerequisites = { "sae-metallurgical-recovery", "sae-advanced-material-recovery" },
     unit = {
       count = 200,
@@ -100,8 +99,7 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-depleted-catalyst-rod-reprocessing" },
       { type = "unlock-recipe", recipe = "sae-thermionic-assembly" },
     },
-    -- The capstone requires both circuit-tier technologies (design doc §14,
-    -- Technology 5).
+    -- The capstone (Technology 5) requires both circuit-tier technologies.
     prerequisites = { "sae-electromagnetic-metallurgy", "sae-integrated-electronics" },
     unit = {
       count = 350,
@@ -113,8 +111,8 @@ data:extend({
     },
   },
   {
-    -- Technology 6 (design doc §9). Named for the subsystem it claims
-    -- (design/03-platform-system.md, "Power") rather than a literal transliteration
+    -- Technology 6. Named for the subsystem it claims ("Power")
+    -- rather than a literal transliteration
     -- of the doc's section title, matching this mod's tech-naming pattern.
     type = "technology",
     name = "sae-thermionic-power",
@@ -136,7 +134,7 @@ data:extend({
     },
   },
   {
-    -- Technology 7 (design doc §9.3). The efficient quench recipe, gated on
+    -- Technology 7. The efficient quench recipe, gated on
     -- Aquilo: its prerequisite is vanilla's own cryogenic-plant technology,
     -- and its recipe needs Fluoroketone, which only Aquilo produces. Power
     -- therefore cannot be solved cheaply before Aquilo -- tier 1 works, but

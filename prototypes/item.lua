@@ -1,5 +1,4 @@
 -- New items introduced by Space Age Extended.
--- See design/trees/vulcanus-fulgora.md §6.
 
 data:extend({
   {
@@ -58,8 +57,8 @@ data:extend({
     stack_size = 100,
   },
   {
-    -- The Vulcanus half of the capstone, shipped up to platforms (design
-    -- doc §9.2). No fuel_category/fuel_value: a Magmatic Core is an
+    -- The Vulcanus half of the capstone, shipped up to platforms.
+    -- No fuel_category/fuel_value: a Magmatic Core is an
     -- *ingredient* of the quench recipes, not a fuel item. The earlier Thermionic
     -- Generator burned it in a real burner slot; the Quench Turbine consumes
     -- the vapour a quench recipe makes from it instead, which is what lets
@@ -81,7 +80,8 @@ data:extend({
     -- against vanilla that made a rocket of cores worth 6TJ at the cryogenic
     -- quench, three times a rocket of fusion power cells (50 x 40GJ = 2TJ)
     -- and seventy-five times a rocket of uranium fuel cells (10 x 8GJ =
-    -- 80GJ). Shipping was effectively free, which guts design/01-principles.md §1 --
+    -- 80GJ). Shipping was effectively free, which guts the whole reason
+    -- the chain ships anything --
     -- the shipping principle is the whole point of a cross-planet tree.
     --
     -- 1000 puts 1000 cores in a rocket: 90GJ at the lean quench, which is
@@ -103,7 +103,7 @@ data:extend({
   {
     -- Verified: solar-panel/accumulator/fusion-generator all use the
     -- vanilla "energy" subgroup -- reuse it rather than inventing a new
-    -- one (design doc §9.2, "no new building tiers" convention).
+    -- one, keeping to the "no new building tiers" convention.
     type = "item",
     name = "sae-quench-turbine",
     icon = "__space-age-extended__/graphics/icons/quench-turbine.png",

@@ -1,9 +1,9 @@
 -- Runtime entry point for Space Age Extended.
 --
 -- Deliberately empty. Every mechanic in the mod is now expressed in
--- prototypes: the Quench Turbine (design/vulcanus-fulgora.md §9) is a real
--- `generator`, so the engine itself computes its output from vapour flow,
--- temperature and heat capacity, and clips what it can't use.
+-- prototypes: the Quench Turbine is a real `generator`, so the engine
+-- itself computes its output from vapour flow, temperature and heat
+-- capacity, and clips what it can't use.
 --
 -- The earlier Thermionic Generator needed ~750 lines here to drive a scripted
 -- temperature/efficiency curve, two hidden paired entities and a custom GUI.

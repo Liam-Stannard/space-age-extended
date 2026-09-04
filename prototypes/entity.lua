@@ -1,9 +1,8 @@
 -- New entities introduced by Space Age Extended.
--- See design/trees/vulcanus-fulgora.md §9 -- the Quench Turbine, the mod's one new
--- building (justified per design/design/01-principles.md §3: its output per shipped
--- Magmatic Core is a *recipe choice*, since the turbine clips vapour hotter
--- than it can use, and nothing in the game trades fuel value against a
--- recipe tier that way).
+-- The Quench Turbine, the mod's one new building. It earns that slot
+-- because its output per shipped Magmatic Core is a *recipe choice*: the
+-- turbine clips vapour hotter than it can use, and nothing in the game
+-- trades fuel value against a recipe tier that way.
 --
 -- This replaces the earlier Thermionic Generator, a `reactor`-type entity
 -- with a scripted temperature/efficiency curve, two hidden paired entities
@@ -47,7 +46,7 @@ data:extend({
     -- Space-platform-only placement via a genuine physical surface property
     -- (zero pressure/vacuum), exactly mirroring vanilla's own `thruster` --
     -- not an arbitrary planet-name check, so it doesn't run afoul of
-    -- design/01-principles.md §3's "no building-placement gimmicks" rule. Kept from
+    -- the "no building-placement gimmicks" rule. Kept from
     -- the Thermionic Generator, which used the same gate for the same reason.
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
@@ -61,7 +60,7 @@ data:extend({
     -- balanced against: the lean tier-1 recipe makes a small volume of
     -- 900-degree vapour and throws away roughly two thirds of it here, while
     -- the tier-2 recipe makes far more vapour at exactly 315 and wastes
-    -- nothing. That difference *is* the tech ladder (design doc §9.3).
+    -- nothing. That difference *is* the tech ladder.
     effectivity = 1,
     fluid_usage_per_tick = 0.2,
     maximum_temperature = 315,
@@ -73,7 +72,8 @@ data:extend({
     -- Deliberately no scale_fluid_usage: the turbine draws only what the grid
     -- demands, so a platform sitting idle at a waypoint consumes no vapour
     -- and therefore no Magmatic Core. Beating nuclear's idle burn was an
-    -- explicit goal of §9.1 and it now falls out of the entity type for free.
+    -- explicit design goal, and it now falls out of the entity type for
+    -- free.
     resistances = {
       { type = "fire", percent = 70 },
     },

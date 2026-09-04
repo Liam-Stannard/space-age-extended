@@ -2,7 +2,7 @@
 
 **Quench Turbine.** Filled from `building-spec-template.md`. Every gameplay
 number here is the implemented, engine-verified value (see
-`design/vulcanus-fulgora.md` §9.6), not a proposal. The art sections *are*
+verified against the engine), not a proposal. The art sections *are*
 proposals: the building currently wears vanilla's steam turbine recoloured, and
 this document exists to commission a replacement.
 
@@ -801,7 +801,7 @@ from a hot surface; this one expands a vapour through a rotor. Three ways out:
 * **Rename the technology** to something like Quench Power or Vapour Power, and
   keep the building and the assembly as they are. Cheapest: one technology name,
   its locale strings and a migration entry. The Thermionic Assembly survives as
-  a deliberately generic capstone item, which `design/vulcanus-fulgora.md` §8.5
+  a deliberately generic capstone item, which the design
   already says it is meant to be.
 * **Rename the building** to Thermionic Turbine, making the whole branch
   consistent with the existing technology and assembly names. Touches the
