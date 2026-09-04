@@ -289,14 +289,25 @@ data:extend({
     -- Generator and vanilla's own thruster use (vacuum), not a planet-name
     -- check (design/framework.md §2.3).
     --
-    -- The other half of "what environment does this work in" is an asymmetry
-    -- that was defaulted into rather than decided: `heating_energy` is unset
-    -- and so is 0W (prototype-api.json, EntityPrototype.heating_energy), so a
-    -- plate never freezes and needs no heat pipe on an Aquilo run -- while
-    -- vanilla's railgun and rocket turrets, the two things a rim of plates
-    -- most directly competes with, both declare "50kW"
-    -- (space-age/prototypes/entity/turrets.lua:318 and :432). Probably right
-    -- for passive hull armour, but it is a real balance edge.
+    -- This is also what settles `heating_energy`, which is left unset and so
+    -- is 0W (prototype-api.json, EntityPrototype.heating_energy). That is
+    -- correct BY CONSTRUCTION here, not a default that was fallen into:
+    -- heating only exists on a surface whose planet sets
+    -- `entities_require_heating`, and Aquilo is the only one in the game that
+    -- does (space-age/prototypes/planet/planet.lua:680, the sole occurrence
+    -- in the whole data tree). Aquilo's surface pressure is 300
+    -- (planet.lua:643) and a space platform's is 0
+    -- (space-age/prototypes/surface.lua:12), so the vacuum condition above
+    -- makes this plate unplaceable on the one surface where heating_energy
+    -- would ever be read. Declaring a value would be dead weight.
+    --
+    -- Vanilla's railgun and rocket turrets do declare "50kW"
+    -- (space-age/prototypes/entity/turrets.lua:318 and :432) -- but neither
+    -- carries any `surface_conditions` at all (verified: no
+    -- `surface_conditions` key anywhere in base/ or space-age/ turrets.lua),
+    -- so both are placeable on Aquilo's surface and both genuinely need it.
+    -- The difference is placement scope, not a balance asymmetry between the
+    -- plate and them.
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },

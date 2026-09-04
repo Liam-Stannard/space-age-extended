@@ -209,10 +209,20 @@ fast-forward into `master`, push, delete the branch.
     (`space-age/prototypes/entity/entities.lua:691-694`) and thruster
     (`:908-911`) do.
   - **`heating_energy` defaults to 0W**, so an entity that does not declare
-    it never freezes on Aquilo. Vanilla's railgun and rocket turrets both
-    declare `"50kW"` (`space-age/prototypes/entity/turrets.lua:318`,
-    `:432`), so omitting it is a real balance asymmetry, not a neutral
-    default.
+    it never freezes — but that only ever matters on a surface whose planet
+    sets `entities_require_heating`, and **Aquilo is the only one in the
+    game that does** (`space-age/prototypes/planet/planet.lua:680`, the sole
+    occurrence in the entire data tree). This is **closed, not an open
+    balance edge**: the plate is vacuum-only (`surface_conditions` pressure
+    min 0 max 0), Aquilo's surface pressure is 300 (`planet.lua:643`) and a
+    platform's is 0 (`space-age/prototypes/surface.lua:12`), so the plate can
+    never stand on the one surface where `heating_energy` is read. Unset/0W
+    is correct **by construction**. Vanilla's railgun and rocket turrets do
+    declare `"50kW"` (`space-age/prototypes/entity/turrets.lua:318`, `:432`)
+    precisely because they carry **no `surface_conditions` at all** (verified:
+    no `surface_conditions` key anywhere in `base/` or `space-age/`
+    `turrets.lua`) and so *are* placeable on Aquilo. The difference is
+    placement scope, not an asymmetry to correct.
 
   Findings that are **design input, not defects** — recorded here for the
   design phase; no fix attempted:
