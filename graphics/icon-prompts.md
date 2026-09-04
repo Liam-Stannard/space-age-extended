@@ -5,13 +5,15 @@ current flat-shape placeholders (`graphics/icons/`, `graphics/icons/fluid/`,
 `graphics/technology/`). Written for pasting into an AI image-generation tool one
 entry at a time — each entry below is a self-contained prompt.
 
-This covers the 21 **flat 2D icon** files only (items, fluids, recipe icons,
-technology icons). It does **not** cover the Quench Turbine's in-world entity
-sprite (the animated object placed on the map) — that's a different, more
-technical asset (multi-layer, shadow-separated, 8-frame animation,
-engine-scale) outside what a general image-generation tool can produce
-directly, and is out of scope for this document. That sprite is currently
-vanilla's steam turbine recoloured by `tools/recolour-turbine.py`.
+This covers the 23 **flat 2D icon** files only (items, fluids, recipe icons,
+technology icons). It does **not** cover the two in-world **entity sprites** —
+the Quench Turbine's (the animated object placed on the map, currently vanilla's
+steam turbine recoloured by `tools/recolour-turbine.py`) and Reactive Edge
+Plating's (the plate as it appears on a platform rim, which also needs
+folded/preparing/attacking states like any turret). Those are a different, more
+technical class of asset (multi-layer, shadow-separated, engine-scale,
+multi-state) outside what a general image-generation tool can produce directly,
+and are out of scope for this document.
 
 ---
 
@@ -48,7 +50,7 @@ Technical notes for the tool/output:
   description" is given below — that's what our existing flat placeholder
   icon (already in the repo) depicts; the goal is a properly rendered version
   of the same concept, not a different concept.
-- Keep a **consistent lighting angle and rendering treatment across all 20**
+- Keep a **consistent lighting angle and rendering treatment across all 23**
   so they read as one icon set once dropped into the game together.
 
 ---
@@ -184,6 +186,49 @@ it is derived art rather than drawn art.
 > metal, with pale frost or condensation gathering on the intake side. It
 > should read as a precision cryogenic turbine, cold and machined, not as a
 > furnace or boiler. No flame, no orange glow. [+ global style guide]
+
+---
+
+### Reactive Charge — `reactive-charge.png`
+
+**What it is:** The single-use munition a Reactive Edge Plating spends to
+destroy an incoming asteroid — one charge, one kill. It is *ordnance*, not a
+power cell: it must not read as a battery (nothing rechargeable, no terminals,
+no charge-level bar) and must not read as a plate or a piece of armour. A
+sealed, dense, obviously energetic object that a machine loads and fires.
+
+**Current placeholder:** vanilla Space Age `railgun-ammo` icon.
+
+**Prompt:**
+> A single sealed munition: a short, heavy, blunt-nosed cylindrical charge in
+> dark gunmetal with a machined tungsten-grey band around its base and a
+> crimped seal at the tip, one thin seam of hot orange-white energy glowing
+> from deep inside a recessed slot in its casing. Dense and solid — it should
+> look heavy for its size. Reads unmistakably as one-shot ordnance to be
+> loaded into something, not as a battery, cell or plate. [+ global style
+> guide]
+
+---
+
+### Reactive Edge Plating — `reactive-edge-plating.png`
+
+**What it is:** The item that places the perimeter plate on a space platform's
+rim. Shown *stowed* — a slab lying ready to be installed, not a deployed
+turret. Two things must read at a glance: the thick tungsten-grey armour liner
+that faces the void, and the recessed cavity in the slab where a Reactive
+Charge seats. Rectangular slab silhouette, deliberately unlike the boxy
+turret silhouettes already in the game.
+
+**Current placeholder:** vanilla `gun-turret` icon.
+
+**Prompt:**
+> A thick rectangular armour plate seen at a three-quarter angle, lying flat
+> as a stowed component. Its outward face is a pale tungsten-grey hardened
+> liner with visible machining and a chamfered edge; the inward face is darker
+> layered composite with exposed mounting lugs. Set into the slab is one
+> recessed cylindrical cavity — the charge socket — with a faint orange-white
+> glow at its base. Reads as a heavy piece of hull armour ready to be fitted,
+> not as a turret or a weapon. [+ global style guide]
 
 ---
 
@@ -444,3 +489,23 @@ turning heat into electricity with an active-cooling balancing act.
 > reaction — represents heat being actively converted into stable power
 > under active cooling. [+ global style guide, illustrated-scene composition
 > rather than a single object]
+---
+
+### Reactive Edge Plating — `reactive-edge-plating.png`
+
+**What it unlocks:** Reactive Edge Plating and the Reactive Charge it fires —
+perimeter plating that destroys an incoming asteroid at contact range instead
+of absorbing the hit.
+
+**Current placeholder:** vanilla's own `space-platform` technology icon,
+borrowed unchanged.
+
+**Prompt:**
+> A technology icon depicting the instant of contact at the edge of a space
+> platform: a rocky metallic asteroid coming apart in a white-hot flash right
+> at the platform's rim, the armoured rim plate directly beneath it firing a
+> short, brilliant orange-white charge outward into the black of space, hull
+> plating and star-field visible around the impact. The destruction happens
+> at the plate's face — close, violent and contained — not out at a distance,
+> and the platform itself is visibly undamaged. [+ global style guide,
+> illustrated-scene composition rather than a single object]
