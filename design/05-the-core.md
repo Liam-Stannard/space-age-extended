@@ -161,7 +161,75 @@ Three consequences worth being explicit about:
 - **The chain spans surface and orbit** at more than one stage (§4), so both
   halves are live for the whole endgame rather than at a single hand-off.
 
-## 6. The completion goal — restarting the dynamo
+## 6. The sixth tech tree
+
+The Core carries the mod's **sixth technology tree** — at least ten technologies,
+and the only tree whose research currency is manufactured on site.
+
+### Telluric science
+
+A new science pack, crafted from the **intermediates** of the Core's own line
+(§5) — the same intermediates the end products need.
+
+> Research and construction draw on one supply. **Every pack burned is a segment
+> delayed.**
+
+That is the endgame's central decision, one layer above the melt's cast-or-heat
+split, and it is why the pack's cost is the most important number in the tree.
+Start it deliberately expensive and tune down: if the pack is cheap, research is
+a formality and the endgame collapses into a segment grind.
+
+*Telluric* because telluric currents are the real electrical currents that run
+through a planet's crust — precisely what the Ignition Array exists to restart.
+
+Three rules:
+
+- **Locked to pressure 1–9.** Labs carry no surface conditions, so research
+  itself can happen anywhere; the *pack* cannot be made anywhere but here. The
+  tree therefore has to be advanced by a factory genuinely running on the Core.
+  Vanilla gates its own packs the same way — electromagnetic at magnetic field
+  99, metallurgic at pressure 4000, cryogenic at 100–600.
+- **It does not mature.** Maturation belongs to the billet. Putting it on
+  research as well would make every rate in the endgame a function of floor
+  space, which is one turn of the screw too many.
+- **It should probably require one orbit-made intermediate**, so the platform
+  overhead is load-bearing from the first technology rather than switching on at
+  the end. Open, but preferred.
+
+### The ladder
+
+Fifteen technologies in five tiers — comfortably past the ten-technology floor,
+and shaped so the endgame builds rather than arriving flat.
+
+| Tier | Technologies | Notes |
+|---|---|---|
+| **0 — Foothold** | Core Survey (melt pump, working the ore) · Melt Casting (raw billet and the aging line) · Thermal Tap (heat into a network) · Volatile Extraction (gas vent pump, compression) | Researched on packs the player already makes, since no Telluric pack exists yet |
+| **1 — Integration** | Five technologies, one per capstone: each unlocks the recipe consuming that product with a local input to make an intermediate | **Researchable in any order**, so a player whose Gleba line is ahead of their Aquilo line is never blocked |
+| **2 — Telluric Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
+| **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
+| **4 — The goal** | Field Coil Segment · Ignition Array | Costs escalate steeply — the Array's research alone running into thousands of packs |
+
+### Three things this shape gets right
+
+**The pack cannot be first.** It is made from intermediates, and intermediates
+need a capstone product plus a local input — so the opening hours run on vanilla
+packs and local bootstrapping, and Telluric science arrives only once the
+corridor is genuinely delivering. The tree's currency is earned rather than
+granted on landing.
+
+**The climax is the last three technologies.** With costs escalating steeply, the
+ramp is felt rather than announced, and the final stretch becomes one sustained
+decision about how to split a single production line between knowing more and
+building more.
+
+**The five integration technologies must not be five of the same technology.**
+They share a shape — capstone plus local input yields intermediate — so what
+saves them is that each integrates through a **different local input**: one
+through the heat, one through the volatiles, one through an orbit-only step, one
+through matured billet, one through raw melt. Then each capstone lands somewhere
+different in the Core's economy, and five reads as five.
+
+## 7. The completion goal — restarting the dynamo
 
 The Core's field is dead: `magnetic-field` reads 0, and the arc storms are what a
 failing dynamo looks like. **The mod is completed by restarting it.**
@@ -203,7 +271,7 @@ consumer: windings replaced forever, which keeps all five trees and the whole
 corridor running after the credits. That is the difference between an ending and
 a switch-off.
 
-## 7. Maturation as the Core's central process
+## 8. Maturation as the Core's central process
 
 The one mechanic carried in from the trees. A billet cast from core melt is not
 finished when it leaves the mould — it has to **age** before it becomes the
@@ -217,7 +285,7 @@ It means the last step cannot be rushed, only widened — the player buys
 throughput with floor space and patience instead of with more machines, which is
 a different problem from every other one the game has set them.
 
-## 8. Bots are earned
+## 9. Bots are earned
 
 Personal roboports work at pressure 5 — verified, the equipment carries no
 surface conditions — so the player can blueprint-build from their armour on day
@@ -230,17 +298,16 @@ pressure 1–9 and it works here and **nowhere else in the game**: not on platfo
 new building that competes with nothing, and it turns bots from an assumption
 into a milestone.
 
-## 9. Still open
+## 10. Still open
 
 - **How rich, and how scattered**, in numbers.
 - **What the intermediates and end products actually are** — the two middle
   stages of §5 are named but not designed.
-- **Whether the sixth tech tree needs its own science pack**, or researches on
-  packs the player already makes. A Core pack would fit the vision's "new items
-  found on the Core or in promethium space"; existing packs keep the footprint
-  smaller. Either way the *physical* gate is the recipe conditions, not the
-  research.
+- **Which local input each of the five integration technologies uses** — the
+  fix for them reading as one technology repeated (§6).
+- **The Telluric pack's cost**, which sets how sharply research competes with
+  construction.
 - **What the promethium-space material is**, and how it enters the chain.
 - **Whether volatiles have a third use** beyond oxidiser and pressurisation.
-- **What gates the pressurised roboport** within the Core tree.
+- **What the end products are**, and how many of them there should be.
 - **How many segments**, and how the 100 divides across the aging floor.
