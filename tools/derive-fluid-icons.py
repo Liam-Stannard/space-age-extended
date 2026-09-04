@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Quench Vapour fluid icon by gradient-mapping an existing drop.
+"""Build this mod's derived fluid icons by gradient-mapping an existing drop.
 
 Technique, and why it differs from tools/recolour-turbine.py: that script
 rotates hue, which only works on pixels that already have some. Here the job
@@ -31,8 +31,16 @@ and the fluid list agree with the icon.
 This is a stopgap: a real render for Quench Vapour would replace it, and the
 prompt for one belongs in graphics/icon-prompts.md.
 
-Usage: tools/derive-vapour-icon.py
-Writes graphics/icons/fluid/quench-vapour.png (120x64 four-level mip strip).
+Each entry in ICONS is (output name, ramp, levels). Hues are chosen against
+what the set already uses -- measured, not guessed: molten scrap 20, molten
+non-ferrous 0-20, contaminated acid 40, molten ferrous 200, holmium residue
+260. Quench Vapour took teal (180), the coolant pair takes blue (215) for the
+cold half and a dull rust (25) for the spent half, which is the one place a
+warm hue is wanted because it is deliberately reading as "used up" next to its
+own cold form rather than competing across the whole list.
+
+Usage: tools/derive-fluid-icons.py
+Writes 120x64 four-level mip strips into graphics/icons/fluid/.
 """
 
 import os
@@ -52,15 +60,38 @@ SOURCE_ICON = "graphics/icons/fluid/molten-non-ferrous-metal.png"
 # Luminance -> colour ramp: deep teal shadow, cyan midtones, near-white core
 # so the drop reads as luminous vapour rather than a liquid. Anchors are
 # (luminance, (r, g, b)) and are linearly interpolated.
-RAMP = [
-    (0.00, (4, 26, 30)),
-    (0.18, (8, 64, 74)),
-    (0.38, (14, 116, 130)),
-    (0.56, (38, 170, 182)),
-    (0.72, (96, 212, 218)),
-    (0.86, (172, 238, 240)),
-    (1.00, (240, 254, 255)),
-]
+ICONS = {
+    # Quench Vapour: cyan-teal, matching the Quench Turbine that drinks it.
+    "quench-vapour": [
+        (0.00, (4, 26, 30)),
+        (0.18, (8, 64, 74)),
+        (0.38, (14, 116, 130)),
+        (0.56, (38, 170, 182)),
+        (0.72, (96, 212, 218)),
+        (0.86, (172, 238, 240)),
+        (1.00, (240, 254, 255)),
+    ],
+    # Quench Coolant, cold: a deep saturated blue, clear of the pale blue-white
+    # molten ferrous already sits at.
+    "quench-coolant": [
+        (0.00, (6, 14, 40)),
+        (0.20, (16, 42, 104)),
+        (0.42, (32, 78, 176)),
+        (0.60, (66, 122, 224)),
+        (0.78, (140, 180, 245)),
+        (1.00, (232, 242, 255)),
+    ],
+    # Spent Quench Coolant: the same drop gone dull and rusty, so the pair
+    # reads as one fluid in two states at a glance.
+    "spent-quench-coolant": [
+        (0.00, (26, 14, 8)),
+        (0.22, (74, 40, 20)),
+        (0.45, (128, 74, 36)),
+        (0.64, (176, 110, 58)),
+        (0.82, (212, 156, 104)),
+        (1.00, (238, 208, 176)),
+    ],
+}
 
 # The source drop uses only the middle of the luminance range (p5 0.31, p95
 # 0.75), so mapping it straight would use only the middle of the ramp and come
@@ -71,21 +102,21 @@ LEVELS_LO, LEVELS_HI = 0.31, 0.75
 CONTRAST_GAMMA = 0.85
 
 
-def ramp_colour(t):
+def ramp_colour(ramp, t):
     t = max(0.0, min(1.0, t))
-    for i in range(len(RAMP) - 1):
-        t0, c0 = RAMP[i]
-        t1, c1 = RAMP[i + 1]
+    for i in range(len(ramp) - 1):
+        t0, c0 = ramp[i]
+        t1, c1 = ramp[i + 1]
         if t0 <= t <= t1:
             f = 0.0 if t1 == t0 else (t - t0) / (t1 - t0)
             return tuple(int(c0[j] + (c1[j] - c0[j]) * f + 0.5) for j in range(3))
-    return RAMP[-1][1]
+    return ramp[-1][1]
 
 
-def gradient_map(im):
+def gradient_map(im, ramp):
     """Map each pixel's luminance through the ramp, preserving alpha."""
     im = im.convert("RGBA")
-    lut = [ramp_colour(i / 255.0) for i in range(256)]
+    lut = [ramp_colour(ramp, i / 255.0) for i in range(256)]
     out = []
     for r, g, b, a in im.getdata():
         if a == 0:
@@ -119,14 +150,12 @@ def main(argv):
     src = Image.open(os.path.join(repo, SOURCE_ICON)).convert("RGBA")
     icon = src.crop((0, 0, 64, 64)) if src.width > 64 else src.resize((64, 64), Image.LANCZOS)
 
-    before = coverage(icon)
-    icon = gradient_map(icon)
-    after = coverage(icon)
-
-    out = os.path.join(repo, "graphics/icons/fluid/quench-vapour.png")
-    mip_strip(icon).save(out)
-    print("quench-vapour.png  from %s  coverage %.0f%% -> %.0f%%"
-          % (os.path.basename(SOURCE_ICON), before * 100, after * 100))
+    for name, ramp in ICONS.items():
+        mapped = gradient_map(icon, ramp)
+        out = os.path.join(repo, "graphics/icons/fluid/%s.png" % name)
+        mip_strip(mapped).save(out)
+        print("%-24s from %s  coverage %.0f%%"
+              % (name + ".png", os.path.basename(SOURCE_ICON), coverage(mapped) * 100))
     return 0
 
 

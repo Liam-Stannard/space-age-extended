@@ -95,7 +95,7 @@ This list is a starting carve-up, not a fixed ceiling — if a future tree's nat
 
 **No redundancy among the mandatory trees.** An earlier draft of this document deliberately gave every corridor hazard two answers from different pairs, so that no single tree became mandatory. Section 2.4 now says the opposite, and the two positions cannot both hold: redundancy is exactly what makes a tree skippable. For any hazard on the mandatory path there is **one** answer, from **one** tree. Trees outside the mandatory set may overlap freely, since their job is to make the corridor cheaper rather than passable.
 
-**One power source.** A platform runs a single generator type, so the Quench Turbine's numbers set the exchange rate for every other capability's power cost. Its tuning cannot be finalised in isolation from the capabilities that draw on it.
+**One power source.** A platform runs a single generator type, so the Quench Turbine's numbers set the exchange rate for every other capability's power cost. Its tuning cannot be finalised in isolation from the capabilities that draw on it. As of the balance pass it sits between nuclear and fusion on floor space and is roughly eight times less ice-hungry than nuclear — see [vulcanus-fulgora.md §9.4](vulcanus-fulgora.md#94-how-it-compares-to-vanillas-power-sources) for the measured tables.
 
 ### 4.3 Capstone shippability requirement
 

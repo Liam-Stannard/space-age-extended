@@ -1,4 +1,4 @@
--- 0.1.x -> 0.2.0: the Thermionic Generator became the Quench Turbine.
+-- 0.1.x -> 0.2.1: the Thermionic Generator became the Quench Turbine.
 -- See prototypes/entity.lua for why the design changed.
 --
 -- The item and recipe renames are handled by the JSON migration alongside

@@ -152,8 +152,9 @@ data:extend({
     icon_size = 256,
     icon_mipmaps = 4,
     effects = {
+      { type = "unlock-recipe", recipe = "sae-quench-coolant" },
       { type = "unlock-recipe", recipe = "sae-cryogenic-quench" },
-      { type = "unlock-recipe", recipe = "sae-radiative-fluoroketone-cooling" },
+      { type = "unlock-recipe", recipe = "sae-radiative-coolant-cooling" },
     },
     prerequisites = { "sae-thermionic-power", "cryogenic-plant" },
     unit = {

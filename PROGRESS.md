@@ -205,9 +205,56 @@ its machine. The fluid's base_color/flow_color were changed to match.
 
 **Still owed:** a client playtest -- nothing here has been played.
 
+## Balance pass (branch `balance-pass`)
+
+A review against the installed game's own numbers found three problems, all
+fixed here. The measurements are in `design/vulcanus-fulgora.md` §9.4.
+
+1. **Magmatic Core shipped 10,000 per rocket.** Its weight was never set, and
+   the engine's derived default came out at 100 because the recipe is mostly
+   Lava and fluids weigh nothing. A rocket of cores was worth 6TJ at the
+   cryogenic quench -- three times a rocket of fusion power cells and
+   seventy-five times a rocket of uranium fuel cells. Shipping was effectively
+   free, which defeats framework.md §2.1 entirely. Now an explicit 1000, so a
+   rocket is 90GJ lean / 600GJ cryogenic. Catalyst Rod, its spent form and
+   Copper Foil are 2000 for the same reason -- left derived, the rod loop cost
+   twenty times moving the cores it exists to produce.
+
+2. **The radiative recipe was buffing vanilla fusion.** Vanilla deliberately
+   has no way to re-cool Fluoroketone in space: its cooling recipe is
+   `cryogenics`-only and a cryogenic plant needs pressure >= 10, which is why
+   vanilla fusion platforms ship coolant in barrels. The mod's vacuum-only
+   recipe had made it the only in-space source of `fluoroketone-cold`, i.e. it
+   silently removed vanilla fusion's coolant logistics for anyone running the
+   mod. The loop now runs on two mod fluids, Quench Coolant and Spent Quench
+   Coolant, made on Aquilo from Fluoroketone. Vanilla's economy is untouched
+   and Aquilo is still the gate. Two fluids rather than one at two
+   temperatures because barrels do not preserve temperature -- a single
+   coolant could be barrelled hot and emptied cold, laundering the radiator
+   step away.
+
+3. **The tier ladder inverted on floor space.** At 10 radiators per quench
+   plant the cryogenic tier was 80 tiles for 60MW (0.71 MW/tile), *less*
+   space-efficient than the lean tier it upgrades from (0.86) -- backwards, on
+   a platform, where floor space is the scarcest thing there is. Radiative
+   cooling now processes 40 per craft instead of 10: 2.5 radiators per quench
+   plant, 50 tiles, 1.17 MW/tile, ahead of lean and still behind fusion's 1.36.
+
+Also worth keeping: **the turbine's real advantage over nuclear is ice, not
+density.** Nuclear on a platform must melt ice into water for its exchangers,
+about 0.52 ice/s per MW and some twenty chemical plants of ice-melting per
+reactor; the cryogenic quench needs 0.067. That, plus no idle burn, is the
+honest case for the building.
+
+Verified over RCON: weights (1000 per rocket for cores, 500 for rods), the
+cryogenic quench producing 400 vapour + 100 spent coolant per core, radiative
+cooling returning 4 cold/s for a 2.5:1 ratio, and vanilla still having no
+in-space Fluoroketone cooling recipe.
+
 ## Not started yet
 
-- **Playtest** the Quench Turbine, then merge `quench-turbine` into `master`.
+- **Playtest** the Quench Turbine. Nothing in it or the balance pass has been
+  played; every number is engine-measured, none is play-tested.
 - **`thermionic-playtest-feedback` is kept, deliberately not merged.** It
   refines the Thermionic Generator this work deletes; kept so the old design
   can be revisited if the Quench Turbine does not survive playtesting.

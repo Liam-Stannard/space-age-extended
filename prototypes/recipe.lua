@@ -389,12 +389,13 @@ data:extend({
     auto_recycle = false,
   },
   {
-    -- Tier 2, gated on Aquilo via vanilla's own cryogenic-plant technology
-    -- and, more importantly, via Fluoroketone -- which only Aquilo can make.
-    -- The fluoroketone is a closed loop, not a consumable: it comes back out
-    -- hot and sae-radiative-fluoroketone-cooling below returns it to cold on
-    -- the platform itself. What Aquilo actually supplies is the technology
-    -- plus an initial fill shipped up in barrels.
+    -- Tier 2, gated on Aquilo twice over: vanilla's own cryogenic-plant
+    -- technology is a prerequisite, and the coolant it drinks can only be
+    -- made from Fluoroketone, which only Aquilo produces. The coolant is a
+    -- closed loop, not a consumable -- it comes back spent and
+    -- sae-radiative-coolant-cooling below returns it cold on the platform
+    -- itself. What Aquilo permanently supplies is the technology plus an
+    -- initial fill shipped up in barrels.
     type = "recipe",
     name = "sae-cryogenic-quench",
     categories = { "chemistry" },
@@ -404,11 +405,11 @@ data:extend({
     ingredients = {
       { type = "item", name = "sae-magmatic-core", amount = 1 },
       { type = "item", name = "ice", amount = 40 },
-      { type = "fluid", name = "fluoroketone-cold", amount = 100 },
+      { type = "fluid", name = "sae-quench-coolant", amount = 100 },
     },
     results = {
       { type = "fluid", name = "sae-quench-vapour", amount = 400, temperature = 315 },
-      { type = "fluid", name = "fluoroketone-hot", amount = 100 },
+      { type = "fluid", name = "sae-spent-quench-coolant", amount = 100 },
     },
     main_product = "sae-quench-vapour",
     energy_required = 10,
@@ -417,34 +418,61 @@ data:extend({
     auto_recycle = false,
   },
   {
-    -- Closes the fluoroketone loop in space. Vanilla re-cools fluoroketone in
-    -- a cryogenic plant, which cannot be built on a platform (its
-    -- surface_conditions demand pressure >= 10), so without this a platform
-    -- would fill up with hot fluoroketone and stall. Vacuum radiates, hence
-    -- the surface condition -- a real physical property, the same gate
-    -- vanilla's thruster uses, not a planet-name rule (framework.md §2.3).
-    -- On a planet the vanilla cryogenic recipe remains the only way.
+    -- Closes the coolant loop in space. Vacuum radiates, hence the surface
+    -- condition -- a real physical property, the same gate vanilla's thruster
+    -- uses, not a planet-name rule (framework.md §2.3). It deliberately works
+    -- on this mod's own coolant and not on Fluoroketone: a vacuum-only
+    -- Fluoroketone recipe would have become the only in-space source of
+    -- fluoroketone-cold and quietly deleted vanilla fusion's coolant
+    -- logistics. See prototypes/fluid.lua.
     --
-    -- 10s for 10 fluid means ~10 chemical plants radiating per quench plant:
-    -- that footprint is the visible cost of the tier-2 density.
+    -- 40 per 10s = 4/s, so 2.5 radiators feed one quench plant's 10/s. An
+    -- earlier 10-per-10s version needed ten radiators per quench plant, which
+    -- measured out at 80 tiles for 60MW -- making the cryogenic quench *less*
+    -- floor-space efficient than the lean one it is supposed to be an upgrade
+    -- over (0.71 vs 0.86 MW/tile), on a platform, where floor space is the
+    -- scarcest thing there is. At this rate the same 60MW fits in 50 tiles
+    -- (1.17 MW/tile): ahead of the lean quench, still behind fusion's 1.36.
     type = "recipe",
-    name = "sae-radiative-fluoroketone-cooling",
+    name = "sae-radiative-coolant-cooling",
     categories = { "chemistry" },
     subgroup = "energy",
-    order = "e[sae]-s[radiative-fluoroketone-cooling]",
+    order = "e[sae]-s[radiative-coolant-cooling]",
     enabled = false,
     surface_conditions = {
       { property = "pressure", min = 0, max = 0 },
     },
     ingredients = {
-      { type = "fluid", name = "fluoroketone-hot", amount = 10, ignored_by_stats = 10 },
+      { type = "fluid", name = "sae-spent-quench-coolant", amount = 40, ignored_by_stats = 40 },
     },
     results = {
-      { type = "fluid", name = "fluoroketone-cold", amount = 10, temperature = -150, ignored_by_stats = 10 },
+      { type = "fluid", name = "sae-quench-coolant", amount = 40, ignored_by_stats = 40 },
     },
     energy_required = 10,
     allow_productivity = false,
     allow_decomposition = false,
+    auto_recycle = false,
+  },
+  {
+    -- Makes the coolant, on Aquilo. Locked there by Fluoroketone (Aquilo-only)
+    -- and by the cryogenics category, which only the cryogenic plant provides
+    -- and which cannot be built on a platform. This is the leg that has to be
+    -- shipped: barrels of cold coolant up to the platform as the loop's fill.
+    type = "recipe",
+    name = "sae-quench-coolant",
+    categories = { "cryogenics" },
+    subgroup = "energy",
+    order = "e[sae]-t[quench-coolant]",
+    enabled = false,
+    ingredients = {
+      { type = "fluid", name = "fluoroketone-cold", amount = 50 },
+      { type = "item", name = "lithium-plate", amount = 1 },
+    },
+    results = {
+      { type = "fluid", name = "sae-quench-coolant", amount = 50, temperature = -100 },
+    },
+    energy_required = 10,
+    allow_productivity = false,
     auto_recycle = false,
   },
   {

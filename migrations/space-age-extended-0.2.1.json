@@ -1,0 +1,18 @@
+{
+  "item": [
+    [
+      "sae-thermionic-generator",
+      "sae-quench-turbine"
+    ]
+  ],
+  "recipe": [
+    [
+      "sae-thermionic-generator",
+      "sae-quench-turbine"
+    ],
+    [
+      "sae-radiative-fluoroketone-cooling",
+      "sae-radiative-coolant-cooling"
+    ]
+  ]
+}

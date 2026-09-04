@@ -5,7 +5,7 @@ current flat-shape placeholders (`graphics/icons/`, `graphics/icons/fluid/`,
 `graphics/technology/`). Written for pasting into an AI image-generation tool one
 entry at a time — each entry below is a self-contained prompt.
 
-This covers the 21 **flat 2D icon** files only (items, fluids, recipe icons,
+This covers the 23 **flat 2D icon** files only (items, fluids, recipe icons,
 technology icons). It does **not** cover the Quench Turbine's in-world entity
 sprite (the animated object placed on the map) — that's a different, more
 technical asset (multi-layer, shadow-separated, 8-frame animation,
@@ -297,6 +297,41 @@ turbine that consumes it.
 > than holding a hard liquid outline. It should read as an energetic gas under
 > pressure, not as a liquid drop and not as steam. Keep the silhouette compact
 > and centred so it stays legible at 16px. [+ global style guide]
+
+---
+
+### Quench Coolant — `fluid/quench-coolant.png`
+
+**What it is:** The Quench Turbine's coolant, made on Aquilo from Fluoroketone
+and cycled in a closed loop on the platform. Deep saturated blue, chosen to sit
+clear of the pale blue-white Molten Ferrous Metal already occupies.
+
+**Current placeholder:** a sibling fluid drop gradient-mapped by
+`tools/derive-fluid-icons.py`.
+
+**Prompt:**
+> A deep, cold, saturated blue liquid drop with a bright specular highlight and
+> a faint frost or condensation sheen on its surface. It should read as
+> something cryogenic and clean — a working fluid, not a chemical waste.
+> [+ global style guide]
+
+---
+
+### Spent Quench Coolant — `fluid/spent-quench-coolant.png`
+
+**What it is:** The same coolant on its way back to the radiators, having
+absorbed the quench's heat. It should read as the *same fluid in a used state*
+next to Quench Coolant, not as an unrelated substance — dull copper-brown
+against the cold blue.
+
+**Current placeholder:** the same drop gradient-mapped to rust by
+`tools/derive-fluid-icons.py`.
+
+**Prompt:**
+> A dull, warm copper-brown liquid drop, the same shape and gloss as a clean
+> cold-blue coolant drop but visibly heat-stained and tired, with a duller
+> highlight. It must read as the used form of that coolant rather than as a
+> different fluid. [+ global style guide]
 
 ---
 

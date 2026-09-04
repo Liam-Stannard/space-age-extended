@@ -1,4 +1,38 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 2026-09-04
+  Balancing:
+    - Magmatic Core now has an explicit weight (1000, so 1000 per rocket). The engine's derived
+      default was 100 -- the recipe is mostly Lava, and fluids weigh nothing -- which put 10,000
+      cores in a rocket and made a rocket of them worth three times a rocket of fusion power cells.
+      Shipping was effectively free, which defeated the point of a cross-planet fuel line. A rocket
+      of cores is now 90GJ on the lean quench (roughly uranium parity) and 600GJ on the cryogenic
+      quench (well under fusion's 2000GJ).
+    - Catalyst Rod and Depleted Catalyst Rod weights set to 2000, and Copper Foil to 2000. Left
+      derived, moving rods to Vulcanus and spent rods back cost twenty times moving the cores they
+      exist to produce.
+    - Radiative cooling now processes 40 coolant per craft instead of 10, so 2.5 radiators feed one
+      quench plant instead of 10. At the old rate the cryogenic tier needed 80 tiles for 60MW and
+      was *less* floor-space efficient than the lean tier it upgrades from -- backwards, on a
+      platform, where floor space is the scarcest resource. It is now 50 tiles and 1.17 MW/tile,
+      ahead of the lean tier and still behind fusion.
+  Changes:
+    - The platform coolant loop now runs on two new mod fluids, Quench Coolant and Spent Quench
+      Coolant, instead of vanilla Fluoroketone. Vanilla deliberately provides no way to re-cool
+      Fluoroketone in space (its cooling recipe is cryogenics-only, and a cryogenic plant cannot be
+      built on a platform), so the previous vacuum-only Fluoroketone recipe had made this mod the
+      only in-space source of fluoroketone-cold -- quietly removing vanilla fusion's coolant
+      logistics for anyone running the mod. Aquilo is still the gate: Quench Coolant can only be
+      made from Fluoroketone, in a cryogenic plant, on a planet.
+    - Two fluids rather than one at two temperatures, because barrels do not preserve temperature:
+      a single coolant could have been barrelled hot and emptied cold, laundering the radiator step
+      away entirely.
+    - Recipe "Radiative Fluoroketone Cooling" renamed to "Radiative Coolant Cooling"; migrated.
+  Info:
+    - The Quench Turbine's real advantage over nuclear is ice, not density: nuclear on a platform
+      needs about 0.52 ice/s per MW to make water for its heat exchangers, against 0.067 for the
+      cryogenic quench.
+---------------------------------------------------------------------------------------------------
 Version: 0.2.0
 Date: 2026-09-03
   Major Features:

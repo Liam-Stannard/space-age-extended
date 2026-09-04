@@ -664,29 +664,62 @@ Efficiency per core is thus a property of the recipe the player can run, enforce
 | Tier | Technology | Per craft | Vapour | Electricity per core |
 |---|---|---|---|---|
 | 1 — Lean Quench | `sae-thermionic-power` | 1 Core + 10 Ice | 60 at 900°C | **90 MJ** (clipped) |
-| 2 — Cryogenic Quench | `sae-cryogenic-quenching` | 1 Core + 40 Ice + 100 Fluoroketone-cold | 400 at 315°C | **600 MJ** |
+| 2 — Cryogenic Quench | `sae-cryogenic-quenching` | 1 Core + 40 Ice + 100 Quench Coolant | 400 at 315°C | **600 MJ** |
 | 3 — corridor tier | deferred | tier 2 plus a new asteroid-derived resource | — | designed with the endgame |
 
 Both are 10-second crafts, so one chemical plant at speed 1 consumes 6 cores/min: **9 MW** of turbine feed on tier 1, **60 MW** on tier 2. One turbine converts **18 MW**.
 
-Tier 2 is gated twice over: on vanilla's own `cryogenic-plant` technology, and on Fluoroketone, which only Aquilo can make.
+Tier 2 is gated twice over: on vanilla's own `cryogenic-plant` technology, and on Quench Coolant, which can only be made from Aquilo's Fluoroketone in a cryogenic plant.
 
-### The Fluoroketone loop is closed, not consumed
+### The coolant loop is closed, not consumed
 
-The tier-2 recipe returns its Fluoroketone hot. A cryogenic plant cannot be built on a platform (it requires pressure ≥ 10), so **Radiative Fluoroketone Cooling** — a vacuum-only chemical-plant recipe — returns it to cold in space. Fluoroketone is therefore an *initial fill* shipped up in barrels, not an ongoing import; what Aquilo permanently supplies is the technology and that fill. Roughly ten radiating plants per quench plant is the footprint cost of tier-2 density.
+The cryogenic quench runs on **Quench Coolant**, a mod fluid made on Aquilo from Fluoroketone. It comes back **Spent Quench Coolant**, and a vacuum-only chemical-plant recipe, **Radiative Coolant Cooling**, returns it cold on the platform itself. Coolant is therefore an *initial fill* shipped up in barrels, not an ongoing import; what Aquilo permanently supplies is the technology and that fill. One quench plant emits 10 spent/s and a radiator returns 4 cold/s, so **2.5 radiators feed one quench plant**.
+
+**Why a mod fluid rather than Fluoroketone itself.** Vanilla deliberately gives you no way to re-cool Fluoroketone in space: its own cooling recipe is in the `cryogenics` category, and a cryogenic plant requires pressure ≥ 10, so it cannot be built on a platform. That is exactly why vanilla fusion platforms must ship coolant up in barrels. An earlier version of this tree added a vacuum-only recipe that re-cooled Fluoroketone directly — which made this mod the only in-space source of `fluoroketone-cold` and so quietly deleted vanilla fusion's coolant logistics for anyone with the mod installed. That is a plain breach of framework.md §2.3. Running the platform loop on the mod's own coolant keeps vanilla's economy untouched while still letting the loop close in space.
+
+**Why two fluids rather than one at two temperatures.** Barrels do not preserve temperature — emptying a barrel returns its fluid at the default. A single temperature-carrying coolant could therefore be barrelled hot and emptied cold, laundering the radiator step away entirely. Two fluids make that impossible to express, which is the same reason vanilla splits Fluoroketone into hot and cold.
 
 **Note on how vacuum-only recipes behave.** Recipe `surface_conditions` are a player-facing selection filter: the recipe does not appear in a machine's recipe list on a surface that doesn't match. They are *not* a runtime crafting block — a recipe forced onto a wrong-surface machine by script or console will happily craft. This was verified against vanilla's own gravity-0 `space-science-pack`, which behaves identically on Nauvis when set by script. Nothing is wrong with the mod's recipe; this is simply what the mechanism is.
 
-## 9.4 Why this shape
+## 9.4 How it compares to vanilla's power sources
+
+Measured against the installed game, not recalled. Shipping first, per rocket (1,000,000 weight):
+
+| Fuel | Per rocket | Energy each | Per rocket |
+|---|---|---|---|
+| Uranium fuel cell | 10 | 8 GJ | 80 GJ |
+| **Magmatic Core, lean quench** | 1000 | 90 MJ | **90 GJ** |
+| **Magmatic Core, cryogenic quench** | 1000 | 600 MJ | **600 GJ** |
+| Fusion power cell | 50 | 40 GJ | 2000 GJ |
+
+That ladder is the point: the lean quench is roughly uranium parity, so pre-Aquilo power is possible but never cheap, and the cryogenic quench is seven times better while still sitting well under fusion.
+
+Magmatic Core's weight is set explicitly (1000) because the engine's derived default was 100 — the recipe is mostly Lava, and fluids weigh nothing — which put **10,000 cores in a rocket** and made a rocket of them worth three times a rocket of fusion cells. Shipping was effectively free, which guts framework.md §2.1. The Catalyst Rod and its spent form are set to 2000 for the same reason: left derived, moving rods cost twenty times moving the cores they exist to make.
+
+Then floor space, which is what a platform is actually short of:
+
+| Setup | Tiles | Net MW | MW per tile |
+|---|---|---|---|
+| Solar (Nauvis orbit) | 9 per panel | 0.06 | 0.007 |
+| Nuclear, 40 MW, incl. ~21 plants melting ice for water | 191 | 35.7 | 0.19 |
+| **Lean quench, per plant** | 10 | 8.6 | **0.86** |
+| **Cryogenic quench, per plant** | 50 | 58.4 | **1.17** |
+| Fusion, 100 MW | 66 | 90 | 1.36 |
+
+The radiator ratio was tuned to this table. At an earlier 10 radiators per quench plant the cryogenic tier came out at 80 tiles and 0.71 MW/tile — *less* space-efficient than the lean tier it is supposed to be an upgrade over, which inverts the whole ladder on the one resource platforms care most about.
+
+**The turbine's real advantage is ice, not density.** A nuclear setup on a platform must melt ice into water for its heat exchangers: about 0.52 ice/s per MW, roughly twenty chemical plants of ice-melting for a single reactor. The cryogenic quench needs 0.067 ice/s per MW, an eight-fold advantage, and the lean quench 0.111. Together with no idle burn, that — not raw MW per tile — is why the building deserves to exist.
+
+## 9.5 Why this shape
 
 - **Degradation, not destruction.** Running the lean recipe is expensive, never fatal (framework.md §4.5 rule 3). There is no meltdown and no failure state, only a worse exchange rate.
 - **Cooling throughput is still the scaling decision**, now expressed as Ice throughput per core rather than as a coolant tank. Viability still scales with asteroid capture, which is already the core platform loop.
 - **The Vulcanus leg stays permanently load-bearing.** Magmatic Core is a consumable, so the Catalyst Rod → Vulcanus → Magmatic Core → Depleted Rod loop must keep running indefinitely.
 - **There is a wrong platform to install it on** (rule 4): one with no oxide asteroids for Ice, or no room for the radiator field tier 2 needs.
 
-Versus fusion, the honest comparison is no longer "meaningfully below 50 MW". One turbine is 18 MW and one tier-2 quench plant feeds three of them, so a quench installation is **denser than fusion per building and far larger per installation** once the chemical plants and radiators are counted — and unlike fusion it depends on a supply line that can be cut.
+Versus fusion, the honest comparison is no longer "meaningfully below 50 MW" (§9.4 has the measured tables). One turbine is 18 MW and one tier-2 quench plant feeds three of them, so a quench installation is **denser than fusion per building and far larger per installation** once the chemical plants and radiators are counted — and unlike fusion it depends on a supply line that can be cut.
 
-## 9.5 Verified against the engine
+## 9.6 Verified against the engine
 
 Measured on a headless server over RCON, not derived by hand:
 
@@ -703,13 +736,17 @@ Measured on a headless server over RCON, not derived by hand:
 | Radiative cooling | hot Fluoroketone → cold, on a platform |
 | Technology gating | tier-2 recipes disabled until `sae-cryogenic-quenching` |
 | Placement | builds on a platform, refused on Nauvis |
+| Magmatic Core weight | 1000 per rocket (was a derived 100, i.e. 10,000) |
+| Cryogenic quench | 400 vapour + 100 spent coolant per core |
+| Radiative cooling | 4 cold/s per plant, 2.5 radiators per quench plant |
+| Vanilla Fluoroketone | still has no in-space cooling recipe |
 
-## 9.6 Open questions
+## 9.7 Open questions
 
-- Whether tier 1 at 90 MJ/core is *expensive* or *impossible* in play: 100 MW needs roughly 11 chemical plants and 67 cores/min. If it reads as impossible, raise tier 1 toward 150 MJ/core before touching anything else — the ratio between tiers (about 1 : 6.7) is the thing to preserve, not the absolute numbers.
-- The radiator ratio (currently ~10 plants per quench plant) has not been playtested for how it *feels* to lay out.
+- Whether tier 1 at 90 MJ/core is *expensive* or *impossible* in play. It is sized for one turbine, not a whole platform: 18 MW is 12 cores/min, while 100 MW would need ~11 chemical plants and 67 cores/min, i.e. a rocket of cores every 15 minutes. If it reads as impossible, raise tier 1 toward 150 MJ/core before touching anything else — the ratio between tiers (about 1 : 6.7) is the thing to preserve, not the absolute numbers.
+- The radiator ratio (2.5 plants per quench plant) is tuned against the floor-space table in §9.4 but has not been playtested for how it *feels* to lay out.
 - Tier 3's asteroid-derived resource, deferred to the endgame design.
-- The turbine's art is derived from vanilla's steam turbine, recoloured to a cryogenic teal (`tools/recolour-turbine.py`), and the Quench Vapour icon is a gradient-mapped sibling drop in the same teal (`tools/derive-vapour-icon.py`). Both are derived rather than drawn; a real render would still be better.
+- The turbine's art is derived from vanilla's steam turbine, recoloured to a cryogenic teal (`tools/recolour-turbine.py`), and the three new fluid icons are gradient-mapped sibling drops (`tools/derive-fluid-icons.py`). All are derived rather than drawn; real renders would still be better.
 
 ---
 
@@ -1064,7 +1101,7 @@ Compare against vanilla on raw resource consumption, machine count, power consum
 
 **Quench Turbine**
 
-See Section 9.6 — every number is engine-verified but none is playtested. The open call is whether tier 1 at 90MJ per core is expensive or simply impossible (100MW needs ~11 chemical plants and 67 cores/min), and whether the tier-2 radiator field (~10 plants per quench plant) is a satisfying layout problem or just floor space.
+See Section 9.7 — every number is engine-verified but none is playtested. The open call is whether tier 1 at 90MJ per core is expensive or simply impossible (100MW needs ~11 chemical plants and 67 cores/min), and whether the tier-2 radiator field (~10 plants per quench plant) is a satisfying layout problem or just floor space.
 
 ---
 
