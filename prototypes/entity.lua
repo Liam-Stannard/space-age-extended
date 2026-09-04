@@ -225,8 +225,13 @@ local function sae_plating_base_direction(dir)
     height = 126,
     frame_count = 1,
     y = dir * 126,
-    shift = { 0, -0.41 },
-    scale = 0.25,
+    -- Scale and shift are in step: the source sheet is 130x126 px, so 0.5
+    -- draws it about two tiles across, which at least fills a 3x2 panel
+    -- instead of sitting as a one-tile dot in the middle of it. Still
+    -- placeholder -- real art is a 3x2 armour panel with its own folded /
+    -- preparing / attacking states.
+    shift = { 0, -0.82 },
+    scale = 0.5,
   }
 end
 
@@ -247,10 +252,19 @@ end
 -- `thruster` use to require open space in front of them. Two rules, ANDed:
 -- solid foundation under the plate, and void in the single tile the plate
 -- faces. The rules rotate with the entity's direction, which is why this is
--- a rotatable 1x1 rather than a direction-less one -- there is no way to
+-- a rotatable entity rather than a direction-less one -- there is no way to
 -- express "void on ANY of my four sides" natively, so instead the plate is
 -- oriented outward and each rim face gets its own rotation. That is the same
 -- ergonomics vanilla already asks of the asteroid collector.
+--
+-- The plate is 3 tiles along the rim by 2 deep. The footprint was decided by
+-- measurement, not by looks -- 1x1, 2x2 and 3x2 were all built as real
+-- prototypes and compared; the numbers and the reasoning are on the entity
+-- below. The short version: at 1x1 the four corner tiles of a rim can never
+-- be fed by an inserter under ANY belt layout, because their orthogonal
+-- neighbours are all void or plate, and 2x2 boxes its corner block in the
+-- same way. Only at 3 wide does the plate reach past the perpendicular band
+-- to a tile an inserter can stand on.
 --
 -- Shared-resource interaction, per design/framework.md §4.5.1 (a capability
 -- must draw on one shared resource and feed another). The plate DRAWS on the
@@ -292,9 +306,9 @@ end
 --     None of that is in this prototype and none of it needs script: it is
 --     the vanilla turret GUI, unlocked by having a connector at all.
 --
--- Visuals are placeholder: vanilla gun turret's own base sprite, scaled down
--- to roughly a tile. The icon art is placeholder too -- prompts for the real
--- item/entity/technology art are in graphics/icon-prompts.md.
+-- Visuals are placeholder: vanilla gun turret's own base sprite. The icon art
+-- is placeholder too -- prompts for the real item/entity/technology art are
+-- in graphics/icon-prompts.md.
 data:extend({
   {
     -- Dedicated ammo-category so a plate can be fed nothing but a Reactive
@@ -312,10 +326,72 @@ data:extend({
     flags = { "placeable-player", "player-creation" },
     minable = { mining_time = 0.2, result = "sae-reactive-edge-plating" },
     max_health = 200,
-    -- The plate is one tile of rim. Slightly under-sized collision box so it
-    -- sits inside its tile without fighting neighbouring plates.
-    collision_box = { { -0.4, -0.4 }, { 0.4, 0.4 } },
-    selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
+    -- FOOTPRINT: 3 tiles along the rim x 2 tiles deep. Chosen over 1x1 and
+    -- 2x2 on measurements, not on taste; the three were built as real
+    -- prototypes and measured side by side. Rotation swaps the dimensions
+    -- (3x2 north/south becomes 2x3 east/west) and the engine handles that
+    -- for both the boxes and the buildability areas below.
+    --
+    -- 1. CORNER FEEDABILITY -- the measurement that actually decided it, and
+    --    the one the 1x1 loses outright. Ask it topology-independently: does
+    --    a plate have ANY orthogonally adjacent tile that is on the platform
+    --    and not itself under a plate? An inserter cannot stand diagonally,
+    --    so a plate with no such tile can never be fed, by any belt layout,
+    --    any bus, any chamfer. MEASURED over a fully plated rim at platform
+    --    sizes 10, 20, 21, 22 and 31 (max-bipartite-matching between plates
+    --    and free adjacent tiles, so "all at once", not "one at a time"):
+    --
+    --                       unfeedable by ANY layout   feedable simultaneously
+    --      1x1                     4 (every size)        68/76 on a 20x20
+    --      2x2                     1-4 (size-dependent)  32/36
+    --      3x2                     0 (every size)        24/24
+    --
+    --    At 1x1 the outermost corner tile has four orthogonal neighbours and
+    --    all four are void or plate; its two neighbours then contend for the
+    --    single diagonal-interior tile, so three plates per corner go dry in
+    --    a real build and two per corner are impossible in principle. At 2x2
+    --    the corner block is boxed in by the perpendicular band. At 3x2 the
+    --    third tile reaches past that band, and every plate has somewhere an
+    --    inserter can stand.
+    --
+    -- 2. FLOOR AND ENTITY COUNT, on a 20x20 rim (measured build, not
+    --    arithmetic): 1x1 = 3 rings of floor (plate/inserter/belt), 76
+    --    plates, 63 inserters. 3x2 = 4 rings, 24 plates, and a third the
+    --    inserters of 2x2's 36 plates. One more ring of floor buys a
+    --    two-thirds cut in entities.
+    --
+    -- 3. PARITY GAPS DO NOT LEAK. Quantising in 3s leaves up to 2 tiles over
+    --    on an arbitrary edge. MEASURED by aiming a promethium asteroid at
+    --    the centre of a deliberate hole in the north band: a 2-tile hole
+    --    cost 4 charges at `medium`, 13-14 at `big` and 37-39 at `huge`,
+    --    against 4 / 14 / 43 for a continuous rim -- and lost zero tiles,
+    --    zero plates and zero witness in every run. So did a 6-tile hole.
+    --    The instrument is not blind: with the north band removed entirely
+    --    the same rock destroyed the witness and ate 90 foundation tiles
+    --    with no plate firing at all. The rim defends by FIRE, not by
+    --    occupancy, and range 4 gives the flanking plates enough lateral
+    --    overlap to cover the leftover.
+    --
+    -- 4. CORNER ARC. The question this shape raises: a corner tile sits
+    --    inside a north-facing plate's body but on the edge of its 180-degree
+    --    arc to the west. MEASURED by sweeping single asteroids through the
+    --    void off the NW corner and recording which plate fired: the corner's
+    --    western approach is picked up by the neighbouring west-facing plate,
+    --    the northern approach by the north-facing one, and their coverage
+    --    overlaps. No hole anywhere inside range.
+    --
+    -- Slightly under-sized collision box (0.1 in on every side) so plates sit
+    -- inside their tiles without fighting their neighbours, exactly as the
+    -- 1x1 did.
+    collision_box = { { -1.4, -0.9 }, { 1.4, 0.9 } },
+    selection_box = { { -1.5, -1.0 }, { 1.5, 1.0 } },
+    -- Derivable from collision_box, but stated: the engine snaps an entity's
+    -- position to a tile centre on an odd axis and a tile BOUNDARY on an even
+    -- one, so a 3x2 plate's centre is (n+0.5, m) facing north and (n, m+0.5)
+    -- facing east. Anything that places these by script has to compute that
+    -- per direction.
+    tile_width = 3,
+    tile_height = 2,
     -- Platform-only, via the same genuine surface property the Thermionic
     -- Generator and vanilla's own thruster use (vacuum), not a planet-name
     -- check (design/framework.md §2.3).
@@ -364,24 +440,41 @@ data:extend({
     -- plate would become placeable in mid-air. The explicit `empty_space`
     -- exclusion is what makes rule 1 mean "real foundation".
     --
-    -- MEASURED against a 20x20 platform, every rim face x every rotation,
-    -- through `can_place_entity` and through reviving an `entity-ghost`
-    -- (identical results -- so a rim blueprint obeys the same rule):
+    -- MEASURED against a 20x20 platform, every rim face and corner x every
+    -- rotation, through `can_place_entity` (both `manual` and
+    -- `blueprint_ghost` build checks) and through reviving a real
+    -- `entity-ghost` -- all three oracles agreeing in every cell, so a rim
+    -- blueprint obeys exactly the same rule a hand-built one does.
     --
-    --              N     E     S     W
-    --   north rim  YES   no    no    no
-    --   south rim  no    no    YES   no
-    --   west rim   no    no    no    YES
-    --   east rim   no    YES   no    no
-    --   NW corner  YES   no    no    YES
-    --   SE corner  no    YES   YES   no
-    --   interior   no    no    no    no
-    --   1 in from  no    no    no    no
+    -- A cell names one ANCHOR TILE and asks "can a plate be built with that
+    -- tile in its OUTER (facing) row?" -- for this 2-deep plate the second
+    -- row is the tile immediately inboard. A 3-wide plate has three ways to
+    -- sit and still cover its anchor tile, so each cell reports how many of
+    -- those three lateral offsets the engine accepted:
     --
-    -- A perfect diagonal: enforcement is entirely native, exact on all four
-    -- faces, correct on corners (both outward directions allowed), and
-    -- rejects every interior tile in every rotation. No on_built rejection
-    -- handler is needed, and control.lua stays untouched by this feature.
+    --              N      E      S      W
+    --   north rim  YES 3  no  0  no  0  no  0
+    --   east rim   no  0  YES 3  no  0  no  0
+    --   south rim  no  0  no  0  YES 3  no  0
+    --   west rim   no  0  no  0  no  0  YES 3
+    --   NW corner  YES 1  no  0  no  0  YES 1
+    --   NE corner  YES 1  YES 1  no  0  no  0
+    --   SW corner  no  0  no  0  YES 1  YES 1
+    --   SE corner  no  0  YES 1  YES 1  no  0
+    --   interior   no  0  no  0  no  0  no  0
+    --   1 in from  no  0  no  0  no  0  no  0
+    --
+    -- Still a perfect diagonal, and the corner counts are the interesting
+    -- part: a corner admits both outward facings, but only the ONE lateral
+    -- offset that sits flush inside the platform -- the other two would hang
+    -- the plate off the edge and rule 1 refuses them. That is exactly the
+    -- pinwheel a rim wants, and it falls out of the rules rather than having
+    -- to be taught. Enforcement stays entirely native: no on_built rejection
+    -- handler, and control.lua untouched by this feature.
+    --
+    -- The identical matrix was measured for the 1x1 and 2x2 candidates during
+    -- the footprint spike, so the diagonal is a property of these rules, not
+    -- of this footprint.
     --
     -- Those two oracles are the only valid ones, and this is worth knowing
     -- before writing any future placement test: MEASURED,
@@ -391,9 +484,14 @@ data:extend({
     -- `thruster`, the two entities these rules are modelled on. A
     -- create_entity-based placement test produces a false PASS in every cell
     -- and proves nothing about buildability.
+    --
+    -- Both areas are written in the entity's NORTH frame and rotate with it,
+    -- which is what lets one prototype cover all four rim faces. Rule 1 is
+    -- the 3x2 body; rule 2 is the 3-wide strip of void one tile in front of
+    -- its leading edge (y = -1 locally, so the strip is y in [-2,-1]).
     tile_buildability_rules = {
-      { area = { { -0.4, -0.4 }, { 0.4, 0.4 } }, required_tiles = { layers = { ground_tile = true } }, colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
-      { area = { { -0.4, -1.4 }, { 0.4, -0.6 } }, required_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
+      { area = { { -1.4, -0.9 }, { 1.4, 0.9 } }, required_tiles = { layers = { ground_tile = true } }, colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
+      { area = { { -1.4, -1.9 }, { 1.4, -1.1 } }, required_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
     },
     -- NOTE: there is deliberately no `weight` here. MEASURED: a space
     -- platform's mass is exactly its hub's weight plus the sum of its tiles'
@@ -471,7 +569,7 @@ data:extend({
     circuit_wire_max_distance = default_circuit_wire_max_distance,
     -- Mandatory on turret prototypes (the engine refuses to load without
     -- it). Matched to the plate's own contact range rather than gun
-    -- turret's 40 -- a plate calls for help over its own tile, not across
+    -- turret's 40 -- a plate calls for help over its own footprint, not across
     -- the platform.
     call_for_help_radius = 4,
     inventory_size = 1,
@@ -605,7 +703,7 @@ data:extend({
       priority = "high",
       width = 150,
       height = 118,
-      scale = 0.25,
+      scale = 0.5,
     },
   },
 })
