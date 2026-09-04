@@ -418,6 +418,71 @@ rather than an error, so check for them before believing a negative result:
   (`project_space_age_extended_future_trees`) and framework.md §4.2's
   open slots.
 
+## Outstanding work, as of 2026-09-04
+
+Consolidated across tree 1, this branch, and tree 2's plan
+(`~/.claude/plans/vulcanus-aquilo-structure.md`). Ordered by what blocks what.
+
+### Tree 1 — Quench Turbine (on `master`)
+
+- [ ] **Client playtest.** Nothing in the Quench Turbine rework has been played.
+      Tooltip legibility of the temperature clipping, and whether the lean tier
+      reads as a bridge rather than a solution.
+- [ ] **Decide `thermionic-playtest-feedback`.** Kept deliberately, refines a
+      design this work deleted. Keep or delete once the turbine is played.
+- [ ] **Strip `icon_mipmaps` repo-wide** — dead key, 25 sites, own janitorial
+      commit.
+
+### Reactive Edge Plating (branch `reactive-edge-plating`, 11 commits, unmerged)
+
+- [ ] **Client playtest.** Two things headless testing cannot answer: whether
+      the four placeholder facings actually read as different in a client, and
+      whether rotate-to-face-void placement is comfortable (vanilla asks the
+      same of the asteroid collector).
+- [ ] **Measure the promethium ladder.** The two-charges-for-`big` and
+      six-for-`huge` figures are computed from prototype data, not measured —
+      no charge has ever been fired at a promethium asteroid.
+- [ ] **Apply the first-pass numbers** from the plan's §13. The prototypes still
+      carry spike placeholders (charge = 1 steel + 1 explosives; plate = 10
+      steel + 5 tungsten) and no composite appears anywhere yet.
+- [ ] **Decide the plate's own survivability** — `max_health = 200` and its
+      resistances, once promethium's doubled `damage_per_hp` is measured.
+- [ ] **Corner feeding.** Adopt chamfered rims as stated design intent, and
+      publish a reference rim pattern. It must not be a closed belt loop (a
+      saturated loop deadlocked for 20,000 ticks with 44 plates dry).
+- [ ] **Circuit connector** is missing and **`heating_energy`** is unset — both
+      recorded in-line as deliberate gaps, neither decided.
+- [ ] **Real art**: the entity sprite with folded/preparing/attacking states,
+      plus the three new icons in `graphics/icon-prompts.md`.
+- [ ] **Merge decision.** Rebased onto current master and purely additive, but
+      not merged and not pushed.
+
+### Tree 2 — the rest of the tree (nothing implemented)
+
+- [ ] **Resolve the Thermal Bus contradiction first — it blocks the design doc.**
+      `design/endgame.md` §2a band 4 still names "Quench Turbine + **Thermal
+      Bus** (tree 1, and V↔A's second stage)", and `design/core.md` §2's
+      stage-one reversal ("run the Thermal Bus backwards") both point at a
+      mechanic the quench rework deleted. Decide whether V↔A owes a second-stage
+      thermal capability at all; the plan's §10 recommends replacing the beat
+      with a Geothermal Quench on the Core rather than deleting it.
+- [ ] **Write `design/vulcanus-aquilo.md`** — plan Phase 1. Nothing in `design/`
+      has been touched yet. Must state the band-5 boundary (consumption stays
+      strictly per-impact) as a rule, not a tuning note.
+- [ ] **Build the chain** — Molten Basalt, Refractory Panel, Basalt Fibre,
+      Fluoride Flux, Spent Flux, Tungsten Halide Pellet, Clad Panel,
+      Thermal-Shock Composite, and the five technologies. Plan phases 2–4.
+- [ ] **Replace the placeholder recipe and technology** on the plating branch
+      with the real chain and its gating (the `explosives` prerequisite goes
+      away with them).
+- [ ] **Update `design/framework.md` §5.1/§5.2** — Structure is still listed as
+      an open slot.
+
+### Housekeeping
+
+- [ ] `.claude/` (agent worktrees) is untracked in the main checkout and should
+      be gitignored.
+
 ## To resume
 
 Say "playtest the quench turbine". Everything needed — design doc, framework doc,
