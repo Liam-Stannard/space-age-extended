@@ -164,19 +164,21 @@ that:
 
 | Pair | Available after | Mechanic taught | Anchor | Capstone product | Endgame role | Status |
 |---|---|---|---|---|---|---|
-| Vulcanus ↔ Fulgora | both | — | — | **Magnetar alloy** | The coil's magnetic core | Capstone chosen |
+| Vulcanus ↔ Fulgora | both | **Surge production** | — | **Magnetar alloy** | The coil's magnetic core | Mechanic + capstone |
 | **Vulcanus ↔ Gleba** | both | **Maturation** | — | **Cultured alloy** | The coil's frame; also ripens on the corridor run | Mechanic + capstone |
-| Fulgora ↔ Gleba | both | — | — | **Bio-polymer** | The coil's insulation | Capstone chosen |
-| Fulgora ↔ Aquilo | Aquilo | — | — | **Superconducting winding** | The coil's conductor | Capstone chosen |
-| Gleba ↔ Aquilo | Aquilo | — | — | **Cryoprotectant fluid** | The coil's coolant | Capstone chosen |
+| Fulgora ↔ Gleba | both | **The living line** | — | **Bio-polymer** | The coil's insulation | Mechanic + capstone |
+| Fulgora ↔ Aquilo | Aquilo | **The cold loop** | — | **Superconducting winding** | The coil's conductor | Mechanic + capstone |
+| Gleba ↔ Aquilo | Aquilo | **Seed stock** | — | **Cryoprotectant fluid** | The coil's coolant | Mechanic + capstone |
 
 **The capstones are one decomposition.** A field coil has five parts — conductor,
 magnetic core, insulation, coolant, frame — and there are five trees, so each
 supplies one. See [the Core](05-the-core.md#stage-1--the-five-integrations) for
 how each is integrated through a different local input.
 
-Each tree still owes a **building** made from its product, and a mechanic:
-four of the five mechanics are unchosen.
+Every tree now has a mechanic and a capstone product. Each still owes a
+**building** made from that product, an **anchor** that forces its crossing, and
+its own 4–10 technology ladder. The corridor has a mechanic of its own —
+[seeding the field](mechanics.md#seeding-the-field--the-corridor).
 
 Vulcanus and Fulgora appear twice, Gleba and Fulgora three times; with four
 worlds and five pairs the even loop is not available, and Fulgora carrying three

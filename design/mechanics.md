@@ -11,59 +11,122 @@ against a data dump of the installed game.
 
 ---
 
-## Chosen
+## The six
+
+Five trees, one corridor. Two rest on the spoil timer and four do not, which is
+the balance we want: the timer is a strong tool and a limited one.
 
 ### Maturation — Vulcanus ↔ Gleba
 
-**The new rule: something that gets better if you leave it alone.**
+**The rule: something that gets better if you leave it alone.** A bio-mineral
+seeded on Gleba and held in Vulcanus's heat improves with age. Spoilage run
+backwards: the timer is the process, and the player's instinct to push everything
+through fast is exactly wrong.
 
-A bio-mineral seeded on Gleba and held in Vulcanus's heat **improves with age**.
-It is spoilage run backwards: the timer is the process. The player's instinct —
-push everything through as fast as it will go — is exactly wrong here, and a
-warehouse becomes a production building.
+*Implementation:* `spoil_ticks` with a `spoil_result` pointing at a **better**
+item. The engine's spoilage is only a timer aimed at another item; nothing
+requires the destination to be a downgrade.
 
-**Why this pair.** Gleba is the only world that grows anything; Vulcanus is the
-only one with heat to spare. Neither can mature anything alone.
+*At the end:* the corridor. The run to the Core is measured in real time, so one
+cargo ripens while everything else merely costs money — the only thing in the mod
+that makes the journey's length an asset.
 
-**Implementation.** `spoil_ticks` with a `spoil_result` pointing at a *better*
-item. The engine's spoilage is only a timer aimed at another item, and nothing
-requires the destination to be a downgrade — so chains of two or three stages
-cost nothing extra. No script.
+*Capstone:* cultured alloy, which becomes the coil's frame.
 
-**What it teaches.** Deliberate storage. Sizing a buffer to a rate rather than to
-a fear, and buying throughput with floor space instead of machines.
+### Surge production — Vulcanus ↔ Fulgora
 
-**Where it lands at the end.** Both places, which is unusual:
+**The rule: rate follows available power, not machine count.** These recipes draw
+so hard against such small buffers that a second machine does nothing while the
+first is browning out. You scale by capturing peaks — collectors, accumulators,
+discharge timing — not by copying the line.
 
-- *On the corridor* — the journey to the Core is a platform run measured in real
-  time, so one cargo ripens while everything else is merely costing money. The
-  trip becomes productive for exactly one material.
-- *On the Core* — it is the **central process**. The billet cast from core melt
-  is unfinished when it leaves the mould and must age before the final line can
-  use it, so the last stage can be widened but never rushed. See
-  [the Core](05-the-core.md#8-maturation-as-the-cores-central-process).
+*Implementation:* native and needs nothing new. Factorio already slows electric
+machines under brownout; the mechanic comes from the alloy's recipes having
+enormous instantaneous draw. On Fulgora the line visibly surges with the
+lightning.
 
----
+*At the end:* the Core's arc storms are the same problem without the lightning-rod
+tutorial. A player who learned to build for peaks arrives ready.
 
-## Still to choose
+*Capstone:* magnetar alloy, which becomes the coil's magnetic core.
 
-Four trees have no mechanic yet.
+### The living line — Fulgora ↔ Gleba
 
-| Pair | Available after | Notes toward a mechanic |
-|---|---|---|
-| Vulcanus ↔ Fulgora | both | The system's heat against its electricity; two worlds that each bootstrap from a single input |
-| Fulgora ↔ Gleba | both | The world with no soil against the world with no ore |
-| Fulgora ↔ Aquilo | Aquilo | Holmium in the cold — vanilla makes superconductors from exactly this pairing and then builds nothing structural on it |
-| Gleba ↔ Aquilo | Aquilo | The world whose every product expires against the only world cold enough to stop one |
+**The rule: a process that cannot be paused.** The polymer line runs on a culture
+the recipe both consumes and returns. Stall it — a backed-up output, a power cut,
+a belt gap — and the culture spoils in the machine. You do not lose a batch, you
+lose the line, and restarting takes a fresh seed.
 
-The selection rules are in
-[the tree pattern](02-tree-pattern.md#5-one-reserved-mechanic-per-tree). The
-short version: a new rule rather than a new recipe, belonging to those two worlds
-specifically, implementable in prototypes, load-bearing either on the corridor
-platform or on the Core, and not a variation on a lesson another tree already
-teaches.
+*Implementation:* a culture item with a short `spoil_ticks`, present on both
+sides of the recipe.
 
----
+*At the end:* running something that can never stop, in the least forgiving place
+in the game, at the far end of the longest supply line.
+
+*Capstone:* bio-polymer, which becomes the coil's insulation.
+
+### The cold loop — Fulgora ↔ Aquilo
+
+**The rule: every machine takes cryogen in and returns it spent.** Not power — a
+fluid, with a return leg. Layouts must be loops rather than lines, and the
+chiller is an overhead that scales with machine count rather than throughput.
+
+*Implementation:* the hot/cold fluid pair vanilla already uses for fluoroketone,
+generalised from one machine to a whole tree. The novelty is the layout problem;
+Factorio almost never forces a return line.
+
+*At the end:* the coil chain is the Core's most machine-dense line, so the loop
+overhead lands where floor space is worst.
+
+*Capstone:* superconducting winding, which becomes the coil's conductor.
+
+### Seed stock — Gleba ↔ Aquilo
+
+**The rule: insurance you have to manufacture in advance.** A frozen seed, made
+from a live culture and cryoprotectant, does not spoil — and it is the only way
+to restart a biological line that died. Cheap while things are running,
+impossible once they have stopped.
+
+*Implementation:* a recipe producing a non-spoiling seed, and another reviving it
+into a live culture. The seed itself has no timer, so this is the *answer* to
+spoilage rather than an instance of it.
+
+*At the end:* the recovery for the living line's failure, two million kilometres
+from Gleba — and the payload of the corridor's seeding missile below. Factorio
+has no recovery mechanic anywhere; nothing you build *in case*.
+
+*Capstone:* cryoprotectant fluid, which becomes the coil's coolant.
+
+### Seeding the field — the corridor
+
+**The rule: you have to sow before you can reap.** The mod adds one asteroid type
+to the far field. Shoot it plainly and it yields the corridor's power material.
+Fire a **bio missile** into it instead and it becomes an *infected asteroid* — a
+crop rather than a mineral — which harvests into organics.
+
+Same rock, two harvests. Every asteroid in range is a small bet about what the
+run needs more of, and the answer changes with distance.
+
+*Implementation:* vanilla asteroids already carry a `dying_trigger_effect` that
+`create-entity`s their smaller siblings — destroying a rock and putting a
+different one in its place is the pattern the game already uses. The missile's
+action does both in one trigger list: damage enough to destroy, and
+`create-entity` for the infected version. Our asteroid gets a **terminal** dying
+effect, so ordinary fire destroys it and yields nothing — using the wrong weapon
+wastes the rock, which is the mechanic teaching itself.
+
+*Why it matters:* it inverts the logistics. Rather than hauling bulk organics two
+million kilometres, you ship **light seed** and grow heavy cargo where it is
+needed. Nothing in vanilla does this; every other space resource arrives whether
+you act or not.
+
+*The payload is seed stock itself*, so Gleba ↔ Aquilo's insurance and the
+corridor's ammunition are the same item, and the field's biology traces to a
+planet that cannot be relocated.
+
+*Spike required:* whether a projectile's action can destroy an asteroid and place
+another in the same trigger, and whether collectors gather chunks produced that
+way. Both look right in the prototype data; neither is proven.
 
 ## Considered and cut
 
