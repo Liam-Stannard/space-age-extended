@@ -17,7 +17,8 @@ Entity sprites have their own document: **[building-spec-template.md](building-s
 — a blank per-building specification covering dimensions, directions, layer
 structure, animation, input/output placement, generation prompts, image
 processing and QA. Copy it to `building-spec-<name>.md` and fill it in before
-commissioning art for a new building.
+commissioning art for a new building. The first filled example is
+**[building-spec-quench-turbine.md](building-spec-quench-turbine.md)**.
 
 ---
 
