@@ -236,10 +236,9 @@ fast-forward into `master`, push, delete the branch.
     are exactly where a rim is most exposed. Any answer is a design one:
     accept unfed corners, chamfer the platform, use a second logistics
     layer, or change the plate's feeding shape.
-  - **A closed belt loop deadlocks.** The first ring attempt saturated one
-    lane across all 60 belt tiles and froze for 20,000 ticks with 44 plates
-    permanently empty; opening the loop by a single tile fixed it entirely.
-    Any rim blueprint the design ships must not be a closed loop.
+  - **A closed belt loop deadlocks — see the stated rule below**, which is
+    the one finding here that has to reach players rather than just the
+    design phase.
   - **`weight` is permanently off the table for this capability.** Platform
     mass is hub weight + sum of tile weights and nothing else (see the
     engine fact below), so a plate can never be balanced against platform
@@ -255,6 +254,36 @@ fast-forward into `master`, push, delete the branch.
     collectors never harvest. Real, but it falls out of turret targeting on
     its own — nothing in the prototype expresses it and there is no knob to
     tune it with.
+
+  ### Rule: a charge-resupply belt ring must never be closed
+
+  **Rule.** Any rim pattern this mod suggests — blueprint, screenshot,
+  tutorial, or wiki page — **must leave the belt ring open by at least one
+  tile**. A ring that meets itself is a broken build, not a tidier one.
+
+  **Cause.** A belt advances an item only into free space ahead of it. Close
+  the ring and every tile's "ahead" is another occupied tile, so once the
+  lane saturates there is nowhere for the front item to go and the whole
+  loop stops moving at once. Inserters on the arc that never received
+  charges then have nothing to pick up, and — because nothing is moving —
+  never will. It is a stable state, not a slow one: it does not clear itself
+  given more time, more belt, or more input.
+
+  **Evidence (measured).** The first rim build used a closed loop: one
+  saturated lane across all 60 belt tiles, frozen for 20,000 ticks, with 44
+  of the rim's plates permanently dry while the belt in front of them was
+  visibly full. Deleting a **single** belt tile to open the ring fixed it
+  completely — the same build then filled every inserter-served plate to
+  >=10 charges and held them there.
+
+  **Symptom, in the words a player will use.** *Full belts, empty plates.*
+  The belt looks perfectly healthy — solidly packed with Reactive Charges
+  all the way round — while a whole arc of the rim sits at zero and does not
+  fire. There is no alert, no red icon and no error; the only visible cue is
+  that the belt is not moving. A player who hits this will report that **the
+  plating is broken**, because from the outside that is exactly what it
+  looks like. Anything shipped with a closed ring will generate that bug
+  report.
 
 ## Headless RCON verification (how this was actually tested)
 
