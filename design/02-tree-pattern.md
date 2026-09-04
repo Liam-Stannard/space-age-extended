@@ -126,23 +126,22 @@ that stands between them and the Core:
 
 | Problem | Mid-game version | Endgame version |
 |---|---|---|
-| **Power where the usual sources fail** | Generating where solar is poor and fuel has to be shipped | The Core has no sun worth the name and nothing burns |
+| **Standing up production where there is nothing** | Every new world begins with hours of shipping everything in | On the Core that condition never ends |
 | **Moving material over distance** | The cost and friction of interplanetary freight | A supply line longer than anything in the game |
 | **Protection from what is out there** | Surviving what attacks a platform or a base | The field between the Edge and the Core |
 | **Refining what is locally available** | Turning a local waste stream into something worth having | Nothing arrives that was not made from what is out there |
 | **Keeping material viable** | Spoilage, decay, temperature, things that expire in transit | A journey long enough that time itself is the hazard |
 
-**Power is a late problem.** Vanilla solves power well until Aquilo — solar
-reads 400 on Vulcanus and 100 on Nauvis, and lightning covers Fulgora. It only
-becomes hard where the sun stops, so a power capstone belongs late even if its
-tree opens earlier.
+**Power is not on this list.** Vanilla covers it to the Edge and fusion answers
+Aquilo; it only becomes hard past the Edge, where there is no sun and nothing
+burns. It is solved there, by a new asteroid type found in the field — corridor
+content, not a tree capstone. See [the problem catalogue](problems.md#power-is-not-a-tree-problem).
 
-Assignment is being worked out in [the problem catalogue](problems.md) and is not
-settled. Current standing:
+Assignment, from that catalogue:
 
 | Problem | Tree | Why that pairing |
 |---|---|---|
-| Power | Vulcanus ↔ Fulgora | The system's heat against the system's electricity |
+| Standing up production from nothing | Vulcanus ↔ Fulgora | The system's two self-starting worlds — one bootstraps from lava, the other from scrap |
 | Protection | Vulcanus ↔ Gleba | Tungsten and heat against the only world that fights back |
 | Refining locally | Fulgora ↔ Gleba | Two worlds that make everything out of what they already have — scrap on one, bacteria on the other |
 | Moving material | Fulgora ↔ Aquilo | Superconduction is how you throw something a long way |
@@ -168,7 +167,7 @@ that:
 
 | Pair | Available after | Problem reserved | Anchor | Mechanic | Capstone | Status |
 |---|---|---|---|---|---|---|
-| Vulcanus ↔ Fulgora | both | Power | — | — | — | Not designed |
+| Vulcanus ↔ Fulgora | both | Production from nothing | — | — | — | Not designed |
 | Vulcanus ↔ Gleba | both | Protection | — | — | — | Not designed |
 | Fulgora ↔ Gleba | both | Refining locally | — | — | — | Not designed |
 | Fulgora ↔ Aquilo | Aquilo | Moving material | — | — | — | Not designed |
