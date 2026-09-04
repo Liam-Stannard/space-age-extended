@@ -11,39 +11,45 @@ can **fail** it — a principle that cannot be failed is decoration.
 A cross-planet leg only exists if the player **cannot just do the work locally**.
 So it matters exactly what the engine will and will not let them move.
 
-### What is actually locked
+### Two separate locks, and they behave differently
 
-Almost every production building can be **placed** anywhere. The Foundry,
-Electromagnetic Plant, Cryogenic Plant, Biochamber, Recycler, Chemical Plant and
-Assembler carry no surface conditions as entities — ship one to a platform or
-another world and it works.
+**Entity placement is gated by surface conditions**, and this is real: a building
+with a pressure or gravity condition cannot be built where the condition fails.
+Measured on a live platform (pressure 0, gravity 0) at a valid foundation tile:
 
-What is locked is the **recipe that manufactures them**, by surface property:
+| Placeable on a platform | Refused on a platform |
+|---|---|
+| chemical plant, assembler, foundry, electromagnetic plant, biochamber, recycler, cryogenic plant | boiler, stone and steel furnace, heating tower, rocket silo, roboport, all chests, biolab, agricultural tower |
 
-| Building recipe | Condition | Which means |
+It separates planets as well as ground from space, and vanilla uses it exactly
+that way: the **biolab** requires pressure 1000 exactly, so it is Nauvis-only;
+the **agricultural tower** requires 1000–2000, so it works on Nauvis and Gleba
+and nowhere else. Both measured.
+
+**Recipe surface conditions are a second, independent lock**, and this is what
+gates most of the big machines — not where they can stand, but where they can be
+*made*:
+
+| Recipe | Condition | Which means |
 |---|---|---|
-| `foundry`, `big-mining-drill`, turbo belts | pressure 4000 | Vulcanus only |
-| `electromagnetic-plant`, `recycler`, `lightning-rod` | magnetic field ≥ 99 | Fulgora only |
-| `biochamber`, the soils, `pentapod-egg` | pressure 2000 | Gleba only |
-| `cryogenic-plant`, `fusion-reactor`, `fusion-generator` | pressure 100–600 | Aquilo only |
-| `biolab`, `tree-seed`, `fish-breeding` | pressure 1000 | Nauvis only |
+| `foundry`, `big-mining-drill`, turbo belts | pressure 4000 | Vulcanus |
+| `electromagnetic-plant`, `recycler`, `lightning-rod` | magnetic field ≥ 99 | Fulgora |
+| `biochamber`, the soils, `pentapod-egg` | pressure 2000 | Gleba |
+| `cryogenic-plant`, `fusion-reactor`, `fusion-generator` | pressure 100–600 | Aquilo |
+| `biolab`, `tree-seed`, `fish-breeding` | pressure 1000 | Nauvis |
+| `acid-neutralisation` | pressure 4000 | Vulcanus |
 
-So a machine is *made* in one place and *used* anywhere. **Manufacture is not a
-crossing** — the player builds it once and ships it, and the chain then runs
-wherever they like.
+The distinction matters. A cryogenic plant is *manufactured* on Aquilo but can be
+*placed* anywhere, platforms included — so **manufacture alone is never a
+crossing**: the player builds the machine once, ships it, and runs the chain
+wherever they like. A boiler, by contrast, genuinely cannot exist in space.
 
-A few entities genuinely cannot be placed everywhere, and those are real
-constraints: `thruster`, `crusher`, `asteroid-collector` and the platform hub
-need pressure 0 or gravity 0, so they are space-only; rails, vehicles, chests,
-the rocket silo, boilers, stone and steel furnaces, roboports and burner
-inserters all need gravity or pressure above zero, so they are ground-only.
-
-### The three honest anchors
+### The four honest anchors
 
 A leg is forced when one of these is true, and only then:
 
 1. **An ingredient that cannot move.** Vanilla marks these `auto_barrel = false`
-   — there is no barrel, so there is no rocket:
+   — no barrel, so no rocket:
 
    | World | Immovable fluids |
    |---|---|
@@ -51,10 +57,15 @@ A leg is forced when one of these is true, and only then:
    | Fulgora | `holmium-solution`, `electrolyte` |
    | Aquilo | `ammoniacal-solution`, `ammonia`, `fluorine`, `lithium-brine` |
 
-2. **A surface condition on the recipe itself**, which is how vanilla locks its
-   own processes — `acid-neutralisation` to pressure 4000, the bacteria and
-   soils to 2000, each science pack to its own world. The surface properties
-   available to separate them:
+2. **A surface condition on the recipe**, the way vanilla locks
+   `acid-neutralisation` and the bacteria cultivations.
+
+3. **A surface condition on the building**, the way vanilla locks the biolab to
+   Nauvis and the agricultural tower to Nauvis and Gleba. **This is the mod's
+   strongest tool for its own buildings** — a capstone that only stands where a
+   physical property allows cannot be relocated to dodge the supply line.
+
+   The properties available to separate the worlds:
 
    | | pressure | gravity | magnetic field | solar |
    |---|---|---|---|---|
@@ -63,19 +74,22 @@ A leg is forced when one of these is true, and only then:
    | Fulgora | 800 | 8 | **99** | 20 |
    | Gleba | 2000 | 20 | 25 | 50 |
    | Aquilo | 300 | 15 | 10 | 1 |
-   | Platform | 0 | 0 | — | — |
+   | Platform | 0 | 0 | 0 | — |
 
-3. **A placement-locked entity**, where the process needs a building that only
-   works in one environment.
+   Every planet has a unique pressure, so pressure alone can name any one of
+   them, any contiguous range of them, or exclude space.
+
+4. **A native process with no equivalent elsewhere** — lightning on Fulgora, lava
+   on Vulcanus, a crop that has to grow on Gleba.
 
 ### The rule that survives all of it
 
 > **A lock must describe a physical fact about the place, never name it.**
 
-Pressure, gravity, magnetic field, an ingredient that has no container — these
-are readable, and a player can reason about them. "Craftable only on Gleba"
-teaches nothing and is arbitrary even when it produces the same outcome. Vanilla
-never does it, and neither does this mod.
+Pressure, gravity, magnetic field, an ingredient with no container — these are
+readable, and a player can reason about them. "Craftable only on Gleba" teaches
+nothing even when it produces the same outcome. Vanilla never does it, and
+neither does this mod.
 
 ## 2. Both planets sending is the default, not the law
 
