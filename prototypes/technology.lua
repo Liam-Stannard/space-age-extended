@@ -193,7 +193,15 @@ data:extend({
     -- (base/prototypes/technology.lua:2700), and neither `space-platform`
     -- nor `tungsten-steel` implies it -- without this a save can reach this
     -- technology with a cost it cannot pay.
-    prerequisites = { "space-platform", "space-science-pack", "tungsten-steel" },
+    --
+    -- `explosives` is here for the same reason, one step further on: the
+    -- charge recipe needs the `explosives` item, which hangs off
+    -- `sulfur-processing` (base/prototypes/technology.lua:2870) and is in the
+    -- prerequisite closure of none of the other three -- so without it a save
+    -- can research this technology and be unable to craft the charge it just
+    -- unlocked. It goes when the placeholder recipe does; the composite chain
+    -- that replaces it carries its own gating.
+    prerequisites = { "space-platform", "space-science-pack", "tungsten-steel", "explosives" },
     unit = {
       count = 100,
       ingredients = {
