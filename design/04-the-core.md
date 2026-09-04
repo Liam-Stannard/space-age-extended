@@ -309,7 +309,7 @@ and shaped so the endgame builds rather than arriving flat.
 
 | Tier | Technologies | Notes |
 |---|---|---|
-| **0 — Foothold** | Core Survey (vent pump, working the ore) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Helium Extraction (the gas vent) | Researched on packs the player already makes, since no geodynamic pack exists yet |
+| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Core Survey (vent pump, working the ore) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Helium Extraction (the gas vent) | Researched on packs the player already makes, since no geodynamic pack exists yet |
 | **1 — Integration** | Five technologies, one per capstone: each unlocks the recipe consuming that product with a local input to make an intermediate | **Researchable in any order**, so a player whose Gleba line is ahead of their Aquilo line is never blocked |
 | **2 — Geodynamic Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
 | **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
@@ -421,8 +421,10 @@ Kamacite whiskers crystallise out of the melt over time on seeded plates, and ar
 harvested like a crop. Growing area, not machine count, is the throughput.
 
 *Implementation:* the `plant` prototype with `growth_ticks` and a tile
-restriction, plus a harvesting tower — vanilla's agriculture machinery used for
-**mineral** growth. Gleba farms food; the Core farms metal.
+restriction — measured working on the Core, growing to maturity and yielding its
+products. **The harvester is the open piece:** vanilla's agricultural tower needs
+pressure 1000–2000 and is refused here, so the mod must supply its own tower.
+Gleba farms food; the Core farms metal.
 
 ### Where maturation went
 

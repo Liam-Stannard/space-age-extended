@@ -33,6 +33,71 @@ against `game.tick` deltas, never wall-clock sleeps**.
 
 ---
 
+## Results so far
+
+| Spike | Status |
+|---|---|
+| S1 — is the Core buildable? | **PASS**, with one required addition |
+| S2 — do the Core's conditions behave? | **PASS** on placement, growth and the sealed roboport; one gap found |
+| S3 — does seeding work? | not yet run |
+| S4 — can a vent require an input fluid? | not yet run |
+
+### S1 — PASS
+
+Measured on a headless server with a scratch mod defining the planet and a
+connection from the Shattered Planet:
+
+- The planet loads, `create_surface()` generates ground, and the surface reports
+  **pressure 5, gravity 50, solar-power 0** exactly as specified.
+- Placement on it matches the design precisely: chests, inserters, rails,
+  assemblers, foundries, electromagnetic plants, cryogenic plants, biochambers,
+  recyclers, nuclear reactors, drills, the rocket silo and the cargo landing pad
+  all place; **boilers, furnaces, heating towers, roboports, burner inserters,
+  agricultural towers and biolabs are all refused.** Lightning rods are refused
+  too, since the magnetic field is 0.
+- The space connection resolves, a platform paths to it, departs under thruster
+  power, and **arrives**: `state = waiting_at_station, location = sae-core`.
+
+**The required addition: the Core needs a discovery technology.** A platform
+reports `no_path` to our planet until the force has explicitly unlocked the
+location. `research_all_technologies()` does not do it, because no technology
+references our planet — vanilla gates each of its worlds behind a
+`planet-discovery-*` technology with an `unlock-space-location` effect, and ours
+needs the same. Without it the Core is unreachable however well-formed the
+connection is.
+
+*Also learned:* the Shattered Planet is a perfectly good waypoint — connections
+from it path fine, so the corridor can genuinely start where vanilla's route
+gives out.
+
+### S2 — PASS, with a gap
+
+- A **mod tile** places on the Core, and a **mod `plant`** placed on it grows to
+  maturity on schedule and yields its harvest products when mined. Whisker
+  growth is buildable exactly as designed.
+- A **sealed roboport** with `surface_conditions` pressure 1–9 places on the
+  Core and is **refused on Aquilo and on a space platform**, while the vanilla
+  roboport is refused on the Core. The mid-tree bot unlock works, and it competes
+  with nothing.
+
+**The gap: there is no harvester.** The vanilla agricultural tower is refused on
+the Core (it needs pressure 1000–2000), so whiskers can only be gathered by hand
+unless the mod supplies **its own harvesting tower** with the Core's conditions.
+That is a second new building on the Core, and it needs to be justified or
+designed into an existing one.
+
+*Not re-tested:* whether recipe `surface_conditions` block crafting at runtime.
+Earlier work established they are a player-facing selection filter rather than a
+runtime block, which is sufficient — players do not set recipes by script.
+
+### Engine change worth knowing
+
+**Recipes in 2.1 use `categories = {...}`, not `category = "..."`.** The data
+stage refuses the old form outright: *"In RecipePrototype, `category` and
+`additional_categories` got merged into `categories` table."*
+
+---
+
 ## S1 — Is the Core buildable at all?
 
 **The claim.** A landable planet can be added past the Shattered Planet, with its

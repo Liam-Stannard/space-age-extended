@@ -135,6 +135,31 @@ It described a design in which each capstone was a space-platform capability.
 Capstones are coil parts now, and the platform content lives in the corridor and
 the Core's orbital half.
 
+## Measured on the Core prototype itself
+
+From the S1 and S2 spikes, on a headless server running a scratch planet.
+
+- **A landable planet past the Shattered Planet works.** The surface generates,
+  reports pressure 5 / gravity 50 / solar 0, and a platform paths to it, flies,
+  and docks.
+- **The Core needs a discovery technology.** A platform reports `no_path` until
+  the force has unlocked the location, and researching everything does not do it
+  because no technology references our planet. Vanilla gates each world behind a
+  `planet-discovery-*` technology with an `unlock-space-location` effect; the
+  Core's tree needs the same as its entry point.
+- **The Shattered Planet is a valid waypoint** — connections from it path
+  normally, so the corridor can start where vanilla's route gives out.
+- **The sealed roboport works.** At `surface_conditions` pressure 1–9 it places
+  on the Core and is refused on Aquilo and on platforms, while the vanilla
+  roboport is refused on the Core.
+- **Mod tiles and mod plants work on the Core**: the plant grows on schedule at
+  pressure 5 and yields its products when harvested.
+- **There is no harvester.** The agricultural tower needs pressure 1000–2000, so
+  the mod must supply its own tower for whisker beds — a second Core building
+  that has to be designed for, not assumed.
+- **Recipes in 2.1 take `categories = {...}`**, not `category`. The old form is
+  refused at the data stage.
+
 ## Verified engine facts behind these decisions
 
 Measured, not assumed — three earlier claims in this design were wrong until
