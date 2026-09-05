@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Turn AI-generated icon renders into the mod's 64px mipmapped icon strips.
+"""Turn AI-generated icon renders into the mod's mipmapped icon strips.
 
 Usage:
-    tools/key-icons.py OUT_DIR SRC.png[:target-name] ...
+    tools/key-icons.py [--size N] OUT_DIR SRC.png[:target-name] ...
+
+--size sets the base icon size and defaults to 64, which is what items, fluids
+and recipes use. Technologies are 256, and vanilla ships those as a 480x256
+strip exactly as it ships a 64px icon as 120x64.
 
 For each source image (1024x1024 renders from an image generator):
 
@@ -17,8 +21,10 @@ For each source image (1024x1024 renders from an image generator):
    is forced opaque (so grey parts of a grey object survive).
 2. Crop to the opaque bounding box plus a small margin, square, and
    downsample to 64x64.
-3. Bake the 120x64 mipmap strip (64/32/16/8 packed left to right) the repo's
-   icons already use with `icon_mipmaps = 4`.
+3. Bake the mipmap strip (N/N-halved/... packed left to right) that vanilla
+   ships its icons as -- 120x64 for a 64px icon, 480x256 for a 256px one. The
+   engine infers the mipmap count from the image being wider than `icon_size`;
+   `icon_mipmaps` was a 1.1 property and no longer exists.
 
 Also writes a keyed 1024px master next to the strip under OUT_DIR/masters/
 so the keying can be judged at full size. Pillow only, no numpy.
@@ -28,7 +34,7 @@ import os
 import sys
 from PIL import Image, ImageDraw
 
-MIP_SIZES = (64, 32, 16, 8)
+MIP_LEVELS = 4       # base size, then halved three times
 BORDER = 28          # px band around the edge assumed to be pure background
 EDGE_LO, EDGE_HI = 10, 80   # colour distance from expected background -> alpha ramp
 BG_ALPHA_CUT = 0.35  # flood fill treats pixels below this alpha as background
@@ -233,16 +239,29 @@ def crop_square(im):
     return canvas
 
 
-def mip_strip(icon64):
-    strip = Image.new("RGBA", (sum(MIP_SIZES), MIP_SIZES[0]), (0, 0, 0, 0))
+def mip_sizes(base):
+    return tuple(base >> i for i in range(MIP_LEVELS))
+
+
+def mip_strip(icon, base):
+    sizes = mip_sizes(base)
+    strip = Image.new("RGBA", (sum(sizes), base), (0, 0, 0, 0))
     x = 0
-    for s in MIP_SIZES:
-        strip.paste(icon64.resize((s, s), Image.LANCZOS), (x, 0))
+    for s in sizes:
+        strip.paste(icon.resize((s, s), Image.LANCZOS), (x, 0))
         x += s
     return strip
 
 
 def main(argv):
+    if len(argv) < 3:
+        print(__doc__)
+        return 2
+    argv = list(argv)
+    base = 64
+    if len(argv) > 2 and argv[1] == "--size":
+        base = int(argv[2])
+        del argv[1:3]
     if len(argv) < 3:
         print(__doc__)
         return 2
@@ -263,8 +282,8 @@ def main(argv):
         for sub in ("", "masters"):
             os.makedirs(os.path.dirname(os.path.join(out_dir, sub, name + ".png")), exist_ok=True)
         keyed.save(os.path.join(out_dir, "masters", name + ".png"))
-        icon = crop_square(keyed).resize((64, 64), Image.LANCZOS)
-        mip_strip(icon).save(os.path.join(out_dir, name + ".png"))
+        icon = crop_square(keyed).resize((base, base), Image.LANCZOS)
+        mip_strip(icon, base).save(os.path.join(out_dir, name + ".png"))
         print("%-32s %-40s interior-forced=%d" % (name, desc, forced))
     return 0
 

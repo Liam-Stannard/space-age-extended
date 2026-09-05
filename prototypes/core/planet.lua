@@ -15,9 +15,8 @@ data:extend({
   {
     type = "planet",
     name = "sae-core",
-    icon = "__space-age__/graphics/icons/starmap-planet-aquilo.png",
-    icon_size = 512,
-    starmap_icon = "__space-age__/graphics/icons/starmap-planet-aquilo.png",
+    icon = "__space-age-extended__/graphics/icons/core.png",
+    starmap_icon = "__space-age-extended__/graphics/icons/starmap-core.png",
     starmap_icon_size = 512,
     gravity_pull = 10,
     distance = 95,

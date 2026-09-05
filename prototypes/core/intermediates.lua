@@ -12,7 +12,7 @@ data:extend({
   {
     type = "item",
     name = "sae-field-conductor",
-    icon = "__space-age__/graphics/icons/superconductor.png",
+    icon = "__space-age-extended__/graphics/icons/field-conductor.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[a-conductor]",
     stack_size = 50,
@@ -21,7 +21,7 @@ data:extend({
   {
     type = "item",
     name = "sae-magnetic-core-billet",
-    icon = "__space-age__/graphics/icons/tungsten-plate.png",
+    icon = "__space-age-extended__/graphics/icons/magnetic-core-billet.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[b-core-billet]",
     stack_size = 50,
@@ -30,7 +30,7 @@ data:extend({
   {
     type = "item",
     name = "sae-reinforced-frame",
-    icon = "__space-age__/graphics/icons/tungsten-carbide.png",
+    icon = "__space-age-extended__/graphics/icons/reinforced-frame.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[c-frame]",
     stack_size = 50,
@@ -39,7 +39,7 @@ data:extend({
   {
     type = "item",
     name = "sae-insulation-sleeve",
-    icon = "__base__/graphics/icons/plastic-bar.png",
+    icon = "__space-age-extended__/graphics/icons/insulation-sleeve.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[d-sleeve]",
     stack_size = 50,
@@ -48,7 +48,7 @@ data:extend({
   {
     type = "item",
     name = "sae-coolant-charge",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
+    icon = "__space-age-extended__/graphics/icons/coolant-charge.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[e-coolant-charge]",
     stack_size = 50,
@@ -166,7 +166,7 @@ data:extend({
   {
     type = "tool",
     name = "sae-geodynamic-science-pack",
-    icon = "__space-age__/graphics/icons/promethium-science-pack.png",
+    icon = "__space-age-extended__/graphics/icons/geodynamic-science-pack.png",
     subgroup = "science-pack",
     order = "z[sae]-geodynamic",
     stack_size = 200,

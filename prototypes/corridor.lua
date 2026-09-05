@@ -21,23 +21,27 @@
 local radiant_chunk = table.deepcopy(data.raw["asteroid-chunk"]["promethium-asteroid-chunk"])
 radiant_chunk.name = "sae-radiant-chunk"
 radiant_chunk.order = "z[sae]-a[radiant]"
+radiant_chunk.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
 radiant_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-radiant-chunk", amount = 1 } } }
 data:extend({ radiant_chunk })
 
 local seeded_chunk = table.deepcopy(data.raw["asteroid-chunk"]["carbonic-asteroid-chunk"])
 seeded_chunk.name = "sae-seeded-chunk"
 seeded_chunk.order = "z[sae]-b[seeded]"
+seeded_chunk.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
 seeded_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-seeded-chunk", amount = 1 } } }
 data:extend({ seeded_chunk })
 
 local radiant_item = table.deepcopy(data.raw.item["promethium-asteroid-chunk"])
 radiant_item.name = "sae-radiant-chunk"
 radiant_item.order = "z[sae]-a[radiant]"
+radiant_item.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
 data:extend({ radiant_item })
 
 local seeded_item = table.deepcopy(data.raw.item["carbonic-asteroid-chunk"])
 seeded_item.name = "sae-seeded-chunk"
 seeded_item.order = "z[sae]-b[seeded]"
+seeded_item.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
 data:extend({ seeded_item })
 
 --------------------------------------------------------------------------------
@@ -94,7 +98,7 @@ data:extend({
   {
     type = "ammo",
     name = "sae-seed-missile",
-    icon = "__base__/graphics/icons/rocket.png",
+    icon = "__space-age-extended__/graphics/icons/seed-missile.png",
     subgroup = "ammo",
     order = "z[sae]-a[seed-missile]",
     ammo_category = "rocket",
@@ -146,8 +150,11 @@ data:extend({
       { type = "item", name = "sae-radiant-fuel", amount = 2 },
       { type = "item", name = "sae-radiant-chunk", amount = 1, independent_probability = 0.2, ignored_by_stats = 1 }
     },
-    icon = "__space-age__/graphics/icons/promethium-asteroid-chunk.png",
-    icon_size = 64,
+    icons =
+    {
+      { icon = "__space-age-extended__/graphics/icons/radiant-chunk.png" },
+      { icon = "__space-age-extended__/graphics/icons/radiant-fuel.png", scale = 0.25, shift = { 8, 8 } }
+    },
     allow_productivity = true,
     enabled = false
   },
@@ -162,8 +169,11 @@ data:extend({
       { type = "item", name = "carbon", amount = 4 },
       { type = "item", name = "spoilage", amount = 2 }
     },
-    icon = "__space-age__/graphics/icons/carbonic-asteroid-chunk.png",
-    icon_size = 64,
+    icons =
+    {
+      { icon = "__space-age-extended__/graphics/icons/seeded-chunk.png" },
+      { icon = "__space-age__/graphics/icons/carbon.png", scale = 0.25, shift = { 8, 8 } }
+    },
     allow_productivity = true,
     enabled = false
   },
@@ -175,7 +185,7 @@ data:extend({
   {
     type = "item",
     name = "sae-radiant-fuel",
-    icon = "__space-age__/graphics/icons/fusion-power-cell.png",
+    icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
     subgroup = "intermediate-product",
     order = "z[sae]-c[radiant-fuel]",
     stack_size = 50,

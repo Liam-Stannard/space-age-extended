@@ -21,7 +21,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-cold-cryogen",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/cold-cryogen.png",
     subgroup = "fluid",
     order = "z[sae]-fa[a-cold-cryogen]",
     default_temperature = -140,
@@ -31,7 +31,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-spent-cryogen",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-hot.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/spent-cryogen.png",
     subgroup = "fluid",
     order = "z[sae]-fa[b-spent-cryogen]",
     default_temperature = 20,
@@ -42,7 +42,7 @@ data:extend({
   {
     type = "item",
     name = "sae-fluorinated-holmium",
-    icon = "__space-age__/graphics/icons/holmium-plate.png",
+    icon = "__space-age-extended__/graphics/icons/fluorinated-holmium.png",
     subgroup = "raw-material",
     order = "z[sae]-fa[c-fluorinated-holmium]",
     stack_size = 100,
@@ -95,7 +95,7 @@ data:extend({
       { type = "item", name = "sae-fluorinated-holmium", amount = 1 },
       { type = "fluid", name = "sae-spent-cryogen", amount = 20 }
     },
-    icon = "__space-age__/graphics/icons/holmium-plate.png",
+    icon = "__space-age-extended__/graphics/icons/fluorinated-holmium.png",
     icon_size = 64,
     allow_productivity = true,
     enabled = false
@@ -119,7 +119,7 @@ data:extend({
       { type = "item", name = "sae-superconducting-winding", amount = 1 },
       { type = "fluid", name = "sae-spent-cryogen", amount = 20 }
     },
-    icon = "__space-age__/graphics/icons/superconductor.png",
+    icon = "__space-age-extended__/graphics/icons/superconducting-winding.png",
     icon_size = 64,
     allow_productivity = true,
     enabled = false
@@ -141,6 +141,25 @@ store.energy_source =
   input_flow_limit = "20MW",
   output_flow_limit = "20MW"
 }
+-- Drop the inherited charge overlays.
+--
+-- `chargable_graphics` is a coupled set: a base `picture` plus `charge_animation`
+-- and `discharge_animation` drawn on top of it. Vanilla's overlays are shaped for
+-- the accumulator's flat-fronted box and light its front panel. This building is
+-- a squat cryostat whose charge read is a band of light travelling around a
+-- recessed ring channel, so the two cannot coexist -- replacing `picture` alone
+-- would land a box-shaped glow on a drum and read as two machines lit at once.
+--
+-- Cleared rather than left in place, because the failure only appears when the
+-- plate lands and would be easy to miss then. Charge feedback is deliberately
+-- absent until the ring frames exist; see building-brief-superconducting-store.md
+-- §9, which specifies them as five states derived by differencing, with the light
+-- travelling around the ring rather than filling a bar.
+store.chargable_graphics.charge_animation = nil
+store.chargable_graphics.charge_cooldown = nil
+store.chargable_graphics.discharge_animation = nil
+store.chargable_graphics.discharge_cooldown = nil
+
 store.fast_replaceable_group = nil
 store.next_upgrade = nil
 data:extend({ store })

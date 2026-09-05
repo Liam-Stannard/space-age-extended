@@ -12,7 +12,7 @@ data:extend({
     name = "sae-core-discovery",
     icons =
     {
-      { icon = "__space-age__/graphics/technology/aquilo.png", icon_size = 256 },
+      { icon = "__space-age-extended__/graphics/technology/sae-core-discovery.png", icon_size = 256 },
       {
         icon = "__core__/graphics/icons/technology/constants/constant-planet.png",
         icon_size = 128, scale = 0.5, shift = { 50, 50 }, floating = true
@@ -55,12 +55,12 @@ data:extend({
 -- packs the player already makes, because the geodynamic pack cannot exist
 -- until the corridor is delivering.
 
-local function foothold(name, prereqs, effects)
+local function foothold(name, prereqs, effects, icon)
   return
   {
     type = "technology",
     name = name,
-    icon = "__space-age__/graphics/technology/aquilo.png",
+    icon = icon or "__space-age__/graphics/technology/aquilo.png",
     icon_size = 256,
     effects = effects,
     prerequisites = prereqs,
@@ -95,13 +95,15 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-dross-resettling" },
       { type = "unlock-recipe", recipe = "sae-ingot-casting" },
       { type = "unlock-recipe", recipe = "sae-orbital-homogenisation" }
-    }),
+    },
+    "__space-age-extended__/graphics/technology/sae-gravity-settling.png"),
   foothold("sae-whisker-beds", { "sae-gravity-settling" },
     {
       { type = "unlock-recipe", recipe = "sae-whisker-bed" },
       { type = "unlock-recipe", recipe = "sae-seed-plate" },
       { type = "unlock-recipe", recipe = "sae-bed-tender" }
-    }),
+    },
+    "__space-age-extended__/graphics/technology/sae-whisker-beds.png"),
   foothold("sae-sealed-roboports", { "sae-cold-welding" },
     {
       { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
@@ -120,12 +122,12 @@ data:extend({
 -- two of the intermediates. Research and construction therefore draw on one
 -- supply, and every pack burned is a Field Coil Segment delayed.
 
-local function geodynamic(name, prereqs, count, effects)
+local function geodynamic(name, prereqs, count, effects, icon)
   return
   {
     type = "technology",
     name = name,
-    icon = "__space-age__/graphics/technology/aquilo.png",
+    icon = icon or "__space-age__/graphics/technology/aquilo.png",
     icon_size = 256,
     effects = effects,
     prerequisites = prereqs,
@@ -169,7 +171,8 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-coil-assembly" },
       { type = "unlock-recipe", recipe = "sae-coolant-loop" },
       { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
-    }),
+    },
+    "__space-age-extended__/graphics/technology/sae-field-coils.png"),
   geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 300,
     {
       { type = "unlock-recipe", recipe = "sae-seed-missile" },

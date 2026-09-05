@@ -399,61 +399,64 @@ together before it disperses.
 
 # 8. Input / Output Visualisation
 
-Read off the two inherited fluid boxes. There are **four possible hookups** on
-a 3×3 building, and the art has to accommodate all of them.
+**Both fluid boxes are declared by this mod, not inherited.** What the pumpjack
+and the mining drill hand down is unusable, and §19 records why.
 
-## Item Inputs
+```
+north-facing:   . O .      O = molten kamacite out, faces north
+                .   .
+                . I .      I = helium-3 in, faces south
+```
 
-| Input | Location | Direction |
-| ----- | -------- | --------- |
-| None  | —        | —         |
+| Fluid | Position (facing north) | Faces | Volume |
+| ----- | ----------------------- | ----- | -----: |
+| `sae-molten-kamacite` | `[0, -1]` — centre of the north edge | north | 1000 |
+| `sae-helium-3` | `[0, 1]` — centre of the south edge | south | 200 |
 
-## Item Outputs
+One in, one out, on opposite faces, both on the centre tile of their edge. Fluid
+runs straight through the building, and the whole arrangement rotates with the
+entity as a rigid pair.
 
-| Output | Location | Direction |
-| ------ | -------- | --------- |
-| None   | —        | —         |
+### Pipes only join in straight lines
 
-Nothing solid enters or leaves. No inserter ever touches this building, which
-frees all four sides for pipe.
+This is the rule the art has to be drawn against, and it is easy to get wrong.
+A pipe connection has a **tile** and a **facing**, and the pipe that meets it
+runs axis-aligned out of that tile's edge. There is no such thing as a diagonal
+hookup. Two consequences:
 
-## Fluid Inputs
+* **Every flange must sit square to the edge it is on** and point straight out
+  of it. A connector angled across a corner is one the player can never join
+  cleanly, however good it looks.
+* **A connection on a corner *tile* is still not diagonal.** The pumpjack's
+  inherited output sat on tile `[1, -1]` and faced *north* — it left through the
+  top edge at the right-hand tile. Reading that as "diagonally out from the
+  shoulder" is what produced the elbow in `concept/v3-sheet.png`, and it was
+  wrong. We no longer use a corner tile at all, but the distinction matters
+  anywhere else it comes up.
 
-Inherited from `electric-mining-drill.input_fluid_box`. Single positions, so
-they rotate with the entity. Volume 200.
+## Item Inputs / Outputs
 
-| Fluid     | Location (entity-relative, facing north) | Connection Type |
-| --------- | ---------------------------------------- | --------------- |
-| `sae-helium-3` | `[-1, 0]` — mid-west edge  | Input pipe connection, facing west |
-| `sae-helium-3` | `[1, 0]` — mid-east edge   | Input pipe connection, facing east |
-| `sae-helium-3` | `[0, 1]` — mid-south edge  | Input pipe connection, facing south |
+| | Location | Direction |
+| --- | -------- | --------- |
+| None | — | — |
 
-## Fluid Outputs
-
-Inherited from `pumpjack.output_fluid_box`. A `positions` array, so the
-connection sits at a **different corner in each of the four rotations** —
-this is the pumpjack's signature quirk and the reason it is worth rotating.
-
-| Fluid | Location by direction | Connection Type |
-| ----- | --------------------- | --------------- |
-| `sae-molten-kamacite` | N `[1, -1]` · E `[1, 1]` · S `[-1, 1]` · W `[-1, -1]` | Output pipe connection |
+Nothing solid enters or leaves. No inserter ever touches this building.
 
 ### Visual Requirement
 
-The three input stubs and the one output elbow must be **visually
-distinguishable at a glance**, because the player will be threading two
-different fluids into the same 3×3 building and getting them backwards is the
-most likely mistake on the planet.
+Two connectors, and they must not be confusable — the player is threading two
+different fluids into one 3×3 building and reversing them is the likeliest
+mistake on the planet.
 
-* The **three input stubs** are pale, ribbed, insulated, and rimed — obviously
-  cryogenic, obviously the same fluid as each other, and obviously not the
-  output.
-* The **one output elbow** is bare, dark, heat-stained metal, sitting higher on
-  the stack, and glowing faintly at its flange. It sits on a **corner**, where
-  no input ever sits, so corner-versus-edge is a second, redundant cue.
-* Only one input is used in practice. The other two stubs should read as
-  **capped and idle** rather than as three live pipes, or the building looks
-  like it wants three helium lines.
+* The **intake** is pale, ribbed, insulated and rimed with frost: obviously
+  cryogenic, obviously the cold side.
+* The **riser** is bare, dark, heat-stained metal, sitting higher on the stack
+  and glowing faintly at its flange, with the armoured sight window on it.
+* They sit on **opposite faces**, which is a second, redundant cue on top of
+  frost-versus-heat.
+
+Both flanges are modelled into the plate, square to their edge — see the
+foundry's `enable_working_visualisations` pattern in the briefs' §8.
 
 ---
 
@@ -972,14 +975,23 @@ testable without any art — and it is the thing this document exists to replace
 ### Version 1 — gas-lift wellhead (this document)
 
 The concept, the palette, the layer split and the prompts in §11 and §16 are
-written and ready to fire; `tools/generate-building-art.py` reads them straight
-out of this file, so there is no second copy to keep in step.
+written; `tools/generate-building-art.py` reads them straight out of this file,
+so there is no second copy to keep in step.
 
-**No art has been generated yet.** The generation pass was attempted and the
-API refused it — the account authenticates fine but has a zero credit balance
-(`insufficient_quota` / `credit_balance_exhausted`, on text calls as well as
-image calls). Nothing about the prompts has been tested against a generator, so
-every art claim below Version 0 is still a proposal on paper.
+**The API route is dead and the browser route is the one that works.** The
+first generation pass was attempted through the OpenAI API and refused — the
+account authenticates but has a zero credit balance (`insufficient_quota` /
+`credit_balance_exhausted`, on text calls as well as image calls). Everything
+since has gone through ChatGPT in the browser; see template Appendix B.
+
+### Round log
+
+| Round | Asset | What came back | Verdict | Fix asked for |
+| ----- | ----- | -------------- | ------- | ------------- |
+| 1 | sheet | `concept/v1-sheet.png`. The machine is right and the anti-read held completely — sealed valve stack, frost-jacketed injection line, glowing sight port, heavy anchored base plate, and not a trace of derrick, horsehead, beam or flame. Palette obeys the split: cyan confined to the cold side, orange to the hot side, clean metal between. **But the four direction panels are a turntable** — four camera angles of the machine rotating in front of the viewer, which is exactly what §5 says must not be asked for and which is unusable as sprite reference. | **Machine accepted; direction panels rejected** | Redraw NORTH / EAST / SOUTH / WEST as four *plumbing arrangements* under one fixed camera: identical base, stack, bolt rings, lighting and shadow in all four, with only the intake and riser attachment points moving a quarter turn between them. |
+| 2 | sheet | `concept/v2-sheet.png`. **The turntable is gone.** All four panels now share one fixed camera: identical base plate, identical valve stack, identical lighting and shadow, with only the intake and riser attachment points moving a quarter turn between them — which is exactly the four *arrangements* §5 asks for, and is usable as sprite reference. The captions state the coupling correctly (intake from north, hot output to south, and so on round). Machine, palette split and anti-read all carried over unchanged. Layer breakdown matches §7 and the sight-port fill runs 0 to 100 per cent. | **Accepted — `concept/v2-sheet.png` is the locked design** | None. |
+| 3 | sheet | `concept/v3-sheet.png`. Drawn against the *inherited* fluid boxes — three edge-midpoint intakes and a rotating corner output. NORTH came back correct; EAST, SOUTH and WEST kept a fixed intake arrangement and moved only the riser, so an intake sat on the edge that had to stay clean and two panels had four intakes instead of three. The corner riser was also drawn as an elbow reaching **diagonally** past the shoulder, which is not a thing that exists: a connection on a corner *tile* still faces straight out through an edge. | **Rejected, and the design changed under it** | Superseded by the fluid-box replacement below. |
+| 4 | sheet | `concept/v4-sheet.png`. Drawn against the replaced fluid boxes: **one intake, one riser, opposite faces, both on the centre tile of their edge, both square to it.** All four rotations correct and captioned; the tile-grid panel draws the straight line through the machine. Anti-read holds. | **Accepted — `concept/v4-sheet.png` is the locked design** | None. |
 
 Two things to expect on the first real pass, and to check for before spending
 another generation on refinement:
@@ -993,6 +1005,24 @@ another generation on refinement:
   surface*, the crop has nothing clean to work with and the prompt needs the
   fix, not the image.
 
+### The fluid boxes were replaced, and why
+
+Three rounds of art were spent trying to serve the inherited plumbing before it
+became clear the plumbing was the problem. The pumpjack contributes an output on
+a **corner tile that walks around the four corners** as the building rotates; the
+electric mining drill contributes **three** inputs at edge midpoints. Seven
+possible hookups on a 3×3, of which a player uses two — and no arrangement of art
+makes the other five look intended rather than broken.
+
+`prototypes/core/entities.lua` now declares both boxes: one in, one out, opposite
+faces, centre tile, facing straight out. The building is simpler, the art is
+honest, and the fluid path reads as the single straight line the pipes in front
+of it will actually form.
+
 ### Final
 
-`[Open until the four directional frames are approved.]`
+The concept sheet is approved and the design is locked. What remains is the
+production pipeline of template Appendix C — canonical plate, idle plate, the
+four directional frames derived from it, glow by differencing, then the sprite
+canvas. **Stop prompting for the design now**: every later image is an edit of
+`concept/v2-sheet.png`, never a fresh generation.

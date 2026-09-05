@@ -23,7 +23,7 @@ data:extend({
   {
     type = "resource",
     name = "sae-kamacite-ore",
-    icon = "__base__/graphics/icons/iron-ore.png",
+    icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     flags = { "placeable-neutral" },
     category = "basic-solid",
     order = "z[sae]-a[kamacite-ore]",
@@ -56,7 +56,7 @@ data:extend({
   {
     type = "resource",
     name = "sae-melt-vent",
-    icon = "__space-age__/graphics/icons/fluid/molten-iron.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     flags = { "placeable-neutral" },
     category = "basic-fluid",
     order = "z[sae]-b[melt-vent]",
@@ -101,7 +101,7 @@ data:extend({
   {
     type = "resource",
     name = "sae-gas-vent",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
     flags = { "placeable-neutral" },
     category = "basic-fluid",
     order = "z[sae]-c[gas-vent]",

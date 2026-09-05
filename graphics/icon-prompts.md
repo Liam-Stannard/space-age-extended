@@ -1,5 +1,20 @@
 # Icon generation prompts
 
+> **Superseded — do not generate anything from this document.**
+>
+> It was written for the *Thermionic* design of the Fulgora ↔ Aquilo tree, and
+> that design is gone: Copper Foil, Catalyst Rod, Depleted Catalyst Rod,
+> Resonant Circuit, Magmatic Core, Thermionic Assembly, Quench Turbine, Molten
+> Scrap and every fluid below them were replaced by the cryogen loop that
+> `prototypes/trees/fulgora-aquilo.lua` actually implements. Not one of the
+> prototypes named here exists in the mod.
+>
+> The live document is **[icon-sheet-prompts.md](icon-sheet-prompts.md)**,
+> which works from the implemented prototypes and generates a whole production
+> chain as one sheet. This file is kept only for its global style guide and the
+> technical notes below it, which are still sound.
+
+
 Instructions for generating final icon art for `space-age-extended`, to replace the
 current flat-shape placeholders (`graphics/icons/`, `graphics/icons/fluid/`,
 `graphics/technology/`). Written for pasting into an AI image-generation tool one

@@ -30,8 +30,11 @@ data:extend({
   {
     type = "recipe",
     name = "sae-gravity-settling",
-    icon = "__space-age__/graphics/icons/fluid/molten-copper.png",
-    icon_size = 64,
+    icons =
+    {
+      { icon = "__space-age-extended__/graphics/icons/fluid/settled-melt.png" },
+      { icon = "__space-age-extended__/graphics/icons/dross.png", scale = 0.25, shift = { 8, 8 } }
+    },
     categories = { "metallurgy" },
     energy_required = 16,
     ingredients = { { type = "fluid", name = "sae-molten-kamacite", amount = 100 } },
@@ -48,8 +51,11 @@ data:extend({
   {
     type = "recipe",
     name = "sae-quenched-settling",
-    icon = "__base__/graphics/icons/fluid/steam.png",
-    icon_size = 64,
+    icons =
+    {
+      { icon = "__space-age-extended__/graphics/icons/fluid/settled-melt.png" },
+      { icon = "__base__/graphics/icons/fluid/steam.png", scale = 0.25, shift = { 8, 8 } }
+    },
     categories = { "metallurgy" },
     energy_required = 16,
     ingredients = { { type = "fluid", name = "sae-molten-kamacite", amount = 100 } },

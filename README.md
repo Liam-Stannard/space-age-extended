@@ -75,13 +75,20 @@ however good it looks, and the rule it has to satisfy is
 
 ### 4. Art
 
-Sprites and icons are all vanilla stand-ins. Two mismatches worth knowing beyond the
-sprite work itself:
+**Icons are done.** All 29 item, fluid and recipe icons, the four technology icons and
+the planet's own art are drawn, installed and verified. **Sprites are not**: five of the
+six buildings have an approved concept sheet and no plates, and everything placed on the
+ground is still a vanilla stand-in. Three mismatches worth knowing beyond the sprite
+work itself:
 
 - the **whisker plant renders as a Gleba tree**, because its prototype is a copy of
   `tree-plant`;
 - the **whisker bed tile is a clone of stone path**, so a farm cannot be told apart from
-  a concrete pad.
+  a concrete pad;
+- the **space connection to the Core still borrows Aquilo's icon**.
+
+**[graphics/TODO.md](graphics/TODO.md) is the list of what is left**, and where to
+start: the building sprites, and the whisker plant and bed tile.
 
 Terrain is already handled: with Alien Biomes installed the Core generates volcanic ash
 and mineral dirt, and falls back to vanilla snow without it.
@@ -139,6 +146,31 @@ tools/process-building-art.py <plate> --dekey    # recover alpha from a flattene
 tools/derive-glow.py  --lit A --unlit B          # recover the additive glow layer
 tools/build-glow-frames.py --glow G              # spritesheets from one plate
 ```
+
+Seven buildings have a filled specification in `graphics/building-spec-*.md`.
+Four of them began as short briefs — enough to commission and judge a concept
+sheet — and were filled out once their sheets were approved. **§13 Sprite
+Dimensions is open in all but the Arc Mast**, because its numbers are measured
+off the canonical plate and those plates do not exist yet.
+
+## Icon art
+
+Icons are generated a **production chain at a time**, not one at a time, because
+what matters is whether the eight icons of a chain read as eight things made
+from each other — and generated separately they do not.
+[graphics/icon-sheet-prompts.md](graphics/icon-sheet-prompts.md) is the
+prompt-of-record: five chains, two sheets each (a labelled review sheet, then a
+flat-background harvest sheet produced by *editing* the approved one), and the
+harvest sheet is cut and keyed by tools rather than by a generator.
+
+```
+tools/cut-icon-sheet.py <harvest sheet> <dir> name1 name2 ...  # sheet -> one PNG per icon
+tools/key-icons.py graphics/icons <dir>/name1.png:name1 ...    # PNG -> 64px mipmap strip
+```
+
+`graphics/icon-prompts.md` is **superseded** and nothing should be generated
+from it: it describes the Thermionic design of Fulgora ↔ Aquilo, and not one of
+those prototypes exists in the mod any more.
 
 Two rules worth stating here rather than only in the template: **once a design
 is locked, every later image is an edit of the approved file, never a fresh

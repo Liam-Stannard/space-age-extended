@@ -95,7 +95,7 @@ data:extend({
   {
     type = "item",
     name = "sae-superconducting-winding",
-    icon = "__space-age__/graphics/icons/superconductor.png",
+    icon = "__space-age-extended__/graphics/icons/superconducting-winding.png",
     subgroup = "raw-material",
     order = "z[sae]-fa[d-winding]",
     stack_size = 50,
@@ -104,7 +104,7 @@ data:extend({
   {
     type = "item",
     name = "sae-coil-assembly",
-    icon = "__space-age__/graphics/icons/superconductor.png",
+    icon = "__space-age-extended__/graphics/icons/coil-assembly.png",
     subgroup = "intermediate-product",
     order = "z[sae]-a[coil-assembly]",
     stack_size = 20,
@@ -113,7 +113,7 @@ data:extend({
   {
     type = "item",
     name = "sae-coolant-loop",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
+    icon = "__space-age-extended__/graphics/icons/coolant-loop.png",
     subgroup = "intermediate-product",
     order = "z[sae]-b[coolant-loop]",
     stack_size = 20,
@@ -122,7 +122,7 @@ data:extend({
   {
     type = "item",
     name = "sae-field-coil-segment",
-    icon = "__space-age__/graphics/icons/superconductor.png",
+    icon = "__space-age-extended__/graphics/icons/field-coil-segment.png",
     subgroup = "intermediate-product",
     order = "z[sae]-c[field-coil-segment]",
     stack_size = 10,

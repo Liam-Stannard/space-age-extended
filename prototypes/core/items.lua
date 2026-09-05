@@ -4,7 +4,7 @@ data:extend({
   {
     type = "item",
     name = "sae-kamacite-ore",
-    icon = "__base__/graphics/icons/iron-ore.png",
+    icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     subgroup = "raw-resource",
     order = "z[sae]-a[kamacite-ore]",
     stack_size = 50,
@@ -13,7 +13,7 @@ data:extend({
   {
     type = "item",
     name = "sae-kamacite-plate",
-    icon = "__base__/graphics/icons/steel-plate.png",
+    icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-b[kamacite-plate]",
     stack_size = 100,
@@ -24,7 +24,7 @@ data:extend({
     -- it can be put back through settling to recover the metal still in it.
     type = "item",
     name = "sae-dross",
-    icon = "__base__/graphics/icons/stone.png",
+    icon = "__space-age-extended__/graphics/icons/dross.png",
     subgroup = "raw-material",
     order = "z[sae]-c[dross]",
     stack_size = 100,
@@ -34,7 +34,7 @@ data:extend({
     -- Cast under 50g, where weight has already done the sorting.
     type = "item",
     name = "sae-cast-ingot",
-    icon = "__base__/graphics/icons/iron-plate.png",
+    icon = "__space-age-extended__/graphics/icons/cast-ingot.png",
     subgroup = "raw-material",
     order = "z[sae]-d[cast-ingot]",
     stack_size = 50,
@@ -44,7 +44,7 @@ data:extend({
     -- The same ingot, alloyed evenly in orbit because nothing settles there.
     type = "item",
     name = "sae-homogenised-ingot",
-    icon = "__base__/graphics/icons/copper-plate.png",
+    icon = "__space-age-extended__/graphics/icons/homogenised-ingot.png",
     subgroup = "raw-material",
     order = "z[sae]-e[homogenised-ingot]",
     stack_size = 50,
@@ -54,7 +54,7 @@ data:extend({
     -- Planted onto a bed; grows into whiskers.
     type = "item",
     name = "sae-seed-plate",
-    icon = "__base__/graphics/icons/steel-plate.png",
+    icon = "__space-age-extended__/graphics/icons/seed-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-f[seed-plate]",
     stack_size = 50,
@@ -65,7 +65,7 @@ data:extend({
   {
     type = "item",
     name = "sae-kamacite-whiskers",
-    icon = "__space-age__/graphics/icons/tungsten-plate.png",
+    icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
     subgroup = "raw-material",
     order = "z[sae]-g[whiskers]",
     stack_size = 100,
@@ -75,7 +75,7 @@ data:extend({
     -- Joined cold, in vacuum, slowly. No heat anywhere in it.
     type = "item",
     name = "sae-welded-plate",
-    icon = "__space-age__/graphics/icons/tungsten-carbide.png",
+    icon = "__space-age-extended__/graphics/icons/welded-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-h[welded-plate]",
     stack_size = 50,

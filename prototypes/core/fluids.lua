@@ -11,7 +11,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-molten-kamacite",
-    icon = "__space-age__/graphics/icons/fluid/molten-iron.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     subgroup = "fluid",
     order = "z[sae]-a[molten-kamacite]",
     default_temperature = 1200,
@@ -25,7 +25,7 @@ data:extend({
     -- What gravity leaves behind once the dross has sunk out of the melt.
     type = "fluid",
     name = "sae-settled-melt",
-    icon = "__space-age__/graphics/icons/fluid/molten-copper.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/settled-melt.png",
     subgroup = "fluid",
     order = "z[sae]-c[settled-melt]",
     default_temperature = 900,
@@ -38,7 +38,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-helium-3",
-    icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
     subgroup = "fluid",
     order = "z[sae]-b[helium-3]",
     default_temperature = 15,
