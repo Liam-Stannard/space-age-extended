@@ -70,13 +70,47 @@ def dekey_checkerboard(im, tol=10):
     return im
 
 
-def trimmed(im):
-    """Crop to the alpha bounding box."""
+def solid_bbox(im, alpha=20, min_run=8):
+    """Bounding box of the content you can actually see.
+
+    `getbbox()` answers "any pixel with any alpha at all", and a generator's
+    output is not that clean: v11-idle.png carries 95 columns of fringe down its
+    right side holding a single speck above alpha 20 and nothing else. Cropping
+    to that squeezed the visible mast into 814/909 of its canvas and pushed it
+    hard against the left edge, where the foot pad was cut off mid-bolt at alpha
+    255 and the whole building drew 0.18 tiles left of its own tile.
+
+    So require a row or column to carry `min_run` pixels above `alpha` before it
+    counts as content. Thin real geometry is safe -- min_run is under 1% of a
+    plate's height -- and specks are not.
+    """
     if im.mode != "RGBA":
         im = im.convert("RGBA")
-    box = im.getchannel("A").getbbox()
+    a = im.getchannel("A")
+    w, h = a.size
+    px = a.load()
+    cols = [x for x in range(w)
+            if sum(1 for y in range(h) if px[x, y] > alpha) >= min_run]
+    rows = [y for y in range(h)
+            if sum(1 for x in range(w) if px[x, y] > alpha) >= min_run]
+    if not cols or not rows:
+        return None
+    return (cols[0], rows[0], cols[-1] + 1, rows[-1] + 1)
+
+
+def trimmed(im):
+    """Crop to the visible content, warning if that differs from the raw box."""
+    if im.mode != "RGBA":
+        im = im.convert("RGBA")
+    box = solid_bbox(im)
     if not box:
         sys.exit("the image is fully transparent -- nothing to process")
+    raw = im.getchannel("A").getbbox()
+    slack = max(abs(box[i] - raw[i]) for i in range(4))
+    if slack > 4:
+        print(f"  note  trimmed on visible content, not raw alpha: "
+              f"{raw[2] - raw[0]}x{raw[3] - raw[1]} -> "
+              f"{box[2] - box[0]}x{box[3] - box[1]} ({slack} px of fringe)")
     return im.crop(box)
 
 

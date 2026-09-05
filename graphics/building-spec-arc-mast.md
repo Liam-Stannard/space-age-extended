@@ -79,7 +79,8 @@ pack can exist before the surface has power.
 **Tile Size:**
 `3×3` selection over a `2.8×2.8` collision. Most of this building is still
 drawn above its footprint — the sprite is `3.5 × 5.4` tiles — but the *base
-plate* is 3.14 tiles across, and it has to fit between neighbours. See §13.
+plate* is cut to exactly 3.00 tiles across, so it is the width of its own box
+and a row of masts touches rather than overlaps. See §13.
 
 **Collision Box:**
 `[-1.4, -1.4] → [1.4, 1.4]`
@@ -90,13 +91,20 @@ plate* is 3.14 tiles across, and it has to fit between neighbours. See §13.
 **Why not the collector's 2×2, which this prototype deep-copies.** Because the
 art does not fit it. Vanilla's collector is 144 source px at its widest — 2.25
 tiles on a 2 tile pitch, a quarter tile of sloped leg overhanging, which reads
-fine. Ours is 201 px, 3.14 tiles, and in the first in-game test a row of masts
+fine. Ours was 3.14 tiles, and in the first in-game test a row of masts
 overlapped by more than a whole tile: each base plate visibly ate its
 neighbour's. The mast is meant to be a bigger machine than Fulgora's collector,
 so the box grew to meet the art rather than the art shrinking to meet the box.
-At a 3 tile pitch the plates just touch. Measured in-engine: the mast reports
-`tile_width 3`, three masts place at a 3 tile pitch, and a second mast 2 tiles
-from the first is refused.
+Measured in-engine: the mast reports `tile_width 3`, three masts place at a
+3 tile pitch, and a second mast 2 tiles from the first is refused.
+
+**A 3x3 box was necessary and not sufficient.** 3.14 tiles of art on a 3 tile
+pitch still overlaps -- by 0.14 tiles, about a quarter of a foot pad -- and a
+second screenshot showed the feet still interleaving. Vanilla tolerates 0.25
+tiles of overlap on its collector because the overhang there is a soft tapering
+skirt; ours is a pair of hard bolted pads, and two of those interpenetrating
+reads as a bug however small the number is. The plate is therefore cut to
+exactly 192 source px, 3.00 tiles, so the art is the width of the box.
 
 **Placement Restrictions:**
 None — no surface conditions, no resource requirement, no terrain restriction.
@@ -434,21 +442,22 @@ No inserter ever touches this building.
 
 | Flow | Location | Connection Type |
 | ---- | -------- | --------------- |
-| In — the strike | `[0, -4.14375]` — the electrode | `lightning_strike_offset` |
+| In — the strike | `[0, -3.8]` — the electrode | `lightning_strike_offset` |
 | Out — up to 40 MW | anywhere inside a pole's supply area | electric network |
 
 ### Hard geometric constraints
 
-**`lightning_strike_offset = {0, -4.14375}`.** The engine draws every arc
+**`lightning_strike_offset = {0, -3.8}`.** The engine draws every arc
 terminating that many tiles above the entity origin regardless of what the
 sprite looks like. If the painted tip is not at that height, arcs strike empty
 air or bury themselves in the column — once every ninety seconds per chunk, in
 front of the player, lit up. §13 converts this to a pixel row.
 
-This is **no longer the inherited `-4.8`.** It moved with the plate: the shift
-came down by 0.65625 tiles (see §13), so the strike row came down by exactly
-the same amount. The two numbers are locked together and neither can be changed
-alone.
+This is **no longer the inherited `-4.8`.** It is measured off the plate, not
+carried over: the electrode cage spans `-4.23` to `-3.38` tiles from the origin
+and `-3.8` is the middle of it. Vanilla's `-4.8` would put the bolt a full tile
+above the mast, terminating in open air. Re-cut the plate and this number has to
+be re-derived with it.
 
 `drawing_box_vertical_extension = 4.5` is inherited and must not change; the art
 is fitted to it, not the other way round.
@@ -761,13 +770,16 @@ proportion never needed forcing.
 
 **Building Width:** `3.5` tiles → `112` in-game px → `224` source px
 
-**Building Height:** `5.45` tiles → `175` in-game px → `349` source px
+**Building Height:** `5.14` tiles → `164` in-game px → `329` source px
 
-**Sprite Width / Height:** `224 × 365` source px — the object is 224 × 349 with
-16 source px of headroom above the tip, which is where the corona and the top
-of the charge flare live.
+**Sprite Width / Height:** `224 × 345` source px — the object is 192 × 329,
+centred, with 16 source px of headroom above the tip and 16 px of margin either
+side. The width is the load-bearing number: 192 px at scale 0.5 is exactly 3.00
+tiles, which is exactly the selection box, so neighbouring masts touch and never
+overlap. The side margins are what keep the plate off the canvas edge; do not
+trim them away.
 
-**Shift:** `util.by_pixel(0, -60)`.
+**Shift:** `util.by_pixel(0, -57)`.
 
 **This was `-81` and it was wrong.** `-81` was derived from the tip, and the tip
 is the one landmark that cannot anchor a sprite: it fixed the top of the
@@ -779,19 +791,19 @@ selection box drawn in bare ground beneath it.
 Measured off `base.png`: the plate spans source rows 225–363, so its centre sits
 55.8 in-game px below the canvas centre. Vanilla's collector puts its own plate
 centre at `-0.133` tiles from the origin; matching that gives
-`shift = -60 in-game px = -1.875 tiles`. The whole plate came down 0.65625 tiles.
+`shift = -57 in-game px = -1.78125 tiles`.
 
-**The strike row moves with it.** With the shift at `-60`, the electrode cage
-spans `-4.43` to `-3.79` tiles from the origin, so the strike belongs at
-`-4.14375` — vanilla's `-4.8` plus the same 0.65625 the plate moved. See §12.
+**The strike row comes off the same plate.** The electrode cage spans `-4.23`
+to `-3.38` tiles from the origin, so the strike belongs at `-3.8`. See §12. Both
+numbers are derived from the plate, so both change together when it is re-cut.
 
-**Spritesheet Width / Height:** `1792 × 1095` px, for charge and discharge alike
+**Spritesheet Width / Height:** `1792 × 1035` px, for charge and discharge alike
 
 **Frame Count:** `1` picture · `1` shadow · `19` charge · `24` discharge
 
 **Line Length:** `8` — 19 frames fill 8+8+3, 24 fill 8+8+8
 
-Glow frames are `224 × 365` — the same canvas as `base.png`, deliberately. An
+Glow frames are `224 × 345` — the same canvas as `base.png`, deliberately. An
 earlier plan gave them their own tighter canvas; sharing one is what makes the
 registration checkable, since any offset between a glow frame and the plate is
 then a straight pixel comparison. See §19, "The registration bug".
@@ -808,16 +820,16 @@ graphics/
     └── arc-mast/
         ├── concept/            generated concepts, not shipped
         ├── base.png            224×365, the whole machine, unlit
-        ├── shadow.png          512×365, draw_as_shadow, its own wider canvas
-        ├── charge.png          1792×1095, 19 frames, additive glow
-        └── discharge.png       1792×1095, 24 frames, additive glow
+        ├── shadow.png          496×345, draw_as_shadow, its own wider canvas
+        ├── charge.png          1792×1035, 19 frames, additive glow
+        └── discharge.png       1792×1035, 24 frames, additive glow
 ```
 
 Four plates and no `working.png`: this building has no moving parts, so its
 entire animation is emissive light and the two glow sheets *are* the working
 layers. **The shadow gets its own canvas** — a five-tile tower's shadow does not
-fit inside a 224 px plate, so it is 512 px wide, anchored left, and offset right
-by half the extra width (`shift = {2.25, -1.875}`). It needs no *extra rows*:
+fit inside a 224 px plate, so it is 496 px wide, anchored left, and offset right
+by half the extra width (`shift = {2.125, -1.78125}`). It needs no *extra rows*:
 the shadow lies flat and leans up and to the right, away from the camera, so it
 never reaches below the plate's own bottom edge.
 
@@ -842,17 +854,17 @@ mast.chargable_graphics =
         filename = "__space-age-extended__/graphics/entity/arc-mast/base.png",
         priority = "high",
         width = 224,
-        height = 365,
-        shift = util.by_pixel(0, -60),
+        height = 345,
+        shift = util.by_pixel(0, -57),
         scale = 0.5
       },
       {
         filename = "__space-age-extended__/graphics/entity/arc-mast/shadow.png",
         priority = "high",
         draw_as_shadow = true,
-        width = 512,
-        height = 365,
-        shift = util.by_pixel(72, -60),
+        width = 496,
+        height = 345,
+        shift = util.by_pixel(68, -57),
         scale = 0.5
       }
     }
@@ -867,10 +879,10 @@ mast.chargable_graphics =
         blend_mode = "additive",
         draw_as_glow = true,
         width = 224,
-        height = 365,
+        height = 345,
         frame_count = 19,
         line_length = 8,
-        shift = util.by_pixel(0, -60),
+        shift = util.by_pixel(0, -57),
         scale = 0.5
       }
     }
@@ -887,10 +899,10 @@ mast.chargable_graphics =
         blend_mode = "additive",
         draw_as_glow = true,
         width = 224,
-        height = 365,
+        height = 345,
         frame_count = 24,
         line_length = 8,
-        shift = util.by_pixel(0, -60),
+        shift = util.by_pixel(0, -57),
         scale = 0.5
       }
     }
@@ -914,8 +926,8 @@ Not applicable to lightning-attractor. Charge and discharge are the whole of it.
 
 Lights:
 None. drawing_box_vertical_extension = 4.5 is inherited and must not change.
-lightning_strike_offset is NOT inherited any more: it is {0, -4.14375}, and it
-is tied to the picture shift. Move one and you move the other. See §12.
+lightning_strike_offset is NOT inherited any more: it is {0, -3.8}, measured
+off the plate. Re-cut the plate and re-derive it. See §12.
 
 Fluid Boxes:
 None.
@@ -1052,8 +1064,12 @@ geometry against the selection brackets, the sprite plates against each other.
 None of them are visible in a PNG viewer.
 
 **1. The sprite was 3.14 tiles wide on a 2 tile pitch.** A row of masts
-overlapped by more than a tile. Fixed by growing the box, not shrinking the art
-— §2 has the reasoning and the in-engine verification.
+overlapped by more than a tile. Fixed by growing the box to 3x3 — §2 has the
+reasoning and the in-engine verification — and then, after a second screenshot
+showed the feet still interleaving, by cutting the plate to exactly 3.00 tiles
+so the art is the width of the box. See "The fringe bug" below: the plate could
+not be centred until the trim was fixed, and until it was centred the whole
+overhang sat on one side.
 
 **2. The glow sheets sat 6 px right and 8 px above the plate.** See "The
 registration bug" below.
@@ -1074,6 +1090,39 @@ do not look at it.** It now extends past the plate to the running game. A
 screen recording plus the selection brackets as a ruler is enough — the
 brackets are a known 2 or 3 tiles, which calibrates pixels to tiles, and every
 other geometry claim follows from that.
+
+## The fringe bug
+
+The 3x3 box fixed the gross overlap and a second screenshot still showed the
+foot pads interleaving. Measuring it turned up two more faults in the same
+plate, both from one cause.
+
+`v11-idle.png` carries 95 columns of near-invisible fringe down its right side —
+they hold a single speck above alpha 20 and nothing else — and `trimmed()`
+cropped on `getbbox()`, which counts any pixel with any alpha at all. So the
+crop was 909 px wide when the visible building was 814. Scaled onto a 224 px
+canvas, that put the mast in 814/909 of the space and pushed it hard left:
+
+```text
+before   visible content x 0..201, centre 100.5 against a canvas centre of 112
+         alpha at x=0 is 255 -- the left foot pad cut off mid-bolt, no rim
+after    visible content x 16..208, centre 112.0, alpha 0 at both edges
+```
+
+Two symptoms, one cause. The building drew 0.18 tiles left of its own tile, so
+the whole 0.14 tile overhang landed on one side and read as much worse than the
+number suggests; and the left foot was clipped flat against the canvas edge.
+
+`solid_bbox()` now requires a row or column to carry at least 8 pixels above
+alpha 20 before it counts as content. A plain alpha threshold is not enough —
+the fringe holds a speck that survives any threshold — so it is the *count* that
+does the work. `derive-glow.py` carries the same function, and it has to: the
+glow's placement is measured with it, so if the two disagree the glow lands
+somewhere the plate is not.
+
+**Check both, on every plate.** Is the visible content centred in its canvas,
+and is the alpha zero at all four edges? Neither is visible in a viewer and both
+are one line to measure.
 
 ## The registration bug
 

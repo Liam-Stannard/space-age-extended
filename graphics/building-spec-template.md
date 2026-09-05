@@ -1004,6 +1004,15 @@ geometry that will not line up with the base plate. Instead:
    measured off the **unlit** plate and applied to both, then they are
    subtracted. The difference *is* the light.
 
+**Trim on what you can see, not on `getbbox()`.** A generator leaves fringe:
+`v11-idle.png` had 95 columns down one side holding a single speck above alpha
+20 and nothing else. Cropping to the raw alpha box squeezed the building into
+814/909 of its canvas, off-centre and clipped flat at the edge. Require a row or
+column to carry a handful of pixels above a real alpha before it counts as
+content — `solid_bbox()` in both art tools — and then check the two things that
+follow: **the visible content is centred in its canvas, and the alpha is zero at
+all four edges.** Neither shows up in a viewer; both are one line to measure.
+
 **Registration is the thing to check, and "same canvas" does not give it to
 you.** The tool used to trim each plate to its own alpha bounding box; a lit
 render blooms past the metal, so its box is bigger, and the two ended up on
@@ -1050,9 +1059,13 @@ point can be verified locally; the in-game pass — scale on the ground, selecti
 box, engine-drawn effects landing where the art says, shadow against
 neighbours — cannot.
 
-**Record it, and measure the recording.** The arc mast passed every local check
-and still shipped four geometry defects, all of them found by pulling frames
-out of a screen capture. The selection brackets are the ruler: they are a known
+**Record it, and measure the recording — then do it again after the fix.** The
+arc mast passed every local check and still shipped four geometry defects, all
+of them found by pulling frames out of a screen capture. The fix for the worst
+of them was itself incomplete, and only a second screenshot showed it: the box
+had been grown to fit the art, but the art was 3.14 tiles against a 3 tile box
+and still overlapped. Sizing art to a box means making the number *equal*, not
+close. The selection brackets are the ruler: they are a known
 number of tiles wide, which calibrates screen pixels to tiles, and every claim
 about sprite size, overlap and shift follows from that. Place at least three of
 the building in a row — a single one hides overlap entirely.

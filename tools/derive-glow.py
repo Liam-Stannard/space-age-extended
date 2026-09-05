@@ -25,6 +25,28 @@ import sys
 from PIL import Image, ImageChops, ImageFilter
 
 
+def solid_bbox(im, alpha=20, min_run=8):
+    """Bounding box of the content you can actually see.
+
+    Must stay in step with process-building-art.py's copy: the placement this
+    measures has to be the one base.png was cut with, or the glow lands
+    somewhere the plate is not. See that file for why raw `getbbox()` is not
+    good enough.
+    """
+    if im.mode != "RGBA":
+        im = im.convert("RGBA")
+    a = im.getchannel("A")
+    w, h = a.size
+    px = a.load()
+    cols = [x for x in range(w)
+            if sum(1 for y in range(h) if px[x, y] > alpha) >= min_run]
+    rows = [y for y in range(h)
+            if sum(1 for x in range(w) if px[x, y] > alpha) >= min_run]
+    if not cols or not rows:
+        return None
+    return (cols[0], rows[0], cols[-1] + 1, rows[-1] + 1)
+
+
 def placement(im, width, height, top_margin):
     """Work out the trim/scale/offset to use, as numbers rather than a picture.
 
@@ -32,7 +54,7 @@ def placement(im, width, height, top_margin):
     is measured off still lands exactly where base.png did -- but returned
     instead of applied, so the lit plate can be given the identical transform.
     """
-    box = im.convert("RGBA").getchannel("A").getbbox()
+    box = solid_bbox(im)
     if not box:
         sys.exit("fully transparent input")
     tw, th = box[2] - box[0], box[3] - box[1]
