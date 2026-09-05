@@ -99,8 +99,11 @@ Space Age's volcanic tiles and Alien Biomes' mineral, snow and heat tiles are li
 separately, so without the pack a palette degrades to its Space Age half rather than to a
 guess. Rock and mineral scatter is on, chosen by name pattern out of
 `data.raw.decorative` rather than by a list, with anything organic refused and
-the palette's own climate deciding where each one places -- the big rocks stay
-off, since vanilla's yield stone and coal and this world has no carbon.
+the palette's own climate deciding where each one places. Vanilla's big rocks
+stay off -- they yield stone and coal, and this world has no carbon -- and the
+Core has its own **kamacite boulder** instead: a tinted copy of a base-game
+rock, roughly two to a chunk, hand-mined for 25 kamacite ore. It is the only
+ore obtainable before a drill is standing.
 **Not yet seen in game**: the four palettes are tuned from Alien Biomes' published
 autoplace windows, not from a screenshot, and the exact spread each one produces still
 wants a fresh surface and an eye. Switching palettes only affects chunks that do not

@@ -256,10 +256,12 @@ end
 -- named. That is the same mechanism the tiles use, and it is why this is safe
 -- to cast wide.
 --
--- Decoratives only: the big rocks are simple-entities, not decoratives, and
--- they are left out on purpose. Vanilla's yield stone and coal, and a world
--- whose whole point is that it has no carbon should not have coal lying on the
--- ground to be picked up.
+-- Decoratives only. The big rocks are simple-entities rather than decoratives,
+-- and vanilla's are refused here on purpose: they yield stone and coal, and a
+-- world whose whole point is that it has no carbon should not have coal lying
+-- on the ground to be picked up. The Core has its own boulder instead --
+-- sae-core-boulder, in resources.lua -- which is enabled through the entity
+-- settings below, where an autoplaced entity belongs.
 local DECORATIVE_WANTED =
 {
   "rock", "stone", "pebble", "boulder", "gravel", "mineral", "crater", "pumice"
@@ -316,7 +318,8 @@ return function()
     {
       ["sae-kamacite-ore"] = {},
       ["sae-melt-vent"] = {},
-      ["sae-gas-vent"] = {}
+      ["sae-gas-vent"] = {},
+      ["sae-core-rock"] = {}
     },
     autoplace_settings =
     {
@@ -328,7 +331,8 @@ return function()
         {
           ["sae-kamacite-ore"] = {},
           ["sae-melt-vent"] = {},
-          ["sae-gas-vent"] = {}
+          ["sae-gas-vent"] = {},
+          ["sae-core-boulder"] = {}
         }
       }
     }

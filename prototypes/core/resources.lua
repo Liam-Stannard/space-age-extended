@@ -1,4 +1,4 @@
--- The Core's three sited resources.
+-- The Core's three sited resources, and the scatter between them.
 --
 -- Ore is rich, widely spaced and genuinely finite, so the base spreads and
 -- rails matter. Both vents are infinite but decline with draw, the way crude
@@ -16,7 +16,10 @@ local sounds = require("__base__/prototypes/entity/sounds")
 data:extend({
   { type = "autoplace-control", name = "sae-kamacite-ore", category = "resource", richness = true, order = "z[sae]-a" },
   { type = "autoplace-control", name = "sae-melt-vent",    category = "resource", richness = true, order = "z[sae]-b" },
-  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" }
+  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" },
+  -- Not a resource: boulders are terrain the way trees are, so they belong on
+  -- the terrain slider rather than among the ore controls.
+  { type = "autoplace-control", name = "sae-core-rock",   category = "terrain",  order = "z[sae]-d" }
 })
 
 data:extend({
@@ -141,3 +144,83 @@ data:extend({
     map_color = { r = 0.55, g = 0.80, b = 0.92 }
   }
 })
+
+-- Kamacite boulders: the scatter worth stopping for.
+--
+-- Vanilla's rocks are the wrong prop here twice over. They yield stone and
+-- coal, and the Core has no carbon at all -- coal lying on the ground would
+-- contradict the one fact the entire world is built on. And they are Nauvis
+-- sandstone to look at, on a crust of iron and nickel.
+--
+-- This is that silhouette with the Core's own contents: a lump of crust, hand
+-- mined for ore. It is the only ore on the planet obtainable before a drill is
+-- standing, which makes the scatter a genuine early move rather than decoration
+-- with a yield attached -- and it runs out, like everything else here.
+
+local ROCK_SOURCES = { "rock-huge", "rock-big", "sand-rock-big" }
+
+local rock_source
+for _, name in pairs(ROCK_SOURCES) do
+  if (data.raw["simple-entity"] or {})[name] then
+    rock_source = data.raw["simple-entity"][name]
+    break
+  end
+end
+
+-- A base-game prototype, not an optional one: if none of these exist the game
+-- is not the game this mod was written against, and saying so beats shipping a
+-- planet with invisible rocks on it.
+if not rock_source then
+  error("prototypes/core/resources.lua: no base-game rock to copy from; looked for " ..
+        table.concat(ROCK_SOURCES, ", "))
+end
+
+-- Sprite tables nest differently depending on which rock was copied -- sheets,
+-- variation arrays and layers all appear -- so the tint is applied by walking
+-- the prototype for anything with a filename rather than by reaching into a
+-- structure this file would then have to be right about. Shadows and glow
+-- layers are left alone: a tinted shadow is either ignored or wrong.
+local function tint_sprites(node, tint)
+  if type(node) ~= "table" then return end
+
+  if node.filename and not node.draw_as_shadow and not node.draw_as_glow then
+    node.tint = tint
+    node.apply_runtime_tint = false
+  end
+
+  for _, child in pairs(node) do
+    tint_sprites(child, tint)
+  end
+end
+
+local boulder = table.deepcopy(rock_source)
+boulder.name = "sae-core-boulder"
+boulder.order = "z[sae]-a[core-boulder]"
+boulder.minable =
+{
+  mining_time = 2,
+  mining_particle = "iron-ore-particle",
+  results = { { type = "item", name = "sae-kamacite-ore", amount = 25 } }
+}
+boulder.map_color = { r = 0.62, g = 0.60, b = 0.66 }
+boulder.autoplace =
+{
+  control = "sae-core-rock",
+  order = "z[sae]-a[core-boulder]",
+  -- Roughly two to a chunk, gathered rather than evenly sprinkled: enough to
+  -- be worth a detour on the walk out, never enough to be a supply.
+  probability_expression = "clamp(0.004 * (0.5 + multioctave_noise{x = x,\z
+                                                                  y = y,\z
+                                                                  seed0 = map_seed,\z
+                                                                  seed1 = 3907,\z
+                                                                  octaves = 3,\z
+                                                                  persistence = 0.55,\z
+                                                                  input_scale = 1/180,\z
+                                                                  output_scale = 1}), 0, 0.01)"
+}
+
+-- Cool and grey, so it reads as metal rather than as sandstone. This is the
+-- whole of the art pass on it; deleting this line returns it to the stand-in.
+tint_sprites(boulder, { r = 0.62, g = 0.66, b = 0.74, a = 1 })
+
+data:extend({ boulder })
