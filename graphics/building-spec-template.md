@@ -51,7 +51,7 @@ silhouette agreed at stage 1.
 | # | Asset | Canvas | Gate before moving on |
 | - | ----- | ------ | --------------------- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review — see below |
-| 1 | Master concept | `[portrait 2:3 / square]` | Silhouette approved against §3.1 and §17 |
+| 1 | Canonical view | `[portrait 2:3 / square]` | Silhouette approved against §3.1 and §17 |
 | 2 | Main structure (unlit) | same | Same machine as stage 1, nothing lit |
 | 3 | Directional frames | same | Only if §5 says >1 direction. One machine, rotated fittings |
 | 4 | Glow plates | same | Aligns with stage 2 geometry |
@@ -70,6 +70,12 @@ drift shows up against the palette strip immediately.
 
 Approve the sheet before stage 1. A silhouette argument is far cheaper here
 than four rounds into the directional frames.
+
+**Stage 1 is the canonical source, and it is a sprite, not a picture.** No
+labels, no sheet layout, no grid, no icon, no close-ups — just the machine,
+isolated on transparency, at the highest resolution available. Every production
+asset afterwards derives from *this file* by editing, not from the prompt by
+re-generating. The concept sheet is reference only; nothing on it ships.
 
 **Rule — one gate at a time.** Do not generate the layer plates from an
 unapproved master. Every plate is drawn to fit geometry that the master
@@ -243,7 +249,7 @@ will blend them unless told not to.
 
 ### Required characteristics
 
-* [ ] Factorio top-down perspective — **see the camera note below**
+* [ ] 45-degree top-down Factorio perspective — **named in the prompt, see below**
 * [ ] Strong readable silhouette
 * [ ] Appropriate visual scale
 * [ ] Industrial construction
@@ -256,17 +262,29 @@ will blend them unless told not to.
 * [ ] No UI elements
 * [ ] No unrelated background objects
 
-**Rule — never write "45°" or "isometric" in a prompt.** Both produce a
-different game. Factorio's camera sits roughly 60° above the horizon and is
-effectively orthographic, and prompts must describe that the long way round:
+**Rule — name the angle, in these words: "the game's characteristic 45-degree
+top-down perspective".** Say it early, in the first or second sentence.
 
-* **A flat building** (under ~2 tiles tall) shows mostly its roof, a shallow
-  slice of its near face, and no far face at all.
-* **A tall building** is drawn leaning toward the viewer so its *sides* show —
-  the same cheat vanilla uses for the lightning collector, the big electric
-  pole and the rocket silo. Its **base** is still seen from above: the top
-  faces of its base plates are visible. Say both halves, or the generator
-  returns a flat side-on elevation.
+This is measured, not stylistic. Prompts that named the angle that way produced
+correct Factorio camera on the first attempt; prompts that avoided naming it and
+described the geometry instead — "a fixed camera high above the horizon", "drawn
+leaning toward the viewer" — produced flat side-on elevations three rounds
+running, on a building whose whole silhouette depends on the camera. The phrase
+is what these models associate with Factorio's look, and no amount of careful
+description substitutes for it.
+
+Two notes that do not change the rule:
+
+* **"45-degree top-down" is a prompt token, not a measurement.** Factorio's
+  camera actually sits nearer 60° above the horizon and is effectively
+  orthographic. Use the true geometry when judging a result in §17; use the
+  phrase when asking for one.
+* **A tall building still needs one added clause.** Vanilla draws anything much
+  above two tiles leaning toward the viewer so its sides show, while its base
+  stays seen from above — the cheat used for the lightning collector, the big
+  electric pole and the rocket silo. Name the angle *and* add that, rather than
+  substituting the description for the angle. Never write "isometric": that one
+  really does produce a different game.
 
 ### Style Reference Buildings
 
@@ -321,6 +339,12 @@ approved image; do not re-generate from the prompt three more times.
 
 **Fill rule:** list only the slots this prototype actually exposes. Naming a
 slot the entity type does not have produces art nobody can wire up.
+
+**Idle is authored, not assumed.** A generator draws every machine at full
+tilt — furnace glowing, metal pouring, everything lit. The idle plate is made by
+*taking that light away*: dark interior, no pouring, no sparks, no steam,
+machinery stopped. The contrast between idle and working is most of what makes
+working read at all, so a bright idle throws away the animation's whole effect.
 
 **Engine limits worth stating here:**
 `[Anything the prototype cannot show — buffer levels, per-direction animation,
@@ -457,9 +481,18 @@ mechanic unreadable.]`
 
 **Frame Count:** `[x]` · **FPS:** `[x]` · **Loop Duration:** `[x] s`
 
-**Rule — do not ask a generator for animation frames.** Ask for stills shaped
-to the geometry, and derive frames from them in processing. A generator asked
-for "32 frames" returns one image, or 32 unrelated ones.
+**Rule — generate animation components, not whole buildings.** Never ask for N
+complete frames: the geometry drifts between them and the building visibly
+changes shape as it animates. Keep the approved base plate fixed and generate
+or edit **only the moving area** — the molten channel, the flowing fluid, the
+light travelling down a bus bar — then composite those over the static base in
+processing.
+
+**Rule — decide what moves before generating anything.** Write the mechanical
+cycle out first (conveyor advances → ram cycles → chamber churns → outlet
+pulses). Prefer a *continuous* cycle over one that visibly completes a recipe:
+crafting time varies with recipe and modules, so an animation that depicts
+completion will desynchronise from what the machine is actually doing.
 
 ---
 
@@ -480,7 +513,7 @@ for "32 frames" returns one image, or 32 unrelated ones.
 
 `[Exactly what is visible while operating.]`
 
-### Effects this building must never show, and why
+### Prohibited effects, and why
 
 `[Name them and give the reason from the design, not just the ban. "No flame —
 pressure 5 means nothing burns here" survives a generator's creative instincts;
@@ -618,6 +651,18 @@ rest fall where it falls.
 scale. Turn every §8 hard constraint into a pixel coordinate here, with a
 tolerance.
 
+**Rule — derive these from the finished art, not from the footprint.** Canvas
+size and `shift` are measurements of the approved plate, taken after it exists;
+guessing them from the nominal tile size produces a sprite that is the wrong
+size on the ground, and the error is invisible until it is in game. Fill this
+section provisionally if you must, mark it so, and re-measure once stage 1
+passes.
+
+**The exception is anything the engine pins.** Where a prototype draws to a
+fixed offset — `lightning_strike_offset`, heat connection points, a launch
+position — that coordinate is a constraint the art must satisfy, not a
+measurement to take afterwards. Derive everything else; pin those.
+
 **Tile Size:** `[32] px in-game` · **Scale:** `[0.5]` → `[64] source px per tile`
 
 **Building Width:** `[x] tiles → [x] in-game px → [x] source px`
@@ -645,13 +690,21 @@ graphics/
     └── [building-name]/
         ├── concept/                   generated concepts, not shipped
         │   └── [tag]-[slug].png
-        ├── [building-name].png
-        ├── [building-name]-shadow.png
-        └── [additional assets as §6 requires]
+        ├── base.png                   almost the whole machine, static, unlit
+        ├── shadow.png                 draw_as_shadow
+        ├── working.png                only the parts that move
+        └── glow.png                   only the emissive light
 ```
 
-**Fill rule:** list only files this building actually needs. The template's
-four directional filenames are not a requirement.
+**Fill rule:** four plates is the practical shipped set for most buildings, and
+§7's nine-part tree describes *content*, not files — several of its entries live
+inside `base.png`. Add directional variants only where §5 says the entity
+rotates, and add frames only where §6 says an animation exists.
+
+**Smoke, steam and particles are usually engine effects, not sprites.**
+Factorio can emit them from the prototype, so baking them into a plate costs
+resolution and freezes something the engine would otherwise vary. Bake an
+effect only when it has to align exactly with painted geometry.
 
 ---
 
@@ -800,8 +853,9 @@ generators weight early text more heavily, and a constraint that arrives after
 three sentences of description gets outvoted by the description.
 
 1. **Subject, in one clause.** What the object *is*, in the plainest words.
-2. **Camera.** Described, never named as an angle — see §4. Both halves for a
-   tall building: base from above, upper structure leaning toward the viewer.
+2. **Camera, named.** "Viewed from the game's characteristic 45-degree top-down
+   perspective" — the exact phrase, early. For a tall building add the leaning
+   clause after it; do not replace it with the clause. See §4.
 3. **Structure, bottom to top.** In physical order, each component with its
    position relative to the last. Generators lose track of "and also" lists;
    they follow a climb.
@@ -853,7 +907,152 @@ When generating through a chat UI rather than the API:
 * **Refine in the same conversation** so the previous image is context, but say
   *"regenerate"* rather than *"edit"* when the silhouette itself is wrong — an
   edit preserves the very shape being rejected.
-* **Expect transparency to be ignored.** Ask anyway, then key.
+* **Never judge a plate by looking at it in a viewer.** A transparent PNG is
+  composited onto whatever background the viewer uses, so the metal's apparent
+  value moves with it and a dark preview makes ordinary highlights read as
+  "silvery" or "bleached". Measured over five rounds on one building, eyeballing
+  produced two confident and completely wrong findings — a lost alpha channel
+  that was never lost, and a pale palette that was in fact already below its
+  target floor, which three refinements then drove darker still. Run
+  `tools/process-building-art.py <plate> --report` and refine against the
+  numbers: alpha split, trimmed aspect, body-metal luminance.
 * Save concepts to `graphics/entity/<building>/concept/<tag>-<slug>.png` by
   hand, matching the names `tools/generate-building-art.py` would have used, so
   both routes leave the same trail.
+
+### Four things that moved the needle more than prompt wording
+
+Measured across roughly a dozen rounds on one building:
+
+1. **Name the camera angle** — see §4. Worth more than any other single word.
+2. **Attach a real vanilla sprite as a style reference.** Pull one out of the
+   game's own `data/base/graphics/entity/…`, crop a single frame, upscale it,
+   and say: *match the camera, rendering, finish and level of detail; do NOT
+   copy the design, shape, colours or components.* The disclaimer is load-
+   bearing. Pick a reference the building is not trying to avoid resembling —
+   using the very machine named in §3.1's anti-read would pull the design
+   straight back toward it.
+3. **Attach an example of the deliverable format.** A finished sheet for a
+   *different* building produced a correctly laid-out sheet in one attempt,
+   including panel structure and an information table that several rounds of
+   describing in words had failed to get.
+4. **Start a new conversation when the context is polluted.** A thread carrying
+   earlier corrections — including wrong ones — keeps honouring them. A clean
+   session with the corrected prompt behaves noticeably better.
+
+### Once the design is locked, stop prompting
+
+This is the single most important rule in this document. A generator asked to
+draw the same machine again will re-interpret it every time, and the drift is
+invisible until two frames are compared side by side. A component count that
+survived nine rounds of being *told* "exactly four" was fixed in one round of
+being *shown* the image and told to edit it.
+
+So: crop the approved view out of whatever it lives in, attach it as the
+source, and give an explicit, numbered list of exactly which changes are
+permitted. Words specify a design; only the image preserves it.
+
+
+---
+
+# Appendix C — The production pipeline
+
+Concept art is not a sprite. Everything below is mechanical, scripted, and
+repeatable; none of it should be asked of an image generator.
+
+### The tools
+
+| Tool | What it does |
+| ---- | ------------ |
+| `tools/generate-building-art.py` | Reads §11/§16 prompts out of a spec. `--list` / `--dry-run` to get prompt text for the browser route. |
+| `tools/process-building-art.py` | `--report` measures a plate; `--dekey` restores alpha; otherwise trims, scales, places on the sprite canvas and derives a shadow. |
+| `tools/derive-glow.py` | Subtracts an unlit plate from its lit twin to recover the additive glow layer. |
+| `tools/build-glow-frames.py` | Builds animation spritesheets from one glow plate with a travelling mask. |
+
+### Measure every plate before judging it
+
+```
+tools/process-building-art.py <plate> --report
+```
+
+Prints alpha split, trimmed aspect and body-metal luminance against the §3.3
+range. **Never judge a transparent plate by looking at it** — the viewer
+composites it onto its own background, so the metal's apparent value moves with
+the backdrop and ordinary highlights read as "silvery". Eyeballing produced two
+confident, completely wrong findings on one building: a lost alpha channel that
+was never lost, and a "pale" palette that was already below its target floor,
+which three refinements then drove darker still.
+
+### The checkerboard export trap
+
+ChatGPT's image editor exports edited images **flattened onto its transparency
+checkerboard**, so a download arrives 100% opaque with the pattern baked in even
+though the editor shows it as transparent. `--dekey` recovers the alpha: a
+border-seeded flood fill over bright neutral greys. It cannot punch through
+light-but-chromatic parts (cream ceramics, warm metal) because those are not
+neutral. Re-running it on an already-cleared plate works — cleared pixels are
+treated as passable.
+
+### Glow: difference, never draw
+
+Do not ask for "just the light on transparency" — the generator invents
+geometry that will not line up with the base plate. Instead:
+
+1. Approve the unlit plate.
+2. Attach it and ask for **the same image, lit**, with the machine unchanged.
+3. `tools/derive-glow.py --lit <lit> --unlit <unlit>` — the placement is
+   measured off the **unlit** plate and applied to both, then they are
+   subtracted. The difference *is* the light.
+
+**Registration is the thing to check, and "same canvas" does not give it to
+you.** The tool used to trim each plate to its own alpha bounding box; a lit
+render blooms past the metal, so its box is bigger, and the two ended up on
+different scales and different centres. Every frame of the arc mast's two
+sheets shipped 6 px right and 8 px above the plate. If you touch this tool,
+verify it the cheap way: put the unlit plate through the same path and diff the
+result against the shipped colour plate. The alpha bounding boxes must match
+exactly.
+
+### Animation: mask, never generate
+
+Frames come from one glow plate and a travelling gradient. A mask cannot drift;
+nineteen separate generations will. Direction carries meaning — light moving
+*down* reads as energy arriving, *up* as energy leaving — so it is worth making
+the two sequences differ in direction and brightness rather than only in speed.
+
+### A tall building's shadow needs its own canvas
+
+Factorio wants the shadow as its own `draw_as_shadow` sheet, and a tall
+building's shadow does not fit inside its colour plate's width. Give it a wider
+canvas, anchor it left, and offset it right by half the extra width in `shift`.
+
+**A synthesised shadow is a projection, not a squash.** A pixel `up` rows above
+the object's foot lands `up*kx` to the right and `up*ky` *further up the
+screen*, on the foot's own row — discard the source row entirely. Keeping it
+only squashes the silhouette and leaves the building standing in its own
+shadow. `kx 0.79, ky 0.25`, measured off vanilla's lightning collector, put the
+arc mast's shadow at 5.98 × 1.45 tiles against vanilla's 6.36 × 1.53.
+
+**Check the alpha before believing the shadow exists.** The first arc-mast
+plate rendered at a peak alpha of 94 and was simply invisible in game, because
+the tool composited it over a transparent canvas through its own alpha —
+squaring it — and then scaled against 255 rather than the plate's actual peak.
+A shadow you cannot see in a brightened screenshot is not a subtle shadow.
+
+It is still synthesised rather than hand-authored, which remains the ceiling on
+how good it gets.
+
+### Then, and only then
+
+Wire the prototype, run `tools/check-data-stage.sh` (which also runs the
+graphics and recipe checks), and take it into a client. Everything up to that
+point can be verified locally; the in-game pass — scale on the ground, selection
+box, engine-drawn effects landing where the art says, shadow against
+neighbours — cannot.
+
+**Record it, and measure the recording.** The arc mast passed every local check
+and still shipped four geometry defects, all of them found by pulling frames
+out of a screen capture. The selection brackets are the ruler: they are a known
+number of tiles wide, which calibrates screen pixels to tiles, and every claim
+about sprite size, overlap and shift follows from that. Place at least three of
+the building in a row — a single one hides overlap entirely.

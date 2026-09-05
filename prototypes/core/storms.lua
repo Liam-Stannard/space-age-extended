@@ -46,13 +46,111 @@ mast.energy_source =
 }
 mast.fast_replaceable_group = nil
 mast.next_upgrade = nil
+
+-- Footprint. The collector this copies is 2x2 with a 1.4 collision box, and
+-- its art matches: vanilla's widest row is 144 px at scale 0.5, so 2.25 tiles
+-- on a 2 tile pitch -- a quarter tile of sloped leg overhanging, which reads
+-- fine. Ours is 201 px, 3.14 tiles, and on the same 2 tile pitch a row of
+-- masts overlapped by more than a whole tile: each base plate ate its
+-- neighbour. The mast is genuinely a bigger machine than Fulgora's collector,
+-- which is the whole point of it, so the box grows to meet the art rather than
+-- the art shrinking to meet the box. At a 3 tile pitch the plates just touch.
+mast.collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } }
+mast.selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } }
+
+-- Art. The entity has no rotation, so there is one picture and the two
+-- one-shot glow sheets the prototype exposes -- see
+-- graphics/building-spec-arc-mast.md sections 6 and 15. Geometry is measured
+-- off the approved plate, not guessed: the sprite is 224x365 at scale 0.5, and
+-- the shift is by_pixel(0, -60) so the base plate's centre sits -0.13 tiles
+-- from the origin -- the same place vanilla's collector puts its own. The
+-- first pass used -81 and the mast floated two thirds of a tile above its
+-- footprint, standing on nothing.
+local ART = "__space-age-extended__/graphics/entity/arc-mast/"
+mast.icon = "__space-age-extended__/graphics/icons/arc-mast.png"
+mast.chargable_graphics =
+{
+  picture =
+  {
+    layers =
+    {
+      {
+        filename = ART .. "base.png",
+        priority = "high",
+        width = 224,
+        height = 365,
+        shift = { 0, -1.875 },     -- by_pixel(0, -60) at scale 0.5
+        scale = 0.5
+      },
+      {
+        filename = ART .. "shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        -- The shadow lies flat on the ground and leans up and to the right,
+        -- so it is wider than the colour plate but needs no extra rows, and it
+        -- carries its own shift -- both derived by
+        -- tools/process-building-art.py, not guessed.
+        width = 512,
+        height = 365,
+        shift = { 2.25, -1.875 },
+        scale = 0.5
+      }
+    }
+  },
+  charge_animation =
+  {
+    layers =
+    {
+      {
+        filename = ART .. "charge.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 224,
+        height = 365,
+        frame_count = 19,
+        line_length = 8,
+        shift = { 0, -1.875 },     -- by_pixel(0, -60) at scale 0.5
+        scale = 0.5
+      }
+    }
+  },
+  charge_animation_is_looped = false,
+  charge_cooldown = 30,
+  discharge_animation =
+  {
+    layers =
+    {
+      {
+        filename = ART .. "discharge.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 224,
+        height = 365,
+        frame_count = 24,
+        line_length = 8,
+        shift = { 0, -1.875 },     -- by_pixel(0, -60) at scale 0.5
+        scale = 0.5
+      }
+    }
+  },
+  discharge_cooldown = 60
+}
+
+-- The strike has to land on the electrode, and the plate just moved down by
+-- 0.65625 tiles, so the row the engine strikes moves with it: vanilla's -4.8
+-- plus that same 0.65625. Left at -4.8 the bolt would terminate below the cage,
+-- inside the ceramic stack.
+mast.lightning_strike_offset = { 0, -4.14375 }
+
 data:extend({ mast })
 
 data:extend({
   {
     type = "item",
     name = "sae-arc-mast",
-    icon = "__space-age__/graphics/icons/lightning-collector.png",
+    icon = "__space-age-extended__/graphics/icons/arc-mast.png",
     subgroup = "energy",
     order = "z[sae]-a[arc-mast]",
     place_result = "sae-arc-mast",
