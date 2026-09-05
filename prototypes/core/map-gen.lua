@@ -36,6 +36,14 @@ local PALETTE = "struck-nickel"
 --        if n:find("mineral") or n:find("volcanic") or n:find("frozen") then
 --          t[#t+1] = n end end
 --      table.sort(t) game.print(table.concat(t, " "))
+--
+-- Decoratives are not listed at all -- see core_decoratives() below, which asks
+-- data.raw what exists rather than naming anything. To see what it selected,
+-- standing on the Core:
+--   /c local s = game.player.surface.map_gen_settings.autoplace_settings
+--                    .decorative.settings
+--      local t = {} for n in pairs(s) do t[#t+1] = n end
+--      table.sort(t) game.print(#t .. ": " .. table.concat(t, " "))
 
 local palettes =
 {
@@ -51,6 +59,10 @@ local palettes =
     temperature = { centre = 30, amplitude = 90, octaves = 2, persistence = 0.45, scale = 520 },
     moisture    = { centre = 0.50, amplitude = 0.16, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.35, amplitude = 0.20, octaves = 3, persistence = 0.5, scale = 300 },
+
+    -- Nothing warm-looking scattered on it: the ground is cold worked metal,
+    -- and the only heat on this world should be the heat the player made.
+    decoratives = {},
 
     tiles       = { "volcanic-cracks", "volcanic-ash-dark", "volcanic-ash-flats" },
     alien_tiles =
@@ -73,6 +85,8 @@ local palettes =
     moisture    = { centre = 0.50, amplitude = 0.18, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.30, amplitude = 0.18, octaves = 3, persistence = 0.5, scale = 300 },
 
+    decoratives = { "ash" },
+
     tiles       = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-ash-cracks" },
     alien_tiles =
     {
@@ -94,6 +108,8 @@ local palettes =
     moisture    = { centre = 0.45, amplitude = 0.22, octaves = 3, persistence = 0.5, scale = 280 },
     aux         = { centre = 0.40, amplitude = 0.22, octaves = 3, persistence = 0.5, scale = 300 },
 
+    decoratives = { "snow", "frozen", "ice" },
+
     tiles       = { "volcanic-cracks", "volcanic-cracks-warm", "volcanic-ash-dark" },
     alien_tiles =
     {
@@ -113,6 +129,8 @@ local palettes =
     temperature = { centre = 85, amplitude = 45, octaves = 3, persistence = 0.55, scale = 300 },
     moisture    = { centre = 0.35, amplitude = 0.18, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.45, amplitude = 0.20, octaves = 3, persistence = 0.5, scale = 300 },
+
+    decoratives = { "ash", "cinder", "lava" },
 
     tiles =
     {
@@ -221,6 +239,67 @@ local function core_tiles()
   return settings
 end
 
+-- Rock and mineral scatter.
+--
+-- Selected by name pattern rather than by list, because the decorative names
+-- are the one part of an optional pack that cannot be checked from outside the
+-- game -- and a list of guesses would fail silently, which is exactly the
+-- failure this file has already had once. A pattern asks data.raw what exists
+-- instead of telling it.
+--
+-- Two filters do the work beyond the patterns. Only decoratives that actually
+-- carry an autoplace are enabled, since one without it would sit in the
+-- settings doing nothing and inflate the count that reports success. And every
+-- palette's climate still has the final say: a decorative places only where its
+-- own conditions are met, so listing the whole rock family gets the grey ones
+-- on struck-nickel and the ash ones on ashen-furnace without either being
+-- named. That is the same mechanism the tiles use, and it is why this is safe
+-- to cast wide.
+--
+-- Decoratives only: the big rocks are simple-entities, not decoratives, and
+-- they are left out on purpose. Vanilla's yield stone and coal, and a world
+-- whose whole point is that it has no carbon should not have coal lying on the
+-- ground to be picked up.
+local DECORATIVE_WANTED =
+{
+  "rock", "stone", "pebble", "boulder", "gravel", "mineral", "crater", "pumice"
+}
+
+-- Nothing that ever lived. The Core has no organics at all, so a stray tuft of
+-- grass would contradict the planet rather than decorate it -- and vanilla's
+-- decorative names are not tidily separated by planet, so this list is what
+-- keeps Nauvis and Gleba off the surface.
+local DECORATIVE_REFUSED =
+{
+  "grass", "plant", "tree", "flower", "bush", "shrub", "fungus", "moss",
+  "lichen", "weed", "garballo", "carpet", "leaf", "root", "vegetation",
+  "water", "mud", "puddle", "oil", "scrap", "egg", "nest", "spawn"
+}
+
+local function matches_any(name, patterns)
+  for _, pattern in pairs(patterns) do
+    if string.find(name, pattern, 1, true) then return true end
+  end
+  return false
+end
+
+local function core_decoratives()
+  local wanted = { }
+  for _, pattern in pairs(DECORATIVE_WANTED) do wanted[#wanted + 1] = pattern end
+  for _, pattern in pairs(palette.decoratives or {}) do wanted[#wanted + 1] = pattern end
+
+  local settings = {}
+  for name, decorative in pairs(data.raw.decorative or {}) do
+    if decorative.autoplace
+       and matches_any(name, wanted)
+       and not matches_any(name, DECORATIVE_REFUSED) then
+      settings[name] = {}
+    end
+  end
+
+  return settings
+end
+
 return function()
   return
   {
@@ -242,7 +321,7 @@ return function()
     autoplace_settings =
     {
       ["tile"] = { settings = core_tiles() },
-      ["decorative"] = { settings = {} },
+      ["decorative"] = { settings = core_decoratives() },
       ["entity"] =
       {
         settings =
