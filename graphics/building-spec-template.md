@@ -663,6 +663,47 @@ fixed offset — `lightning_strike_offset`, heat connection points, a launch
 position — that coordinate is a constraint the art must satisfy, not a
 measurement to take afterwards. Derive everything else; pin those.
 
+### The arithmetic everything else rests on
+
+Get these three wrong and every number in this section is wrong, invisibly.
+
+```text
+tiles          = source_px * scale / 32          NOT / 64
+util.by_pixel  = {x/32, y/32}, always in-game px, whatever the sprite's scale
+```
+
+`scale = 0.5` does mean 64 source px per tile — but the formula is
+`* scale / 32`, and reaching for `/ 64` instead makes the building half the size
+you think it is. On a scale-0.5 plate, `by_pixel(0, -60)` is a shift of 120
+*source* pixels.
+
+**Fit the art to the box by making the numbers equal, not close.** The visible
+half-width in tiles must *equal* the selection box's half-width. The arc mast
+sat at 3.14 tiles against a 3.00 tile box and the 0.14 tiles of overlap was
+plainly visible in game — a quarter of a foot pad, two of them interleaving.
+Vanilla tolerates 0.25 tiles on its lightning collector only because the
+overhang there is a soft tapering skirt; hard bolted geometry has no such
+slack. Cut the plate so the number is exact, then check it:
+
+```python
+half = max(abs(bb[0] - W/2), abs(bb[2] - W/2))   # bb = visible bbox, W = canvas
+assert half * scale / 32 == selection_box_half_width
+```
+
+**Anchor `shift` on the ground-contact plate, never on the tip.** Anchoring on
+the tip fixes the top of the building and lets the bottom fall wherever it
+lands; the arc mast floated two thirds of a tile above its own footprint, with
+its selection box drawn in bare ground beneath it. Measure the rows the base
+plate occupies, take their centre, and put that on the origin. Vanilla's
+collector sits its plate centre at `-0.133` tiles, which is a good target.
+
+**Anything the engine pins is downstream of the plate, not fixed.** The note
+above says pinned coordinates are a constraint the art must satisfy — true when
+you are *commissioning* art, but once the plate exists the pin has to be
+re-derived from it, and re-derived again every time the plate is re-cut.
+`lightning_strike_offset` moved twice on the arc mast for exactly this reason.
+Write the derivation down next to the number.
+
 **Tile Size:** `[32] px in-game` · **Scale:** `[0.5]` → `[64] source px per tile`
 
 **Building Width:** `[x] tiles → [x] in-game px → [x] source px`
@@ -794,10 +835,16 @@ constraint in §8. A generic checklist passes everything.
 
 ### In-Game
 
+Place **at least three in a row.** One building hides every spacing defect
+there is.
+
 * [ ] Engine-drawn effects land where the art says they should
-* [ ] Shadow aligns and does not double
+* [ ] Shadow aligns, does not double, and is *visible* — brighten the screenshot
+      and confirm it is actually there
 * [ ] Inserters and pipes align correctly
-* [ ] Doesn't overlap neighbours incorrectly
+* [ ] Neighbours do not overlap — measured, not judged: see Appendix C
+* [ ] The building sits on its tile, not above it — the selection box should not
+      be drawn in bare ground below the machine
 * [ ] Recognisable among other machines
 * [ ] Performance is acceptable
 
@@ -1051,6 +1098,71 @@ A shadow you cannot see in a brightened screenshot is not a subtle shadow.
 It is still synthesised rather than hand-authored, which remains the ceiling on
 how good it gets.
 
+### Four measurements before a plate is wired
+
+Every arc-mast defect passed the data-stage load, `--report`, `check-graphics.sh`
+and a careful look at the PNG. All four were geometry, and geometry is not
+visible in a viewer. These take a minute and would have caught all of them.
+
+```python
+from PIL import Image
+im = Image.open(plate).convert("RGBA"); a = im.getchannel("A"); W, H = im.size
+bb = a.point(lambda v: 255 if v > 20 else 0).getbbox()      # visible content
+
+# 1. centred?  content centre must equal canvas centre
+(bb[0] + bb[2]) / 2 == W / 2
+
+# 2. clipped?  alpha must be 0 down both edge columns and along both edge rows
+max(a.getpixel((0, y))     for y in range(H)) == 0
+max(a.getpixel((W - 1, y)) for y in range(H)) == 0
+
+# 3. fits the box?  visible half-width in tiles == selection box half-width
+max(abs(bb[0] - W/2), abs(bb[2] - W/2)) * scale / 32
+
+# 4. declared == actual?  and does the sheet hold its frames?
+im.size == (declared_w * cols, declared_h * rows)
+frame_count <= cols * rows  and  line_length <= cols
+```
+
+Check 2 is the one nobody thinks of. A plate hard against its canvas edge has no
+antialiased rim — it ends on a razor line mid-geometry — and it is also the
+symptom that says the *trim* is wrong, which is what pushes the building
+off-centre in the first place.
+
+`check-graphics.sh` covers none of this; it only proves the files exist.
+
+### Measuring overlap, rather than arguing about it
+
+Render N neighbours at the real pitch and count opaque pixels claimed by two
+buildings at once:
+
+```python
+overlap = sum(1 for y in ... for x in ... if mask_a[x, y] and mask_b[x, y])
+```
+
+A correct fit gives a **1–2 px seam at low alpha that vanishes above ~alpha 80**
+— that is two antialiased edges meeting. Real overlap is tens of pixels wide and
+survives any threshold. Run the same measurement on the vanilla building yours
+is modelled on and compare: the arc mast finished at a 2 px seam against
+vanilla's collector's 32 px, which is the evidence that ended the argument.
+
+### Verifying without closing the game
+
+`--dump-data` and the headless rig both take `~/.factorio/.lock`, so neither runs
+while a client is open. Point Factorio at a scratch user-data directory instead
+and it will not contend at all:
+
+```ini
+# scratch/config.ini
+[path]
+read-data=__PATH__executable__/../../data
+write-data=/path/to/scratch/data
+```
+
+`factorio --dump-data --config scratch/config.ini --mod-directory scratch/mods`
+then writes its dump to `scratch/data/script-output/`. The same flag works for
+`--create` and `--start-server`. Do not kill a running client to free the lock.
+
 ### Then, and only then
 
 Wire the prototype, run `tools/check-data-stage.sh` (which also runs the
@@ -1065,7 +1177,18 @@ of them found by pulling frames out of a screen capture. The fix for the worst
 of them was itself incomplete, and only a second screenshot showed it: the box
 had been grown to fit the art, but the art was 3.14 tiles against a 3 tile box
 and still overlapped. Sizing art to a box means making the number *equal*, not
-close. The selection brackets are the ruler: they are a known
-number of tiles wide, which calibrates screen pixels to tiles, and every claim
-about sprite size, overlap and shift follows from that. Place at least three of
-the building in a row — a single one hides overlap entirely.
+close.
+
+**The selection brackets are the ruler.** They are a known number of tiles wide,
+so measuring them in a frame gives screen-pixels-per-tile, and every claim about
+sprite size, overlap and shift follows from that one number. Place at least
+three of the building in a row — one hides overlap entirely.
+
+**Do not assert a geometry number you have not computed.** Two of the four
+arc-mast diagnoses were wrong the first time round and both were confident:
+"the plates just touch at a 3 tile pitch" was arithmetic never actually done —
+3.14 on a pitch of 3 overlaps — and the invisible shadow was blamed on the blur
+when the real cause was compositing the plate through its own alpha, squaring
+155 into 94. Both would have been caught by rendering the thing and measuring
+it, which is a minute's work. If a claim about size, position or overlap has not
+come out of a measurement, write it as a question instead.
