@@ -83,8 +83,24 @@ sprite work itself:
 - the **whisker bed tile is a clone of stone path**, so a farm cannot be told apart from
   a concrete pad.
 
-Terrain is already handled: with Alien Biomes installed the Core generates volcanic ash
-and mineral dirt, and falls back to vanilla snow without it.
+Terrain is a choice rather than a default. `prototypes/core/map-gen.lua` defines four
+palettes and selects one with a single `PALETTE` constant at the top of the file:
+
+| Palette | What it looks like |
+|---|---|
+| `struck-nickel` *(selected)* | Grey mineral ground and cool unlit cracks, with a sparse blue-violet scorch. Electrical rather than molten, so it ties to the arc storms and does not read as a second Vulcanus |
+| `iron-crust` | Black and grey ground and dark ash, with no lit tile anywhere. Heat exists only where the player built for it |
+| `frozen-crust` | Cold ground cut by hot veins where the interior comes close -- the design document's own sentence, made visible |
+| `ashen-furnace` | Ash with common orange heat tiles. The most dramatic, and the closest to Vulcanus |
+
+Each palette carries its own temperature, moisture and aux expressions, because tiles
+choose themselves along those three axes and a tile list on its own decides nothing.
+Space Age's volcanic tiles and Alien Biomes' mineral, snow and heat tiles are listed
+separately, so without the pack a palette degrades to its Space Age half rather than to a
+guess. **Not yet seen in game**: the four palettes are tuned from Alien Biomes' published
+autoplace windows, not from a screenshot, and the exact spread each one produces still
+wants a fresh surface and an eye. Switching palettes only affects chunks that do not
+exist yet.
 
 ### 5. Balance is arithmetic, not play
 
