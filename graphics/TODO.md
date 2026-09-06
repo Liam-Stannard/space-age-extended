@@ -116,33 +116,51 @@ together.
 | Crust Tap | `v1-sheet.png` | 1 | Two-temperature read landed; burst disc and choke both present |
 | Ignition Ring Mast | `v1-sheet.png` | 1 | The critical anti-read landed — no cage, no electrode, closed dark cap. It will not be confused with the Arc Mast |
 
-### Reviewed against vanilla convention — five sheets need a fix before locking
+### Redraw in progress — the whole set is being regenerated
 
-Checked against the real sprites (space crusher, foundry, chemical plant, big
-mining drill). The three rules are now written into the template's §8. Two of
-them are broken across this set.
+The convention review found faults in eight of nine sheets, so rather than
+refining each one the whole set is being redrawn against rewritten prompts. The
+four rules now live in the template's §8 and in every prompt.
 
-**Product drawn into the plate — five sheets.** Vanilla never does this, and the
-material is drawn on tiles the entity does not own:
+| Building | State |
+| -------- | ----- |
+| Drop Crusher | **`v4-sheet.png`** — clean on all four rules; chutes now wide-left and narrow-right on opposite faces |
+| Ballast Drill | **`v2-sheet.png`** — clean; gained the toothed cutting head, so it reads as a mining machine at last |
+| The other seven | not yet redrawn |
 
-| Building | What it draws | Fix |
-| -------- | ------------- | --- |
-| Drop Crusher | Coarse fragments and fine powder heaped on the ground at both chutes | Keep both chutes as mechanism; delete every pile. The **chute mouths still differ in size**, which is what carried the read |
-| Ballast Drill | Crushed ore spilling from the output boom | Delete the spill; keep the boom. Ground dust may stay **only** as a separate decal layer |
-| Dross Classifier | Two collection bins full of visible grit and powder | Empty the bins. Bins implying storage the entity does not have is the second problem |
-| Coil Separator | Ore stream through the aperture, piles under both chutes | Hardest of the five — the stream is half the signature. Keep it **inside** the throat and the chutes; nothing on the ground |
-| Whisker Comber | Tangle in the infeed tray, ribbon leaving the outfeed | Hardest overall: §3.2's signature *is* the before-and-after. Keep both **contained within the machine** — tangle inside a hopper mouth, ribbon inside the nip — and off the floor |
+**Two art-direction corrections drove this, both from Liam.**
 
-**Fluid connections that land where the engine cannot reach — three sheets:**
+*Both hatches in the same square.* The Drop Crusher's two chutes sat side by side
+inside one tile, so they read as one output and there was nowhere to put a second
+belt. Now rule 3 in the template, and it also applied to the Dross Classifier and
+the Coil Separator.
 
-| Building | Problem | Fix |
-| -------- | ------- | --- |
-| Helium Concentrator | The gas riser **exits at the top of the building**, terminating in the air. Only two connections drawn; §8 needs **three** — melt in, helium out, settled melt out, on three faces | Bring the riser back down to a tile-edge flange, and draw the third connection |
-| Ring Mast | The helium inlet enters the coil band at **waist height**, above ground level | Route it down to a ground-level flange at the tile the fluid box names |
-| Crust Tap | The riser runs well past the 2×2 footprint in the canonical view | Shorten it so the flange lands on the footprint edge, at `fluid_source_offset` |
+*Everything looks the same instead of unique.* The cause was the format example
+doing more than layout — the Ballast Drill came back with **identical palette
+swatch values** to the Drop Crusher. Two changes: every building now gets its own
+**distinct vanilla style reference**, none repeated across the nine, and the
+format example **rotates** through the older approved sheets rather than being one
+sheet for everything. The prompt also now says in terms that the second image is a
+layout reference only, that the machine in it is a different building, and that
+this one must look like nothing else.
 
-**Clean on both counts: Vacuum Furnace.** No product, one flux inlet on a flank
-at ground level, item I/O left to inserters. It is the reference for the others.
+**The uniqueness fix is not yet proven.** It has only been through the Drop
+Crusher, which was always going to look like itself. The first real test is the
+next building drawn against a reference it has not seen.
+
+### The reference plan, so it is not re-derived
+
+| Building | Vanilla style reference | Format example |
+| -------- | ----------------------- | -------------- |
+| Drop Crusher | assembling machine 3 | radiant generator v2 |
+| Ballast Drill | big mining drill | sealed roboport v2 |
+| Dross Classifier | centrifuge | bed tender v2 |
+| Coil Separator | nuclear reactor | superconducting store v1 |
+| Whisker Comber | recycler | sealed roboport v2 |
+| Helium Concentrator | chemical plant | vent pump v4 |
+| Vacuum Furnace | cryogenic plant | ignition array v2 |
+| Crust Tap | pumpjack | arc mast v4 |
+| Ignition Ring Mast | our own ignition array | radiant generator v1 |
 
 **One thing to settle across all nine at lock time.** Every sheet titles itself
 with a generic descriptive name — ORE PRESS, VIBRATING CLASSIFIER, MAGNETIC

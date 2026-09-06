@@ -446,7 +446,16 @@ fluid connections on the tile boundary the prototype names, and a player's pipe
 arrives there and nowhere else. A riser is fine as long as it comes back down and
 terminates at the edge.
 
-**3. Nothing crosses the collision box** — not the machine, not a pipe run, and
+**3. Two ports means two tiles.** Where a machine has two output ports — a coarse
+and a fine chute, two splitter mouths, two discharge lips — they must sit on
+**separate tiles of the footprint**, ideally on different faces. Drawn side by
+side inside one tile they read as a single output, which throws away the reason
+there are two of them, and a player cannot see where to put the second belt.
+The engine does not care: an assembling machine has one output inventory and an
+inserter may stand anywhere. The *player* cares, and the art is the only thing
+telling them.
+
+**4. Nothing crosses the collision box** — not the machine, not a pipe run, and
 not spilled material or ground scatter. The Arc Mast is the standing lesson: at
 3.14 tiles on a 3-tile pitch, a row of them interleaved, and the fix was to cut
 the plate to exactly 3.00. Ground decals are the one legitimate exception, and

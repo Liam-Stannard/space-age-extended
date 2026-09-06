@@ -153,19 +153,21 @@ magnetic separator standing on an airless metallic world. Its centre is a
 thick copper-brown toroidal coil mounted vertically with an open aperture
 facing the viewer. Heavy flat pale-grey bus bars enter the coil from both
 flanks. Cooling fins on the coil's outer face. Two empty angled splitter
-chutes of different widths leave the base below the coil. A steady cold blue-
-violet glow appears only inside the aperture and never on the chassis. Dark
-grey-brown armour. No white laboratory panels, no flickering electricity, no
-arcs, no smoke, no flame. Panels: main view, front elevation, side elevation,
-a detail of the empty coil throat and the two chute mouths, and a lit/unlit
-pair. Title the sheet COIL SEPARATOR. Draw no loose material anywhere: no ore,
-powder, fibre, grit, debris or product on the ground, in bins, at chutes, on
-trays or spilling from the machine. Factorio machines never show what they
-make, so every chute, port, bin and tray is drawn as empty machinery. Every
-pipe connection must run down to ground level and stop flush at the edge of
-the tile footprint; no pipe may end in mid-air and none may leave the top of
-the building. Nothing may extend past the tile footprint, pipework included,
-and the tile-grid panel must show the whole machine inside the grid with no
+chutes of different widths leave the base below the coil on opposite sides --
+one to the left and one to the right -- so they sit on clearly separate tiles
+of the footprint and never side by side. A steady cold blue- violet glow
+appears only inside the aperture and never on the chassis. Dark grey-brown
+armour. No white laboratory panels, no flickering electricity, no arcs, no
+smoke, no flame. Panels: main view, front elevation, side elevation, a detail
+of the empty coil throat and the two chute mouths, and a lit/unlit pair. Title
+the sheet COIL SEPARATOR. Draw no loose material anywhere: no ore, powder,
+fibre, grit, debris or product on the ground, in bins, at chutes, on trays or
+spilling from the machine. Factorio machines never show what they make, so
+every chute, port, bin and tray is drawn as empty machinery. Every pipe
+connection must run down to ground level and stop flush at the edge of the
+tile footprint; no pipe may end in mid-air and none may leave the top of the
+building. Nothing may extend past the tile footprint, pipework included, and
+the tile-grid panel must show the whole machine inside the grid with no
 overhang.
 ```
 

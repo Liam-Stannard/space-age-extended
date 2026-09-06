@@ -153,9 +153,11 @@ classifier standing on an airless metallic world. Three shallow empty stepped
 trays descend across the footprint, each with a visibly finer mesh than the
 one above. The whole deck rides on compressed leaf springs at four corners. A
 small offset flywheel drive sits at the high end. Two empty discharge lips of
-different widths leave the low end. Dark grey-brown frame, pale grey tray
-decks, charcoal springs. No belts, no conveyor, no collection bins, no glow,
-no flame, no smoke. Panels: main view, side elevation showing the three
+different widths leave the machine on opposite sides -- one on the left face
+and one on the right face -- so they sit on clearly separate tiles of the
+footprint and never side by side. Dark grey-brown frame, pale grey tray decks,
+charcoal springs. No belts, no conveyor, no collection bins, no glow, no
+flame, no smoke. Panels: main view, side elevation showing the three
 descending planes clearly, top-down view, a detail of the springs and the
 eccentric drive, and the deck shown at both ends of its shake. Title the sheet
 DROSS CLASSIFIER. Draw no loose material anywhere: no ore, powder, fibre,

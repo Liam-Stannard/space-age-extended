@@ -163,8 +163,10 @@ crusher standing on an airless metallic world. Four heavy vertical posts,
 roughly twice the height of the base, form an open frame with no pipes, hoses
 or cables anywhere on it. A plain unadorned near-black slab of solid metal
 rides the posts as a dead weight, with no surface detail. A pale scarred anvil
-bed sits at the base. Two empty discharge chutes leave the base at visibly
-different mouth sizes, one wide and one narrow. Dark grey-brown armour,
+bed sits at the base. Two empty discharge chutes leave the base, one wide and
+one narrow, and they are on opposite sides of the machine -- one leaving the
+left face and one leaving the right face -- so they sit on clearly separate
+tiles of the footprint and never side by side. Dark grey-brown armour,
 charcoal slab, pale grey struck anvil, small yellow hazard banding on the base
 edge only. No opposed jaw plates, no gnashing mechanism, no glow, no flame, no
 smoke. Panels: main view, front elevation, side elevation, a detail of the
