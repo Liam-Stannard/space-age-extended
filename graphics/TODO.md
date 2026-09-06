@@ -96,6 +96,29 @@ past stage 0** into real sprites; the other five stop at "design locked".
 | Ignition Array | `building-spec-ignition-array.md` | `v2-sheet.png` | **base plate done**, wired, launch furniture emptied; iris / shaft / lamps / 64-frame glow / rocket entity outstanding |
 | Vent Pump | `building-spec-vent-pump.md` | `v4-sheet.png` | **all outstanding** — 4 directional frames plus an animation, the most expensive of the seven |
 
+## 5b. Nine briefs, no sheets, nothing generated
+
+Drafted 2026-09-06 from the Core production-chain review. Each is a **brief** in
+the sense §5's four brief-first specs began as: enough to commission and judge a
+concept sheet, with §6, §12 and §13 deliberately open. **None is at stage 0 yet**,
+and three carry a question that has to be answered before art is worth
+commissioning — the last column says which.
+
+| Building | Document | Blocked on |
+| -------- | -------- | ---------- |
+| Drop Crusher | `building-spec-drop-crusher.md` | nothing — **start here**; vanilla's crusher is space-only, so T1 cannot exist without it |
+| Ballast Drill | `building-spec-ballast-drill.md` | nothing |
+| Dross Classifier | `building-spec-dross-classifier.md` | nothing |
+| Coil Separator | `building-spec-coil-separator.md` | nothing |
+| Whisker Comber | `building-spec-whisker-comber.md` | its two consumers (T5 prepreg, T6 cryostat) do not exist |
+| Helium Concentrator | `building-spec-helium-concentrator.md` | **§20** — it turns helium from a hard cap into a price, which rewrites `decisions.md` D12 |
+| Vacuum Furnace | `building-spec-vacuum-furnace.md` | **§20** — the sintering recipe's shape decides whether it can be a `furnace` at all |
+| Crust Tap | `building-spec-crust-tap.md` | **§20** — an offshore pump on open ground is untested; spike it as S9 was spiked |
+| Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | **§20** — does spoilage tick inside a rocket silo's input slot? |
+
+Every one of the nine is a **first draft**: gameplay numbers are placeholders,
+and none has been read back off a prototype, because no prototype exists.
+
 For each: canonical view, idle plate, directional frames where the prototype has
 them, glow by differencing, sprite canvas, icon. Template Appendix C is the
 pipeline and none of it should be asked of a generator.

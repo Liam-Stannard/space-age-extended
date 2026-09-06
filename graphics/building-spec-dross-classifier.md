@@ -1,0 +1,205 @@
+# Factorio Building — Art & Implementation Specification
+
+**Dross Classifier.** First draft — a brief, enough to commission and judge a
+concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
+approved and a canonical plate has been measured.
+
+---
+
+# 0. Generation Contract
+
+| # | Asset | Canvas | Gate before moving on | State |
+| - | ----- | ------ | --------------------- | ----- |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
+| 5 | Working animation | portrait 2:3 | The sort loop reads as sorting | blocked on 1 |
+| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+
+---
+
+# 1. Building Overview
+
+**Building Name:** `Dross Classifier`
+**Internal Prototype Name:** `sae-dross-classifier`
+
+**Building Type:** `assembling-machine`.
+
+**Purpose:** Sorts settling dross by particle size into **bed-grade dross**,
+which is the ground the whisker beds are laid on, and **recovered fines**, which
+go to the carbonyl line. It uses the same thing the settler uses — weight — but
+applied to a solid.
+
+**Why it matters:** dross is currently the mod's only genuine byproduct and it
+has two outlets that are both terminal (bed tiles, and resettling back into
+melt). Neither teaches anything. Classifying it makes the byproduct a **feedstock
+with a choice attached**, and it gives the whisker farm a supply chain instead of
+a hand recipe.
+
+**Locale:** *"Sorts the leavings by weight, because weight is what this planet
+has."* / *"Coarse dross makes ground for the beds; the fines go to the carbonyl
+line. Nothing here is waste for long."*
+
+---
+
+# 2. Gameplay Dimensions
+
+| | |
+| --- | --- |
+| Tile footprint | 3×3 (`collision_box {-1.4,-1.4},{1.4,1.4}`) |
+| Directions | 1 |
+| Crafting category | `sae-classification` |
+| Energy | **Low: 150 kW.** The sort is gravity; the shake is not |
+| Surface conditions | `gravity` ≥ 45 — the Core's surface alone |
+| Module slots | 2 |
+
+**The recipe, first pass:** 10 dross → 6 bed-grade dross + 3 kamacite fines, 5 s.
+A tenth is lost, so classifying is not free and stockpiling raw dross stays a
+legitimate choice.
+
+### Why it is not a reskin
+
+It shares the Ballast Drill's and the Drop Crusher's argument — gravity doing
+mechanical work — but applies it to separation rather than to extraction or
+breaking. Together the three read as a **family of machines that all lean on the
+same planetary fact**, which is worth more than three unrelated ideas. Nothing in
+vanilla sorts a solid by density.
+
+---
+
+# 3. Visual Design
+
+## 3.1 Design Concept
+
+An inclined deck that shakes. The building is a **stepped cascade** — three
+shallow trays descending across the footprint, each with a finer mesh than the
+one above — mounted on visible springs, with a small eccentric drive at one end.
+
+**The anti-read is a splitter.** This is not a belt device and must not borrow a
+splitter's flat, low, symmetrical read. It is a piece of process plant with a
+visible height difference across it, and the height difference is what does the
+work.
+
+## 3.2 Key Visual Features
+
+* **Three stepped trays**, descending left to right, meshes visibly coarsening
+  upward and fining downward.
+* **Leaf springs** at all four corners, drawn compressed.
+* An **eccentric drive** — a small offset flywheel at the high end.
+* Two **collection bins** at the low end, the coarse one shallow and wide, the
+  fine one deep and narrow.
+
+### Signature Feature
+
+**The stepped profile, read from the side.** Three descending planes is a
+silhouette nothing else in the mod has, and it is legible even at the 45-degree
+camera where flat machines all look alike.
+
+## 3.3 Colour Palette
+
+| Role | Hex | Where |
+| ---- | --- | ----- |
+| Frame and bins | `#4A463F` → `#6E685C` | the structure |
+| Tray decks | `#8A8580` | the three planes |
+| Springs and drive | `#3B3B40` | corners and high end |
+| Coarse dross | `#7A6A55` | upper trays, shallow bin |
+| Fine dross | `#A89A82` | lower tray, deep bin |
+
+**No glow.** Dross is cold by the time it gets here — it is what settled *out*.
+
+---
+
+# 4. Factorio Visual Style
+
+3×3 and low, so the camera shows mostly deck. That suits this building: the three
+trays *are* the deck, so the most-visible surface is also the most informative
+one. Style reference to attach: the **crusher**, cropped and upscaled, for
+material and finish.
+
+---
+
+# 5. Building Orientation
+
+* [x] North · [x] East · [x] South · [x] West
+
+**Direction count:** `4`. The cascade runs downhill in a specific direction and
+the bins sit at its foot; a classifier whose bins face the wrong way is a machine
+whose function has been drawn backwards.
+
+---
+
+# 8. Connections
+
+| Connection | Where | Notes |
+| ---------- | ----- | ----- |
+| Dross in | any adjacent tile | inserters, unconstrained |
+| Bed-grade / fines out | any adjacent tile | two products, one output inventory |
+| Electric | no visible connector | poles reach it wirelessly |
+| Fluids | none | no fluid box; no pipe flange in the art |
+
+The bins are honest decoration, as the Drop Crusher's chutes are. They say which
+end is downhill; they do not constrain inserters.
+
+---
+
+# 11. Generation Requirements
+
+## Concept Sheet Prompt
+
+```text
+A single landscape concept-art and asset-breakdown sheet for one Factorio Space
+Age industrial machine, every panel drawn from the game's characteristic
+45-degree top-down perspective. The machine is a low three-by-three vibrating
+classifier standing on an airless metallic world. Three shallow stepped trays
+descend across the footprint, each with a visibly finer mesh than the one above.
+The whole deck rides on compressed leaf springs at four corners. A small offset
+flywheel drive sits at the high end. Two collection bins sit at the low end, one
+shallow and wide holding coarse grey-brown grit, one deep and narrow holding pale
+fine powder. Dark grey-brown frame, pale grey tray decks, charcoal springs. No
+belts, no conveyor, no glow, no flame, no smoke. Panels: main view, side
+elevation showing the three descending planes clearly, top-down view, a detail of
+the springs and the eccentric drive, and the deck shown at both ends of its
+shake.
+```
+
+---
+
+# 15. Factorio Prototype — sketch
+
+```lua
+{
+  type = "assembling-machine",
+  name = "sae-dross-classifier",
+  crafting_categories = { "sae-classification" },
+  crafting_speed = 1,
+  energy_usage = "150kW",
+  energy_source = { type = "electric", usage_priority = "secondary-input" },
+  surface_conditions = { { property = "gravity", min = 45 } },
+  module_slots = 2
+}
+```
+
+---
+
+# 16. Icon
+
+The three stepped trays seen from the side, coarse grit on top and pale powder
+below. Must read at 32 px as *"three descending steps"* — the springs and drive
+will not survive and should not be attempted.
+
+---
+
+# 20. Open questions
+
+- **It must not be a second phosphorus source.** Settled here and in the Coil
+  Separator's §20: **schreibersite comes from the separator only.** If the
+  classifier also yielded it, neither source would gate the flux and T1 would
+  stop mattering. The classifier's second stream is fines, which the carbonyl
+  line consumes.
+- **Two fines sources is fine; two phosphorus sources is not.** The Drop Crusher
+  also makes fines, deliberately — a byproduct with two producers and one hungry
+  consumer is a healthy shape, and it means the carbonyl line does not stall when
+  ore runs short.
+- **Does bed-grade dross replace raw dross in the whisker bed recipe?** It
+  should, or classifying is optional and the building is decoration. That is a
+  one-line change to `recipes.lua:sae-whisker-bed`, and it should land in the
+  same commit.

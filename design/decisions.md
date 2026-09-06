@@ -135,6 +135,29 @@ It described a design in which each capstone was a space-platform capability.
 Capstones are coil parts now, and the platform content lives in the corridor and
 the Core's orbital half.
 
+**R7 — The geodynamic science pack takes one ingredient per Core mechanic,
+including cold welding.**
+D15 and `04-the-core.md` §6 split the two halves of the endgame — *"research uses
+the material sciences; construction uses the joining"* — and deliberately kept
+cold welding out of the pack. That split is reversed. The pack now draws one
+ingredient from each of the Core's four mechanics: a cast or settled product
+(gravity settling), kamacite whiskers (growth), a homogenised product (orbital
+homogenisation) and a welded plate (cold welding).
+
+The reason is teaching rather than economy. A pack whose ingredients each come
+from a different mechanic makes its own production line a tour of the planet, so
+a player who can make research can, by construction, already run every process
+the Field Coil Segment needs. Under the old split, cold welding was first met at
+the last assembly, which is the worst possible place to learn it.
+
+What is given up is real and was the original argument: research and
+construction no longer draw on strictly separate processes, so the pack competes
+with the segment for welding time as well as for materials. That competition is
+judged a feature — §6 already names research-versus-construction as the
+endgame's central decision, and this sharpens it — but if play shows the welding
+line starving, the fix is to drop the welded plate rather than to re-split the
+mechanics.
+
 ## Measured on the Core prototype itself
 
 From the S1 and S2 spikes, on a headless server running a scratch planet.
