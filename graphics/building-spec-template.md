@@ -424,6 +424,32 @@ moves it]`
 list every position, including the ones a player will rarely use. Art that
 hides an existing connection point is a bug report waiting to happen.
 
+### Rule zero: the building is drawn square-on to the tile grid
+
+**Checked against the electric mining drill in all four directions.** Factorio's
+camera is a slightly-tilted top-down, and the tile grid is aligned with the
+screen: north is up, east is right. So every vanilla sprite presents the building
+**face-on** — its front face parallel to the bottom of the frame, its side faces
+parallel to the left and right edges. The drill's output spout leaves a face at
+right angles and points **straight down the screen**.
+
+**A building drawn rotated, with a corner toward the viewer, is in the wrong
+projection**, and it takes every port with it: from a corner-on box, every face
+points diagonally, so every chute, flange and boom exits on a diagonal and aims
+at no tile at all. Belts and inserters are axis-aligned; a diagonal port is
+pointing at nothing.
+
+This is easy to get wrong because a three-quarter corner view is what concept art
+*normally* looks like, and a generator will default to it every time unless told
+otherwise. Say it explicitly in every prompt:
+
+> Draw the building square-on to the tile grid, as Factorio draws its own
+> sprites: the front face parallel to the bottom edge of the panel, the side
+> faces parallel to the left and right edges. Do not rotate it so a corner points
+> at the viewer. Every chute, port and pipe leaves a face at right angles to it,
+> pointing straight up, down, left or right in the image — never diagonally out
+> of a corner.
+
 ### Three conventions vanilla never breaks
 
 Checked against the real sprites, not remembered. Every one of these is easy to
