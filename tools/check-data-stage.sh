@@ -29,9 +29,20 @@ if [ -z "$FACTORIO_BIN" ] || [ ! -x "$FACTORIO_BIN" ]; then
 fi
 
 SCRATCH_MODS="$(mktemp -d)"
+SCRATCH_DATA="$(mktemp -d)"
 LOG_FILE="$(mktemp)"
-cleanup() { rm -rf "$SCRATCH_MODS" "$LOG_FILE"; }
+cleanup() { rm -rf "$SCRATCH_MODS" "$SCRATCH_DATA" "$LOG_FILE"; }
 trap cleanup EXIT
+
+# --dump-data takes ~/.factorio/.lock, so it refuses to run while a client is
+# open -- "Couldn't acquire exclusive lock". Pointing Factorio at a scratch
+# write-data directory sidesteps the contention entirely, so this check works
+# with the game running instead of asking anyone to close it.
+cat > "$SCRATCH_DATA/config.ini" <<EOF
+[path]
+read-data=__PATH__executable__/../../data
+write-data=$SCRATCH_DATA
+EOF
 
 ln -s "$REPO_ROOT" "$SCRATCH_MODS/$MOD_NAME"
 cat > "$SCRATCH_MODS/mod-list.json" <<EOF
@@ -48,7 +59,8 @@ cat > "$SCRATCH_MODS/mod-list.json" <<EOF
 EOF
 
 set +e
-"$FACTORIO_BIN" --dump-data --mod-directory "$SCRATCH_MODS" > "$LOG_FILE" 2>&1
+"$FACTORIO_BIN" --dump-data --config "$SCRATCH_DATA/config.ini" \
+    --mod-directory "$SCRATCH_MODS" > "$LOG_FILE" 2>&1
 STATUS=$?
 set -e
 
@@ -63,13 +75,25 @@ echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
 # The data stage never opens image files, so a mod with broken icon paths passes
 # here and is then refused outright by a client. Check them too.
 "$REPO_ROOT/tools/check-graphics.sh" || exit 1
+DATA_DIR="$(dirname "$(dirname "$FACTORIO_BIN")")/../data"
+DATA_DIR="$(cd "$DATA_DIR" && pwd)"
 
 # And a recipe can name more fluids than any machine in its category has boxes
 # for. The data stage accepts that, set_recipe accepts it, and the machine then
 # sits there doing nothing. The dump the run above produced has the answer.
-DUMP="$HOME/.factorio/script-output/data-raw-dump.json"
+#
+# The dump comes from the scratch write-data directory this run just used, not
+# from ~/.factorio -- pointing at the latter went stale the moment this script
+# stopped writing there, and a stale dump answers questions about a version of
+# the mod that no longer exists.
+DUMP="$SCRATCH_DATA/script-output/data-raw-dump.json"
 if [ -f "$DUMP" ]; then
+  # Paths as the engine resolved them, which is the only way to see the ones Lua
+  # builds by concatenation -- check-graphics.sh cannot, and most of this mod's
+  # sprite paths are built that way. See tools/check-dumped-graphics.py.
+  python3 "$REPO_ROOT/tools/check-dumped-graphics.py" "$DUMP" "$DATA_DIR" || exit 1
   "$REPO_ROOT/tools/check-recipes.py" "$DUMP" || exit 1
 else
-  echo "Recipe check skipped -- no data-raw dump at $DUMP"
+  echo "Checks skipped -- no data-raw dump at $DUMP" >&2
+  exit 1
 fi

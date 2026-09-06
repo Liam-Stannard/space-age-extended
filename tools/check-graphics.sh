@@ -43,7 +43,8 @@ while read -r ref; do
     echo "  MISSING  $ref"
     missing=$((missing + 1))
   fi
-done < <(grep -rhoE '"__[a-z-]+__/[^"]+\.(png|ogg)"' "$REPO_ROOT/prototypes" "$REPO_ROOT/data.lua" "$REPO_ROOT/data-updates.lua" 2>/dev/null | tr -d '"' | sort -u)
+done < <(python3 "$REPO_ROOT/tools/collect-graphics-refs.py" \
+           "$REPO_ROOT/prototypes" "$REPO_ROOT/data.lua" "$REPO_ROOT/data-updates.lua")
 
 if [ "$missing" -gt 0 ]; then
   echo "Graphics check FAILED: $missing of $checked referenced files do not exist." >&2

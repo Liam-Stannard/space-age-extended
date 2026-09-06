@@ -47,7 +47,7 @@ def solid_bbox(im, alpha=20, min_run=8):
     return (cols[0], rows[0], cols[-1] + 1, rows[-1] + 1)
 
 
-def placement(im, width, height, top_margin):
+def placement(im, width, height, top_margin, bottom_margin=0):
     """Work out the trim/scale/offset to use, as numbers rather than a picture.
 
     Same arithmetic process-building-art.py's place() does, so the plate this
@@ -58,7 +58,7 @@ def placement(im, width, height, top_margin):
     if not box:
         sys.exit("fully transparent input")
     tw, th = box[2] - box[0], box[3] - box[1]
-    target_h = height - top_margin
+    target_h = height - top_margin - bottom_margin
     scale = target_h / th
     if tw * scale > width:
         scale = width / tw
@@ -89,6 +89,13 @@ def main():
     ap.add_argument("--width", type=int, default=224)
     ap.add_argument("--height", type=int, default=365)
     ap.add_argument("--top-margin", type=int, default=16)
+    # These two must mirror process-building-art.py exactly. The placement here
+    # has to be the one base.png was actually cut with, and a plate cut with a
+    # bottom margin or a vertical stretch and a glow derived without them land
+    # in different places -- which is the registration bug the module docstring
+    # is about, in a new disguise.
+    ap.add_argument("--bottom-margin", type=int, default=0)
+    ap.add_argument("--stretch-y", type=float, default=1.0)
     ap.add_argument("--gain", type=float, default=1.0,
                     help="multiply the recovered light before clamping")
     ap.add_argument("--floor", type=int, default=18,
@@ -97,12 +104,17 @@ def main():
 
     lit_src = Image.open(args.lit).convert("RGBA")
     unlit_src = Image.open(args.unlit).convert("RGBA")
+    if args.stretch_y != 1.0:
+        h = max(1, round(lit_src.height * args.stretch_y))
+        lit_src = lit_src.resize((lit_src.width, h), Image.LANCZOS)
+        unlit_src = unlit_src.resize((unlit_src.width, h), Image.LANCZOS)
     if lit_src.size != unlit_src.size:
         sys.exit(f"lit is {lit_src.size} and unlit is {unlit_src.size}; a shared "
                  "placement is only meaningful if both renders share a canvas")
 
     # Measured off the unlit plate, applied to both. See the module docstring.
-    box, scale, origin = placement(unlit_src, args.width, args.height, args.top_margin)
+    box, scale, origin = placement(unlit_src, args.width, args.height,
+                                   args.top_margin, args.bottom_margin)
     lit = place_by(lit_src, box, scale, origin, args.width, args.height)
     unlit = place_by(unlit_src, box, scale, origin, args.width, args.height)
 

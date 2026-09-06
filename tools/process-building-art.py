@@ -38,17 +38,44 @@ def dekey_checkerboard(im, tol=10):
     w, h = im.size
     px = im.load()
 
+    # Read the two greys off the border rather than assuming them. A single
+    # bright-neutral floor (>= 195) was enough for the arc mast, whose exports
+    # came back on a light checkerboard; the superconducting store's arrived on
+    # a 199/141 pair and the floor cleared 1% of the frame. The pattern's
+    # period is fractional -- 1254 px over 160 squares -- so reconstructing the
+    # grid drifts; matching the two values it is actually made of does not.
+    band = []
+    for x in range(0, w, 2):
+        band += [px[x, 1], px[x, h - 2]]
+    for y in range(0, h, 2):
+        band += [px[1, y], px[w - 2, y]]
+    # Take the two commonest neutral values, not the min and max: the border
+    # can carry a stray dark pixel, and widening the window down to it would
+    # clear every neutral grey in the building too.
+    hist = {}
+    for p in band:
+        if max(p[:3]) - min(p[:3]) <= 6:
+            v = round(sum(p[:3]) / 3)
+            hist[v] = hist.get(v, 0) + 1
+    peaks = sorted(hist, key=hist.get, reverse=True)
+    modes = []
+    for v in peaks:                      # two clusters, not two adjacent values
+        if all(abs(v - m) > 3 * tol for m in modes):
+            modes.append(v)
+        if len(modes) == 2:
+            break
+    lo, hi = (min(modes), max(modes)) if len(modes) == 2 else \
+             (peaks[0], peaks[0]) if peaks else (199, 199)
+
     def neutral(p):
         if p[3] == 0:
             return True          # already cleared: the fill must pass through
         r, g, b = p[0], p[1], p[2]
         if abs(r - g) > 6 or abs(g - b) > 6 or abs(r - b) > 6:
             return False
-        # The two checkerboard greys and every anti-aliased blend between
-        # them. The building's own neutral greys are far darker (its body
-        # metal measures luminance 74-104), so a single bright-neutral test
-        # is safe and catches the square boundaries a two-window test misses.
-        return (r + g + b) / 3 >= 255 - 60
+        # Either checkerboard grey, or any blend between them -- the squares'
+        # own boundaries are anti-aliased, and a two-window test misses those.
+        return lo - tol <= (r + g + b) / 3 <= hi + tol
 
     seen = bytearray(w * h)
     stack = [(x, 0) for x in range(w)] + [(x, h - 1) for x in range(w)]
@@ -67,6 +94,43 @@ def dekey_checkerboard(im, tol=10):
         for x in range(w):
             if seen[row + x]:
                 px[x, y] = (0, 0, 0, 0)
+
+    # The squares are anti-aliased against each other, so their boundaries land
+    # outside both grey windows and survive the fill as a fine speckle across
+    # the whole frame -- dense enough that solid_bbox() read it as content and
+    # trimmed the store's plate to 1247x1254 of a 1254 canvas, i.e. not at all.
+    # Everything that is really the building is one connected mass, so keep that
+    # and drop the rest.
+    keep = bytearray(w * h)
+    best, best_n = None, 0
+    for sy in range(h):
+        for sx in range(w):
+            i0 = sy * w + sx
+            if keep[i0] or px[sx, sy][3] == 0:
+                continue
+            comp, stack, n = [], [(sx, sy)], 0
+            keep[i0] = 1
+            while stack:
+                x, y = stack.pop()
+                comp.append(y * w + x)
+                n += 1
+                for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if 0 <= nx < w and 0 <= ny < h:
+                        j = ny * w + nx
+                        if not keep[j] and px[nx, ny][3] != 0:
+                            keep[j] = 1
+                            stack.append((nx, ny))
+            if n > best_n:
+                best, best_n = comp, n
+    if best is not None:
+        main = bytearray(w * h)
+        for i in best:
+            main[i] = 1
+        for y in range(h):
+            row = y * w
+            for x in range(w):
+                if px[x, y][3] != 0 and not main[row + x]:
+                    px[x, y] = (0, 0, 0, 0)
     return im
 
 
@@ -138,9 +202,32 @@ def body_metal(im):
     return med, 0.2126 * med[0] + 0.7152 * med[1] + 0.0722 * med[2]
 
 
-def place(im, width, height, top_margin):
-    """Scale to fit the canvas under the top margin, then centre horizontally."""
-    target_h = height - top_margin
+def stretch_y(im, factor):
+    """Resample the plate taller, to deepen a camera that came back too flat.
+
+    Not a substitute for asking again -- three rounds of asking got the
+    superconducting store from 1:0.61 to 1:0.96 and then stopped moving, with
+    the target at 1:1.10. The residual is a uniform vertical under-scale of the
+    whole projection, so the inverse is a uniform vertical resample, and at the
+    5-15% these plates need it is invisible on the details: a bolt block on a
+    2x2 building is a handful of pixels across in game.
+
+    Record the factor in the spec's section 13. A plate that needed more than
+    about 1.2 here should have been regenerated instead -- past that the drum
+    stops reading as round and the frost runs visibly downhill.
+    """
+    return im.resize((im.width, max(1, round(im.height * factor))), Image.LANCZOS)
+
+
+def place(im, width, height, top_margin, bottom_margin=0):
+    """Scale to fit the canvas between the margins, then centre horizontally.
+
+    bottom_margin exists so the cut plate can satisfy the pipeline's second
+    geometry check -- alpha zero along *both* edge rows. Without it the art
+    lands flush against the canvas floor, which ends the building on a razor
+    line with no antialiased rim; the arc mast shipped that way.
+    """
+    target_h = height - top_margin - bottom_margin
     scale = target_h / im.height
     if im.width * scale > width:
         scale = width / im.width
@@ -248,6 +335,12 @@ def main():
     ap.add_argument("--width", type=int, default=224)
     ap.add_argument("--height", type=int, default=448)
     ap.add_argument("--top-margin", type=int, default=25)
+    ap.add_argument("--stretch-y", type=float, default=1.0,
+                    help="resample the plate this much taller before cutting, "
+                         "to correct a camera that came back too shallow")
+    ap.add_argument("--bottom-margin", type=int, default=0,
+                    help="clear rows to leave under the art, so the plate has "
+                         "an antialiased rim rather than a razor-cut floor")
     ap.add_argument("--tip-row", type=int, default=53)
     ap.add_argument("--tolerance", type=int, default=4)
     ap.add_argument("--shift-y", type=float, default=-81.0,
@@ -272,7 +365,13 @@ def main():
     if not args.out_dir or not args.name:
         sys.exit("--out-dir and --name are required unless --report")
 
-    colour = place(trimmed(im), args.width, args.height, args.top_margin)
+    art = trimmed(im)
+    if args.stretch_y != 1.0:
+        art = stretch_y(art, args.stretch_y)
+        print(f"  note  stretched {args.stretch_y:g}x vertically: "
+              f"aspect 1:{art.height / art.width:.2f}")
+    colour = place(art, args.width, args.height, args.top_margin,
+                   args.bottom_margin)
     os.makedirs(args.out_dir, exist_ok=True)
     cpath = os.path.join(args.out_dir, f"{args.name}.png")
     spath = os.path.join(args.out_dir, f"{args.name}-shadow.png")
