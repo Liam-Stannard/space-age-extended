@@ -581,6 +581,29 @@ products the recipe lists.
 Where a machine *does* auto-output, it gets **one** port, pointing straight out of
 one face, and the art must match `vector_to_place_result` exactly.
 
+**A generated grid overlay proves nothing.** Every concept sheet in this repo
+has drawn a "3×3 top view" with grid lines, and on every one of them the grid and
+the building do not line up — because a generator has no idea where the tile
+edges are and is drawing a decoration. Do not read those panels as evidence, do
+not spend rounds trying to prompt them into accuracy, and prefer to leave the
+grid off the sheet entirely rather than ship a check that is not a check.
+
+**Measure it instead**, once a real plate exists:
+
+```
+tools/check-footprint.py <plate.png> --tiles 3 --out check.png
+```
+
+It finds the sprite's visible bounds, fits the declared footprint to them, and
+reports the sideways overhang in tiles. Verified against the Arc Mast's plate,
+which reads 192 px at a 64 px pitch — exactly 3.00 tiles, matching what
+`storms.lua` says it was cut to.
+
+**Only sideways overhang matters.** A tall building is *supposed* to rise above
+its footprint — the Arc Mast is 5.14 tiles tall on a 3 tile box — and the engine
+places it with a shift rather than by shrinking it. It is the left and right
+edges that make a row of machines interleave.
+
 **4. Nothing crosses the collision box** — not the machine, not a pipe run, and
 not spilled material or ground scatter. The Arc Mast is the standing lesson: at
 3.14 tiles on a 3-tile pitch, a row of them interleaved, and the fix was to cut
