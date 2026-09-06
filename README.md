@@ -23,6 +23,7 @@ production line on the **Core of the Shattered Planet**, where the game is won.
 | [Decisions](design/decisions.md) | What was settled, what it replaced, and why |
 | [Spikes](design/spikes.md) | Engine assumptions, and what measuring them found |
 | [Problems](design/problems.md) | Twenty frictions from a vanilla playthrough, as source material |
+| [Ideas](design/ideas.md) | Proposals nobody has ruled on — **never built without being agreed first** |
 
 Per-tree specifications live in [design/trees/](design/trees/); none is written yet.
 
