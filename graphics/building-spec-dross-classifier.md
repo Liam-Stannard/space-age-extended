@@ -70,19 +70,25 @@ vanilla sorts a solid by density.
 
 ## 3.1 Design Concept
 
-An inclined deck that shakes. The building is a **stepped cascade** — three
-shallow trays descending across the footprint, each with a finer mesh than the
-one above — mounted on visible springs, with a small eccentric drive at one end.
+**An enclosed deck that shakes.** The screens are *inside* a sloped armoured
+housing; what the player sees is the housing riding on visible leaf springs with
+an eccentric drive turning at one end. The dross is never drawn (§8), so open
+trays would be three empty mesh decks on show at all times — see the template's
+§8 corollary and the Drop Crusher's §19.
+
+**The whole machine's read is that it is shaking**, and that survives enclosure
+perfectly: springs and a spinning eccentric on the outside say *vibration* far
+more clearly than an empty tray does.
 
 **The anti-read is a splitter.** This is not a belt device and must not borrow a
-splitter's flat, low, symmetrical read. It is a piece of process plant with a
-visible height difference across it, and the height difference is what does the
-work.
+splitter's flat, low, symmetrical read. **The second anti-read is a plain crate** —
+the sloped roofline, the springs and the drive are what stop it reading as a
+box.
 
 ## 3.2 Key Visual Features
 
-* **Three stepped trays**, descending left to right, meshes visibly coarsening
-  upward and fining downward.
+* A **sloped armoured housing**, its roofline visibly descending from the drive
+  end to the discharge end, so the cascade inside is legible from the outside.
 * **Leaf springs** at all four corners, drawn compressed.
 * An **eccentric drive** — a small offset flywheel at the high end.
 * Two **collection bins** at the low end, the coarse one shallow and wide, the

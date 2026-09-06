@@ -77,19 +77,22 @@ player deciding the ratio, every hour, against whatever their line is short of.
 
 ## 3.1 Design Concept
 
-A carding machine for metal. Two counter-rotating **comb drums**, their surfaces
-covered in fine needles, with a loose mass of whiskers going in one side and a
-neat aligned sliver leaving the other.
+**An enclosed carding machine.** The needled drums run *inside* a heavy casing;
+what shows outside are the **drum bearing housings** bulging from both flanks,
+a hinged inspection lid on top, and a drive housing at one end. The fibre is
+never drawn (§8), so an open hopper and an open nip would both be permanently
+empty — see the template's §8 corollary.
 
 **The anti-read is a textile mill.** The reference is real carding machinery, but
-the material here is metal, the environment is vacuum, and the machine should
-look like it is handling something that would cut you: guarded, heavy, with the
-drums recessed rather than open.
+the material is metal, the environment is vacuum, and this machine handles
+something that would cut you: it should look sealed and guarded, not open.
+**The second anti-read is a plain crate** — the paired bulging bearing housings
+are what stop it reading as a box.
 
 ## 3.2 Key Visual Features
 
-* **Two comb drums** side by side, needled surfaces catching the light, recessed
-  below a guard rail.
+* **Two drum bearing housings** bulging from each flank, paired and obviously
+  cylindrical, so the two drums inside are legible from the outside.
 * An **infeed tray** at one end holding a loose grey tangle.
 * An **outfeed nip** at the other, where the aligned sliver emerges as a bright
   ordered ribbon.
