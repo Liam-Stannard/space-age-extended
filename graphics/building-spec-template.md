@@ -443,12 +443,18 @@ This is easy to get wrong because a three-quarter corner view is what concept ar
 *normally* looks like, and a generator will default to it every time unless told
 otherwise. Say it explicitly in every prompt:
 
-> Draw the building square-on to the tile grid, as Factorio draws its own
-> sprites: the front face parallel to the bottom edge of the panel, the side
-> faces parallel to the left and right edges. Do not rotate it so a corner points
-> at the viewer. Every chute, port and pipe leaves a face at right angles to it,
-> pointing straight up, down, left or right in the image — never diagonally out
-> of a corner.
+> Camera: looking steeply down from above, as Factorio does — **mostly roof,
+> with only a shallow near face visible**. Square to the tile grid: the near face
+> parallel to the bottom edge, the side faces parallel to the left and right
+> edges. Not rotated corner-on, and not a flat front elevation.
+
+**Both halves of that matter, and missing either one looks wrong in a different
+way.** Get the rotation wrong and you have a corner-on box whose every port
+exits on a diagonal. Get the *elevation* wrong — say only "square-on" — and you
+get an architectural front elevation with no roof at all, which is what happened
+to the Drop Crusher's v7. The roof is most of what a player ever sees of a
+Factorio building; it is where the hatches, collars and vents live, and it is the
+surface the sprite is mostly made of.
 
 ### Three conventions vanilla never breaks
 
@@ -1005,6 +1011,52 @@ Painted semi-realistic industrial game art, strong readable silhouette,
 no logos, no characters, no UI, no ground texture, no background scenery,
 no baked drop shadow.
 ```
+
+### The prompt skeleton — sections, not prose
+
+**Measured on the Drop Crusher.** A 2,505-character prose prompt kept losing
+rules: ports, palette and camera each dropped out of a different generation. The
+same content as **1,751 characters of labelled sections** produced a better sheet
+in one pass, with the palette hit exactly and the rules echoed back on the sheet
+as a notes panel.
+
+Prose buries requirements in the middle of sentences and makes every rule compete
+with every other. Sections give each one somewhere to live, and make it obvious
+at a glance when one is missing.
+
+```text
+FACTORIO SPACE AGE BUILDING -- CONCEPT SHEET
+
+== CAMERA ==
+Match the attached vanilla sprite exactly: steeply down from above,
+MOSTLY ROOF with only a shallow near face. Square to the tile grid.
+Not rotated corner-on. Not a flat front elevation.
+
+== BUILDING ==
+Name, footprint, and the one sentence that says what it is.
+
+== FORM ==
+- Four to six bullets. Silhouette first, then the signature feature.
+
+== COLOUR ==
+- Role: #HEX   (one per line, with the role named)
+
+== RULES ==
+- Ports, forbidden reads, and the conventions from §8.
+
+== PANELS ==
+The panel list, dash-separated.
+
+== OUTPUT ==
+Title and aspect ratio.
+```
+
+Two mechanical notes. **A newline sends the message**, so a sectioned prompt
+cannot be typed — set it into the composer through the DOM
+(`document.execCommand('insertText', …)` after focusing `#prompt-textarea`),
+which registers with the editor where assigning `innerText` does not. And put
+the **camera section first**: it is the rule most often lost, and the one whose
+loss is least obvious until the sheet is beside a real sprite.
 
 ### Writing a refinement
 

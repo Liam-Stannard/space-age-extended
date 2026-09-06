@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v7-sheet.png`**, variant B chosen, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v8-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -414,3 +414,23 @@ buttresses reading as the footprint's corners, no output port anywhere, and a
 layer breakdown that separates cleanly into shadow, base plate, cylinder body,
 buttresses, roof collar and drop weight — which is close to how the prototype
 will actually be layered.
+
+
+### Version 8 — the camera fixed, and the prompt restructured
+
+Two faults in v7, both Liam's catch.
+
+**The camera was wrong, and my own rule caused it.** Rule zero said "square-on to
+the tile grid", which fixed the corner-on rotation but was read as *flat-on*: v7
+is an architectural front elevation with almost no roof. Factorio looks steeply
+**down** — mostly roof, shallow near face — and the roof is where the collar, the
+hatches and the vents live. The template's rule zero now names both halves,
+rotation *and* elevation, and says what each looks like when missed.
+
+**The prompt had grown to 2,505 characters of competing prose** and rules kept
+falling out of it — ports from one generation, palette from another, camera from
+this one. Rewritten as **1,751 characters of labelled sections** — CAMERA,
+BUILDING, FORM, COLOUR, RULES, PANELS, OUTPUT — it produced a better sheet in a
+single pass. The palette came back hit exactly, hex for hex, and the rules were
+echoed onto the sheet as a notes panel, which no prose version ever managed. The
+skeleton is now in the template's Appendix B.
