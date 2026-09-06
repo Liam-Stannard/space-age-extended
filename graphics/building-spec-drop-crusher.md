@@ -487,3 +487,39 @@ kicking clear, fallen with the gears freewheeling.
 New palette entry, `#8A857C` for the gear, rack and pawl — deliberately brighter
 than the armour so the mechanism reads as a separate assembly rather than as more
 shell.
+
+
+---
+
+# 9. Working Animation — what the engine will and will not do
+
+**Yes, the gears will turn in game.** `WorkingVisualisations.animation` on a
+crafting machine plays while the machine is crafting, so the gears, the rack and
+the pawl are all just authored frames. Three constraints shape how they have to
+be drawn.
+
+**1. It loops; it cannot fire once per craft.** An assembling machine has no
+"play this once when a craft completes" hook — the animation runs continuously
+while working and stops when it stops. So **one drop does not equal one item**,
+and the animation must not imply that it does. Draw it as a *rhythm* — a hammer
+that keeps hammering for as long as the machine is running — rather than as a
+discrete event. Vanilla assemblers work the same way and nobody notices.
+
+**2. Playback speed scales with crafting speed.** `constant_speed` defaults to
+false, so the animation is *adjusted to the machine speed*: modules and beacons
+will make the gears spin and the hammer fall faster. That is the right behaviour
+here and should be left alone — a sped-up drop hammer reads as a machine working
+harder. Set `constant_speed = true` only if the fall ever looks silly at speed.
+
+**3. The fall has to be faked in the frame spacing.** Frames play at a constant
+rate, so a weight that falls at a constant rate looks like it is being *lowered*.
+The acceleration must be baked into **frame spacing**: many frames through the
+slow wind-up, progressively fewer through the fall, and a hard stop at the
+bottom. Budget roughly two thirds of the frame count to the rise and the pawl
+trip, and the last third to the fall and impact.
+
+**One authoring gotcha, from the prototype docs:** `idle_animation` **must have
+the same frame count as `animation`**. So a 24-frame working animation cannot
+pair with a 1-frame idle — the idle would have to be 24 frames of the machine
+sitting still, weight seated and pawl engaged. Budget for it, or omit
+`idle_animation` entirely and let the machine simply stop on a frame.
