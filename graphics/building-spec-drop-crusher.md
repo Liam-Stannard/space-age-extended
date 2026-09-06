@@ -111,8 +111,9 @@ the moving crown are what stop it reading as storage.
   reads as a container.
 * An **armoured inspection hatch** with locking dogs on the front face — the only
   way to the anvil bed, which is never seen in normal operation.
-* Two **discharge chutes** at the base, deliberately different sizes: coarse to
-  one side, fines to the other.
+* **No output port of any sort.** This is an `assembling-machine`: inserters take
+  from any adjacent tile, so a chute would promise something the entity cannot
+  keep — see the template's §8 rule 3.
 
 ### Signature Feature
 
@@ -120,9 +121,11 @@ the moving crown are what stop it reading as storage.
 in silhouette above the roofline where nothing can obscure it. A player should be
 able to tell a running crusher from a stopped one across the base.
 
-**Second: the two chutes**, on opposite faces at visibly different mouth sizes.
-They are the recipe made visible — one building, two output streams — and they
-are what a player looks for when working out which machine splits the ore.
+**There is no second feature, and that is deliberate.** Three rounds were spent
+arguing about the size and placement of two discharge chutes before the simpler
+truth surfaced: an assembling machine has one output inventory and no output
+position, so it should never have had chutes at all. The stroke carries the whole
+read on its own.
 
 ## 3.3 Colour Palette
 

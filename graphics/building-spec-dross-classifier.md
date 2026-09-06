@@ -91,8 +91,8 @@ box.
   end to the discharge end, so the cascade inside is legible from the outside.
 * **Leaf springs** at all four corners, drawn compressed.
 * An **eccentric drive** — a small offset flywheel at the high end.
-* Two **collection bins** at the low end, the coarse one shallow and wide, the
-  fine one deep and narrow.
+* **No output port.** An `assembling-machine` waits for an inserter, which may
+  stand anywhere — see the template's §8 rule 3.
 
 ### Signature Feature
 

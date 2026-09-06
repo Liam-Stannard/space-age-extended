@@ -480,20 +480,24 @@ fluid connections on the tile boundary the prototype names, and a player's pipe
 arrives there and nowhere else. A riser is fine as long as it comes back down and
 terminates at the edge.
 
-**3. Two ports means two tiles.** Where a machine has two output ports — a coarse
-and a fine chute, two splitter mouths, two discharge lips — they must sit on
-**separate tiles of the footprint**, ideally on different faces. Drawn side by
-side inside one tile they read as a single output, which throws away the reason
-there are two of them, and a player cannot see where to put the second belt.
-The engine does not care: an assembling machine has one output inventory and an
-inserter may stand anywhere. The *player* cares, and the art is the only thing
-telling them.
+**3. Only a machine that outputs by itself draws an output port.** A
+`mining-drill` places its items directly on the ground or a belt, at
+`vector_to_place_result` — that is a real, single, engine-known position, and it
+is why vanilla draws the drill a spout. An `assembling-machine` or a `furnace`
+does nothing of the kind: it holds its products in an inventory until an inserter
+takes them, and that inserter may stand on **any** adjacent tile. So vanilla's
+assembler, furnace, chemical plant and space crusher draw **no output port at
+all**, and neither should ours.
 
-**And the ports must differ in size, not just in position.** Two identical mouths
-read as a decorative symmetric pair; one wide and one narrow reads as *coarse and
-fine*, which is the recipe. State it as its own hard rule when prompting, with
-the faces named — buried inside a longer clause it is quietly dropped, which cost
-a full regeneration of the Drop Crusher's variants sheet.
+A chute on an assembling machine is a promise the entity cannot keep. It says
+*the output comes out here*, when the truth is *the output comes out wherever you
+put the inserter* — and it invites a player to belt the one face the art pointed
+at. Two chutes are worse: they imply two output streams the engine has no concept
+of, since a crafting machine has exactly one output inventory however many
+products the recipe lists.
+
+Where a machine *does* auto-output, it gets **one** port, pointing straight out of
+one face, and the art must match `vector_to_place_result` exactly.
 
 **4. Nothing crosses the collision box** — not the machine, not a pipe run, and
 not spilled material or ground scatter. The Arc Mast is the standing lesson: at

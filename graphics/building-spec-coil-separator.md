@@ -87,8 +87,8 @@ This machine is heavy, dark and visibly strained: the field is expensive here.
 
 * A **coil throat** — the signature. A thick copper-brown toroid mounted
   vertically, its aperture facing the camera, with the ore path running through.
-* **Two splitter chutes** below the throat, angled apart, where the stream
-  divides.
+* **No output port.** The split happens inside; an `assembling-machine` has one
+  output inventory and no output position — see the template's §8 rule 3.
 * **Bus bars** — heavy flat conductors entering the throat from both flanks,
   visibly overbuilt.
 * **Cooling fins** on the throat's outer face.
