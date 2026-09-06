@@ -424,6 +424,35 @@ moves it]`
 list every position, including the ones a player will rarely use. Art that
 hides an existing connection point is a bug report waiting to happen.
 
+### Three conventions vanilla never breaks
+
+Checked against the real sprites, not remembered. Every one of these is easy to
+break at concept stage and expensive to unpick afterwards.
+
+**1. Never draw the product.** No vanilla machine paints the thing it makes into
+its own plate. The space crusher is enclosed and shows nothing; the foundry and
+the chemical plant show pipework and no material at all. The apparent exception
+proves it: the big mining drill has an `output` layer, and that layer is an
+*animated chute mechanism* — the ore itself is placed by the engine at
+`vector_to_place_result`, as a real item entity.
+
+So **draw the chute, never what comes out of it.** A machine with product heaped
+at its feet is wrong twice over: the pile is a lie the moment the belt backs up
+or the machine idles, and it is drawn on tiles the entity does not own.
+
+**2. Every connection lands on a tile edge, at ground level.** A pipe that leaves
+the top of a building, or stops in mid-air, connects to nothing — the engine puts
+fluid connections on the tile boundary the prototype names, and a player's pipe
+arrives there and nowhere else. A riser is fine as long as it comes back down and
+terminates at the edge.
+
+**3. Nothing crosses the collision box** — not the machine, not a pipe run, and
+not spilled material or ground scatter. The Arc Mast is the standing lesson: at
+3.14 tiles on a 3-tile pitch, a row of them interleaved, and the fix was to cut
+the plate to exactly 3.00. Ground decals are the one legitimate exception, and
+they belong in their own layer rather than baked into the base plate — vanilla
+does this with `mining_drill_scorch_mark`.
+
 ## Item Inputs
 
 | Input    | Location      | Direction   |

@@ -116,6 +116,34 @@ together.
 | Crust Tap | `v1-sheet.png` | 1 | Two-temperature read landed; burst disc and choke both present |
 | Ignition Ring Mast | `v1-sheet.png` | 1 | The critical anti-read landed — no cage, no electrode, closed dark cap. It will not be confused with the Arc Mast |
 
+### Reviewed against vanilla convention — five sheets need a fix before locking
+
+Checked against the real sprites (space crusher, foundry, chemical plant, big
+mining drill). The three rules are now written into the template's §8. Two of
+them are broken across this set.
+
+**Product drawn into the plate — five sheets.** Vanilla never does this, and the
+material is drawn on tiles the entity does not own:
+
+| Building | What it draws | Fix |
+| -------- | ------------- | --- |
+| Drop Crusher | Coarse fragments and fine powder heaped on the ground at both chutes | Keep both chutes as mechanism; delete every pile. The **chute mouths still differ in size**, which is what carried the read |
+| Ballast Drill | Crushed ore spilling from the output boom | Delete the spill; keep the boom. Ground dust may stay **only** as a separate decal layer |
+| Dross Classifier | Two collection bins full of visible grit and powder | Empty the bins. Bins implying storage the entity does not have is the second problem |
+| Coil Separator | Ore stream through the aperture, piles under both chutes | Hardest of the five — the stream is half the signature. Keep it **inside** the throat and the chutes; nothing on the ground |
+| Whisker Comber | Tangle in the infeed tray, ribbon leaving the outfeed | Hardest overall: §3.2's signature *is* the before-and-after. Keep both **contained within the machine** — tangle inside a hopper mouth, ribbon inside the nip — and off the floor |
+
+**Fluid connections that land where the engine cannot reach — three sheets:**
+
+| Building | Problem | Fix |
+| -------- | ------- | --- |
+| Helium Concentrator | The gas riser **exits at the top of the building**, terminating in the air. Only two connections drawn; §8 needs **three** — melt in, helium out, settled melt out, on three faces | Bring the riser back down to a tile-edge flange, and draw the third connection |
+| Ring Mast | The helium inlet enters the coil band at **waist height**, above ground level | Route it down to a ground-level flange at the tile the fluid box names |
+| Crust Tap | The riser runs well past the 2×2 footprint in the canonical view | Shorten it so the flange lands on the footprint edge, at `fluid_source_offset` |
+
+**Clean on both counts: Vacuum Furnace.** No product, one flux inlet on a flank
+at ground level, item I/O left to inserters. It is the reference for the others.
+
 **One thing to settle across all nine at lock time.** Every sheet titles itself
 with a generic descriptive name — ORE PRESS, VIBRATING CLASSIFIER, MAGNETIC
 SEPARATOR, GAS SEPARATOR, INDUSTRIAL FURNACE, INDUSTRIAL WELLHEAD, CHARGING POST
