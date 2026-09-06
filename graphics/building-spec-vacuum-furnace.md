@@ -208,8 +208,32 @@ and should not be attempted.
   be allowed to drift that way. A furnace that accumulates categories becomes the
   one machine that does everything, and the point of the Core's buildings is that
   each says something.
-- **Furnace recipe selection needs one item ingredient.** Any sintering recipe
-  that wants powder *and* flux breaks auto-selection — it would have to be one
-  item plus one fluid. If sintering genuinely needs two solids, this must become
-  an assembling machine and the "picks its own recipe" argument is lost. **Settle
-  the sintering recipe's shape before commissioning art.**
+- ~~**Furnace recipe selection needs one item ingredient**~~ — **spiked (S12),
+  and the furnace path is viable.** A furnace *does* accept `fluid_boxes` and
+  *does* auto-select from one item plus one fluid, disambiguating correctly by the
+  item: powder-a made preform-a, powder-b made preform-b, from the same shared
+  fluid.
+
+  **The decision this leaves is about phosphide flux, not about this building.**
+
+  | Option | What it costs | Status |
+  | ------ | ------------- | ------ |
+  | **Furnace, flux becomes a fluid** | T2's flux recipe changes; flux can no longer be belted or chested, only piped | Proven in S12 |
+  | **Assembling machine, flux stays an item** | Loses auto-selection; the player sets a recipe per machine | Proven a thousand times over |
+
+  Leaning furnace: auto-selection is worth real money on a machine meant to handle
+  several powders, a molten flux is not a strange thing for something whose job is
+  to wet a powder, and piping it adds a routing problem to a line that is otherwise
+  all belts.
+
+- **If it stays a furnace, §3 must account for S12's ordering catch.** A furnace
+  with a fluid ingredient **will not accept its solid until the fluid is already
+  in the machine** — `insert` returns 0 with the fluid box empty, and 5 with it
+  full. A vanilla furnace accepts a new item unconditionally, so this is specific
+  to the fluid path. Two consequences: on first build the player must pipe before
+  they belt, and a dry flux line plus an empty input latches the machine shut until
+  flux returns. It self-heals, and it is invisible while it is happening.
+
+  That argues for the **sight port being visible even when idle-but-blocked**, so a
+  latched machine does not read as a working one. Worth settling before the glow
+  plate is drawn, since §3.2 currently gives the building exactly one lit state.

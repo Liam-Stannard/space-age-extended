@@ -44,6 +44,7 @@ against `game.tick` deltas, never wall-clock sleeps**.
 | S9 — do arc storms need night? | **FAIL, then fixed** — `day-night-cycle = 0` has no night, so no lightning at all |
 | S10 — crust tap: pump on land, generator burning a fluid | **PASS on both**, but the pump needs a fluid-bearing *tile*, which makes the tap sited |
 | S11 — does a spoiling ingredient survive a rocket silo? | **PASS** — it ticks, it vanishes cleanly, and it cannot rot mid-craft |
+| S12 — can a furnace select on one item + one fluid? | **PASS**, but the fluid must reach the machine before it will accept the solid |
 
 ### S1 — PASS
 
@@ -374,3 +375,63 @@ of life left, against an eight-second craft — still produced a rocket part
 it.
 
 **So the ring mast works as specified, and §20's second open question is closed.**
+
+---
+
+## S12 — Can a `furnace` auto-select a recipe from one item *and* one fluid? — PASS, with a catch
+
+`auxiliary/furnace-recipe-selection.html` says recipes with *"one fluid and one
+item ingredient"* are selectable. Nothing in the game does it: there are exactly
+three furnaces — stone, steel and electric — and **none has a fluid box**. So it
+was documented and unproven, which after S10 is not a category to build on.
+
+### It works, and it disambiguates properly
+
+A `furnace` deep-copied from the electric furnace, given `fluid_boxes` and a
+crafting category holding two recipes that share one fluid and differ only in
+their item:
+
+| Fed | Produced |
+| --- | -------- |
+| powder-**a** + flux | `spike-preform-a` ×20 |
+| powder-**b** + flux | `spike-preform-b` ×5 |
+
+So selection is genuinely by the item, not "the first recipe in the category".
+The data stage accepts `fluid_boxes` on a furnace without complaint.
+
+### The catch: the fluid has to arrive first
+
+**A furnace with a fluid ingredient will not accept its solid ingredient until
+the fluid is already in the machine.** Measured, with the input inventory empty
+each time:
+
+| Furnace state | `insert{spike-powder-b, 5}` returns |
+| ------------- | ----------------------------------- |
+| No fluid in the machine | **0** — refused outright |
+| 100 flux in the machine | **5** — accepted, crafted, correct product |
+
+The engine cannot select a recipe it has no fluid for, and it will not hold an
+item for a recipe it cannot select.
+
+**The vanilla control behaves differently**, which is what makes this a real
+finding rather than an artefact: an electric furnace that has just smelted iron
+accepts copper ore unconditionally — `insert` returned 5 — because its recipes
+have no fluid to be missing.
+
+It self-heals: the moment fluid arrives, solids are accepted again. But two
+consequences are worth designing around.
+
+- **On first build, pipe before you belt.** A player who runs the solid line in
+  first will watch inserters refuse to load a machine that looks perfectly
+  healthy.
+- **A dry fluid line plus an empty input latches the machine shut** until the
+  fluid comes back. Recoverable, and invisible while it is happening.
+
+### Also learned
+
+`RecipePrototype::category` and `additional_categories` **no longer exist** — they
+were merged into `categories`, and the data stage names the replacement in its
+error, which is the friendliest failure in this whole set of spikes.
+
+And `defines.inventory.furnace_source` is gone: a furnace's ingredient inventory
+is `crafter_input`, the same one a rocket silo uses (S10).
