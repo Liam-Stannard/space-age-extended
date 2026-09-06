@@ -1,6 +1,23 @@
 #!/usr/bin/env python3
 """Build the Bed Tender crane's rotation sheets from one drawing per part.
 
+**DO NOT RUN THIS. Its central assumption is false and it corrupts the arm.**
+
+The claim below -- that vanilla's frames are one pose differing only in shading,
+measured at "at most 26%" on part 5 -- does not generalise. Extracting frames 0,
+32, 64 and 96 from vanilla's part 3 shows genuinely different views: different
+shading, different self-occlusion, hoses on different sides, and frame 64 *empty*
+because the part is hidden at that angle. Stamping one drawing into every frame
+gives an arm whose segments never change as it swings, and which draws a segment
+at angles where vanilla draws none. That is what "the crane arm is all messed up"
+looked like in game.
+
+The ten parts it wrote have been reverted to recoloured vanilla via
+recolour-crane.py. Kept only as the record of an approach that was tried and
+does not work; making it correct needs a 3D model, which is the same conclusion
+recolour-crane.py reaches.
+
+
 The crane is a turntable: seven parts, each a `rotated_sprite` with
 `direction_count` 64 or 128, stored as a spritesheet of that many frames. It is
 tempting to conclude that authoring one means drawing 128 angles per part. It

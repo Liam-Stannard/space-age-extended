@@ -6,13 +6,32 @@ here as they land; this file is deleted when the list is empty.
 
 ## Defects found in existing buildings
 
-- [ ] **B1 · Crane arm is corrupt.** 10 of the Bed Tender's 29 crane sprites
+- [x] **B1 · Crane arm is corrupt — FIXED.** 10 of the Bed Tender's 29 crane sprites
       have a destroyed alpha channel — max delta 255, more pixels changed than
       were ever opaque, so those segments render as solid blocks instead of a
       shaped arm. Damaged: `crane-1-1`, `crane-1-2`, `crane-3`, `crane-4`,
       `crane-5-1`, `crane-5-2`, `crane-6`, `crane-7-1`, `crane-7-2`, `crane-8`.
-      Undamaged: the shadows, the reflections, `crane-2`, `crane-9`, `crane-10`.
-      Fix `tools/recolour-crane.py` to preserve alpha, then re-run it.
+      Undamaged: the shadows, the reflections, `crane-9`, `crane-10`.
+
+      **The cause was not the recolour.** `tools/build-crane-sheets.py` had
+      deliberately replaced those exact ten parts with bespoke art, stamping one
+      canonical vertical drawing into every frame of each rotation sheet. Its
+      argument was that vanilla's frames are all the same pose and differ only in
+      shading — measured at "at most 26%" on part 5, then generalised to the set.
+
+      That does not hold. Extracting frames 0, 32, 64 and 96 from vanilla's part 3
+      shows genuinely different views: different shading, different self-occlusion,
+      hoses on different sides, and **frame 64 empty**, because the part is hidden
+      at that angle. Ours drew the same strut in all four — so the arm's segments
+      never changed as it swung, and a segment appeared at angles where vanilla
+      draws nothing.
+
+      Fixed by re-running `tools/recolour-crane.py`, which restores recoloured
+      vanilla geometry for all ten. Verified: **0 alpha mismatches** across all 29
+      sprites, and part 3's frames 0 and 32 now differ by 23.91 mean where they
+      previously differed by 0. This is exactly the case `recolour-crane.py`'s own
+      docstring makes — *"an image generator cannot produce 64 consistent angles
+      of anything"*.
 - [ ] **B2 · Sealed roboport's port is too small.** Robots emerge wrongly. Two
       causes: `spawn_and_station_height` is still vanilla's `0.3`, tuned to
       vanilla's roof, and the iris is drawn closed with
