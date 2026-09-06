@@ -45,6 +45,7 @@ against `game.tick` deltas, never wall-clock sleeps**.
 | S10 — crust tap: pump on land, generator burning a fluid | **PASS on both**, but the pump needs a fluid-bearing *tile*, which makes the tap sited |
 | S11 — does a spoiling ingredient survive a rocket silo? | **PASS** — it ticks, it vanishes cleanly, and it cannot rot mid-craft |
 | S12 — can a furnace select on one item + one fluid? | **PASS**, but the fluid must reach the machine before it will accept the solid |
+| S13 — can a furnace carry a status-tinted lamp? | **PASS at the data stage** — loaded and retained; rendering still wants an eye on it |
 
 ### S1 — PASS
 
@@ -435,3 +436,53 @@ error, which is the friendliest failure in this whole set of spikes.
 
 And `defines.inventory.furnace_source` is gone: a furnace's ingredient inventory
 is `crafter_input`, the same one a rocket silo uses (S10).
+
+
+---
+
+## S13 — Can a `furnace` carry a status-tinted fault lamp? — PASS at the data stage
+
+S12 left the Vacuum Furnace able to latch shut invisibly: with no flux it refuses
+powder outright, so the input slot stays empty and the fault reads as an upstream
+belt problem. The building had one lit state — a heat glow — and no way to say
+*why* it was dark.
+
+The engine has a mechanism for exactly this, and it is not new: a
+`working_visualisation` with `apply_tint = "status"` and `always_draw = true`,
+coloured by `WorkingVisualisations::status_colors`. Vanilla drives the electric
+mining drill's status LEDs with it (`base/prototypes/entity/mining-drill.lua:161`
+and `179`).
+
+**But vanilla uses it only on mining drills.** The documentation says
+`apply_tint` is *"Used by CraftingMachinePrototype ("status" and
+"visual-state-color" only) and MiningDrillPrototype"*, and after S10 and S12 that
+is exactly the shape of claim worth checking rather than trusting.
+
+Applied to a `furnace` with all eight `status_colors` keys set, the data stage
+loads without complaint and the dump retains both:
+
+```
+status_colors kept: {"no_power":[0,0,0,0], "working":[0,0,0,0], "low_power":[...],
+                     "idle":[...], "insufficient_input":[...], "full_output":[...],
+                     "disabled":[...]}
+working_visualisations: 5, one with apply_tint = status, always_draw = true
+```
+
+**The available statuses are fixed and short:** `no_power`, `low_power`, `idle`,
+`working`, `disabled`, `insufficient_input`, `full_output`, `no_minable_resources`.
+`insufficient_input` is the one that covers a missing fluid ingredient, which is
+what the latch is.
+
+**`always_draw = true` is mandatory.** Vanilla's own comment is explicit: without
+it, the `no_power`, `idle`, `disabled`, `insufficient_input` and `full_output`
+layers are never drawn at all — the visualisation only appears while working,
+which is the opposite of what a fault lamp is for.
+
+**What this does not prove.** The dump shows the properties *loaded and retained*
+on a furnace; it does not show the renderer applying the tint. That needs a
+client, and it is a ten-second check rather than a spike: build one, cut its
+flux, look at the lamp.
+
+**It generalises.** Nothing in this mod uses status colours anywhere, and every
+machine in it can stall for a reason the player cannot see. This is the cheapest
+legibility win available to the whole set of nine buildings.

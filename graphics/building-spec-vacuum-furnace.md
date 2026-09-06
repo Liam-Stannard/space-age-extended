@@ -9,6 +9,12 @@ because "a furnace, but sealed" is a reskin of the electric furnace unless it is
 given work nothing else can do. §2 is where that happens; if the exclusive work
 is ever removed, delete the building rather than shipping it.
 
+**Settled 2026-09-06: it stays a `furnace`, and phosphide flux becomes a fluid.**
+Spike S12 proved a furnace can auto-select on one item plus one fluid, so
+sintering keeps its flux without costing the machine its defining trick. The
+consequence outside this document is that `06-core-production-tree.md` T2's flux
+is a fluid now — piped, never belted or chested.
+
 ---
 
 # 0. Generation Contract
@@ -55,9 +61,16 @@ nothing to seal."*
 | Directions | 1 |
 | Crafting categories | `smelting` **and** `sae-sintering` |
 | `source_inventory_size` | 1 (the prototype maximum) |
+| Fluid boxes | 1 in — **phosphide flux**, used by the sintering recipes only |
 | Energy | 1.2 MW, electric |
 | Surface conditions | `pressure` ≤ 9 — the Core and platforms |
 | Module slots | 2 |
+
+**The flux box wants a generous volume.** S12 found that a furnace with a fluid
+ingredient refuses its *solid* ingredient outright until the fluid is already in
+the machine. A large buffer against a small per-craft draw makes that latch rare
+after first build; it does not remove it, and §3.2's status lamp is what makes it
+legible when it happens.
 
 ### The exclusive work — the reason it exists
 
@@ -99,13 +112,49 @@ a sealed machine is a contradiction the player will notice.
 * A **clamped roof hatch**, heavy, with radial dogs around its rim.
 * **Radiator loops** on two flanks — the heat has nowhere to go but a radiator,
   since there is no air to carry it.
-* A **sight port**, small and thick, the only place any glow escapes.
+* A **sight port**, small and thick, the only place any *heat* glow escapes.
+* A **fault lamp** on the hatch rim — a small neutral-white lens the engine
+  tints. See below; it is drawn white and coloured at runtime, never painted.
+* A **flux inlet** on one flank, frost-jacketed, small.
 
 ### Signature Feature
 
 **The sight port.** One small deep-set circle of orange in an otherwise cold dark
 building. It is how the player tells a running furnace from an idle one at a
-glance, and it is the entire lighting budget.
+glance, and it is the entire *heat* lighting budget.
+
+### The fault lamp — and the problem it exists to solve
+
+S12's latch is invisible without it. A furnace with no flux **refuses to accept
+powder at all**, so its input slot stays empty and the fault reads as an upstream
+belt problem rather than a machine problem — the player stares at a healthy-looking
+furnace that inserters will not load.
+
+The engine solves this directly, and vanilla proves the pattern on the electric
+mining drill (`base/prototypes/entity/mining-drill.lua:161` and `179`): a
+`working_visualisation` with `apply_tint = "status"` and **`always_draw = true`**,
+plus `status_colors` on the graphics set. The lamp is drawn once, in white, and
+the engine colours it per machine status.
+
+**The lamp is a *fault* lamp, not a status lamp**, and that is what keeps §3.2's
+"one lit state" honest:
+
+| Status | Colour | Reads as |
+| ------ | ------ | -------- |
+| `working` | **clear** — invisible | The sight port already says this |
+| `insufficient_input` | amber | **The latch.** No flux, or no powder |
+| `full_output` | pale blue | Nothing is taking the preforms |
+| `idle`, `disabled` | dim grey | Off, on purpose |
+| `no_power`, `low_power` | clear / amber | The grid, not the machine |
+
+So the building has exactly one lit state when it is well — the orange port — and
+lights a second, differently coloured, differently placed lamp only when something
+is wrong. `always_draw = true` is **mandatory**: vanilla's own comment says the
+non-working states will not draw without it.
+
+**The lamp sprite is not concept-art work.** It is a small white lens drawn once,
+at 32 px, `draw_as_glow`. It should be on the *hatch rim* rather than beside the
+sight port, so the two lights are never confused at a glance.
 
 ## 3.3 Colour Palette
 
@@ -115,10 +164,13 @@ glance, and it is the entire lighting budget.
 | Hatch and dogs | `#8A8580` | roof only |
 | Radiator loops | `#6E685C` | two flanks |
 | Sight port glow | `#E8A24A` → `#FFD9A0` | the port, and nothing else |
+| Fault lamp lens | `#FFFFFF` | hatch rim — **painted white, tinted by the engine** |
+| Flux inlet frost | `#BFD8E8` | one flank, small |
 | Weld seams | `#7A7268` | fine lines on the drum |
 
-**The glow budget is one circle.** If orange appears anywhere else on this
-building the seal is a lie.
+**The heat-glow budget is one circle.** If orange appears anywhere else on this
+building the seal is a lie — and the fault lamp is not an exception to that, since
+it is painted white and only the engine ever makes it amber.
 
 ---
 
@@ -145,13 +197,17 @@ attach the electric furnace**; it is the anti-read.
 | ---------- | ----- | ----- |
 | Item in | any adjacent tile | `source_inventory_size = 1` |
 | Item out | any adjacent tile | `result_inventory_size = 1` |
+| Phosphide flux in | one flank, modelled flange | `pipe_picture` emptied, foundry pattern |
 | Electric | no visible connector | poles reach it wirelessly |
-| Fluids | none | no fluid box; no pipe flange in the art |
 
 **A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
 the prototype prevents it, but a player who feeds fines and ore onto one belt
 will watch the machine flip recipes. That is vanilla smelting's own behaviour and
 needs no fix, but the locale should not encourage it.
+
+**Smelting takes no flux; sintering does.** So the same machine runs with its
+pipe connected or not, depending on which job it is doing — and the flange has to
+look unremarkable when nothing is plumbed to it.
 
 ---
 
@@ -188,9 +244,35 @@ sight port, and a lit/unlit pair.
   energy_usage = "1200kW",
   energy_source = { type = "electric", usage_priority = "secondary-input" },
   surface_conditions = { { property = "pressure", max = 9 } },
-  module_slots = 2
+  module_slots = 2,
+  fluid_boxes = { --[[ 1 in, phosphide flux, generous volume; see §2 ]] },
+  graphics_set =
+  {
+    status_colors =
+    {
+      working            = { 0, 0, 0, 0 },        -- the sight port says this
+      insufficient_input = { 1, 0.65, 0.15, 1 },  -- the latch
+      full_output        = { 0.4, 0.7, 1, 1 },
+      idle               = { 0.3, 0.3, 0.35, 1 },
+      disabled           = { 0.3, 0.3, 0.35, 1 },
+      no_power           = { 0, 0, 0, 0 }
+    },
+    working_visualisations =
+    {
+      { --[[ the sight port glow, working only ]] },
+      {
+        apply_tint = "status",
+        always_draw = true,      -- mandatory, or the fault states never draw
+        animation = { --[[ the white lens, 32px, draw_as_glow ]] }
+      }
+    }
+  }
 }
 ```
+
+**Verified at the data stage (S13):** the engine loads and retains both
+`status_colors` and `apply_tint = "status"` on a `furnace`, not only on the mining
+drills vanilla uses them on.
 
 ---
 
@@ -202,12 +284,29 @@ and should not be attempted.
 
 ---
 
-# 20. Open questions
+# 20. Decisions and open questions
+
+**Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
+the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
+in `06-core-production-tree.md` T2, where flux stops being an item.
+
+**Settled: the latch gets a fault lamp**, not a redesign — §3.2. The engine's
+`apply_tint = "status"` does it, vanilla does it on the drills, and S13 confirmed
+a furnace loads it.
 
 - **Does it also take `sae-degassing` or `sae-crushing`?** No, and it should not
   be allowed to drift that way. A furnace that accumulates categories becomes the
   one machine that does everything, and the point of the Core's buildings is that
   each says something.
+- **The lamp is proven to load, not proven to render.** S13 read it back out of
+  the data dump; whether the renderer applies the tint on a furnace as it does on
+  a drill needs eyes on a client. It is the cheapest possible check — build one,
+  cut its flux, look at it — and it should happen the first time anyone plays this
+  building rather than being spiked on its own.
+- **Flux as a fluid costs the player a storage option.** It can no longer be
+  belted or chested, only piped and tanked. That is the price of keeping
+  auto-selection, and it is worth re-examining if the sintering line ever turns
+  out to want flux in more than two or three places.
 - ~~**Furnace recipe selection needs one item ingredient**~~ — **spiked (S12),
   and the furnace path is viable.** A furnace *does* accept `fluid_boxes` and
   *does* auto-select from one item plus one fluid, disambiguating correctly by the

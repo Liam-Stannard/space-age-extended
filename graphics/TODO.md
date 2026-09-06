@@ -112,12 +112,20 @@ commissioning — the last column says which.
 | Coil Separator | `building-spec-coil-separator.md` | nothing |
 | Whisker Comber | `building-spec-whisker-comber.md` | its two consumers (T5 prepreg, T6 cryostat) do not exist |
 | Helium Concentrator | `building-spec-helium-concentrator.md` | **clear** — helium is a price now (`decisions.md` R8); what is left is tuning, not design |
-| Vacuum Furnace | `building-spec-vacuum-furnace.md` | **spiked (S12)** — furnace-with-fluid works; what is left is whether phosphide flux becomes a fluid (furnace) or stays an item (assembler) |
+| Vacuum Furnace | `building-spec-vacuum-furnace.md` | **clear** — stays a furnace, flux is a fluid (S12), and the latch gets a status-tinted fault lamp (S13) |
 | Crust Tap | `building-spec-crust-tap.md` | **spiked (S10)** — both halves work, but the pump needs a fluid-bearing tile, so the tap is now **sited**: it also needs a tile prototype, a map-gen entry and tile art |
 | Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | **clear** — mechanic agreed, and spike S11 passed: spoilage ticks in the silo, charges vanish cleanly, nothing rots mid-craft |
 
 Every one of the nine is a **first draft**: gameplay numbers are placeholders,
 and none has been read back off a prototype, because no prototype exists.
+
+**One cross-cutting art item, from S13.** Nothing in this mod uses
+`status_colors` with `apply_tint = "status"`, and every machine in it can stall
+for a reason the player cannot see. Each of the nine should carry a small white
+**fault lamp** lens — drawn once at 32 px, `draw_as_glow`, tinted by the engine,
+and placed away from whatever the building's working glow is so the two are never
+confused. It is the cheapest legibility win in the set, and it costs one sprite
+per building rather than a concept round.
 
 For each: canonical view, idle plate, directional frames where the prototype has
 them, glow by differencing, sprite canvas, icon. Template Appendix C is the

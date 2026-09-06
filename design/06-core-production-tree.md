@@ -124,7 +124,13 @@ Mostly built already. One addition and one change.
 | Kamacite plate | 2 kamacite ore | furnace | **exists** — should become 3 crushed kamacite, so T1 is not bypassable |
 | Settled melt · dross · steam | 100 molten kamacite | foundry | **exists**, two recipes (metal-heavy / steam-heavy) |
 | Cast ingot | 100 settled melt | foundry | **exists** |
-| **Phosphide flux** | schreibersite concentrate + settled melt | foundry | New. Consumed in T3 and T8; the reason T1 is not optional |
+| **Phosphide flux** *(fluid)* | schreibersite concentrate + settled melt | foundry | New. Consumed in T3 and T8; the reason T1 is not optional. **A fluid, settled 2026-09-06** — see below |
+
+**Phosphide flux is a fluid, not an item.** Spike S12 showed a `furnace` can
+auto-select a recipe from one item plus one fluid, which is what lets the Vacuum
+Furnace sinter powder *and* flux while still picking its own recipe from what is
+inserted. The cost is that flux is piped rather than belted, and can be tanked but
+not chested. See `graphics/building-spec-vacuum-furnace.md`.
 
 **Make the plate recipe consume crushed ore.** Right now smelting takes raw ore,
 so the whole beneficiation tier can be skipped. Routing plate through crushed
