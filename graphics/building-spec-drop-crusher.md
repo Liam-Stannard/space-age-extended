@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v6-sheet.png`**, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v7-sheet.png`**, variant B chosen, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -79,11 +79,19 @@ Core variant should mean.
 
 ## 3.1 Design Concept
 
-**A sealed hammer.** A heavy armoured housing with a tall narrow tower rising
-from its centre, and the forged weight's crown emerging from a gland at the top
-of that tower. The crushing chamber, the anvil bed and the whole stroke are
-**inside**; what the player sees from outside is the crown riding up and slamming
-down.
+**A sealed hammer.** *(Silhouette locked to variant B, `concept/variants-v4.png`.)*
+A **tall armoured cylinder** ringed by external buttresses, with the forged
+weight's crown seated in a collar at the centre of its flat roof. The crushing
+chamber, the anvil bed and the whole stroke are **inside**; what the player sees
+from outside is the crown riding up clear of its collar and slamming back down
+flush.
+
+**The collar is a datum, and that is what makes the stroke legible.** A crown
+that merely bobs inside a recess reads as nothing; a crown that lifts *clear* of
+a hard horizontal ring and returns to sit flush against it gives the eye a fixed
+line to measure against. At the top of the stroke the crown stands proud of the
+collar by most of its own height; at impact it is seated, and the collar's rim is
+unbroken.
 
 **Why enclosed, and this is the load-bearing decision.** The ore is never drawn
 (§8), so an open frame would surround a permanently empty anvil bed and read as a
@@ -98,10 +106,12 @@ the moving crown are what stop it reading as storage.
 
 ## 3.2 Key Visual Features
 
-* A **sealed housing**, squat and armoured, with heavy ribbed buttresses at the
-  corners hinting at the frame inside.
-* A **central tower** rising from the roof, narrow relative to the housing, with a
-  gland at its top.
+* A **tall armoured cylinder**, its wall slightly tapered, standing on a square
+  base plate that fills the 3×3.
+* **External buttresses** ringing the cylinder, standing proud of its wall and
+  running from the base plate to just under the roof.
+* A **collar** at the centre of the flat roof, a hard machined ring, with the
+  weight's chamfered crown seated in it.
 * A **drop weight** — a forged mass that climbs the posts and releases. It must
   read as *dense*, which is not the same as plain: a compact trapezoidal block,
   wider at its striking face than at its crown, with heavily chamfered edges that
@@ -189,29 +199,34 @@ where an inserter may stand.
 
 ```text
 A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a heavy enclosed three-by-three
-crushing housing standing on an airless metallic world: a sealed armoured box
-with thick ribbed buttresses at its four corners, and a tall narrow tower
-rising from the centre of its roof. The crown of a forged drop weight emerges
-from a gland at the top of that tower -- a compact chamfered steel head with
-lifting lugs, scarred and burnished, which rides up and slams down. The
-crushing chamber is completely enclosed and nothing inside it is visible. A
-heavy armoured inspection hatch with radial locking dogs sits on the front
-face. Two empty discharge chutes leave the housing on opposite sides, one wide
-on the left face and one narrow on the right face, so they sit on clearly
-separate tiles of the footprint. Dark grey-brown armour, pale steel tower
-gland, dark forged crown, small yellow hazard banding on the base edge only.
-No open frame, no exposed anvil, no jaw plates, no conveyor, no silo or tank
-read, no glow, no flame, no smoke. Panels: main view, front elevation, side
-elevation, a detail of the tower gland with the weight's crown emerging, a
-detail of the inspection hatch and the two empty chute mouths, and the crown
-shown at the top of its stroke and driven fully down. Title the sheet DROP
-CRUSHER. Draw no loose material anywhere: no ore, powder, grit, debris or
-product on the ground, in bins, at chutes or spilling from the machine.
-Factorio machines never show what they make, so every chute and port is drawn
-as empty machinery. Nothing may extend past the tile footprint and the tile-
-grid panel must show the whole machine inside the grid with no overhang.
+Space Age industrial machine. PROJECTION RULE, which overrides everything else
+and applies to every panel: draw the building SQUARE-ON to the tile grid
+exactly as Factorio draws its own sprites -- the front face parallel to the
+bottom edge of the panel, the side faces parallel to the left and right edges.
+Do NOT rotate the building so a corner points at the viewer, and do not draw
+it three-quarter or isometric. The machine is a sealed 3x3 impact crusher: a
+tall armoured cylinder with a slightly tapered wall, standing on a square base
+plate that fills the footprint, ringed by external buttresses that stand proud
+of the wall and run from the base plate to just under the roof. Its roof is
+flat, with a hard machined collar at the centre in which the forged drop
+weight's chamfered crown is seated. An armoured inspection hatch with radial
+locking dogs sits on the front face. PORT RULE: this machine holds its output
+in an inventory until an inserter takes it, so it has NO output chute, spout,
+boom, bin, tray or opening of any kind -- draw none at all. Its side and rear
+faces are plain armour, broken only by armour ribs, small louvred vents and
+bolt lines. Dark grey-brown armour, pale machined collar, dark forged crown,
+small yellow hazard banding at the base only. No open frame, no exposed anvil,
+no jaw plates, no conveyor, no silo or tank read, no glow, no flame, no smoke.
+Panels: main view, front elevation, side elevation, an in-game icon, a 3x3
+tile grid top view, a detail of the roof collar with the crown seated in it, a
+detail of the inspection hatch, a layer breakdown row separating shadow, base
+plate, cylinder body, buttresses, roof collar and drop weight, a colour
+palette row, and an animation row of four key frames showing the crown
+standing proud of the collar by most of its own height at the top of the
+stroke, descending, and finally seated flush so the collar rim is unbroken.
+Draw no loose material anywhere. Nothing may extend past the 3x3 tile
+footprint. Draw no logos, wordmarks or watermarks anywhere -- in particular no
+Factorio or Space Age logo. Title the sheet DROP CRUSHER.
 ```
 
 ---
@@ -366,3 +381,36 @@ What the enclosure bought, beyond fixing that:
 The anvil bed is now behind an armoured inspection hatch and is never seen in
 normal operation, which is the honest arrangement: it was only ever drawn to be
 looked at, and it was always empty.
+
+
+### Version 7 — variant B, built out
+
+Liam chose **variant B**, the tall buttressed cylinder, off
+`concept/variants-v4.png`. The full sheet is `concept/v7-sheet.png`.
+
+**The one concern raised at selection, and how it was answered.** B's crown sits
+in a collar on the roof rather than on top of a tower, so the stroke risked being
+the least legible of the three. The fix is to make the collar a **datum**: the
+crown lifts *clear* of the ring by most of its own height at the top of the
+stroke and returns to sit flush, leaving the rim unbroken. A crown bobbing inside
+a recess reads as nothing; a crown measured against a hard horizontal line reads
+at a glance. The four key frames on the sheet are drawn to that.
+
+**Palette as drawn**, superseding §3.3 again:
+
+| Role | Sheet | Note |
+| ---- | ----- | ---- |
+| Primary armour | `#3A3632` | Darker than §3.3's `#4A463F` |
+| Secondary armour | `#64605A` | |
+| Machined collar | `#A7A7A2` | The palest thing on the machine, correctly |
+| Drop weight | `#212121` | Near-black again, but now faceted, so it reads as forged rather than as a hole |
+| Warm metal | `#7C7364` | |
+| Hazard yellow | `#D4A017` | |
+| Rust accent | `#7B4B2A` | Not in §3.3; sparingly used and worth keeping |
+
+**What the sheet gets right that earlier ones did not:** four true elevations
+(south, east, north) all square-on, a top view sitting inside the 3×3 with the
+buttresses reading as the footprint's corners, no output port anywhere, and a
+layer breakdown that separates cleanly into shadow, base plate, cylinder body,
+buttresses, roof collar and drop weight — which is close to how the prototype
+will actually be layered.
