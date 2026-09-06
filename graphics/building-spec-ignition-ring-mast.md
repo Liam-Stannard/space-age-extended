@@ -64,6 +64,9 @@ It has to stand close: what it makes does not travel."*
 
 ### The ring is geometry, not a rule
 
+**Agreed 2026-09-06.** The mechanic below is settled; what remains open in §20 is
+whether the engine behaves as it assumes, not whether the design is wanted.
+
 Nothing in the engine can require a building to be *near* another one. The mast
 does it with a timer instead: **ignition charge carries a very short
 `spoil_ticks`** — on the order of ten seconds — and no `spoil_result`, so it

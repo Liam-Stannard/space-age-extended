@@ -113,8 +113,8 @@ commissioning — the last column says which.
 | Whisker Comber | `building-spec-whisker-comber.md` | its two consumers (T5 prepreg, T6 cryostat) do not exist |
 | Helium Concentrator | `building-spec-helium-concentrator.md` | **§20** — it turns helium from a hard cap into a price, which rewrites `decisions.md` D12 |
 | Vacuum Furnace | `building-spec-vacuum-furnace.md` | **§20** — the sintering recipe's shape decides whether it can be a `furnace` at all |
-| Crust Tap | `building-spec-crust-tap.md` | **§20** — an offshore pump on open ground is untested; spike it as S9 was spiked |
-| Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | **§20** — does spoilage tick inside a rocket silo's input slot? |
+| Crust Tap | `building-spec-crust-tap.md` | **§20** — one spike covers it: an offshore pump on open ground, and `burns_fluid` on a generator. Neither has a vanilla user |
+| Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | mechanic **agreed**; §20's spike stands — does spoilage tick inside a rocket silo's input slot, and can a charge rot mid-craft? |
 
 Every one of the nine is a **first draft**: gameplay numbers are placeholders,
 and none has been read back off a prototype, because no prototype exists.
