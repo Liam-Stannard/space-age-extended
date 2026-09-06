@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v9-sheet.png`**, variant B, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v10-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -86,6 +86,13 @@ chamber, the anvil bed and the whole stroke are **inside**; what the player sees
 from outside is the crown riding up clear of its collar and slamming back down
 flush.
 
+**The weight is lifted, not levitated.** A crown that simply rises out of a ring
+with nothing touching it reads as floating. The roof therefore carries the
+mechanism that does the work: geared drums winding the weight up a rack cut into
+its shank, and a trip pawl that kicks clear to drop it. This is how a real board
+drop hammer behaves — wound up, then released — and it puts moving machinery on
+the surface the camera shows most of, which the roof previously lacked entirely.
+
 **The collar is a datum, and that is what makes the stroke legible.** A crown
 that merely bobs inside a recess reads as nothing; a crown that lifts *clear* of
 a hard horizontal ring and returns to sit flush against it gives the eye a fixed
@@ -112,6 +119,11 @@ the moving crown are what stop it reading as storage.
   running from the base plate to just under the roof.
 * A **collar** at the centre of the flat roof, a hard machined ring, with the
   weight's chamfered crown seated in it.
+* **Lift gear on the roof**, flanking the collar: a pair of heavy toothed gears
+  meshing with a **vertical rack** cut into the weight's shank, driven by a
+  compact geared motor housing on one side.
+* A **trip pawl** — a stout sprung lever beside one gear that visibly engages the
+  rack and kicks clear to release the weight.
 * A **drop weight** — a forged mass that climbs the posts and releases. It must
   read as *dense*, which is not the same as plain: a compact trapezoidal block,
   wider at its striking face than at its crown, with heavily chamfered edges that
@@ -450,3 +462,28 @@ a preference: a square assembling machine with no fluid box cannot be rotated.
 So v9 draws the machine **once**, large, and spends the reclaimed space on the
 icon, the top view, the two details, the layer breakdown, the palette and the
 four animation frames.
+
+
+### Version 10 — the weight is lifted, not levitated
+
+Liam's catch on the animation: the weight rose out of its collar with nothing
+touching it, so it read as floating rather than as being hauled up and dropped.
+
+The roof now carries the mechanism that does the work — a pair of heavy toothed
+gears meshing with a rack cut into the weight's shank, a geared motor housing at
+one side, and a sprung trip pawl that engages the rack and kicks clear to
+release. That is how a board drop hammer actually behaves: wound up, then let go.
+
+**It also fixes something the sheet had not solved.** The roof is the surface
+this camera shows most of, and until now it held only a collar and a blank
+weight. Putting the lift gear there gives the most-visible face of the building
+something mechanical to look at, and it is the reason v10 reads as a machine
+rather than as a lid.
+
+The four frames now describe a cycle rather than a position: seated with the pawl
+engaged, gears turning and the weight climbing the rack, at the top with the pawl
+kicking clear, fallen with the gears freewheeling.
+
+New palette entry, `#8A857C` for the gear, rack and pawl — deliberately brighter
+than the armour so the mechanism reads as a separate assembly rather than as more
+shell.
