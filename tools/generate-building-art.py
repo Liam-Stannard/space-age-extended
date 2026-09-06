@@ -56,9 +56,14 @@ def blocks(spec_text):
     """Pull the first ```text fence following each known heading."""
     found = {}
     for heading, slug in SECTIONS:
-        i = spec_text.find("\n" + heading)
-        if i < 0:
+        # Whole-line match. A prefix match would let "### Effects" bind to
+        # "### Effects this building must never show, and why" in section 10
+        # and pull the wrong fence.
+        m = re.search(r"^" + re.escape(heading) + r"\s*$",
+                      spec_text, re.M)
+        if not m:
             continue
+        i = m.start()
         m = re.search(r"```text\n(.*?)```", spec_text[i:], re.S)
         if not m:
             continue

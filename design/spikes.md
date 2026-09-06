@@ -239,3 +239,41 @@ Every spike either confirms a line in the design documents or forces a specific,
 already-identified fallback. Record each outcome in
 [decisions.md](decisions.md) — including the ones that pass, since "we checked
 this" is worth as much as "we changed this."
+
+---
+
+## S9 — Arc storms need night, and `day-night-cycle = 0` has none
+
+**Measured after the Core shipped with no working lightning at all.**
+
+A mast on the Core caught nothing: 729 chunks, 7018 ticks, zero strikes, while
+vanilla Fulgora in the same rig produced 35 sightings over 5171 ticks. The
+prototype data was not at fault — the dumped `lightning_properties` are present
+and correct on both planets.
+
+Lightning is generated **only while a surface is dark**:
+
+| `day-night-cycle` | darkness | result |
+| ----------------- | -------- | ------ |
+| `0` | 0.00, always | zero strikes in 7018 ticks |
+| `216000`, sampled in daylight | 0.00 | zero strikes in 8864 ticks |
+| `216000`, forced to `daytime = 0.5` | 0.85 | charged in **370 ticks** |
+| `10800`, night comes round quickly | varies | charged in 4063 ticks |
+
+A cycle of 0 means there is never any night, so the Core's only power source and
+its only hazard were both silently dead.
+
+**The fix.** The planet declares a long cycle so night is reachable, and
+`control.lua` pins the Core at `daytime = 0.5` with `freeze_daytime = true` when
+the surface is created. The design's "sky that does not move" survives intact —
+it simply never moves off night, which suits a world with `solar-power = 0`.
+
+Verified on a fresh save with no console intervention: darkness 0.85, frozen,
+mast at 1399 MJ within 1108 ticks — exactly 35% of a 4000 MJ strike, matching
+`efficiency = 0.35`.
+
+**Also worth knowing:** a hand-spawned lightning entity does *not* charge a
+mast. `create_entity{name = "sae-arc", position = ...}` with no `target` strikes
+the ground and nothing else, because attraction is decided when the lightning is
+created, not by proximity afterwards. Pass `target = <the mast>` to test by hand.
+

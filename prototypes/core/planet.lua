@@ -30,7 +30,12 @@ data:extend({
     solar_power_in_space = 0,
     surface_properties =
     {
-      ["day-night-cycle"] = 0,        -- a sky that does not move
+      -- NOT zero, and this is load-bearing. Measured against the engine: arc
+      -- storms only strike at night, so a planet with no day-night cycle gets
+      -- no lightning at all -- which would leave the Core with no power source
+      -- and no hazard. The cycle exists so night exists; control.lua then
+      -- freezes it at midnight, so the sky still never moves.
+      ["day-night-cycle"] = 216000,
       ["magnetic-field"] = 0,         -- a dead dynamo; restarting it is the goal
       ["solar-power"] = 0,            -- not a trickle: nothing
       pressure = 5,
