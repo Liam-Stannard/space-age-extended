@@ -187,7 +187,10 @@ attach the electric furnace**; it is the anti-read.
 
 * [x] North only
 
-**Direction count:** `1`.
+**Direction count:** `1` — **a choice, not a constraint.** The flux fluid box
+means the engine would allow rotation. One direction keeps the roof hatch, the
+fault lamp and the sight port in a fixed relationship, which is what makes the
+three lamp states legible at a glance..
 
 ---
 

@@ -125,11 +125,21 @@ material and finish.
 
 # 5. Building Orientation
 
-* [x] North · [x] East · [x] South · [x] West
+* [x] North only
 
-**Direction count:** `4`. The cascade runs downhill in a specific direction and
-the bins sit at its foot; a classifier whose bins face the wrong way is a machine
-whose function has been drawn backwards.
+**Direction count:** `1` — **and this is the engine's decision, not a design
+choice.** `CraftingMachinePrototype` refuses to rotate a crafting machine unless
+it has a fluid box, a heat or fluid energy source, or a non-square collision box.
+This is a square 3×3 assembling machine with no fluid box, so it **cannot** be
+rotated whatever the art implies.
+
+That matters here more than on the other machines, because the housing's sloped
+roofline is directional by nature — it descends from the drive end to the
+discharge end. A player cannot turn it to suit their layout, so **the slope must
+read well from every approach**, and the drive end should be the near face in the
+one orientation that exists.
+
+*(This spec previously said four directions, which was wrong.)*
 
 ---
 

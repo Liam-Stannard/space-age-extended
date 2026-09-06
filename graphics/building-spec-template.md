@@ -448,8 +448,32 @@ otherwise. Say it explicitly in every prompt:
 > parallel to the bottom edge, the side faces parallel to the left and right
 > edges. Not rotated corner-on, and not a flat front elevation.
 
-**Both halves of that matter, and missing either one looks wrong in a different
-way.** Get the rotation wrong and you have a corner-on box whose every port
+**Every panel that shows the whole machine uses that same camera.** Factorio has
+**rotations, not elevations**. A building's north, east, south and west sprites
+are the same camera with the building turned underneath it — the engine never
+shows a flat side-on architectural elevation, so a sheet that draws one is
+describing a view the game cannot produce, and it will read as "off" next to the
+panel that got it right.
+
+**How many directions a building has is per-building, and for crafting machines
+the engine decides it for you.** From `CraftingMachinePrototype`: *"a crafting
+machine cannot be rotated unless it has at least one of the following: a fluid
+box, a heat energy source, a fluid energy source, or a non-square collision
+box."* So a square assembling machine with no fluid box **cannot rotate at all**,
+however much the art wants it to — while a mining drill, an offshore pump, a
+belt-connected machine or anything with a fluid box rotates normally.
+
+Read the direction count off the prototype before drawing, never off the design:
+
+- **One direction** — draw the machine **once**, and spend the space on details,
+  the layer breakdown and the animation.
+- **Four directions** — draw four **rotations**: the same camera with the building
+  turned underneath it, labelled N/E/S/W. Never "front elevation" or "side
+  elevation"; the engine has no such view and it will read as wrong beside a
+  panel that got the camera right.
+
+**Both halves of the camera matter, and missing either one looks wrong in a
+different way.** Get the rotation wrong and you have a corner-on box whose every port
 exits on a diagonal. Get the *elevation* wrong — say only "square-on" — and you
 get an architectural front elevation with no roof at all, which is what happened
 to the Drop Crusher's v7. The roof is most of what a player ever sees of a

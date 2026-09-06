@@ -134,7 +134,11 @@ upscaled, with the standing disclaimer.
 
 * [x] North only
 
-**Direction count:** `1`. The fluid boxes name fixed faces, so the building never
+**Direction count:** `1` — **a choice, not a constraint.** This machine has fluid
+boxes, so the engine *would* let it rotate. It is fixed at one direction because
+its three flanges are on three named faces (§8) and rotating it would move all
+three at once, which is more confusion than convenience. Revisit if playtesting
+shows people fighting the pipe runs.. The fluid boxes name fixed faces, so the building never
 rotates. One plate, one glow sheet.
 
 ---

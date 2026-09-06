@@ -144,7 +144,12 @@ thing it rings read as one installation.
 
 * [x] North only
 
-**Direction count:** `1`. A ring of masts around a silo will be placed at every
+**Direction count:** `1` — **a choice, and the right one.** The helium fluid box
+would permit rotation, but a ring of masts around the Array will be placed at
+every angle, and a machine with a visible "front" would look wrong in three
+quarters of those positions. Radial symmetry is the requirement (§5), so the
+single asymmetry — the inlet flange — is the only thing that has to be sited
+carefully.. A ring of masts around a silo will be placed at every
 angle, and a machine with a visible "front" would look wrong in three quarters of
 those positions. Radial symmetry is the requirement, not a simplification.
 

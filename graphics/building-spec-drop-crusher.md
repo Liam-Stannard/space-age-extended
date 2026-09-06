@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v8-sheet.png`**, variant B, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v9-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -434,3 +434,19 @@ BUILDING, FORM, COLOUR, RULES, PANELS, OUTPUT — it produced a better sheet in 
 single pass. The palette came back hit exactly, hex for hex, and the rules were
 echoed onto the sheet as a notes panel, which no prose version ever managed. The
 skeleton is now in the template's Appendix B.
+
+
+### Version 9 — one view, one camera
+
+v8's main view was right and its three "elevations" were wrong: drawn flatter and
+more side-on than the main view, they read as architectural elevations. **Factorio
+has rotations, not elevations** — north, east, south and west are the same camera
+with the building turned underneath it, and the engine never produces a flat
+side-on view at all. A sheet that draws one is describing something the game
+cannot show.
+
+This entity has **one** direction, and that is the engine's decision rather than
+a preference: a square assembling machine with no fluid box cannot be rotated.
+So v9 draws the machine **once**, large, and spends the reclaimed space on the
+icon, the top view, the two details, the layer breakdown, the palette and the
+four animation frames.
