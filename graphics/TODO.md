@@ -1,15 +1,41 @@
 # Art — what is left
 
-State as of 2026-09-05. Written at the end of the session that produced the icon
-chain sheets, the six building concept sheets and the planet art, so the next
-session does not have to reconstruct it.
+State as of 2026-09-05, second art session. The icons, technology icons, planet
+and six concept sheets are **committed** (`83b7512`). This session took the Bed
+Tender from a locked design to shipped sprites and found the defect that every
+remaining building will hit.
 
-**Everything below is uncommitted.** Nothing has been staged or
-committed, and the working tree also carries another session's in-flight changes
-(`control.lua`, `prototypes/core/planet.lua`, `prototypes/core/storms.lua`,
-`design/spikes.md`, `graphics/building-spec-arc-mast.md`,
-`graphics/building-spec-template.md`, the arc-mast plates, and four
-`tools/*.py`). Stage explicit paths; never `git add -A` here.
+The working tree still carries another session's in-flight arc-mast work
+(`control.lua`, `prototypes/core/planet.lua`, `design/spikes.md`,
+`tools/generate-building-art.py`, the arc-mast concept plates, `tools/rcon.py`
+and `graphics/icons/arc-mast.png`). Stage explicit paths; never `git add -A`
+here.
+
+---
+
+## The defect to expect on every remaining building
+
+**The concept sheets are drawn at a shallower camera than Factorio's
+projection.** The Bed Tender's first plate came back 3.00 tiles wide by 1.84
+deep — aspect **1 : 0.61** — against a vanilla 3×3 plate's **1 : 0.96**. It
+passed `--report` on transparency, palette and body-metal luminance, because
+none of those can see projection.
+
+Check the **trimmed aspect** first, against a real vanilla building of the same
+footprint, and fix it with a *regenerate* carrying a vanilla sprite as a camera
+reference. It is written up in the template's Appendix C, under *Measure the
+camera before anything else*, with the comparator table.
+
+Two tool gaps this exposed, both fixed:
+
+- **`check-graphics.sh` was not checking any building plate.** It grepped for a
+  whole quoted path, and every sprite block writes `local ART = "__mod__/dir/"`
+  then `ART .. "base.png"` — so the arc mast's four plates had never been
+  verified. `tools/collect-graphics-refs.py` now resolves those bindings; the
+  reference count went from 52 to 59.
+- **`process-building-art.py` had no `--bottom-margin`**, so a cut plate always
+  landed flush on the canvas floor and could not pass the pipeline's own check 2
+  (alpha zero along both edge rows). The arc mast measures `B255` because of it.
 
 ---
 
@@ -57,18 +83,18 @@ hand for that reason — see `icon-sheet-prompts.md`.
 
 ## 5. Buildings — six designs locked, one building actually built
 
-Every concept sheet is approved. **Only the Arc Mast has gone past stage 0** into
-real sprites; the other five stop at "design locked".
+Every concept sheet is approved. **The Arc Mast and the Bed Tender have gone
+past stage 0** into real sprites; the other five stop at "design locked".
 
 | Building | Document | Sheet | Stages 1–6 |
 | -------- | -------- | ----- | ---------- |
 | Arc Mast | `building-spec-arc-mast.md` | locked | **done** — plates, glow, icon |
-| Ignition Array | `building-spec-ignition-array.md` | `v2-sheet.png` | **all outstanding** |
-| Vent Pump | `building-spec-vent-pump.md` | `v4-sheet.png` | **all outstanding** |
-| Bed Tender | `building-spec-bed-tender.md` | `v2-sheet.png` | **all outstanding** |
-| Sealed Roboport | `building-spec-sealed-roboport.md` | `v2-sheet.png` | **all outstanding** |
-| Radiant Generator | `building-spec-radiant-generator.md` | `v2-sheet.png` | **all outstanding** |
-| Superconducting Store | `building-spec-superconducting-store.md` | `v1-sheet.png` | **all outstanding** |
+| Bed Tender | `building-spec-bed-tender.md` | `v2-sheet.png` | **done** — plate, shadow, bin layer, icon, recoloured crane, wired |
+| Superconducting Store | `building-spec-superconducting-store.md` | `v1-sheet.png` | **done** — plate, shadow, ring glow, charge/discharge, icon, wired |
+| Sealed Roboport | `building-spec-sealed-roboport.md` | `v2-sheet.png` | **done** — plate, shadow, lamp glow, icon, wired; three vanilla slots emptied |
+| Radiant Generator | `building-spec-radiant-generator.md` | `v2-sheet.png` | **done** — both directions, glow split by hue, icon, wired |
+| Ignition Array | `building-spec-ignition-array.md` | `v2-sheet.png` | **base plate done**, wired, launch furniture emptied; iris / shaft / lamps / 64-frame glow / rocket entity outstanding |
+| Vent Pump | `building-spec-vent-pump.md` | `v4-sheet.png` | **all outstanding** — 4 directional frames plus an animation, the most expensive of the seven |
 
 For each: canonical view, idle plate, directional frames where the prototype has
 them, glow by differencing, sprite canvas, icon. Template Appendix C is the
@@ -89,7 +115,13 @@ tools/key-icons.py graphics/icons <plate>:<name>        # the icon
 
 Order worth taking them in, cheapest first, because each one teaches the next:
 
-1. **Bed Tender** — no lit state at all, so no glow step. One plate, one shadow.
+1. ~~**Bed Tender**~~ — **done.** Two generation rounds: one to take the arm off
+   and one to fix the camera. `base.png` 224×189 with 192 px (3.00 tiles) of
+   visible content, `base-shadow.png` 363×189, `bin.png` for the collection
+   bin's contents, icon derived from the plate. Three in a row overlap by 90 px
+   at alpha > 1 and **0 px above alpha 80**. Still open: the in-client pass with
+   the inherited crane actually turning, which is the only way to know the arm
+   lands on the drawn bearing.
 2. **Superconducting Store** — 2×2, one direction, one glow, exercises the
    travelling-mask animation path.
 3. **Sealed Roboport** — 4×4, one direction, but the iris is a mask job and the
@@ -156,15 +188,32 @@ the art; each is recorded in the building's own §8.
       remove it before the sheet is shown anywhere outside the repo, and never
       carry it into a plate.
 
-## 6. Two mismatches with no art plan at all
+## 6. Two mismatches with no art plan at all — both now fixed
 
-Both are flagged in the README and neither has a brief:
+- [x] The **whisker plant rendered as a Gleba tree**. Replaced with four kamacite
+      whisker clusters; the engine dump shows **zero references to
+      `planted-tree` left**. It also grows: the `trunk == leaves + 1` frame rule
+      turned out to exist *for* growth, so frame 0 is the clump at 62%.
+- [x] The **whisker bed tile was a clone of stone path**. Recoloured from
+      vanilla's own sheets so the tiling contract survives, measured at
+      luminance 60 against the Core's basalt at 22.
 
-- [ ] The **whisker plant renders as a Gleba tree**, because its prototype copies
-      `tree-plant`.
-- [ ] The **whisker bed tile is a clone of stone path**, so a farm cannot be told
-      apart from a concrete pad. Chain 2's whisker-bed *item* icon is done, but
-      the in-world tile is a different asset.
+## 7. What a session should run before believing anything
+
+`./tools/check-data-stage.sh` now runs four checks, and the third is new and the
+one that matters:
+
+```
+Data stage OK        -- the mod loads
+Graphics OK          -- 67 paths written as whole string literals
+Dumped graphics OK   -- 375 paths as the ENGINE resolved them, 115 of them ours
+Recipes OK           -- every recipe fits a machine that can hold its fluids
+```
+
+The gap between 67 and 375 is the point. `check-graphics.sh` reads Lua source and
+cannot see a path that was built rather than written, and this mod builds nearly
+all of them. It reported "all 52 files exist" for months while checking **not one
+building plate**.
 
 ---
 

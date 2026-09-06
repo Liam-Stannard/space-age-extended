@@ -21,11 +21,11 @@ nobody had written them down.
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/v2-sheet.png`** |
-| 1 | Canonical view | square | Silhouette approved against §3 | blocked on 0 |
-| 2 | Idle plate (unlit) | square | Same machine, nothing lit | blocked on 1 |
+| 1 | Canonical view | square | Silhouette approved against §3 | **passed — `concept/v4-hub.png`** |
+| 2 | Idle plate (unlit) | square | Same machine, nothing lit | **passed — the same plate; this building has no lit state, so stages 1 and 2 are one asset** |
 | 3 | Directional frames | — | **n/a — no rotation, see §5** | n/a |
 | 4 | Crane asset | — | **Its own prototype, see §6** | separate |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+| 6 | Icon | square | Legible at 32 px | **passed — `graphics/icons/bed-tender.png`, derived from the plate** |
 
 ### Where generation happens
 
@@ -291,19 +291,50 @@ ours yet, and the only way to know the bearing lines up is to watch it turn.
 
 # 13. Sprite Dimensions
 
-**Not yet measurable.** Fixed in advance:
+**Measured off `concept/v4-hub.png` after cutting.** The numbers below are what
+the shipped plates actually are, not what was intended.
 
 **Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
+
+| | Canvas | Visible content | Shift |
+| --- | --- | --- | --- |
+| `base.png` | 224 × 189 | 192 × 161 px at rows 16–177, centred | `{ 0, 0.21094 }` — `by_pixel(0, 6.75)` |
+| `base-shadow.png` | 363 × 189 | 241 × 49 px | `{ 1.08594, 0.21094 }` |
+| `bin.png` | 224 × 189 | 41 × 57 px, over the bin opening | `{ 0, 0.21094 }` |
+
+All three share the colour plate's canvas origin, so registration is exact by
+construction rather than by alignment.
+
+**Why the shift is positive.** A tall building's art reaches up and takes a
+negative shift; this one is low and is nearly all footprint, so its plate hangs
+slightly *below* the origin. `by_pixel(0, 6.75)` puts the front skirt on the
+footprint's near edge at +1.5 tiles. Vanilla anchors its own low plates the same
+way — `assembling-machine-1-base` is `by_pixel(0, 4)`.
+
+**The camera, which is the thing that nearly shipped wrong.** See §19 round 3.
+The measurable test: a vanilla 3×3 building's plate is close to square —
+`assembling-machine-1-base.png` measures 188 × 180 px, **aspect 1 : 0.96**. The
+first plate came back at 1 : 0.61, a pancake, and no amount of looking at it in
+a viewer said so. The shipped plate is 1 : 0.84.
+
+**Verified before wiring**, by the four measurements in the template's Appendix C:
+centred to 0.0 px; alpha zero along all four edges; visible span **3.000 tiles**
+exactly; peak alpha 255 on the colour plate and 155 on the shadow. Three tenders
+rendered at a 3-tile pitch overlap by **90 px at alpha > 1 and 0 px above alpha
+80** — two antialiased edges meeting, which is the signature of a correct fit.
 
 **Footprint:** 3×3 tiles. `collision_box` `{{-1.2,-1.2},{1.2,1.2}}`,
 `selection_box` `{{-1.5,-1.5},{1.5,1.5}}`, inherited.
 
 **Width, load-bearing:** the hub must span **exactly 3.00 tiles** — `192` source
-px at scale 0.5.
+px at scale 0.5. **It does: measured 192 px.**
 
 **The bearing centre is the second load-bearing number.** With `crane.origin` now
 `{0, 0, 4.6}` the arm pivots on the plate's centre, so the ring's centre must
-land exactly there. Measure it on the cut plate.
+land exactly there. The plate's content is centred on the canvas to 0.0 px and
+the ring is drawn centred in it, so this holds by construction — but it is a
+claim about *drawn* geometry, not canvas geometry, and only a client with the
+arm turning can settle it. Still open.
 
 **`drawing_box_vertical_extension = 2.5`** is inherited and must stay: the arm
 reaches well above the hub, and without the extension the engine culls it.
@@ -363,22 +394,25 @@ part of the building.
 
 ### Building
 
-- [ ] Reads as a machine that tends ground it is not standing on
-- [ ] Nothing suggests it grows anything itself — no glass, no green, no water
-- [ ] Slewing ring reads as a real bearing race, with depth
-- [ ] Seed magazine and collection bin are distinguishable at a glance
-- [ ] Nothing on the building is lit
-- [ ] Body metal luminance inside the §3.3 range, **measured**
+- [ ] Reads as a machine that tends ground it is not standing on — **cannot be
+      judged until the crane is authored; the hub alone does not carry it**
+- [x] Nothing suggests it grows anything itself — no glass, no green, no water
+- [x] Slewing ring reads as a real bearing race, with depth
+- [x] Seed magazine and collection bin are distinguishable at a glance
+- [x] Nothing on the building is lit
+- [x] Body metal luminance inside the §3.3 range, **measured** — `#5E554C`, 86
 
 ### Connections
 
-- [ ] Bearing ring centre lands on `{0, 0}`, checked on the cut plate
+- [x] Bearing ring centre lands on `{0, 0}`, checked on the cut plate — content
+      centred to 0.0 px, ring drawn centred within it
 - [ ] The inherited arm turns on the drawn ring — **verified in a client, moving**
 - [ ] Circuit connector sprite lands somewhere sensible on the hub
 
 ### In-Game
 
-- [ ] Two tenders side by side touch and do not overlap
+- [x] Two tenders side by side touch and do not overlap — measured at a 3-tile
+      pitch: 90 px overlapping at alpha > 1, **0 px above alpha 80**
 - [ ] Sits on its footprint
 - [ ] Arm is not culled at full extension — `drawing_box_vertical_extension` intact
 - [ ] Hub and inherited arm do not read as two different art styles glued together
@@ -389,13 +423,16 @@ part of the building.
 
 # 18. Final Asset Checklist
 
-- [ ] `base.png` cut and measured
-- [ ] `shadow.png` derived
-- [ ] `bin.png` working visualisation
-- [ ] Icon derived from the plate
-- [ ] §13 filled in with **measured** numbers, bearing centre verified
-- [ ] Prototype wired
-- [ ] `./tools/check-data-stage.sh` passes
+- [x] `base.png` cut and measured — 224 × 189, content 192 × 161
+- [x] `base-shadow.png` derived — 363 × 189 (the file is `base-shadow.png`, not
+      `shadow.png`; §14 predates the tool's naming)
+- [x] `bin.png` working visualisation
+- [x] Icon derived from the plate — no collision at 16 px against the 32 icons
+      already locked (closest 30.4, against the set's own floor of 30.2)
+- [x] §13 filled in with **measured** numbers; bearing centre still open on the
+      one part only a client can answer
+- [x] Prototype wired
+- [x] `./tools/check-data-stage.sh` passes
 - [ ] Verified in a client with the crane actually working
 
 # 19. Design Notes / Iteration History
@@ -404,3 +441,53 @@ part of the building.
 | ----- | ----- | -------------- | ------- | ------------- |
 | 1 | sheet | Commissioned before this document existed. The design itself is good and is what §3 now records: armoured octagonal hub, slewing ring, counterweighted arm, seed plate magazine, gripper head, crystal collection bin, and a five-frame work cycle. Palette is right and nothing glows. **Two engine facts were wrong because nobody had written them down**: it drew NORTH / EAST / SOUTH / WEST panels for a building that cannot be rotated, and it treated the arm as part of the building plate when the crane is a separate prototype (§6). | **Design accepted; sheet structure rejected** | Replace the direction panels with CANONICAL and ARM EXTENDED, add the reach circle to the tile-grid panel, and keep the arm as its own layer in the breakdown. |
 | 2 | sheet | Both structural fixes landed. The direction panels are gone, replaced by CANONICAL and ARM EXTENDED — the same unrotatable machine with the arm at rest and reached out. The tile-grid panel now carries the dashed three-tile reach circle around the 3×3 footprint. **The arm appears as its own layer in the breakdown**, separate from the hub, which is what §6 needs given the crane is its own prototype. Five-frame work cycle reads correctly: idle, sweep out, position, plant, lift. Nothing glows, nothing is green, no glass anywhere. | **Accepted — `concept/v2-sheet.png` is the locked design** | None. |
+| 3 | plate | The approved CANONICAL panel was cropped out of `v2-sheet.png`, attached, and the arm asked away so the slewing ring could be drawn complete underneath. The arm came off cleanly and the ring came back whole. **The camera was wrong and nothing about looking at it said so**: measured, the machine came back 3.00 tiles wide by 1.84 deep, aspect **1 : 0.61**, a pancake. A vanilla 3×3 plate — `assembling-machine-1-base.png`, 188 × 180 px — is **1 : 0.96**. The report passed it: transparency ok, palette in range, body metal luminance 83. Palette and alpha checks cannot see projection. | **Rejected on camera; design accepted** | Regenerate rather than edit — an edit preserves the silhouette being rejected — with a real vanilla 3×3 sprite attached as a camera reference under the usual "do not copy the design" clause, and the target stated as a number: as deep front to back as it is wide. |
+| 4 | plate | Aspect **1 : 0.84**, up from 1 : 0.61. The octagonal deck now reads as an octagon covering ground rather than an ellipse pasted on a box, and the slewing ring sits on the deck at the same angle instead of floating flat on it. Design unchanged: magazine left, crystal bin right, corner bollards, no arm, nothing lit. Body metal `#5E554C`, luminance 86, inside §3.3. | **Accepted — `concept/v4-hub.png` is the plate** | None. Cut at 224 × 189 with 192 px of visible content; crystal split into `bin.png`; icon derived; prototype wired. |
+
+### What this building cost, in one line
+
+The concept sheets are drawn at a shallower camera than Factorio's projection,
+and **the aspect ratio of the trimmed content is the cheapest way to see it**.
+Measure the plate against a real vanilla building of the same footprint before
+anything else: `aspect` is already in `--report` output, and 1 : 0.61 against a
+1 : 0.96 target is not a judgement call. Every remaining building in this mod is
+cut from a sheet drawn the same way, so expect the same round on each.
+
+---
+
+# 20. The crane, and what it actually costs
+
+Section 6 says the crane is a separate prototype and cannot be replaced by
+editing the hub plate. That is still true. What was *wrong* — asserted in this
+session and corrected the same session — is the claim that authoring one needs
+64 hand-drawn angles per part and is therefore out of reach.
+
+**The engine does the rotation.** Every one of the 128 frames in
+`agricultural-tower-crane-5` is drawn with the arm segment *vertical*; the crane
+parts carry `rotated_sprite` with `direction_count = 128`, and the engine
+selects and orients them. The frames are not 128 poses. They are one pose seen
+from 128 camera azimuths, and what varies is shading and self-occlusion.
+
+Measured, frame 0 against the others:
+
+| vs frame 0 | silhouette differs | colour differs |
+| ---------- | -----------------: | -------------: |
+| 1 | 2.7% | 4.7% |
+| 16 | 18.1% | 36.5% |
+| 32 | 25.9% | 39.2% |
+| 63 | 6.1% | 31.5% |
+
+So a bespoke crane needs **one canonical vertical image per part**, replicated
+across that part's direction count. The arm then swings correctly, because the
+engine is doing the swinging; what it loses is the up-to-26% of outline and up
+to 47% of colour that should shift as the camera comes round. At 33 in-game px
+across, that is a small and honest loss.
+
+Six generations would do it: hub, inner arm, inner joint, central arm, central
+joint, and outer arm with gripper. Until then the recoloured vanilla arm stands,
+which is right in material and wrong in movement.
+
+**The general lesson, which is the template's:** do not assert what an asset
+costs before opening it. "Sixty-four angles per part" was inferred from a frame
+count and would have closed off a tractable job. One look at the frames, and one
+measurement across them, said otherwise.

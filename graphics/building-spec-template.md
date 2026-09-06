@@ -967,6 +967,29 @@ When generating through a chat UI rather than the API:
   hand, matching the names `tools/generate-building-art.py` would have used, so
   both routes leave the same trail.
 
+### Driving the composer, which is fiddly
+
+Three mechanical things cost time every session until they are written down.
+
+* **Typing into a freshly-loaded page silently does nothing.** Click the
+  composer, type a one-word probe, and read `#prompt-textarea`'s `innerText`
+  back before committing the real prompt. On a page that has just navigated or
+  just taken an upload, the first click-and-type lands nowhere and the composer
+  stays empty — and the send button is enabled either way, so nothing complains.
+* **Do not click the send arrow by screen position.** Attaching files and typing
+  a long prompt both grow the composer, and the arrow moves down with it; a
+  click at the old coordinates lands inside the textarea. Click the button
+  through the DOM (`button[data-testid="send-button"]`), and gate it on the text
+  actually being there.
+* **Poll for the image, not for the stop button, and identify it by bytes.**
+  Several `img` elements share the same rendered image, a lazily-attached
+  thumbnail can be the newest node while being an *older* picture, and an edit
+  that changed nothing comes back re-encoded — different file size, identical
+  pixels. Fetch each candidate as a blob, compare sizes to find the one you have
+  not seen, and if the result matters, `ImageChops.difference` it against the
+  input before believing it is new. The store's "make the ring glow" edit was
+  caught this way: zero difference on every channel.
+
 ### Four things that moved the needle more than prompt wording
 
 Measured across roughly a dozen rounds on one building:
@@ -1098,6 +1121,49 @@ A shadow you cannot see in a brightened screenshot is not a subtle shadow.
 It is still synthesised rather than hand-authored, which remains the ceiling on
 how good it gets.
 
+### Measure the camera before anything else
+
+Every concept sheet this mod has commissioned is drawn at a **shallower camera
+than Factorio's projection**, and no amount of looking at the plate says so. The
+tell is one number `--report` already prints: the **aspect of the trimmed
+content**, measured against a real vanilla building of the same footprint and
+roughly the same shape.
+
+| Vanilla plate | Footprint | Content | Aspect |
+| ------------- | --------- | ------- | ------ |
+| `assembling-machine-1-base.png` | 3×3, boxy | 188 × 180 px | 1 : 0.96 |
+| `storage-tank.png` (frame 0) | 3×3, **round** | 199 × 218 px | 1 : 1.10 |
+| `accumulator.png` | 2×2, tall box | 130 × 186 px | 1 : 1.43 |
+
+**Why it is never much below 1 : 1.** Factorio's ground is drawn as a true
+top-down square grid — a tile is a 32 × 32 square, not a diamond, and not
+foreshortened. So a building's base spans its footprint *equally in both axes*:
+a round drum two tiles across stands on a base drawn as a full circle two tiles
+wide **and** two tiles deep. The 45-degree look comes from buildings showing
+their sides, not from a tilted ground plane. A plate wider than it is tall is
+therefore a building that does not cover its own footprint, and it shows up in
+game as bare ground between neighbours — which vanilla never has.
+
+The cheap way to see it: render the cut plate in a grid at the real tile pitch,
+in **both** axes. Nine vanilla accumulators at a 2-tile pitch overlap heavily
+front to back with no ground showing; the store's first plate, at 1 : 0.94, left
+a clear gap in every row.
+
+The fix is a **regenerate, not an edit**: an edit preserves the silhouette being
+rejected. Attach a real vanilla sprite as a camera reference under the standing
+"do not copy the design" clause — but **not one the design's anti-read names**;
+a storage tank is the right camera for a round drum and exactly the wrong thing
+to show a generator drawing a cryostat that must not read as a fluid tank.
+State the target as a number, not an adjective, and give it in pixels: *if it is
+1000 px wide the finished object must be about 1100 px tall.*
+
+**And when the correction does not take, start a new conversation.** The store's
+third round was asked to regenerate unlit and came back lit, at the same wrong
+camera, because the thread above it contained "the lighting on that last one is
+exactly right and I want it kept". A thread honours its own history over the
+instruction in front of it — Appendix B says this and it costs a round every
+time it is forgotten.
+
 ### Four measurements before a plate is wired
 
 Every arc-mast defect passed the data-stage load, `--report`, `check-graphics.sh`
@@ -1123,6 +1189,10 @@ max(abs(bb[0] - W/2), abs(bb[2] - W/2)) * scale / 32
 im.size == (declared_w * cols, declared_h * rows)
 frame_count <= cols * rows  and  line_length <= cols
 ```
+
+`process-building-art.py --bottom-margin` exists so check 2 can actually pass:
+without it the art lands flush on the canvas floor and the bottom row is never
+zero. The arc mast shipped that way and measures `B255` to this day.
 
 Check 2 is the one nobody thinks of. A plate hard against its canvas edge has no
 antialiased rim — it ends on a razor line mid-geometry — and it is also the

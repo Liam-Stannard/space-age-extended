@@ -319,8 +319,30 @@ not lit, and there are no status lamps. One light, one meaning.
 
 # 13. Sprite Dimensions
 
-**Not yet measurable.** These numbers are derived from the approved canonical
-plate, and there isn't one. What is fixed in advance:
+**Measured off `concept/v5-unlit.png` after cutting.** These are what the
+shipped plates are, not what was intended.
+
+| | Canvas | Visible content | Shift |
+| --- | --- | --- | --- |
+| `base.png` | 160 × 164 | 128 × 136 px at rows 16–152, centred | `{ 0, -0.03125 }` |
+| `base-shadow.png` | 279 × 164 | 173 × 42 px | `{ 0.92969, -0.03125 }` |
+| `charge.png` / `discharge.png` | 800 × 656 | 20 frames of 160 × 164, `line_length` 5 | as `base.png` |
+
+**Cut with `--stretch-y 1.10`, and that is a defect worked around rather than
+fixed.** Four generation rounds put the camera at 1 : 0.94, 1 : 0.96, 1 : 0.94
+and 1 : 0.96 against a target of 1 : 1.10 — the aspect of vanilla's
+`storage-tank`, the only round vanilla building of comparable shape. The
+generator would not go deeper no matter how the target was phrased, so the
+residual was taken out by resampling the plate 10% taller before cutting, which
+is the inverse of the error. Recorded here because a later round that fixes the
+camera properly should drop the stretch, not stack another on top of it.
+
+The test that showed the problem, and the one worth repeating: render the cut
+plate in a grid at the real 2-tile pitch **in both axes**. Vanilla accumulators
+overlap heavily front to back with no ground showing between them; the store's
+first plate left a clear gap in every row.
+
+What is fixed in advance:
 
 **Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
 
@@ -329,7 +351,8 @@ plate, and there isn't one. What is fixed in advance:
 
 **Width, load-bearing:** the drum must span **exactly 2.00 tiles** at scale 0.5,
 which is `128` source px, so that a row of stores touches and never overlaps.
-The plate is wider than that only by its side margins.
+**It does: measured 128 px, centred to 0.0 px, with alpha zero along all four
+canvas edges.**
 
 **Height:** the building is squat — §4 says wider than it is tall — so expect
 roughly 1.2 to 1.4 tiles of visible height above the deck. Measure it; do not
@@ -443,3 +466,51 @@ silent, which suits a superconducting loop with no moving parts.
 | Round | Asset | What came back | Verdict | Fix asked for |
 | ----- | ----- | -------------- | ------- | ------------- |
 | 1 | sheet | **Accepted first round.** The anti-read held: a squat insulated cryostat with a continuous recessed ring channel as the only lit feature, frost-jacketed feed pipes with condensation collars, and an oversized busbar block — no flat-topped cabinet, no glowing panel, no charge bar, nothing tank-like. Detail count stayed low, which was the hard part at 2×2. **The charge animation is exactly the §9 behaviour**: the light travels progressively around the ring at 0/25/50/75/100 per cent and closes into a continuous circle, rather than filling like a bar. Palette strip carries the §3.3 hexes. | **Accepted — `concept/v1-sheet.png` is the locked design** | None. |
+
+---
+
+# 19. Design Notes / Iteration History
+
+| Round | Asset | What came back | Verdict | Fix asked for |
+| ----- | ----- | -------------- | ------- | ------------- |
+| 1 | sheet | The locked design: cryostat, toroidal channel, cold plumbing, busbar block, frost, five charge frames. `concept/v1-sheet.png`. | **Accepted** | None. |
+| 2 | plate | Camera and design good, transparency clean. **Asking for the ring to be "unlit" made the generator delete it** — the lid came back with no channel at all, and the channel is both the signature feature and the only place the animation can happen. | **Rejected** | Put the groove back as real recessed geometry — chamfered lips, its own shadow — and say explicitly that it is a deep recess that is *not currently glowing*, rather than saying "unlit". |
+| 3 | plate | Groove restored and continuous. Arrived **flattened onto the editor's checkerboard**, 100% opaque; `--dekey` cleared 1% of it because its neutral test assumed one bright grey and this export used a 199/141 pair. Fixed in the tool. | **Accepted after de-key** | — |
+| — | measurement | Rendered at the real 2-tile pitch in both axes: rows left bare ground between them, where vanilla accumulators overlap heavily. Aspect 1 : 0.94 against `storage-tank`'s 1 : 1.10. | **Rejected on camera** | Regenerate deeper. |
+| 4 | plate | Regenerated **lit**, at the same camera. The thread contained "the lighting on that last one is exactly right and I want it kept", and it honoured that over the instruction in front of it. | **Rejected** | Start a fresh conversation — Appendix B, and it cost a round here exactly as it says it will. |
+| 5 | plate | Fresh thread, vanilla camera reference, target given in pixels. Came back 1 : 0.96 — better than 0.94 and still short of 1.10. Four rounds had now landed in a 0.94–0.96 band and stopped moving. | **Accepted, with the residual taken out mechanically** | `--stretch-y 1.10` at cut time; see §13. |
+| 6 | lit twin | The "make the ring glow" edit returned the unlit image **pixel-identical** — measured, the difference between the two files was zero on every channel. | **Abandoned** | Glow built from the plate's own groove instead; see below. |
+
+### The glow is found, not generated, and not differenced
+
+Five rounds failed to produce a lit twin, so `tools/ring-glow.py` was written:
+it searches the plate for the darkest closed ellipse on the upper face — which
+is the recessed channel, and nothing else on the lid is both dark and closed —
+and paints the light into exactly those pixels. Measured on this plate the ring
+sits at `(78, 48)` with radii `29 × 23` and a channel luminance of 40.8.
+
+This is **not** the thing Appendix C forbids. The rule there is against asking a
+generator for "just the light on transparency", because it invents geometry that
+will not line up. Nothing is invented here: the light is placed on the plate's
+own groove, in the plate's own canvas, so registration is exact by construction
+rather than by alignment. Differencing remains the right first choice for a
+building whose light is a shape; this is the fallback for one whose light is a
+curve the plate already draws.
+
+`build-glow-frames.py` grew a `--mode ring` for the animation: an angular wedge
+sweeping round the measured centre, rather than the band that travels down the
+arc mast's column. Column mode still reproduces the arc mast's shipped sheets
+byte for byte, which was checked rather than assumed.
+
+---
+
+# 18. Final Asset Checklist
+
+- [x] `base.png` cut and measured — 160 × 164, content 128 × 136, span 2.000 tiles
+- [x] `base-shadow.png` derived — 279 × 164, peak alpha 155
+- [x] `charge.png` / `discharge.png` — 20 frames each, light travelling around the ring
+- [x] Icon derived from the plate — no collision at 16 px (closest 43.7 against the set's floor of 30.2)
+- [x] §13 filled in with **measured** numbers, including the stretch
+- [x] Prototype wired, overlays replaced as a coupled set
+- [x] `./tools/check-data-stage.sh` passes
+- [ ] Verified in a client — scale on the ground, and whether the ring reads at 2 tiles
