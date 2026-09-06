@@ -14,7 +14,7 @@ here already says Core in its description.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
 | 3 | Directional frames | portrait 2:3 | **Four are needed** — see §5 | blocked on 1 |
 | 5 | Working animation | portrait 2:3 | Loops without a visible seam | blocked on 3 |

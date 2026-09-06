@@ -14,7 +14,7 @@ sells **pressure, not heat**, and that single choice is what keeps it simple.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | **Both** prototypes approved in one review | not started |
+| 0 | Concept sheet | landscape 3:2 | **Both** prototypes approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
 | 1 | Canonical view — tap | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
 | 1b | Canonical view — turbine | landscape | May be derived; see §20 | blocked on 0 |
 | 4 | Glow / frost plate — tap | portrait 2:3 | Differenced against the unlit plate | blocked on 1 |

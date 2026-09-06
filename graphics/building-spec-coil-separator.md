@@ -10,7 +10,7 @@ approved and a canonical plate has been measured.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
 | 2 | Idle plate (unlit) | portrait 2:3 | Same machine, field dead | blocked on 1 |
 | 4 | Glow plate | portrait 2:3 | Differenced against stage 2 | blocked on 2 |

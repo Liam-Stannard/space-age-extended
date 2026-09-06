@@ -96,28 +96,41 @@ past stage 0** into real sprites; the other five stop at "design locked".
 | Ignition Array | `building-spec-ignition-array.md` | `v2-sheet.png` | **base plate done**, wired, launch furniture emptied; iris / shaft / lamps / 64-frame glow / rocket entity outstanding |
 | Vent Pump | `building-spec-vent-pump.md` | `v4-sheet.png` | **all outstanding** — 4 directional frames plus an animation, the most expensive of the seven |
 
-## 5b. Nine briefs, no sheets, nothing generated
+## 5b. Nine drafted concept sheets, none locked
 
-Drafted 2026-09-06 from the Core production-chain review. Each is a **brief** in
-the sense §5's four brief-first specs began as: enough to commission and judge a
-concept sheet, with §6, §12 and §13 deliberately open. **None is at stage 0 yet**,
-and three carry a question that has to be answered before art is worth
-commissioning — the last column says which.
+Drafted 2026-09-06 from the Core production-chain review, then taken through
+stage 0 in one sitting. **All nine are drafts.** Nothing is approved, so
+Appendix C's *"once a design is locked, stop prompting"* rule has not started
+applying to any of them, and stage 1 is blocked on the whole set being locked
+together.
 
-| Building | Document | Blocked on |
-| -------- | -------- | ---------- |
-| Drop Crusher | `building-spec-drop-crusher.md` | **stage 0 passed** — `concept/v2-sheet.png` approved, design locked. Next: canonical view (stage 1) |
-| Ballast Drill | `building-spec-ballast-drill.md` | nothing |
-| Dross Classifier | `building-spec-dross-classifier.md` | nothing |
-| Coil Separator | `building-spec-coil-separator.md` | nothing |
-| Whisker Comber | `building-spec-whisker-comber.md` | its two consumers (T5 prepreg, T6 cryostat) do not exist |
-| Helium Concentrator | `building-spec-helium-concentrator.md` | **clear** — helium is a price now (`decisions.md` R8); what is left is tuning, not design |
-| Vacuum Furnace | `building-spec-vacuum-furnace.md` | **clear** — stays a furnace, flux is a fluid (S12), and the latch gets a status-tinted fault lamp (S13) |
-| Crust Tap | `building-spec-crust-tap.md` | **spiked (S10)** — both halves work, but the pump needs a fluid-bearing tile, so the tap is now **sited**: it also needs a tile prototype, a map-gen entry and tile art |
-| Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | **clear** — mechanic agreed, and spike S11 passed: spoilage ticks in the silo, charges vanish cleanly, nothing rots mid-craft |
+| Building | Sheet | Rounds | Notes for the lock review |
+| -------- | ----- | ------ | ------------------------- |
+| Drop Crusher | `v2-sheet.png` | 2 | v1 had copper hydraulics on a building with no fluid box; carriage read as an equipment box; too squat. All fixed. See its §19 |
+| Ballast Drill | `v1-sheet.png` | 1 | **Two concerns.** No visible cutting head, so it reads as a press rather than a mining machine. And it shares a silhouette family with the Drop Crusher — posts plus a dark block |
+| Dross Classifier | `v1-sheet.png` | 1 | Strong and clearly distinct. Palette added a "flywheel brown" not in §3.3 |
+| Coil Separator | `v1-sheet.png` | 1 | The signature coil throat landed, field contained inside the aperture only |
+| Whisker Comber | `v1-sheet.png` | 1 | The before-and-after read landed: tangle in, ordered ribbon out |
+| Helium Concentrator | `v1-sheet.png` | 1 | The two-temperature split landed — frost at the waist, hot lower third |
+| Vacuum Furnace | `v1-sheet.png` | 1 | Got the three-state row right: RUNNING / BLOCKED / IDLE, which is S12's latch drawn |
+| Crust Tap | `v1-sheet.png` | 1 | Two-temperature read landed; burst disc and choke both present |
+| Ignition Ring Mast | `v1-sheet.png` | 1 | The critical anti-read landed — no cage, no electrode, closed dark cap. It will not be confused with the Arc Mast |
 
-Every one of the nine is a **first draft**: gameplay numbers are placeholders,
-and none has been read back off a prototype, because no prototype exists.
+**One thing to settle across all nine at lock time.** Every sheet titles itself
+with a generic descriptive name — ORE PRESS, VIBRATING CLASSIFIER, MAGNETIC
+SEPARATOR, GAS SEPARATOR, INDUSTRIAL FURNACE, INDUSTRIAL WELLHEAD, CHARGING POST
+— because the prompts describe the machine rather than naming it. Harmless on a
+reference sheet, but it means no sheet carries the name the mod actually uses.
+
+**What made this work, and it is worth keeping.** Two attachments per generation:
+a cropped and upscaled frame of a real vanilla building for camera and finish,
+and an already-approved sheet of our own for format. The second one did the heavy
+lifting — from the Drop Crusher onward, every sheet arrived with the right panel
+set, information tables, layer-breakdown row, tile grid and swatch panel without
+any of it being described in words. Appendix B says this; it is now measured.
+
+**Every gameplay number in the nine specs is still a placeholder**, and none has
+been read back off a prototype, because no prototype exists.
 
 **One cross-cutting art item, from S13.** Nothing in this mod uses
 `status_colors` with `apply_tint = "status"`, and every machine in it can stall

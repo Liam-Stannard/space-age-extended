@@ -16,8 +16,8 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/v2-sheet.png`** |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | **ready** |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v2-sheet.png`**, not yet locked |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -233,7 +233,11 @@ Four things were wrong, all of them in the machine rather than the sheet:
 4. **Raised and dropped were nearly identical** in the key frames, so the
    signature stroke did not read.
 
-### Version 2 — `concept/v2-sheet.png` — **approved, design locked**
+### Version 2 — `concept/v2-sheet.png` — **draft, not locked**
+
+All nine buildings are being drafted first and locked together at the end, so
+nothing here is approved yet and Appendix C's *"once a design is locked, stop
+prompting"* rule has not started applying.
 
 All four fixes took, in one round, written to Appendix A's shape: keep-list
 first, then numbered fixes each naming what it currently reads as and what it

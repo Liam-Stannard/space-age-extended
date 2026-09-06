@@ -21,7 +21,7 @@ is a fluid now — piped, never belted or chested.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
 | 2 | Idle plate (unlit) | portrait 2:3 | Same machine, cold | blocked on 1 |
 | 4 | Glow plate | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
@@ -220,13 +220,17 @@ A single landscape concept-art and asset-breakdown sheet for one Factorio Space
 Age industrial furnace, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a squat sealed three-by-three
 welded drum standing on an airless metallic world. No door and no chimney. A
-heavy clamped circular hatch with radial locking dogs sits on the roof. Radiator
-loops run along two flanks. One small deep-set thick sight port glows warm
-orange; no other part of the machine glows. Very dark grey-brown welded body with
-fine visible weld seams, pale grey hatch and dogs. No open furnace mouth, no
-flame, no smoke, no chimney, no visible fire. Panels: main view, top-down view
-emphasising the roof hatch, side elevation, a detail of the hatch dogs and the
-sight port, and a lit/unlit pair.
+heavy clamped circular hatch with radial locking dogs sits on the roof, and a
+small round white lamp lens is set into the hatch rim. Radiator loops run along
+two flanks. A small frost-jacketed pale-blue fluid inlet pipe enters one flank
+low down. One small deep-set thick sight port glows warm orange; no other part of
+the machine glows. Very dark grey-brown welded body with fine visible weld seams,
+pale grey hatch and dogs. No open furnace mouth, no flame, no smoke, no chimney,
+no visible fire. Panels: main view, top-down view emphasising the roof hatch and
+its lamp, side elevation showing the frost-jacketed inlet, a detail of the hatch
+dogs with the lamp lens beside the sight port, and a three-state row: RUNNING
+with the sight port orange and the lamp dark, BLOCKED with the sight port dark
+and the lamp glowing amber, and IDLE with both dark.
 ```
 
 ---

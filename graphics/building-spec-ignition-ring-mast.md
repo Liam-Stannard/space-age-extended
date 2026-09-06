@@ -17,7 +17,7 @@ mast's output as an item.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and against the Arc Mast** | blocked on 0 |
 | 2 | Idle plate (unlit) | portrait 2:3 | Same machine, unenergised | blocked on 1 |
 | 4 | Charge glow sheet | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
