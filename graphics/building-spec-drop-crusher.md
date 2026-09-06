@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v5-sheet.png`**, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v6-sheet.png`**, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -79,18 +79,29 @@ Core variant should mean.
 
 ## 3.1 Design Concept
 
-A shaft with a hammer at the top of it. The building is mostly **empty vertical
-space**: a heavy frame, a lifting carriage that climbs it, and a hardened anvil
-bed at the bottom where the ore lands.
+**A sealed hammer.** A heavy armoured housing with a tall narrow tower rising
+from its centre, and the forged weight's crown emerging from a gland at the top
+of that tower. The crushing chamber, the anvil bed and the whole stroke are
+**inside**; what the player sees from outside is the crown riding up and slamming
+down.
+
+**Why enclosed, and this is the load-bearing decision.** The ore is never drawn
+(§8), so an open frame would surround a permanently empty anvil bed and read as a
+machine doing nothing. Vanilla's crusher is a sealed housing with its rollers in a
+recessed bay for exactly this reason. Enclosing it also buys mass: a box reads
+heavier than a frame, which suits the one machine on the planet whose argument is
+weight.
 
 **The anti-read is a jaw crusher.** No opposed plates, no visible gnashing, no
-conveyor gullet. Everything about this machine is vertical and it should look
-like it works in one direction only: down.
+conveyor gullet. And the second anti-read is a **silo or a tank** — the tower and
+the moving crown are what stop it reading as storage.
 
 ## 3.2 Key Visual Features
 
-* A **four-post frame**, tall relative to the footprint, open on all sides so the
-  drop is visible.
+* A **sealed housing**, squat and armoured, with heavy ribbed buttresses at the
+  corners hinting at the frame inside.
+* A **central tower** rising from the roof, narrow relative to the housing, with a
+  gland at its top.
 * A **drop weight** — a forged mass that climbs the posts and releases. It must
   read as *dense*, which is not the same as plain: a compact trapezoidal block,
   wider at its striking face than at its crown, with heavily chamfered edges that
@@ -98,15 +109,20 @@ like it works in one direction only: down.
   shoes visibly wrapping the posts, and lifting lugs on its top face. It is
   distinctly **smaller than the gap it rides in** — a weight that fills the frame
   reads as a container.
-* An **anvil bed** at the base, scarred and pale where it has been struck.
+* An **armoured inspection hatch** with locking dogs on the front face — the only
+  way to the anvil bed, which is never seen in normal operation.
 * Two **discharge chutes** at the base, deliberately different sizes: coarse to
   one side, fines to the other.
 
 ### Signature Feature
 
-**The two chutes.** They are the recipe made visible — one building, two output
-streams — and they are what the player will look for when they are trying to
-remember which machine splits the ore.
+**The crown that rises and falls.** The stroke is the entire read, and it happens
+in silhouette above the roofline where nothing can obscure it. A player should be
+able to tell a running crusher from a stopped one across the base.
+
+**Second: the two chutes**, on opposite faces at visibly different mouth sizes.
+They are the recipe made visible — one building, two output streams — and they
+are what a player looks for when working out which machine splits the ore.
 
 ## 3.3 Colour Palette
 
@@ -171,34 +187,28 @@ where an inserter may stand.
 ```text
 A single landscape concept-art and asset-breakdown sheet for one Factorio
 Space Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a tall open three-by-three drop
-crusher standing on an airless metallic world. Four heavy vertical posts,
-roughly twice the height of the base, form an open frame with no pipes, hoses
-or cables anywhere on it. A compact forged drop weight rides the posts: a
-dense trapezoidal mass, wider at its flat striking face below than at its
-crown above, with heavily chamfered edges that catch the light, a scarred and
-burnished striking face on its underside, four guide shoes that visibly wrap
-around the posts, and lifting lugs on its top face. It is clearly smaller than
-the gap it rides in and obviously very heavy. It carries no machinery, no
-panel lines, no hatches and no bolts, but it is forged dark steel with real
-highlights along every chamfer -- never a flat featureless black box. A pale
-scarred anvil bed sits at the base. Two empty discharge chutes leave the base,
-one wide and one narrow, and they are on opposite sides of the machine -- one
-leaving the left face and one leaving the right face -- so they sit on clearly
-separate tiles of the footprint and never side by side. Dark grey-brown
-armour, charcoal slab, pale grey struck anvil, small yellow hazard banding on
-the base edge only. No opposed jaw plates, no gnashing mechanism, no glow, no
-flame, no smoke. Panels: main view, front elevation, side elevation, a detail
-of the anvil bed and the two empty chute mouths, and the slab shown at the
-very top of the posts and hard down on the bed. Title the sheet DROP CRUSHER.
-Draw no loose material anywhere: no ore, powder, fibre, grit, debris or
-product on the ground, in bins, at chutes, on trays or spilling from the
-machine. Factorio machines never show what they make, so every chute, port,
-bin and tray is drawn as empty machinery. Every pipe connection must run down
-to ground level and stop flush at the edge of the tile footprint; no pipe may
-end in mid-air and none may leave the top of the building. Nothing may extend
-past the tile footprint, pipework included, and the tile-grid panel must show
-the whole machine inside the grid with no overhang.
+45-degree top-down perspective. The machine is a heavy enclosed three-by-three
+crushing housing standing on an airless metallic world: a sealed armoured box
+with thick ribbed buttresses at its four corners, and a tall narrow tower
+rising from the centre of its roof. The crown of a forged drop weight emerges
+from a gland at the top of that tower -- a compact chamfered steel head with
+lifting lugs, scarred and burnished, which rides up and slams down. The
+crushing chamber is completely enclosed and nothing inside it is visible. A
+heavy armoured inspection hatch with radial locking dogs sits on the front
+face. Two empty discharge chutes leave the housing on opposite sides, one wide
+on the left face and one narrow on the right face, so they sit on clearly
+separate tiles of the footprint. Dark grey-brown armour, pale steel tower
+gland, dark forged crown, small yellow hazard banding on the base edge only.
+No open frame, no exposed anvil, no jaw plates, no conveyor, no silo or tank
+read, no glow, no flame, no smoke. Panels: main view, front elevation, side
+elevation, a detail of the tower gland with the weight's crown emerging, a
+detail of the inspection hatch and the two empty chute mouths, and the crown
+shown at the top of its stroke and driven fully down. Title the sheet DROP
+CRUSHER. Draw no loose material anywhere: no ore, powder, grit, debris or
+product on the ground, in bins, at chutes or spilling from the machine.
+Factorio machines never show what they make, so every chute and port is drawn
+as empty machinery. Nothing may extend past the tile footprint and the tile-
+grid panel must show the whole machine inside the grid with no overhang.
 ```
 
 ---
@@ -328,3 +338,28 @@ panel lines, hatches or bolts — while carrying all the **forging** it likes:
 
 §3.2 and §3.3 are corrected to match, and the weight now has its own detail panel
 on the sheet.
+
+
+### Version 6 — enclosed, and this is the shape to keep
+
+Liam's call, and it is the better design for a reason that generalises: **the ore
+is never drawn, so an open frame surrounds a permanently empty anvil bed and the
+machine reads as idle even while it runs.** That is precisely why vanilla's
+crusher is a sealed housing with its rollers in a recessed bay, and it is now
+recorded in the template's §8 as the corollary to *never draw the product*.
+
+What the enclosure bought, beyond fixing that:
+
+- **Mass.** A box reads heavier than a frame, which suits the one machine on the
+  planet whose whole argument is weight. The open version never looked heavy no
+  matter what was done to the weight itself.
+- **A better animation.** The weight's crown emerging from a gland on the tower
+  gives the stroke a silhouette read above the roofline, where nothing can
+  obscure it — legible across the base, and four key frames now show the crown
+  sinking away into the tower.
+- **A distinctive silhouette.** Enclosed with a central tower, it no longer shares
+  a family read with the Ballast Drill, which was the other standing complaint.
+
+The anvil bed is now behind an armoured inspection hatch and is never seen in
+normal operation, which is the honest arrangement: it was only ever drawn to be
+looked at, and it was always empty.

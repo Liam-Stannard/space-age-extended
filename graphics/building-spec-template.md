@@ -440,6 +440,14 @@ So **draw the chute, never what comes out of it.** A machine with product heaped
 at its feet is wrong twice over: the pile is a lie the moment the belt backs up
 or the machine idles, and it is drawn on tiles the entity does not own.
 
+**The corollary: enclose the working chamber.** This is *why* vanilla's crusher
+is a sealed housing with its rollers in a recessed bay. If a machine cannot show
+what it is working on, then an open frame around an empty bed, an empty tray or
+an empty throat advertises that emptiness on every tick, and the machine reads as
+idle even while it runs. Put the process inside a housing, and let the outside
+carry the read instead — a shaft head that rises, a hatch, a window, a moving arm.
+An open machine is only right when the thing moving in the open is *machinery*.
+
 **2. Every connection lands on a tile edge, at ground level.** A pipe that leaves
 the top of a building, or stops in mid-air, connects to nothing — the engine puts
 fluid connections on the tile boundary the prototype names, and a player's pipe
