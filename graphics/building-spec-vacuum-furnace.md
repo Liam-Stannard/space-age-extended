@@ -216,21 +216,31 @@ look unremarkable when nothing is plumbed to it.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial furnace, every panel drawn from the game's characteristic
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial furnace, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a squat sealed three-by-three
 welded drum standing on an airless metallic world. No door and no chimney. A
 heavy clamped circular hatch with radial locking dogs sits on the roof, and a
-small round white lamp lens is set into the hatch rim. Radiator loops run along
-two flanks. A small frost-jacketed pale-blue fluid inlet pipe enters one flank
-low down. One small deep-set thick sight port glows warm orange; no other part of
-the machine glows. Very dark grey-brown welded body with fine visible weld seams,
-pale grey hatch and dogs. No open furnace mouth, no flame, no smoke, no chimney,
-no visible fire. Panels: main view, top-down view emphasising the roof hatch and
-its lamp, side elevation showing the frost-jacketed inlet, a detail of the hatch
-dogs with the lamp lens beside the sight port, and a three-state row: RUNNING
-with the sight port orange and the lamp dark, BLOCKED with the sight port dark
-and the lamp glowing amber, and IDLE with both dark.
+small round white lamp lens is set into the hatch rim. Radiator loops run
+along two flanks. A small frost-jacketed pale-blue fluid pipe runs down one
+flank and stops at a flange flush with the ground at the footprint edge. One
+small deep-set thick sight port glows warm orange; no other part of the
+machine glows. Very dark grey-brown welded body with fine visible weld seams,
+pale grey hatch and dogs. No open furnace mouth, no flame, no smoke, no
+chimney, no visible fire. Panels: main view, top-down view emphasising the
+roof hatch and its lamp, side elevation showing the frost-jacketed pipe and
+its ground flange, a detail of the hatch dogs with the lamp lens beside the
+sight port, and a three-state row: RUNNING with the sight port orange and the
+lamp dark, BLOCKED with the sight port dark and the lamp glowing amber, and
+IDLE with both dark. Title the sheet VACUUM FURNACE. Draw no loose material
+anywhere: no ore, powder, fibre, grit, debris or product on the ground, in
+bins, at chutes, on trays or spilling from the machine. Factorio machines
+never show what they make, so every chute, port, bin and tray is drawn as
+empty machinery. Every pipe connection must run down to ground level and stop
+flush at the edge of the tile footprint; no pipe may end in mid-air and none
+may leave the top of the building. Nothing may extend past the tile footprint,
+pipework included, and the tile-grid panel must show the whole machine inside
+the grid with no overhang.
 ```
 
 ---

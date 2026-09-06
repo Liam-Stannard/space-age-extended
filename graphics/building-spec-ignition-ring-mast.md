@@ -169,19 +169,29 @@ fluid box names.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial machine, every panel drawn from the game's characteristic
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial machine, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a tall radially symmetric
 three-by-three charging post standing on an airless metallic world. Four heavy
 buttresses splay from a wide base. At waist height a thick banded ring of
 copper-brown coils forms the widest part of the machine. Above it the shaft
-tapers to a short blunt closed charcoal cap. A small frost-jacketed pale-blue
-pipe enters the coil band horizontally. Warm white light glows from inside the
-coil band only; the top of the machine is completely dark. Dark grey-brown
-armour. No cage, no open electrode, no lightning rod, no upward-reaching mast, no
-antenna, no arcs, no smoke, no flame. Panels: main view, front elevation, side
-elevation, a detail of the coil band and its frosted inlet, and the band shown
-unlit and fully charged.
+tapers to a short blunt closed charcoal cap. A slim frost-jacketed pale-blue
+pipe leaves the coil band, runs down the outside of one buttress, and stops at
+a flange flush with the ground at the edge of the footprint. Warm white light
+glows from inside the coil band only; the top of the machine is completely
+dark. Dark grey-brown armour. No cage, no open electrode, no lightning rod, no
+upward-reaching mast, no antenna, no arcs, no smoke, no flame. Panels: main
+view, front elevation, side elevation, a detail of the coil band with the
+frosted pipe running down to its ground flange, and the band shown unlit and
+fully charged. Title the sheet IGNITION RING MAST. Draw no loose material
+anywhere: no ore, powder, fibre, grit, debris or product on the ground, in
+bins, at chutes, on trays or spilling from the machine. Factorio machines
+never show what they make, so every chute, port, bin and tray is drawn as
+empty machinery. Every pipe connection must run down to ground level and stop
+flush at the edge of the tile footprint; no pipe may end in mid-air and none
+may leave the top of the building. Nothing may extend past the tile footprint,
+pipework included, and the tile-grid panel must show the whole machine inside
+the grid with no overhang.
 ```
 
 ---

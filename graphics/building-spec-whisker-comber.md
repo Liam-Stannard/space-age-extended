@@ -151,18 +151,27 @@ do not care which end they stand at.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a low three-by-three metal-fibre
-carding machine standing on an airless metallic world. Two pale grey needled
-comb drums lie side by side, recessed beneath a heavy guard hood and rail. At one
-end an infeed tray holds a loose disordered tangle of dull grey metal fibres. At
-the other end an aligned bright ordered ribbon of fibre emerges from a nip
-roller. Dark grey-brown chassis and hood, pale grey drums with fine bright needle
-glints. No textile-mill wooden framing, no belts, no glow, no flame, no smoke.
-Panels: main view, side elevation showing tangle at one end and ribbon at the
-other, top-down view, a detail of the needled drum surface and the guard, and the
-drums shown at two points in their rotation.
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial machine, every panel drawn from the game's characteristic
+45-degree top-down perspective. The machine is a low three-by-three metal-
+fibre carding machine standing on an airless metallic world. Two pale grey
+needled comb drums lie side by side, recessed beneath a heavy guard hood and
+rail, and the needles are the machine's most distinctive feature. At one end a
+deep empty hopper mouth opens upward; at the other a pair of polished nip
+rollers sits in an empty outfeed slot. Dark grey-brown chassis and hood, pale
+grey drums with fine bright needle glints. No textile-mill wooden framing, no
+belts, no glow, no flame, no smoke. Panels: main view, side elevation showing
+the hopper mouth at one end and the nip rollers at the other, top-down view, a
+close detail of the needled drum surface and the guard rail, and the drums
+shown at two points in their rotation. Title the sheet WHISKER COMBER. Draw no
+loose material anywhere: no ore, powder, fibre, grit, debris or product on the
+ground, in bins, at chutes, on trays or spilling from the machine. Factorio
+machines never show what they make, so every chute, port, bin and tray is
+drawn as empty machinery. Every pipe connection must run down to ground level
+and stop flush at the edge of the tile footprint; no pipe may end in mid-air
+and none may leave the top of the building. Nothing may extend past the tile
+footprint, pipework included, and the tile-grid panel must show the whole
+machine inside the grid with no overhang.
 ```
 
 ---

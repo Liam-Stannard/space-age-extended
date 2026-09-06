@@ -162,17 +162,28 @@ the geometry to get right at concept stage, not later.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age building, every panel drawn from the game's characteristic 45-degree
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age building, every panel drawn from the game's characteristic 45-degree
 top-down perspective. The building is a squat three-by-three industrial gas
-separator standing on an airless metallic world. A heavy ribbed separation drum
-fills most of the height. A slim frost-jacketed pale-blue gas riser climbs the
-left flank and exits at the top. A dark insulated melt return line leaves low on
-the right. Hot orange metal glows in the lower third only; pale frost-blue
-appears only at the drum's waist and on the riser. Dark grey-brown armour,
-charcoal shielding collars. No smoke, no flame, no fractionating tower, no
-ladder cage. Panels: main view, front elevation, side elevation, a detail of the
-riser-to-drum junction, and a lit/unlit pair.
+separator standing on an airless metallic world. A heavy ribbed separation
+drum fills most of the height. Exactly three pipe flanges meet the ground at
+the edge of the footprint, one on each of three different sides: a wide dark
+inlet flange on the near side, a slim frost-jacketed pale-blue gas flange on
+the left, and a heavy insulated dark flange on the right. Each pipe runs from
+the drum down to its flange and stops there. Hot orange metal glows in the
+lower third of the drum only; pale frost-blue appears only at the drum's waist
+and on the gas pipe. Dark grey-brown armour, charcoal shielding collars. No
+smoke, no flame, no fractionating tower, no ladder cage. Panels: main view,
+front elevation, side elevation, a top-down view showing all three ground
+flanges at the footprint edge, and a lit/unlit pair. Title the sheet HELIUM
+CONCENTRATOR. Draw no loose material anywhere: no ore, powder, fibre, grit,
+debris or product on the ground, in bins, at chutes, on trays or spilling from
+the machine. Factorio machines never show what they make, so every chute,
+port, bin and tray is drawn as empty machinery. Every pipe connection must run
+down to ground level and stop flush at the edge of the tile footprint; no pipe
+may end in mid-air and none may leave the top of the building. Nothing may
+extend past the tile footprint, pipework included, and the tile-grid panel
+must show the whole machine inside the grid with no overhang.
 ```
 
 ---

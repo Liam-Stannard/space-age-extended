@@ -146,19 +146,27 @@ end is downhill; they do not constrain inserters.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial machine, every panel drawn from the game's characteristic
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial machine, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a low three-by-three vibrating
-classifier standing on an airless metallic world. Three shallow stepped trays
-descend across the footprint, each with a visibly finer mesh than the one above.
-The whole deck rides on compressed leaf springs at four corners. A small offset
-flywheel drive sits at the high end. Two collection bins sit at the low end, one
-shallow and wide holding coarse grey-brown grit, one deep and narrow holding pale
-fine powder. Dark grey-brown frame, pale grey tray decks, charcoal springs. No
-belts, no conveyor, no glow, no flame, no smoke. Panels: main view, side
-elevation showing the three descending planes clearly, top-down view, a detail of
-the springs and the eccentric drive, and the deck shown at both ends of its
-shake.
+classifier standing on an airless metallic world. Three shallow empty stepped
+trays descend across the footprint, each with a visibly finer mesh than the
+one above. The whole deck rides on compressed leaf springs at four corners. A
+small offset flywheel drive sits at the high end. Two empty discharge lips of
+different widths leave the low end. Dark grey-brown frame, pale grey tray
+decks, charcoal springs. No belts, no conveyor, no collection bins, no glow,
+no flame, no smoke. Panels: main view, side elevation showing the three
+descending planes clearly, top-down view, a detail of the springs and the
+eccentric drive, and the deck shown at both ends of its shake. Title the sheet
+DROSS CLASSIFIER. Draw no loose material anywhere: no ore, powder, fibre,
+grit, debris or product on the ground, in bins, at chutes, on trays or
+spilling from the machine. Factorio machines never show what they make, so
+every chute, port, bin and tray is drawn as empty machinery. Every pipe
+connection must run down to ground level and stop flush at the edge of the
+tile footprint; no pipe may end in mid-air and none may leave the top of the
+building. Nothing may extend past the tile footprint, pipework included, and
+the tile-grid panel must show the whole machine inside the grid with no
+overhang.
 ```
 
 ---

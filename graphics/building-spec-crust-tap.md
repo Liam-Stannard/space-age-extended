@@ -230,19 +230,30 @@ declared on another is the same class of defect as the arc mast's first
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial wellhead, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a low squat two-by-two armoured
-collar clamped over a bore in dark metallic ground on an airless world. Heavy
-ground anchors bolt it down. A single pale pipe rises from one side and turns
-horizontal, visibly narrowed at a choke partway along; beyond the choke the pipe
-carries a pale blue frost jacket. A small bulging yellow burst disc sits on the
-collar's shoulder. A thin dull orange line of conducted heat glows in the joint
-where the collar meets the ground, and nowhere else on the machine. A tight ring
-of scorched near-black ground surrounds the base. Very dark grey-brown armour,
-pale grey pipe. No water, no impeller, no open frame, no lava, no flame, no
-smoke, no bright fire. Panels: main view, top-down view, side elevation, a detail
-of the collar seam and the frosted riser together, and a lit/unlit pair.
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial wellhead, every panel drawn from the game's
+characteristic 45-degree top-down perspective. The machine is a low squat two-
+by-two armoured collar clamped over a bore in dark metallic ground on an
+airless world, and the entire machine including its pipework fits inside the
+two-by-two footprint. Heavy ground anchors bolt it down. A short pale pipe
+rises from the collar, turns, and comes straight back down to a flange flush
+with the ground at the edge of the footprint; it is visibly narrowed at a
+choke, and beyond the choke it carries a pale blue frost jacket. A small
+bulging yellow burst disc sits on the collar's shoulder. A thin dull orange
+line of conducted heat glows in the joint where the collar meets the ground,
+and nowhere else on the machine. Very dark grey-brown armour, pale grey pipe.
+No water, no impeller, no open frame, no lava, no flame, no smoke, no bright
+fire. Panels: main view, top-down view showing the pipe flange at the
+footprint edge, side elevation, a detail of the collar seam and the frosted
+pipe together, and a lit/unlit pair. Title the sheet CRUST TAP. Draw no loose
+material anywhere: no ore, powder, fibre, grit, debris or product on the
+ground, in bins, at chutes, on trays or spilling from the machine. Factorio
+machines never show what they make, so every chute, port, bin and tray is
+drawn as empty machinery. Every pipe connection must run down to ground level
+and stop flush at the edge of the tile footprint; no pipe may end in mid-air
+and none may leave the top of the building. Nothing may extend past the tile
+footprint, pipework included, and the tile-grid panel must show the whole
+machine inside the grid with no overhang.
 ```
 
 ---

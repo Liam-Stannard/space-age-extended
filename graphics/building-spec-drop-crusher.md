@@ -156,17 +156,28 @@ where an inserter may stand.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age industrial machine, every panel drawn from the game's characteristic
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age industrial machine, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a tall open three-by-three drop
-crusher standing on an airless metallic world. Four heavy vertical posts form an
-open frame. A dark heavy lifting carriage rides the posts. A pale scarred anvil
-bed sits at the base. Two discharge chutes leave the base at different sizes, one
-coarse and one fine. Dark grey-brown armour, charcoal carriage, pale grey struck
-anvil, small yellow hazard banding on the floor edge only. Grey-brown ore dust.
-No opposed jaw plates, no gnashing mechanism, no glow, no flame, no smoke.
-Panels: main view, front elevation, side elevation, a detail of the anvil bed and
-the two chutes, and the carriage shown raised and dropped.
+crusher standing on an airless metallic world. Four heavy vertical posts,
+roughly twice the height of the base, form an open frame with no pipes, hoses
+or cables anywhere on it. A plain unadorned near-black slab of solid metal
+rides the posts as a dead weight, with no surface detail. A pale scarred anvil
+bed sits at the base. Two empty discharge chutes leave the base at visibly
+different mouth sizes, one wide and one narrow. Dark grey-brown armour,
+charcoal slab, pale grey struck anvil, small yellow hazard banding on the base
+edge only. No opposed jaw plates, no gnashing mechanism, no glow, no flame, no
+smoke. Panels: main view, front elevation, side elevation, a detail of the
+anvil bed and the two empty chute mouths, and the slab shown at the very top
+of the posts and hard down on the bed. Title the sheet DROP CRUSHER. Draw no
+loose material anywhere: no ore, powder, fibre, grit, debris or product on the
+ground, in bins, at chutes, on trays or spilling from the machine. Factorio
+machines never show what they make, so every chute, port, bin and tray is
+drawn as empty machinery. Every pipe connection must run down to ground level
+and stop flush at the edge of the tile footprint; no pipe may end in mid-air
+and none may leave the top of the building. Nothing may extend past the tile
+footprint, pipework included, and the tile-grid panel must show the whole
+machine inside the grid with no overhang.
 ```
 
 ---

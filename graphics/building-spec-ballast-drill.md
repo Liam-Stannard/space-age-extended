@@ -153,17 +153,28 @@ not through the chassis.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age mining machine, every panel drawn from the game's characteristic 45-degree
-top-down perspective. The machine is a broad low five-by-five ore press standing
-on an airless metallic world. Four splayed bracing legs with wide foot pads. A
-heavy dark unadorned ballast slab rides above the centre on four pale vertical
-guide rails. A short stubby output boom projects from one side. Dark grey-brown
-armour, charcoal ballast, pale grey rails, small yellow hazard banding on the
-foot pads only. Disturbed grey-brown ore dust under the machine. No tower, no
-derrick, no headframe, no glow, no flame, no smoke. Panels: main view, front
-elevation, side elevation, a detail of the ballast block and its rails, and the
-block shown at the top and bottom of its stroke.
+A single landscape concept-art and asset-breakdown sheet for one Factorio
+Space Age mining machine, every panel drawn from the game's characteristic
+45-degree top-down perspective. The machine is a broad low wide five-by-five
+ore press standing on an airless metallic world, much wider than it is tall.
+Four splayed bracing legs with wide foot pads reach out to the corners. A
+heavy dark unadorned ballast slab rides above the centre on four short pale
+vertical guide rails. Directly beneath the slab, a toothed circular cutting
+head is set into the ground and mostly hidden, with only its rim showing. A
+short stubby empty output boom projects from one side. Dark grey-brown armour,
+charcoal ballast, pale grey rails, small yellow hazard banding on the foot
+pads only. No tower, no derrick, no headframe, no glow, no flame, no smoke.
+Panels: main view, front elevation, side elevation, a detail of the cutting
+head beneath the raised slab, and the slab shown at the top and bottom of its
+stroke. Title the sheet BALLAST DRILL. Draw no loose material anywhere: no
+ore, powder, fibre, grit, debris or product on the ground, in bins, at chutes,
+on trays or spilling from the machine. Factorio machines never show what they
+make, so every chute, port, bin and tray is drawn as empty machinery. Every
+pipe connection must run down to ground level and stop flush at the edge of
+the tile footprint; no pipe may end in mid-air and none may leave the top of
+the building. Nothing may extend past the tile footprint, pipework included,
+and the tile-grid panel must show the whole machine inside the grid with no
+overhang.
 ```
 
 ---
