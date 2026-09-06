@@ -114,6 +114,17 @@ be confused — this one is steady, not flickering.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 3.** Advanced and sealed: seamless chassis, chamfered forms, no visible fasteners on the primary faces, and the field itself doing the visible work. It is built *from* a coil assembly, so it should look like it.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and mid-height. The throat's aperture must survive the 45-degree camera — an
 opening drawn as a perfect circle will read as an ellipse and lose its centre, so
 it should be drawn already foreshortened. Style reference to attach: the

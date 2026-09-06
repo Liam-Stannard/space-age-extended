@@ -116,6 +116,17 @@ camera where flat machines all look alike.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 0–1.** Mostly mechanical but deliberately built: exposed leaf springs and eccentric drive, but a machined housing rather than a knocked-together frame.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and low, so the camera shows mostly deck. That suits this building: the three
 trays *are* the deck, so the most-visible surface is also the most informative
 one. Style reference to attach: the **crusher**, cropped and upscaled, for

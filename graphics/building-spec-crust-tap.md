@@ -194,6 +194,17 @@ are legible in the same glance — that adjacency *is* the signature.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 0 — Foothold.** Crude and mechanical: heavy bolted collar, ground anchors, a burst disc that is plainly a safety afterthought. The first thing built on the planet.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 2×2 and very low, so the camera sees almost entirely roof and the ring of scorched
 ground. That is the right emphasis: the interesting thing about this building is
 where it is, not how tall it is. Style reference to attach: the **pumpjack**,

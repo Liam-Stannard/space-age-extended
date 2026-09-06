@@ -173,6 +173,17 @@ bolts, while carrying all the **forging** it likes.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 0 — Foothold.** Crude and mechanical: riveted plate, cast housings, exposed gears, rack and pawl, weld seams, hazard tape, honest wear. **Its visible gearing is correct because of its tier and must not be modernised** — it is the baseline the endgame is measured against.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 but tall, so the tall-building clause applies: the frame leans slightly away
 from the camera and the shadow needs its own canvas (Appendix C). Style reference
 to attach: the **crusher**, cropped and upscaled, with the standing disclaimer

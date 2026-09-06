@@ -122,6 +122,17 @@ true — aligned fibres catch light coherently — and it is the whole visual ga
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 1–2.** Precision plant: machined casing, guarded mechanism, few visible fasteners on the primary faces. The needled drums inside are the only crude thing about it.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and low, mostly roof and hood from the camera, so the two drums have to be
 visible *through* the guard rather than hidden by it. Style reference to attach:
 the **biochamber**, cropped and upscaled, for the organic-process-in-an-

@@ -424,6 +424,41 @@ moves it]`
 list every position, including the ones a player will rarely use. Art that
 hides an existing connection point is a bug report waiting to happen.
 
+### Technology tier sets the visual register
+
+**The higher a building sits in the tech tree, the more futuristic it looks.**
+The player should be able to read their own progress off the factory floor
+without opening the tech tree — an hour-one machine and an endgame machine
+standing side by side should not look like siblings.
+
+This is a per-building instruction, not a mod-wide style. Put the register in the
+prompt's `== FORM ==` section, in the vocabulary below, and let it drive the
+surface treatment rather than the silhouette.
+
+| Tier | Register | Surface vocabulary |
+| ---- | -------- | ------------------ |
+| **0 — Foothold** | Crude, mechanical, made on site from what was to hand | Riveted and bolted plate, cast housings, exposed gears, racks, pawls, springs and linkages, weld seams, hazard tape, visible wear and rust |
+| **1 — Integration** | Industrial and deliberate; built, not improvised | Machined surfaces, flush panels, fewer fasteners, guarded mechanisms, some cabling and instrumentation |
+| **2 — Geodynamic science** | Precision plant | Clean welded shells, sealed housings, indicator lamps, no visible fasteners on primary faces |
+| **3 — The Core's own goods** | Advanced, quiet, sealed | Seamless composite shells, chamfered forms, cryogenic jacketing, light used as a material, machinery implied rather than shown |
+| **4 — The goal** | Exotic; barely reads as machinery | Field effects, superconducting elements, monolithic surfaces with no seams at all, contained light doing the work |
+
+**Where the nine Core buildings sit**, from `04-the-core.md` §6's ladder:
+
+| Tier | Buildings |
+| ---- | --------- |
+| 0 | **Drop Crusher · Ballast Drill · Crust Tap** — the landing-day machines |
+| 0–1 | **Dross Classifier · Vacuum Furnace** |
+| 1–2 | **Whisker Comber** |
+| 3 | **Coil Separator · Helium Concentrator** — both gated late by their own §20 |
+| 4 | **Ignition Ring Mast** — endgame, alongside the Array |
+
+**The Drop Crusher's exposed gears, rack and trip pawl are correct *because* it
+is tier 0**, and they should not be tidied up later. A machine that lifts a
+weight with visible toothed gears is exactly what hour one should look like — and
+it is what makes the Ring Mast's seamless, light-filled coil band land as
+progress when the player finally builds one.
+
 ### Rule zero: the building is drawn square-on to the tile grid
 
 **Checked against the electric mining drill in all four directions.** Factorio's

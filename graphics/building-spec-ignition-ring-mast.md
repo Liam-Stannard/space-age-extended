@@ -133,6 +133,17 @@ warm-white light in the mod, and these two *should* look related.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 4 — The goal.** Exotic, barely reading as machinery: a monolithic surface with no seams at all, no fasteners anywhere, and contained light doing the work. It stands beside the Ignition Array and must not look like it came from the same era as the Drop Crusher.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and tall, so the tall-building clause applies: it leans slightly away from
 the camera and its shadow needs its own canvas (Appendix C). Style reference to
 attach: the **Ignition Array's own approved deck plate**, so the ring and the

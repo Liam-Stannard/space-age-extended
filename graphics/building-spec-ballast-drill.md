@@ -117,6 +117,17 @@ on a rail. A drill that glows would read as a smelter.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 0 — Foothold.** Crude and mechanical: bolted plate, cast legs, exposed guide rails, visible wear on the cutting head. A landing-day machine.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 5×5 and low, so the camera shows a great deal of roof and very little face — the
 ballast block and the four rails carry the whole silhouette. Style reference to
 attach: the **big mining drill**, cropped and upscaled, with the standing

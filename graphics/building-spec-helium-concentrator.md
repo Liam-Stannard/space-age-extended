@@ -123,6 +123,17 @@ green is radiant fuel's family, and this gas is not that.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 3.** Advanced and quiet: cryogenic jacketing, smooth shells, machinery implied rather than shown. Gated late by §20, and should look it.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and mid-height, so the camera shows roof, a shallow near face and one flank.
 Name the camera exactly — *"the game's characteristic 45-degree top-down
 perspective"*. Style reference to attach: the **chemical plant**, cropped and

@@ -176,6 +176,17 @@ it is painted white and only the engine ever makes it amber.
 
 # 4. Factorio Visual Style
 
+## Technology tier and visual register
+
+**Tier 0–1.** Industrial: welded shell with visible seams, but a clean clamped hatch and a proper status lamp. Built, not improvised.
+
+See the template's *"Technology tier sets the visual register"* — the player
+should be able to read their progress off the factory floor without opening the
+tech tree, so this building's surface treatment is set by where it sits on
+`04-the-core.md` §6's ladder, not by taste.
+
+
+
 3×3 and squat, so the camera shows a great deal of roof — which is why the hatch
 is the roof's feature and has to carry the read from above. Style reference to
 attach: the **foundry**, cropped and upscaled, for weight and finish. **Do not
