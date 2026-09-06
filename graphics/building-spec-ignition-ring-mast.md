@@ -228,16 +228,16 @@ requirement.
 
 # 20. Open questions
 
-- **Does spoilage tick inside a rocket silo's input inventory?** The mechanic
-  depends on it *not* mattering — the Array should consume charges promptly — but
-  if charges rot in the silo faster than segments are built, the Array will jam on
-  an ingredient that keeps vanishing. **This is the spike to run before anything
-  is drawn.** It is cheap: one silo, one spoiling item, watch the slot.
-- **What happens to a part-built segment when the charge is gone?** Vanilla holds
-  ingredients in the crafting machine mid-craft. If a charge spoils *during* the
-  8-second segment craft, the craft may fail and lose the coil assembly with it —
-  which would be an appalling way to lose an hour of production. Either the charge
-  must outlive the craft comfortably, or the segment recipe needs its time cut.
+- ~~**Does spoilage tick inside a rocket silo's input inventory?**~~ **Answered
+  by spike S11: yes, and cleanly.** Charges with no `spoil_result` simply vanish
+  where they stand, and the Array does not jam — it keeps building parts for as
+  long as a fresh charge is present, and loses only the ones that sat too long.
+  That is the mechanic working, not failing.
+- ~~**What happens to a part-built segment when the charge is gone?**~~ **Not a
+  risk — S11 disproved it.** Ingredients are consumed at craft *start*: a charge
+  inserted at `spoil_percent = 0.98`, about a fifth of a second from death against
+  an eight-second craft, still produced a rocket part. Nothing can rot mid-craft
+  and take a coil assembly with it.
 - **How many masts, and does the number matter?** The brief makes throughput the
   only constraint, so the "ring" is however many masts keep up. If the ring should
   be a *specific* shape, that needs a different mechanic and probably a script —

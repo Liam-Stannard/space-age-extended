@@ -41,6 +41,9 @@ against `game.tick` deltas, never wall-clock sleeps**.
 | S2 — do the Core's conditions behave? | **PASS** on placement, growth and the sealed roboport; one gap found |
 | S3 — does seeding work? | **PARTIAL** — the conversion works; the harvest half is unproven by this harness |
 | S4 — can a vent require an input fluid? | **PASS** |
+| S9 — do arc storms need night? | **FAIL, then fixed** — `day-night-cycle = 0` has no night, so no lightning at all |
+| S10 — crust tap: pump on land, generator burning a fluid | **PASS on both**, but the pump needs a fluid-bearing *tile*, which makes the tap sited |
+| S11 — does a spoiling ingredient survive a rocket silo? | **PASS** — it ticks, it vanishes cleanly, and it cannot rot mid-craft |
 
 ### S1 — PASS
 
@@ -277,3 +280,97 @@ mast. `create_entity{name = "sae-arc", position = ...}` with no `target` strikes
 the ground and nothing else, because attraction is decided when the lightning is
 created, not by proximity afterwards. Pass `target = <the mast>` to test by hand.
 
+
+---
+
+## S10 — The crust tap: an offshore pump on land, and a generator that burns a fluid
+
+**Both halves needed, and one of them changed the design.**
+
+### The pump builds on open ground — and produces nothing
+
+Vanilla's offshore pump carries two `tile_buildability_rules`: one requiring a
+ground tile under the centre, one requiring **water** in the tiles ahead. Drop the
+second and the entity places on bare ground on the Core: `can_place_entity` true,
+`create_entity` true.
+
+It then yields nothing at all, while reporting itself perfectly healthy:
+
+| Probe | Result |
+| ----- | ------ |
+| `entity.status` | **`working`** |
+| `get_fluid_contents()` | empty |
+| `get_fluid_source_fluid()` | `nil` |
+
+**An offshore pump takes its fluid from `TilePrototype::fluid` on the tile beneath
+it, not from its own fluid box filter.** Vanilla's water tiles declare
+`fluid = "water"` (`base/prototypes/tile/tiles.lua:962` and after); a tile that
+declares nothing is a pump that pumps nothing. This is the same shape of silent
+failure as S9 — a correct-looking prototype, a machine reporting "working", and
+no output — and it would have survived every check the repo currently runs.
+
+Given a tile that declares the fluid, it works immediately: `get_fluid_source_fluid`
+returns the gas and a connected pipe fills to its full 100 units.
+
+**Consequence for the design: the Crust Tap is sited, not placeable anywhere.**
+It needs a vent tile of its own, which means a tile prototype, an autoplace entry
+in `map-gen.lua`, and tile art. That makes it a **fourth sited resource**
+alongside ore, melt vents and gas vents — arguably better than the brief assumed,
+since power becomes a place you go rather than a thing you tile, but it is a
+larger build than "an offshore pump with the water rule removed".
+
+### `burns_fluid = true` works, and temperature genuinely stops mattering
+
+A `generator` with `burns_fluid = true`, fed a fluid at **25 °C** carrying
+`fuel_value = "200kJ"`, produced **30,000 J/tick — exactly 1.80 MW**, its declared
+`max_power_output`, under a 2 MW load. Status `working`, fluid consumed.
+
+That is the whole reason to prefer a gas over steam: vanilla `steam` sits at
+`default_temperature = 15` and an offshore pump has no field to raise it, so a
+temperature-based generator on a tapped fluid would have produced nothing.
+
+**One gotcha:** `maximum_temperature` is **mandatory on a `generator` even when
+`burns_fluid` is true**. Omitting it fails the data stage outright —
+`Key "maximum_temperature" not found in property tree`. It is unused for power in
+this mode, but it has to be there.
+
+### Also learned — the rig itself
+
+**`LuaEntity.fluidbox` no longer exists in 2.1.** It is replaced by
+`get_fluid_contents()`, `get_fluid(index)`, `get_fluid_source_fluid()` and
+friends. Any spike script carried over from an older note will fail with
+*"LuaEntity doesn't contain key fluidbox"*.
+
+Two more, for whoever drives the rig next: a headless server **pauses when no
+player is connected** unless `auto_pause` is `false` in the server settings — with
+it left on, `game.tick` advances one tick per RCON call and every measurement is
+meaningless. And a rocket silo's ingredient inventory is
+`defines.inventory.crafter_input`, not `assembling_machine_input`, which does not
+exist.
+
+---
+
+## S11 — Does a spoiling ingredient survive a rocket silo? — PASS
+
+The Ignition Ring Mast's whole mechanic rests on it: charges carry a ten-second
+`spoil_ticks` and no `spoil_result`, so a mast too far from the Array delivers
+nothing. Two things had to be true.
+
+**Spoilage does tick inside a rocket silo's input inventory.** Five charges
+inserted with the segment's other ingredients; after ~750 ticks against a 600-tick
+timer, the two consumed by crafting were gone and **the remaining three had simply
+vanished**. An item with no `spoil_result` does exactly what the design wants:
+ceases to exist, quietly, wherever it is.
+
+The Array does **not** jam on this. It keeps building parts for as long as a fresh
+charge is present, and loses only the charges that sat too long — which is the
+mechanic, not a failure of it.
+
+**A charge cannot rot mid-craft and take the coil assembly with it.** This was the
+real worry in the brief, and it is unfounded: **ingredients are consumed at craft
+start.** A charge inserted at `spoil_percent = 0.98` — about a fifth of a second
+of life left, against an eight-second craft — still produced a rocket part
+(`rocket_parts` 3 → 4). Once a craft begins, the ingredients are already inside
+it.
+
+**So the ring mast works as specified, and §20's second open question is closed.**

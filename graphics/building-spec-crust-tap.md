@@ -63,7 +63,7 @@ anything."*
 | Output | `sae-crust-gas`, ~30/s |
 | Energy | none — an offshore pump needs no power to run |
 | Surface conditions | `gravity` ≥ 45 — the Core's surface alone |
-| Placement | anywhere on the Core; **not** tile-restricted |
+| Placement | **on a crust vent tile only** — see below |
 
 ## The companion turbine
 
@@ -80,12 +80,41 @@ and it should stay small: a foothold, not a power strategy. A player who tiles
 fifty taps should still find the melt-and-steam line the better answer by a wide
 margin, or the Core's central tension is undercut by its own tutorial.
 
+### The tap is sited — measured, not assumed
+
+**Spike S10 changed this brief.** An offshore pump draws its fluid from
+`TilePrototype::fluid` on the tile beneath it, **not** from its own fluid box
+filter. Placed on bare ground it builds happily, reports `status = working`, and
+produces nothing at all — `get_fluid_source_fluid()` returns `nil`. That is the
+same silent failure as S9 and it would pass every check in the repo.
+
+So the tap needs a **crust vent tile** carrying `fluid = "sae-crust-gas"`, and
+`tile_buildability_rules` requiring it. Which makes the Crust Tap a **fourth
+sited resource** beside ore, melt vents and gas vents, rather than a building the
+player tiles at will.
+
+That is a better design than the first draft assumed — power becomes a place you
+go rather than a thing you spam, and the cap is enforced by the map instead of by
+a tuning number — but it is a **larger build**: a tile prototype, an autoplace
+entry in `prototypes/core/map-gen.lua`, and tile art on top of the building's own.
+`tools/build-whisker-bed-tile.py` and the whisker bed are the precedent for the
+tile half.
+
 ### Pressure, not heat — and why that is the whole simplification
 
 A `generator` with **`burns_fluid = true`** takes its power from the fluid's
 `fuel_value` and ignores temperature entirely. So `sae-crust-gas` carries a
 `fuel_value` and can sit at any temperature at all, and the tap never has to
 declare one.
+
+**Measured in S10:** a turbine burning gas at 25 °C with `fuel_value = "200kJ"`
+produced **30,000 J/tick — exactly 1.80 MW**, its declared `max_power_output`,
+under load. Temperature genuinely does not enter into it.
+
+**One gotcha, also from S10:** `maximum_temperature` is **mandatory on a
+`generator` even when `burns_fluid` is true**. Leaving it out fails the data stage
+outright with `Key "maximum_temperature" not found in property tree`. It does no
+work in this mode; it still has to be declared.
 
 That matters because the obvious alternative is a trap. Vanilla `steam` has
 `default_temperature = 15` (`base/prototypes/fluid.lua:42`) and an offshore pump
@@ -279,14 +308,19 @@ attempted.
 - **`auto_barrel = false` is not optional.** Crust gas must never leave the Core,
   or a player barrels a landing-day power source and ships it to Nauvis. It joins
   molten kamacite on the unbarrelable list for the same reason.
-- **`burns_fluid = true` has no vanilla user.** Base explicitly sets it `false`
-  (`base/prototypes/entity/entities.lua:9549`), and nothing in Space Age turns it
-  on. The field is documented and its contract is clear, but it should be proven
-  on the headless rig before art is commissioned.
-- **Placement on open ground needs the same test.** Clearing an offshore pump's
-  `tile_buildability_rules` so it builds away from water is not something vanilla
-  does anywhere. Both this and `burns_fluid` are one spike, not two — build a tap,
-  pipe it to a turbine, read the power.
+- ~~**`burns_fluid = true` has no vanilla user**~~ — **proven in S10.** 1.80 MW
+  from a 25 °C gas, exactly as declared.
+- ~~**Placement on open ground needs the same test**~~ — **tested in S10, and it
+  changed the design.** The pump builds on open ground and yields nothing; it
+  needs a fluid-bearing tile. See §2.
+- **Still open: how many vents, and how scattered.** Now that the tap is sited,
+  its cap is a map-gen number rather than a balance number, and it wants the same
+  treatment `resources.lua` gives the other three. All of them are in the starting
+  area deliberately; a landing-day power source has to be.
+- **Still open: the vent tile's art.** It is a second art job inside this brief,
+  and `graphics/TODO.md` already records the whisker bed tile as an outstanding
+  mismatch for exactly this reason — a tile cloned from stone path reads as a
+  concrete pad.
 - **Turbine art may be derived rather than generated.** `tools/recolour-turbine.py`
   already exists — written for the superseded Quench Turbine — and recolours
   vanilla's steam turbine. Reusing it would make the companion turbine nearly
