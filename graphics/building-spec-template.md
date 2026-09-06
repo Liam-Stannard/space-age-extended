@@ -463,6 +463,12 @@ The engine does not care: an assembling machine has one output inventory and an
 inserter may stand anywhere. The *player* cares, and the art is the only thing
 telling them.
 
+**And the ports must differ in size, not just in position.** Two identical mouths
+read as a decorative symmetric pair; one wide and one narrow reads as *coarse and
+fine*, which is the recipe. State it as its own hard rule when prompting, with
+the faces named — buried inside a longer clause it is quietly dropped, which cost
+a full regeneration of the Drop Crusher's variants sheet.
+
 **4. Nothing crosses the collision box** — not the machine, not a pipe run, and
 not spilled material or ground scatter. The Arc Mast is the standing lesson: at
 3.14 tiles on a 3-tile pitch, a row of them interleaved, and the fix was to cut
