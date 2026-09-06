@@ -16,7 +16,7 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v2-sheet.png`**, not yet locked |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v5-sheet.png`**, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -91,7 +91,13 @@ like it works in one direction only: down.
 
 * A **four-post frame**, tall relative to the footprint, open on all sides so the
   drop is visible.
-* A **lifting carriage** — a dark mass that climbs the posts and releases.
+* A **drop weight** — a forged mass that climbs the posts and releases. It must
+  read as *dense*, which is not the same as plain: a compact trapezoidal block,
+  wider at its striking face than at its crown, with heavily chamfered edges that
+  catch the light, a scarred and burnished striking face underneath, four guide
+  shoes visibly wrapping the posts, and lifting lugs on its top face. It is
+  distinctly **smaller than the gap it rides in** — a weight that fills the frame
+  reads as a container.
 * An **anvil bed** at the base, scarred and pale where it has been struck.
 * Two **discharge chutes** at the base, deliberately different sizes: coarse to
   one side, fines to the other.
@@ -107,13 +113,20 @@ remember which machine splits the ore.
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Frame and posts | `#4A463F` → `#6E685C` | the structure |
-| Lifting carriage | `#2E2C29` | the falling mass |
+| Drop weight | `#2E2C29` body, chamfers up to `#6A6660` | the falling mass |
 | Anvil bed | `#9A948A` | struck surface, palest thing on the machine |
 | Hazard banding | `#C8A23A` | the drop zone's floor edge only |
 | Ore and fines | `#7A6A55` / `#A89A82` | the two chutes, coarse and fine |
 
 **No glow.** Nothing here is hot. The one bright note is the anvil, and it is
 bright because it is polished by impact.
+
+**The weight must not be flat black.** The first three sheets drew it as an
+unadorned near-black box, because that is what §3.2 asked for, and it read as a
+hole in the picture rather than a mass of steel. Dark, yes — but with a real
+value range across its chamfers, so the eye reads forged metal. *Unadorned* was
+the wrong word: it should carry no **machinery**, no panel lines, hatches or
+bolts, while carrying all the **forging** it likes.
 
 ---
 
@@ -161,25 +174,31 @@ Space Age industrial machine, every panel drawn from the game's characteristic
 45-degree top-down perspective. The machine is a tall open three-by-three drop
 crusher standing on an airless metallic world. Four heavy vertical posts,
 roughly twice the height of the base, form an open frame with no pipes, hoses
-or cables anywhere on it. A plain unadorned near-black slab of solid metal
-rides the posts as a dead weight, with no surface detail. A pale scarred anvil
-bed sits at the base. Two empty discharge chutes leave the base, one wide and
-one narrow, and they are on opposite sides of the machine -- one leaving the
-left face and one leaving the right face -- so they sit on clearly separate
-tiles of the footprint and never side by side. Dark grey-brown armour,
-charcoal slab, pale grey struck anvil, small yellow hazard banding on the base
-edge only. No opposed jaw plates, no gnashing mechanism, no glow, no flame, no
-smoke. Panels: main view, front elevation, side elevation, a detail of the
-anvil bed and the two empty chute mouths, and the slab shown at the very top
-of the posts and hard down on the bed. Title the sheet DROP CRUSHER. Draw no
-loose material anywhere: no ore, powder, fibre, grit, debris or product on the
-ground, in bins, at chutes, on trays or spilling from the machine. Factorio
-machines never show what they make, so every chute, port, bin and tray is
-drawn as empty machinery. Every pipe connection must run down to ground level
-and stop flush at the edge of the tile footprint; no pipe may end in mid-air
-and none may leave the top of the building. Nothing may extend past the tile
-footprint, pipework included, and the tile-grid panel must show the whole
-machine inside the grid with no overhang.
+or cables anywhere on it. A compact forged drop weight rides the posts: a
+dense trapezoidal mass, wider at its flat striking face below than at its
+crown above, with heavily chamfered edges that catch the light, a scarred and
+burnished striking face on its underside, four guide shoes that visibly wrap
+around the posts, and lifting lugs on its top face. It is clearly smaller than
+the gap it rides in and obviously very heavy. It carries no machinery, no
+panel lines, no hatches and no bolts, but it is forged dark steel with real
+highlights along every chamfer -- never a flat featureless black box. A pale
+scarred anvil bed sits at the base. Two empty discharge chutes leave the base,
+one wide and one narrow, and they are on opposite sides of the machine -- one
+leaving the left face and one leaving the right face -- so they sit on clearly
+separate tiles of the footprint and never side by side. Dark grey-brown
+armour, charcoal slab, pale grey struck anvil, small yellow hazard banding on
+the base edge only. No opposed jaw plates, no gnashing mechanism, no glow, no
+flame, no smoke. Panels: main view, front elevation, side elevation, a detail
+of the anvil bed and the two empty chute mouths, and the slab shown at the
+very top of the posts and hard down on the bed. Title the sheet DROP CRUSHER.
+Draw no loose material anywhere: no ore, powder, fibre, grit, debris or
+product on the ground, in bins, at chutes, on trays or spilling from the
+machine. Factorio machines never show what they make, so every chute, port,
+bin and tray is drawn as empty machinery. Every pipe connection must run down
+to ground level and stop flush at the edge of the tile footprint; no pipe may
+end in mid-air and none may leave the top of the building. Nothing may extend
+past the tile footprint, pipework included, and the tile-grid panel must show
+the whole machine inside the grid with no overhang.
 ```
 
 ---
@@ -285,3 +304,27 @@ should be holding its weight up, not sitting on its own anvil.
 
 **Still open, and unchanged:** §20's two questions. One recipe or two, and
 whether the fines have a consumer yet.
+
+
+### Versions 3 to 5 — the redraw
+
+**v3** applied the I/O conventions: chutes empty, nothing on the ground, inside
+the grid. **v4** split the chutes onto opposite faces, after both were found
+sitting side by side in a single tile of the 3×3 — which read as one output and
+left nowhere for a second belt.
+
+**v5 fixed the weight, and the fault was in this document.** §3.2 said
+*"an unadorned slab"* and §3.3 pinned it near-black, so three sheets running drew
+a featureless black box that read as a hole in the picture rather than a mass of
+steel. *Unadorned* was the wrong word. It should carry no **machinery** — no
+panel lines, hatches or bolts — while carrying all the **forging** it likes:
+
+- a compact trapezoidal mass, wider at the striking face than at the crown,
+- heavily chamfered edges that catch the light,
+- a scarred, burnished striking face underneath,
+- four guide shoes visibly wrapping the posts, and lifting lugs on top,
+- **distinctly smaller than the gap it rides in** — a weight that fills the frame
+  reads as a container, not a hammer.
+
+§3.2 and §3.3 are corrected to match, and the weight now has its own detail panel
+on the sheet.
