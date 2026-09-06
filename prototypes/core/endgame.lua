@@ -182,7 +182,7 @@ data:extend({
 
 local array = table.deepcopy(data.raw["rocket-silo"]["rocket-silo"])
 array.name = "sae-ignition-array"
-array.icon = "__base__/graphics/icons/rocket-silo.png"
+array.icon = "__space-age-extended__/graphics/icons/ignition-array.png"
 array.minable = { mining_time = 5, result = "sae-ignition-array" }
 array.crafting_categories = { "sae-ignition" }
 array.fixed_recipe = "sae-field-coil-segment"
@@ -195,6 +195,60 @@ array.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
 -- It fires on command rather than at a platform's request: this is an ignition,
 -- not a delivery.
 array.launch_to_space_platforms = false
+
+-- Art. See graphics/building-spec-ignition-array.md sections 6.1 and 13.
+--
+-- Section 6.1 is the scoping decision and it still holds: vanilla's silo uses
+-- sixteen art slots, several of them 64-frame sheets running to millions of
+-- pixels, and replacing all of it is not a realistic target. What is replaced
+-- here is the part that carries the read -- the deck, the cradle ring, the
+-- closed iris -- measured at exactly 576 px, **9.000 tiles**, centred to 0.0 px
+-- with alpha zero on all four canvas edges.
+--
+-- Everything that is launch-pad furniture is emptied rather than left inherited.
+-- On a world whose entire premise is that nothing leaves, vanilla's blast doors
+-- sliding open, its engine bell, its steam vents and its extractor fans would
+-- each be a lie, and they would draw straight over our deck. Emptying them costs
+-- the open-shaft frames until the iris plates of section 6.1 are drawn; the
+-- alternative was vanilla's doors opening on our building.
+local IA = "__space-age-extended__/graphics/entity/ignition-array/"
+array.base_day_sprite =
+{
+  filename = IA .. "base.png",
+  priority = "medium",
+  width = 608, height = 602,
+  shift = { 0, 0 },
+  scale = 0.5
+}
+array.shadow_sprite =
+{
+  filename = IA .. "base-shadow.png",
+  priority = "medium",
+  draw_as_shadow = true,
+  width = 1073, height = 602,
+  shift = { 3.63281, 0 },
+  scale = 0.5
+}
+array.base_front_sprite = util.empty_sprite()
+array.base_night_sprite = nil
+array.door_back_sprite = util.empty_sprite()
+array.door_front_sprite = util.empty_sprite()
+array.hole_sprite = util.empty_sprite()
+array.hole_light_sprite = util.empty_sprite()
+array.rocket_shadow_overlay_sprite = util.empty_sprite()
+array.rocket_glow_overlay_sprite = util.empty_sprite()
+array.red_lights_back_sprites = util.empty_sprite()
+array.red_lights_front_sprites = util.empty_sprite()
+array.satellite_animation = nil
+array.arm_01_back_animation = nil
+array.arm_02_right_animation = nil
+array.arm_03_front_animation = nil
+-- `graphics_set.working_visualisations` is left inherited on purpose. The silo
+-- names one of its entries -- "crafting" -- from elsewhere in the prototype, and
+-- clearing the list makes the engine refuse to load with
+-- `Working visualisation "crafting" doesn't exist`. Section 6.1 wants these
+-- replaced by a derived glow; until that exists they stay, which is the one
+-- piece of inherited launch furniture still drawn.
 array.heating_energy = nil
 array.fast_replaceable_group = nil
 array.next_upgrade = nil
@@ -211,10 +265,77 @@ data:extend({ array })
 
 local port = table.deepcopy(data.raw.roboport["roboport"])
 port.name = "sae-sealed-roboport"
-port.icon = "__base__/graphics/icons/roboport.png"
+port.icon = "__space-age-extended__/graphics/icons/sealed-roboport.png"
 port.minable = { mining_time = 0.5, result = "sae-sealed-roboport" }
 port.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
 port.energy_usage = "150kW"
+
+-- Art. See graphics/building-spec-sealed-roboport.md sections 6, 7 and 13.
+--
+-- Measured off the cut plate: the deck's visible content is exactly 256 px --
+-- 4.00 tiles -- so a block of ports tiles without overlapping, and the shift is
+-- by_pixel(0, -3) so the deck's near edge lands on the footprint's near edge at
+-- +2 tiles rather than being guessed.
+--
+-- Three of vanilla's six slots are deliberately emptied rather than replaced,
+-- and that is a scoping decision, not an oversight:
+--
+--   * `base_patch` -- vanilla lays a ground patch under its roboport. Ours is a
+--     square armoured deck that already covers the footprint, so a patch under
+--     it would only peek out at the edges.
+--   * `door_animation_up` / `door_animation_down` -- vanilla slides two roof
+--     doors apart. Section 6 wants these as the two halves of the central iris,
+--     which is real art nobody has drawn yet. Left inherited they would slide
+--     vanilla's roof doors across our dome, so they are emptied: the iris is
+--     drawn closed in `base` and simply stays closed. Robots appear at the crown
+--     without it opening, which is wrong but quiet.
+--   * `recharging_animation` -- vanilla draws its own contact arc at each
+--     charging offset. The docks are drawn in our plate at those offsets, but
+--     vanilla's arc is shaped for an open pad, so it is emptied too. The light
+--     stays, retinted to the amber of section 3.3, so an occupied dock still
+--     reads at night.
+local RBP = "__space-age-extended__/graphics/entity/sealed-roboport/"
+port.base =
+{
+  layers =
+  {
+    {
+      filename = RBP .. "base.png",
+      priority = "high",
+      width = 288, height = 306,
+      shift = { 0, -0.09375 },        -- by_pixel(0, -3) at scale 0.5
+      scale = 0.5
+    },
+    {
+      filename = RBP .. "base-shadow.png",
+      priority = "high",
+      draw_as_shadow = true,
+      width = 519, height = 306,
+      shift = { 1.80469, -0.09375 },
+      scale = 0.5
+    }
+  }
+}
+port.base_patch = util.empty_sprite()
+-- The amber status ring and the lit hatch frame, recovered by differencing a lit
+-- render against the unlit plate -- so it registers over `base` by construction
+-- rather than by alignment. One frame: the ring idles rather than animating.
+port.base_animation =
+{
+  filename = RBP .. "lamps.png",
+  priority = "high",
+  blend_mode = "additive",
+  draw_as_glow = true,
+  width = 288, height = 306,
+  frame_count = 1,
+  shift = { 0, -0.09375 },
+  scale = 0.5
+}
+port.door_animation_up = util.empty_sprite()
+port.door_animation_down = util.empty_sprite()
+port.recharging_animation = util.empty_sprite()
+port.recharging_light = { intensity = 0.2, size = 3, color = { 0.91, 0.64, 0.23 } }
+
 port.fast_replaceable_group = nil
 port.next_upgrade = nil
 data:extend({ port })
@@ -223,7 +344,7 @@ data:extend({
   {
     type = "item",
     name = "sae-ignition-array",
-    icon = "__base__/graphics/icons/rocket-silo.png",
+    icon = "__space-age-extended__/graphics/icons/ignition-array.png",
     subgroup = "production-machine",
     order = "z[sae]-z[ignition-array]",
     place_result = "sae-ignition-array",
@@ -233,7 +354,7 @@ data:extend({
   {
     type = "item",
     name = "sae-sealed-roboport",
-    icon = "__base__/graphics/icons/roboport.png",
+    icon = "__space-age-extended__/graphics/icons/sealed-roboport.png",
     subgroup = "logistic-network",
     order = "z[sae]-a[sealed-roboport]",
     place_result = "sae-sealed-roboport",

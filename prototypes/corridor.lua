@@ -215,7 +215,7 @@ data:extend({
 
 local gen = table.deepcopy(data.raw["burner-generator"]["burner-generator"])
 gen.name = "sae-radiant-generator"
-gen.icon = "__space-age__/graphics/icons/fusion-reactor.png"
+gen.icon = "__space-age-extended__/graphics/icons/radiant-generator.png"
 gen.minable = { mining_time = 1, result = "sae-radiant-generator" }
 gen.max_power_output = "10MW"
 gen.energy_source = { type = "electric", usage_priority = "primary-output" }
@@ -229,6 +229,61 @@ gen.burner =
 }
 gen.surface_conditions = { { property = "pressure", max = 9 } }
 gen.working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_sound)
+
+-- Art. Two plates, because `burner-generator` maps north/south onto one
+-- animation and east/west onto the other -- see
+-- graphics/building-spec-radiant-generator.md sections 5 and 13. They are the
+-- same machine rotated on the ground, drawn twice rather than rotated in
+-- software: the camera looks down at an angle, so turning the building shows
+-- different faces of it.
+--
+-- The load-bearing numbers, measured off the cut plates rather than guessed:
+-- north/south is 192 px (3.000 tiles) wide, east/west is 320 px (5.000 tiles)
+-- wide. Section 13 is blunt about why -- get these wrong and a row of
+-- generators will not tile.
+--
+-- The glow is not a second render. Each plate was generated with the throat
+-- already lit and then split by hue with tools/split-glow.py: the green-white
+-- slots come out as the additive layer and the base keeps a dark recess where
+-- each slot was. One generation per direction instead of two, and the two
+-- layers register by construction because they are cut from one image.
+local RG = "__space-age-extended__/graphics/entity/radiant-generator/"
+local function rg_layers(dir, w, h, sw, sh, shift, sshift)
+  return
+  {
+    layers =
+    {
+      {
+        filename = RG .. "base-" .. dir .. ".png",
+        priority = "high",
+        width = w, height = h, shift = shift, scale = 0.5
+      },
+      {
+        filename = RG .. "base-" .. dir .. "-shadow.png",
+        priority = "high", draw_as_shadow = true,
+        width = sw, height = sh, shift = sshift, scale = 0.5
+      },
+      {
+        filename = RG .. "glow-" .. dir .. ".png",
+        priority = "high",
+        blend_mode = "additive", draw_as_glow = true,
+        width = w, height = h, shift = shift, scale = 0.5
+      }
+    }
+  }
+end
+
+local rg_vertical = rg_layers("vertical", 224, 414, 541, 414,
+                              { 0, 0 }, { 1.23828, 0 })
+local rg_horizontal = rg_layers("horizontal", 352, 233, 526, 233,
+                                { 0, 0 }, { 1.35938, 0 })
+gen.animation =
+{
+  north = rg_vertical,
+  south = table.deepcopy(rg_vertical),
+  east = rg_horizontal,
+  west = table.deepcopy(rg_horizontal)
+}
 gen.fast_replaceable_group = nil
 gen.next_upgrade = nil
 gen.hidden = false
@@ -239,7 +294,7 @@ data:extend({
   {
     type = "item",
     name = "sae-radiant-generator",
-    icon = "__space-age__/graphics/icons/fusion-reactor.png",
+    icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
     subgroup = "energy",
     order = "z[sae]-b[radiant-generator]",
     place_result = "sae-radiant-generator",

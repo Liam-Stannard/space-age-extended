@@ -131,7 +131,7 @@ data:extend({
 -- put a surge that arrives faster than anything can spend it.
 local store = table.deepcopy(data.raw.accumulator["accumulator"])
 store.name = "sae-superconducting-store"
-store.icon = "__base__/graphics/icons/accumulator.png"
+store.icon = "__space-age-extended__/graphics/icons/superconducting-store.png"
 store.minable = { mining_time = 0.5, result = "sae-superconducting-store" }
 store.energy_source =
 {
@@ -141,24 +141,101 @@ store.energy_source =
   input_flow_limit = "20MW",
   output_flow_limit = "20MW"
 }
--- Drop the inherited charge overlays.
+-- Art. `chargable_graphics` is a coupled set -- a base `picture` plus the two
+-- overlays drawn on top of it -- so all four are replaced together. Vanilla's
+-- overlays are shaped for the accumulator's flat-fronted box and light its front
+-- panel; landing those on a drum would read as two machines lit at once. The
+-- overlays were cleared when the prototype was written precisely so that whoever
+-- set `picture` could not forget them, and this is that commit.
 --
--- `chargable_graphics` is a coupled set: a base `picture` plus `charge_animation`
--- and `discharge_animation` drawn on top of it. Vanilla's overlays are shaped for
--- the accumulator's flat-fronted box and light its front panel. This building is
--- a squat cryostat whose charge read is a band of light travelling around a
--- recessed ring channel, so the two cannot coexist -- replacing `picture` alone
--- would land a box-shaped glow on a drum and read as two machines lit at once.
---
--- Cleared rather than left in place, because the failure only appears when the
--- plate lands and would be easy to miss then. Charge feedback is deliberately
--- absent until the ring frames exist; see building-brief-superconducting-store.md
--- §9, which specifies them as five states derived by differencing, with the light
--- travelling around the ring rather than filling a bar.
-store.chargable_graphics.charge_animation = nil
-store.chargable_graphics.charge_cooldown = nil
-store.chargable_graphics.discharge_animation = nil
-store.chargable_graphics.discharge_cooldown = nil
+-- Every number is measured off the cut plate. The drum's visible content is
+-- exactly 128 px -- 2.00 tiles -- so a row of stores touches rather than
+-- overlaps. See graphics/building-spec-superconducting-store.md sections 9 and 13.
+local SCS = "__space-age-extended__/graphics/entity/superconducting-store/"
+local scs_plate = function(name, w, h, shift)
+  return { filename = SCS .. name, priority = "high",
+           width = w, height = h, shift = shift, scale = 0.5 }
+end
+store.chargable_graphics =
+{
+  picture =
+  {
+    layers =
+    {
+      scs_plate("base.png", 160, 164, { 0, -0.03125 }),
+      -- The shadow leans up and right, so it is wider than the colour plate and
+      -- carries its own x shift; both come out of process-building-art.py.
+      (function ()
+        local s = scs_plate("base-shadow.png", 279, 164, { 0.92969, -0.03125 })
+        s.draw_as_shadow = true
+        return s
+      end)(),
+      -- The ring, lit, always.
+      --
+      -- This is in `picture` rather than in the animations because the engine
+      -- gives an accumulator nowhere else to put it. `chargable_graphics` has
+      -- exactly `picture`, `charge_animation` and `discharge_animation`, and the
+      -- two animations are **one-shots fired on charge and discharge events** --
+      -- there is no charge-level slot. So a store sitting full and idle plays
+      -- nothing, which is why the first in-game test showed four stores reading
+      -- "Fully charged, 500 MJ/500 MJ" with the channel completely dark. Vanilla
+      -- accumulators behave the same way; vanilla can afford it because its
+      -- charge read is a panel on a box, and ours is the entire design.
+      --
+      -- So the ring idles lit at 90% and the charge sweep brightens it further. The cost
+      -- is that an empty store glows too, which is wrong but is the lesser of
+      -- the two errors the prototype allows.
+      (function ()
+        local s = scs_plate("ring-idle.png", 160, 164, { 0, -0.03125 })
+        s.blend_mode = "additive"
+        s.draw_as_glow = true
+        return s
+      end)()
+    }
+  },
+  -- The ring channel, lit. The light travels *around* the channel rather than
+  -- filling it like a bar, because a current going round a loop is what this
+  -- building physically is -- section 9. Charge runs one way and discharge the
+  -- other, at a little over half the brightness, so the direction reads.
+  charge_animation =
+  {
+    layers =
+    {
+      {
+        filename = SCS .. "charge.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 160, height = 164,
+        frame_count = 20, line_length = 5,
+        shift = { 0, -0.03125 },
+        scale = 0.5
+      }
+    }
+  },
+  charge_cooldown = 30,
+  discharge_animation =
+  {
+    layers =
+    {
+      {
+        filename = SCS .. "discharge.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 160, height = 164,
+        frame_count = 20, line_length = 5,
+        shift = { 0, -0.03125 },
+        scale = 0.5
+      }
+    }
+  },
+  discharge_cooldown = 60
+}
+
+-- No water tile can place on the Core, so the inherited reflection is dead
+-- weight -- section 6.
+store.water_reflection = nil
 
 store.fast_replaceable_group = nil
 store.next_upgrade = nil
@@ -168,7 +245,7 @@ data:extend({
   {
     type = "item",
     name = "sae-superconducting-store",
-    icon = "__base__/graphics/icons/accumulator.png",
+    icon = "__space-age-extended__/graphics/icons/superconducting-store.png",
     subgroup = "energy",
     order = "z[sae]-c[superconducting-store]",
     place_result = "sae-superconducting-store",
