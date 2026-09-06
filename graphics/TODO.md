@@ -106,7 +106,7 @@ commissioning — the last column says which.
 
 | Building | Document | Blocked on |
 | -------- | -------- | ---------- |
-| Drop Crusher | `building-spec-drop-crusher.md` | nothing — **start here**; vanilla's crusher is space-only, so T1 cannot exist without it |
+| Drop Crusher | `building-spec-drop-crusher.md` | **stage 0 passed** — `concept/v2-sheet.png` approved, design locked. Next: canonical view (stage 1) |
 | Ballast Drill | `building-spec-ballast-drill.md` | nothing |
 | Dross Classifier | `building-spec-dross-classifier.md` | nothing |
 | Coil Separator | `building-spec-coil-separator.md` | nothing |

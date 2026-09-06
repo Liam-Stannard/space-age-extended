@@ -16,8 +16,8 @@ production tree needs and the first thing that should be built.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | not started |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/v2-sheet.png`** |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | **ready** |
 | 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -207,3 +207,64 @@ that size and should not be attempted.
 - **Do the fines have a home yet?** They feed the carbonyl line (T3), which does
   not exist. Until it does, fines are a dead-end item and the split is
   cosmetic — so either land T3 alongside this, or give fines a stopgap use.
+
+
+---
+
+# 19. Design Notes / Iteration History
+
+### Version 1 — `concept/v1-sheet.png`
+
+Layout, panel set and silhouette right first time. Attaching a vanilla crusher
+frame as a style reference and an approved sheet from another building as a
+format example did the work Appendix B says they do: the panel structure, the
+labelled information table and the colour-swatch row all arrived without being
+described.
+
+Four things were wrong, all of them in the machine rather than the sheet:
+
+1. **Copper hydraulic pipes and cables all over the frame**, and copper in the
+   palette. §8 says this building has **no fluid box and no pipe flange
+   anywhere** — the art was promising a connection the prototype does not have.
+2. **The carriage read as a detailed equipment box** with panel lines, bolts and
+   a hatch. §3.2 asks for an unadorned slab: it is a dead weight, not a machine.
+3. **Too squat.** §4 invokes the tall-building clause and the drop distance is
+   the mechanic; the posts were barely taller than the base.
+4. **Raised and dropped were nearly identical** in the key frames, so the
+   signature stroke did not read.
+
+### Version 2 — `concept/v2-sheet.png` — **approved, design locked**
+
+All four fixes took, in one round, written to Appendix A's shape: keep-list
+first, then numbered fixes each naming what it currently reads as and what it
+must read as.
+
+- Every pipe, hose and cable gone; copper gone from the palette; the breakdown
+  row's **PIPES & DETAIL** layer replaced with **GUIDE RAILS**.
+- The carriage is now a plain near-black block, `#1F1F1F`, darker than anything
+  else on the machine and labelled *"plain weight block"*.
+- The posts are roughly twice the base height. It reads as tall, and the drop
+  reads as long.
+- Raised sits at the top of the posts, dropped sits hard on the bed.
+
+Verified new rather than re-encoded by byte size (2,091,348 against v1's
+2,187,107) and by `ImageChops.difference`, per Appendix B.
+
+**Palette as drawn**, which supersedes §3.3's first guess:
+
+| Role | Sheet | §3.3 asked for | Note |
+| ---- | ----- | -------------- | ---- |
+| Dark metal | `#3B3A36` | `#4A463F` | Slightly darker; in family |
+| Secondary metal | `#5E5B55` | `#6E685C` | Slightly darker; in family |
+| Anvil stone | `#B7B6AF` | `#9A948A` | **Lighter, and better** — §3.3 wants it the palest thing on the machine |
+| Carriage block | `#1F1F1F` | `#2E2C29` | **Darker, and better** — §3.2 wants it darker than everything |
+| Hazard yellow | `#D1A620` | `#C8A23A` | Effectively the same |
+| Dust grey | `#787B71` | `#7A6A55` | Greyer than the brown asked for; left alone at concept stage, since Appendix C measures colour off the plate rather than eyeballing the sheet |
+
+**One thing settled by the art, for §5 and the plate stage:** the canonical view
+draws the carriage **raised**, so the idle plate is the raised position and the
+drop is the working animation. That is the right way round — a machine at rest
+should be holding its weight up, not sitting on its own anvil.
+
+**Still open, and unchanged:** §20's two questions. One recipe or two, and
+whether the fines have a consumer yet.
