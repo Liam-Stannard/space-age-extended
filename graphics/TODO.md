@@ -111,7 +111,7 @@ commissioning — the last column says which.
 | Dross Classifier | `building-spec-dross-classifier.md` | nothing |
 | Coil Separator | `building-spec-coil-separator.md` | nothing |
 | Whisker Comber | `building-spec-whisker-comber.md` | its two consumers (T5 prepreg, T6 cryostat) do not exist |
-| Helium Concentrator | `building-spec-helium-concentrator.md` | **§20** — it turns helium from a hard cap into a price, which rewrites `decisions.md` D12 |
+| Helium Concentrator | `building-spec-helium-concentrator.md` | **clear** — helium is a price now (`decisions.md` R8); what is left is tuning, not design |
 | Vacuum Furnace | `building-spec-vacuum-furnace.md` | **§20** — the sintering recipe's shape decides whether it can be a `furnace` at all |
 | Crust Tap | `building-spec-crust-tap.md` | **spiked (S10)** — both halves work, but the pump needs a fluid-bearing tile, so the tap is now **sited**: it also needs a tile prototype, a map-gen entry and tile art |
 | Ignition Ring Mast | `building-spec-ignition-ring-mast.md` | **clear** — mechanic agreed, and spike S11 passed: spoilage ticks in the silo, charges vanish cleanly, nothing rots mid-craft |

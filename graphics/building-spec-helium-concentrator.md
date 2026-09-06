@@ -202,25 +202,33 @@ rising. Must read at 32 px as *"gas coming off metal"*, not as a tank.
 
 ---
 
-# 20. Open questions
+# 20. Decisions and open questions
 
-**This building changes helium from a hard cap into a price, and that is a real
-design decision, not a tuning number.** Today helium-3 is a wall: no vents, no
-melt (`resources.lua` sets `required_fluid`). With a concentrator, a player who
-finds one gas vent can bootstrap indefinitely by spending melt — which is the
-loop `decisions.md` D12 was written to prevent.
+**Settled: helium-3 is a price, not a cap** — `decisions.md` R8. The concentrator
+exists, and D12's hard wall becomes an exchange rate. The three options this
+section previously offered are closed; option 3 was taken.
 
-Three ways to hold the line, to choose between before this is built:
+**The price is denominated in power, not melt.** That is the load-bearing half of
+the decision. Electricity is already the Core's central competition — every
+megawatt the Array draws is melt that was not cast — so a helium shortage now
+resolves into a power decision rather than a new one. Tune `energy_usage` first
+and the melt ratio second.
 
-1. **Make it net-negative on its own.** The concentrator's helium output must be
-   less than the helium the melt cost to draw, so it can never sustain itself —
-   it only converts a *surplus* of melt into gas. Cleanest, and it keeps D12
-   literally true.
-2. **Gate it late.** Available only after the tech tree is well advanced, so the
-   hard cap teaches the lesson first and the relief valve arrives once the player
-   has already built around it.
-3. **Accept the change and rewrite D12.** The cap becomes "helium is expensive"
-   rather than "helium is limited", which is a weaker but still real constraint.
+Still open, and all of it is tuning rather than design:
 
-Recommendation: **1, with 2 as well.** Option 3 removes the Core's best siting
-problem.
+- **How expensive, in watts.** The 1.5 MW in §2 is a first guess and it is the
+  single most important number on this building. Too cheap and gas-vent siting
+  stops mattering from the first hour; too dear and the relief valve is decorative.
+- **When it unlocks.** Late. R8's mitigation for the lost constraint is unlock
+  order, not arithmetic: the hard cap has to have taught its lesson before the way
+  around it is offered. Tier 3 of the ladder at the earliest, and it should not be
+  in the foothold tier under any circumstances.
+- **Whether the melt output is worth having at all.** §2 returns 40 settled melt
+  alongside the gas. If that makes the concentrator a competitive *melt* source as
+  well, it is doing two jobs and should lose one — drop the melt return to dross,
+  or to nothing.
+- **Does it need a surface condition at all?** `pressure ≤ 9` is written in §2 out
+  of habit. Molten kamacite is unbarrelable and exists nowhere else, so the recipe
+  is already Core-locked by its ingredient. The condition is harmless but it is
+  not doing any work, and `01-principles.md` is clear that manufacture alone is
+  never a crossing.

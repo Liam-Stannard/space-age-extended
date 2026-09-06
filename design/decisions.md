@@ -158,6 +158,32 @@ endgame's central decision, and this sharpens it — but if play shows the weldi
 line starving, the fix is to drop the welded plate rather than to re-split the
 mechanics.
 
+**R8 — Helium-3 is a price, not a cap.**
+D12 made the gas vent a wall: no helium, no melt, because `resources.lua` sets
+`required_fluid` on the melt vent. The Helium Concentrator breaks that wall
+deliberately — helium can be stripped out of molten kamacite, so a player with one
+vent and enough power is never hard-stopped again.
+
+**What replaces the cap is the price, and the price should be denominated in
+power.** That is the whole reason this is a change worth making rather than a
+weakening: electricity is already the Core's central competition — every megawatt
+the Ignition Array draws is melt that was not cast — so moving helium onto that
+axis does not remove a constraint, it folds one into the constraint the endgame
+already turns on. A player short of helium now has a lever, and pulling it costs
+them the thing they were going to spend on the Array.
+
+The melt cost matters less than the power cost and should be tuned second. If the
+concentrator is cheap in watts, D12 is simply gone and gas-vent siting stops
+mattering; if it is expensive in watts, siting still decides the early game and
+the concentrator is the late-game release valve it is meant to be.
+
+**What is given up, and it is real.** Gas-vent siting is no longer a hard
+constraint, so the coupled two-vent problem D12 describes becomes a soft one. The
+mitigation is unlock order rather than arithmetic: the concentrator must arrive
+late enough that the hard cap has already taught its lesson. A player who meets
+the wall for the first ten hours and then earns a way around it has learned
+something; a player who never meets it has not.
+
 ## Measured on the Core prototype itself
 
 From the S1 and S2 spikes, on a headless server running a scratch planet.
