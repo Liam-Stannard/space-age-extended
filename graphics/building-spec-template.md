@@ -476,7 +476,24 @@ pointing at nothing.
 
 This is easy to get wrong because a three-quarter corner view is what concept art
 *normally* looks like, and a generator will default to it every time unless told
-otherwise. Say it explicitly in every prompt:
+otherwise.
+
+**Two things make it recur even after the rule is in the prompt.** First, saying
+"square to the tile grid" is too abstract to act on — say instead that **the
+square base plate must read as a SQUARE and never as a diamond or rhombus**,
+which is a thing that can be checked by looking. Second, any building whose form
+is *directional* — a sloped roof, a tapering deck, anything with a high end and a
+low end — invites turning the machine to show that slope off, and the Dross
+Classifier came back corner-on for exactly that reason. Put the slope in the
+**roof** and keep the walls upright, then there is nothing to turn.
+
+The reliable fix is to attach **one of our own already-correct sheets** as a
+projection example alongside the vanilla reference, and say: copy its projection
+exactly, note how its base plate's front edge is parallel to the bottom of the
+frame, and copy nothing else about it. That worked in one round where three
+paragraphs of instruction had not.
+
+Say it explicitly in every prompt:
 
 > Camera: looking steeply down from above, as Factorio does — **mostly roof,
 > with only a shallow near face visible**. Square to the tile grid: the near face
