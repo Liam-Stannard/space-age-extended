@@ -32,10 +32,24 @@ here as they land; this file is deleted when the list is empty.
       previously differed by 0. This is exactly the case `recolour-crane.py`'s own
       docstring makes — *"an image generator cannot produce 64 consistent angles
       of anything"*.
-- [ ] **B2 · Sealed roboport's port is too small.** Robots emerge wrongly. Two
-      causes: `spawn_and_station_height` is still vanilla's `0.3`, tuned to
-      vanilla's roof, and the iris is drawn closed with
-      `door_animation_up`/`down` emptied — so robots come through a shut hatch.
+- [~] **B2 · Sealed roboport's port is too small — half fixed.** Robots emerge wrongly. Two
+      **Measured.** Vanilla's door frame is 97 px — a **1.52 tile** opening. The
+      aperture drawn on our dome is a connected 46 × 36 px blob: **0.72 × 0.56
+      tiles**, which is **47% of vanilla's width and 45% of its area**. A
+      construction robot is about half a tile across, so ours is barely wider than
+      the robot coming through it.
+
+      **Fixed in the prototype.** Robots were also spawning at vanilla's
+      `spawn_and_station_height = 0.3`, tuned to vanilla's low mouth — a third of
+      a tile off the ground, *inside* our deck and below the hole. Measured off
+      the plate (306 px at scale 0.5, shift −0.09375, so the top edge is 2.48
+      tiles up): the iris centre sits **0.94** tiles above the origin and the dome
+      crown **1.62**. Set to those, with the render-layer swap moved from 0.87 —
+      which was halfway up our dome — to the crown.
+
+      **Still outstanding: the art.** The plate needs redrawing with the aperture
+      at roughly **96 px (1.5 tiles)** to match what vanilla gives a robot to fly
+      through. Until then the hole is right-placed but half-sized.
 - [ ] **B3 · Audit every derived prototype for inherited leftovers.** The
       Ignition Array is a `rocket-silo` and must not keep silo crafting
       animations, launch furniture or anything else that describes a delivery it

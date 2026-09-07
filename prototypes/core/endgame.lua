@@ -270,6 +270,21 @@ port.minable = { mining_time = 0.5, result = "sae-sealed-roboport" }
 port.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
 port.energy_usage = "150kW"
 
+-- Where robots come out, measured off the plate rather than inherited.
+--
+-- Vanilla's 0.3 and 0.87 were chosen for vanilla's roboport, whose mouth is a
+-- wide opening low on a squat body. Ours is a dome with an iris near its crown,
+-- so inherited values put robots a third of a tile off the ground -- inside the
+-- deck, below the hole they are supposed to be using.
+--
+-- The plate is 306 px at scale 0.5 with shift -0.09375, so its top edge sits
+-- 2.48 tiles above the origin. The iris centre is 99 px down from there, and the
+-- dome crown 55 px, which puts them 0.94 and 1.62 tiles up.
+port.spawn_and_station_height = 0.94
+-- Robots pass behind the dome and then in front of it, so the swap belongs just
+-- above the crown rather than at vanilla's 0.87, which is halfway up our dome.
+port.stationing_render_layer_swap_height = 1.62
+
 -- Art. See graphics/building-spec-sealed-roboport.md sections 6, 7 and 13.
 --
 -- Measured off the cut plate: the deck's visible content is exactly 256 px --
@@ -287,8 +302,19 @@ port.energy_usage = "150kW"
 --     doors apart. Section 6 wants these as the two halves of the central iris,
 --     which is real art nobody has drawn yet. Left inherited they would slide
 --     vanilla's roof doors across our dome, so they are emptied: the iris is
---     drawn closed in `base` and simply stays closed. Robots appear at the crown
---     without it opening, which is wrong but quiet.
+--     drawn closed in `base` and simply stays closed.
+--
+--     This was recorded as "wrong but quiet". It is not quiet. Measured against
+--     vanilla: vanilla's door frame is 97 px, a 1.52 tile opening, and the
+--     aperture drawn on our dome is a connected 46 x 36 px blob -- 0.72 x 0.56
+--     tiles, 47% of vanilla's width and 45% of its area. A construction robot is
+--     about half a tile across, so ours is barely wider than the robot coming
+--     through it, and robots appear to squeeze out of a porthole.
+--
+--     Half of that is fixed here, by putting the spawn height on the iris
+--     instead of on vanilla's mouth. The other half needs the plate redrawn with
+--     the aperture at roughly 96 px -- 1.5 tiles -- to match what vanilla gives
+--     a robot to fly through.
 --   * `recharging_animation` -- vanilla draws its own contact arc at each
 --     charging offset. The docks are drawn in our plate at those offsets, but
 --     vanilla's arc is shaped for an open pad, so it is emptied too. The light
