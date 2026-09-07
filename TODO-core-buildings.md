@@ -32,7 +32,7 @@ here as they land; this file is deleted when the list is empty.
       previously differed by 0. This is exactly the case `recolour-crane.py`'s own
       docstring makes — *"an image generator cannot produce 64 consistent angles
       of anything"*.
-- [~] **B2 · Sealed roboport's port is too small — half fixed.** Robots emerge wrongly. Two
+- [x] **B2 · Sealed roboport's port is too small — FIXED.** Robots emerge wrongly. Two
       **Measured.** Vanilla's door frame is 97 px — a **1.52 tile** opening. The
       aperture drawn on our dome is a connected 46 × 36 px blob: **0.72 × 0.56
       tiles**, which is **47% of vanilla's width and 45% of its area**. A
@@ -47,9 +47,17 @@ here as they land; this file is deleted when the list is empty.
       crown **1.62**. Set to those, with the render-layer swap moved from 0.87 —
       which was halfway up our dome — to the crown.
 
-      **Still outstanding: the art.** The plate needs redrawing with the aperture
-      at roughly **96 px (1.5 tiles)** to match what vanilla gives a robot to fly
-      through. Until then the hole is right-placed but half-sized.
+      **Art fixed too.** The locked plate was *edited* rather than regenerated,
+      per the README rule, and everything but the iris came back unchanged. The
+      aperture is now 80 × 69 px — 1.25 × 1.08 tiles, **114% of vanilla's**
+      70 × 64. Widening it moved its centre down the dome, so
+      `spawn_and_station_height` went 0.94 → **0.75** to follow it. `lamps.png`
+      still registers: 2 of its 3,563 lit pixels fall inside the new iris.
+
+      *Correction to the first measurement in this entry:* the "47% of vanilla"
+      figure compared our aperture interior against vanilla's **door sprite
+      width** (97 px), which was not like-for-like. Measured the same way on both,
+      the old aperture was **66%** of vanilla's. Too small either way.
 - [ ] **B3 · Audit every derived prototype for inherited leftovers.** The
       Ignition Array is a `rocket-silo` and must not keep silo crafting
       animations, launch furniture or anything else that describes a delivery it

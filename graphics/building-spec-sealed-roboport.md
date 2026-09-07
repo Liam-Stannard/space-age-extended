@@ -445,3 +445,35 @@ different things** — robots through the iris on the roof, materials through th
 hatch on the wall — and that is a clearer building than the one the review broke.
 The engine's four charging points and centre docking were not arbitrary; they
 were a 4×4 layout someone had already thought about.
+
+
+### The iris was half the size vanilla uses — widened
+
+Reported in game as robots looking wrong coming out. Measured rather than
+guessed, flood-filling the aperture interior on both plates with the same
+method:
+
+| | Aperture interior | vs vanilla |
+| --- | --- | --- |
+| Vanilla roboport | 70 × 64 px = **1.09 × 1.00 tiles** | — |
+| Ours, before | 46 × 36 px = 0.72 × 0.56 tiles | **66%** |
+| Ours, after | 80 × 69 px = **1.25 × 1.08 tiles** | **114%** |
+
+A construction robot is about half a tile across, so the old aperture was barely
+wider than the robot using it.
+
+**Fixed by editing the locked plate, not regenerating it** — the rule in the
+README, and it held: the deck, the corner blocks, the hazard striping, the four
+dock housings, the antenna mast and the louvred hatch all came back unchanged,
+with only the iris enlarged.
+
+The editor returned 1217×1293 rather than the 288×306 it was given, so the result
+was rescaled to put the visible content back on exactly 256 px — 4.00 tiles — and
+seated on the original's bottom edge, so the prototype's `shift` is still valid.
+Verified: visible width 256, bottom edge identical to the original's.
+
+**Two knock-ons checked rather than assumed.** The iris centre moved *down* the
+dome as it widened, from 0.94 to 0.75 tiles above the origin, so
+`spawn_and_station_height` moved with it. And `lamps.png` still registers: of its
+3,563 lit pixels, **2** fall inside the new iris footprint, so the amber ring was
+not drawn over.

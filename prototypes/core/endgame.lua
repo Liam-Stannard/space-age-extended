@@ -278,9 +278,10 @@ port.energy_usage = "150kW"
 -- deck, below the hole they are supposed to be using.
 --
 -- The plate is 306 px at scale 0.5 with shift -0.09375, so its top edge sits
--- 2.48 tiles above the origin. The iris centre is 99 px down from there, and the
--- dome crown 55 px, which puts them 0.94 and 1.62 tiles up.
-port.spawn_and_station_height = 0.94
+-- 2.48 tiles above the origin. The iris centre is 111 px down from there, and
+-- the dome crown 55 px, which puts them 0.75 and 1.62 tiles up. (0.94 was the
+-- old, smaller iris; widening it moved its centre down the dome.)
+port.spawn_and_station_height = 0.75
 -- Robots pass behind the dome and then in front of it, so the swap belongs just
 -- above the crown rather than at vanilla's 0.87, which is halfway up our dome.
 port.stationing_render_layer_swap_height = 1.62
