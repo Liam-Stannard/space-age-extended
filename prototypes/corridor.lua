@@ -55,6 +55,12 @@ radiant.dying_trigger_effect =
 {
   { type = "create-explosion", entity_name = "promethium-asteroid-explosion-2", only_when_visible = true }
 }
+-- The preview on this asteroid's Factoriopedia page is a script, and inherited
+-- it launched a vanilla `small-promethium-asteroid` across the frame. Same for
+-- the seeded rock below. Each page now shows its own rock.
+radiant.factoriopedia_simulation.init =
+  radiant.factoriopedia_simulation.init:gsub(
+    'name="small%-promethium%-asteroid"', 'name="sae-radiant-asteroid"')
 data:extend({ radiant })
 
 local seeded = table.deepcopy(data.raw.asteroid["small-promethium-asteroid"])
@@ -69,6 +75,9 @@ seeded.dying_trigger_effect =
     offsets = { { -0.125, -0.0625 }, { 0.125, -0.0625 } }
   }
 }
+seeded.factoriopedia_simulation.init =
+  seeded.factoriopedia_simulation.init:gsub(
+    'name="small%-promethium%-asteroid"', 'name="sae-seeded-asteroid"')
 data:extend({ seeded })
 
 --------------------------------------------------------------------------------

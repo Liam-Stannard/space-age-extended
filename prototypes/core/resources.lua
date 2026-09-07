@@ -12,6 +12,22 @@
 local resource_autoplace = require("resource-autoplace")
 local sounds = require("__base__/prototypes/entity/sounds")
 
+-- The vents get their own mining category, and that is a gameplay fix rather
+-- than tidiness.
+--
+-- Both vents were `basic-fluid`, the category vanilla's pumpjack works, and a
+-- pumpjack has no surface conditions -- so a player could land on the Core,
+-- build an ordinary pumpjack on a melt vent and draw melt for nothing. The Vent
+-- Pump's entire reason to exist is that melt costs helium-3 (see the note at the
+-- top of entities.lua), and the vanilla machine walked straight past it.
+--
+-- A private category closes it from both ends: nothing vanilla can work a vent,
+-- and the Vent Pump can no longer be built on Nauvis crude oil as a pumpjack
+-- that happens to need helium.
+data:extend({
+  { type = "resource-category", name = "sae-vent" }
+})
+
 -- Each resource needs an autoplace control before a planet may name it.
 data:extend({
   { type = "autoplace-control", name = "sae-kamacite-ore", category = "resource", richness = true, order = "z[sae]-a" },
@@ -58,7 +74,7 @@ data:extend({
     name = "sae-melt-vent",
     icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     flags = { "placeable-neutral" },
-    category = "basic-fluid",
+    category = "sae-vent",
     order = "z[sae]-b[melt-vent]",
     infinite = true,
     highlight = true,
@@ -103,7 +119,7 @@ data:extend({
     name = "sae-gas-vent",
     icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
     flags = { "placeable-neutral" },
-    category = "basic-fluid",
+    category = "sae-vent",
     order = "z[sae]-c[gas-vent]",
     infinite = true,
     highlight = true,

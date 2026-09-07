@@ -196,6 +196,65 @@ array.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
 -- not a delivery.
 array.launch_to_space_platforms = false
 
+-- Three things inherited from the silo that describe a machine this is not.
+--
+-- Emptied rather than left, for the same reason section 6.1 empties the blast
+-- doors: on a world whose whole premise is that nothing leaves and nothing
+-- burns, vanilla's furniture is not neutral, it is a lie that happens to be
+-- drawn well.
+--
+--   * `graphics_set.working_visualisations` -- six vanilla animations played
+--     while the Array crafts: `crafting` and `crafting-light` at 64 frames,
+--     `engine` and `filter` at 32, and `steam-1` and `steam-2` at 64. An engine
+--     and two steam plumes, at pressure 5, on a planet with no atmosphere to
+--     carry either. Section 1 of design/04-the-core.md is explicit that nothing
+--     burns here, and the radiant generator's spec calls a steam engine "the
+--     single most wrong object that could stand on a vacuum world". The Array
+--     has no working animation of its own yet, so it now has none at all, which
+--     is quiet rather than wrong.
+--   * `robot_door` -- vanilla's silo has a little roboport hatch, animated, with
+--     passive-provider-chest sounds. Our deck has no such door drawn on it.
+--   * `rocket_entity` -- pointed at `rocket-silo-rocket`, so firing the Array
+--     would have sent a Factorio rocket up off the Core. control.lua already
+--     says what this machine does: "it delivers nothing -- it fires a current
+--     into the crust". It gets its own rocket below, with every sprite, flame
+--     and smoke plume emptied, so the launch is the game ending rather than a
+--     vehicle leaving.
+--   * `working_sound.sound_accents` -- four welder and metal-rotation accents
+--     fired on named frames of that same `crafting` visualisation. They are the
+--     sound of a rocket being welded together, and with the visualisation gone
+--     they are also a hard load error ("Working visualisation \"crafting\"
+--     doesn't exist"), because an accent names the visualisation it plays for.
+--     The ambient silo loop stays; the assembly accents go.
+array.graphics_set = { working_visualisations = {} }
+array.robot_door = util.empty_sprite()
+if array.working_sound then array.working_sound.sound_accents = nil end
+
+-- The thing that "launches", drawn as nothing.
+--
+-- `rocket_entity` is mandatory on a rocket-silo, so the Array cannot simply not
+-- have one. This is vanilla's rocket with its sprite, flame, glare, shadow and
+-- five smoke plumes all emptied, and its explosion removed: nothing rises, and
+-- what the player sees is the Array firing and the game ending.
+local ignition = table.deepcopy(data.raw["rocket-silo-rocket"]["rocket-silo-rocket"])
+ignition.name = "sae-ignition-discharge"
+for _, k in ipairs({
+  "rocket_sprite", "rocket_shadow_sprite", "rocket_glare_overlay_sprite",
+  "rocket_flame_animation", "rocket_flame_left_animation", "rocket_flame_right_animation",
+  "rocket_smoke_bottom1_animation", "rocket_smoke_bottom2_animation",
+  "rocket_smoke_top1_animation", "rocket_smoke_top2_animation", "rocket_smoke_top3_animation",
+}) do
+  if ignition[k] ~= nil then ignition[k] = util.empty_sprite() end
+end
+ignition.dying_explosion = nil
+ignition.shadow_slave_entity = nil
+ignition.glow_light = nil
+-- Three takeoff roars, inherited. The Core has no atmosphere to carry them and
+-- nothing leaves the pad, so the launch is silent.
+ignition.flying_sound = nil
+data:extend({ ignition })
+array.rocket_entity = "sae-ignition-discharge"
+
 -- Art. See graphics/building-spec-ignition-array.md sections 6.1 and 13.
 --
 -- Section 6.1 is the scoping decision and it still holds: vanilla's silo uses
@@ -243,12 +302,30 @@ array.satellite_animation = nil
 array.arm_01_back_animation = nil
 array.arm_02_right_animation = nil
 array.arm_03_front_animation = nil
--- `graphics_set.working_visualisations` is left inherited on purpose. The silo
--- names one of its entries -- "crafting" -- from elsewhere in the prototype, and
--- clearing the list makes the engine refuse to load with
--- `Working visualisation "crafting" doesn't exist`. Section 6.1 wants these
--- replaced by a derived glow; until that exists they stay, which is the one
--- piece of inherited launch furniture still drawn.
+-- The frozen set. Aquilo draws a second, iced copy of a building when it is
+-- cold, and the silo ships one: an iced hole, iced doors, an iced base and an
+-- iced front. Every sprite those ice over is emptied above, so what is left is
+-- a frozen picture of a rocket silo laid over an Array that has none of it. The
+-- Array is pressure-locked to the Core and can never freeze, so these can never
+-- correctly draw either.
+array.base_frozen = util.empty_sprite()
+array.base_front_frozen = util.empty_sprite()
+array.door_back_frozen = util.empty_sprite()
+array.door_front_frozen = util.empty_sprite()
+array.hole_frozen = util.empty_sprite()
+
+-- The launch sequence, heard but not seen. Vanilla's silo opens doors, releases
+-- clamps and raises a rocket, and has a sound for each. The Array does none of
+-- those things -- its doors, clamps and rocket are all emptied above -- so the
+-- sounds play over nothing moving. The alarms go with them: they warn the
+-- player to stand clear of a launch, and nothing here leaves the pad.
+array.doors_sound = nil
+array.clamps_on_sound = nil
+array.clamps_off_sound = nil
+array.raise_rocket_sound = nil
+array.alarm_sound = nil
+array.quick_alarm_sound = nil
+
 array.heating_energy = nil
 array.fast_replaceable_group = nil
 array.next_upgrade = nil
@@ -305,22 +382,36 @@ port.stationing_render_layer_swap_height = 1.62
 --     vanilla's roof doors across our dome, so they are emptied: the iris is
 --     drawn closed in `base` and simply stays closed.
 --
---     This was recorded as "wrong but quiet". It is not quiet. Measured against
---     vanilla: vanilla's door frame is 97 px, a 1.52 tile opening, and the
---     aperture drawn on our dome is a connected 46 x 36 px blob -- 0.72 x 0.56
---     tiles, 47% of vanilla's width and 45% of its area. A construction robot is
---     about half a tile across, so ours is barely wider than the robot coming
---     through it, and robots appear to squeeze out of a porthole.
---
---     Half of that is fixed here, by putting the spawn height on the iris
---     instead of on vanilla's mouth. The other half needs the plate redrawn with
---     the aperture at roughly 96 px -- 1.5 tiles -- to match what vanilla gives
---     a robot to fly through.
+--     The iris was drawn far too small to begin with, and it showed: robots
+--     appeared to squeeze out of a porthole. Measured the same way on both, the
+--     old aperture was 66% of the width vanilla gives a robot to fly through.
+--     The plate was edited -- not regenerated -- to open it to 80 x 69 px,
+--     1.25 x 1.08 tiles, which is 114% of vanilla's 70 x 64. The spawn heights
+--     below are measured off that edited plate.
 --   * `recharging_animation` -- vanilla draws its own contact arc at each
 --     charging offset. The docks are drawn in our plate at those offsets, but
 --     vanilla's arc is shaped for an open pad, so it is emptied too. The light
 --     stays, retinted to the amber of section 3.3, so an occupied dock still
 --     reads at night.
+--
+-- Two more inherited pictures are of vanilla's roboport rather than ours, and
+-- both are dropped rather than emptied because neither is required:
+--
+--   * `frozen_patch` -- the iced version of the ground patch. The patch itself
+--     is gone, and this port is pressure-locked to the Core, which never
+--     freezes.
+--   * `water_reflection` -- vanilla's squat silhouette mirrored in water. Wrong
+--     shape for a dome, and there is no water on the Core to hold it.
+port.frozen_patch = nil
+port.water_reflection = nil
+
+-- And the sound of doors that no longer move. `open_door_trigger_effect` and
+-- `close_door_trigger_effect` fire the roboport's door clunk on the animations
+-- emptied just above, so the port would clunk open and shut with the iris drawn
+-- shut throughout.
+port.open_door_trigger_effect = nil
+port.close_door_trigger_effect = nil
+
 local RBP = "__space-age-extended__/graphics/entity/sealed-roboport/"
 port.base =
 {

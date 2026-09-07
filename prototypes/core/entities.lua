@@ -43,6 +43,15 @@ pump.input_fluid_box =
     { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } }
   }
 }
+-- Inherited from the pumpjack: 10 pollution a minute. Same reasoning as the Bed
+-- Tender above -- the Core tracks no pollutant, so this is a tooltip line about
+-- an atmosphere that is not there.
+pump.energy_source.emissions_per_minute = nil
+
+-- Only the Core's vents, and only this machine on them. See the note beside the
+-- `sae-vent` resource category in resources.lua for what this closes.
+pump.resource_categories = { "sae-vent" }
+
 pump.fast_replaceable_group = nil
 pump.next_upgrade = nil
 data:extend({ pump })
@@ -57,6 +66,41 @@ plant.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
 plant.autoplace = { probability_expression = 0, tile_restriction = { "sae-whisker-bed" } }
 plant.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-kamacite-whiskers", amount = 4 } } }
 plant.map_color = { r = 0.75, g = 0.75, b = 0.80 }
+
+-- Five things `tree-plant` brought that describe a tree on Nauvis, all of which
+-- survived unnoticed because none of them stops the game loading:
+--
+--   * `localised_name` was `entity-name.tree`, and a hardcoded localised_name
+--     beats the locale file -- so locale/en/strings.cfg said "Kamacite whiskers"
+--     and the game said "Tree".
+--   * `order` was `a[tree]-c[nauvis]-...`, sorting it among Nauvis's forest.
+--     It stays in the `trees` subgroup, because that is what it is, but takes
+--     the `z[sae]-` order prefix every other prototype in this mod uses.
+--   * `colors` tint each planted instance at random, and vanilla's seven run
+--     white plus faint cyan, magenta, yellow, blue, red and green. That is
+--     foliage variety; on a single silvery mineral it grows pink and cyan
+--     whiskers. Replaced with three neutrals so a bed still varies without
+--     changing material.
+--   * `agricultural_tower_tint` is what the Bed Tender's crane flashes while
+--     handling the crop, inherited as Gleba's yellow-green.
+--   * `emissions_per_second` had it absorbing pollution. There is no
+--     pollutant on the Core at all -- `pollutant_type` is nil -- so it absorbs
+--     nothing anywhere it can be planted.
+plant.localised_name = nil
+plant.localised_description = nil
+plant.order = "z[sae]-a[whisker-plant]"
+plant.colors =
+{
+  { r = 255, g = 255, b = 255 },
+  { r = 236, g = 240, b = 245 },
+  { r = 245, g = 242, b = 236 }
+}
+plant.agricultural_tower_tint =
+{
+  primary = { r = 0.78, g = 0.80, b = 0.85, a = 1 },
+  secondary = { r = 0.48, g = 0.50, b = 0.55, a = 1 }
+}
+plant.emissions_per_second = nil
 
 -- Art. Inherited, this drew Gleba's planted tree -- so the Core's one crop grew
 -- as a tree, on a dead metal world with no air. See graphics/TODO.md section 6,
@@ -168,6 +212,11 @@ tender.name = "sae-bed-tender"
 tender.icon = "__space-age-extended__/graphics/icons/bed-tender.png"
 tender.minable = { mining_time = 0.5, result = "sae-bed-tender" }
 tender.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
+-- Gleba's tower vents 4 spores a minute, which is how its crop spreads. This
+-- one is locked to the Core, where `pollutant_type` is nil and nothing is
+-- tracked -- so the figure does nothing but sit in the tooltip claiming the
+-- machine seeds the air of a world that has none.
+tender.energy_source.emissions_per_minute = nil
 
 -- Centre the crane's pivot. Inherited it is {0.5, -0.55, 4.6} -- half a tile
 -- east and just over half north of the building's middle, because vanilla's

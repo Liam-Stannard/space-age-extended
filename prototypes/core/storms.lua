@@ -15,6 +15,10 @@ local arc = table.deepcopy(data.raw.lightning["lightning"])
 arc.name = "sae-arc"
 -- The strike itself is machinery, not something to browse.
 arc.hidden_in_factoriopedia = true
+-- Vanilla's lightning carries a Factoriopedia preview that strikes with
+-- `name = "lightning"`. The page it belongs to is hidden, so the preview can
+-- never be opened; it is inherited weight and nothing else.
+arc.factoriopedia_simulation = nil
 arc.damage = { amount = 600, type = "electric" }
 arc.energy = "4000MJ"
 data:extend({ arc })
@@ -24,7 +28,6 @@ data:extend({ arc })
 -- exception rather than the weather.
 local mast = table.deepcopy(data.raw["lightning-attractor"]["lightning-collector"])
 mast.name = "sae-arc-mast"
-mast.icon = "__space-age__/graphics/icons/lightning-collector.png"
 mast.minable = { mining_time = 0.5, result = "sae-arc-mast" }
 mast.efficiency = 0.35
 mast.range_elongation = 20
@@ -46,6 +49,20 @@ mast.energy_source =
 }
 mast.fast_replaceable_group = nil
 mast.next_upgrade = nil
+
+-- Two things the deepcopy brought that are pictures of a different building.
+--
+-- The Factoriopedia preview is a script, and the script names its entities:
+-- inherited, opening the mast's page built a vanilla *lightning-collector* on
+-- Fulgora and struck it with vanilla *lightning*. Both names are swapped for
+-- ours, so the page shows the machine it is the page for.
+--
+-- `water_reflection` is the collector's silhouette mirrored in water. It is the
+-- wrong silhouette for this mast, and there is no water on the Core to hold it.
+mast.factoriopedia_simulation.init = mast.factoriopedia_simulation.init
+  :gsub('name = "lightning%-collector"', 'name = "sae-arc-mast"')
+  :gsub('name = "lightning"', 'name = "sae-arc"')
+mast.water_reflection = nil
 
 -- Footprint. The collector this copies is 2x2 with a 1.4 collision box, and
 -- its art matches: vanilla's widest row is 144 px at scale 0.5, so 2.25 tiles

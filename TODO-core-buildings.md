@@ -58,11 +58,89 @@ here as they land; this file is deleted when the list is empty.
       figure compared our aperture interior against vanilla's **door sprite
       width** (97 px), which was not like-for-like. Measured the same way on both,
       the old aperture was **66%** of vanilla's. Too small either way.
-- [ ] **B3 · Audit every derived prototype for inherited leftovers.** The
-      Ignition Array is a `rocket-silo` and must not keep silo crafting
-      animations, launch furniture or anything else that describes a delivery it
-      never makes. Same sweep for the arc mast, vent pump, bed tender, sealed
-      roboport, whisker plant, radiant generator and superconducting store.
+- [x] **B3 · Audit every derived prototype for inherited leftovers — DONE.**
+      Fifteen `table.deepcopy` derivations swept mechanically, not by eye: one
+      script listing every field still pointing at a vanilla asset, a second
+      listing every field still byte-identical to its source. Both are kept at
+      `/tmp/claude-1000/audit/` and are cheap to re-run after any new derivation.
+
+      **Ignition Array** (`rocket-silo`) — the one named in the brief. It still
+      carried the six vanilla crafting visualisations: `crafting`,
+      `crafting-light`, an `engine` and *two steam plumes*, on a vacuum world
+      where nothing burns. Emptying them exposed a second reference —
+      `working_sound.sound_accents`, four welder and metal-rotation accents keyed
+      by name to frames of the `crafting` animation, which is a hard load error
+      once the animation is gone. Also cleared: `robot_door` (a silo roboport
+      hatch, with passive-provider-chest sounds), the five Aquilo `*_frozen`
+      sprites (an iced rocket silo laid over a machine that is pressure-locked to
+      the Core and can never freeze), and the launch-sequence audio —
+      `doors_sound`, `clamps_on/off_sound`, `raise_rocket_sound` and both alarms,
+      all of them the sound of machinery that is now drawn as nothing.
+      `rocket_entity` pointed at `rocket-silo-rocket`, so firing the Array sent a
+      Factorio rocket up off the Core; it now has `sae-ignition-discharge`, the
+      same rocket with every sprite, flame, glare, shadow and smoke plume emptied
+      and its three takeoff roars removed.
+
+      **Sealed roboport** — `frozen_patch` and `water_reflection` were vanilla's
+      squat silhouette, wrong shape for a dome and pointless on a world with no
+      ice and no water. `open_door_trigger_effect` / `close_door_trigger_effect`
+      clunked vanilla's doors open and shut over an iris that is drawn
+      permanently closed.
+
+      **Arc mast** — its Factoriopedia preview is a *script*, and inherited it
+      built a vanilla `lightning-collector` on screen and struck it with vanilla
+      `lightning`. Both names swapped for ours. `water_reflection` dropped, and a
+      duplicate assignment of the vanilla collector icon removed. Same preview
+      bug on both corridor asteroids, which launched a vanilla
+      `small-promethium-asteroid` across their own pages.
+
+      **Whisker plant** — the worst of the sweep, because none of it stops the
+      game loading. `localised_name = ["entity-name.tree"]` was inherited, and a
+      hardcoded localised name beats the locale file: `strings.cfg` said
+      "Kamacite whiskers" and the game said **"Tree"**. Its `order` filed it
+      among Nauvis's forest. Its seven random `colors` are foliage variety, so
+      the Core's one mineral crop grew pink and cyan whiskers; replaced with
+      three neutrals. `agricultural_tower_tint` was Gleba's yellow-green, which
+      is what the Bed Tender's crane flashes while handling it.
+
+      **Emissions** — the Bed Tender vented 4 spores/minute (Gleba's tower
+      spreading its crop) and the Vent Pump 10 pollution/minute. The Core sets no
+      `pollutant_type` at all, so both were tooltip lines about an atmosphere
+      that is not there.
+
+      **One real hole, found by the sweep and closed.** Both Core vents were
+      `basic-fluid` — the pumpjack's category — and a pumpjack has no surface
+      conditions, so a player could land on the Core, drop an ordinary pumpjack
+      on a melt vent and draw melt **for free**, walking straight past the
+      helium-3 price the Vent Pump exists to charge. The vents now have their own
+      `sae-vent` category and the Vent Pump takes only that, which closes it from
+      both ends (the Vent Pump also stops being a pumpjack for Nauvis crude).
+      Proven on the rig rather than argued: a `pumpjack` built on
+      `sae-melt-vent` reports **`no_minable_resources`** with `mining_target =
+      nil`, and a `sae-vent-pump` on the same tile reports
+      **`missing_required_fluid`** with `mining_target = sae-melt-vent`.
+
+      **Left inherited on purpose:** open/close and working sounds, circuit
+      connector sprites, corpses and explosions. Reusing vanilla audio and
+      connector art is ordinary modding, not a leftover.
+
+      **Two art questions raised, not decided** — see the note under the nine
+      buildings below.
+
+### Raised by the B3 sweep, for Liam to decide
+
+Neither is a leftover to delete — both are art calls, so they are written down
+rather than acted on.
+
+1. **The two corridor asteroids are visually identical to each other and to
+   vanilla's.** `sae-radiant-asteroid` and `sae-seeded-asteroid` are both
+   `small-promethium-asteroid` deepcopies and both still carry its graphics and
+   its icon, while their chunks got icons of their own. So a rock that has been
+   hit with a seed missile looks exactly like one that has not — and the player's
+   whole job out there is to tell them apart.
+2. **A seeded rock is promethium but breaks into carbonic chunks.**
+   `sae-seeded-chunk` is a `carbonic-asteroid-chunk` copy, so the parent and the
+   fragment are made of visibly different material.
 
 ## The nine buildings
 
