@@ -93,6 +93,13 @@ A sixth, new here and load-bearing for tiers 1 and 6:
   T11  ................................ IGNITION ARRAY .....................
 ```
 
+The sketch above is the shape only. The drawn version —
+[`diagrams/core-production-tree.html`](diagrams/core-production-tree.html), built
+by `tools/build-core-tree-diagram.py` — carries what this cannot: which boxes
+exist today against which are drafted, where the two rails enter and at which
+tier each capstone lands, and the marks from `07-sinks-and-dead-ends.md`.
+Regenerate it rather than editing it.
+
 ---
 
 ## T1 — Beneficiation

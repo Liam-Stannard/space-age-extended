@@ -1,0 +1,706 @@
+<title>Kamacite to Ignition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+:root {
+  --bg:#E4E7E3; --panel:#F4F6F2; --panel2:#DCE0DA; --band:#EDF0EA;
+  --ink:#14181A; --ink2:#525A56; --ink3:#8B948F; --rule:#C6CCC5;
+  --molten:#BF4A19; --molten-f:#BF4A1914; --helium:#2C7986;
+  --cor:#7C857F; --cor-f:#7C857F14;
+  --fa:#3A6BB0; --fa-f:#3A6BB014; --vf:#8B3E9C; --vf-f:#8B3E9C14;
+  --vg:#7A5E20; --vg-f:#7A5E2014; --fg:#2A8360; --fg-f:#2A836014;
+  --ga:#1B7C8A; --ga-f:#1B7C8A14;
+  --ok:#2A7A52; --ok-f:#2A7A5218; --warn:#9A6A15; --warn-f:#9A6A1518;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0F1211; --panel:#1A1E1C; --panel2:#232825; --band:#161A18;
+    --ink:#E7EBE6; --ink2:#A6B0AA; --ink3:#6E7A74; --rule:#2C322E;
+    --molten:#E8703A; --molten-f:#E8703A1F; --helium:#59B2C1;
+    --cor:#8B948E; --cor-f:#8B948E1A;
+    --fa:#6E9BE0; --fa-f:#6E9BE01F; --vf:#C173D2; --vf-f:#C173D21F;
+    --vg:#C0A055; --vg-f:#C0A0551F; --fg:#4FBD8C; --fg-f:#4FBD8C1F;
+    --ga:#45B0BF; --ga-f:#45B0BF1F;
+    --ok:#5CBF8B; --ok-f:#5CBF8B22; --warn:#D3A445; --warn-f:#D3A44522;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0F1211; --panel:#1A1E1C; --panel2:#232825; --band:#161A18;
+  --ink:#E7EBE6; --ink2:#A6B0AA; --ink3:#6E7A74; --rule:#2C322E;
+  --molten:#E8703A; --molten-f:#E8703A1F; --helium:#59B2C1;
+  --cor:#8B948E; --cor-f:#8B948E1A;
+  --fa:#6E9BE0; --fa-f:#6E9BE01F; --vf:#C173D2; --vf-f:#C173D21F;
+  --vg:#C0A055; --vg-f:#C0A0551F; --fg:#4FBD8C; --fg-f:#4FBD8C1F;
+  --ga:#45B0BF; --ga-f:#45B0BF1F;
+  --ok:#5CBF8B; --ok-f:#5CBF8B22; --warn:#D3A445; --warn-f:#D3A44522;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 15px/1.6 "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1290px; margin: 0 auto; padding: 40px 20px 72px; display: flex; flex-direction: column; gap: 48px; }
+.col { max-width: 68ch; }
+h1, h2, h3 { font-family: "IBM Plex Sans Condensed", "IBM Plex Sans", sans-serif; font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(34px, 5.5vw, 52px); line-height: 1.02; letter-spacing: -0.015em; }
+h2 { font-size: 25px; letter-spacing: -0.005em; }
+h3 { font-size: 16px; }
+p { margin: 0 0 14px; }
+p:last-child { margin-bottom: 0; }
+code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.86em; background: var(--panel2); padding: 1px 5px; border-radius: 2px; }
+em { font-style: italic; }
+.eyebrow {
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--molten); margin-bottom: 14px;
+}
+header .deck { font-size: 18px; line-height: 1.55; color: var(--ink2); margin-top: 18px; max-width: 62ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 22px;
+  font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink3); letter-spacing: 0.02em; }
+.facts b { color: var(--ink); font-weight: 500; }
+.rule { height: 1px; background: var(--rule); border: 0; margin: 0; }
+figure { margin: 0; }
+figcaption { font-size: 13px; color: var(--ink2); margin-top: 14px; max-width: 78ch; }
+.scroller { overflow-x: auto; padding-bottom: 6px; }
+svg.tree { width: 1250px; max-width: none; height: auto; display: block; }
+svg.pwr { width: 100%; max-width: 900px; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; margin-bottom: 18px;
+  font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 24px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw-built { background: var(--panel); border: 1px solid var(--ink); }
+.sw-draft { border: 1px dashed var(--ink3); }
+.sw-fluid { background: var(--panel); border: 1px solid var(--ink); border-radius: 6px; }
+.sw-cap { background: var(--vf-f); border: 1px solid var(--vf); border-left: 3px solid var(--vf); }
+.sw-loc { background: var(--molten); height: 3px; border-radius: 0; }
+.sw-term { background: var(--panel); border: 1px solid var(--ink); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--ink3); }
+.sw-loop { border-top: 2px dashed var(--helium); height: 0; }
+.badge-key { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px;
+  border-radius: 50%; background: var(--warn-f); border: 1px solid var(--warn); color: var(--warn);
+  font: 700 10px "IBM Plex Mono", monospace; font-style: normal; }
+
+/* ---- SVG type and marks ---- */
+.band { fill: var(--band); }
+.panel { fill: var(--panel); stroke: var(--rule); }
+.t-panelh { font: 500 11px "IBM Plex Mono", monospace; letter-spacing: 0.13em; fill: var(--ink3); }
+.t-src { font: 500 12px "IBM Plex Sans", sans-serif; fill: var(--ink); }
+.t-srcsub { font: 400 11.5px "IBM Plex Sans", sans-serif; fill: var(--ink3); }
+.t-node { font: 500 11.5px "IBM Plex Sans", sans-serif; fill: var(--ink); text-anchor: middle; }
+.t-note { font: 400 9.5px "IBM Plex Mono", monospace; fill: var(--ink3); text-anchor: middle; }
+.t-chip { font: 500 9.5px "IBM Plex Mono", monospace; }
+.t-chiptag { font: 500 9.5px "IBM Plex Mono", monospace; text-anchor: end; opacity: 0.8; }
+.t-chipsub { font: 500 9px "IBM Plex Mono", monospace; }
+.t-edge { font: 400 10px "IBM Plex Sans", sans-serif; fill: var(--ink2); }
+.t-tap { font: 500 10px "IBM Plex Mono", monospace; fill: var(--molten); }
+.t-stub { font: 400 9.5px "IBM Plex Mono", monospace; fill: var(--ink3); }
+.t-tnum { font: 700 15px "IBM Plex Mono", monospace; fill: var(--ink); text-anchor: end; }
+.t-tname { font: 500 9.5px "IBM Plex Mono", monospace; fill: var(--ink2); letter-spacing: 0.06em; text-anchor: end; }
+.t-tmach { font: 400 9.5px "IBM Plex Sans", sans-serif; fill: var(--ink3); text-anchor: end; }
+.t-rail { font: 500 10px "IBM Plex Mono", monospace; letter-spacing: 0.18em; fill: var(--ink3); text-anchor: middle; }
+.t-array { font: 700 17px "IBM Plex Sans Condensed", sans-serif; letter-spacing: 0.09em; fill: var(--molten); text-anchor: middle; }
+.t-arraysub { font: 400 10.5px "IBM Plex Mono", monospace; fill: var(--ink2); text-anchor: middle; }
+.t-vac { font: 400 10px "IBM Plex Sans", sans-serif; font-style: italic; fill: var(--ink3); }
+.n-built { fill: var(--panel); stroke: var(--ink); stroke-width: 1; }
+.n-draft { fill: none; stroke: var(--ink3); stroke-width: 1; stroke-dasharray: 5 3; }
+.n-array { fill: var(--molten-f); stroke: var(--molten); stroke-width: 1.5; }
+.n-term { fill: none; stroke: var(--ink3); stroke-width: 1; }
+.term-array { stroke: var(--molten); }
+.badge { fill: var(--warn-f); stroke: var(--warn); stroke-width: 1; }
+.t-badge { font: 700 10px "IBM Plex Mono", monospace; fill: var(--warn); text-anchor: middle; }
+.chip { stroke-width: 1; }
+.ed { fill: none; stroke: var(--ink3); stroke-width: 1; }
+.ed.tap { stroke: var(--molten); marker-end: url(#ahm); }
+.ed.molten { stroke: var(--molten); stroke-width: 1.5; marker-end: url(#ahm); }
+.ed.cor { stroke: var(--cor); }
+.ed.dash { stroke-dasharray: 4 3; }
+.ed.loop { stroke: var(--helium); stroke-dasharray: 6 3; marker-end: url(#ahh); }
+.ed.sci { stroke: var(--ink3); stroke-dasharray: 6 3; }
+.rail { fill: none; stroke: var(--rule); stroke-width: 5; stroke-linecap: round; }
+.rail-l { stroke: var(--molten); opacity: 0.32; }
+.head { fill: var(--ink3); }
+.head-m { fill: var(--molten); }
+.head-h { fill: var(--helium); }
+.lbl-bg { fill: var(--band); }
+
+/* ---- table ---- */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { font: 500 10.5px "IBM Plex Mono", monospace; letter-spacing: 0.11em; text-transform: uppercase;
+  color: var(--ink3); text-align: left; padding: 0 14px 8px 0; border-bottom: 1px solid var(--rule); }
+td { padding: 14px 14px 14px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:last-child, th:last-child { padding-right: 0; width: 92px; }
+.tk { width: 46px; }
+.tnum { font: 700 13px "IBM Plex Mono", monospace; color: var(--ink); }
+.tn { width: 250px; font-weight: 500; }
+.tm { font: 400 12px "IBM Plex Sans", sans-serif; color: var(--ink3); margin-top: 4px; }
+.ta { color: var(--ink2); font-size: 13.5px; line-height: 1.5; }
+.pill { display: inline-block; font: 500 10px "IBM Plex Mono", monospace; letter-spacing: 0.05em;
+  padding: 3px 7px; border-radius: 2px; white-space: nowrap; }
+.p-built { background: var(--ok-f); color: var(--ok); }
+.p-draft { background: var(--panel2); color: var(--ink3); }
+.p-mixed { background: var(--warn-f); color: var(--warn); }
+
+.risks { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 16px 40px; }
+.risk { border-top: 1px solid var(--rule); padding-top: 14px; }
+.rh { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.rh h3 { margin: 0; }
+.rh .pill { margin-left: auto; }
+.risk p { font-size: 13.5px; color: var(--ink2); line-height: 1.55; }
+.risk .when { font: 500 12px "IBM Plex Mono", monospace; color: var(--ink); margin-top: 10px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 34px; }
+.note h3 { margin-bottom: 8px; }
+.note p { font-size: 14px; color: var(--ink2); }
+.spine { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; line-height: 2.1; color: var(--ink2); }
+.spine b { color: var(--ink); font-weight: 500; }
+.spine .arw { color: var(--molten); padding: 0 4px; }
+footer { font-size: 12.5px; color: var(--ink3); }
+footer a { color: var(--ink2); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Space Age Extended · the Core of the Shattered Planet</div>
+  <h1>Kamacite to Ignition</h1>
+  <p class="deck">The Core's whole production line, drawn end to end: what the planet gives you,
+  what the corridor has to carry, and the eleven tiers between a vent and the array that ends the game.
+  Solid boxes are in the mod today; dashed boxes are the draft in
+  <code>design/06&#8209;core&#8209;production&#8209;tree.md</code>.</p>
+  <div class="facts">
+    <span><b>11</b> tiers</span><span><b>34</b> nodes</span>
+    <span><b>3</b> stages deep today &rarr; <b>10</b> drafted</span>
+    <span><b>5</b> capstones, entering at T5, T6 and T7</span>
+    <span><b>100</b> segments to fire</span>
+  </div>
+</header>
+
+<hr class="rule">
+
+<figure>
+  <div class="legend">
+    <span><i class="sw sw-built"></i>built</span>
+    <span><i class="sw sw-draft"></i>drafted</span>
+    <span><i class="sw sw-fluid"></i>fluid</span>
+    <span><i class="sw sw-cap"></i>arrives by freight</span>
+    <span><i class="sw sw-loc"></i>local resource</span>
+    <span><i class="sw sw-term"></i>the line ends here</span>
+    <span><i class="sw sw-loop"></i>recovered and reused</span>
+    <span><i class="badge-key">!</i>can stall or dead-end</span>
+  </div>
+  <div class="scroller"><svg viewBox="0 0 1270 1610" role="img" class="tree" aria-label="The Core of the Shattered Planet, eleven production tiers deep. Kamacite ore and two vents enter from a local rail on the left; carbon, an electromagnetic plant and the five cross-planet capstone products enter from a corridor freight rail on the right. Beneficiation feeds primary metallurgy, carbonyl chemistry, orbital crystal growth, whisker fibre, cryogenics, five capstone integrations, subassemblies and major assemblies, ending in the Field Coil Segment and the Ignition Array.">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1.2 L 8.6 5 L 0 8.8 z" class="head"/></marker><marker id="ahm" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1.2 L 8.6 5 L 0 8.8 z" class="head-m"/></marker><marker id="ahh" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1.2 L 8.6 5 L 0 8.8 z" class="head-h"/></marker></defs>
+<rect class="band" x="10" y="190" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="308" width="1250" height="98" rx="3"/>
+<rect class="band" x="10" y="426" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="544" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="662" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="780" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="898" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="1016" width="1250" height="160" rx="3"/>
+<rect class="band" x="10" y="1202" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="1320" width="1250" height="92" rx="3"/>
+<rect class="band" x="10" y="1438" width="1250" height="104" rx="3"/>
+<rect class="panel" x="24" y="34" width="588" height="140" rx="4"/>
+<rect class="panel" x="658" y="34" width="588" height="140" rx="4"/>
+<text class="t-panelh" style="fill:var(--molten)" x="44" y="58">LOCAL — THE CORE’S OWN GROUND</text>
+<text class="t-panelh" x="678" y="58">FREIGHT — WHAT THE CORRIDOR CARRIES</text>
+<circle cx="48" cy="78" r="3" style="fill:var(--molten)"/>
+<text class="t-src" x="60" y="82">Kamacite ore</text>
+<text class="t-srcsub" x="148" y="82">the only solid ore, sited in the starting area</text>
+<circle cx="48" cy="99" r="3" style="fill:var(--molten)"/>
+<text class="t-src" x="60" y="103">Molten kamacite vent</text>
+<text class="t-srcsub" x="200" y="103">drawing it costs helium-3</text>
+<circle cx="48" cy="120" r="3" style="fill:var(--molten)"/>
+<text class="t-src" x="60" y="124">Helium-3 vent</text>
+<text class="t-srcsub" x="154" y="124">rare — it throttles the rich one</text>
+<circle cx="48" cy="141" r="3" style="fill:var(--molten)"/>
+<text class="t-src" x="60" y="145">Radiant chunks</text>
+<text class="t-srcsub" x="161" y="145">seeded from the Edge; fuel, not metal</text>
+<circle cx="682" cy="78" r="3" style="fill:var(--ink3)"/>
+<text class="t-src" x="694" y="82">Carbon</text>
+<text class="t-srcsub" x="743" y="82">the carbonyl carrier — about 90% comes back</text>
+<circle cx="682" cy="99" r="3" style="fill:var(--ink3)"/>
+<text class="t-src" x="694" y="103">Electromagnetic plant</text>
+<text class="t-srcsub" x="840" y="103">magnetic-field = 0: it cannot be built here</text>
+<circle cx="682" cy="120" r="3" style="fill:var(--ink3)"/>
+<text class="t-src" x="694" y="124">Five capstone products</text>
+<text class="t-srcsub" x="847" y="124">one per cross-planet tree</text>
+<rect x="698" y="148" width="54" height="18" rx="2" style="fill:var(--fa-f);stroke:var(--fa)"/>
+<text class="t-chip" style="fill:var(--fa);text-anchor:middle" x="725" y="161">F↔A</text>
+<text class="t-chip" style="fill:var(--ink3)" x="758" y="161">at T7</text>
+<rect x="804" y="148" width="54" height="18" rx="2" style="fill:var(--vf-f);stroke:var(--vf)"/>
+<text class="t-chip" style="fill:var(--vf);text-anchor:middle" x="831" y="161">V↔F</text>
+<text class="t-chip" style="fill:var(--ink3)" x="864" y="161">at T7</text>
+<rect x="910" y="148" width="54" height="18" rx="2" style="fill:var(--vg-f);stroke:var(--vg)"/>
+<text class="t-chip" style="fill:var(--vg);text-anchor:middle" x="937" y="161">V↔G</text>
+<text class="t-chip" style="fill:var(--ink3)" x="970" y="161">at T7</text>
+<rect x="1016" y="148" width="54" height="18" rx="2" style="fill:var(--fg-f);stroke:var(--fg)"/>
+<text class="t-chip" style="fill:var(--fg);text-anchor:middle" x="1043" y="161">F↔G</text>
+<text class="t-chip" style="fill:var(--ink3)" x="1076" y="161">at T5</text>
+<rect x="1122" y="148" width="54" height="18" rx="2" style="fill:var(--ga-f);stroke:var(--ga)"/>
+<text class="t-chip" style="fill:var(--ga);text-anchor:middle" x="1149" y="161">G↔A</text>
+<text class="t-chip" style="fill:var(--ink3)" x="1182" y="161">at T6</text>
+<path class="rail rail-l" d="M 178 174 L 178 850"/>
+<path class="rail" d="M 1200 174 L 1200 900"/>
+<text class="t-rail" style="fill:var(--molten)" transform="rotate(-90 164 560)" x="164" y="560">LOCAL RESOURCES</text>
+<text class="t-rail" transform="rotate(-90 1218 570)" x="1218" y="570">CORRIDOR FREIGHT</text>
+<text class="t-tnum" x="150" y="245">T1</text>
+<text class="t-tname" x="150" y="260">BENEFICIATION</text>
+<text class="t-tmach" x="150" y="273">crusher · EM plant</text>
+<rect class="n-draft" x="250" y="230" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="256">Crushed kamacite</text>
+<rect class="n-draft" x="428" y="230" width="148" height="44" rx="3"/>
+<circle class="badge" cx="565" cy="242" r="7.5"/>
+<text class="t-badge" x="565" y="246">!</text>
+<text class="t-node" x="502" y="256">Kamacite fines</text>
+<rect class="n-draft" x="784" y="230" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="250">Schreibersite</text>
+<text class="t-node" x="858" y="262">concentrate</text>
+<rect class="chip" style="fill:var(--cor-f);stroke:var(--cor);stroke-dasharray:4 3" x="792" y="192" width="132" height="26" rx="2"/>
+<rect style="fill:var(--cor)" x="792" y="192" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--cor)" x="803" y="209">electromagnetic plant</text>
+<path class="ed cor" d="M 1200 205 L 927 205" marker-end="url(#ah)"/>
+<path class="ed dash" d="M 858 218 L 858 230" marker-end="url(#ah)"/>
+<path class="ed tap" d="M 178 205 L 279 205 L 279 230" marker-end="url(#ah)"/>
+<text class="t-tap" x="188" y="198">kamacite ore</text>
+<path class="ed" d="M 398 252 L 425 252" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="387" y="213" width="52" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="413" y="223">tailings</text>
+<path class="ed" d="M 576 252 L 781 252" marker-end="url(#ah)"/>
+<text class="t-edge" style="text-anchor:middle" x="680" y="244">magnetic separation</text>
+<text class="t-tnum" x="150" y="363">T2</text>
+<text class="t-tname" x="150" y="378">PRIMARY METALLURGY</text>
+<text class="t-tmach" x="150" y="391">foundry · gravity ≥ 45</text>
+<rect class="n-built" x="250" y="348" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="374">Kamacite plate</text>
+<text class="t-note" x="324" y="405">today: 2 raw ore, skipping T1</text>
+<rect class="n-built" x="428" y="348" width="148" height="44" rx="21"/>
+<text class="t-node" x="502" y="374">Settled melt</text>
+<rect class="n-built" x="606" y="348" width="148" height="44" rx="3"/>
+<circle class="badge" cx="743" cy="360" r="7.5"/>
+<text class="t-badge" x="743" y="364">!</text>
+<text class="t-node" x="680" y="374">Dross</text>
+<rect class="n-built" x="784" y="348" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="374">Cast ingot</text>
+<rect class="n-draft" x="962" y="348" width="148" height="44" rx="3"/>
+<text class="t-node" x="1036" y="374">Phosphide flux</text>
+<path class="ed tap" d="M 178 323 L 457 323 L 457 348" marker-end="url(#ah)"/>
+<text class="t-tap" x="188" y="316">molten kamacite · 100</text>
+<path class="ed" d="M 324 274 L 324 348" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="324" y="287" width="58" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="329" y="296">3 crushed</text>
+<path class="ed" d="M 576 362 L 603 362" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="558" y="331" width="66" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="591" y="341">2 per settle</text>
+<path class="ed loop" d="M 606 378 L 579 378" marker-end="url(#ah)"/>
+<path class="ed" d="M 502 392 L 502 404 L 858 404 L 858 392" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="627" y="407" width="105" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="680" y="416">100 melt → 1 ingot</text>
+<path class="ed" d="M 542 392 L 542 418 L 1036 418 L 1036 392" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="877" y="421" width="74" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="946" y="430">settled melt</text>
+<path class="ed" d="M 858 274 L 858 300 L 1036 300 L 1036 348" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="970" y="303" width="63" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="1028" y="312">phosphorus</text>
+<text class="t-tnum" x="150" y="481">T3</text>
+<text class="t-tname" x="150" y="496">CARBONYL CHEMISTRY</text>
+<text class="t-tmach" x="150" y="509">chemical plant</text>
+<rect class="n-draft" x="250" y="466" width="148" height="44" rx="21"/>
+<text class="t-node" x="324" y="492">Carbon monoxide</text>
+<rect class="n-draft" x="428" y="466" width="148" height="44" rx="21"/>
+<text class="t-node" x="502" y="492">Metal carbonyl</text>
+<rect class="n-draft" x="606" y="466" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="492">Carbonyl powder</text>
+<rect class="n-draft" x="784" y="466" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="492">Sintered preform</text>
+<rect class="chip" style="fill:var(--cor-f);stroke:var(--cor)" x="250" y="428" width="100" height="26" rx="2"/>
+<rect style="fill:var(--cor)" x="250" y="428" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--cor)" x="261" y="445">carbon</text>
+<path class="ed cor" d="M 1200 441 L 353 441" marker-end="url(#ah)"/>
+<path class="ed" d="M 300 454 L 300 466" marker-end="url(#ah)"/>
+<path class="ed" d="M 502 392 L 502 440 L 376 440 L 376 466" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="427" y="443" width="74" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="496" y="452">settled melt</text>
+<path class="ed" d="M 502 274 L 502 290 L 413 290 L 413 488 L 425 488" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="328" y="321" width="84" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="407" y="330">kamacite fines</text>
+<path class="ed" d="M 398 488 L 425 488" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="397" y="449" width="31" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="413" y="459">cold</text>
+<path class="ed" d="M 576 488 L 603 488" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="578" y="449" width="26" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="591" y="459">hot</text>
+<path class="ed" d="M 754 488 L 781 488" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="745" y="449" width="47" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="769" y="459">pressed</text>
+<path class="ed loop" d="M 650 510 L 650 528 L 324 528 L 324 510" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="396" y="531" width="211" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="502" y="540">≈90% of the carbon monoxide comes back</text>
+<path class="ed" d="M 1036 392 L 1036 488 L 935 488" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="949" y="471" width="84" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="1028" y="480">phosphide flux</text>
+<text class="t-tnum" x="150" y="599">T4</text>
+<text class="t-tname" x="150" y="614">ORBITAL CRYSTAL</text>
+<text class="t-tmach" x="150" y="627">in orbit · gravity 0</text>
+<rect class="n-built" x="962" y="584" width="148" height="44" rx="3"/>
+<text class="t-node" x="1036" y="610">Homogenised ingot</text>
+<rect class="n-draft" x="784" y="584" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="610">Zone-refined boule</text>
+<rect class="n-draft" x="606" y="584" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="610">Kamacite wafer</text>
+<path class="ed" d="M 858 392 L 858 410 L 941 410 L 941 606 L 959 606" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="942" y="511" width="79" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="947" y="520">cast ingot ×2</text>
+<path class="ed" d="M 962 606 L 935 606" marker-end="url(#ah)"/>
+<text class="t-edge" style="text-anchor:middle" x="947" y="598">zoned</text>
+<path class="ed" d="M 784 606 L 757 606" marker-end="url(#ah)"/>
+<text class="t-edge" style="text-anchor:middle" x="769" y="598">sliced</text>
+<path class="ed tap" d="M 178 559 L 813 559 L 813 584" marker-end="url(#ah)"/>
+<text class="t-tap" x="188" y="552">helium-3 — the rare vent reaches orbit</text>
+<text class="t-tnum" x="150" y="717">T5</text>
+<text class="t-tname" x="150" y="732">FIBRE AND COMPOSITE</text>
+<text class="t-tmach" x="150" y="745">whisker beds · tender</text>
+<rect class="n-built" x="250" y="702" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="728">Seed plate</text>
+<rect class="n-built" x="428" y="702" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="728">Kamacite whiskers</text>
+<rect class="n-draft" x="606" y="702" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="728">Whisker tow</text>
+<rect class="n-draft" x="784" y="702" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="728">Whisker prepreg</text>
+<rect class="n-draft" x="962" y="702" width="148" height="44" rx="3"/>
+<text class="t-node" x="1036" y="728">Whisker felt</text>
+<rect class="chip" style="fill:var(--fg-f);stroke:var(--fg)" x="800" y="664" width="120" height="26" rx="2"/>
+<rect style="fill:var(--fg)" x="800" y="664" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--fg)" x="811" y="681">bio-polymer</text>
+<text class="t-chiptag" style="fill:var(--fg)" x="912" y="681">F↔G</text>
+<path class="ed cor" d="M 1200 677 L 923 677" marker-end="url(#ah)"/>
+<path class="ed" d="M 860 690 L 860 702" marker-end="url(#ah)"/>
+<path class="ed" d="M 324 392 L 324 410 L 232 410 L 232 724 L 247 724" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="233" y="639" width="100" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="238" y="648">1 plate + 20 melt</text>
+<path class="ed" d="M 606 370 L 591 370 L 591 690 L 542 690 L 542 702" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="592" y="639" width="127" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="597" y="648">beds are made of dross</text>
+<path class="ed" d="M 398 724 L 425 724" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="376" y="685" width="74" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="413" y="695">grown, 4 min</text>
+<path class="ed" d="M 576 724 L 603 724" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="570" y="685" width="42" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="591" y="695">combed</text>
+<path class="ed" d="M 754 724 L 781 724" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="748" y="685" width="42" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="769" y="695">matrix</text>
+<path class="ed" d="M 542 746 L 542 768 L 1036 768 L 1036 746" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="615" y="771" width="111" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="670" y="780">uncombed, low grade</text>
+<text class="t-tnum" x="150" y="835">T6</text>
+<text class="t-tname" x="150" y="850">CRYOGENICS</text>
+<text class="t-tmach" x="150" y="863">cryogenic plant</text>
+<rect class="n-draft" x="250" y="820" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="846">Dilution charge</text>
+<rect class="n-draft" x="428" y="820" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="846">Cryostat core</text>
+<rect class="chip" style="fill:var(--ga-f);stroke:var(--ga)" x="266" y="782" width="132" height="26" rx="2"/>
+<rect style="fill:var(--ga)" x="266" y="782" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--ga)" x="277" y="799">cryoprotectant</text>
+<text class="t-chiptag" style="fill:var(--ga)" x="390" y="799">G↔A</text>
+<path class="ed cor" d="M 1200 795 L 401 795" marker-end="url(#ah)"/>
+<path class="ed" d="M 332 808 L 332 820" marker-end="url(#ah)"/>
+<path class="ed tap" d="M 178 842 L 247 842" marker-end="url(#ah)"/>
+<text class="t-tap" x="188" y="835">helium-3</text>
+<path class="ed" d="M 398 842 L 425 842" marker-end="url(#ah)"/>
+<path class="ed" d="M 858 510 L 858 528 L 1150 528 L 1150 842 L 579 842" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="1054" y="651" width="95" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="1144" y="660">sintered preform</text>
+<path class="ed" d="M 1036 746 L 1036 790 L 547 790 L 547 820" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="872" y="775" width="142" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:end" x="1010" y="784">whisker felt — insulation</text>
+<text class="t-tnum" x="150" y="953">T7</text>
+<text class="t-tname" x="150" y="968">THE FIVE INTEGRATIONS</text>
+<text class="t-tmach" x="150" y="981">one local mechanic each</text>
+<rect class="n-built" x="250" y="938" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="964">Field conductor</text>
+<rect class="n-built" x="428" y="938" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="964">Magnetic core billet</text>
+<text class="t-note" x="502" y="995">+ settled melt &amp; flux, T2</text>
+<rect class="n-built" x="606" y="938" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="964">Reinforced frame</text>
+<rect class="n-term" x="958" y="934" width="156" height="52" rx="5"/>
+<rect class="n-built" x="962" y="938" width="148" height="44" rx="3"/>
+<text class="t-node" x="1036" y="958">Geodynamic</text>
+<text class="t-node" x="1036" y="970">science pack</text>
+<path class="ed cor" d="M 1200 894 L 319 894" marker-end="url(#ah)"/>
+<rect class="chip" style="fill:var(--fa-f);stroke:var(--fa)" x="250" y="900" width="176" height="26" rx="2"/>
+<rect style="fill:var(--fa)" x="250" y="900" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--fa)" x="261" y="917">superconducting winding</text>
+<text class="t-chiptag" style="fill:var(--fa)" x="418" y="917">F↔A</text>
+<path class="ed cor" d="M 338 894 L 338 900" marker-end="url(#ah)"/>
+<path class="ed" d="M 338 926 L 338 938" marker-end="url(#ah)"/>
+<rect class="chip" style="fill:var(--vf-f);stroke:var(--vf)" x="428" y="900" width="128" height="26" rx="2"/>
+<rect style="fill:var(--vf)" x="428" y="900" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--vf)" x="439" y="917">magnetar alloy</text>
+<text class="t-chiptag" style="fill:var(--vf)" x="548" y="917">V↔F</text>
+<path class="ed cor" d="M 492 894 L 492 900" marker-end="url(#ah)"/>
+<path class="ed" d="M 492 926 L 492 938" marker-end="url(#ah)"/>
+<rect class="chip" style="fill:var(--vg-f);stroke:var(--vg)" x="606" y="900" width="128" height="26" rx="2"/>
+<rect style="fill:var(--vg)" x="606" y="900" width="3" height="26"/>
+<text class="t-chip" style="fill:var(--vg)" x="617" y="917">cultured alloy</text>
+<text class="t-chiptag" style="fill:var(--vg)" x="726" y="917">V↔G</text>
+<path class="ed cor" d="M 670 894 L 670 900" marker-end="url(#ah)"/>
+<path class="ed" d="M 670 926 L 670 938" marker-end="url(#ah)"/>
+<path class="ed" d="M 680 628 L 680 660 L 208 660 L 208 960 L 247 960" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="209" y="871" width="84" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="214" y="880">kamacite wafer</text>
+<path class="ed" d="M 858 746 L 858 912 L 725 912 L 725 938" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="865" y="899" width="90" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="870" y="908">whisker prepreg</text>
+<path class="ed sci" d="M 364 982 L 364 1004 L 1036 1004 L 1036 986" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="612" y="1009" width="296" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:middle" x="760" y="1018">research: 1 conductor + 1 frame + 4 whiskers → 5 packs</text>
+<text class="t-tnum" x="150" y="1071">T8</text>
+<text class="t-tname" x="150" y="1086">SUBASSEMBLIES</text>
+<text class="t-tmach" x="150" y="1099">assembler · cold weld</text>
+<rect class="n-draft" x="250" y="1056" width="148" height="44" rx="3"/>
+<text class="t-node" x="324" y="1082">Winding pack</text>
+<rect class="n-draft" x="428" y="1056" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="1082">Coil lamination</text>
+<rect class="n-built" x="606" y="1056" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="1082">Insulation sleeve</text>
+<rect class="n-built" x="784" y="1056" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="1082">Coolant charge</text>
+<rect class="n-built" x="250" y="1124" width="148" height="44" rx="3"/>
+<circle class="badge" cx="387" cy="1136" r="7.5"/>
+<text class="t-badge" x="387" y="1140">!</text>
+<text class="t-node" x="324" y="1150">Welded plate</text>
+<rect class="n-draft" x="428" y="1124" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="1150">Vacuum cell</text>
+<path class="ed" d="M 324 982 L 324 1056" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="324" y="997" width="90" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="329" y="1006">field conductor</text>
+<path class="ed" d="M 428 842 L 413 842 L 413 1078 L 401 1078" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="414" y="1031" width="79" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="419" y="1040">cryostat core</text>
+<path class="ed" d="M 1150 842 L 1150 1018 L 502 1018 L 502 1056" marker-end="url(#ah)"/>
+<path class="ed" d="M 324 864 L 324 876 L 591 876 L 591 1030 L 898 1030 L 898 1056" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="592" y="1031" width="90" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="597" y="1040">dilution charge</text>
+<path class="ed" d="M 858 912 L 858 1042 L 725 1042 L 725 1056" marker-end="url(#ah)"/>
+<path class="ed" d="M 220 1146 L 247 1146" marker-end="url(#ah)"/>
+<text class="t-stub" style="text-anchor:end" x="214" y="1142">T2 plate ×4</text>
+<text class="t-stub" style="text-anchor:end" x="214" y="1153">+ T5 whiskers ×2</text>
+<path class="ed" d="M 502 1100 L 502 1124" marker-end="url(#ah)"/>
+<path class="ed" d="M 680 1100 L 680 1112 L 547 1112 L 547 1124" marker-end="url(#ah)"/>
+<text class="t-vac" x="438" y="1182">sealed in vacuum — free here, expensive anywhere else</text>
+<text class="t-tnum" x="150" y="1257">T9</text>
+<text class="t-tname" x="150" y="1272">MAJOR ASSEMBLIES</text>
+<text class="t-tmach" x="150" y="1285">assembler · cold weld</text>
+<rect class="n-built" x="428" y="1242" width="148" height="44" rx="3"/>
+<text class="t-node" x="502" y="1268">Coil assembly</text>
+<rect class="n-built" x="784" y="1242" width="148" height="44" rx="3"/>
+<text class="t-node" x="858" y="1268">Coolant loop</text>
+<path class="ed" d="M 368 1100 L 368 1112 L 405 1112 L 405 1214 L 457 1214 L 457 1242" marker-end="url(#ah)"/>
+<path class="ed" d="M 502 1168 L 502 1242" marker-end="url(#ah)"/>
+<path class="ed" d="M 858 1100 L 858 1242" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="858" y="1161" width="84" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="863" y="1170">+ T2 plate ×10</text>
+<path class="ed" d="M 398 1264 L 425 1264" marker-end="url(#ah)"/>
+<text class="t-stub" style="text-anchor:end" x="392" y="1260">T7 billet + frame,</text>
+<text class="t-stub" style="text-anchor:end" x="392" y="1271">T8 welded plate ×2</text>
+<path class="ed" d="M 754 1264 L 781 1264" marker-end="url(#ah)"/>
+<text class="t-stub" style="text-anchor:end" x="748" y="1260">T6 cryostat core</text>
+<text class="t-tnum" x="150" y="1375">T10</text>
+<text class="t-tname" x="150" y="1390">THE SEGMENT</text>
+<text class="t-tmach" x="150" y="1403">the array itself</text>
+<rect class="n-built" x="606" y="1360" width="148" height="44" rx="3"/>
+<text class="t-node" x="680" y="1386">Field Coil Segment</text>
+<path class="ed" d="M 502 1286 L 502 1330 L 640 1330 L 640 1360" marker-end="url(#ah)"/>
+<path class="ed" d="M 858 1286 L 858 1330 L 720 1330 L 720 1360" marker-end="url(#ah)"/>
+<text class="t-tnum" x="150" y="1493">T11</text>
+<text class="t-tname" x="150" y="1508">IGNITION</text>
+<text class="t-tmach" x="150" y="1521">fires once</text>
+<rect class="n-term term-array" x="424" y="1474" width="512" height="66" rx="5"/>
+<rect class="n-array" x="428" y="1478" width="504" height="58" rx="3"/>
+<text class="t-array" x="680" y="1504">IGNITION ARRAY</text>
+<text class="t-arraysub" x="680" y="1523">100 segments · 50 MW while it runs · the game is won</text>
+<path class="ed molten" d="M 680 1404 L 680 1474" marker-end="url(#ah)"/>
+<rect class="lbl-bg" x="681" y="1431" width="36" height="12" rx="2"/>
+<text class="t-edge" style="text-anchor:start" x="686" y="1440">× 100</text>
+<path class="ed" d="M 398 1500 L 425 1500" marker-end="url(#ah)"/>
+<text class="t-stub" style="text-anchor:end" x="392" y="1496">arc mast ×4, welded plate ×200,</text>
+<text class="t-stub" style="text-anchor:end" x="392" y="1507">kamacite plate ×500, proc. unit ×200</text>
+</svg></div>
+  <figcaption><strong>Figure 1.</strong> Every tier is anchored on something the Core has or lacks, and reads
+  left to right within itself, top to bottom between tiers. The two rails are the point of the planet: nothing
+  organic, wet or combustible is on the left, and the right-hand rail never stops running — carbon is recovered
+  at about 90%, not consumed once. Two capstones (bio-polymer and cryoprotectant) enter deep in the line rather
+  than at the last moment, so a lagging cross-planet tree starves the Core early and visibly. Two kinds of mark were
+  added after tracing every sink: a double edge where the line genuinely ends, and an amber <strong>!</strong>
+  where a product can back up and stall the tier that makes it.</figcaption>
+</figure>
+
+<hr class="rule">
+
+<section>
+  <h2>Where it can stall</h2>
+  <p class="col" style="color:var(--ink2);margin:10px 0 26px">Nothing in the mod is orphaned — the three
+  products no recipe consumes are taken by the silo's rocket parts, by research, and by being fired. What is
+  worth watching is the shape of the sinks: an output that cannot leave stops the recipe that made it, and two
+  of the Core's outputs are unconditional.</p>
+  <div class="risks">
+    <div class="risk">
+      <div class="rh"><span class="badge-key">!</span><h3>Steam</h3><span class="pill p-mixed">built line</span></div>
+      <p>Both settling recipes emit it every craft — 150 metal-heavy, 900 quenched — and nothing in the mod
+      consumes it. Its only sink is a vanilla turbine, which stops drawing the moment the grid is satisfied. A
+      well-powered Core therefore stalls its own settling, and settling is the root of the whole tree.</p>
+      <p class="when">Decide during balancing: feature, or defect needing a steam sink that is not power.</p>
+    </div>
+    <div class="risk">
+      <div class="rh"><span class="badge-key">!</span><h3>Dross</h3><span class="pill p-mixed">built line</span></div>
+      <p>Two per settle, into an item slot that blocks when full. Whisker beds are a one-time cost, so
+      resettling is the only steady sink — about one resettler per seven vessels, for 4% more molten kamacite.
+      The ratio works; what matters is that it is mandatory rather than an efficiency nicety.</p>
+      <p class="when">Make its necessity legible rather than discoverable by stalling.</p>
+    </div>
+    <div class="risk">
+      <div class="rh"><span class="badge-key">!</span><h3>Kamacite fines</h3><span class="pill p-draft">created by the draft</span></div>
+      <p>T1 makes them as tailings and T3's metal carbonyl is their only sink — while the same draft routes
+      kamacite plate through crushed ore, so beneficiation stops being optional. Build T1 before T3, as the
+      draft's own order suggests, and the crusher backs up and takes plate with it.</p>
+      <p class="when">Before implementing T1: give fines a sink that exists at T1, or land T3 alongside it.</p>
+    </div>
+    <div class="risk">
+      <div class="rh"><span class="badge-key">!</span><h3>Welded plate</h3><span class="pill p-draft">created by the draft</span></div>
+      <p>Today the coil assembly consumes two, which keeps cold welding on every segment's critical path. The
+      draft's T9 assembly drops it, leaving only arc masts, the roboport and the array — all one-time builds.
+      One of the Core's four signature mechanics then quietly runs out of work.</p>
+      <p class="when">Before implementing T8–T9: keep it in the coil assembly, or route it into the vacuum cell.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section>
+  <h2>Tier by tier</h2>
+  <p class="col" style="color:var(--ink2);margin-top:10px;margin-bottom:24px">Each step earns its place by a
+  mechanic rather than by length. The test: if this step were deleted, would the player notice anything other
+  than fewer clicks?</p>
+  <table>
+    <thead><tr><th></th><th>Tier</th><th>Anchored on</th><th>State</th></tr></thead>
+    <tbody>
+<tr><td class="tk"><span class="tnum">T1</span></td><td class="tn">Beneficiation<div class="tm">Crushed kamacite, kamacite fines, schreibersite concentrate</div></td><td class="ta">The dead dynamo. Magnetic separation needs an electromagnetic plant, and <code>magnetic-field = 0</code> refuses to let one be manufactured here — so the first one arrives by freight.</td><td><span class="pill p-draft">drafted</span></td></tr>
+<tr><td class="tk"><span class="tnum">T2</span></td><td class="tn">Primary metallurgy<div class="tm">Kamacite plate, settled melt, dross, cast ingot, phosphide flux</div></td><td class="ta">Gravity. Settling only runs at <code>gravity ≥ 45</code>, which is the Core alone — Vulcanus, the next heaviest, is 40. 100 molten kamacite gives either 60 melt + 150 steam or 25 melt + 900 steam.</td><td><span class="pill p-mixed">part built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T3</span></td><td class="tn">Carbonyl chemistry<div class="tm">Carbon monoxide, metal carbonyl, carbonyl powder, sintered preform</div></td><td class="ta">No carbon. Metal that travels through pipes: nickel and CO combine cold and separate hot, returning about 90% of the carbon monoxide. The corridor delivers a trickle, permanently.</td><td><span class="pill p-draft">drafted</span></td></tr>
+<tr><td class="tk"><span class="tnum">T4</span></td><td class="tn">Orbital crystal growth<div class="tm">Homogenised ingot, zone-refined boule, kamacite wafer</div></td><td class="ta">No gravity in orbit. A boule grown under 50 g slumps under its own weight; helium-3 rides the lift up as the cold end of the zone.</td><td><span class="pill p-mixed">part built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T5</span></td><td class="tn">Fibre and composite<div class="tm">Seed plate, kamacite whiskers, whisker tow, prepreg, felt</div></td><td class="ta">The farm. Single-crystal fibres are absurdly strong in one direction and useless in the others, so combing is a real step — and what is not worth combing becomes felt.</td><td><span class="pill p-mixed">part built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T6</span></td><td class="tn">Cryogenics<div class="tm">Dilution charge, cryostat core</div></td><td class="ta">The rare vent. Helium-3 stops being only a gate on the melt and becomes a product: every superconducting step downstream needs something cold.</td><td><span class="pill p-draft">drafted</span></td></tr>
+<tr><td class="tk"><span class="tnum">T7</span></td><td class="tn">The five integrations<div class="tm">Field conductor, magnetic core billet, reinforced frame</div></td><td class="ta">Each capstone is integrated through a <em>different</em> local mechanic, which is what stops the five technologies being one technology repeated. Geodynamic science eats the same parts.</td><td><span class="pill p-built">built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T8</span></td><td class="tn">Subassemblies<div class="tm">Coil lamination, winding pack, insulation sleeve, coolant charge, vacuum cell, welded plate</div></td><td class="ta">Vacuum. Cold welding and vacuum sealing are cheap here and would need an expensive sealed process anywhere else — the one thing the Core is <em>good</em> at rather than short of.</td><td><span class="pill p-mixed">part built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T9</span></td><td class="tn">Major assemblies<div class="tm">Coil assembly, coolant loop</div></td><td class="ta">Convergence: five planets, two vents and a farm meet in two items.</td><td><span class="pill p-built">built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T10</span></td><td class="tn">The segment<div class="tm">Field Coil Segment</div></td><td class="ta">The array's own fixed recipe. Nothing else makes it, and nowhere else can.</td><td><span class="pill p-built">built</span></td></tr>
+<tr><td class="tk"><span class="tnum">T11</span></td><td class="tn">Ignition<div class="tm">Ignition Array</div></td><td class="ta">100 segments at 50 MW, then it fires once. Currently a rocket silo underneath, which is the mod's most contradictory frame.</td><td><span class="pill p-built">built</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<hr class="rule">
+
+<section>
+  <h2>What the line runs on</h2>
+  <p class="col" style="color:var(--ink2);margin:10px 0 26px">Nothing burns on the Core — pressure 5 refuses
+  every combustion prototype — so power comes off the melt, out of the corridor's chunks, or out of the sky.
+  The array's 50 MW is the reason the settling choice bites.</p>
+  <figure>
+    <svg viewBox="0 0 900 292" role="img" class="pwr" aria-label="The Core has three power sources: steam raised by settling the melt, radiant fuel crushed from seeded chunks and burned in a radiant generator, and arc masts catching storms. All three feed the Ignition Array's 50 megawatt draw, so power spent is metal not cast.">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1.2 L 8.6 5 L 0 8.8 z" class="head"/></marker></defs>
+<rect class="n-built" x="16" y="44" width="148" height="40" rx="3"/>
+<text class="t-node" x="90" y="68">Molten kamacite</text>
+<rect class="n-built" x="16" y="140" width="148" height="40" rx="3"/>
+<text class="t-node" x="90" y="164">Radiant chunk</text>
+<rect class="n-draft" x="16" y="226" width="148" height="40" rx="3"/>
+<text class="t-node" x="90" y="250">Arc storm</text>
+<rect class="n-built" x="246" y="24" width="168" height="34" rx="3"/>
+<text class="t-node" x="330" y="45">Gravity settling</text>
+<text class="t-note" x="330" y="71">60 melt · 150 steam</text>
+<rect class="n-built" x="246" y="88" width="168" height="34" rx="3"/>
+<text class="t-node" x="330" y="109">Quenched settling</text>
+<text class="t-note" x="330" y="135">25 melt · 900 steam</text>
+<rect class="n-built" x="246" y="140" width="168" height="40" rx="3"/>
+<text class="t-node" x="330" y="164">Radiant fuel ×2</text>
+<rect class="n-built" x="246" y="226" width="168" height="40" rx="3"/>
+<text class="t-node" x="330" y="250">Arc mast</text>
+<text class="t-note" x="330" y="279">35% efficient · 4000 MJ buffer</text>
+<rect class="n-built" x="500" y="44" width="158" height="40" rx="3"/>
+<text class="t-node" x="579" y="68">Steam turbine</text>
+<text class="t-note" x="579" y="97">≈1 turbine per vessel, quenched</text>
+<circle class="badge" cx="647" cy="56" r="7.5"/>
+<text class="t-badge" x="647" y="60">!</text>
+<rect class="n-built" x="500" y="140" width="158" height="40" rx="3"/>
+<text class="t-node" x="579" y="164">Radiant generator</text>
+<text class="t-note" x="579" y="193">10 MW</text>
+<rect class="n-built" x="500" y="226" width="158" height="40" rx="3"/>
+<text class="t-node" x="579" y="250">Storm charge</text>
+<text class="t-note" x="579" y="279">40 MW out</text>
+<rect class="n-array" x="726" y="112" width="158" height="66" rx="3"/>
+<text class="t-array" x="805" y="142">50 MW</text>
+<text class="t-arraysub" x="805" y="161">the array, while it runs</text>
+<path class="ed" d="M 164 54 L 246 41" marker-end="url(#ah2)"/>
+<path class="ed" d="M 164 74 L 246 105" marker-end="url(#ah2)"/>
+<path class="ed" d="M 164 160 L 246 160" marker-end="url(#ah2)"/>
+<text class="t-edge" style="text-anchor:middle" x="205" y="154">crushed</text>
+<path class="ed" d="M 164 246 L 246 246" marker-end="url(#ah2)"/>
+<text class="t-edge" style="text-anchor:middle" x="205" y="240">caught</text>
+<path class="ed" d="M 414 41 L 500 56" marker-end="url(#ah2)"/>
+<text class="t-edge" style="text-anchor:middle" x="457" y="34">150 steam</text>
+<path class="ed" d="M 414 105 L 500 72" marker-end="url(#ah2)"/>
+<text class="t-edge" style="text-anchor:middle" x="457" y="116">900 steam</text>
+<path class="ed" d="M 414 160 L 500 160" marker-end="url(#ah2)"/>
+<path class="ed" d="M 414 246 L 500 246" marker-end="url(#ah2)"/>
+<path class="ed" d="M 658 64 L 692 64 L 692 128 L 726 128" marker-end="url(#ah2)"/>
+<path class="ed" d="M 658 160 L 692 160 L 692 145 L 726 145" marker-end="url(#ah2)"/>
+<path class="ed" d="M 658 246 L 692 246 L 692 162 L 726 162" marker-end="url(#ah2)"/>
+<text class="t-vac" style="text-anchor:middle" x="330" y="200">the same melt is either metal or power</text>
+</svg>
+    <figcaption><strong>Figure 2.</strong> One settling vessel is worth roughly one turbine when quenched, and
+    about six times the electricity for less than half the metal. Every megawatt the array draws while it runs is
+    melt that was not cast into the segments it also needs.</figcaption>
+  </figure>
+</section>
+
+<hr class="rule">
+
+<section class="two">
+  <div class="note">
+    <h3>What is actually built</h3>
+    <p>Three stages from local resource to Field Coil Segment, which is shorter than Gleba's nutrient chain and
+    does not keep design §5's promise of the mod's largest chain:</p>
+    <p class="spine"><b>molten kamacite</b><span class="arw">&rarr;</span><b>settled melt</b><span class="arw">&rarr;</span><b>cast ingot</b><span class="arw">&rarr;</span><b>homogenised ingot</b><span class="arw">&rarr;</span><b>field conductor</b></p>
+    <p>The draft takes that to ten, adding 14 items and 2 fluids — none of them one-in, one-out. Every added tier
+    either branches (T1's two streams, T5's two grades), loops (T3's recovered carbon monoxide) or converges
+    (T6's three inputs).</p>
+  </div>
+  <div class="note">
+    <h3>What would make it worse</h3>
+    <p><strong>Tedium instead of depth.</strong> Ten tiers of one-in-one-out recipes is a conveyor, not a factory.
+    Any new step that neither branches, loops nor converges should be cut.</p>
+    <p><strong>The corridor becoming the bottleneck.</strong> Carbon recovery is the dial. If freight limits the
+    endgame it turns into a shipping puzzle, which is Space Age's problem, not this mod's.</p>
+    <p><strong>Burying the capstones.</strong> Moving two of them deeper makes lagging trees bite sooner, but the
+    player still has to see five planets in the thing they are building — which is why the intermediates keep the
+    capstones' names in their ingredient lists.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<footer>
+  Drawn from <code>design/06-core-production-tree.md</code> and the prototypes that exist today
+  (<code>prototypes/core/recipes.lua</code>, <code>intermediates.lua</code>, <code>endgame.lua</code>,
+  <code>storms.lua</code> and <code>corridor.lua</code>). Four of the five capstone products are still
+  one-ingredient stubs, so every arrival on the right-hand rail below F&#8596;A is a placeholder in the mod as it
+  stands. Quantities shown are the ones in the source; everything in the draft tiers is a first guess. The sink analysis
+  behind the marks — how it was checked, and what it did not check — is written up in
+  <code>design/07-sinks-and-dead-ends.md</code>.
+</footer>
+</div>
