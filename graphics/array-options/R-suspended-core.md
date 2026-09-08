@@ -1,5 +1,43 @@
 # Option R — the Suspended Core
 
+> ## ADOPTED — this is the Ignition Array
+>
+> Chosen 2026-09-08 from twenty concepts across four sets. The sheet and its
+> panels are locked at `graphics/entity/ignition-array/concept/adopted/`.
+> Everything else in this directory is a rejected option and can be deleted.
+
+### Why it won
+
+It is the only option that clears every constraint at once. Measured against the
+four vanilla style references by `tools/check-sheet-style.py`, all three bands
+pass — luminance 65.3 (band 63.2–90.4), saturation 0.262 (0.230–0.490), detail
+density 0.185 (0.144–0.261) — and its base flatness is 0.904, so it is drawn
+square-on to the tile grid where P and S were drawn corner-on.
+
+Beyond the numbers: no rocket read, a base that actually fills its 9 × 9 instead
+of leaving bare ground inside it, an unmistakable silhouette, and a charge that
+works in two channels at once.
+
+### Four things to fix in production, found on review
+
+1. **It glows at rest, and it must not.** The hero and top-down panels both show
+   violet in the drum beneath the sphere and at the equator band. `base_day_sprite`
+   has to be the *unlit* machine; the glow is a separate overlay driven from
+   `control.lua`. `R-charge-000.png` is the correct reference for the base — the
+   hero is effectively the building at about 25%.
+2. **The sphere is not suspended.** The brief asked for open air between sphere
+   and base; the render puts a lit drum under it. That is a change to the idea —
+   "held in the air" was this option's headline — but it is the better machine:
+   it gives the charge somewhere to live and it is far easier to draw a shadow
+   for. Recorded as a deliberate departure, not a defect.
+3. **The discharge frame has a smoke plume.** The Core has no atmosphere to carry
+   one and `pressure = 5` means nothing burns. The discharge is light and arcs
+   only; the cloud goes.
+4. **The sheet cannot be keyed.** It is on charcoal, and this building's own
+   darks overlap the ground's luminance — the exact failure recorded in the plate
+   plan. Production needs a magenta render, generated as an *edit of the locked
+   image* rather than a fresh prompt.
+
 **One line.** A colossal sphere held off the ground in the middle of a heavy frame, with clear air all round it.
 
 *Set 4: built for spectacle. Same register as set 3.*

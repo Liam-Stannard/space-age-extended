@@ -248,37 +248,22 @@ array.launch_to_space_platforms = false
 -- own sake -- the full plate at 64 frames is 23 Mpx, against the 2.9 Mpx vanilla
 -- spends on its own crafting sheet. At 32 half-resolution frames this lands on
 -- vanilla's budget.
-array.graphics_set =
-{
-  working_visualisations =
-  {
-    {
-      name = "sae-assembly",
-      render_layer = "object",
-      draw_as_glow = true,
-      -- The Core has no day, so this light is not decoration: it is how the
-      -- player reads the machine at all.
-      light = { intensity = 0.55, size = 14, color = { r = 0.62, g = 0.48, b = 1.0 } },
-      animation =
-      {
-        filename = IA .. "working.png",
-        priority = "medium",
-        blend_mode = "additive",
-        draw_as_glow = true,
-        width = 314, height = 306,
-        frame_count = 32,
-        line_length = 6,
-        animation_speed = 0.65,
-        shift = { 0.0625, 0.109375 },
-        -- A quarter of the deck's resolution, so four times the deck's scale
-        -- lands it on the same pixels. Quarter rather than half because the v3
-        -- plate is 1390 px wide: halving it put 32 frames at 14.2 Mpx against
-        -- vanilla's 2.9. This sits at 3.5.
-        scale = 1.0
-      }
-    }
-  }
-}
+-- No working visualisation.
+--
+-- Vanilla's six went for the reasons above. The one that replaced them was drawn
+-- for the v3 ring and is registered to that plate's shift, so it cannot survive
+-- the change of design -- and it should not, because it answered the wrong
+-- question. A `working_visualisation` plays while the machine crafts; it cannot
+-- hold cumulative state, and neither can any other prototype field.
+-- `LuaEntity` has no `disabled_working_visualisations` in 2.1.17 either, so
+-- named visualisations cannot be switched per entity from script. All three were
+-- probed on a live server.
+--
+-- The Array assembles a hundred field coil segments before it can fire, and that
+-- is what the player needs to see. `control.lua` draws it with `LuaRendering`
+-- off `(rocket_parts + crafting_progress) / rocket_parts_required` -- a smooth
+-- nought to one across the whole build rather than a hundred steps.
+array.graphics_set = { working_visualisations = {} }
 array.robot_door = util.empty_sprite()
 if array.working_sound then array.working_sound.sound_accents = nil end
 
@@ -410,8 +395,13 @@ array.base_day_sprite =
 {
   filename = IA .. "base.png",
   priority = "medium",
-  width = 628, height = 612,
-  shift = { 0.0625, 0.109375 },
+  width = 576, height = 525,
+  -- 9.00 x 8.20 tiles: drawn to the footprint exactly, overhanging on neither
+  -- axis. It is 0.80 tiles *short* of the box vertically, so it is centred and
+  -- the shortfall is split 0.40 a side. Parking the bottom edge past the south
+  -- edge the way vanilla's silo does put all of that slack at the north instead
+  -- -- 1.19 tiles of empty box above the machine, and 0.39 poking out below.
+  shift = { 0.0, 0.0 },
   scale = 0.5
 }
 -- Derived from the deck's own alpha, sheared north-east and blurred, so it is
@@ -422,63 +412,30 @@ array.shadow_sprite =
   filename = IA .. "base-shadow.png",
   priority = "medium",
   draw_as_shadow = true,
-  width = 656, height = 600,
-  shift = { 0.625, -0.125 },
+  width = 622, height = 525,
+  shift = { 0.35938, 0.0 },
   scale = 0.5
 }
 array.base_front_sprite = util.empty_sprite()
 array.base_night_sprite = nil
 
--- The iris, and the shaft behind it.
+-- No doors, and no shaft.
 --
--- A rocket-silo does not paint its shaft on the deck. Vanilla's own
--- `base_day_sprite` is a *ring* -- 06-rocket-silo.png has a hole through the
--- middle -- `hole_sprite` is the shaft interior drawn inside that hole, and the
--- two door sprites sit over the hole and are slid apart by the engine at
--- `door_opening_speed`. Painting the closed iris on the deck, which is what the
--- approved plate does, would mean the doors part at ignition and reveal a
--- second, closed iris underneath.
+-- Both door sprites are optional -- proved on a live 2.1.17 server, not assumed:
+-- a rocket-silo with `door_back_sprite` and `door_front_sprite` set to nil loads
+-- cleanly, and one ran the whole launch sequence in lockstep with a vanilla silo
+-- standing beside it, identical states on identical ticks, both rockets away.
+-- The door phases still elapse; nothing stalls waiting for art that is not there.
 --
--- So `tools/cut-array-iris.py` lifts the blades out of the plate: the deck keeps
--- its bolted collar and rim, and the blades become the two leaves below, split
--- on the NW-SE seam so the parting line runs along two of the cable trunks.
--- Closed, they are the plate again, pixel for pixel. `tools/build-array-shaft.py`
--- then draws the shaft and its light on the same measured ellipse, so nothing
--- has to be registered by eye. Every width, height and shift below is printed by
--- those two tools; none of it is typed by hand.
-array.door_back_sprite =
-{
-  filename = IA .. "door-back.png",
-  priority = "medium",
-  width = 312, height = 286,
-  shift = { 1.15625, 0.375 },
-  scale = 0.5
-}
-array.door_front_sprite =
-{
-  filename = IA .. "door-front.png",
-  priority = "medium",
-  width = 332, height = 300,
-  shift = { -0.875, 1.03125 },
-  scale = 0.5
-}
-array.hole_sprite =
-{
-  filename = IA .. "hole.png",
-  priority = "medium",
-  width = 400, height = 270,
-  shift = { -0.15625, 0.5 },
-  scale = 0.5
-}
-array.hole_light_sprite =
-{
-  filename = IA .. "hole-light.png",
-  priority = "medium",
-  draw_as_glow = true,
-  width = 400, height = 270,
-  shift = { -0.15625, 0.5 },
-  scale = 0.5
-}
+-- So the Suspended Core has none. Its sphere is held in the frame's arms and the
+-- ground is already visible under it, so there is no deck to open and no shaft
+-- to reveal -- the two slots that shaped every previous version of this building
+-- simply do not apply to the design that was chosen.
+array.door_back_sprite = nil
+array.door_front_sprite = nil
+array.hole_sprite = util.empty_sprite()
+array.hole_light_sprite = util.empty_sprite()
+
 -- The shadow a rocket casts on the pad while it sits there. Nothing sits on this
 -- pad, and there is no rocket to cast it.
 array.rocket_shadow_overlay_sprite = util.empty_sprite()
@@ -487,14 +444,34 @@ array.rocket_shadow_overlay_sprite = util.empty_sprite()
 -- midnight it is most of what the player sees of the ignition.
 array.rocket_glow_overlay_sprite =
 {
-  filename = IA .. "ignition-glow.png",
+  filename = IA .. "charge-glow.png",
   priority = "medium",
   blend_mode = "additive",
   draw_as_glow = true,
-  width = 520, height = 470,
-  shift = { -0.03125, -0.39062 },
+  width = 576, height = 525,
+  shift = { 0.0, 0.0 },
   scale = 0.5
 }
+-- The charge plate, as a sprite prototype so `control.lua` can draw it.
+--
+-- It is the same 576 x 525 plate the discharge uses, at the same shift, so the
+-- glow the player watches climb during the build is pixel-for-pixel the glow
+-- that floods the machine when it fires. `LuaRendering` needs a named sprite;
+-- it cannot be handed a filename.
+data:extend({
+  {
+    type = "sprite",
+    name = "sae-ignition-charge-glow",
+    filename = IA .. "charge-glow.png",
+    priority = "medium",
+    blend_mode = "additive",
+    draw_as_glow = true,
+    width = 576, height = 525,
+    scale = 0.5,
+    flags = { "light" }
+  }
+})
+
 array.red_lights_back_sprites = util.empty_sprite()
 array.red_lights_front_sprites = util.empty_sprite()
 array.satellite_animation = nil
