@@ -1,9 +1,16 @@
 # Ignition Array — the plate plan
 
 **What this is.** Every dimension the Array's art must hit, so a generation round
-can be drawn *to* the slots rather than fitted into them afterwards. Two
-diagrams accompany it and are the things to attach to a prompt:
-`concept/plate-plan-deck.png` and `concept/plate-plan-lid.png`.
+can be drawn *to* the slots rather than fitted into them afterwards.
+
+**`tools/build-array-plan.py` is the source of all of it.** Every number in this
+document is derived there from vanilla's `rocket-silo` prototype, and the three
+images it emits are drawn from the same constants — so the prose, the diagrams
+and the template cannot drift apart. Run it after changing anything here.
+
+  * `concept/plate-paint-template.png` — **the one to attach to a prompt.**
+  * `concept/plate-plan-deck.png` — the dimensioned drawing, for a human.
+  * `concept/plate-plan-lid.png` — the lid and the true seam angle.
 
 **Why it exists.** The previous attempt derived each plate's size, scale and
 shift independently — every one from its own content, its own centroid, its own
@@ -62,10 +69,12 @@ than a judgement to make.
 > **The hole is 637 wide and 430 tall — exactly 1.4815 : 1.**
 > **Its centre is 478 from the left edge and 527 from the top.**
 > **Its edges: left 159, right 796, top 312, bottom 742.**
+> **So the ring is 159 thick on the left, 204 on the right, 312 at the top and
+> 232 at the bottom, and the hole is 0.637 of the building's width.**
 
 Every one of those is the same geometry as the table above, scaled so the deck's
 width is 1000. `concept/plate-plan-deck.png` carries them as labelled dimension
-lines on the drawing itself.
+lines on the drawing itself, the ring included.
 
 The hole is **not centred** — it sits low and a little left, because vanilla's
 opening is half a tile south of the entity origin. Drawing it centred is the
@@ -132,16 +141,36 @@ the opening measures the floor instead — which is how the lid came to be sized
 
 ## 6. What to attach to a generation round
 
-1. `concept/plate-plan-deck.png` — the footprint and the opening, to scale.
-2. `concept/plate-plan-lid.png` — the lid and the true seam angle.
-3. The four standing style references from
+1. `concept/plate-paint-template.png` — **the silhouette to paint inside.**
+   Flat grey where armour goes, flat magenta where the hole and the ground go,
+   at exactly the proportions above.
+2. The four standing style references from
    `tools/extract-style-references.py` (see the template, Appendix B).
-4. A flat magenta background, which keys cleanly — the dark ground the earlier
-   sheets used cannot be keyed at all, because the building's own dark parts run
-   luminance 18–59 against a ground of 20–64.
 
-State in the prompt that the plan images are **geometry diagrams, not artwork**:
-their colours, flat shading and grid lines must not be copied.
+The magenta stays. It keys cleanly, where the dark ground the earliest sheets
+used cannot be keyed at all — the building's own dark parts run luminance 18–59
+against a ground of 20–64.
+
+### Show the ring, do not describe it
+
+Rounds 1–3 were handed a diagram that drew the *hole* — a filled ellipse on a
+dark ground — and stated everything else in words and arithmetic. The hole came
+out right every time and the ring never did, because **the ring was the one
+quantity there was nothing to copy**. r3 put the hole at 0.582 of the deck where
+vanilla is at 0.637, which is not carelessness; it is a free variable being
+filled in.
+
+So the ask is now "paint inside this shape" rather than "draw a building with
+these measurements". That is the same move that worked first time on v3, when
+vanilla's actual hole sprite was handed over and the opening came back correct
+immediately. Section 8's conclusion — a generator hits a shape it is shown and
+not a ratio it is told — is the reason, and the template applies it to the ring
+as well as the hole.
+
+Two things still have to be said in words, because no template can show them:
+the magenta inside the ring is background seen **through** a hole rather than a
+coloured disc, and the template is a **geometry diagram, not artwork** — its flat
+grey is a region to fill, not a colour to copy.
 
 ## 7. Accepting a round
 
@@ -184,6 +213,7 @@ So the correction is one instruction: make the hole taller, not wider.
 | deck r2 | 1.70 | 0.579 | 500 / 481 | numbers given as arithmetic; height moved 4% where 20% was asked |
 | deck r3 | 1.62 | 0.582 | 501 / 476 | **fresh session, no history** — best building yet, aspect closest yet |
 | deck r3 corrected | **1.481** | 0.582 | 501 / 476 | vertical stretch ×1.0928, applied locally |
+| deck r4 | — | — | — | first round against `plate-paint-template.png` |
 
 **Arithmetic did not move it either, and that is worth recording.** Round 2 gave
 the exact figures — 637 wide, 430 tall, 1.4815 : 1, edges at 159/796/312/742 —
@@ -202,10 +232,14 @@ A hole is an ellipse; scaling the whole plate vertically by 1.0928 lands 1.619 o
 1.4815 exactly, cannot distort anything (every feature scales together), and
 takes one operation. Generate the design, measure the ellipse, scale to fit.
 
-**What is still open is not the aspect but the ring's thickness.** The hole is
-0.582 of the deck's width where the plan wants 0.637, so the ring is
+**What was still open after r3 was not the aspect but the ring's thickness.** The
+hole is 0.582 of the deck's width where the plan wants 0.637, so the ring is
 proportionally fatter than vanilla's. Fitting the hole to vanilla's 6.25 tiles
 therefore puts the deck at **10.74 tiles** on a 9-tile footprint, against
-vanilla's 9.81 — a 19% overhang rather than 9%. Either the deck is cropped
-inward a little, or the overhang is accepted; that is a judgement rather than a
-measurement.
+vanilla's 9.81 — a 19% overhang rather than 9%.
+
+Cropping 4.3% off each edge fixes it arithmetically and costs only a band of
+plain outer armour, which was measured and drawn. **It was rejected in favour of
+regenerating**, and rightly: a crop treats the symptom on every plate for the
+rest of the building's life, where a template that shows the ring removes the
+free variable once. Hence section 6.
