@@ -9,7 +9,7 @@ So the entity stays and its art stops being a vehicle. What rises is a column of
 violet-white light, section 9's last step: "the iris opens, the shaft floods with
 light, and the sequence does not return to idle."
 
-Four pieces, and the shape of each is dictated by the slot it fills:
+Three pieces, and the shape of each is dictated by the slot it fills:
 
   column.png        `rocket_sprite`. Hangs *below* its origin, the way vanilla's
                     rocket art does, so that as the nose climbs the tail still
@@ -17,8 +17,14 @@ Four pieces, and the shape of each is dictated by the slot it fills:
   column-glare.png  `rocket_glare_overlay_sprite`. A soft bloom around the head.
   column-flame.png  `rocket_flame_animation`, 8 frames -- the only animated slot
                     the rocket prototype has. The flicker at the column's foot.
-  ignition-glow.png The silo's own `rocket_glow_overlay_sprite`, additive, which
-                    is the deck itself lit by what is coming out of it.
+
+There was a fourth, `ignition-glow.png`: a drawn ellipse for the silo's own
+`rocket_glow_overlay_sprite`, the deck lit by what was coming out of it. That
+slot now takes `charge-glow.png`, which is the artist's own light differenced out
+of the adopted render's 100% and 0% charge frames rather than an ellipse someone
+drew, and it is the same plate the charge display climbs -- so what floods the
+machine at ignition is pixel for pixel what the player watched fill. A painted
+glow cannot register with a plate it was not cut from, so this one went.
 
 Drawn at 2x and shipped at `scale = 0.5`, like every other plate in this set.
 """
@@ -98,21 +104,9 @@ def flame(frames=8, w=232, h=232):
     return sheet
 
 
-def deck_glow(w=520, h=470):
-    """The deck lit from its own shaft. Additive, so it adds light and no colour cast."""
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    for i, (f, a) in enumerate([(1.0, 20), (0.80, 28), (0.62, 40),
-                                (0.46, 58), (0.32, 88), (0.20, 140), (0.10, 210)]):
-        rx, ry = w / 2 * f, h / 2 * f
-        c = _mix(GLOW, WHITE, (i / 6.0) ** 2)
-        d.ellipse((w / 2 - rx, h / 2 - ry, w / 2 + rx, h / 2 + ry), fill=c + (a,))
-    return img.filter(ImageFilter.GaussianBlur(14))
-
-
 def main():
     for img, name in ((column(), "column.png"), (glare(), "column-glare.png"),
-                      (flame(), "column-flame.png"), (deck_glow(), "ignition-glow.png")):
+                      (flame(), "column-flame.png")):
         img.save(os.path.join(ART, name))
         print("  %-20s %dx%d" % (name, img.width, img.height))
 
