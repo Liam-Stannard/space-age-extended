@@ -129,3 +129,22 @@ in the style of a game art bible page. Title the sheet COIL SEPARATOR -- QUADRUP
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/coil-separator/concept/options/E-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **65.0**, saturation **0.208**, edge density **0.148**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** Four corner coil bosses with visible windings, cable runs
+recessed into the roof and converging on a square shaft collar, and the field as
+a cold column seen down the throat. **The only sheet in the fifteen whose edge
+density clears vanilla's floor** -- the "keep Factorio's mechanical density"
+clause did its job, and the monolith did not go featureless.
+
+**What to weigh.** Its signature feature is on the roof, which is where
+Factorio's camera looks -- the strongest argument in the set. The four bosses
+give it a chunky four-cornered silhouette that is distinct from everything else
+on the Core.

@@ -117,3 +117,21 @@ in the style of a game art bible page. Title the sheet DROSS CLASSIFIER -- SHAKE
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/dross-classifier/concept/options/A-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **61.4**, saturation **0.150**, edge density **0.122**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The three descending roof planes, the four corner spring
+stacks, the guarded drive with its belt cover, bolt rings on every plane. Square
+to the grid, roof-dominant, the base reads as a square. The silhouette panel is
+an honest lumpy rectangle -- which is the finding, not a complaint.
+
+**What to weigh.** It is the safest of the five and the least distinctive: at a
+glance it is a box with a stepped lid, and the Vacuum Furnace and Drop Crusher
+are also boxes. The roof steps read more as an arched ribbed cover than as three
+flat planes.

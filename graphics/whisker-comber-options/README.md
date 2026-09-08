@@ -95,3 +95,44 @@ a needle bar that is visibly finer than the matting roller beside it (E).
 machine is crafting, which is the one honest way to show material: it stops when
 the machine does. That is a decision for after a design is picked, and it does
 not change which design is picked.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Sheet | Luminance | Saturation | Edge density |
+| ------ | ----- | --------: | ---------: | -----------: |
+| A — Carding Casing | `options/A-sheet.png` | 69.1 | 0.208 | 0.152 |
+| B — Travelling Gill | `options/B-sheet.png` | 58.1 | 0.176 | 0.125 |
+| C — Spinner | `options/C-sheet.png` | 66.5 | 0.194 | 0.114 |
+| D — Mill Stack | `options/D-sheet.png` | 61.3 | 0.165 | 0.122 |
+| E — Two-Lane Machine | `options/E-sheet.png` | 61.2 | 0.180 | 0.116 |
+| **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+**The sheets are at `graphics/entity/whisker-comber/concept/options/`.**
+
+**Option A is the best-measured sheet of the fifteen** and the only one in this
+set inside vanilla's detail band. The set's own weakness is legibility of the
+*process*: with the material correctly undrawn, B reads as a machine waiting, C
+reads as a vessel, and E's two lanes are not yet unequal enough to say "one of
+these is slower" — which is the whole point of E. That is the conflict the
+section above predicted, arriving as a measurement rather than an opinion, and it
+is the case for resolving it with a `working_visualisation` once a design is
+chosen.
+
+**One finding runs across all fifteen sheets in this round, not just these
+five: every one of them is under vanilla's saturation floor.** The measurement is
+like-for-like — the adopted Ignition Array sheet scores 0.262 the same way, on
+the same kind of charcoal page — so this is real and not an artefact of the
+background.
+
+The cause is in the prompts, and it is worth fixing before the next round rather
+than arguing about taste. These prompts confine copper to one place each
+(*"the drive end only"*, *"the coil itself"*). Option R's prompt, the one that
+was adopted, said the opposite: copper and brass **"VISIBLE and used freely on
+bus runs, joints and fittings. This is what keeps the building warm."** Set 2 of
+the Array's concepts failed the same way at 0.10–0.12, and the fix that worked
+was putting the warmth and the mechanical density back while keeping the
+advanced fabrication.
+
+Whichever option is picked here, its stage-1 prompt should let the copper out.

@@ -121,3 +121,19 @@ in the style of a game art bible page. Title the sheet WHISKER COMBER -- MILL ST
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/whisker-comber/concept/options/D-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **61.3**, saturation **0.165**, edge density **0.122**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** Two screw-down caps standing proud above paired housings, a
+roller stack visible end-on through the viewing gap, tie bars back to the base.
+The caps give it something the rest of the set lacks: a piece of machinery above
+the roofline that is unmistakable in silhouette.
+
+**What to weigh.** It reads as *squeezing*, and so does the Drop Crusher; the two
+are close cousins, which was the risk going in. Nothing about it says fibre.

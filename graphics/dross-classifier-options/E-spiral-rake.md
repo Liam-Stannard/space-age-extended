@@ -119,3 +119,21 @@ in the style of a game art bible page. Title the sheet DROSS CLASSIFIER -- SPIRA
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/dross-classifier/concept/options/E-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **63.3**, saturation **0.200**, edge density **0.127**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The closed settling box, the armoured leg with its screw drive
+head, the bracing struts, the discharge boot. The L-shape is unmistakable in the
+silhouette panel and nothing else in the mod has it.
+
+**What to weigh.** The leg rises toward the viewer rather than straight out over
+one face, so the machine reads as turned a few degrees even though the base is
+square -- the same pull that turned option C, arriving in a milder form. And the
+leg is drawn long enough that a plate cut from this would need checking against
+the 3x3 footprint before anything else.

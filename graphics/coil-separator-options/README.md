@@ -101,3 +101,42 @@ confused — that one flickers, this one does not.
 Option D is the deliberate test of that rule: it hides the coil completely and
 shows one lit slot at the base of a refrigeration plant. If a sheet can carry the
 read with that little light, the rule is safe everywhere else.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Sheet | Luminance | Saturation | Edge density |
+| ------ | ----- | --------: | ---------: | -----------: |
+| A — the Throat | `options/A-sheet.png` | 64.0 | 0.189 | 0.129 |
+| B — Split Poles | `options/B-sheet.png` | 70.3 | 0.218 | 0.141 |
+| C — Magnet Drum | `options/C-sheet.png` | 69.8 | 0.188 | 0.142 |
+| D — Cold Plant | `options/D-sheet.png` | 70.2 | 0.136 | 0.129 |
+| E — Quadrupole | `options/E-sheet.png` | 65.0 | 0.208 | 0.148 |
+| **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+**The sheets are at `graphics/entity/coil-separator/concept/options/`.**
+
+**This is the strongest of the three sets.** All five hold the containment rule —
+the violet stays inside the aperture, the slot, the arc, the base slot and the
+shaft respectively, and never touches the chassis — and none of them reads as
+vanilla's electromagnetic plant. Option E is the only sheet in the whole round
+whose detail density clears vanilla's floor; option D is the least saturated
+sheet of the fifteen, which is what happens to a design with no copper in it.
+
+**One finding runs across all fifteen sheets in this round, not just these
+five: every one of them is under vanilla's saturation floor.** The measurement is
+like-for-like — the adopted Ignition Array sheet scores 0.262 the same way, on
+the same kind of charcoal page — so this is real and not an artefact of the
+background.
+
+The cause is in the prompts, and it is worth fixing before the next round rather
+than arguing about taste. These prompts confine copper to one place each
+(*"the drive end only"*, *"the coil itself"*). Option R's prompt, the one that
+was adopted, said the opposite: copper and brass **"VISIBLE and used freely on
+bus runs, joints and fittings. This is what keeps the building warm."** Set 2 of
+the Array's concepts failed the same way at 0.10–0.12, and the fix that worked
+was putting the warmth and the mechanical density back while keeping the
+advanced fabrication.
+
+Whichever option is picked here, its stage-1 prompt should let the copper out.

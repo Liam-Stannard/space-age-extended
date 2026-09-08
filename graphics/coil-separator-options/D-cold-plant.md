@@ -127,3 +127,20 @@ in the style of a game art bible page. Title the sheet COIL SEPARATOR -- COLD PL
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/coil-separator/concept/options/D-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **70.2**, saturation **0.136**, edge density **0.129**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** Exactly what the option asked for: a jacketed vessel, a
+condenser stack, lagged trunking, and one narrow lit slot at the base doing all
+the work. The unlit/lit pair proves the read survives with that little light.
+
+**What to weigh.** The predicted risk arrived -- it reads as a chemical or
+cryogenic plant first and a separator second, and at 0.136 it is the least
+saturated sheet of the fifteen, because the design has almost no copper in it by
+construction. If this one is picked, the copper has to come back somewhere.

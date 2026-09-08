@@ -121,3 +121,23 @@ in the style of a game art bible page. Title the sheet DROSS CLASSIFIER -- ROCKE
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/dross-classifier/concept/options/C-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **63.6**, saturation **0.151**, edge density **0.132**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The trunnion on its plinth, the counterweight on a crank throw,
+the bump stops, and a rocking state pair that genuinely tilts the whole body. It
+is the only one of the five whose animation is the entire machine, and it shows.
+
+**What to weigh -- and this is the one real defect in the set.** The hero and the
+state frames draw the body as a long cylinder-ended mass lying at an angle to the
+frame, and the silhouette panel confirms it: this is the corner-on failure the
+template's rule zero exists for, arriving through exactly the route it predicts,
+a directional form the generator wanted to turn. Fixable in one regeneration by
+attaching one of our own square-on sheets as a projection example, but it is a
+round, not a free fix.

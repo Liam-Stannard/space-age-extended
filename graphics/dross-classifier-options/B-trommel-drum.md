@@ -119,3 +119,20 @@ in the style of a game art bible page. Title the sheet DROSS CLASSIFIER -- TROMM
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/dross-classifier/concept/options/B-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **63.3**, saturation **0.151**, edge density **0.122**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The ring gear and pinion, the roller cradle, the guarded band
+of drum through the housing roof, the two-diameter taper. The rotation state pair
+advances the gear teeth, which is the right thing to show.
+
+**What to weigh.** The housing swallowed the cylinder: from the hero view this
+reads as a box with a drum let into it rather than as a drum in a cradle, so the
+distinct silhouette the option was chosen for is only half there. The silhouette
+panel is nearly the same rectangle as option A's.

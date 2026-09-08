@@ -122,3 +122,20 @@ in the style of a game art bible page. Title the sheet COIL SEPARATOR -- THE THR
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/coil-separator/concept/options/A-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **64.0**, saturation **0.189**, edge density **0.129**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The toroid stands on edge with its aperture foreshortened by
+the camera rather than drawn as a true circle, which was the round's main risk.
+Copper windings, bus bars into both flanks, a fin bank, and a lit/unlit pair
+where the violet stays strictly inside the ring.
+
+**What to weigh.** The aperture is a dark hole in the unlit frame, and the
+silhouette panel shows it as a hole through the mass -- readable, but it is the
+one option whose signature feature disappears when the machine is idle.

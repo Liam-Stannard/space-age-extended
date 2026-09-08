@@ -97,3 +97,42 @@ faces regardless, which is a promise the entity cannot keep. Every option here
 draws its bins as closed decoration built into the housing rather than as ports
 aimed at tiles. If that reads as coy in the sheets, the honest fix is to drop the
 bins entirely rather than to aim them.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Sheet | Luminance | Saturation | Edge density |
+| ------ | ----- | --------: | ---------: | -----------: |
+| A — Shaker Deck | `options/A-sheet.png` | 61.4 | 0.150 | 0.122 |
+| B — Trommel | `options/B-sheet.png` | 63.3 | 0.151 | 0.122 |
+| C — Rocker Beam | `options/C-sheet.png` | 63.6 | 0.151 | 0.132 |
+| D — Cascade Tower | `options/D-sheet.png` | 60.3 | 0.199 | 0.127 |
+| E — Spiral Rake | `options/E-sheet.png` | 63.3 | 0.200 | 0.127 |
+| **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+**The sheets are at `graphics/entity/dross-classifier/concept/options/`.**
+
+**Read the per-option pages for what each one actually came back as.** Two things
+are worth knowing before looking: **option C came back corner-on**, which is the
+failure this building has now produced twice and which the template predicts for
+any directional form; and **option B's housing swallowed its drum**, so the
+distinct cylinder silhouette it was picked for is only half present. Options A, D
+and E all landed what they were asked for.
+
+**One finding runs across all fifteen sheets in this round, not just these
+five: every one of them is under vanilla's saturation floor.** The measurement is
+like-for-like — the adopted Ignition Array sheet scores 0.262 the same way, on
+the same kind of charcoal page — so this is real and not an artefact of the
+background.
+
+The cause is in the prompts, and it is worth fixing before the next round rather
+than arguing about taste. These prompts confine copper to one place each
+(*"the drive end only"*, *"the coil itself"*). Option R's prompt, the one that
+was adopted, said the opposite: copper and brass **"VISIBLE and used freely on
+bus runs, joints and fittings. This is what keeps the building warm."** Set 2 of
+the Array's concepts failed the same way at 0.10–0.12, and the fix that worked
+was putting the warmth and the mechanical density back while keeping the
+advanced fabrication.
+
+Whichever option is picked here, its stage-1 prompt should let the copper out.

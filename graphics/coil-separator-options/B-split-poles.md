@@ -122,3 +122,20 @@ in the style of a game art bible page. Title the sheet COIL SEPARATOR -- SPLIT P
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/coil-separator/concept/options/B-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **70.3**, saturation **0.218**, edge density **0.141**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** Two shaped pole shoes leaning in over a narrow slot with a flat
+blade of cold light standing in it, and the silhouette panel reads as two
+shoulders with a notch -- the clearest small-size read in the set. Highest
+saturation and detail density of the five, and closest to the vanilla band.
+
+**What to weigh.** It is the most symmetrical machine here, and the spec's first
+anti-read for the Classifier was symmetry; that does not apply to this building,
+but two of these standing side by side may read as one wide machine.

@@ -120,3 +120,20 @@ in the style of a game art bible page. Title the sheet WHISKER COMBER -- SPINNER
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/whisker-comber/concept/options/C-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **66.5**, saturation **0.194**, edge density **0.114**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** A squat standing drum with a dogged lid, balance bosses round
+the waist, a louvred drive skirt and the draw-off guide over the lid. It is the
+only round building in the set and separates instantly at any zoom.
+
+**What to weigh.** Two problems. Its dome is close to the Sealed Roboport's, and
+that building is already on the Core. And at 0.114 it is the least detailed sheet
+of the fifteen -- a round shell gives the eye less to hold, which is exactly why
+vanilla covers its round machines in hardware.

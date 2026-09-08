@@ -124,3 +124,20 @@ in the style of a game art bible page. Title the sheet WHISKER COMBER -- TWO-LAN
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/whisker-comber/concept/options/E-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **61.2**, saturation **0.180**, edge density **0.116**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** The two unequal lanes under one continuous roofline, the comb
+lane's needles visible through its slotted guard, and the two differently-sized
+gear housings on one shared drive shaft -- the detail panel makes the whole
+argument on its own. The state pair advances the two shafts by different amounts.
+
+**What to weigh.** The lanes are less unequal than asked for, so "one of these is
+slower" is not yet legible at hero size, and that difference is the entire reason
+for the design. It also has the second-lowest detail density of the set.

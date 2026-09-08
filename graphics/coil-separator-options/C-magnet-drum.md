@@ -126,3 +126,22 @@ in the style of a game art bible page. Title the sheet COIL SEPARATOR -- MAGNET 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/coil-separator/concept/options/C-sheet.png`, generated 2026-09-08 from the prompt above with the four attachments named
+in the README.
+
+**Measured:** luminance **69.8**, saturation **0.188**, edge density **0.142**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column `check-sheet-style.py` prints is meaningless on a whole sheet -- it measures the sheet's panel bounds, not the building -- so its "perspective low" verdict is ignored here, as `array-options/README.md` says it must be.
+
+**What landed.** One heavy jacketed drum across the near half, end plates with
+bearing housings, a scraper standing off the shell, and the field drawn as a
+single thin bright line along the contact -- the most disciplined use of violet
+in the whole set. The rotation pair advances the shell and leaves the scraper
+still.
+
+**What to weigh.** The generator titled its own output "steampunk", and the drum
+does carry more banding and rivet-like detail than tier 3 asks for. Also the
+closest of the five to vanilla's recycler, which is a building the player will
+have standing nearby.
