@@ -265,16 +265,16 @@ array.graphics_set =
         priority = "medium",
         blend_mode = "additive",
         draw_as_glow = true,
-        width = 347, height = 283,
+        width = 314, height = 306,
         frame_count = 32,
         line_length = 6,
         animation_speed = 0.65,
-        shift = { 0, 0 },
+        shift = { 0.0625, 0.109375 },
         -- A quarter of the deck's resolution, so four times the deck's scale
         -- lands it on the same pixels. Quarter rather than half because the v3
         -- plate is 1390 px wide: halving it put 32 frames at 14.2 Mpx against
         -- vanilla's 2.9. This sits at 3.5.
-        scale = 1.0104
+        scale = 1.0
       }
     }
   }
@@ -387,27 +387,32 @@ array.rocket_entity = "sae-ignition-discharge"
 -- each be a lie, and they would draw straight over our deck. Emptying them costs
 -- the open-shaft frames until the iris plates of section 6.1 are drawn; the
 -- alternative was vanilla's doors opening on our building.
--- Scale 0.2526, not 0.5, and measured rather than chosen.
+-- Every plate below uses the rocket silo's **own** slot geometry -- vanilla's
+-- sizes, vanilla's shifts, vanilla's scale -- and our art is resampled into them
+-- by tools/fit-array-to-silo.py.
 --
--- A Factorio building's art overhangs its footprint a little: vanilla's own
--- rocket silo is 628 x 612 at scale 0.5, which is 9.81 x 9.56 tiles on the same
--- 9 x 9 collision box, 9% proud. Drawn to *exactly* 9 tiles this deck came out
--- 9.00 x 7.78 and read as small and cut off, sitting in the middle of its own
--- square with bare footprint above and below. At vanilla's overhang it is
--- 9.81 x 8.48 -- still flatter than the silo, because it is a shallow revetment
--- rather than a tower, but sitting in its footprint the way a Factorio building
--- does.
+-- That is Liam's call and it is the right one. Deriving each plate's size and
+-- shift independently, from its own content and its own measured ellipse, gives
+-- five numbers that are each defensible and collectively wrong, because nothing
+-- ties them together: the doors stopped closing over the hole and the lid
+-- stopped reading as a circle. Vanilla's five slots are mutually consistent by
+-- construction -- two leaves resting 2.031 tiles apart in x and 0.656 in y,
+-- closing over a hole at (-0.15625, 0.5) under a deck at (0.0625, 0.109) -- and
+-- the engine slides those leaves 255 ticks apart and they clear the hole exactly,
+-- because Wube placed them that way. Copying the geometry inherits all of it.
 --
--- Every shift below is printed by build-array-plates.py in tiles, which the
--- engine reads as pixels * scale / 32. At 0.5 that is pixels/64; here a tile is
--- 126.8 px, and using 64 put the whole building two tiles off its footprint.
+-- The anchor is vanilla's hole: our opening is mapped onto it at 6.25 x 4.22
+-- tiles, and one affine transform then carries every plate. Our deck lands at
+-- 9.02 tiles wide against vanilla's 9.81, because our ring is proportionally
+-- thinner around a mouth of the same size -- which is the design, v3 being
+-- mostly shaft, and 9.02 sits on a 9-tile footprint where vanilla's overhangs.
 array.base_day_sprite =
 {
   filename = IA .. "base.png",
   priority = "medium",
-  width = 1243, height = 1074,
-  shift = { 0.01184, -0.11052 },
-  scale = 0.2526
+  width = 628, height = 612,
+  shift = { 0.0625, 0.109375 },
+  scale = 0.5
 }
 -- Derived from the deck's own alpha, sheared north-east and blurred, so it is
 -- the shadow of the building that is actually drawn rather than a leftover from
@@ -417,9 +422,9 @@ array.shadow_sprite =
   filename = IA .. "base-shadow.png",
   priority = "medium",
   draw_as_shadow = true,
-  width = 1099, height = 1074,
-  shift = { -2.77318, 0 },
-  scale = 0.2526
+  width = 656, height = 600,
+  shift = { 0.625, -0.125 },
+  scale = 0.5
 }
 array.base_front_sprite = util.empty_sprite()
 array.base_night_sprite = nil
@@ -445,34 +450,34 @@ array.door_back_sprite =
 {
   filename = IA .. "door-back.png",
   priority = "medium",
-  width = 722, height = 572,
-  shift = { 0.85257, -0.07894 },
-  scale = 0.2526
+  width = 312, height = 286,
+  shift = { 1.15625, 0.375 },
+  scale = 0.5
 }
 array.door_front_sprite =
 {
   filename = IA .. "door-front.png",
   priority = "medium",
-  width = 723, height = 572,
-  shift = { -0.71443, 0.29998 },
-  scale = 0.2526
+  width = 332, height = 300,
+  shift = { -0.875, 1.03125 },
+  scale = 0.5
 }
 array.hole_sprite =
 {
   filename = IA .. "hole.png",
   priority = "medium",
-  width = 869, height = 587,
-  shift = { 0.07495, 0.11440 },
-  scale = 0.2526
+  width = 400, height = 270,
+  shift = { -0.15625, 0.5 },
+  scale = 0.5
 }
 array.hole_light_sprite =
 {
   filename = IA .. "hole-light.png",
   priority = "medium",
   draw_as_glow = true,
-  width = 1390, height = 1132,
-  shift = { 0, 0 },
-  scale = 0.2526
+  width = 400, height = 270,
+  shift = { -0.15625, 0.5 },
+  scale = 0.5
 }
 -- The shadow a rocket casts on the pad while it sits there. Nothing sits on this
 -- pad, and there is no rocket to cast it.

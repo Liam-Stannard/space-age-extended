@@ -99,7 +99,10 @@ def main():
     # spends on its own crafting sheet. Quartering lands at 3.5 -- the same place
     # the v1 sheet sat -- and the frames are still drawn larger than they are
     # displayed, because the deck itself ships at scale 0.2317.
-    half = (src.width // 4, src.height // 4)
+    # Half of vanilla's base plate, so the sheet lands in the same slot as the
+    # deck at twice its scale -- 314 x 306 per frame, 32 frames, 3.1 Mpx against
+    # the 2.9 vanilla spends on its own crafting sheet.
+    half = (314, 306)
     rows = (FRAMES + COLS - 1) // COLS
     sheet = Image.new("RGBA", (half[0] * COLS, half[1] * rows), (0, 0, 0, 0))
 
@@ -133,8 +136,8 @@ def main():
              sheet.width * sheet.height / 1e6))
     # The deck ships at 0.2317 and this sheet is a quarter of the deck's
     # resolution, so it needs four times that scale to land on the same pixels.
-    print("  shift = { 0, 0 }, scale = %.4f  -- quarter-resolution, matches the deck"
-          % (0.2317 * 4))
+    print("  width = 314, height = 306, shift = { 0.0625, 0.109375 }, scale = 1.0"
+          "  -- half of vanilla's base slot, drawn at twice its scale")
 
 
 if __name__ == "__main__":
