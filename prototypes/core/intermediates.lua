@@ -98,7 +98,12 @@ data:extend({
     ingredients =
     {
       { type = "item", name = "sae-cultured-alloy", amount = 2 },
-      { type = "item", name = "sae-kamacite-whiskers", amount = 8 }
+      -- Combed, not raw. One tow is eight whiskers, so the frame costs exactly
+      -- what it always did -- but the comb is now a step on the way rather than
+      -- an optional refinement, which is the same argument that put crushing in
+      -- front of plate smelting. Strength in a fibre is directional, and a frame
+      -- is the one part that has to carry load.
+      { type = "item", name = "sae-whisker-tow", amount = 1 }
     },
     results = { { type = "item", name = "sae-reinforced-frame", amount = 1 } },
     surface_conditions = { { property = "pressure", min = 1, max = 9 } },
@@ -115,6 +120,11 @@ data:extend({
     ingredients =
     {
       { type = "item", name = "sae-bio-polymer", amount = 4 },
+      -- The felt earns its place here: it is thermal insulation, and this is the
+      -- insulation. It also gives the Whisker Comber's cheap output a consumer,
+      -- so combing everything starves the sleeves and matting everything starves
+      -- the frames -- which is the decision that building exists to pose.
+      { type = "item", name = "sae-whisker-felt", amount = 2 },
       { type = "fluid", name = "sae-molten-kamacite", amount = 50 }
     },
     results = { { type = "item", name = "sae-insulation-sleeve", amount = 2 } },

@@ -237,7 +237,10 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-carbonyl-powder" },
       { type = "unlock-recipe", recipe = "sae-sintered-preform" }
     }),
-  geodynamic("sae-ignition-array", { "sae-field-coils" }, 1200,
+  -- Carbonyl chemistry is a prerequisite because the Array's recipe now takes
+  -- sintered preforms. Without it the last technology would unlock a building
+  -- the player cannot yet make a part of.
+  geodynamic("sae-ignition-array", { "sae-field-coils", "sae-carbonyl-chemistry" }, 1200,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
 })
 

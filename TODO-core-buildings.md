@@ -308,7 +308,24 @@ with `build_check_type = manual`, the answer is `vent=true, bare=false`. The two
 other check types both return true off-vent, which is why the first reading was
 misleading. Anything testing a buildability rule must pass `manual`.
 
-**Three items are still dead ends**, and knowingly: whisker tow, whisker felt and
+**No item is a dead end any more.** Whisker tow now makes the reinforced frame
+(which took raw whiskers before — one tow is eight whiskers, so the frame costs
+exactly what it did and the comb becomes a step rather than a refinement),
+whisker felt goes into the insulation sleeve it is thermally suited to, and the
+sintered preform goes into the Ignition Array itself. Schreibersite was fixed a
+stage earlier by phosphide flux.
+
+The preform sits in the **Array's** recipe rather than the segment's, and that is
+a constraint rather than a preference: the segment is unlocked by
+`sae-field-coils`, which the Coil Separator's build cost sits behind, which the
+flux sits behind, which the preform sits behind. A preform in the segment would
+ask the player to make one before the research that allows it. Verified: no
+dependency cycle, and no technology unlocks a recipe whose ingredients do not
+yet exist.
+
+*Superseded — the note below is kept for the record:*
+
+**Three items were dead ends**, knowingly: whisker tow, whisker felt and
 schreibersite have no consumer yet. Their consumers — prepreg, the cryostat core
 and phosphide flux — are tier 4+ in `design/06-core-production-tree.md` and are
 not implemented. They are produced but not yet wanted.

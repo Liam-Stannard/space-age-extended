@@ -679,6 +679,18 @@ data:extend({
       { type = "item", name = "sae-kamacite-plate", amount = 500 },
       { type = "item", name = "sae-coil-assembly", amount = 10 },
       { type = "item", name = "processing-unit", amount = 200 },
+      -- The purest metal the Core can make, in the last thing it builds. This
+      -- is also what stops the sintering line being decoration: the Vacuum
+      -- Furnace's second category, the Coil Separator's schreibersite and the
+      -- whole carbonyl chain all end here.
+      --
+      -- In the Array's recipe rather than the segment's, and that is a real
+      -- constraint rather than a preference: the segment is unlocked by
+      -- sae-field-coils, which the Coil Separator's own build cost sits behind,
+      -- which the flux sits behind, which the preform sits behind. Putting a
+      -- preform in the segment would ask the player to make one before the
+      -- research that allows it. The Array is built once, afterwards.
+      { type = "item", name = "sae-sintered-preform", amount = 20 },
       { type = "item", name = "sae-arc-mast", amount = 4 }
     },
     results = { { type = "item", name = "sae-ignition-array", amount = 1 } },
