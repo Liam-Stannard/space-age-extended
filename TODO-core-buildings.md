@@ -215,10 +215,27 @@ rather than acted on.
 3. **`hole_light_sprite` was never observed drawing.** Wired, file present, and
    across two full rendered launches no light from it appeared at any phase. The
    ignition read currently rests on `rocket_glow_overlay_sprite` and the column.
-4. **Cumulative cradle lamps may not be possible.** The spec wants one lamp per
-   completed segment, lit and staying lit, but `red_lights_back_sprites` is a
-   single sprite driven by `light_blinking_speed` and `times_to_blink` — a blink
-   cycle, not a counter.
+4. **Cumulative cradle lamps: answered, and they are possible.** Not through the
+   prototype — `red_lights_back_sprites` is a blink cycle driven by
+   `light_blinking_speed` and `times_to_blink`, not a counter, and 2.1.17's
+   `LuaEntity` has no `disabled_working_visualisations`, so named working
+   visualisations cannot be switched per entity from script either. Both were
+   probed on a live 2.1.17 server rather than inferred.
+
+   The route that does work is `control.lua` plus `LuaRendering`.
+   `rendering.draw_sprite`, `draw_animation` and `draw_light` all exist, a drawn
+   object's `intensity` is settable after creation (so a charge can ramp rather
+   than step), and the charge level is readable straight off the entity as
+   `(rocket_parts + crafting_progress) / prototype.rocket_parts_required` — a
+   smooth 0–1 across the whole build, not one step per part.
+
+5. **The doors are cosmetic.** `door_back_sprite` and `door_front_sprite` are
+   optional: a silo with both nil loads, and on a headless 2.1.17 server one ran
+   the entire launch sequence in lockstep with a vanilla silo beside it —
+   identical states on identical ticks, both rockets away. The door phases
+   (`doors_opening`, `doors_opened`, `doors_closing`) still elapse; nothing
+   stalls. So a charging animation can replace the doors outright rather than
+   sitting alongside them.
 
 ### The Ignition Array's v3 art — where it stands
 
