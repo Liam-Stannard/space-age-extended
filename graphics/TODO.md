@@ -126,7 +126,41 @@ four rules now live in the template's §8 and in every prompt.
 | -------- | ----- |
 | Drop Crusher | **`v4-sheet.png`** — clean on all four rules; chutes now wide-left and narrow-right on opposite faces |
 | Ballast Drill | **`v2-sheet.png`** — clean; gained the toothed cutting head, so it reads as a mining machine at last |
-| The other seven | not yet redrawn |
+| Dross Classifier | **LOCKED — option A, the Shaker Deck**, chosen from five on 2026-09-08. `concept/adopted/A-sheet.png` |
+| Coil Separator | **LOCKED — option D, the Cold Plant**, chosen from five. The coil is buried; the machine is the refrigeration it needs. `concept/adopted/D-sheet.png` |
+| Whisker Comber | **LOCKED — option C, the Spinner**, chosen from five. A standing drum, not a low box. `concept/adopted/C-sheet.png` |
+| The other four | not yet redrawn — Helium Concentrator, Vacuum Furnace, Crust Tap, Ignition Ring Mast |
+
+### The five-option round, and what it is worth repeating for
+
+Three of the nine were taken through **five designs each, compared rather than
+refined** — the method the Ignition Array arrived at after four sets, and the one
+that answers "was this the right idea?" rather than "is this a better version of
+the idea?". Fifteen sheets, one generation apiece, a fresh conversation per option
+so nothing bled between them. Decision records are in
+`dross-classifier-options/`, `coil-separator-options/` and
+`whisker-comber-options/`; each keeps the winner's page, the README, and a
+contact sheet of all five at reduced size. The twelve losing pages and their
+full-size sheets are deleted.
+
+**Three prompt changes came out of it and should carry to the remaining four
+buildings:**
+
+* **Name the machine in the title line.** Every sheet in the set so far had
+  titled itself ORE PRESS or MAGNETIC SEPARATOR, because the prompts described
+  the machine and never named it. All fifteen came back correctly titled.
+* **Ask for no tile-grid panel.** Every grid ever drawn in this repo failed to
+  line up with the building on it. The prompts asked for a plain top-down view
+  instead, and the footprint is measured on the real plate with
+  `check-footprint.py`.
+* **Ask for a silhouette panel.** It is the cheapest possible map-zoom check and
+  it decided at least two of the three picks.
+
+**And one prompt mistake, measured:** all fifteen sheets came back under vanilla's
+saturation floor of 0.230, the worst at 0.136, because each prompt confined
+copper to one place (*"the drive end only"*, *"the coil itself"*). The adopted
+Array prompt says copper is "VISIBLE and used freely on bus runs, joints and
+fittings" and measures 0.262. Let the copper out.
 
 **Two art-direction corrections drove this, both from Liam.**
 

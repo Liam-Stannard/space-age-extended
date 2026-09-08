@@ -1264,6 +1264,17 @@ Measured across roughly a dozen rounds on one building:
    including panel structure and an information table that several rounds of
    describing in words had failed to get.
 
+3a. **Say where the copper goes, and do not ration it.** Measured across fifteen
+   sheets drawn in one round: every prompt that confined copper to a single
+   place — "the drive end only", "the coil itself" — produced a sheet under
+   vanilla's saturation floor of 0.230, the worst at 0.136. The adopted Ignition
+   Array prompt says copper and brass are *"VISIBLE and used freely on bus runs,
+   joints and fittings. This is what keeps the building warm"*, and measures
+   0.262. Warmth is not decoration in this palette; the Core's iron-nickel body
+   colours are low-chroma by design, so copper is the only thing carrying
+   saturation, and a prompt that rations it fails the band by arithmetic rather
+   than by taste.
+
 3b. **When a proportion matters, attach a measured diagram, not a description.**
    The Ignition Array's mouth took four rounds of prose to get wrong four
    different ways -- 1.48, then 1.77, 1.66, 1.55 -- and a fifth round that

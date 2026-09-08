@@ -1,8 +1,10 @@
 # Factorio Building — Art & Implementation Specification
 
-**Dross Classifier.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
-approved and a canonical plate has been measured.
+**Dross Classifier.** The design is locked: **option A, the Shaker Deck**, chosen
+2026-09-08 from five drawn against each other. The decision record is
+`dross-classifier-options/`, the sheet is
+`concept/adopted/A-sheet.png`, and the four rejected designs are gone.
+§6, §12 and §13 stay open until a canonical plate exists and has been measured.
 
 ---
 
@@ -10,8 +12,8 @@ approved and a canonical plate has been measured.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/A-sheet.png`**, option A of five |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and the three roof planes actually distinct** | ready — see §11 |
 | 5 | Working animation | portrait 2:3 | The sort loop reads as sorting | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -76,6 +78,11 @@ an eccentric drive turning at one end. The dross is never drawn (§8), so open
 trays would be three empty mesh decks on show at all times — see the template's
 §8 corollary and the Drop Crusher's §19.
 
+**This is the adopted design and it beat four alternatives**: a trommel drum, a
+rocking counterweight beam, a cascade tower and a spiral rake. It won because
+vibration is the mechanism and this is the only one of the five that says so from
+outside a closed machine. See `dross-classifier-options/README.md`.
+
 **The whole machine's read is that it is shaking**, and that survives enclosure
 perfectly: springs and a spinning eccentric on the outside say *vibration* far
 more clearly than an empty tray does.
@@ -100,6 +107,12 @@ box.
 silhouette nothing else in the mod has, and it is legible even at the 45-degree
 camera where flat machines all look alike.
 
+**It is also the one thing the adopted sheet did not land.** The concept came
+back with a ribbed, slightly domed cover rather than three flat planes, and since
+the roofline is the only feature separating this silhouette from every other low
+grey box on the Core, stage 1 has to fix it. That is a regeneration, not an edit
+— an edit preserves the shape being rejected.
+
 ## 3.3 Colour Palette
 
 | Role | Hex | Where |
@@ -111,6 +124,13 @@ camera where flat machines all look alike.
 | Fine dross | `#A89A82` | lower tray, deep bin |
 
 **No glow.** Dross is cold by the time it gets here — it is what settled *out*.
+
+**Let the copper out.** The line above that confines copper to the drive end is
+what put the adopted sheet at saturation **0.150**, under vanilla's 0.230 floor —
+measured, not felt. The adopted Ignition Array prompt says copper is "VISIBLE and
+used freely on bus runs, joints and fittings", and measures 0.262. Bus runs,
+spring fittings, hatch furniture and bolt rings can all carry it here without
+touching the tier-0 register.
 
 ---
 
@@ -170,33 +190,22 @@ end is downhill; they do not constrain inserters.
 
 # 11. Generation Requirements
 
-## Concept Sheet Prompt
+**The concept prompt lives with the design it drew:**
+`dross-classifier-options/A-shaker-deck.md`. It is the sectioned form of
+Appendix A — camera first, then building, form, colour, rules, panels, output —
+and it is what produced the locked sheet.
 
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a low three-by-three vibrating
-classifier standing on an airless metallic world. Three shallow empty stepped
-trays descend across the footprint, each with a visibly finer mesh than the
-one above. The whole deck rides on compressed leaf springs at four corners. A
-small offset flywheel drive sits at the high end. Two empty discharge lips of
-different widths leave the machine on opposite sides -- one on the left face
-and one on the right face -- so they sit on clearly separate tiles of the
-footprint and never side by side. Dark grey-brown frame, pale grey tray decks,
-charcoal springs. No belts, no conveyor, no collection bins, no glow, no
-flame, no smoke. Panels: main view, side elevation showing the three
-descending planes clearly, top-down view, a detail of the springs and the
-eccentric drive, and the deck shown at both ends of its shake. Title the sheet
-DROSS CLASSIFIER. Draw no loose material anywhere: no ore, powder, fibre,
-grit, debris or product on the ground, in bins, at chutes, on trays or
-spilling from the machine. Factorio machines never show what they make, so
-every chute, port, bin and tray is drawn as empty machinery. Every pipe
-connection must run down to ground level and stop flush at the edge of the
-tile footprint; no pipe may end in mid-air and none may leave the top of the
-building. Nothing may extend past the tile footprint, pipework included, and
-the tile-grid panel must show the whole machine inside the grid with no
-overhang.
-```
+**Do not re-prompt this design.** Appendix C's rule applies from here: crop the
+approved view out of the sheet, attach it as the source, and give a numbered list
+of exactly which changes are permitted. Words specify a design; only the image
+preserves it.
+
+**Two changes are permitted at stage 1**, and both are in the option page's
+production notes:
+
+1. **The roof must step**, in three distinct flat planes, walls staying vertical.
+   This one is a regeneration rather than an edit, because it is the silhouette.
+2. **More copper**, on bus runs, spring fittings and hatch furniture — see §3.3.
 
 ---
 
@@ -222,6 +231,30 @@ overhang.
 The three stepped trays seen from the side, coarse grit on top and pale powder
 below. Must read at 32 px as *"three descending steps"* — the springs and drive
 will not survive and should not be attempted.
+
+---
+
+# 19. Design Notes / Iteration History
+
+**Round 1, 2026-09-08 — five options, compared rather than refined.** A Shaker
+Deck, B Trommel, C Rocker Beam, D Cascade Tower, E Spiral Rake; one generation
+each, no refinements, a fresh conversation per option so no design bled into the
+next. **A was chosen.**
+
+Two failures worth keeping, because both were predicted on the option pages
+before anything was drawn and both are properties of the *shape*, not of the
+generator:
+
+* **C came back corner-on.** A directional form — a body that rocks, a slope to
+  show off — invites turning the machine, which is the template's rule zero
+  failure. This building has now done it twice. E did a milder version of it with
+  its inclined leg.
+* **B's housing swallowed its drum.** An enclosed rotating part gets absorbed
+  into its enclosure, so the cylinder silhouette the option existed for was only
+  half present.
+
+The earlier `v1`–`v3` sheets in `concept/` predate the five-option round and
+describe no adopted design.
 
 ---
 

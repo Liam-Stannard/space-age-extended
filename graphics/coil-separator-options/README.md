@@ -108,11 +108,11 @@ read with that little light, the rule is safe everywhere else.
 
 | Option | Sheet | Luminance | Saturation | Edge density |
 | ------ | ----- | --------: | ---------: | -----------: |
-| A — the Throat | `options/A-sheet.png` | 64.0 | 0.189 | 0.129 |
-| B — Split Poles | `options/B-sheet.png` | 70.3 | 0.218 | 0.141 |
-| C — Magnet Drum | `options/C-sheet.png` | 69.8 | 0.188 | 0.142 |
-| D — Cold Plant | `options/D-sheet.png` | 70.2 | 0.136 | 0.129 |
-| E — Quadrupole | `options/E-sheet.png` | 65.0 | 0.208 | 0.148 |
+| A — the Throat | `five-options-contact-sheet.png (panel 1)` | 64.0 | 0.189 | 0.129 |
+| B — Split Poles | `five-options-contact-sheet.png (panel 2)` | 70.3 | 0.218 | 0.141 |
+| C — Magnet Drum | `five-options-contact-sheet.png (panel 3)` | 69.8 | 0.188 | 0.142 |
+| D — Cold Plant | `five-options-contact-sheet.png (panel 4)` | 70.2 | 0.136 | 0.129 |
+| E — Quadrupole | `five-options-contact-sheet.png (panel 5)` | 65.0 | 0.208 | 0.148 |
 | **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
 
 **The sheets are at `graphics/entity/coil-separator/concept/options/`.**
@@ -140,3 +140,27 @@ was putting the warmth and the mechanical density back while keeping the
 advanced fabrication.
 
 Whichever option is picked here, its stage-1 prompt should let the copper out.
+
+---
+
+## CHOSEN — option D, the Cold Plant
+
+Picked by Liam on 2026-09-08. Its page is the only one left in this directory;
+the other four are deleted, and so are their full-size sheets. What survives of
+the round is this README, the winner's page with its production notes, and
+`graphics/entity/coil-separator/concept/five-options-contact-sheet.png`, which
+holds all five at reduced size so the comparison can still be seen.
+
+The adopted sheet is `graphics/entity/coil-separator/concept/adopted/D-sheet.png`.
+
+**Chosen because it draws the argument instead of the object.** Four of the five
+draw a magnet; this one draws the refrigeration a magnet needs on a world with no
+field to borrow, which is the only design here that explains the 2.5 MW on the
+tooltip.
+
+**What the round cost, and what it bought.** Five generations, no refinements,
+and the strongest set of the three: every option held the containment rule and
+none read as vanilla's electromagnetic plant. The runner-up worth recording is
+**E, the Quadrupole** — the only sheet of the fifteen whose detail density
+cleared vanilla's floor, and the only one whose signature feature sat on the
+roof, where the camera looks. If D fails at stage 1, E is where to go.

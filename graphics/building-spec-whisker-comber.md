@@ -1,8 +1,15 @@
 # Factorio Building — Art & Implementation Specification
 
-**Whisker Comber.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
-approved and a canonical plate has been measured.
+**Whisker Comber.** The design is locked: **option C, the Spinner**, chosen
+2026-09-08 from five drawn against each other. The decision record is
+`whisker-comber-options/`, the sheet is `concept/adopted/C-sheet.png`, and the
+four rejected designs are gone. §6, §12 and §13 stay open until a canonical plate
+exists and has been measured.
+
+**The adopted design changed what this building looks like.** It is no longer a
+low casing with two needled drums lying in it: it is a squat vertical drum that
+aligns fibre by spinning it. §3 and §16 are rewritten against that; §1, §2, §8
+and §20 are unchanged, because none of them was ever about the art.
 
 ---
 
@@ -10,8 +17,8 @@ approved and a canonical plate has been measured.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/C-sheet.png`**, option C of five |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and clearly not the Sealed Roboport's dome** | ready — see §11 |
 | 5 | Working animation | portrait 2:3 | The comb stroke loops seamlessly | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -77,48 +84,71 @@ player deciding the ratio, every hour, against whatever their line is short of.
 
 ## 3.1 Design Concept
 
-**An enclosed carding machine.** The needled drums run *inside* a heavy casing;
-what shows outside are the **drum bearing housings** bulging from both flanks,
-a hinged inspection lid on top, and a drive housing at one end. The fibre is
-never drawn (§8), so an open hopper and an open nip would both be permanently
-empty — see the template's §8 corollary.
+**A squat vertical drum that spins fibre into line.** The machine stands rather
+than lies: a heavy machined shell about as tall as it is wide, a domed lid held
+by a ring of toggle dogs, a ring of balance bosses round the waist, a louvred
+drive skirt at the base, and a small arched draw-off guide standing over one edge
+of the lid. Inside, a spinning head throws the material against the wall and it
+comes off aligned; none of that is visible, and none of it needs to be.
 
-**The anti-read is a textile mill.** The reference is real carding machinery, but
-the material is metal, the environment is vacuum, and this machine handles
-something that would cut you: it should look sealed and guarded, not open.
-**The second anti-read is a plain crate** — the paired bulging bearing housings
-are what stop it reading as a box.
+**Why standing, and not another low box.** The spec's own problem, stated below
+in §3.2, is that this machine sorts things next to a machine that sorts things —
+the Dross Classifier is also a low grey 3×3. A standing drum separates from it at
+any zoom, in any direction, with no detail at all. A vertical axis is also the
+honest answer to gravity 50: it is the one axis where the Core's gravity is not
+fighting the bearings.
+
+**The anti-read is a textile mill**: no wooden framing, no spindles, no bobbins,
+no thread, nothing that belongs in one. **The second anti-read is now the Sealed
+Roboport**, which is a smooth dome already standing on the Core. This machine is
+squat, bolted and industrial where that one is smooth — and that difference is
+carried entirely by hardware, so every piece of it matters.
 
 ## 3.2 Key Visual Features
 
-* **Two drum bearing housings** bulging from each flank, paired and obviously
-  cylindrical, so the two drums inside are legible from the outside.
-* An **infeed tray** at one end holding a loose grey tangle.
-* An **outfeed nip** at the other, where the aligned sliver emerges as a bright
-  ordered ribbon.
-* A **guard hood** that is clearly removable and clearly necessary.
+* A **squat drum** on the 3×3, machined shell, low skirt where it meets ground.
+* A **domed lid** held by a ring of toggle dogs, lifting eye at the crown —
+  bolted and squat, never smooth and seamless.
+* A ring of **balance bosses** round the waist, evenly spaced. This is the detail
+  that says the thing spins, and it is what a round shell needs to stop reading
+  as a tank.
+* A **louvred drive skirt** at the base, with a cable entry.
+* A **draw-off guide** over one edge of the lid: two polished rollers in a small
+  arch, drawn empty. It is not a port and must never be aimed at a tile.
+* **No output port.** An `assembling-machine` waits for an inserter, which may
+  stand anywhere — see the template's §8 rule 3.
 
 ### Signature Feature
 
-**The before-and-after across the machine's length.** Tangle at one end, ordered
-ribbon at the other, and the transition visible in between. It is the recipe
-drawn on the building, and it is what makes the comber legible next to the
-classifier, which is also a low grey box that sorts things.
+**The standing silhouette.** A round body among low boxes, and the only round
+building in the Core's machine set.
+
+**What was given up to get it**, recorded so it is not rediscovered as a
+surprise: the previous design's signature was the *before-and-after* along the
+machine's length — tangle in, ordered ribbon out — which was the recipe drawn on
+the building. A vertical drum has no length to read along, and the two recipes
+(comb into tow, mat into felt) are not visible on this machine at all. Option E
+of the round was the design that showed them, and it was not picked. If the
+choice has to become visible later it belongs in a `working_visualisation`, which
+only plays while the machine is crafting.
 
 ## 3.3 Colour Palette
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Chassis and hood | `#4A463F` → `#6E685C` | the mass of the building |
-| Comb drums | `#8A8580` | the two cylinders |
-| Needle glints | `#D8D4CC` | drum surfaces, sparingly |
-| Loose whiskers | `#9A9488` | infeed tray, disordered |
-| Aligned tow | `#C8C4BC` | outfeed, brighter and ordered |
+| Chassis and shell | `#4A463F` → `#6E685C` | the drum |
+| Working parts | `#8A8580` | draw-off rollers, visible mechanism |
+| Needle glints | `#D8D4CC` | needled surfaces only, sparingly |
+| Pale nickel-white | `#B9B4A8` | lid ring, chamfers, guards, end caps |
+| Copper and brass | `#8A5A32` | drive skirt, bearing caps, lid furniture |
 
-**The aligned material is brighter than the loose material.** That is physically
-true — aligned fibres catch light coherently — and it is the whole visual gag.
-
----
+**Two measurements to fix at stage 1, both from the adopted sheet.** It came back
+at **saturation 0.180** against vanilla's 0.230 floor, and at **edge density
+0.114** against a floor of 0.144 — the least detailed sheet of the fifteen drawn
+that day. A round shell gives the eye less to hold, which is exactly why vanilla
+covers its round machines in hardware. More instrumentation, more panel breaks,
+more fittings on the skirt; and let the copper out, which fixes both numbers at
+once.
 
 # 4. Factorio Visual Style
 
@@ -133,10 +163,10 @@ tech tree, so this building's surface treatment is set by where it sits on
 
 
 
-3×3 and low, mostly roof and hood from the camera, so the two drums have to be
-visible *through* the guard rather than hidden by it. Style reference to attach:
-the **biochamber**, cropped and upscaled, for the organic-process-in-an-
-industrial-shell read.
+3×3 and standing, about as tall as it is wide, so the camera shows the lid and a
+shallow band of shell. The lid is therefore the most-visible surface and has to
+carry hardware. Style references: the **recycler** for a guarded precision
+machine, plus the standard assembling machine 3 and foundry.
 
 ---
 
@@ -162,31 +192,20 @@ do not care which end they stand at.
 
 # 11. Generation Requirements
 
-## Concept Sheet Prompt
+**The concept prompt lives with the design it drew:**
+`whisker-comber-options/C-spinner-drum.md`.
 
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a low three-by-three metal-
-fibre carding machine standing on an airless metallic world. Two pale grey
-needled comb drums lie side by side, recessed beneath a heavy guard hood and
-rail, and the needles are the machine's most distinctive feature. At one end a
-deep empty hopper mouth opens upward; at the other a pair of polished nip
-rollers sits in an empty outfeed slot. Dark grey-brown chassis and hood, pale
-grey drums with fine bright needle glints. No textile-mill wooden framing, no
-belts, no glow, no flame, no smoke. Panels: main view, side elevation showing
-the hopper mouth at one end and the nip rollers at the other, top-down view, a
-close detail of the needled drum surface and the guard rail, and the drums
-shown at two points in their rotation. Title the sheet WHISKER COMBER. Draw no
-loose material anywhere: no ore, powder, fibre, grit, debris or product on the
-ground, in bins, at chutes, on trays or spilling from the machine. Factorio
-machines never show what they make, so every chute, port, bin and tray is
-drawn as empty machinery. Every pipe connection must run down to ground level
-and stop flush at the edge of the tile footprint; no pipe may end in mid-air
-and none may leave the top of the building. Nothing may extend past the tile
-footprint, pipework included, and the tile-grid panel must show the whole
-machine inside the grid with no overhang.
-```
+**Do not re-prompt this design.** Appendix C's rule applies: crop the approved
+view out of the sheet, attach it, and give a numbered list of permitted changes.
+
+**Two changes are permitted at stage 1**, from the option page's production
+notes:
+
+1. **More hardware and more copper** — instrumentation, panel breaks, skirt
+   fittings. §3.3 carries the two measurements that demand it.
+2. **Everything that separates this from the Sealed Roboport must survive**: the
+   toggle dogs, the lifting eye, the balance-boss ring, the louvred skirt. If a
+   round smooths any of them away, it is a failed round however good it looks.
 
 ---
 
@@ -209,9 +228,36 @@ machine inside the grid with no overhang.
 
 # 16. Icon
 
-A bundle of aligned fibres against a tangle, split down the middle of the frame.
-Must read at 32 px as *"messy on one side, neat on the other"*; the drums will not
-survive and should not be attempted.
+**The standing drum, its dogged lid and the draw-off arch.** Must read at 16 px
+as *"a squat round machine with something over its lid"* — the balance bosses and
+the louvres will not survive that size and should not be attempted; the
+silhouette and the arch must.
+
+*(The previous icon concept — aligned fibres against a tangle — drew the product,
+which the template's §8 rule 1 forbids on the building and which is a poor idea
+on an icon for the same reason: it promises a read the machine never shows.)*
+
+---
+
+# 19. Design Notes / Iteration History
+
+**Round 1, 2026-09-08 — five options, compared rather than refined.** A Carding
+Casing, B Travelling Gill, C Spinner, D Mill Stack, E Two-Lane Machine; one
+generation each, no refinements, a fresh conversation per option. **C was
+chosen.**
+
+**The set's real finding was not about any one option.** With the material
+correctly undrawn, three of the five read as machines *waiting* rather than
+working — B's empty roof slot most of all. That is the sharpest form of the
+conflict between this spec's old §3.2, which wanted the fibre's before-and-after
+drawn on the building, and the template's §8 rule 1, which forbids drawing the
+product at all. The honest resolution is a `working_visualisation`: the engine
+draws it only while the machine crafts, so it stops when the machine does.
+
+**The runner-up is recorded on purpose.** A, the Carding Casing, was the
+best-measured sheet of the fifteen — the only one in this set inside vanilla's
+detail band — and it is the fallback if the Spinner cannot be kept clear of the
+Sealed Roboport's dome.
 
 ---
 

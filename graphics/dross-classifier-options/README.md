@@ -104,11 +104,11 @@ bins entirely rather than to aim them.
 
 | Option | Sheet | Luminance | Saturation | Edge density |
 | ------ | ----- | --------: | ---------: | -----------: |
-| A — Shaker Deck | `options/A-sheet.png` | 61.4 | 0.150 | 0.122 |
-| B — Trommel | `options/B-sheet.png` | 63.3 | 0.151 | 0.122 |
-| C — Rocker Beam | `options/C-sheet.png` | 63.6 | 0.151 | 0.132 |
-| D — Cascade Tower | `options/D-sheet.png` | 60.3 | 0.199 | 0.127 |
-| E — Spiral Rake | `options/E-sheet.png` | 63.3 | 0.200 | 0.127 |
+| A — Shaker Deck | `five-options-contact-sheet.png (panel 1)` | 61.4 | 0.150 | 0.122 |
+| B — Trommel | `five-options-contact-sheet.png (panel 2)` | 63.3 | 0.151 | 0.122 |
+| C — Rocker Beam | `five-options-contact-sheet.png (panel 3)` | 63.6 | 0.151 | 0.132 |
+| D — Cascade Tower | `five-options-contact-sheet.png (panel 4)` | 60.3 | 0.199 | 0.127 |
+| E — Spiral Rake | `five-options-contact-sheet.png (panel 5)` | 63.3 | 0.200 | 0.127 |
 | **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
 
 **The sheets are at `graphics/entity/dross-classifier/concept/options/`.**
@@ -136,3 +136,27 @@ was putting the warmth and the mechanical density back while keeping the
 advanced fabrication.
 
 Whichever option is picked here, its stage-1 prompt should let the copper out.
+
+---
+
+## CHOSEN — option A, the Shaker Deck
+
+Picked by Liam on 2026-09-08. Its page is the only one left in this directory;
+the other four are deleted, and so are their full-size sheets. What survives of
+the round is this README, the winner's page with its production notes, and
+`graphics/entity/dross-classifier/concept/five-options-contact-sheet.png`, which
+holds all five at reduced size so the comparison can still be seen.
+
+The adopted sheet is `graphics/entity/dross-classifier/concept/adopted/A-sheet.png`.
+
+**Chosen because vibration is the mechanism, and it is the only option that says
+so from the outside.** The other four each moved the read somewhere else and each
+paid for it: B's housing swallowed the drum it was picked for, C came back
+corner-on, D dropped the camera to fit its height, and E's leg pulled the machine
+off-square.
+
+**What the round cost, and what it bought.** Five generations, no refinements.
+The two failures are both instructive and both predicted on the pages before
+anything was drawn: a directional form gets turned (C, and E in a milder form),
+and an enclosed rotating part gets absorbed into its enclosure (B). Neither is a
+generator being careless; both are the shape asking for it.

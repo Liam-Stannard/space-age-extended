@@ -1,5 +1,48 @@
 # Option D — the Cold Plant
 
+> ## ADOPTED — this is the Coil Separator
+>
+> Chosen 2026-09-08 by Liam from five options drawn against each other. The sheet
+> is locked at `graphics/entity/coil-separator/concept/options/D-sheet.png`. Every other option in this directory is
+> rejected and its page has been deleted; the README keeps the record of what the
+> five were and what the round measured.
+
+### Why it won
+
+It draws the argument instead of the object. Every other option draws a magnet;
+this one draws the refrigeration a magnet needs on a world with no field to
+borrow -- which is the only design in the five that explains the 2.5 MW on the
+tooltip, and the reason the building exists at all.
+
+It also lands the tier hardest. Cryogenic jacketing is tier 3's own vocabulary
+and here it is structural rather than decorative, and at luminance 70.2 it is one
+of the brightest, most readable sheets in the round.
+
+The risk was that it would not read as a separator, and the sheet answers that
+better than expected: the unlit/lit pair shows the base slot carrying the whole
+read with very little light, which is the discipline the containment rule wanted
+everywhere.
+
+### What to fix in production, found on review
+
+1. **It reads as a plant before it reads as a separator**, exactly as the
+   option page predicted. The defence is the slot: it must be unmistakable at
+   normal zoom, brighter and wider than in the concept, and it must be the first
+   thing the eye finds. If stage 1 comes back with the slot subordinate to the
+   vessel, that is a failed round.
+2. **It is the least saturated sheet of the fifteen, at 0.136**, because the
+   design has almost no copper in it by construction. The copper has to come back
+   somewhere honest: the trunking's flanged joints, the terminal blocks, the
+   condenser frame's fittings. This one needs it more than the other two.
+3. **Vanilla's cryogenic plant is a real building the player will own**, and it
+   is on Aquilo, not here -- but a screenshot of the two side by side is the only
+   way to know this is not a copy of it. Do that before locking stage 1.
+4. **The spec is now wrong in three places** and has been rewritten: §3.1
+   described "a machine built around a hole", §3.2 made the coil throat the
+   signature feature, and §16 asked for an icon of a toroid seen square-on. None
+   of that survives -- the coil is buried and the icon is a vessel, a condenser
+   stack and one lit slot.
+
 **One line.** Nine tenths cooling plant and one tenth magnet: a jacketed vessel and a condenser stack, with the field visible only as a slot glowing at the base.
 
 ## The idea

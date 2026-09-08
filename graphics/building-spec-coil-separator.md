@@ -1,8 +1,16 @@
 # Factorio Building — Art & Implementation Specification
 
-**Coil Separator.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
-approved and a canonical plate has been measured.
+**Coil Separator.** The design is locked: **option D, the Cold Plant**, chosen
+2026-09-08 from five drawn against each other. The decision record is
+`coil-separator-options/`, the sheet is `concept/adopted/D-sheet.png`, and the
+four rejected designs are gone. §6, §12 and §13 stay open until a canonical plate
+exists and has been measured.
+
+**The adopted design changed what this building looks like.** It is no longer a
+machine built around an open coil throat: the coil is *buried*, and what stands
+on the tile is the refrigeration plant a magnet needs on a world with no field to
+borrow. §3 and §16 are rewritten against that; §1, §2, §8 and §20 are unchanged,
+because none of them was ever about the art.
 
 ---
 
@@ -10,8 +18,8 @@ approved and a canonical plate has been measured.
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/D-sheet.png`**, option D of five |
+| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and the base slot unmistakable at normal zoom** | ready — see §11 |
 | 2 | Idle plate (unlit) | portrait 2:3 | Same machine, field dead | blocked on 1 |
 | 4 | Glow plate | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
@@ -74,43 +82,63 @@ also the only building in the game whose ingredient list is an argument.
 
 ## 3.1 Design Concept
 
-A machine built around a hole. The centre of the building is an open **coil
-throat** — a heavy toroidal winding on its side, with the ore stream passing
-through it — and everything else is the apparatus needed to keep that throat fed
-and cooled.
+**Nine tenths cooling plant, one tenth magnet.** A fat jacketed vessel stands
+off-centre on the tile with a finned condenser stack beside it, lagged trunking
+looping between them, frost collars and relief valves on the crown. The coil is
+inside the vessel and the player never sees it. All that shows of the separation
+itself is a narrow horizontal **slot at the base of the vessel**, with cold light
+standing in it.
 
-**The anti-read is the electromagnetic plant.** Vanilla's is a clean lab-white
-box with a violet field effect, and copying it would say "you imported this".
-This machine is heavy, dark and visibly strained: the field is expensive here.
+**The joke is the proportion**: a machine this big, to make a field that small.
+It is the only design of the five that explains the 2.5 MW on the tooltip, and
+the tooltip is the building's whole argument.
+
+**The anti-read is still the electromagnetic plant.** Vanilla's is a clean
+lab-white box with a violet field playing over it, and copying it would say "you
+imported this". **The second anti-read is now vanilla's cryogenic plant**, which
+this design is much closer to than the rejected coil-throat one was: a vessel and
+a condenser stack could be any cold process. The slot is what separates them, and
+it has to carry that weight.
 
 ## 3.2 Key Visual Features
 
-* A **coil throat** — the signature. A thick copper-brown toroid mounted
-  vertically, its aperture facing the camera, with the ore path running through.
-* **No output port.** The split happens inside; an `assembling-machine` has one
-  output inventory and no output position — see the template's §8 rule 3.
-* **Bus bars** — heavy flat conductors entering the throat from both flanks,
-  visibly overbuilt.
-* **Cooling fins** on the throat's outer face.
+* A **jacketed vessel**, pale cryogenic jacketing over a dark shell, banded with
+  frost collars, capped with a domed head.
+* A **condenser stack** beside it — a close-packed fin bank in a heavy frame,
+  about two thirds the vessel's height.
+* **Lagged trunking** looping between the two, thick, flanged, staying inside
+  the footprint. It connects the machine to *itself*: there is no pipe to the
+  outside world, because there is no fluid box.
+* **No visible coil at all.** This is the design decision, not an omission.
+* **No output port.** An `assembling-machine` waits for an inserter, which may
+  stand anywhere — see the template's §8 rule 3.
 
 ### Signature Feature
 
-**The throat's field glow, seen only through the aperture.** A cold blue-violet
-that lives strictly inside the ring and never spills onto the chassis. Fulgora's
-lightning and this are the only violet in the mod's palette and they should not
-be confused — this one is steady, not flickering.
+**The slot at the base of the vessel.** One narrow horizontal opening, the only
+opening in the machine, with a steady cold blue-violet standing in it. Everything
+else on the building is apparatus for keeping that slot cold.
+
+It is also the risk: the adopted sheet reads as a *plant* first and a separator
+second, and the slot is the only thing arguing otherwise. Stage 1 must draw it
+wider and brighter than the concept does, and it must be the first thing the eye
+finds.
 
 ## 3.3 Colour Palette
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Chassis | `#4A463F` → `#6E685C` | the mass of the building |
-| Coil windings | `#8A5A32` → `#C88A4A` | the toroid only |
-| Bus bars | `#8A8580` | flanks |
-| Field glow | `#6A5AC8` → `#B0A8F0` | inside the aperture only |
-| Concentrate | `#7A7060` | the chutes |
+| Chassis and vessel shell | `#4A463F` → `#6E685C` | the mass of the building |
+| Cryogenic jacketing, frost collars | `#B9B4A8` | the vessel, the collars |
+| Bus bars and conductors | `#8A8580` | flanks |
+| Copper and brass | `#8A5A32` → `#C88A4A` | trunking flanges, terminal blocks, condenser fittings |
+| Field glow | `#6A5AC8` → `#B0A8F0` | inside the base slot only |
 
----
+**The copper line is a correction, not a preference.** The adopted sheet measured
+saturation **0.136** — the least saturated of the fifteen drawn this round, and
+well under vanilla's 0.230 floor — because the design has almost no copper in it
+by construction. It has to come back somewhere honest, and flanged joints,
+terminal blocks and condenser fittings are where a real cold plant carries it.
 
 # 4. Factorio Visual Style
 
@@ -125,11 +153,11 @@ tech tree, so this building's surface treatment is set by where it sits on
 
 
 
-3×3 and mid-height. The throat's aperture must survive the 45-degree camera — an
-opening drawn as a perfect circle will read as an ellipse and lose its centre, so
-it should be drawn already foreshortened. Style reference to attach: the
-**foundry**, cropped and upscaled, for weight and finish. **Do not attach the
-electromagnetic plant**; it is the anti-read.
+3×3 and mid-height, with the vessel's domed head the tallest thing on it. Style
+references: the **nuclear reactor** for heavy contained power, plus the standard
+assembling machine 3 and foundry. **Do not attach the electromagnetic plant** —
+it is the anti-read, and attaching it unlabelled pulls the design back toward the
+thing this building exists to not be.
 
 ---
 
@@ -154,33 +182,26 @@ electromagnetic plant**; it is the anti-read.
 
 # 11. Generation Requirements
 
-## Concept Sheet Prompt
+**The concept prompt lives with the design it drew:**
+`coil-separator-options/D-cold-plant.md`.
 
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a heavy dark three-by-three
-magnetic separator standing on an airless metallic world. Its centre is a
-thick copper-brown toroidal coil mounted vertically with an open aperture
-facing the viewer. Heavy flat pale-grey bus bars enter the coil from both
-flanks. Cooling fins on the coil's outer face. Two empty angled splitter
-chutes of different widths leave the base below the coil on opposite sides --
-one to the left and one to the right -- so they sit on clearly separate tiles
-of the footprint and never side by side. A steady cold blue- violet glow
-appears only inside the aperture and never on the chassis. Dark grey-brown
-armour. No white laboratory panels, no flickering electricity, no arcs, no
-smoke, no flame. Panels: main view, front elevation, side elevation, a detail
-of the empty coil throat and the two chute mouths, and a lit/unlit pair. Title
-the sheet COIL SEPARATOR. Draw no loose material anywhere: no ore, powder,
-fibre, grit, debris or product on the ground, in bins, at chutes, on trays or
-spilling from the machine. Factorio machines never show what they make, so
-every chute, port, bin and tray is drawn as empty machinery. Every pipe
-connection must run down to ground level and stop flush at the edge of the
-tile footprint; no pipe may end in mid-air and none may leave the top of the
-building. Nothing may extend past the tile footprint, pipework included, and
-the tile-grid panel must show the whole machine inside the grid with no
-overhang.
-```
+**Do not re-prompt this design.** Appendix C's rule applies: crop the approved
+view out of the sheet, attach it, and give a numbered list of permitted changes.
+
+**Three changes are permitted at stage 1**, from the option page's production
+notes:
+
+1. **The base slot, wider and brighter** — it must be the first thing the eye
+   finds, and it must be unmistakable at normal zoom.
+2. **More copper** — trunking flanges, terminal blocks, condenser fittings. See
+   §3.3 for the measurement that demands it.
+3. **Nothing else.** In particular the vessel-and-stack composition is the design
+   and must not drift.
+
+**One check before locking stage 1, and it needs the game rather than an
+opinion:** photograph this building beside vanilla's cryogenic plant on the same
+ground at the same zoom. That is the anti-read §3.1 names, and a screenshot is
+the only way to know.
 
 ---
 
@@ -203,9 +224,32 @@ overhang.
 
 # 16. Icon
 
-The toroid seen square on, aperture open, with the violet field inside it and the
-ore stream splitting below. Must read at 32 px as *"a ring with something passing
-through"*.
+**The vessel, the condenser stack beside it, and the lit slot at the base.** Must
+read at 16 px as *"a fat cold tank with a bright line under it"* — the stack and
+the trunking will not survive that size and should not be attempted; the vessel's
+silhouette and the slot must.
+
+*(The previous icon concept — a toroid seen square-on with the ore stream
+splitting below — belonged to the rejected coil-throat design.)*
+
+---
+
+# 19. Design Notes / Iteration History
+
+**Round 1, 2026-09-08 — five options, compared rather than refined.** A the
+Throat, B Split Poles, C Magnet Drum, D Cold Plant, E Quadrupole; one generation
+each, no refinements, a fresh conversation per option. **D was chosen.**
+
+**This was the strongest of the three sets drawn that day.** All five held the
+containment rule — the violet stayed inside the aperture, the slot, the arc line,
+the base slot and the shaft respectively, and never touched the chassis — and
+none of them read as vanilla's electromagnetic plant.
+
+**The runner-up is recorded on purpose.** E, the Quadrupole, was the only sheet
+of the fifteen whose detail density cleared vanilla's floor (0.148 against
+0.144), and the only one whose signature feature sat on the *roof*, which is
+where Factorio's camera looks. If D cannot be kept clear of vanilla's cryogenic
+plant at stage 1, E is where to go.
 
 ---
 

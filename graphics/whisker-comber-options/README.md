@@ -102,11 +102,11 @@ not change which design is picked.
 
 | Option | Sheet | Luminance | Saturation | Edge density |
 | ------ | ----- | --------: | ---------: | -----------: |
-| A — Carding Casing | `options/A-sheet.png` | 69.1 | 0.208 | 0.152 |
-| B — Travelling Gill | `options/B-sheet.png` | 58.1 | 0.176 | 0.125 |
-| C — Spinner | `options/C-sheet.png` | 66.5 | 0.194 | 0.114 |
-| D — Mill Stack | `options/D-sheet.png` | 61.3 | 0.165 | 0.122 |
-| E — Two-Lane Machine | `options/E-sheet.png` | 61.2 | 0.180 | 0.116 |
+| A — Carding Casing | `five-options-contact-sheet.png (panel 1)` | 69.1 | 0.208 | 0.152 |
+| B — Travelling Gill | `five-options-contact-sheet.png (panel 2)` | 58.1 | 0.176 | 0.125 |
+| C — Spinner | `five-options-contact-sheet.png (panel 3)` | 66.5 | 0.194 | 0.114 |
+| D — Mill Stack | `five-options-contact-sheet.png (panel 4)` | 61.3 | 0.165 | 0.122 |
+| E — Two-Lane Machine | `five-options-contact-sheet.png (panel 5)` | 61.2 | 0.180 | 0.116 |
 | **vanilla band** | | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
 
 **The sheets are at `graphics/entity/whisker-comber/concept/options/`.**
@@ -136,3 +136,28 @@ was putting the warmth and the mechanical density back while keeping the
 advanced fabrication.
 
 Whichever option is picked here, its stage-1 prompt should let the copper out.
+
+---
+
+## CHOSEN — option C, the Spinner
+
+Picked by Liam on 2026-09-08. Its page is the only one left in this directory;
+the other four are deleted, and so are their full-size sheets. What survives of
+the round is this README, the winner's page with its production notes, and
+`graphics/entity/whisker-comber/concept/five-options-contact-sheet.png`, which
+holds all five at reduced size so the comparison can still be seen.
+
+The adopted sheet is `graphics/entity/whisker-comber/concept/adopted/C-sheet.png`.
+
+**Chosen because it is the only one of the five that stops being a box**, and
+this building's standing problem — stated in its own spec — is that it is a low
+grey machine that sorts things standing beside a low grey machine that sorts
+things.
+
+**What the round cost, and what it bought.** Five generations, no refinements.
+The set's real finding was not about any one option: with the material correctly
+undrawn, three of the five read as machines *waiting* rather than working, which
+is the sharpest form of the spec-versus-template conflict this README opened
+with. **A, the Carding Casing**, is the better-measured sheet and the safer
+machine, and it is the fallback if the Spinner cannot be kept clear of the Sealed
+Roboport's dome.

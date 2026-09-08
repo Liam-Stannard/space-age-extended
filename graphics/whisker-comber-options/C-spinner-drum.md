@@ -1,5 +1,49 @@
 # Option C — the Spinner
 
+> ## ADOPTED — this is the Whisker Comber
+>
+> Chosen 2026-09-08 by Liam from five options drawn against each other. The sheet
+> is locked at `graphics/entity/whisker-comber/concept/options/C-sheet.png`. Every other option in this directory is
+> rejected and its page has been deleted; the README keeps the record of what the
+> five were and what the round measured.
+
+### Why it won
+
+It is the only one of the five that stops being a box. The Comber's standing
+problem, stated in its own spec, is that it is a low grey machine that sorts
+things standing next to a low grey machine that sorts things -- and a squat
+standing drum separates from the Dross Classifier at any zoom, in any direction,
+with no detail at all.
+
+The vertical axis is also the honest answer to gravity 50: spinning about the
+vertical is the one axis where the Core's gravity is not fighting the bearings.
+
+Of the four it beat, A is the better-measured sheet and the safer machine, but it
+is the box again; B reads as a machine waiting rather than working; D reads as
+the Drop Crusher's cousin; and E's two lanes did not come back unequal enough to
+carry the idea that justified them.
+
+### What to fix in production, found on review
+
+1. **It must not become the Sealed Roboport.** That building is a smooth dome
+   and it is already on the Core. This one stays squat, bolted and industrial:
+   the ring of toggle dogs, the lifting eye, the balance bosses round the waist
+   and the louvred drive skirt are the difference, and every one of them has to
+   survive stage 1.
+2. **It is the least detailed sheet of the fifteen, at 0.114**, against vanilla's
+   0.144 floor. A round shell gives the eye less to hold, which is exactly why
+   vanilla covers its round machines in hardware. More instrumentation, more
+   panel breaks, more fittings on the skirt -- and let the copper out, which
+   fixes the saturation at the same time.
+3. **The two recipes are not drawn, and that is accepted.** The comb-versus-mat
+   choice is the reason this building exists, and this design does not show it;
+   option E was the one that did, and it was not picked. If the choice needs to
+   be visible later, it belongs in a `working_visualisation` that only plays
+   while the machine is crafting, not in a second permanent lane.
+4. **The draw-off guide is the one part that can lie.** It stands over the lid
+   with two polished rollers and nothing between them, which is correct. It must
+   never be drawn with tow in it, and it must not be aimed at a tile.
+
 **One line.** A squat vertical drum with a domed lid and a draw-off arch, aligning fibre by spinning it rather than combing it.
 
 ## The idea

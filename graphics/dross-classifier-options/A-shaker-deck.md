@@ -1,5 +1,47 @@
 # Option A — the Shaker Deck
 
+> ## ADOPTED — this is the Dross Classifier
+>
+> Chosen 2026-09-08 by Liam from five options drawn against each other. The sheet
+> is locked at `graphics/entity/dross-classifier/concept/options/A-sheet.png`. Every other option in this directory is
+> rejected and its page has been deleted; the README keeps the record of what the
+> five were and what the round measured.
+
+### Why it won
+
+It is the only option that says *vibration* from the outside without opening
+the machine, and vibration is the mechanism. The four other options each moved
+the read somewhere else -- into rotation, into a swinging mass, into height, into
+a screw -- and each paid for it: B's housing swallowed the drum it was picked
+for, C came back corner-on, D dropped the camera to fit its height, and E's leg
+pulled the whole machine off-square.
+
+It also passes the checks the others fail. Square to the grid with the base
+reading as a square, roof-dominant, nothing past the footprint, and a working
+state pair that is legible in a still frame -- the whole body displaced between
+two frames, which is a real animation and a cheap one.
+
+### What to fix in production, found on review
+
+1. **The roof is arched, not stepped.** The prompt asked for three distinct
+   descending planes and the render gave a ribbed, slightly domed cover. The
+   stepped profile is this design's signature -- §3.2 calls it "three descending
+   planes" and it is the only thing separating this silhouette from every other
+   low grey box on the Core. Stage 1 must land it, and it is worth one explicit
+   regeneration rather than an edit.
+2. **Let the copper out.** At saturation 0.150 this is one of the least saturated
+   sheets in the round, under vanilla's 0.230 floor. The cause is a prompt line I
+   wrote -- copper "used sparingly on the drive end only". The adopted Array
+   prompt says the opposite and measures 0.262. Bus runs, joints, spring
+   fittings and hatch furniture can all carry it.
+3. **The two bins stay shut, and stay decoration.** They are drawn as closed
+   recesses, which is correct: an assembling machine has one output inventory and
+   no output position, so a bin aimed at a tile is a promise the entity cannot
+   keep. If a round ever opens them or points them at a face, that is a defect.
+4. **Check the silhouette against the Vacuum Furnace and the Drop Crusher** when
+   those are drawn. This design's whole distinctiveness is a roofline, and a
+   roofline is the first thing lost at map zoom.
+
 **One line.** A stepped armoured housing riding on compressed leaf springs, with an eccentric flywheel spinning at its high end.
 
 ## The idea
