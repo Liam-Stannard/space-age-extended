@@ -119,3 +119,39 @@ strapped dewar becomes a solid block.
 fiction. It is still Factorio — physical, weighty, industrial — and futuristic
 through *material and finish*, not through neon strip lighting, holograms or
 glowing panel lines. That sentence is in every F–J prompt for a reason.
+
+---
+
+## The third set — K to O, the register that was actually wanted
+
+Set 1 was tier 0. Set 2 was tier 4 and overshot: *"almost too seamless and gone
+too far futuristic — it still is Factorio."* `tools/check-sheet-style.py` says
+the same thing in numbers, against the four vanilla style references:
+
+| | Saturation | Detail | Verdict |
+| --- | ---: | ---: | --- |
+| **vanilla band** | 0.230 – 0.490 | 0.144 – 0.261 | |
+| F Field Ring (set 2) | **0.116** | 0.171 | half the chroma floor |
+| G Emitter Array (set 2) | **0.098** | 0.159 | half the chroma floor |
+| K Sealed Coil Ring | 0.301 | 0.186 | in band |
+| L Emitter Deck | 0.335 | 0.222 | in band |
+| M Jacketed Core | 0.276 | 0.213 | in band |
+| N Capacitor Rack | 0.346 | 0.246 | in band |
+| O Driven Collar | 0.417 | 0.185 | in band |
+
+Set 2 was **cold, monochrome and smooth** where Factorio is warm, busy and
+mechanical — and that was the spec's fault, not the generator's: set 2 asked for
+a blue-grey shell and "almost no copper".
+
+Set 3 keeps the advanced *fabrication* — machined, sealed, chamfered, indicator
+lamps, cryogenic jacketing, light used as a material — and puts back the warmth
+and the density: copper and brass used freely, panel breaks, vents, grilles,
+service hardware, pipe runs in the shadows, honest wear. **Sealed, not blank.**
+
+**One caveat on the measurements.** Saturation, luminance and detail density are
+per-pixel statistics and are trustworthy. The *aspect* column is not: the hero
+panels are cropped to the sheet's own panel bounds, so a building that fills its
+panel reports the panel's shape rather than its own. Three of set 3's heroes also
+came back on magenta rather than charcoal, which polluted the first pass badly —
+O read 0.690 saturation until the background was keyed out and it settled at
+0.417. Judge perspective from the sheets, not from that column.
