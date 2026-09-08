@@ -127,9 +127,15 @@ here as they land; this file is deleted when the list is empty.
       **Two art questions raised, not decided** — see the note under the nine
       buildings below.
 
-- [x] **B4 · The Ignition Array had no animations — DONE.** It inherited nothing
-      but suppressed slots after B3, so it crafted and fired without a single
-      thing moving. Built and verified in-engine:
+- [x] **B4 · The Ignition Array had no animations — DONE, then mostly superseded.**
+      It inherited nothing but suppressed slots after B3, so it crafted and fired
+      without a single thing moving. Everything below was built and verified
+      in-engine on the **v3 deck**, and the iris, the shaft and the 32-frame
+      assembly glow went with that design when the Suspended Core replaced it.
+      What survived the change is the launch — the light column and its entity —
+      and the screenshot rig, which is now the standard way this repo answers a
+      question about what a building looks like. The charge display that replaced
+      the glow is in `control.lua`; see "The Ignition Array — settled" below.
 
       **The iris.** A rocket-silo's deck is a *ring* — vanilla's own
       `06-rocket-silo.png` has a hole through the middle, `hole_sprite` draws the
@@ -203,39 +209,49 @@ rather than acted on.
    The same screenshot incidentally confirmed two things: the locale landed
    ("Ignition array", "Field coil segment"), and the ring mechanic is live —
    eleven ignition charges in the ingredient row.
-2. **Does the Array's camera need to match the rocket silo's?** Photographed side
-   by side in-engine: the silo's shaft mouth is 1.485 wide-to-tall, ours is
-   1.127, so ours is about 30% too round, and where the silo shows its far inner
-   wall ours shows a lid. This is template rule zero working as written — "mostly
-   roof" — not a defect, but a vanilla silo has no surface conditions and can be
-   built on the Core, so a player can see them together.
-   `graphics/building-spec-ignition-array-v2.md` is a complete alternative spec
-   at the silo's camera. **Nothing is adopted.** Taking it costs a re-plate plus
-   the icon; the four tools rebuild every other asset from it.
-3. **`hole_light_sprite` was never observed drawing.** Wired, file present, and
-   across two full rendered launches no light from it appeared at any phase. The
-   ignition read currently rests on `rocket_glow_overlay_sprite` and the column.
-4. **Cumulative cradle lamps: answered, and they are possible.** Not through the
+2. ~~**Does the Array's camera need to match the rocket silo's?**~~ **Closed by
+   the redesign — the question was about a mouth that no longer exists.** It was
+   raised because our shaft mouth measured 1.127 wide-to-tall against the silo's
+   1.485, about 30% too round, and a vanilla silo has no surface conditions so a
+   player can build one alongside. The Suspended Core has no shaft, no iris and
+   no lid, so there is nothing to compare.
+   `graphics/building-spec-ignition-array-v2.md` is marked superseded.
+
+   **The measurement underneath it did not go away**, and it is worth keeping in
+   view: a plate generated under the template's "mostly roof" rule sits at a
+   shallower camera than vanilla's silo, which is why the shipped plate is 9.00
+   tiles wide but only 8.20 tall and under-fills its own footprint by 0.80. The
+   slack is split evenly rather than parked at one end. Fixing it properly is a
+   re-render at a steeper camera, not a number — recorded in the spec's §12 as
+   the one thing the pipeline did not solve.
+3. ~~**`hole_light_sprite` was never observed drawing.**~~ **Moot.** It was
+   wired, its file was present, and no light from it appeared at any phase across
+   two rendered launches. The Suspended Core has no shaft to light, so the slot
+   is emptied along with `hole_sprite`. The ignition read rests on
+   `rocket_glow_overlay_sprite` and the column, which is where it already rested.
+4. **Cumulative cradle lamps: answered, and then built.** Not through the
    prototype — `red_lights_back_sprites` is a blink cycle driven by
    `light_blinking_speed` and `times_to_blink`, not a counter, and 2.1.17's
    `LuaEntity` has no `disabled_working_visualisations`, so named working
    visualisations cannot be switched per entity from script either. Both were
    probed on a live 2.1.17 server rather than inferred.
 
-   The route that does work is `control.lua` plus `LuaRendering`.
-   `rendering.draw_sprite`, `draw_animation` and `draw_light` all exist, a drawn
-   object's `intensity` is settable after creation (so a charge can ramp rather
-   than step), and the charge level is readable straight off the entity as
-   `(rocket_parts + crafting_progress) / prototype.rocket_parts_required` — a
-   smooth 0–1 across the whole build, not one step per part.
+   The route that works is `control.lua` plus `LuaRendering`, and it is what
+   ships: a `draw_sprite` of the charge plate whose alpha is the charge, and a
+   `draw_light` whose intensity follows it, both destroyed below 0.001 so a
+   dormant Array costs the renderer nothing. The charge level is read straight
+   off the entity as `(rocket_parts + crafting_progress) /
+   prototype.rocket_parts_required` — a smooth 0–1 across the whole build, not
+   one step per part. Reported 0.25 / 0.50 / 0.75 / 0.99 on the rig.
 
-5. **The doors are cosmetic.** `door_back_sprite` and `door_front_sprite` are
-   optional: a silo with both nil loads, and on a headless 2.1.17 server one ran
-   the entire launch sequence in lockstep with a vanilla silo beside it —
-   identical states on identical ticks, both rockets away. The door phases
-   (`doors_opening`, `doors_opened`, `doors_closing`) still elapse; nothing
-   stalls. So a charging animation can replace the doors outright rather than
-   sitting alongside them.
+5. **The doors are cosmetic — and they are gone.** `door_back_sprite` and
+   `door_front_sprite` are optional: a silo with both nil loads, and on a
+   headless 2.1.17 server one ran the entire launch sequence in lockstep with a
+   vanilla silo beside it — identical states on identical ticks, both rockets
+   away. The door phases (`doors_opening`, `doors_opened`, `doors_closing`) still
+   elapse; nothing stalls. Both are `nil` on the Array: its sphere is held in the
+   frame's arms and the ground is already visible underneath, so there is no deck
+   to open.
 
 ### The Ignition Array — settled
 
@@ -244,6 +260,29 @@ and implemented: plates cut, doors and shaft removed, charge drawn from
 `control.lua`, and the whole thing exercised on a headless server through charge
 and launch to the ending. See `graphics/array-options/` for the decision record
 and `tools/build-ignition-array.py` for the plates.
+
+**Closed out afterwards, and each of these was a real gap rather than a tidy-up:**
+
+* **The plate was clipped on all four canvas edges.** Cropping a render to its
+  own content and scaling it to nine tiles puts opaque pixels — measured at alpha
+  222 — on every edge, which is Appendix C's check 2, the one the arc mast still
+  fails. The builder now leaves four transparent pixels a side (twelve on the
+  shadow, because a 3 px Gaussian carries about nine past its mask), so the
+  canvases are 584 × 533 and 655 × 557 and the drawn machine is untouched at
+  9.000 tiles, centred to 0.0 px. The four `width`/`height` pairs in
+  `prototypes/core/endgame.lua` moved with them.
+* **The icon was the old building.** It was keyed from the rejected deck design —
+  an octagonal plate with a closed iris — so the item in your hand and the
+  machine on the ground were different objects. Re-keyed off `array-render.png`,
+  which makes it the shipped building by construction.
+* **The prototype still described the v3 ring**, in comments that named
+  `tools/fit-array-to-silo.py`, an affine transform onto vanilla's hole and a
+  32-frame trunk glow, none of which survive. Rewritten to what is there.
+* **The spec described a building that was never built.**
+  `building-spec-ignition-array.md` §0, §6, §12, §13, §14, §15, §16, §17 and §18
+  are rewritten against the shipped plates and measured; §3, §7, §9, §10 and §11
+  are kept, marked, as the record of the rejected design.
+  `building-spec-ignition-array-v2.md` is marked superseded.
 
 Everything below this line describes **v3, which was rejected**, and is kept only
 because its measurements explain why the plate plan exists.

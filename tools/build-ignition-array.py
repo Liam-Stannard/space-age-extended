@@ -62,6 +62,17 @@ SCALE = 0.5
 PX_PER_TILE = 32 / SCALE                  # 64 source px to a tile at scale 0.5
 TARGET_W = int(FOOTPRINT * PX_PER_TILE)   # 576
 
+# A transparent rim, so the plate does not end on a razor line.
+#
+# The render is cropped to its own content, so scaling it to nine tiles puts
+# opaque pixels on all four canvas edges -- the template's Appendix C check 2,
+# the one the arc mast still fails ("B255"). A plate hard against its canvas has
+# no antialiased rim and ends mid-geometry. Four pixels a side at scale 0.5 is
+# 0.0625 tiles of empty canvas, which changes nothing on screen and nothing
+# about where the building is drawn: the content stays 576 px, still 9.000
+# tiles, still centred, so the shift stays { 0, 0 }.
+MARGIN = 4
+
 
 def solid(img, t=40):
     return img.getchannel("A").point(lambda v: 255 if v > t else 0)
@@ -100,6 +111,13 @@ def base_band_centre(img):
     return (min(band) + max(band)) / 2.0, widest
 
 
+def pad(img, m=MARGIN):
+    """Centre an image on a canvas m pixels larger on every side."""
+    out = Image.new("RGBA", (img.width + 2 * m, img.height + 2 * m), (0, 0, 0, 0))
+    out.paste(img, (m, m))
+    return out
+
+
 def emit(img, name, note=""):
     path = os.path.join(ART, name)
     img.save(path)
@@ -123,9 +141,10 @@ def main():
     print("render %d x %d, aspect %.3f" % (src.width, src.height, src.height / src.width))
 
     scale = TARGET_W / src.width
-    base = src.resize((TARGET_W, max(1, round(src.height * scale))), Image.LANCZOS)
-    tiles_w = base.width / PX_PER_TILE
-    tiles_h = base.height / PX_PER_TILE
+    drawn = src.resize((TARGET_W, max(1, round(src.height * scale))), Image.LANCZOS)
+    base = pad(drawn)
+    tiles_w = drawn.width / PX_PER_TILE
+    tiles_h = drawn.height / PX_PER_TILE
     print("drawn %.2f x %.2f tiles on a %d-tile footprint" % (tiles_w, tiles_h, FOOTPRINT))
     if tiles_w > FOOTPRINT + 1e-6:
         raise SystemExit("plate is wider than its footprint")
@@ -152,9 +171,14 @@ def main():
     # the machine rather than as its shadow.
     SHEAR = (0.5625 + (656 - 628) * SCALE / 32 / 2) / (612 * SCALE / 32)
     a = base.getchannel("A")
-    pad = int(base.height * SHEAR) + 4
-    sh = Image.new("L", (base.width + pad, base.height), 0)
-    sh.paste(a, (0, 0))
+    lean = int(base.height * SHEAR) + 4
+    # The blur needs somewhere to go. A 3 px Gaussian carries about nine pixels
+    # past the mask, so the base's own 4 px rim is not enough and the shadow
+    # would fail check 2 where the plate now passes it. Pasted at (BLEED, BLEED)
+    # and the shift solved from that offset rather than assumed to be zero.
+    BLEED = 12
+    sh = Image.new("L", (base.width + lean + 2 * BLEED, base.height + 2 * BLEED), 0)
+    sh.paste(a, (BLEED, BLEED))
     sh = sh.transform(sh.size, Image.AFFINE, (1, SHEAR, -SHEAR * sh.height, 0, 1, 0),
                       resample=Image.BILINEAR)
     sh = sh.filter(ImageFilter.GaussianBlur(3)).point(lambda v: min(255, int(v * 0.75)))
@@ -162,8 +186,12 @@ def main():
     shadow = Image.new("RGBA", sh.size, (0, 0, 0, 0))
     shadow.putalpha(sh)
     emit(shadow, "base-shadow.png")
+    # Alignment, not centring: the base's pixel (0, 0) sits at (BLEED, BLEED) in
+    # this canvas, so the shift is (Ws - Wb - 2*BLEED) / 2 tiles, and vertically
+    # the two cancel to zero.
     report("base-shadow.png", shadow,
-           (shift[0] + (shadow.width - base.width) / 2 / PX_PER_TILE, shift[1]))
+           (shift[0] + (shadow.width - base.width - 2 * BLEED) / 2 / PX_PER_TILE,
+            shift[1] + (shadow.height - base.height - 2 * BLEED) / 2 / PX_PER_TILE))
 
     # ---- the charge glow, differenced out of the two charge frames ---------
     off = Image.open(os.path.join(ADOPTED, "R-charge-000.png")).convert("RGB")
@@ -177,11 +205,14 @@ def main():
     gl = glow.convert("L").point(lambda v: 255 if v > 18 else 0).getbbox()
     if gl:
         glow = glow.crop(gl)
-    glow = glow.resize(base.size, Image.LANCZOS).filter(ImageGaussian := ImageFilter.GaussianBlur(2))
+    glow = glow.resize(drawn.size, Image.LANCZOS).filter(ImageFilter.GaussianBlur(2))
     lum = glow.convert("L")
-    out = Image.new("RGBA", base.size, (0, 0, 0, 0))
+    out = Image.new("RGBA", drawn.size, (0, 0, 0, 0))
     out.paste(glow, (0, 0))
     out.putalpha(lum.point(lambda v: min(255, int(v * 1.6))))
+    # Padded exactly as the base is, so the glow registers with it pixel for
+    # pixel: the same canvas, the same shift, the same building underneath.
+    out = pad(out)
     emit(out, "charge-glow.png")
     report("charge-glow.png", out, shift)
 

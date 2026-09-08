@@ -93,7 +93,7 @@ past stage 0** into real sprites; the other five stop at "design locked".
 | Superconducting Store | `building-spec-superconducting-store.md` | `v1-sheet.png` | **done** — plate, shadow, ring glow, charge/discharge, icon, wired |
 | Sealed Roboport | `building-spec-sealed-roboport.md` | `v2-sheet.png` | **done** — plate, shadow, lamp glow, icon, wired; three vanilla slots emptied |
 | Radiant Generator | `building-spec-radiant-generator.md` | `v2-sheet.png` | **done** — both directions, glow split by hue, icon, wired |
-| Ignition Array | `building-spec-ignition-array.md` | `v2-sheet.png` | **base plate done**, wired, launch furniture emptied; iris / shaft / lamps / 64-frame glow / rocket entity outstanding |
+| Ignition Array | `building-spec-ignition-array.md` | `concept/adopted/R-sheet.png` | **done** — the design was replaced (option R, the Suspended Core), then plate, shadow, charge glow, icon, discharge column and prototype all shipped; charged and launched on a server |
 | Vent Pump | `building-spec-vent-pump.md` | `v4-sheet.png` | **all outstanding** — 4 directional frames plus an animation, the most expensive of the seven |
 
 ## 5b. Nine drafted concept sheets, none locked
@@ -218,7 +218,11 @@ Order worth taking them in, cheapest first, because each one teaches the next:
    dock offsets have to be verified on the cut plate.
 4. **Radiant Generator** — two directions, so two of everything, and neither may
    be a rotation of the other.
-5. **Ignition Array** — largest surface, and §6.1 scopes it down before starting.
+5. ~~**Ignition Array**~~ — **done**, and it cost the most, because the design
+   was replaced rather than refined halfway through: a v3 deck was cut, irised,
+   shafted and glowed before twenty concepts across four sets replaced it with
+   the Suspended Core. §6.1 still did its job — the shipped building is three
+   plates and three discharge plates, not sixteen silo slots.
 
 **Fill §13 from the plate as you go.** It is left open in every spec on purpose;
 the Arc Mast's §13 records what guessing those numbers cost.
@@ -273,10 +277,10 @@ the art; each is recorded in the building's own §8.
       and its explosion removed, and `rocket_sprite` re-pointed at `column.png`:
       a column of light leaving, not a vehicle. Confirmed on a headless server —
       the launch runs and the ignition fires.
-- [ ] Cosmetic: the Ignition Array v2 sheet carries a *Factorio Space Age*
-      wordmark the generator added unasked. Harmless on an internal document;
-      remove it before the sheet is shown anywhere outside the repo, and never
-      carry it into a plate.
+- [x] Cosmetic: the Ignition Array v2 sheet's unasked-for *Factorio Space Age*
+      wordmark — **closed by the redesign.** `concept/v2-sheet.png` is a rejected
+      sheet now and no shipped asset was ever cut from it. The rule it produced
+      stands: never carry a generator's wordmark into a plate.
 
 ## 6. Two mismatches with no art plan at all — both now fixed
 

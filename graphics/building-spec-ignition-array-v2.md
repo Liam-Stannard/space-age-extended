@@ -2,13 +2,25 @@
 
 **Ignition Array — v2, the silo camera.**
 
-**Nothing here is adopted, and nothing has been replaced.**
-`building-spec-ignition-array.md` is still the spec the shipped art was built
-to, `concept/v3-canonical.png` is still the locked plate, and
-`prototypes/core/endgame.lua` still points at the pieces cut from it. This
-document is a second, complete proposal that exists to be compared against the
-first one and then either taken up or thrown away. Adopting it means
-regenerating the base plate, which is why it is written down rather than done.
+> ## SUPERSEDED — closed 2026-09-08, unadopted
+>
+> This was a proposal to redraw the **v3 deck-and-shaft** Array at the rocket
+> silo's own camera. The question it answers stopped existing when the design
+> did: the Array is now **the Suspended Core** (`graphics/array-options/
+> R-suspended-core.md`), which has no shaft, no iris and no lid, so there is no
+> mouth to measure against vanilla's and nothing here to adopt.
+>
+> It is kept for two things that outlived it. The **side-by-side rig in §20** is
+> how any question about what a building looks like beside a vanilla one gets
+> answered. And the **measurement it made** — that a plate generated under the
+> template's "mostly roof" rule sits at a shallower camera than the rocket
+> silo's — is still true of the shipped plate, which is why it under-fills its
+> footprint by 0.80 tiles vertically. That is recorded in
+> `building-spec-ignition-array.md` §12 as the one thing the pipeline did not
+> solve.
+
+**When it was written, none of it was adopted**, and it never was. What follows
+is the proposal as it stood.
 
 **What prompted it.** The Array is a `rocket-silo` deepcopy, and the two were
 photographed side by side in-engine on the Core — same ground, same light, same

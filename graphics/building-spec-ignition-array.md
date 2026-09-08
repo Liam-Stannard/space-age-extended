@@ -11,19 +11,40 @@ several of them 64-frame sheets — and a full custom set is not a realistic
 target. §6.1 scopes it down to the slots that carry the read, and says plainly
 what stays inherited.
 
+> ## The design changed after this spec was written
+>
+> **The Array is the Suspended Core** — option R, chosen 2026-09-08 from twenty
+> concepts across four sets. A colossal sphere held off the ground inside a
+> heavy frame, with clear air underneath it. The decision record is
+> `graphics/array-options/R-suspended-core.md`; the locked panels are at
+> `graphics/entity/ignition-array/concept/adopted/`.
+>
+> **§0, §6, §9, §12, §13, §14, §15, §16, §17 and §18 describe what ships** and
+> have been rewritten against it and against measurements of the shipped plates.
+>
+> **§3, §7, §10 and §11 still describe the earlier deck-and-iris design**
+> and its concept prompts. They are kept as the record of a rejected building —
+> the octagonal deck, the closed iris and the cradle ring are not what stands on
+> the Core. Read them as history, and do not commission art from §11.
+
 ---
 
 # 0. Generation Contract
 
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/v2-sheet.png`, all four round-1 corrections applied** |
-| 1 | Canonical view | square | Silhouette approved against §3.1 and §17 | blocked on 0 |
-| 2 | Idle plate (unlit) | square | Same machine, nothing lit | blocked on 1 |
+| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/R-sheet.png`, option R, chosen against nineteen others** |
+| 1 | Canonical view | landscape | Silhouette approved against §17 | **passed — `concept/adopted/R-hero.png`, with its own silhouette panel** |
+| 2 | Idle plate (unlit) | landscape | Same machine, nothing lit | **passed — `array-render.png`, generated as an *edit* of the locked hero, transparent, so nothing had to be keyed** |
 | 3 | Directional frames | — | n/a — no rotation, see §5 | n/a |
-| 4 | Glow plates | square | Differenced against stage 2 | blocked on 2 |
-| 5 | Effects plate | square | Deferred — engine effects, see §10 | — |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+| 4 | Glow plates | — | Differenced against stage 2 | **passed — `R-charge-100.png` minus `R-charge-000.png`; the artist's own light, not a painted ellipse** |
+| 5 | Effects plate | — | Deferred — engine effects, see §10 | n/a — the discharge is `column*.png`, drawn by `tools/build-array-column.py` |
+| 6 | Icon | square | Legible at 16 px | **passed — keyed off `array-render.png`, so the icon is the building** |
+
+Every shipped plate is cut from stage 2 by `tools/build-ignition-array.py`. No
+plate is drawn from scratch and no stage was re-prompted after the lock: the
+rule that cost the Arc Mast and the Bed Tender their extra rounds — *edit the
+approved image, do not ask again* — held for the whole of this building.
 
 **Square, not portrait.** Unlike the Arc Mast this is a wide, squat, ground-
 hugging building — 9×9 tiles with almost nothing above two tiles tall. Its
@@ -302,24 +323,28 @@ generated art. The slots below are split into what we **replace** — everything
 that carries the "buried coil array, not launch pad" read — and what we
 **inherit or suppress**.
 
-| Slot | Frames | Plan |
-| ---- | -----: | ---- |
-| `base_day_sprite` | 1 | **Replace** — the deck, ring, cradles, iris. This is the building. |
-| `shadow_sprite` | 1 | **Replace** — derived from the base plate. |
-| `door_back_sprite` | 1 | **Replace** — as the *back half of the iris*, not a sliding blast door. |
-| `door_front_sprite` | 1 | **Replace** — front half of the iris. |
-| `hole_sprite` | 1 | **Replace** — the open shaft under the iris: dark, deep, lined. |
-| `hole_light_sprite` | 1 | **Replace** — violet light rising out of the open shaft. |
-| `red_lights_back_sprites` / `red_lights_front_sprites` | 1 each | **Replace** — the amber cradle lamps of §3.3. |
-| `crafting` working visualisation | 64 | **Replace, derived** — glow only, by the §12 method. |
-| `crafting-light` | 64 | **Replace, derived** — same plate, additive. |
-| `filter`, `engine`, `steam-1`, `steam-2`, `turbine` | 32–64 each | **Suppress.** All four are launch-pad furniture — extractor fans, engine bells, steam venting. Nothing on the Core vents steam (§10), and there is no engine. Set to empty. |
-| `arm_01/02/03` animations | — | **Not used** by the vanilla silo prototype; nothing to do. |
-| The rocket itself (`rocket-silo-rocket`) | many | **Replace the entity, not just the art** — see below. |
+| Slot | Frames | What ships |
+| ---- | -----: | ---------- |
+| `base_day_sprite` | 1 | **Replaced** — `base.png`, the machine itself, unlit. |
+| `shadow_sprite` | 1 | **Replaced** — `base-shadow.png`, sheared out of the plate's own alpha. |
+| `rocket_glow_overlay_sprite` | 1 | **Replaced** — `charge-glow.png`, the deck lit by what leaves it. |
+| `door_back_sprite` / `door_front_sprite` | 1 each | **Removed — set to `nil`.** Both are optional, proved on a live 2.1.17 server rather than assumed: a silo with both nil ran the whole launch in lockstep with a vanilla silo beside it. The Suspended Core has no deck to open. |
+| `hole_sprite` / `hole_light_sprite` | 1 each | **Emptied.** There is no shaft: the ground is already visible under the sphere. |
+| `red_lights_back_sprites` / `red_lights_front_sprites` | 1 each | **Not used.** They are a blink cycle driven by `light_blinking_speed` and `times_to_blink`, not a counter, so they cannot show a fill state — probed on a live server. The charge is drawn from `control.lua` instead. |
+| `rocket_shadow_overlay_sprite` | 1 | **Emptied** — nothing sits on the pad to cast it. |
+| `graphics_set.working_visualisations` — `crafting`, `crafting-light`, `filter`, `engine`, `steam-1`, `steam-2` | 32–64 each | **All suppressed**, and none replaced. An engine and two steam plumes at pressure 5 are a lie; and a working visualisation cannot hold cumulative state anyway, which is what this machine needs to show. See §9. |
+| `robot_door` | — | **Emptied** — a silo roboport hatch that our building does not draw. |
+| `working_sound.sound_accents` | — | **Removed.** Four welder accents keyed by name to frames of `crafting`; with that visualisation gone they are a hard load error, not just a wrong noise. |
+| `*_frozen` sprites (5) | — | **Emptied** — an iced rocket silo over a machine pressure-locked to the Core, which can never freeze. |
+| The rocket (`rocket-silo-rocket`) | many | **Replaced as an entity** — `sae-ignition-discharge`, see below. |
+
+**The charge is not in this table**, because it is not a prototype slot at all —
+it is `control.lua` and `LuaRendering`. See §9, which is where the three routes
+that do not work are recorded.
 
 **Engine limits worth stating here:**
 
-**The rocket is a real problem and this document should not pretend otherwise.**
+**The rocket was a real problem and this document did not pretend otherwise.**
 `rocket-silo` spawns a `rocket-silo-rocket` entity and plays a launch sequence.
 `launch_to_space_platforms = false` stops it *going* anywhere, but the engine
 still has a rocket rise out of the building — which on a world where the whole
@@ -332,25 +357,25 @@ silo carries `rocket_entity = "rocket-silo-rocket"` as a settable field, and
 `rocket_shadow_sprite`, `rocket_glare_overlay_sprite` and its own
 `rising_speed`, `engine_starting_speed` and `flying_speed`.
 
-So the Array gets **its own rocket entity that is not a rocket**:
+So the Array got **its own rocket entity that is not a rocket**, and it is
+built: `sae-ignition-discharge`, a `rocket-silo-rocket` copy with its shadow,
+both flames and all five smoke plumes emptied, its explosion and its three
+takeoff roars removed, and three slots replaced with the light column that
+`tools/build-array-column.py` draws.
 
 ```lua
-local column = table.deepcopy(data.raw["rocket-silo-rocket"]["rocket-silo-rocket"])
-column.name = "sae-ignition-column"
--- art: a column of violet-white light rising and dispersing, not a vehicle
-array.rocket_entity = "sae-ignition-column"
+array.rocket_entity = "sae-ignition-discharge"
 ```
 
-What the player sees at ignition is the iris opening and **a column of light
-going up out of the shaft** — the restarted field lighting, which is exactly
-what the fiction says happens. The engine still has its entity and its launch
-sequence; only the art changes. `rising_speed` and `engine_starting_speed`
-should be raised so the column goes up fast rather than lumbering like a
-vehicle, and `flying_speed` is irrelevant because
-`launch_to_space_platforms = false` means it is going nowhere.
-
-**This is a separate asset with its own spec section, not part of the building
-plate.** Ship the building first; the column is the next piece after it.
+**Two inherited numbers were wrong, and rendering found them where reasoning had
+not.** `rocket_initial_offset` is vanilla's `{ 0, 3.5 }` — a rocket starts low
+on the pad, three and a half tiles south of the origin — which put the column
+eleven tiles south of the building as a bright smear on the ground; it is
+`{ 0, 0 }`. And `rocket_visible_distance_from_center = 0`, on the reasoning that
+a column standing in the machine should be visible, left the parked discharge
+lit in the open indefinitely, because the Array reaches
+`waiting_to_launch_rocket` and stays there. Held at `1.0`, the column appears as
+it leaves and not before.
 
 ---
 
@@ -488,34 +513,59 @@ read dark and bare, full ones carry a pale blue segment and a lit lamp.
 
 # 9. Working Animation
 
+*Rewritten against what ships. The sequence this section used to describe — light
+pulsing inward along four cable trunks, cradle lamps latching one per segment —
+belonged to the deck design and to a 32-frame sheet that was actually built
+before the design was replaced. It is in §19.*
+
 ## Animation Concept
 
-Two things, and they are not the same event. **Assembly** is continuous: while
-the array is building segments, light pulses inward along the cable trunks and
-the iris seams breathe. **Ignition** is one-shot and engine-driven: the iris
-opens, the shaft lights, and the field goes up.
+**Two things, and they are not the same event.** The **charge** is cumulative and
+continuous: it climbs the sphere over the whole hundred-segment build. The
+**ignition** is one-shot and engine-driven.
 
-Prefer the continuous read for assembly. Crafting time varies, so an animation
-that depicts *completing a segment* will desynchronise from what the machine is
-doing; light travelling inward does not.
+**The charge is not a prototype slot, and that is the finding worth keeping.**
+Three routes were probed on a live 2.1.17 server rather than reasoned about:
+
+* `red_lights_back_sprites` / `red_lights_front_sprites` are a **blink cycle**,
+  driven by `light_blinking_speed` and `times_to_blink`. They are not a counter
+  and cannot show a level.
+* A `working_visualisation` plays *while the machine crafts*. It has no access to
+  how much has been built.
+* `LuaEntity` in 2.1.17 has no `disabled_working_visualisations`, so named
+  visualisations cannot be switched per entity from script either.
+
+So the charge is drawn by `control.lua` with `LuaRendering`, off
+`(rocket_parts + crafting_progress) / rocket_parts_required` — a smooth 0–1
+across the whole build rather than a hundred steps, because `crafting_progress`
+is the segment currently in flight. One `draw_sprite` of `charge-glow.png` whose
+alpha *is* the charge, and one `draw_light` whose intensity is
+`0.15 + 0.55 × charge`. Below 0.001 both are destroyed rather than faded, so a
+dormant Array costs the renderer nothing and **nothing glows at rest**.
+
+The Arrays are held in a registry keyed by unit number, maintained on build and
+destroy events; a whole-surface `find_entities_filtered` once a second to track a
+handful of endgame buildings is work the map does not need to do. It is updated
+every 20 ticks — three times a second, which is plenty for a ramp.
 
 ### Sequence
 
-1. Idle — deck dark, iris closed, cradle lamps dark, nothing lit.
-2. Assembly begins — violet pulses travel **inward** along the four cable
-   trunks toward the shaft.
-3. The iris seams take up the light and glow faintly, in time with the pulses.
-4. A segment completes — one more cradle lamp lights and stays lit. This is the
-   only cumulative state on the building.
-5. Full — all cradle lamps lit, the ring reading unmistakably loaded.
-6. Ignition — the iris opens, the shaft floods with violet-white light, and the
-   sequence does not return to idle.
+1. **Idle** — nothing drawn. No glow, no light, no working visualisation.
+2. **Charging** — the sphere's bands fill with violet as segments accumulate,
+   and the machine casts a violet light that brightens with them.
+3. **Full** — the whole shell lit, the gap beneath it glowing. This is the state
+   the concept sheet's 100% frame draws, and it is what "loaded" looks like.
+4. **Ignition** — `charge-glow.png` again as `rocket_glow_overlay_sprite`, the
+   same plate at the same shift, floods the machine additively; the light column
+   rises; the game ends. It does not return to idle.
 
-**Frame Count:** `64` (crafting glow, inherited) · iris and lights engine-driven
+**Frame Count:** none on the building — the charge is one plate whose alpha
+ramps, and there is nothing to step. The discharge's flicker is 8 frames.
 
-**FPS:** `animation_speed = 0.65`, inherited
-
-**Loop Duration:** ~1.6 s for the assembly glow
+**Verified on the rig:** charge reported 0.25 / 0.50 / 0.75 / 0.99 with the
+glow's alpha and the light's intensity tracking it, nothing drawn at all at rest,
+then `doors_opening` → `rocket_rising` → `rocket_ready` with no door sprites to
+open, `launch_rocket` returning true, and the ignition firing.
 
 ---
 
@@ -717,72 +767,109 @@ of the hole_light slot, not a particle effect.
 
 ### Processing Checklist
 
-* [ ] Remove background
-* [ ] Remove unwanted shadows/background objects
-* [ ] Crop to building
-* [ ] Correct perspective
-* [ ] Match Factorio scale
-* [ ] Convert to appropriate resolution
-* [ ] Align to tile grid
-* [ ] Separate layers
-* [ ] Generate directional sprites — **skip, one direction**
-* [ ] Generate animation frames
-* [ ] Generate spritesheets
-* [ ] Optimise PNGs
+* [x] Remove background — n/a, the production render came back on real
+      transparency rather than a checkerboard, so nothing had to be keyed. This
+      is the one thing the Suspended Core got for free: R's own review said the
+      concept sheet **could not** be keyed, because the building's darks overlap
+      the charcoal it was drawn on.
+* [x] Remove unwanted shadows/background objects — none present
+* [x] Crop to building — `solid()` at alpha 40, then `getbbox()`
+* [x] Correct perspective — see the note below; not fully solved
+* [x] Match Factorio scale — 576 px of drawn machine, 9.000 tiles exactly
+* [x] Convert to appropriate resolution — LANCZOS to the target width
+* [x] Align to tile grid — centred to 0.0 px on both axes
+* [x] Separate layers — plate, shadow and charge glow
+* [x] Generate directional sprites — **skip, one direction**
+* [x] Generate animation frames — none on the building; the discharge's flicker
+      is 8 frames of `column-flame.png`
+* [x] Generate spritesheets — n/a, single plates
+* [x] Optimise PNGs
 
-Run `tools/process-building-art.py <plate> --report` before judging any plate,
-and `--dekey` if it came back flattened onto a checkerboard. Both traps are
-documented in template Appendix C.
+Everything above is `tools/build-ignition-array.py`, which is the only thing
+allowed to write the shipped plates. Run it with `--check` to measure without
+writing.
 
 **Three jobs are specific to this building.**
 
-**The iris has to be cut, not drawn.** `door_back_sprite` and
-`door_front_sprite` are the two halves of the iris, and they must be *cut out
-of the approved base plate* so they register with it exactly — the same
-edit-don't-regenerate rule that fixed the Arc Mast. The hole beneath them is
-then painted in the gap they leave.
+**The alpha has to be snapped.** Re-encoding left the body at alpha 252–253.
+Left alone, that is a building the ground shows faintly through, on every pixel,
+for ever. Anything at 240 or over is forced to 255.
 
-**The glow is differenced**, per Appendix C: lit minus unlit, then
-`tools/build-glow-frames.py` for the 64-frame crafting sheet, with the mask
-travelling **inward** along the trunks rather than down a column.
+**The plate needs a transparent rim.** A render cropped to its own content puts
+opaque pixels on all four canvas edges, which fails Appendix C's check 2 — the
+one the arc mast still fails. Four pixels a side, at scale 0.5, is 0.0625 tiles
+of empty canvas: it changes nothing on screen, and the drawn machine stays 576
+px, still 9.000 tiles, still centred. The shadow needs twelve, because a 3 px
+Gaussian carries about nine pixels past its mask.
 
-**The suppressed slots need empty art, not deletion.** `filter`, `engine`,
-`steam-1`, `steam-2` and `turbine` are structural in the vanilla graphics set;
-replace them with 1×1 transparent sprites rather than removing the keys, unless
-a data-stage check proves the keys are optional.
+**The glow is differenced, not painted.** `R-charge-100.png` minus
+`R-charge-000.png` is exactly the light the artist put on the machine, because
+the two frames are the same render with the power on and off. The two panels are
+cropped to their own panel bounds, so they are registered on the *building*
+before subtracting.
+
+**What is not solved: the camera.** The render is 0.911 wider than tall, so at
+nine tiles wide it is 8.20 tiles high and under-fills its own footprint by 0.80.
+That is a camera artefact — Factorio draws buildings mostly roof, and this render
+is more front-on than that — and fixing it means a re-render at a steeper camera,
+not a different number. The slack is split 0.40 a side rather than parked at one
+end; see §13.
 
 ---
 
 # 13. Sprite Dimensions
 
-**Provisional — nothing here is measured yet.** Per template §13, canvas size
-and shift are measurements of the approved plate, taken after it exists. What
-follows is the *target* and the inherited geometry the plates must respect.
+**Measured off the shipped plates, not targeted.** Template §13 exists because
+guessing these numbers cost the Arc Mast three rounds.
 
 **Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
 
-**Building Width:** `9` tiles → `288` in-game px → `576` source px
+**Building Width:** `9` tiles → `576` source px of drawn machine — the footprint
+exactly, overhanging on neither side
 
-**Building Height:** `9` tiles → `288` in-game px → `576` source px (target;
-the deck is flat, so the plate should be close to square)
+**Building Height:** `8.203` tiles → `525` source px. Short of the 9-tile box by
+`0.797` tiles, split `0.40` a side.
 
-**Sprite Width / Height:** `[measure after stage 1]`
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 584 × 533 | 576 × 525 → 9.000 × 8.203 tiles | `{ 0.0, 0.0 }` | 0.5 |
+| `base-shadow.png` | 655 × 557 | 594 × 538, the plate's own alpha sheared and blurred | `{ 0.36719, 0.0 }` | 0.5 |
+| `charge-glow.png` | 584 × 533 | same canvas as the base, pixel for pixel | `{ 0.0, 0.0 }` | 0.5 |
+| `column.png` | 208 × 512 | the discharge, drawn foot-down | `{ 0.0, -4.0 }` | 0.5 |
+| `column-glare.png` | 384 × 384 | on the foot | `{ 0.0, 0.0 }` | 0.5 |
+| `column-flame.png` | 1856 × 232 | 8 frames of 232 × 232, line length 8 | `{ 0.0, 0.0 }` | 0.5 |
 
-**Shift:** `[measure after stage 1]`
+**Checked against Appendix C, all four checks:**
 
-**Fixed points:**
-The inherited layer offsets. Vanilla's plates for reference:
-`06-rocket-silo.png` 628×612 (base), `00-rocket-silo-shadow.png` 656×600,
-`04-door-back.png` 312×286, `05-door-front.png` 332×300,
-`01-rocket-silo-hole.png` 400×270. The replacements do not have to match these
-sizes, but the **door and hole plates must sit correctly relative to the base**,
-so their shifts are derived together, not separately.
+1. **Centred** — content centre equals canvas centre to `0.0` px on both axes.
+2. **Not clipped** — alpha is `0` down both edge columns and along both edge
+   rows, on the base, the shadow and the glow.
+3. **Fits the box** — visible half-width `288` px × `0.5` ÷ `32` = **4.50
+   tiles**, against a 9×9 selection box's 4.5.
+4. **Declared equals actual** — the four `width`/`height` pairs in
+   `prototypes/core/endgame.lua` are the files' own sizes, and
+   `column-flame.png` holds its 8 frames at line length 8 (1856 = 8 × 232).
 
-**Spritesheet Width / Height:** `[derive from the 64-frame glow]`
+**Two shifts that are solved rather than typed.** The base's is `{ 0, 0 }`
+because the plate is *shorter* than its footprint: vanilla parks a silo's bottom
+edge past the south edge, which works when the art is larger than the box and
+here would dump all 0.80 tiles of slack at the north — 1.19 tiles of empty box
+above the machine and 0.39 poking out below it. The shadow's is
+`(Ws − Wb − 2·bleed) / 2` tiles, solved from where the base's own pixel (0, 0)
+sits inside the sheared canvas, not assumed.
 
-**Frame Count:** `1` base · `1` shadow · `1` each door · `1` hole · `64` glow
+**The shadow's lean is vanilla's.** Its silo shadow is 656 px wide against a 628
+px base and sits 0.5625 tiles east, so it leans about 0.78 tiles over a
+9.56-tile height: a shear of **0.0817**. An early pass used 0.55, which throws
+this building's shadow four and a half tiles east and reads as a separate object
+lying on the ground beside it.
 
-**Line Length:** `6`, matching vanilla's crafting sheet
+**Body luminance 68.5, saturation 0.353**, measured over the plate's opaque
+pixels — inside §3.3's band and inside the four vanilla style references
+(`tools/check-sheet-style.py` measured the adopted sheet at luminance 65.3,
+saturation 0.262, detail density 0.185, base flatness 0.904).
+
+**Frame Count:** `1` base · `1` shadow · `1` charge glow · `8` discharge flicker
 
 ---
 
@@ -791,132 +878,162 @@ so their shifts are derived together, not separately.
 ```text
 graphics/
 ├── icons/
-│   └── ignition-array.png
+│   └── ignition-array.png      keyed off array-render.png, so the icon is the building
 └── entity/
     └── ignition-array/
-        ├── concept/            generated concepts, not shipped
-        ├── base.png            the deck, ring, cradles, closed iris, unlit
-        ├── shadow.png          draw_as_shadow
-        ├── door-back.png       iris, back half — cut from base.png
-        ├── door-front.png      iris, front half — cut from base.png
-        ├── hole.png            the open shaft
-        ├── hole-light.png      light rising from the shaft
-        ├── lights-back.png     amber cradle lamps
-        ├── lights-front.png    amber cradle lamps
-        ├── working.png         64 frames, the assembly glow
-        └── empty.png           1×1 transparent, for the suppressed slots
+        ├── concept/
+        │   ├── adopted/        option R: sheet, hero, top-down, five charge frames, discharge
+        │   └── …               the rejected deck-and-iris rounds, kept as the record
+        ├── array-render.png    the production render: unlit, transparent, an EDIT of the hero
+        ├── base.png            the machine, unlit
+        ├── base-shadow.png     draw_as_shadow, sheared from base.png's alpha
+        ├── charge-glow.png     100% minus 0%, additive — the charge and the ignition
+        ├── column.png          the discharge, a column of light
+        ├── column-glare.png    its glare at the foot
+        └── column-flame.png    8-frame flicker at the foot
 ```
 
-More than the four-plate default, because `rocket-silo` demands named slots
-rather than a free layer stack. The principle is unchanged: `base.png` carries
-almost the whole machine, and everything else is either cut from it or derived
-from it.
+Eight files against the ten this section used to list, and the difference is the
+design: there are no iris halves, no shaft, no shaft light and no cradle lamps,
+because the Suspended Core has no deck to put them in. The principle is
+unchanged and stronger for it — `array-render.png` carries the whole machine,
+and **every other file here is cut or derived from it**, so nothing can drift out
+of register with anything else.
+
+Two tools own this directory: `tools/build-ignition-array.py` for the three
+building plates, `tools/build-array-column.py` for the three discharge plates.
 
 ---
 
 # 15. Factorio Prototype
 
-**Prototype Type:** `rocket-silo`
+**Prototype Type:** `rocket-silo` · **Prototype Name:** `sae-ignition-array`
 
-**Prototype Name:** `sae-ignition-array`
+All of it is in `prototypes/core/endgame.lua`; this is what is wired, not a
+proposal.
 
 ### Graphics
 
 ```lua
--- Written against the vanilla graphics_set's slot names; sizes and shifts are
--- filled in from section 13 once stage 1 has passed and been measured.
-local ART = "__space-age-extended__/graphics/entity/ignition-array/"
-array.graphics_set =
-{
-  -- base, doors, hole, hole light and the cradle lamps
-  -- working_visualisations: the assembly glow only; every launch-pad
-  -- visualisation vanilla ships (filter, engine, steam, turbine) is replaced
-  -- with an empty sprite -- see section 6.1.
-}
+local IA = "__space-age-extended__/graphics/entity/ignition-array/"
+
+array.graphics_set = { working_visualisations = {} }   -- all six suppressed, §6.1
+array.base_day_sprite   = { filename = IA .. "base.png",
+                            width = 584, height = 533, shift = { 0.0, 0.0 }, scale = 0.5 }
+array.shadow_sprite     = { filename = IA .. "base-shadow.png", draw_as_shadow = true,
+                            width = 655, height = 557, shift = { 0.36719, 0.0 }, scale = 0.5 }
+array.base_front_sprite = util.empty_sprite()
+array.base_night_sprite = nil
+array.door_back_sprite  = nil   -- optional, proved on a live server
+array.door_front_sprite = nil
+array.hole_sprite       = util.empty_sprite()
+array.hole_light_sprite = util.empty_sprite()
+array.rocket_shadow_overlay_sprite = util.empty_sprite()
+array.rocket_glow_overlay_sprite = { filename = IA .. "charge-glow.png",
+                            blend_mode = "additive", draw_as_glow = true,
+                            width = 584, height = 533, shift = { 0.0, 0.0 }, scale = 0.5 }
+array.rocket_entity = "sae-ignition-discharge"
 ```
 
 ### Other Visual Properties
 
 ```text
 Animation:
-Assembly glow, 64 frames, animation_speed 0.65 inherited. The iris and the
-cradle lamps are engine-driven, not authored as loops.
+None on the building. The machine is one plate; everything that moves on it is
+either drawn by control.lua or is the engine's own launch sequence.
 
 Shadow:
-Derived from the base plate. Flat building, so it fits beside its own plate and
-needs no oversized canvas.
+Derived from the plate's alpha at vanilla's own shear, 0.0817. Fixed: the Core's
+sky never moves.
 
 Working Visualisation:
-One: the assembly glow. All inherited launch-pad visualisations suppressed.
+None. All six of vanilla's are suppressed and none is replaced -- see §9. A
+working visualisation cannot hold cumulative state, which is the only thing this
+machine needs to show.
+
+The charge:
+control.lua draws it. `sae-ignition-charge-glow` is charge-glow.png declared as a
+sprite prototype, because LuaRendering needs a name and cannot be handed a
+filename. It is the same plate at the same shift as rocket_glow_overlay_sprite,
+so the glow the player watches climb is pixel for pixel the glow that floods the
+machine when it fires.
 
 Lights:
-red_lights_back_sprites / red_lights_front_sprites, repurposed as the amber
-cradle lamps. Engine-driven from launch state, which is what makes a filling
-array visibly fill.
+One rendering.draw_light per charging Array, utility/light_medium, violet
+(0.62, 0.48, 1.0), intensity 0.15 + 0.55 x charge. Destroyed rather than faded to
+zero at rest, so a dormant Array costs the renderer nothing.
 
 Fluid Boxes:
 None.
 
 Circuit Connections:
-Inherited from rocket-silo.
+Inherited from rocket-silo -- ordinary modding, not a leftover.
 
 The rocket:
-array.rocket_entity = "sae-ignition-column", a deep copy of rocket-silo-rocket
-whose sprites are a rising column of violet-white light rather than a vehicle.
-Checked: rocket_entity is settable and rocket-silo-rocket is its own prototype
-type with its own sprite and speed fields. Ship the building first; the column
-is the next asset after it.
+sae-ignition-discharge, a rocket-silo-rocket copy emptied of every sprite, flame,
+plume and roar, with column.png, column-glare.png and column-flame.png in the
+three slots that are left. See §6.1 for the two offsets that had to be measured.
 ```
 
 ---
 
 # 16. Icon
 
-**Icon Required:** ✓ · **Icon Size:** `64×64`
+**Icon Required:** ✓ · **Icon Size:** `64×64`, shipped as vanilla ships one — a
+`120×64` mipmap strip, four levels
 
-**Icon Concept:**
+**What ships.** `tools/key-icons.py graphics/icons
+graphics/entity/ignition-array/array-render.png:ignition-array` — the icon is
+the production render itself, cropped, squared and downsampled, exactly as every
+other building icon in this mod is derived from its own plate. The render
+already carries real alpha, so no keying was needed and nothing was re-prompted.
+
+**Judged at 16 px, not by eye at 64.** At the size the player actually sees it in
+a full inventory it reads as a heavy arch with a bright gap beneath it — which is
+this design's own silhouette, the daylight under the sphere, and it is the one
+shape nothing else in the mod has. It occupies 63% of the icon field.
+
+**The icon concept below is the rejected design's** and is kept with §3. There is
+no icon prompt any more: an icon derived from the shipped plate cannot disagree
+with the building, and a generated one can.
+
+**Icon Concept (rejected design, for the record):**
 The radial read, compressed: a dark octagonal deck, the bright cradle ring, and
 the closed iris at the centre with one violet seam. The cable trunks are
 dropped — at icon size four diagonals turn the silhouette into a star and lose
-the octagon. Derived from the approved base plate once it exists, per the
-"icon last" rule.
-
-### Icon Prompt
-
-```text
-Factorio "Space Age" item icon. A small rendered industrial object on a
-workbench: a wide, low, octagonal armoured deck with a ring of short angled
-cradles around a closed iris cap at its centre, seen from slightly above. Pale
-blue coil segments sit in the cradles; one hairline violet-white seam crosses
-the iris. Dark iron-nickel grey-brown metal, #4A463F to #6E685C, with pale
-nickel-white bolt rings.
-
-Semi-realistic sci-fi industrial painting, not flat, not cartoon, not
-photo-real. Three-quarter view from slightly above, close to the game's
-characteristic 45-degree top-down perspective. Soft single-direction lighting
-from the upper left, visible specular highlight, subtle ambient occlusion,
-gentle drop shadow behind the object. The object fills roughly 85% of the
-frame, centred. Bold simple silhouette that still reads at very small size.
-Fully transparent background, square canvas, no ground or platform under the
-object, no text, no logos, no watermark, no border, no scene elements.
-```
+the octagon.
 
 ---
 
 # 17. Visual QA Checklist
 
+Measured, not looked at. Every box here was ticked by a number.
+
 ### Building
 
-* [ ] Correct tile size — fills 9×9 without overflowing it
-* [ ] Correct perspective — flat case: roof-dominant, no leaning
-* [ ] Correct scale
-* [ ] Clear silhouette
-* [ ] Looks like Factorio
-* [ ] Matches intended planet — bare metal, no vegetation, no snow
-* [ ] Inputs are visually understandable — edges are approachable by inserters
-* [ ] Outputs are visually understandable — n/a, nothing leaves
-* [ ] **Does not read as** a rocket launch pad, a nuclear reactor, or a radar
-* [ ] Fill state is readable — empty cradles look empty
+* [x] Correct tile size — 9.000 tiles wide on a 9×9 footprint, nothing spills
+      sideways
+* [x] Correct perspective — square to the grid, base flatness 0.904 where two
+      rejected options were drawn corner-on. **One reservation:** the render is
+      more front-on than Factorio's mostly-roof camera, which is why it is 0.80
+      tiles short vertically. See §12.
+* [x] Correct scale — human-scale cues (walkways, ladders, handrails) are on the
+      towers, so the mass reads as enormous rather than as a small object drawn
+      large
+* [x] Clear silhouette — the sheet carries its own silhouette panel, and the
+      icon at 16 px is the same shape
+* [x] Looks like Factorio — luminance 65.3, saturation 0.262, detail density
+      0.185, all three inside the bands taken off four vanilla references
+* [x] Matches intended planet — bare metal, no vegetation, no snow, nothing that
+      burns
+* [x] Inputs are visually understandable — the base slab is approachable on all
+      four edges
+* [x] Outputs are visually understandable — n/a, nothing leaves
+* [x] **Does not read as** a rocket launch pad, a nuclear reactor or a radar —
+      no rocket read was the constraint that eliminated most of the twenty
+      options
+* [x] Fill state is readable — the charge climbs the sphere's bands, and it is
+      the whole reason this option won
 
 ### Directions
 
@@ -925,47 +1042,64 @@ object, no text, no logos, no watermark, no border, no scene elements.
 
 ### Animation
 
-* [ ] Assembly glow travels **inward**, toward the shaft
-* [ ] Iris halves register exactly with the base plate
-* [ ] Cradle lamps light cumulatively as segments complete
-* [ ] Static components remain static
-* [ ] No steam, no engine, no turbine anywhere
+* [x] The charge is continuous, not stepped — `(rocket_parts +
+      crafting_progress) / rocket_parts_required`, a smooth 0–1 across the whole
+      build rather than a hundred clicks
+* [x] The glow registers exactly with the base plate — same canvas, same shift,
+      cut by the same tool
+* [x] Nothing glows at rest — the drawn objects are destroyed below 0.001, not
+      faded
+* [x] Static components remain static
+* [x] No steam, no engine, no turbine anywhere — all six vanilla visualisations
+      suppressed
 
 ### Generated-art defects
 
-* [ ] Alpha measured clear by `--report`, never judged from a preview
-* [ ] Palette measured inside `#4A463F`–`#6E685C`
-* [ ] No baked drop shadow, no ground plane
-* [ ] Nothing glows on the base plate
+* [x] Alpha measured clear rather than judged from a preview — alpha 0 on all
+      four canvas edges of all three plates
+* [x] Palette measured — body luminance 68.5, saturation 0.353 over the plate's
+      opaque pixels
+* [x] No baked drop shadow, no ground plane — the shadow is a separate plate
+      derived from the alpha
+* [x] Nothing glows on the base plate — the production render is the *unlit*
+      machine; the hero panel is effectively 25% charged and was not used
 
 ### In-Game
 
-* [ ] Doors and hole align with the base
-* [ ] Inserters reach the deck edge correctly
-* [ ] Shadow aligns and does not double
-* [ ] The launch sequence does not show a vanilla rocket
-* [ ] Recognisable at map zoom as the endgame building
-* [ ] Performance acceptable at 9×9 with a 64-frame glow
+* [x] Shadow aligns and does not double — one shadow plate, and vanilla's
+      `*_frozen` art emptied so nothing draws twice
+* [x] The launch sequence does not show a vanilla rocket — `sae-ignition-
+      discharge`, run end to end on a headless 2.1.17 server
+* [x] The charge tracks the build — reported 0.25 / 0.50 / 0.75 / 0.99 on the
+      rig, with the glow's alpha and the light's intensity following it
+* [x] The win condition is reachable — the silo GUI's **Launch** button is
+      present and enables at 100%, checked in a real client, not inferred
+* [x] Performance acceptable — no 64-frame sheet ships at all; the building is
+      three plates and one drawn sprite per Array
+* [ ] Inserters reach the deck edge correctly — not tested; the Array has a fixed
+      recipe and is fed by belt or bot in practice, but nobody has put an inserter
+      against it
+* [ ] Recognisable at map zoom — not measured
 
 ---
 
 # 18. Final Asset Checklist
 
 ```text
-[ ] Concept sheet
-[ ] Master concept / canonical view
-[x] Directional sprites    n/a, one direction
-[ ] Shadow
-[ ] Idle / static picture
-[ ] Iris doors (back, front)
-[ ] Hole and hole light
-[ ] Cradle lamps
-[ ] Assembly glow (64 frames)
-[ ] Suppressed-slot empty sprite
-[ ] Icon
-[ ] Factorio prototype
-[ ] Ignition column entity    -- sae-ignition-column, see section 6.1
-[ ] In-game test
+[x] Concept sheet            concept/adopted/R-sheet.png, option R of twenty
+[x] Master concept / canonical view   concept/adopted/R-hero.png
+[x] Directional sprites      n/a, one direction
+[x] Idle / static picture    base.png
+[x] Shadow                   base-shadow.png
+[x] Charge glow              charge-glow.png, differenced 100% - 0%
+[x] Charge display           control.lua, LuaRendering, sprite + light
+[x] Discharge                column.png, column-glare.png, column-flame.png
+[x] Ignition entity          sae-ignition-discharge
+[x] Suppressed slots         doors nil, hole/hole-light/robot-door/frozen emptied
+[x] Icon                     keyed off array-render.png
+[x] Factorio prototype       prototypes/core/endgame.lua
+[x] In-game test             headless 2.1.17: placed, charged, launched, ended;
+                             and the Launch button seen in a real client
 ```
 
 ---
@@ -976,6 +1110,25 @@ object, no text, no logos, no watermark, no border, no scene elements.
 | ----- | ----- | -------------- | ------- | ------------- |
 | 1 | sheet | Everything requested, and the anti-read held first time: octagonal deck, closed iris with radiating seams, ring of pale-blue segments, four converging copper trunks, capacitor banks, bolt rings. **Camera is correct — flat and roof-dominant**, which the nuclear-reactor reference clearly earned. Layer breakdown matches §7. Animation frames travel **inward**. Palette strip carries the exact §3.3 hexes and the art matches them. Information panel accurate. | **Accept as the design language** | Four corrections before the canonical view: (1) it drew NORTH/EAST/SOUTH/WEST panels, but §5 says one direction — replace with CANONICAL / ALTERNATE / TOP VIEW; (2) the cable trunks overhang the 9×9 grid in the top-down panel and need checking against the footprint; (3) the cradles read as capsules lying flat around the ring rather than tilted nose-down toward the centre; (4) the iris reads as a smooth scored disc rather than eight overlapping leaves. |
 | 2 | sheet | All four round-1 corrections landed in one pass. The direction panels are gone, replaced by CANONICAL / ALTERNATE / TOP VIEW as asked. The iris is now unmistakably **eight overlapping armoured leaves** with individual thickness and lap shadows, not a scored disc. The cradles hold their segments **angled nose-down toward the centre**, and the close-up panel captions it. The tile-grid panel shows the whole building, trunks included, inside the 9×9. Layer breakdown, animation frames and palette all correct. | **Accepted — `concept/v2-sheet.png` is the locked design** | None to the design. One cosmetic note: the generator added a *Factorio Space Age* wordmark in the bottom-right corner of the sheet, which was not asked for and is not part of any asset. Harmless on an internal document; remove it before the sheet is shown anywhere outside the repo, and do not carry it into a plate. |
+**Round 3 — the design was replaced, not refined.** Rounds 1 and 2 above locked
+the octagonal deck, and a v3 was then taken as far as cut iris blades, a drawn
+shaft, a 32-frame assembly glow and a screenshot rig to check them on. It was
+put aside anyway: the Array is the last building in the game and it had been
+drawn as another machine. Twenty concepts across four sets followed —
+`graphics/array-options/README.md` records what each set cost — and **option R,
+the Suspended Core, was adopted on 2026-09-08**.
+
+What the four sets taught, in one line each: tier zero is riveted and rusted and
+that is the landing-day machines; tier four overshoots into generic science
+fiction and measured at half vanilla's chroma; the register that works is
+advanced fabrication with Factorio's mechanical density still on it; and
+spectacle is a *height* decision, not a detail one.
+
+**The cosmetic note from round 2 is closed by the replacement.** The *Factorio
+Space Age* wordmark the generator added unasked lives on `concept/v2-sheet.png`,
+which is a rejected sheet in the concept folder. No shipped asset was ever cut
+from it.
+
 ### Version 1
 
 Written before any generation, from the implemented prototype and from what the

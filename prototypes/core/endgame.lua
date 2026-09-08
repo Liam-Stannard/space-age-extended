@@ -233,21 +233,6 @@ array.launch_to_space_platforms = false
 --     they are also a hard load error ("Working visualisation \"crafting\"
 --     doesn't exist"), because an accent names the visualisation it plays for.
 --     The ambient silo loop stays; the assembly accents go.
--- What the machine does while it is working, and the only thing that says so.
---
--- Vanilla's six visualisations are gone for the reasons above. This is what
--- replaces the two that carried the read. `tools/build-array-glow.py` finds the
--- four cable trunks in the plate by their copper and pulses violet *inward*
--- along them, with the iris seams taking the light up and breathing in time --
--- section 9 wants a continuous read rather than a completion animation, because
--- crafting time varies and anything depicting "a segment finished" drifts out of
--- step with the machine.
---
--- Drawn at half the plate's resolution and shipped at `scale = 1.0` rather than
--- 0.5: identical on screen, a quarter of the pixels. That is not thrift for its
--- own sake -- the full plate at 64 frames is 23 Mpx, against the 2.9 Mpx vanilla
--- spends on its own crafting sheet. At 32 half-resolution frames this lands on
--- vanilla's budget.
 -- No working visualisation.
 --
 -- Vanilla's six went for the reasons above. The one that replaced them was drawn
@@ -362,42 +347,36 @@ array.rocket_entity = "sae-ignition-discharge"
 -- Section 6.1 is the scoping decision and it still holds: vanilla's silo uses
 -- sixteen art slots, several of them 64-frame sheets running to millions of
 -- pixels, and replacing all of it is not a realistic target. What is replaced
--- here is the part that carries the read -- the deck, the cradle ring, the
--- closed iris -- measured at exactly 576 px, **9.000 tiles**, centred to 0.0 px
--- with alpha zero on all four canvas edges.
+-- here is what carries the read -- the machine itself, its shadow and its
+-- charge -- and everything that is launch-pad furniture is emptied rather than
+-- left inherited. On a world whose entire premise is that nothing leaves,
+-- vanilla's blast doors sliding open, its engine bell, its steam vents and its
+-- extractor fans would each be a lie, and they would draw straight over ours.
 --
--- Everything that is launch-pad furniture is emptied rather than left inherited.
--- On a world whose entire premise is that nothing leaves, vanilla's blast doors
--- sliding open, its engine bell, its steam vents and its extractor fans would
--- each be a lie, and they would draw straight over our deck. Emptying them costs
--- the open-shaft frames until the iris plates of section 6.1 are drawn; the
--- alternative was vanilla's doors opening on our building.
--- Every plate below uses the rocket silo's **own** slot geometry -- vanilla's
--- sizes, vanilla's shifts, vanilla's scale -- and our art is resampled into them
--- by tools/fit-array-to-silo.py.
+-- The three plates are cut by tools/build-ignition-array.py from the adopted
+-- Suspended Core render, and they are one canvas: the machine is drawn 576 px
+-- wide -- **9.000 tiles**, the footprint exactly -- centred to 0.0 px, on a
+-- canvas four pixels larger a side so alpha is zero on all four edges. That rim
+-- is the template's Appendix C check 2, which a plate cropped to its own content
+-- cannot pass: with no margin the art ends on a razor line mid-geometry, which
+-- is the defect the arc mast still carries.
 --
--- That is Liam's call and it is the right one. Deriving each plate's size and
--- shift independently, from its own content and its own measured ellipse, gives
--- five numbers that are each defensible and collectively wrong, because nothing
--- ties them together: the doors stopped closing over the hole and the lid
--- stopped reading as a circle. Vanilla's five slots are mutually consistent by
--- construction -- two leaves resting 2.031 tiles apart in x and 0.656 in y,
--- closing over a hole at (-0.15625, 0.5) under a deck at (0.0625, 0.109) -- and
--- the engine slides those leaves 255 ticks apart and they clear the hole exactly,
--- because Wube placed them that way. Copying the geometry inherits all of it.
---
--- The anchor is vanilla's hole: our opening is mapped onto it at 6.25 x 4.22
--- tiles, and one affine transform then carries every plate. Our deck lands at
--- 9.02 tiles wide against vanilla's 9.81, because our ring is proportionally
--- thinner around a mouth of the same size -- which is the design, v3 being
--- mostly shaft, and 9.02 sits on a 9-tile footprint where vanilla's overhangs.
+-- The deck-and-shaft geometry that earlier versions of this file described --
+-- vanilla's five silo slots, tied together by one affine transform out of
+-- tools/fit-array-to-silo.py -- went with the v3 ring it was measured for. The
+-- Suspended Core has no deck and no hole, so there is nothing to register
+-- against vanilla's, and the slots that carried it are emptied below.
 array.base_day_sprite =
 {
   filename = IA .. "base.png",
   priority = "medium",
-  width = 576, height = 525,
-  -- 9.00 x 8.20 tiles: drawn to the footprint exactly, overhanging on neither
-  -- axis. It is 0.80 tiles *short* of the box vertically, so it is centred and
+  width = 584, height = 533,
+  -- 576 x 525 of drawn machine on a canvas four pixels larger a side: 9.00 x
+  -- 8.20 tiles, the footprint exactly, overhanging on neither axis. The rim is
+  -- there so alpha is zero on all four edges -- Appendix C's check 2, which a
+  -- plate cropped to its own content cannot pass.
+  --
+  -- It is 0.80 tiles *short* of the box vertically, so it is centred and
   -- the shortfall is split 0.40 a side. Parking the bottom edge past the south
   -- edge the way vanilla's silo does put all of that slack at the north instead
   -- -- 1.19 tiles of empty box above the machine, and 0.39 poking out below.
@@ -412,8 +391,8 @@ array.shadow_sprite =
   filename = IA .. "base-shadow.png",
   priority = "medium",
   draw_as_shadow = true,
-  width = 622, height = 525,
-  shift = { 0.35938, 0.0 },
+  width = 655, height = 557,
+  shift = { 0.36719, 0.0 },
   scale = 0.5
 }
 array.base_front_sprite = util.empty_sprite()
@@ -448,13 +427,13 @@ array.rocket_glow_overlay_sprite =
   priority = "medium",
   blend_mode = "additive",
   draw_as_glow = true,
-  width = 576, height = 525,
+  width = 584, height = 533,
   shift = { 0.0, 0.0 },
   scale = 0.5
 }
 -- The charge plate, as a sprite prototype so `control.lua` can draw it.
 --
--- It is the same 576 x 525 plate the discharge uses, at the same shift, so the
+-- It is the same 584 x 533 plate the discharge uses, at the same shift, so the
 -- glow the player watches climb during the build is pixel-for-pixel the glow
 -- that floods the machine when it fires. `LuaRendering` needs a named sprite;
 -- it cannot be handed a filename.
@@ -466,7 +445,7 @@ data:extend({
     priority = "medium",
     blend_mode = "additive",
     draw_as_glow = true,
-    width = 576, height = 525,
+    width = 584, height = 533,
     scale = 0.5,
     flags = { "light" }
   }

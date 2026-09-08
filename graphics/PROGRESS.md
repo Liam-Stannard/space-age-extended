@@ -31,7 +31,7 @@ verification, and this repo has a long history of that costing rounds.
 | C3 | Sealed Roboport | **done** | 4.000 tiles; 2×2 block tiles cleanly. Three vanilla slots deliberately emptied — see the prototype comment. |
 | C4 | Radiant Generator | **done** | Two plates, one per direction axis, drawn not rotated. North/south **3.000 tiles** wide, deck 4.95 of 5.00; east/west **5.000 tiles** wide, deck 3.20 of 3.00 (over-deep, so it overhangs rather than gaps). Both edges clear and centred to 0.0 px. Glow split out by hue rather than differenced — one generation per direction. Horizontal took three rounds: 0.39 → 0.43 → 0.51, the jump coming from a **square** canvas rather than 3:2, which had been pushing a flat composition. |
 | C5 | Vent Pump | open | |
-| C6 | Ignition Array | **base plate done** | **9.000 × 8.969 tiles**, centred to 0.0 px, edges clear, palette in range at luminance 82. Every launch-pad slot emptied — blast doors, engine bell, steam vents, extractor fans, rocket overlays — because on a world whose premise is that nothing leaves, each is a lie *and* would draw over our deck. **Still open:** the iris halves, the shaft and its light, the cradle lamps, the 64-frame crafting glow, and the replacement rocket entity of §6.1. |
+| C6 | Ignition Array | **done — and it is a different building** | The deck-and-iris design was put aside and the Array is now **the Suspended Core**, option R of twenty. `base.png` is **9.000 × 8.203 tiles** of drawn machine on a 584 × 533 canvas, centred to 0.0 px, alpha 0 on all four edges, body luminance 68.5. Shadow sheared at vanilla's own 0.0817. The charge is `control.lua` + `LuaRendering`, not a prototype slot — nothing in the prototype can hold cumulative state, and all three routes were probed on a live server. Doors nil (proved optional on a server), hole, hole light, robot door, frozen art and all six working visualisations emptied. Discharge is `sae-ignition-discharge` with the light column. Run end to end on headless 2.1.17: placed, charged 0.25 → 0.99, launched, ended. |
 
 ## D. Review
 
@@ -85,7 +85,7 @@ is what the file is.
 | Sealed Roboport | 288×306 | 288×306 | 4.000 | 4.00 | +0.0 | yes | 81 |
 | Radiant Generator N/S | 224×414 | 224×414 | 3.000 | 3.00 | +0.0 | yes | 61 |
 | Radiant Generator E/W | 352×233 | 352×233 | 5.000 | 5.00 | +0.0 | yes | 74 |
-| Ignition Array | 608×602 | 608×602 | 9.000 | 9.00 | +0.0 | yes | 82 |
+| Ignition Array | 584×533 | 584×533 | 9.000 | 9.00 | +0.0 | yes | 68.5 |
 
 Declared equals actual everywhere, every span is exact, everything is centred.
 Two notes, neither a blocker:
