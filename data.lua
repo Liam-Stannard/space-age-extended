@@ -17,3 +17,7 @@ require("prototypes.core.endgame")
 require("prototypes.core.technology")
 require("prototypes.trees.fulgora-aquilo")
 require("prototypes.corridor")
+
+-- Last, deliberately: it re-points every item and fluid the files above defined
+-- into the Core's own subgroups, so it has to run after all of them exist.
+require("prototypes.core.groups")

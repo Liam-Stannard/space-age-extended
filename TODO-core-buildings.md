@@ -338,17 +338,22 @@ no spoil result, and the Field Coil Segment recipe genuinely lists it.
 
 ## Raised by Liam, not yet done
 
-- [ ] **Group the Core's buildings and items together in the crafting menu**, the
-      way each vanilla planet's own kit is grouped. At present every new
-      prototype is scattered into whatever vanilla subgroup was nearest —
-      `raw-material`, `production-machine`, `energy`, `intermediate-product` —
-      so a player hunting for Core content finds it interleaved with Nauvis's.
-      Vulcanus, Fulgora, Gleba and Aquilo each keep their own item groups and
-      subgroups; the Core should too. That means an `item-group` for the Core
-      plus subgroups beneath it, and re-pointing every `sae-*` item and machine
-      onto them — `items.lua`, `machines.lua`, `crust-tap.lua`, `endgame.lua`,
-      `storms.lua`, `entities.lua`, `intermediates.lua`. Worth doing in one pass
-      rather than per building, so the ordering can be designed as a whole.
+- [x] **Group the Core's buildings and items together in the crafting menu** —
+      done, in `prototypes/core/groups.lua`. Vanilla's own pattern rather than an
+      invented one: Space Age gives a planet a *subgroup* inside the existing
+      groups, not a group of its own — `vulcanus-processes`, `fulgora-processes`
+      and `aquilo-processes` all sit under `intermediate-products` at orders k–p,
+      and every planet's machines stay in `production` beside the rest. So the
+      Core takes `sae-core-processes` at order **q**, the next letter after
+      Aquilo, and `sae-core-machines` at **eb**, straight after
+      `production-machine`.
+
+      **52 prototypes re-pointed in one pass** — 35 chain items and 17 machines —
+      ordered by the production tree rather than the alphabet, so reading the
+      menu top to bottom reads the factory in build order. Ten fluids ordered to
+      match. Verified against a dump: no duplicate orders, and the only mod item
+      left outside is the geodynamic science pack, which stays with the other
+      science packs on purpose.
 
 ## Closing out
 
