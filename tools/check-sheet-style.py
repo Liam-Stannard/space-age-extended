@@ -125,3 +125,53 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ---------------------------------------------------------------------------
+# Rule zero: the building is drawn square-on to the tile grid.
+#
+# Template section "Rule zero", checked against the electric mining drill in all
+# four directions. A building drawn corner-on -- rotated 45 degrees so a corner
+# points at the viewer -- reads as a diamond and does not sit on Factorio's grid,
+# and it is the single easiest camera error to miss by eye because the render
+# still looks good in isolation.
+#
+# The tell is the bottom of the silhouette. Square-on, the near face gives a long
+# roughly-horizontal bottom edge. Corner-on, the base comes to a point and the
+# bottom is a V. So: what fraction of the silhouette's width sits within a small
+# band of its lowest row?
+# ---------------------------------------------------------------------------
+
+def base_flatness(img, band_frac=0.06):
+    """Band scales with the building's WIDTH, not the panel's height.
+
+    Scaled to height, a tall building in a tall panel gets a band deep enough to
+    swallow its whole base and scores a perfect 1.000 while being an obvious
+    diamond -- which is exactly what the Driven Column did on the first run.
+
+    **And it is not reliable enough to act on alone.** Run against set 4 it called
+    the Driven Column square-on at 1.000 when its base is plainly a diamond, and
+    flagged the Storm Crown, whose base is merely round. Corner-on drawing was
+    caught by eye, not by this. It is kept as a cheap first pass and a place to
+    put the fix when someone works out a metric that holds -- probably one that
+    reads the *top-down* panel's outline against the grid rather than guessing
+    from the hero's bottom edge.
+    """
+    img = content(img)
+    w, h = img.size
+    if img.mode == "RGBA" and img.getchannel("A").getextrema()[0] < 255:
+        m = img.getchannel("A").point(lambda v: 255 if v > 40 else 0)
+    else:
+        m = img.convert("L").point(lambda v: 255 if v > 42 else 0)
+    px = m.load()
+    bottom = []
+    for x in range(w):
+        col = [y for y in range(h) if px[x, y]]
+        bottom.append(max(col) if col else None)
+    ys = [b for b in bottom if b is not None]
+    if not ys:
+        return 0.0
+    lowest = max(ys)
+    band = max(2, int(band_frac * w))
+    near = sum(1 for b in ys if b >= lowest - band)
+    return near / len(ys)

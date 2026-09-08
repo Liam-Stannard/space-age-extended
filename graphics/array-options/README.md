@@ -155,3 +155,36 @@ panel reports the panel's shape rather than its own. Three of set 3's heroes als
 came back on magenta rather than charcoal, which polluted the first pass badly —
 O read 0.690 saturation until the background was keyed out and it settled at
 0.417. Judge perspective from the sheets, not from that column.
+
+---
+
+## Set 4, and a camera defect worth recording
+
+Set 4 (P–T) is the spectacle set: 9 × 9 base, nothing spilling sideways, height
+above the footprint the way Factorio draws every tall building, plus a silhouette
+panel and a discharge panel on every sheet.
+
+**Two of the five are drawn corner-on, and that is a real defect.**
+`building-spec-template.md`'s rule zero — *the building is drawn square-on to the
+tile grid* — is checked against the electric mining drill in all four directions,
+and P and S both present a diamond base with a corner toward the viewer. Their
+own top-down panels are correctly grid-aligned, which makes the hero renders
+inconsistent with them rather than merely stylised.
+
+| | Hero grid alignment |
+| --- | --- |
+| **P** Ignition Tower | **corner-on — reject** |
+| **Q** Gantry Vault | square-on |
+| **R** Suspended Core | square-on, the cleanest of the set |
+| **S** Driven Column | **corner-on — reject** |
+| **T** Storm Crown | round base, presented square-on; acceptable |
+
+Set 3 (K–O) is square-on throughout.
+
+**The automated check does not catch this yet.** `base_flatness` in
+`check-sheet-style.py` scored the Driven Column 1.000 — perfectly square-on —
+while its base is plainly a diamond, and flagged the Storm Crown, whose base is
+simply round. Both offenders were found by eye. The function is kept as a cheap
+first pass with its limitation documented, not as a gate; a metric that reads the
+top-down panel's outline against the grid would probably work, and nothing yet
+does.
