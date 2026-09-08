@@ -186,6 +186,29 @@ is what produced five mutually inconsistent numbers last time.
 | Seam angle | 100° – 116° |
 | Background | flat magenta, keys with no holes or ledges |
 | Lit anything | none |
+| Fitted size | **at most 9.00 × 9.00 tiles** — see below |
+
+### The deck does not overhang its footprint
+
+Vanilla overhangs: the rocket silo is 9.81 × 9.56 tiles on a 9 × 9 collision
+box, 9% proud, and this plan used to copy that on the grounds that it is what a
+Factorio building does. **That is rejected.** Art that spills past its own
+square overlaps whatever is built beside it, and r4 at 9.65 × 9.42 was still
+overlapping — "slightly" is not a defence.
+
+So the deck is scaled to the footprint exactly: 9.00 tiles wide, 8.79 tall at
+r4's 1000 × 976. `build-array-plates.py` enforces it and raises rather than
+emitting a plate that overhangs.
+
+The consequence to be aware of: everything scales together, so the opening lands
+at **5.83 tiles** rather than vanilla's 6.25. That is fine — the mod ships its
+own `hole_sprite`, so the opening's absolute size was never fixed by anything.
+What the slots fix is the plates' geometry *relative to one another*, and a
+uniform scale leaves all of that untouched.
+
+The old argument for overhanging was that v3 drawn to 9 tiles came out 9.00 ×
+7.78 and read as small and cut off. That was v3's aspect, not the rule — it was
+far too flat. r4 fills the square.
 
 ---
 

@@ -233,25 +233,27 @@ def main():
     ring = deck.copy()
     ring.putalpha(ImageChops.subtract(deck.getchannel("A"), hole))
 
-    # Scale, and the reason it is not simply "make the deck 9 tiles wide".
+    # Scale: the deck fits inside its footprint, and does not overhang it.
     #
-    # A Factorio building's art overhangs its footprint a little: vanilla's own
-    # rocket silo is 628 x 612 at scale 0.5, which is 9.81 x 9.56 tiles on the
-    # same 9 x 9 collision box -- 9% proud. Drawn to exactly 9 tiles this deck
-    # came out 9.00 x 7.78, so there was bare footprint above and below it and
-    # the building read as small and cut off inside its own square.
+    # Vanilla does overhang -- the rocket silo is 628 x 612 at scale 0.5, which
+    # is 9.81 x 9.56 tiles on a 9 x 9 collision box, 9% proud -- and this tool
+    # used to copy that. Liam rejected it on the r4 deck at 9.65 x 9.42: art that
+    # spills past its own square overlaps whatever is built beside it, and
+    # "slightly" is still overlapping. So the width is the footprint exactly.
     #
-    # Matching vanilla's 9% overhang on the width puts it at 9.81 x 8.47. It
-    # stays flatter than the silo because it is a shallow revetment rather than a
-    # tower -- that is the design -- but it now sits in its footprint the way a
-    # Factorio building does rather than floating in the middle of it.
+    # An earlier round argued the other way, because drawn to 9 tiles the v3 deck
+    # came out 9.00 x 7.78 and read as small and cut off inside its square. That
+    # was the old art's aspect, not the rule: v3 was far too flat. r4 is 1000 x
+    # 976, so 9 tiles wide is 8.79 tall and the footprint is properly filled.
     deck_w = box[2] - box[0]
-    OVERHANG = 628 * 0.5 / 32 / FOOTPRINT_TILES        # 1.090, measured off vanilla
-    tiles_wide = FOOTPRINT_TILES * OVERHANG
+    tiles_wide = FOOTPRINT_TILES
     scale = tiles_wide * 32.0 / deck_w
     px_per_tile = 32.0 / scale
-    print("\ndeck %d px -> %.2f x %.2f tiles (vanilla silo: 9.81 x 9.56), scale = %.4f"
-          % (deck_w, tiles_wide, (box[3] - box[1]) * scale / 32, scale))
+    tiles_high = (box[3] - box[1]) * scale / 32
+    print("\ndeck %d px -> %.2f x %.2f tiles on a %d-tile footprint, scale = %.4f"
+          % (deck_w, tiles_wide, tiles_high, FOOTPRINT_TILES, scale))
+    if tiles_wide > FOOTPRINT_TILES or tiles_high > FOOTPRINT_TILES:
+        raise SystemExit("deck overhangs its footprint")
 
     print("\nplates:")
     emit(ring, "base.png", px_per_tile)
