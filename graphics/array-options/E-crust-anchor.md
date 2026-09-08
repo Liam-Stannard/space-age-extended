@@ -59,11 +59,66 @@ there being less building.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space Age building, every panel drawn from the game's characteristic 45-degree top-down perspective, laid out as labelled panels on a dark charcoal background, in the style of a game art bible page.
+FACTORIO SPACE AGE BUILDING -- CONCEPT SHEET
 
-Panels, left to right and top to bottom. A large hero view of the building. A tile-grid panel showing it from directly overhead on a 9x9 tile grid, sitting inside the grid with no part crossing the edge. Three close-up detail panels: one driven anchor plate with the rock heaved and cracked around it, the armoured collar at the mouth of the central well, and the joint where a leg leaves the head. A row of five charge key frames labelled 0%, 25%, 50%, 75% and 100%, showing violet running outward from the head along all six legs at once, reaching the anchor plates at 100%, with the fractures in the rock around each anchor lighting from within as it arrives. A layer breakdown row showing the same building separated into shadow, bare metal, charge overlay and discharge. A palette strip of eight colour swatches.
+== CAMERA ==
+Match the attached vanilla sprites exactly: steeply down from above, MOSTLY ROOF
+with only a shallow near face. Square to the tile grid. Not rotated corner-on.
+Not a flat front elevation.
+The four attached sprites are style references only: match the camera, rendering,
+finish and level of detail; do NOT copy the design, shape, colours or components.
 
-The building in every panel is the same machine: a compact, heavy, six-sided machine head sitting low on rocky ground with six thick tapering legs splaying out from it and driven into the rock, each ending in a massive bolted anchor plate with the ground heaved and cracked around it, and a thick armoured collar at the centre of the head around a narrow well sunk into the ground.
+== BUILDING ==
+Ignition Array - option E, Crust Anchor.
+A compact six-sided machine head driven into rock on six splayed
+legs, over a narrow well. 9x9 tiles.
 
-It stands on an airless metallic world under crushing gravity, so it is squat, thick and anchored, and nothing about it is delicate. Weathered iron-nickel plate, grey-brown, rust in the seams. Violet is the only saturated colour on the sheet and it appears only in the charge frames. No flame, no exhaust, no steam, no smoke and no fire anywhere on the sheet.
+== FORM ==
+- A compact hexagonal head, low and thick, at the centre
+- Six thick tapering legs splaying out from the head to the edge of the footprint
+- Each leg ends in a massive bolted anchor plate driven into the rock
+- The ground heaved and cracked around each anchor plate
+- A thick armoured collar at the centre of the head, around a narrow well sunk
+  into the ground
+- The head is small relative to the span of the legs
+
+== COLOUR ==
+- Body casing: #4A463F to #6E685C, warm low-value iron-nickel, old dark cast iron
+- Pale nickel-white: #B9B4A8, confined to bolt rings and end caps
+- Ceramic: #C9C0AC, the lightest value on the building
+- Copper: #8A5A32, confined to busbars and straps
+- Charge: violet-white #C9B6FF ramping to #FFFFFF, in the charge frames only
+- NOT pale galvanised or bleached weathered steel. That is the default drift and
+  it must be argued down. Warm dark desaturated steel, so violet is the only
+  saturated colour on the sheet.
+
+== RULES ==
+- Airless metallic world, gravity 50: squat, thick, anchored. Nothing cantilevers,
+  nothing is delicate, nothing is slender.
+- Nothing burns here. No flame, no exhaust, no steam, no smoke, no fire, anywhere
+  on the sheet, in any panel.
+- Superconducting, therefore cold. Frost and rime are correct; glowing hot metal
+  is wrong.
+- Nothing glows at rest. Violet appears only in the charge frames.
+- The building sits inside a 9x9 tile square with no part crossing the edge.
+- Must read as a machine driven into the ground, not a spider, a walking robot
+  or anything with limbs. The legs are anchors and they do not articulate.
+
+== PANELS ==
+- A large hero view of the building
+- A tile-grid panel from directly overhead on a 9x9 tile grid, the building
+  inside the grid with no part crossing the edge
+- Three close-up detail panels: one driven anchor plate with the rock heaved and cracked around it; the
+armoured collar at the mouth of the central well; the joint where a leg leaves
+the head
+- A row of five charge key frames labelled 0%, 25%, 50%, 75%, 100%, showing
+  violet running outward from the head along all six legs at once, reaching
+the anchor plates at 100%, with the fractures in the rock around each anchor
+lighting from within as it arrives
+- A layer breakdown row: shadow, bare metal, charge overlay, discharge
+- A palette strip of eight colour swatches
+
+== OUTPUT ==
+One landscape concept sheet, 3:2, labelled panels on a dark charcoal background,
+in the style of a game art bible page. Panel labels only; no other text.
 ```

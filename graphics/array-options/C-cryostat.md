@@ -61,11 +61,64 @@ is no bore, so the rocket has nowhere obvious to rise from.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space Age building, every panel drawn from the game's characteristic 45-degree top-down perspective, laid out as labelled panels on a dark charcoal background, in the style of a game art bible page.
+FACTORIO SPACE AGE BUILDING -- CONCEPT SHEET
 
-Panels, left to right and top to bottom. A large hero view of the building. A tile-grid panel showing it from directly overhead on a 9x9 tile grid, sitting inside the grid with no part crossing the edge. Three close-up detail panels: the banded thermal lagging and steel strapping on the vessel's flank, an inspection hatch with frost around its rim, and the cryogenic pipework and relief stacks at the base. A row of five charge key frames labelled 0%, 25%, 50%, 75% and 100%, showing the white frost receding down the vessel from the top as it charges, uncovering inspection slots that glow violet from the windings inside, until at 100% the drum is clear of ice and lit from within. A layer breakdown row showing the same building separated into shadow, bare metal, charge overlay and discharge. A palette strip of eight colour swatches.
+== CAMERA ==
+Match the attached vanilla sprites exactly: steeply down from above, MOSTLY ROOF
+with only a shallow near face. Square to the tile grid. Not rotated corner-on.
+Not a flat front elevation.
+The four attached sprites are style references only: match the camera, rendering,
+finish and level of detail; do NOT copy the design, shape, colours or components.
 
-The building in every panel is the same machine: one enormous insulated cryogenic vessel - a fat horizontal drum, wider than it is tall, wrapped in banded thermal lagging and steel strapping, standing on a low anchored plinth, with thick cryogenic pipework and relief stacks around its base, the whole vessel caked in heavy white frost and rime, pale blue in the shadows.
+== BUILDING ==
+Ignition Array - option C, Cryostat.
+One enormous insulated cryogenic vessel holding a superconducting
+magnet, standing on a low anchored plinth. 9x9 tiles.
 
-It stands on an airless metallic world under crushing gravity, so it is squat, thick and anchored, and nothing about it is delicate. Weathered iron-nickel plate, grey-brown, rust in the seams. Violet is the only saturated colour on the sheet and it appears only in the charge frames. No flame, no exhaust, no steam, no smoke and no fire anywhere on the sheet.
+== FORM ==
+- One fat drum lying horizontally, wider than it is tall, filling the footprint
+- Wrapped in banded thermal lagging with steel strapping over it
+- Standing on a low, thick, anchored plinth
+- Thick cryogenic pipework and relief stacks around its base
+- Inspection hatches along its flank
+- The whole vessel caked in heavy white frost and rime, pale blue in the shadows
+- A skirt of frost spreading onto the ground where it stands
+
+== COLOUR ==
+- Lagging: #C6C8C6 to #E4E7EA, frosted pale grey-white, the body of the building
+- Ice and rime: #DCE6EE with #9FB3C4 in the shadows, pale blue
+- Plinth and pipework: #4A463F to #6E685C, warm dark iron-nickel
+- Copper: #8A5A32, confined to fittings
+- Charge: violet-white #C9B6FF ramping to #FFFFFF, in the charge frames only
+- This is the one option that is pale on purpose. The vessel is white; the steel
+  it stands on is not.
+
+== RULES ==
+- Airless metallic world, gravity 50: squat, thick, anchored. Nothing cantilevers,
+  nothing is delicate, nothing is slender.
+- Nothing burns here. No flame, no exhaust, no steam, no smoke, no fire, anywhere
+  on the sheet, in any panel.
+- Superconducting, therefore cold. Frost and rime are correct; glowing hot metal
+  is wrong.
+- Nothing glows at rest. Violet appears only in the charge frames.
+- The building sits inside a 9x9 tile square with no part crossing the edge.
+- Must read as a cryogenic dewar, not a fuel tank, boiler or silo: no burner,
+  no firebox, no chimney, no flue, nothing that could combust.
+
+== PANELS ==
+- A large hero view of the building
+- A tile-grid panel from directly overhead on a 9x9 tile grid, the building
+  inside the grid with no part crossing the edge
+- Three close-up detail panels: the banded lagging and steel strapping on the flank; an inspection hatch
+with frost around its rim; the cryogenic pipework and relief stacks at the base
+- A row of five charge key frames labelled 0%, 25%, 50%, 75%, 100%, showing
+  the white frost receding down the vessel from the top, uncovering
+inspection slots that glow violet from the windings inside, until at 100% the
+drum is clear of ice and lit from within
+- A layer breakdown row: shadow, bare metal, charge overlay, discharge
+- A palette strip of eight colour swatches
+
+== OUTPUT ==
+One landscape concept sheet, 3:2, labelled panels on a dark charcoal background,
+in the style of a game art bible page. Panel labels only; no other text.
 ```

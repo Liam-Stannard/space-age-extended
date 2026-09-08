@@ -86,3 +86,36 @@ design that fails this constraint even if it is the prettiest.
 
 Judge them on the three constraints, in order, and on one more thing that is not
 a constraint but decides it: **does it look like the last thing you build?**
+
+---
+
+## The second set — F to J, at the tier the Array actually sits at
+
+**A to E were written in the wrong visual register, and the repo already said so.**
+`building-spec-template.md`, "Technology tier sets the visual register", puts the
+Array at **tier 4 — the goal**: *exotic; barely reads as machinery. Field effects,
+superconducting elements, monolithic surfaces with no seams at all, contained
+light doing the work.*
+
+A to E are riveted, bolted, weathered, rust in the seams. That is **tier 0**, the
+vocabulary of the landing-day machines — the Drop Crusher, the Ballast Drill, the
+Crust Tap. Drawing the last building in the game in the same language as the
+first one throws away the thing the ladder exists for: *"the player should be able
+to read their own progress off the factory floor without opening the tech tree."*
+
+So F to J are the same design space at tier 4. Not a coat of paint — the register
+changes the forms, because at tier 4 a lattice mast becomes a cast emitter and a
+strapped dewar becomes a solid block.
+
+| | Tier-0 original | Massing | Charge lives in |
+|---|---|---|---|
+| **F** Field Ring | A | seamless torus round an open bore | light inside a containment gap |
+| **G** Emitter Array | B | flat deck, four cast pylons | translucent bands up each pylon |
+| **H** Cryo Monolith | C | one chamfered jacketed block | light under the surface, in cut channels |
+| **I** Inlaid Plate | D | almost flat, set into the ground | inlaid traces filling to a central node |
+| **J** Containment Well | E | a bowl, and a ring hovering over it | the ring rises and lights |
+
+**The guard that matters for this set:** tier 4 must not become generic science
+fiction. It is still Factorio — physical, weighty, industrial — and futuristic
+through *material and finish*, not through neon strip lighting, holograms or
+glowing panel lines. That sentence is in every F–J prompt for a reason.

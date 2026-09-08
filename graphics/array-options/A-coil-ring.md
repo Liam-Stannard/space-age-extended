@@ -59,11 +59,65 @@ means the comparison changed nothing.
 ## Concept Sheet Prompt
 
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space Age building, every panel drawn from the game's characteristic 45-degree top-down perspective, laid out as labelled panels on a dark charcoal background, in the style of a game art bible page.
+FACTORIO SPACE AGE BUILDING -- CONCEPT SHEET
 
-Panels, left to right and top to bottom. A large hero view of the building. A tile-grid panel showing it from directly overhead on a 9x9 tile grid, sitting inside the grid with no part crossing the edge. Three close-up detail panels: one coil housing in its armoured cradle with frost on it, the copper busbar joint between two housings, and the bolted collar at the lip of the shaft. A row of five charge key frames labelled 0%, 25%, 50%, 75% and 100%, showing the coil housings lighting violet one at a time around the ring, so the lit arc grows clockwise and the ring is fully lit only at 100%. A layer breakdown row showing the same building separated into shadow, bare metal, charge overlay and discharge. A palette strip of eight colour swatches.
+== CAMERA ==
+Match the attached vanilla sprites exactly: steeply down from above, MOSTLY ROOF
+with only a shallow near face. Square to the tile grid. Not rotated corner-on.
+Not a flat front elevation.
+The four attached sprites are style references only: match the camera, rendering,
+finish and level of detail; do NOT copy the design, shape, colours or components.
 
-The building in every panel is the same machine: a squat, heavy, octagonal machine ring with a wide open shaft straight down through its middle, and a continuous chain of superconducting coil housings laid end to end around the ring - thick cylindrical windings in armoured cradles, copper busbars linking one to the next, frost and rime collecting on the housings.
+== BUILDING ==
+Ignition Array - option A, Coil Ring.
+A squat octagonal machine ring with a wide open shaft straight down
+through its middle. 9x9 tiles.
 
-It stands on an airless metallic world under crushing gravity, so it is squat, thick and anchored, and nothing about it is delicate. Weathered iron-nickel plate, grey-brown, rust in the seams. Violet is the only saturated colour on the sheet and it appears only in the charge frames. No flame, no exhaust, no steam, no smoke and no fire anywhere on the sheet.
+== FORM ==
+- Outer silhouette an octagon, wider than it is tall, sitting low
+- A shaft straight through the centre, open, the background visible through it
+- The shaft is roughly two thirds of the building's width
+- A continuous chain of superconducting coil housings laid end to end around the
+  ring: thick cylindrical windings in armoured cradles
+- Copper busbars linking each housing to the next
+- Frost and rime collecting on the coil housings and nowhere else
+- A bolted armoured collar at the lip of the shaft
+
+== COLOUR ==
+- Body casing: #4A463F to #6E685C, warm low-value iron-nickel, old dark cast iron
+- Pale nickel-white: #B9B4A8, confined to bolt rings and end caps
+- Ceramic: #C9C0AC, the lightest value on the building
+- Copper: #8A5A32, confined to busbars and straps
+- Charge: violet-white #C9B6FF ramping to #FFFFFF, in the charge frames only
+- NOT pale galvanised or bleached weathered steel. That is the default drift and
+  it must be argued down. Warm dark desaturated steel, so violet is the only
+  saturated colour on the sheet.
+
+== RULES ==
+- Airless metallic world, gravity 50: squat, thick, anchored. Nothing cantilevers,
+  nothing is delicate, nothing is slender.
+- Nothing burns here. No flame, no exhaust, no steam, no smoke, no fire, anywhere
+  on the sheet, in any panel.
+- Superconducting, therefore cold. Frost and rime are correct; glowing hot metal
+  is wrong.
+- Nothing glows at rest. Violet appears only in the charge frames.
+- The building sits inside a 9x9 tile square with no part crossing the edge.
+- Must read as a winding around a bore, not a rocket silo: no launch clamps,
+  no gantry, no blast doors, nothing aimed upward.
+
+== PANELS ==
+- A large hero view of the building
+- A tile-grid panel from directly overhead on a 9x9 tile grid, the building
+  inside the grid with no part crossing the edge
+- Three close-up detail panels: one coil housing in its armoured cradle with frost on it; the copper
+busbar joint between two housings; the bolted collar at the lip of the shaft
+- A row of five charge key frames labelled 0%, 25%, 50%, 75%, 100%, showing
+  the coil housings lighting violet one at a time around the ring, so the
+lit arc grows clockwise and the ring is fully lit only at 100%
+- A layer breakdown row: shadow, bare metal, charge overlay, discharge
+- A palette strip of eight colour swatches
+
+== OUTPUT ==
+One landscape concept sheet, 3:2, labelled panels on a dark charcoal background,
+in the style of a game art bible page. Panel labels only; no other text.
 ```
