@@ -16,6 +16,20 @@ building can sit in:
   electromagnetic-plant  coils, windings and heavy cable runs treated as a
                          subject in their own right.
 
+Three more are **per-building style references**, one machine each, because the
+nine-building set came back looking like one machine drawn nine times when they
+all shared a reference. The plan for which building gets which is in
+graphics/TODO.md; these are the three cut so far:
+
+  centrifuge             Dross Classifier
+  nuclear-reactor        Coil Separator -- heavy, dark, contained power. It
+                         covers the ground the electromagnetic plant would,
+                         while that machine is the separator's anti-read and so
+                         must not be attached to it at all.
+  recycler               Whisker Comber
+
+Use --only to cut a subset: the standard four plus the one this building owns.
+
 **These files are Wube's art and must never be copied into the repo.** They are
 written to a scratch directory, attached to a prompt, and thrown away; the mod
 ships none of them. That is why this is a tool that extracts them on demand
@@ -63,6 +77,21 @@ REFERENCES = {
          "electromagnetic-plant-main-rotate-continue.png",
          220, 302, 0.0625, -0.375, 8, 0),
     ],
+    "centrifuge": [
+        ("base/graphics/entity/centrifuge/centrifuge-ABC-integration.png",
+         246, 250, 0.015625, 0.09375, 1, 0),
+        ("base/graphics/entity/centrifuge/centrifuge-ABC.png",
+         194, 248, -0.078125, -0.5625, 8, 0),
+    ],
+    "nuclear-reactor": [
+        ("base/graphics/entity/nuclear-reactor/reactor.png",
+         302, 318, -0.15625, -0.21875, 1, 0),
+    ],
+    "recycler": [
+        # The recycler ships in its own data mod, not in space-age.
+        ("recycler/graphics/entity/recycler/recycler-N.png",
+         170, 304, 0.0625, -0.203125, 8, 0),
+    ],
 }
 
 PX_PER_TILE = 64
@@ -96,20 +125,30 @@ def build(layers):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.environ.get("TMPDIR", "/tmp") + "/sae-style-refs")
+    ap.add_argument("--only", help="comma-separated subset, e.g. "
+                                   "assembling-machine-3,foundry,centrifuge")
     args = ap.parse_args()
+
+    wanted = REFERENCES
+    if args.only:
+        names = [n.strip() for n in args.only.split(",")]
+        missing = [n for n in names if n not in REFERENCES]
+        if missing:
+            raise SystemExit("unknown reference(s): %s" % ", ".join(missing))
+        wanted = {n: REFERENCES[n] for n in names}
 
     if not os.path.isdir(DATA):
         raise SystemExit("Factorio data not found at %s" % DATA)
     os.makedirs(args.out, exist_ok=True)
 
-    for name, layers in REFERENCES.items():
+    for name, layers in wanted.items():
         img = build(layers)
         path = os.path.join(args.out, name + ".png")
         img.save(path)
         print("  %-24s %4dx%-4d  %s" % (name, img.width, img.height, path))
 
-    print("\nAttach all four to every generation round. Vanilla art -- scratch only,"
-          "\nnever copied into the repo.")
+    print("\nAttach the standard four to every generation round, plus the one this"
+          "\nbuilding owns. Vanilla art -- scratch only, never copied into the repo.")
 
 
 if __name__ == "__main__":
