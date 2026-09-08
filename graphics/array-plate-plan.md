@@ -140,3 +140,26 @@ is what produced five mutually inconsistent numbers last time.
 | Seam angle | 100° – 116° |
 | Background | flat magenta, keys with no holes or ledges |
 | Lit anything | none |
+
+---
+
+## 8. Round log
+
+| Round | Aspect | Hole/deck | Centre | Verdict |
+| --- | ---: | ---: | --- | --- |
+| deck r1 | 1.76 | 0.578 | 50.0% / 53.1% | **the hole is real** — reject on aspect and size |
+
+**Round 1 got the hard part right first time.** `concept/plan-deck-r1.png` has a
+genuine hole straight through the deck showing background, which no previous
+round of this building ever produced — every one of them painted a lid on and
+left the engine nothing to open. The centre landed in band at 50.0% / 53.1%, the
+octagon reads, the machinery sits on the inner wall, the palette is right and
+nothing is lit.
+
+Two numbers miss, and both are the same mistake in opposite directions: the hole
+is too flat (**1.76** against a 1.45–1.52 band) and slightly too small (**0.578**
+of the deck against 0.60–0.68). Flat and small together mean the *height* is what
+is wrong — at the right height, 688 px wide would be 465 tall rather than 390,
+which is both a 1.48 aspect and a bigger hole.
+
+So the correction is one instruction: make the hole taller, not wider.
