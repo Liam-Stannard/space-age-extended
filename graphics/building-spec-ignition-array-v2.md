@@ -1235,7 +1235,13 @@ screenshot expensive, so shoot the sequence and nothing else.
 Three things the v1 work turned up that this version does not resolve, all of
 which affect what is worth drawing.
 
-**1. The Array never fires by itself.** It assembles a rocket, reaches
+**1. ~~The Array never fires by itself.~~ Resolved: it does not need to.** The
+silo GUI carries a Launch button, disabled with "Rocket is not ready" below 100%
+and available at it — checked in a real game rather than inferred.
+`launch_to_space_platforms = false` removes the destination, not the trigger, so
+the ignition sequence is art the player *will* see. The original note follows.
+
+**The Array never fires by itself.** It assembles a rocket, reaches
 `waiting_to_launch_rocket` and stays there indefinitely — measured over several
 thousand ticks — while it goes on making parts for the next one. Something must
 call `launch_rocket()`. With `launch_to_space_platforms = false` there is no

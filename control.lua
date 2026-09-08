@@ -52,6 +52,11 @@ end)
 
 -- on_rocket_launch_ordered, not on_rocket_launched.
 --
+-- The player fires it, from the silo GUI's Launch button -- confirmed in a real
+-- game, where the button sits disabled with "Rocket is not ready" until progress
+-- reaches 100%. launch_to_space_platforms = false removes the destination, not
+-- the trigger, so nothing here needs to launch the rocket on the player's behalf.
+--
 -- Measured: the Array raises "ordered" and never raises "launched". A vanilla
 -- rocket completes its launch by delivering cargo to space, and the Array
 -- delivers nothing -- it fires a current into the crust. The order is the

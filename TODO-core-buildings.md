@@ -184,14 +184,25 @@ rather than acted on.
 
 ### Raised by the Array animation work, for Liam to decide
 
-1. **The Array never fires by itself, and this is a gameplay gap, not an art
-   one.** Measured over several thousand ticks: it assembles a rocket, reaches
-   `waiting_to_launch_rocket` and stays there while it goes on making parts for
-   the next one. Something must call `launch_rocket()`. With
-   `launch_to_space_platforms = false` there is no destination to send it to, so
-   whether the player has any way at all to trigger the win condition needs
-   checking in a real game. **Until this is answered the whole ignition sequence
-   is art the player may never see.**
+1. ~~**The Array never fires by itself.**~~ **Resolved 2026-09-08 — the win
+   condition is reachable and nothing needs changing.** Liam opened a loaded
+   Array in a real game: the silo GUI carries a **Launch** button, disabled with
+   *"Rocket is not ready"* until progress reaches 100%. So
+   `launch_to_space_platforms = false` removes the *destination*, not the
+   player's ability to fire, and the mod is completable as built.
+
+   Worth recording how badly I mis-scoped this. I flagged it three times as
+   possibly making the mod uncompletable, on the strength of a true observation —
+   it never auto-launches — plus an assumption I never tested, that no button
+   would appear without a destination. Two rendering routes failed to settle it
+   (`take_screenshot` does not capture entity GUIs; `xwd` on the GL surface
+   returns black) and a screenshot from the actual game answered it in one.
+   **When a question is about what a player sees, the cheapest instrument is a
+   player.**
+
+   The same screenshot incidentally confirmed two things: the locale landed
+   ("Ignition array", "Field coil segment"), and the ring mechanic is live —
+   eleven ignition charges in the ingredient row.
 2. **Does the Array's camera need to match the rocket silo's?** Photographed side
    by side in-engine: the silo's shaft mouth is 1.485 wide-to-tall, ours is
    1.127, so ours is about 30% too round, and where the silo shows its far inner
