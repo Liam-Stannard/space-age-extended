@@ -328,3 +328,92 @@ data.raw.recipe["sae-whisker-bed"].ingredients =
   { type = "item", name = "sae-kamacite-plate", amount = 1 }
 }
 
+
+--------------------------------------------------------------------------------
+-- T3, carbonyl chemistry, and the flux that feeds it.
+--
+-- This is what fills `sae-sintering`, the category the Vacuum Furnace has been
+-- carrying with nothing in it, and it is half that furnace's stated reason to
+-- exist. It also gives schreibersite its only consumer, which is what makes the
+-- Coil Separator worth building rather than a curiosity.
+--
+-- Numbers are a first pass and should be played before they are trusted. The one
+-- that carries meaning is the 90% carbon monoxide recovery: carbon is a catalyst
+-- with losses, not a consumable, so the corridor delivers a trickle rather than
+-- a torrent and modules on the decomposition step visibly lower the freight bill.
+--------------------------------------------------------------------------------
+
+data:extend({
+  {
+    type = "recipe",
+    name = "sae-carbon-monoxide",
+    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+    categories = { "chemistry" },
+    energy_required = 2,
+    ingredients =
+    {
+      { type = "item", name = "carbon", amount = 1 },
+      { type = "fluid", name = "sae-settled-melt", amount = 20 }
+    },
+    results = { { type = "fluid", name = "sae-carbon-monoxide", amount = 50 } },
+    enabled = false
+  },
+  {
+    -- Cold. Metal walks into the pipe here.
+    type = "recipe",
+    name = "sae-metal-carbonyl",
+    categories = { "chemistry" },
+    energy_required = 4,
+    ingredients =
+    {
+      { type = "item", name = "sae-kamacite-fines", amount = 4 },
+      { type = "fluid", name = "sae-carbon-monoxide", amount = 50 }
+    },
+    results = { { type = "fluid", name = "sae-metal-carbonyl", amount = 50 } },
+    enabled = false
+  },
+  {
+    -- Hot. The metal falls out and 45 of the 50 carrier units come back.
+    type = "recipe",
+    name = "sae-carbonyl-powder",
+    icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
+    categories = { "chemistry" },
+    energy_required = 4,
+    ingredients = { { type = "fluid", name = "sae-metal-carbonyl", amount = 50 } },
+    results =
+    {
+      { type = "item", name = "sae-carbonyl-powder", amount = 1 },
+      { type = "fluid", name = "sae-carbon-monoxide", amount = 45 }
+    },
+    enabled = false
+  },
+  {
+    type = "recipe",
+    name = "sae-phosphide-flux",
+    categories = { "metallurgy" },
+    energy_required = 8,
+    ingredients =
+    {
+      { type = "item", name = "sae-schreibersite", amount = 2 },
+      { type = "fluid", name = "sae-settled-melt", amount = 30 }
+    },
+    results = { { type = "fluid", name = "sae-phosphide-flux", amount = 40 } },
+    enabled = false
+  },
+  {
+    -- The `sae-sintering` recipe, and the only one. One solid ingredient and one
+    -- fluid, which is exactly what a furnace can pick a recipe from -- see the
+    -- flux note in fluids.lua.
+    type = "recipe",
+    name = "sae-sintered-preform",
+    categories = { "sae-sintering" },
+    energy_required = 6,
+    ingredients =
+    {
+      { type = "item", name = "sae-carbonyl-powder", amount = 4 },
+      { type = "fluid", name = "sae-phosphide-flux", amount = 20 }
+    },
+    results = { { type = "item", name = "sae-sintered-preform", amount = 1 } },
+    enabled = false
+  }
+})

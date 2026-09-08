@@ -177,3 +177,33 @@ data:extend({
     spoil_result = nil
   }
 })
+
+--------------------------------------------------------------------------------
+-- T3's two solids.
+--------------------------------------------------------------------------------
+
+data:extend({
+  {
+    -- Ultra-pure metal, deposited out of a gas. Nothing else on the Core is
+    -- this clean, which is why the laminations want it.
+    type = "item",
+    name = "sae-carbonyl-powder",
+    icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
+    subgroup = "raw-material",
+    order = "z[sae]-e[carbonyl-powder]",
+    stack_size = 100,
+    weight = 1000
+  },
+  {
+    -- Powder pressed into a shape, and the only thing the `sae-sintering`
+    -- category makes. An open furnace would lose the powder; the Vacuum Furnace
+    -- is the only machine that can do this at all.
+    type = "item",
+    name = "sae-sintered-preform",
+    icon = "__space-age-extended__/graphics/icons/homogenised-ingot.png",
+    subgroup = "intermediate-product",
+    order = "z[sae]-f[sintered-preform]",
+    stack_size = 50,
+    weight = 2000
+  }
+})

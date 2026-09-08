@@ -222,7 +222,20 @@ data:extend({
   geodynamic("sae-magnetic-separation", { "sae-field-coils" }, 300,
     {
       { type = "unlock-recipe", recipe = "sae-coil-separator" },
-      { type = "unlock-recipe", recipe = "sae-magnetic-separation" }
+      { type = "unlock-recipe", recipe = "sae-magnetic-separation" },
+      -- Schreibersite's only consumer. Without it the separator produces
+      -- something nothing wants, which is not a building worth researching.
+      { type = "unlock-recipe", recipe = "sae-phosphide-flux" }
+    }),
+  -- Metal that travels through pipes, and the only thing that fills the Vacuum
+  -- Furnace's `sae-sintering` category. After magnetic separation because the
+  -- preform needs flux, and flux needs schreibersite.
+  geodynamic("sae-carbonyl-chemistry", { "sae-magnetic-separation" }, 400,
+    {
+      { type = "unlock-recipe", recipe = "sae-carbon-monoxide" },
+      { type = "unlock-recipe", recipe = "sae-metal-carbonyl" },
+      { type = "unlock-recipe", recipe = "sae-carbonyl-powder" },
+      { type = "unlock-recipe", recipe = "sae-sintered-preform" }
     }),
   geodynamic("sae-ignition-array", { "sae-field-coils" }, 1200,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
