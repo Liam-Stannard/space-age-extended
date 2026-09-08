@@ -213,7 +213,32 @@ So the correction is one instruction: make the hole taller, not wider.
 | deck r2 | 1.70 | 0.579 | 500 / 481 | numbers given as arithmetic; height moved 4% where 20% was asked |
 | deck r3 | 1.62 | 0.582 | 501 / 476 | **fresh session, no history** — best building yet, aspect closest yet |
 | deck r3 corrected | **1.481** | 0.582 | 501 / 476 | vertical stretch ×1.0928, applied locally |
-| deck r4 | — | — | — | first round against `plate-paint-template.png` |
+| deck r4 | **1.493** | **0.648** | 494 / 527 | **PASS** — first round against the template, every band met |
+
+**The template worked first time, and on the quantity that had never once come
+back right.** r4 is `concept/plan-deck-r4.png`. Measured by
+`tools/check-array-plate.py`:
+
+| Check | r4 | Target | Band |
+| --- | ---: | ---: | --- |
+| Opening aspect | 1.493 | 1.4815 | 1.45 – 1.52 |
+| Opening width | 648 | 637 | 600 – 680 |
+| Opening height | 434 | 430 | 405 – 460 |
+| Centre across | 494 | 478 | 460 – 500 |
+| Centre down | 527 | 527 | 505 – 555 |
+| Hole / deck | 0.648 | 0.637 | 0.60 – 0.68 |
+
+Sixteen attempts stated the aspect and none landed inside the band; the first
+one handed a shape to paint inside landed at 1.493 without the ratio being
+mentioned at all. The building is 1000 × 976 against a plan of 1000 × 975, and
+fitting the opening to vanilla's 6.25 tiles puts the deck at **9.65 × 9.42
+tiles** against vanilla's 9.81 × 9.56 — the overhang problem is simply gone,
+with no crop and no local correction of any kind.
+
+The one number worth watching is the centre, at 494 across against a target of
+478 and a band ending at 500. The ring is thinner on its right side than the
+plan asks, by about 22 units on the 1000 base. It is inside the band and not
+worth another round.
 
 **Arithmetic did not move it either, and that is worth recording.** Round 2 gave
 the exact figures — 637 wide, 430 tall, 1.4815 : 1, edges at 159/796/312/742 —
