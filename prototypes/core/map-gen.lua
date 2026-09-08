@@ -107,6 +107,13 @@ local function core_tiles()
     end
   end
 
+  -- The crust vent is ours and always present, whatever tile pack is installed.
+  -- It has to be listed here or it never places at all: a planet's
+  -- `autoplace_settings["tile"]` is a whitelist, and a tile absent from it is
+  -- excluded no matter what its own autoplace says. Measured: sixteen chunks
+  -- generated exactly zero vents until this line existed.
+  settings["sae-crust-vent"] = {}
+
   return settings
 end
 

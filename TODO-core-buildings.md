@@ -238,10 +238,11 @@ logged at data stage.
 - [x] **N5 · Whisker Comber** — `assembling-machine`, 3×3, `sae-fibre`
 - [x] **N6 · Helium Concentrator** — `assembling-machine`, 3×3, `sae-degassing`, 3 fluid boxes
 - [x] **N7 · Vacuum Furnace** — `furnace`, 3×3, `smelting` + `sae-sintering`, flux fluid box
-- [ ] **N8 · Crust Tap** — `offshore-pump`, 2×2, + `sae-crust-gas` fluid + `sae-crust-turbine`
-      — the only one outstanding, and the largest: it needs a fluid, a **sited
-      vent tile** (S10: an offshore pump draws from `TilePrototype::fluid`, not
-      from its own filter) and the companion `burns_fluid` turbine.
+- [x] **N8 · Crust Tap** — `offshore-pump`, 2×2, + `sae-crust-gas` fluid + `sae-crust-turbine`
+      — in `prototypes/core/crust-tap.lua`. Five prototypes, not one: a fluid, a
+      private collision layer, a sited vent tile, the tap and the turbine.
+      **Proven end to end on the rig at exactly 1,800,000 W**, the declared
+      figure to the watt.
 - [x] **N9 · Ignition Ring Mast** — `assembling-machine`, 3×3, fixed recipe, helium fluid box
 
 ### Review of the eight, and what it found
@@ -270,6 +271,40 @@ instead of raw dross, or the Dross Classifier has nothing that needs it.
 ignition charge, and the charge spoils in ten seconds with no spoil result — so
 a mast has to stand within a few seconds of belt of the Array. Nothing in the
 engine can require one building to be near another; real belt time does it.
+
+### Review of N8, and what it found
+
+Nothing here was visible from the data stage, which is the whole point of the
+building: S10's lesson is that a broken tap reports `working` and yields nothing.
+Four bugs, each of which looked correct until measured on the rig.
+
+**The vent tile never generated.** A planet's `autoplace_settings.tile` is a
+whitelist, and a tile absent from it is excluded no matter what its own autoplace
+says. Sixteen chunks produced exactly zero vents until the tile was listed in
+`map-gen.lua`.
+
+**The autoplace threshold had to be measured, not guessed**, and the first four
+readings were non-monotonic — 0.72 → 3.9%, 1.05 → 6.8%, 1.18 → 2.99%, 1.27 →
+4.13% — because every run generated a *fresh map seed*. Pinning the seed made it
+monotonic immediately: 1.10 → 0.90%, 1.18 → 0.46%, 1.24 → 0.13%. Settled at
+**1.38 with feature scale 1/40: 1.31% coverage in 6 fields** per 384×384, largest
+800 tiles. Vents are a place you travel to, which is what makes power a location
+rather than a tuning number.
+
+**`fluid_source_offset = { 0, 0 }` drew nothing.** On a 2×2 that offset lands on
+the corner where the four footprint tiles meet. The tap reported `working` with
+0.0 fluid — S10's exact silent failure, reproduced by my own first draft. Moved
+to `{ 0.5, 0.5 }`, squarely inside one tile.
+
+**An offshore pump does not buffer.** Even correct, it read 0.0 for ever until
+something was connected. Piped to a tank it filled at 0.5/tick as declared; the
+zero was the test, not the tap.
+
+**Still open on N8:** `tile_buildability_rules` does not yet bite — a tap can be
+built on bare ground, where it produces nothing. The rule requires the
+`sae-crust-vent` collision layer across the footprint and the tile carries that
+layer, but `can_place_entity` returns true off-vent. That is the one thing about
+this building a player could get wrong, so it needs solving before the tap ships.
 
 **Three items are still dead ends**, and knowingly: whisker tow, whisker felt and
 schreibersite have no consumer yet. Their consumers — prepreg, the cryostat core
