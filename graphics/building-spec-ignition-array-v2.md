@@ -1124,6 +1124,25 @@ cut off from the border.
 
 ---
 
+## The plate plan
+
+**`graphics/array-plate-plan.md` is now the authority on every dimension**, with
+`concept/plate-plan-deck.png` and `concept/plate-plan-lid.png` as the diagrams to
+attach to a round. It supersedes the sizes and shifts scattered through §13 and
+§15 here: those were derived per plate and drifted apart, and the plan takes all
+of them from vanilla's own slots instead, where they are mutually consistent by
+construction.
+
+Two things in it are corrections rather than restatements:
+
+* **The opening is not centred.** It sits at 47.8% across and 54.1% down the
+  deck plate — low and a little left, because vanilla's hole is half a tile
+  south of the entity origin. Every sheet so far drew it centred.
+* **The seam runs at 108°, not 45°.** The engine parts the leaves along the
+  vector between their rest shifts, (+2.031, −0.656) tiles, and a seam must be
+  perpendicular to the direction its halves separate or they grind past each
+  other rather than opening. Every sheet so far drew roughly 45°.
+
 ## What is left on the Ignition Array
 
 The blocker is solved and the method is known. What remains is assembly.
