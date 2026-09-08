@@ -180,3 +180,32 @@ is wrong — at the right height, 688 px wide would be 465 tall rather than 390,
 which is both a 1.48 aspect and a bigger hole.
 
 So the correction is one instruction: make the hole taller, not wider.
+
+| deck r2 | 1.70 | 0.579 | 500 / 481 | numbers given as arithmetic; height moved 4% where 20% was asked |
+| deck r3 | 1.62 | 0.582 | 501 / 476 | **fresh session, no history** — best building yet, aspect closest yet |
+| deck r3 corrected | **1.481** | 0.582 | 501 / 476 | vertical stretch ×1.0928, applied locally |
+
+**Arithmetic did not move it either, and that is worth recording.** Round 2 gave
+the exact figures — 637 wide, 430 tall, 1.4815 : 1, edges at 159/796/312/742 —
+and the height moved four per cent where twenty was asked for. Round 3 started a
+completely fresh session with no history of previous attempts, which produced the
+best *building* of the whole run and got the aspect to 1.62, its closest. Neither
+hit the band.
+
+**The conclusion after roughly fifteen attempts across this building: a generator
+will not hit a stated aspect ratio.** It will hit a *shape* it is shown, and it
+will draw a hole when told the background must show through — both of those
+worked first time — but a numeric ratio is not something it converges on.
+
+**So the aspect is corrected locally, and that is the right division of labour.**
+A hole is an ellipse; scaling the whole plate vertically by 1.0928 lands 1.619 on
+1.4815 exactly, cannot distort anything (every feature scales together), and
+takes one operation. Generate the design, measure the ellipse, scale to fit.
+
+**What is still open is not the aspect but the ring's thickness.** The hole is
+0.582 of the deck's width where the plan wants 0.637, so the ring is
+proportionally fatter than vanilla's. Fitting the hole to vanilla's 6.25 tiles
+therefore puts the deck at **10.74 tiles** on a 9-tile footprint, against
+vanilla's 9.81 — a 19% overhang rather than 9%. Either the deck is cropped
+inward a little, or the overhang is accepted; that is a judgement rather than a
+measurement.
