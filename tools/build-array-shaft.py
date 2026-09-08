@@ -29,9 +29,9 @@ ART = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 # Shared with cut-array-iris.py. The shaft is drawn a shade wider than the
 # blades so no seam of background shows between the two.
-CX, CY = 302, 276
-RX, RY = 85, 75
-SIZE = (608, 602)
+CX, CY = 704, 580
+RX, RY = 431, 290
+SIZE = (1390, 1132)
 
 LINING = (0x6E, 0x68, 0x5C)     # section 3.3 casing, top of range
 GLOW = (0xC9, 0xB6, 0xFF)       # section 3.3 working glow
@@ -99,7 +99,7 @@ def light():
     return img.filter(ImageFilter.GaussianBlur(9))
 
 
-def emit(img, name, path):
+def emit(img, name, path, px_per_tile=138.11):
     """Crop to content and print the Lua the prototype needs.
 
     Every piece here is cut or drawn on `base.png`'s own 608x602 canvas, whose
@@ -115,8 +115,10 @@ def emit(img, name, path):
     piece.save(path)
     cx = (box[0] + box[2]) / 2 - img.width / 2
     cy = (box[1] + box[3]) / 2 - img.height / 2
+    # Tiles, not pixels/64: the v3 plates ship at scale 0.2317, where a tile is
+    # 138.1 px rather than 64. See build-array-plates.py.
     print("  %-16s width = %d, height = %d, shift = { %.5f, %.5f }"
-          % (name, piece.width, piece.height, cx / 64, cy / 64))
+          % (name, piece.width, piece.height, cx / px_per_tile, cy / px_per_tile))
 
 
 def main():

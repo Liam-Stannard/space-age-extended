@@ -29,10 +29,10 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 ART = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                    "..", "graphics", "entity", "ignition-array")
-SRC = os.path.join(ART, "concept", "base-closed.png")
+SRC = os.path.join(ART, "concept", "v3-around-hole.png")
 
-CX, CY = 302, 276                # the iris centre, shared with the other two tools
-BLADE_X, BLADE_Y = 83, 73
+CX, CY = 704, 580                # the opening's centre, shared with build-array-plates.py
+BLADE_X, BLADE_Y = 431, 290
 FRAMES = 32
 COLS = 6
 GLOW = (0xC9, 0xB6, 0xFF)        # section 3.3 working glow
@@ -55,7 +55,7 @@ def trunk_pixels(src):
             if abs(abs(dx) - abs(dy)) > 70:
                 continue
             rr = math.hypot(dx, dy)
-            if rr < 150:                     # inside the cradle ring: not a trunk
+            if rr < 470:                     # inside the collar: not a trunk
                 continue
             r, g, b, a = px[x, y]
             if a < 100:
@@ -94,7 +94,12 @@ def main():
     seams = seam_mask(src)
     print("trunk pixels: %d" % len(trunks))
 
-    half = (src.width // 2, src.height // 2)
+    # Quarter resolution, not half. The v3 plate is 1390 px wide where v1's was
+    # 608, so halving it left 32 frames at 14.2 Mpx against the 2.9 vanilla
+    # spends on its own crafting sheet. Quartering lands at 3.5 -- the same place
+    # the v1 sheet sat -- and the frames are still drawn larger than they are
+    # displayed, because the deck itself ships at scale 0.2317.
+    half = (src.width // 4, src.height // 4)
     rows = (FRAMES + COLS - 1) // COLS
     sheet = Image.new("RGBA", (half[0] * COLS, half[1] * rows), (0, 0, 0, 0))
 
@@ -126,7 +131,10 @@ def main():
     print("working.png %dx%d  frame %dx%d  %d frames, %d per row  (%.2f Mpx)"
           % (sheet.width, sheet.height, half[0], half[1], FRAMES, COLS,
              sheet.width * sheet.height / 1e6))
-    print("  shift = { 0, 0 }, scale = 1.0  -- half-resolution plate, full size on screen")
+    # The deck ships at 0.2317 and this sheet is a quarter of the deck's
+    # resolution, so it needs four times that scale to land on the same pixels.
+    print("  shift = { 0, 0 }, scale = %.4f  -- quarter-resolution, matches the deck"
+          % (0.2317 * 4))
 
 
 if __name__ == "__main__":

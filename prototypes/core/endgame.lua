@@ -265,12 +265,16 @@ array.graphics_set =
         priority = "medium",
         blend_mode = "additive",
         draw_as_glow = true,
-        width = 304, height = 301,
+        width = 347, height = 283,
         frame_count = 32,
         line_length = 6,
         animation_speed = 0.65,
         shift = { 0, 0 },
-        scale = 1.0
+        -- A quarter of the deck's resolution, so four times the deck's scale
+        -- lands it on the same pixels. Quarter rather than half because the v3
+        -- plate is 1390 px wide: halving it put 32 frames at 14.2 Mpx against
+        -- vanilla's 2.9. This sits at 3.5.
+        scale = 0.9268
       }
     }
   }
@@ -383,22 +387,30 @@ array.rocket_entity = "sae-ignition-discharge"
 -- each be a lie, and they would draw straight over our deck. Emptying them costs
 -- the open-shaft frames until the iris plates of section 6.1 are drawn; the
 -- alternative was vanilla's doors opening on our building.
+-- Scale 0.2317, not 0.5, and that is measured rather than chosen: the deck plate
+-- is 1243 px across a 9-tile footprint, which is 138.1 px per tile against the
+-- 64 a scale-0.5 sprite assumes. 0.5 x 64/138.1 puts the building on its
+-- footprint exactly. Every shift below is printed by build-array-plates.py in
+-- the same units, so nothing here is typed by hand.
 array.base_day_sprite =
 {
   filename = IA .. "base.png",
   priority = "medium",
-  width = 608, height = 602,
-  shift = { 0, 0 },
-  scale = 0.5
+  width = 1243, height = 1074,
+  shift = { 0.01086, -0.10137 },
+  scale = 0.2317
 }
+-- Derived from the deck's own alpha, sheared north-east and blurred, so it is
+-- the shadow of the building that is actually drawn rather than a leftover from
+-- the plate this replaced. The Core's sky never moves, so it is fixed.
 array.shadow_sprite =
 {
   filename = IA .. "base-shadow.png",
   priority = "medium",
   draw_as_shadow = true,
-  width = 1073, height = 602,
-  shift = { 3.63281, 0 },
-  scale = 0.5
+  width = 1099, height = 1074,
+  shift = { -2.54505, 0 },
+  scale = 0.2317
 }
 array.base_front_sprite = util.empty_sprite()
 array.base_night_sprite = nil
@@ -424,34 +436,34 @@ array.door_back_sprite =
 {
   filename = IA .. "door-back.png",
   priority = "medium",
-  width = 144, height = 134,
-  shift = { 0.20312, -0.53125 },
-  scale = 0.5
+  width = 722, height = 572,
+  shift = { 0.78198, -0.07241 },
+  scale = 0.2317
 }
 array.door_front_sprite =
 {
   filename = IA .. "door-front.png",
   priority = "medium",
-  width = 144, height = 134,
-  shift = { -0.25000, -0.23438 },
-  scale = 0.5
+  width = 723, height = 572,
+  shift = { -0.65527, 0.27514 },
+  scale = 0.2317
 }
 array.hole_sprite =
 {
   filename = IA .. "hole.png",
   priority = "medium",
-  width = 177, height = 157,
-  shift = { -0.02344, -0.38281 },
-  scale = 0.5
+  width = 869, height = 587,
+  shift = { 0.06879, 0.10499 },
+  scale = 0.2317
 }
 array.hole_light_sprite =
 {
   filename = IA .. "hole-light.png",
   priority = "medium",
   draw_as_glow = true,
-  width = 434, height = 388,
-  shift = { -0.03125, -0.39062 },
-  scale = 0.5
+  width = 1390, height = 1132,
+  shift = { 0, 0 },
+  scale = 0.2317
 }
 -- The shadow a rocket casts on the pad while it sits there. Nothing sits on this
 -- pad, and there is no rocket to cast it.
