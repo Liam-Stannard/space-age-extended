@@ -299,6 +299,12 @@ Each tier is anchored on something the Core has or lacks:
 
 ## Risks, and what would make this worse
 
+**Two of these tiers create a dead end**, and both are cheap to avoid at
+implementation time: T1's fines have no sink until T3 exists, and T9's coil
+assembly as drafted drops welded plate, leaving cold welding with nothing
+ongoing to do. See `07-sinks-and-dead-ends.md` §4, which also carries the
+byproduct stalls the existing line already has.
+
 **It could become tedious rather than deep.** Ten tiers of one-in-one-out
 recipes is a conveyor, not a factory. Every tier above either branches (T1's two
 streams, T5's two grades), loops (T3's recovered carbon monoxide), or converges
