@@ -83,10 +83,30 @@ local function foothold(name, prereqs, effects, icon)
 end
 
 data:extend({
+  -- The landing kit, and the crusher is not optional in it. Plate smelting was
+  -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
+  -- recipes.lua), so unlocking smelting without the crusher would unlock a
+  -- recipe whose ingredient the player cannot make.
   foothold("sae-core-survey", { "sae-core-discovery" },
     {
       { type = "unlock-recipe", recipe = "sae-vent-pump" },
-      { type = "unlock-recipe", recipe = "sae-kamacite-smelting" }
+      { type = "unlock-recipe", recipe = "sae-ballast-drill" },
+      { type = "unlock-recipe", recipe = "sae-drop-crusher" },
+      { type = "unlock-recipe", recipe = "sae-crushing" },
+      { type = "unlock-recipe", recipe = "sae-kamacite-smelting" },
+      -- The only machine that will take the crusher's second stream. Without it
+      -- fines accumulate from the first craft with nowhere to go.
+      { type = "unlock-recipe", recipe = "sae-vacuum-furnace" },
+      { type = "unlock-recipe", recipe = "sae-fines-smelting" }
+    }),
+  -- Landing-day power, and deliberately the first thing available: a tap and a
+  -- turbine are what the player builds before there is a smelter to make
+  -- anything better with. Off the discovery rather than the survey, because it
+  -- needs nothing the survey teaches.
+  foothold("sae-crust-tapping", { "sae-core-discovery" },
+    {
+      { type = "unlock-recipe", recipe = "sae-crust-tap" },
+      { type = "unlock-recipe", recipe = "sae-crust-turbine" }
     }),
   foothold("sae-gravity-settling", { "sae-core-survey" },
     {
@@ -94,14 +114,25 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-quenched-settling" },
       { type = "unlock-recipe", recipe = "sae-dross-resettling" },
       { type = "unlock-recipe", recipe = "sae-ingot-casting" },
-      { type = "unlock-recipe", recipe = "sae-orbital-homogenisation" }
+      { type = "unlock-recipe", recipe = "sae-orbital-homogenisation" },
+      -- Settling is what makes dross, and the beds are laid on the classified
+      -- grade rather than the raw -- so the classifier has to arrive with the
+      -- settling that feeds it, and before the beds that need it.
+      { type = "unlock-recipe", recipe = "sae-dross-classifier" },
+      { type = "unlock-recipe", recipe = "sae-classification" },
+      -- The relief valve on helium. Needs melt, so it arrives with the melt.
+      { type = "unlock-recipe", recipe = "sae-helium-concentrator" },
+      { type = "unlock-recipe", recipe = "sae-degassing" }
     },
     "__space-age-extended__/graphics/technology/sae-gravity-settling.png"),
   foothold("sae-whisker-beds", { "sae-gravity-settling" },
     {
       { type = "unlock-recipe", recipe = "sae-whisker-bed" },
       { type = "unlock-recipe", recipe = "sae-seed-plate" },
-      { type = "unlock-recipe", recipe = "sae-bed-tender" }
+      { type = "unlock-recipe", recipe = "sae-bed-tender" },
+      { type = "unlock-recipe", recipe = "sae-whisker-comber" },
+      { type = "unlock-recipe", recipe = "sae-whisker-combing" },
+      { type = "unlock-recipe", recipe = "sae-whisker-matting" }
     },
     "__space-age-extended__/graphics/technology/sae-whisker-beds.png"),
   foothold("sae-sealed-roboports", { "sae-cold-welding" },
@@ -170,7 +201,11 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-coil-assembly" },
       { type = "unlock-recipe", recipe = "sae-coolant-loop" },
-      { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
+      { type = "unlock-recipe", recipe = "sae-field-coil-segment" },
+      -- The segment recipe takes an ignition charge, and only the Ring Mast
+      -- makes one, so the two unlock together or the segment is unbuildable.
+      { type = "unlock-recipe", recipe = "sae-ring-mast" },
+      { type = "unlock-recipe", recipe = "sae-ignition-charge" }
     },
     "__space-age-extended__/graphics/technology/sae-field-coils.png"),
   geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 300,
@@ -179,6 +214,15 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-radiant-crushing" },
       { type = "unlock-recipe", recipe = "sae-seeded-crushing" },
       { type = "unlock-recipe", recipe = "sae-radiant-generator" }
+    }),
+  -- After the field coils, and not by accident: building a Coil Separator costs
+  -- a coil assembly, so the recipe cannot be reached before the thing it is
+  -- priced in exists. Spending endgame material to make more endgame material
+  -- is the point of the building.
+  geodynamic("sae-magnetic-separation", { "sae-field-coils" }, 300,
+    {
+      { type = "unlock-recipe", recipe = "sae-coil-separator" },
+      { type = "unlock-recipe", recipe = "sae-magnetic-separation" }
     }),
   geodynamic("sae-ignition-array", { "sae-field-coils" }, 1200,
     { { type = "unlock-recipe", recipe = "sae-ignition-array" } })

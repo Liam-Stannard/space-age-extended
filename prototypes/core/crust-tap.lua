@@ -48,6 +48,13 @@
 --   * The vent tile has to be listed in the planet's `autoplace_settings.tile`
 --     whitelist in map-gen.lua. Its own autoplace is not enough -- sixteen
 --     chunks generated exactly zero vents until that line existed.
+--
+-- And one that turned out to be the *test* being wrong rather than the building:
+-- `can_place_entity` defaults to a lenient check that ignores tile buildability
+-- entirely, so the tap appeared to be buildable on bare ground. Checked the way
+-- a player actually builds -- `build_check_type = manual` -- it is refused off a
+-- vent and accepted on one. Anything testing a buildability rule has to pass
+-- that, or it is not testing the rule.
 
 local derive = require("prototypes.derive")
 

@@ -300,16 +300,32 @@ to `{ 0.5, 0.5 }`, squarely inside one tile.
 something was connected. Piped to a tank it filled at 0.5/tick as declared; the
 zero was the test, not the tap.
 
-**Still open on N8:** `tile_buildability_rules` does not yet bite — a tap can be
-built on bare ground, where it produces nothing. The rule requires the
-`sae-crust-vent` collision layer across the footprint and the tile carries that
-layer, but `can_place_entity` returns true off-vent. That is the one thing about
-this building a player could get wrong, so it needs solving before the tap ships.
+**The one thing that looked broken was the test, not the tap.**
+`tile_buildability_rules` appeared not to bite — a tap could seemingly be built
+on bare ground. It cannot. `can_place_entity` *defaults to a lenient check that
+ignores tile buildability entirely*; asked the way a player actually builds,
+with `build_check_type = manual`, the answer is `vent=true, bare=false`. The two
+other check types both return true off-vent, which is why the first reading was
+misleading. Anything testing a buildability rule must pass `manual`.
 
 **Three items are still dead ends**, and knowingly: whisker tow, whisker felt and
 schreibersite have no consumer yet. Their consumers — prepreg, the cryostat core
 and phosphide flux — are tier 4+ in `design/06-core-production-tree.md` and are
 not implemented. They are produced but not yet wanted.
+
+## Raised by Liam, not yet done
+
+- [ ] **Group the Core's buildings and items together in the crafting menu**, the
+      way each vanilla planet's own kit is grouped. At present every new
+      prototype is scattered into whatever vanilla subgroup was nearest —
+      `raw-material`, `production-machine`, `energy`, `intermediate-product` —
+      so a player hunting for Core content finds it interleaved with Nauvis's.
+      Vulcanus, Fulgora, Gleba and Aquilo each keep their own item groups and
+      subgroups; the Core should too. That means an `item-group` for the Core
+      plus subgroups beneath it, and re-pointing every `sae-*` item and machine
+      onto them — `items.lua`, `machines.lua`, `crust-tap.lua`, `endgame.lua`,
+      `storms.lua`, `entities.lua`, `intermediates.lua`. Worth doing in one pass
+      rather than per building, so the ordering can be designed as a whole.
 
 ## Closing out
 
