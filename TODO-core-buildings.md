@@ -352,8 +352,17 @@ no spoil result, and the Field Coil Segment recipe genuinely lists it.
 
 ## Closing out
 
-- [ ] **C1 · Recipes, categories and items** for everything above
-- [ ] **C2 · Technologies** placing each building on the ladder at its tier
-- [ ] **C3 · Review each implementation for correctness**, one at a time
+- [ ] **C1 · Recipes, categories and items** for everything above — *nearly done.*
+      Every building has an item, a build recipe and a crafting category, and
+      every category has recipes in it **except one**: `sae-sintering` is carried
+      by the Vacuum Furnace and nothing runs in it. The sintered preform is the
+      missing recipe, and it is half the furnace's reason to exist — see
+      `building-spec-vacuum-furnace.md`, "the exclusive work".
+- [x] **C2 · Technologies** placing each building on the ladder at its tier — done;
+      two new techs, and the whole ladder walked in dependency order to prove every
+      recipe is reachable and nothing unlocks before its ingredients exist.
+- [x] **C3 · Review each implementation for correctness**, one at a time — done
+      after each stage. Found the inherited +50% productivity on the Coil
+      Separator, the missing locale for all 29 prototypes, and four N8 bugs.
 - [ ] **C4 · `tools/check-data-stage.sh` green**, including the recipe and
       graphics checks
