@@ -99,7 +99,7 @@ def light():
     return img.filter(ImageFilter.GaussianBlur(9))
 
 
-def emit(img, name, path, px_per_tile=138.11):
+def emit(img, name, path, px_per_tile=126.75):
     """Crop to content and print the Lua the prototype needs.
 
     Every piece here is cut or drawn on `base.png`'s own 608x602 canvas, whose

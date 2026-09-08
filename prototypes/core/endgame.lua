@@ -274,7 +274,7 @@ array.graphics_set =
         -- lands it on the same pixels. Quarter rather than half because the v3
         -- plate is 1390 px wide: halving it put 32 frames at 14.2 Mpx against
         -- vanilla's 2.9. This sits at 3.5.
-        scale = 0.9268
+        scale = 1.0104
       }
     }
   }
@@ -387,18 +387,27 @@ array.rocket_entity = "sae-ignition-discharge"
 -- each be a lie, and they would draw straight over our deck. Emptying them costs
 -- the open-shaft frames until the iris plates of section 6.1 are drawn; the
 -- alternative was vanilla's doors opening on our building.
--- Scale 0.2317, not 0.5, and that is measured rather than chosen: the deck plate
--- is 1243 px across a 9-tile footprint, which is 138.1 px per tile against the
--- 64 a scale-0.5 sprite assumes. 0.5 x 64/138.1 puts the building on its
--- footprint exactly. Every shift below is printed by build-array-plates.py in
--- the same units, so nothing here is typed by hand.
+-- Scale 0.2526, not 0.5, and measured rather than chosen.
+--
+-- A Factorio building's art overhangs its footprint a little: vanilla's own
+-- rocket silo is 628 x 612 at scale 0.5, which is 9.81 x 9.56 tiles on the same
+-- 9 x 9 collision box, 9% proud. Drawn to *exactly* 9 tiles this deck came out
+-- 9.00 x 7.78 and read as small and cut off, sitting in the middle of its own
+-- square with bare footprint above and below. At vanilla's overhang it is
+-- 9.81 x 8.48 -- still flatter than the silo, because it is a shallow revetment
+-- rather than a tower, but sitting in its footprint the way a Factorio building
+-- does.
+--
+-- Every shift below is printed by build-array-plates.py in tiles, which the
+-- engine reads as pixels * scale / 32. At 0.5 that is pixels/64; here a tile is
+-- 126.8 px, and using 64 put the whole building two tiles off its footprint.
 array.base_day_sprite =
 {
   filename = IA .. "base.png",
   priority = "medium",
   width = 1243, height = 1074,
-  shift = { 0.01086, -0.10137 },
-  scale = 0.2317
+  shift = { 0.01184, -0.11052 },
+  scale = 0.2526
 }
 -- Derived from the deck's own alpha, sheared north-east and blurred, so it is
 -- the shadow of the building that is actually drawn rather than a leftover from
@@ -409,8 +418,8 @@ array.shadow_sprite =
   priority = "medium",
   draw_as_shadow = true,
   width = 1099, height = 1074,
-  shift = { -2.54505, 0 },
-  scale = 0.2317
+  shift = { -2.77318, 0 },
+  scale = 0.2526
 }
 array.base_front_sprite = util.empty_sprite()
 array.base_night_sprite = nil
@@ -437,24 +446,24 @@ array.door_back_sprite =
   filename = IA .. "door-back.png",
   priority = "medium",
   width = 722, height = 572,
-  shift = { 0.78198, -0.07241 },
-  scale = 0.2317
+  shift = { 0.85257, -0.07894 },
+  scale = 0.2526
 }
 array.door_front_sprite =
 {
   filename = IA .. "door-front.png",
   priority = "medium",
   width = 723, height = 572,
-  shift = { -0.65527, 0.27514 },
-  scale = 0.2317
+  shift = { -0.71443, 0.29998 },
+  scale = 0.2526
 }
 array.hole_sprite =
 {
   filename = IA .. "hole.png",
   priority = "medium",
   width = 869, height = 587,
-  shift = { 0.06879, 0.10499 },
-  scale = 0.2317
+  shift = { 0.07495, 0.11440 },
+  scale = 0.2526
 }
 array.hole_light_sprite =
 {
@@ -463,7 +472,7 @@ array.hole_light_sprite =
   draw_as_glow = true,
   width = 1390, height = 1132,
   shift = { 0, 0 },
-  scale = 0.2317
+  scale = 0.2526
 }
 -- The shadow a rocket casts on the pad while it sits there. Nothing sits on this
 -- pad, and there is no rocket to cast it.

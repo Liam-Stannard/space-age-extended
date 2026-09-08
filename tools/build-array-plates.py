@@ -233,13 +233,25 @@ def main():
     ring = deck.copy()
     ring.putalpha(ImageChops.subtract(deck.getchannel("A"), hole))
 
-    # The deck's drawn width is the 9-tile footprint, which fixes both the scale
-    # the prototype must use and the units every shift is expressed in.
+    # Scale, and the reason it is not simply "make the deck 9 tiles wide".
+    #
+    # A Factorio building's art overhangs its footprint a little: vanilla's own
+    # rocket silo is 628 x 612 at scale 0.5, which is 9.81 x 9.56 tiles on the
+    # same 9 x 9 collision box -- 9% proud. Drawn to exactly 9 tiles this deck
+    # came out 9.00 x 7.78, so there was bare footprint above and below it and
+    # the building read as small and cut off inside its own square.
+    #
+    # Matching vanilla's 9% overhang on the width puts it at 9.81 x 8.47. It
+    # stays flatter than the silo because it is a shallow revetment rather than a
+    # tower -- that is the design -- but it now sits in its footprint the way a
+    # Factorio building does rather than floating in the middle of it.
     deck_w = box[2] - box[0]
-    px_per_tile = deck_w / FOOTPRINT_TILES
-    scale = 32.0 / px_per_tile
-    print("\ndeck is %d px across %d tiles -> %.1f px/tile, scale = %.4f"
-          % (deck_w, FOOTPRINT_TILES, px_per_tile, scale))
+    OVERHANG = 628 * 0.5 / 32 / FOOTPRINT_TILES        # 1.090, measured off vanilla
+    tiles_wide = FOOTPRINT_TILES * OVERHANG
+    scale = tiles_wide * 32.0 / deck_w
+    px_per_tile = 32.0 / scale
+    print("\ndeck %d px -> %.2f x %.2f tiles (vanilla silo: 9.81 x 9.56), scale = %.4f"
+          % (deck_w, tiles_wide, (box[3] - box[1]) * scale / 32, scale))
 
     print("\nplates:")
     emit(ring, "base.png", px_per_tile)
