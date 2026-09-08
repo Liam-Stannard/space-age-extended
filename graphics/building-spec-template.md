@@ -1228,17 +1228,51 @@ Three mechanical things cost time every session until they are written down.
 Measured across roughly a dozen rounds on one building:
 
 1. **Name the camera angle** — see §4. Worth more than any other single word.
-2. **Attach a real vanilla sprite as a style reference.** Pull one out of the
-   game's own `data/base/graphics/entity/…`, crop a single frame, upscale it,
-   and say: *match the camera, rendering, finish and level of detail; do NOT
-   copy the design, shape, colours or components.* The disclaimer is load-
-   bearing. Pick a reference the building is not trying to avoid resembling —
-   using the very machine named in §3.1's anti-read would pull the design
-   straight back toward it.
+2. **Attach real vanilla sprites as style references.** Say with them: *match
+   the camera, rendering, finish and level of detail; do NOT copy the design,
+   shape, colours or components.* The disclaimer is load-bearing.
+
+   **Attach the same four every time**, and let
+   `tools/extract-style-references.py` cut them — it composites each one from
+   its real layers at their real shifts, so what goes over is the machine as the
+   engine assembles it rather than a raw sheet with the animation tiled across
+   it, and it leaves the shadows out, because a reference carrying a baked drop
+   shadow invites one back:
+
+   | Reference | What it is there for |
+   | --- | --- |
+   | `assembling-machine-3` | The house camera. The most-seen machine in the game and the one a player's eye is calibrated to. |
+   | `foundry` | A big Space Age machine at the current art standard — the finish and detail density to match. |
+   | `rocket-silo` | The deep end: a building you look *into*, with a visible far inner wall. The camera reference for anything with a shaft. |
+   | `electromagnetic-plant` | Coils, windings and heavy cable runs treated as a subject in their own right. |
+
+   Four rather than one because they bracket the range: the assembling machine
+   is nearly flat, the foundry and the plant lean toward the viewer, and the
+   silo is tilted far enough to show its interior. One reference teaches one
+   camera and the building inherits it whether or not it should; four teach the
+   *range*, and §4 then says which end of it this building sits at.
+
+   **They are Wube's art. Never copy them into the repo** — extract to a scratch
+   directory, attach, discard. The tool defaults to one.
+
+   If one of the four is the very machine named in §3.1's anti-read, keep it and
+   label it in the prompt as a **camera reference only**, naming what must not be
+   taken from it. Dropping it loses the camera; attaching it unlabelled pulls the
+   design back toward the thing the building exists to not be.
 3. **Attach an example of the deliverable format.** A finished sheet for a
    *different* building produced a correctly laid-out sheet in one attempt,
    including panel structure and an information table that several rounds of
    describing in words had failed to get.
+
+3b. **When a proportion matters, attach a measured diagram, not a description.**
+   The Ignition Array's mouth took four rounds of prose to get wrong four
+   different ways -- 1.48, then 1.77, 1.66, 1.55 -- and a fifth round that
+   overshot the size by 20%. One flat diagram, a labelled 9x9 grid with the
+   opening drawn on it at exactly the right size and offset, landed it inside 5%
+   on size and within 0.001 on aspect in a **single** round. Ratios in words do
+   not survive; a shape on a grid does. Say plainly in the prompt that the
+   attachment is a geometry diagram and that its colours, flat shading and grid
+   lines must not be copied.
 4. **Start a new conversation when the context is polluted.** A thread carrying
    earlier corrections — including wrong ones — keeps honouring them. A clean
    session with the corrected prompt behaves noticeably better.

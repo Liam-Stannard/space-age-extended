@@ -168,7 +168,13 @@ data:extend({
     ingredients =
     {
       { type = "item", name = "sae-coil-assembly", amount = 1 },
-      { type = "item", name = "sae-coolant-loop", amount = 1 }
+      { type = "item", name = "sae-coolant-loop", amount = 1 },
+      -- The Ring Mast's charge, and the reason that building exists. It spoils
+      -- ten seconds after it is made, with no spoil result, so a mast has to
+      -- stand within a few seconds of belt of this machine or it delivers
+      -- nothing at all. That timer is how one building is made to matter *near*
+      -- another, which the engine cannot express directly. See machines.lua.
+      { type = "item", name = "sae-ignition-charge", amount = 1 }
     },
     results = { { type = "item", name = "sae-field-coil-segment", amount = 1 } },
     enabled = false,
@@ -181,6 +187,7 @@ data:extend({
 --------------------------------------------------------------------------------
 
 local array = table.deepcopy(data.raw["rocket-silo"]["rocket-silo"])
+local IA = "__space-age-extended__/graphics/entity/ignition-array/"
 array.name = "sae-ignition-array"
 array.icon = "__space-age-extended__/graphics/icons/ignition-array.png"
 array.minable = { mining_time = 5, result = "sae-ignition-array" }
@@ -226,7 +233,48 @@ array.launch_to_space_platforms = false
 --     they are also a hard load error ("Working visualisation \"crafting\"
 --     doesn't exist"), because an accent names the visualisation it plays for.
 --     The ambient silo loop stays; the assembly accents go.
-array.graphics_set = { working_visualisations = {} }
+-- What the machine does while it is working, and the only thing that says so.
+--
+-- Vanilla's six visualisations are gone for the reasons above. This is what
+-- replaces the two that carried the read. `tools/build-array-glow.py` finds the
+-- four cable trunks in the plate by their copper and pulses violet *inward*
+-- along them, with the iris seams taking the light up and breathing in time --
+-- section 9 wants a continuous read rather than a completion animation, because
+-- crafting time varies and anything depicting "a segment finished" drifts out of
+-- step with the machine.
+--
+-- Drawn at half the plate's resolution and shipped at `scale = 1.0` rather than
+-- 0.5: identical on screen, a quarter of the pixels. That is not thrift for its
+-- own sake -- the full plate at 64 frames is 23 Mpx, against the 2.9 Mpx vanilla
+-- spends on its own crafting sheet. At 32 half-resolution frames this lands on
+-- vanilla's budget.
+array.graphics_set =
+{
+  working_visualisations =
+  {
+    {
+      name = "sae-assembly",
+      render_layer = "object",
+      draw_as_glow = true,
+      -- The Core has no day, so this light is not decoration: it is how the
+      -- player reads the machine at all.
+      light = { intensity = 0.55, size = 14, color = { r = 0.62, g = 0.48, b = 1.0 } },
+      animation =
+      {
+        filename = IA .. "working.png",
+        priority = "medium",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 304, height = 301,
+        frame_count = 32,
+        line_length = 6,
+        animation_speed = 0.65,
+        shift = { 0, 0 },
+        scale = 1.0
+      }
+    }
+  }
+}
 array.robot_door = util.empty_sprite()
 if array.working_sound then array.working_sound.sound_accents = nil end
 
@@ -239,13 +287,78 @@ if array.working_sound then array.working_sound.sound_accents = nil end
 local ignition = table.deepcopy(data.raw["rocket-silo-rocket"]["rocket-silo-rocket"])
 ignition.name = "sae-ignition-discharge"
 for _, k in ipairs({
-  "rocket_sprite", "rocket_shadow_sprite", "rocket_glare_overlay_sprite",
-  "rocket_flame_animation", "rocket_flame_left_animation", "rocket_flame_right_animation",
+  "rocket_shadow_sprite",
+  "rocket_flame_left_animation", "rocket_flame_right_animation",
   "rocket_smoke_bottom1_animation", "rocket_smoke_bottom2_animation",
   "rocket_smoke_top1_animation", "rocket_smoke_top2_animation", "rocket_smoke_top3_animation",
 }) do
   if ignition[k] ~= nil then ignition[k] = util.empty_sprite() end
 end
+
+-- Three slots are not emptied but replaced, and they are what the player sees
+-- at ignition. See tools/build-array-column.py. The layout follows vanilla's
+-- rocket, inverted: vanilla's art hangs below its origin because the origin is
+-- the nose of a thing that is leaving. Here the origin is the *foot*, standing
+-- in the shaft, and the column rises out of it -- so the glare and the flicker
+-- sit on the origin too, at the mouth, and the plate reaches north from there.
+--
+-- Light casts no shadow, so `rocket_shadow_sprite` stays empty above.
+-- Where it starts, and when it is allowed to be seen. Both were measured on the
+-- rig rather than reasoned about, and both were wrong on the first try.
+--
+-- `rocket_initial_offset` is inherited as { 0, 3.5 }: vanilla's rocket begins
+-- three and a half tiles *south* of the silo origin, low on the pad. For a
+-- column of light whose whole job is to stand in the shaft that put the
+-- discharge eleven tiles south of the deck, a bright smear on the ground beside
+-- the machine. It starts in the shaft.
+--
+-- `rocket_visible_distance_from_center` is how far the rocket must travel before
+-- the engine draws it, and it is what hides a rocket that is still inside its
+-- building. Setting it to zero -- on the reasoning that a column standing in the
+-- shaft should be visible -- was a mistake with teeth: the Array reaches
+-- `waiting_to_launch_rocket` and *stays there*, so the parked discharge stood
+-- lit in the open shaft indefinitely and the machine read as permanently firing.
+-- Held at 1.0, the column appears as it leaves and not before, which is also
+-- what section 9 describes.
+ignition.rocket_initial_offset = { 0, 0 }
+ignition.rocket_visible_distance_from_center = 1.0
+
+ignition.rocket_sprite =
+{
+  filename = IA .. "column.png",
+  priority = "medium",
+  blend_mode = "additive",
+  draw_as_glow = true,
+  width = 208, height = 512,
+  -- The plate is drawn foot-down, and the foot is what stands in the shaft, so
+  -- the shift puts the image's bottom edge on the origin and the column rises
+  -- north from there: half of 512 px at scale 0.5 is 4 tiles.
+  shift = { 0, -4.0 },
+  scale = 0.5
+}
+ignition.rocket_glare_overlay_sprite =
+{
+  filename = IA .. "column-glare.png",
+  priority = "medium",
+  blend_mode = "additive",
+  draw_as_glow = true,
+  width = 384, height = 384,
+  shift = { 0, 0 },
+  scale = 0.5
+}
+ignition.rocket_flame_animation =
+{
+  filename = IA .. "column-flame.png",
+  priority = "medium",
+  blend_mode = "additive",
+  draw_as_glow = true,
+  width = 232, height = 232,
+  frame_count = 8,
+  line_length = 8,
+  animation_speed = 0.8,
+  shift = { 0, 0 },
+  scale = 0.5
+}
 ignition.dying_explosion = nil
 ignition.shadow_slave_entity = nil
 ignition.glow_light = nil
@@ -270,7 +383,6 @@ array.rocket_entity = "sae-ignition-discharge"
 -- each be a lie, and they would draw straight over our deck. Emptying them costs
 -- the open-shaft frames until the iris plates of section 6.1 are drawn; the
 -- alternative was vanilla's doors opening on our building.
-local IA = "__space-age-extended__/graphics/entity/ignition-array/"
 array.base_day_sprite =
 {
   filename = IA .. "base.png",
@@ -290,12 +402,73 @@ array.shadow_sprite =
 }
 array.base_front_sprite = util.empty_sprite()
 array.base_night_sprite = nil
-array.door_back_sprite = util.empty_sprite()
-array.door_front_sprite = util.empty_sprite()
-array.hole_sprite = util.empty_sprite()
-array.hole_light_sprite = util.empty_sprite()
+
+-- The iris, and the shaft behind it.
+--
+-- A rocket-silo does not paint its shaft on the deck. Vanilla's own
+-- `base_day_sprite` is a *ring* -- 06-rocket-silo.png has a hole through the
+-- middle -- `hole_sprite` is the shaft interior drawn inside that hole, and the
+-- two door sprites sit over the hole and are slid apart by the engine at
+-- `door_opening_speed`. Painting the closed iris on the deck, which is what the
+-- approved plate does, would mean the doors part at ignition and reveal a
+-- second, closed iris underneath.
+--
+-- So `tools/cut-array-iris.py` lifts the blades out of the plate: the deck keeps
+-- its bolted collar and rim, and the blades become the two leaves below, split
+-- on the NW-SE seam so the parting line runs along two of the cable trunks.
+-- Closed, they are the plate again, pixel for pixel. `tools/build-array-shaft.py`
+-- then draws the shaft and its light on the same measured ellipse, so nothing
+-- has to be registered by eye. Every width, height and shift below is printed by
+-- those two tools; none of it is typed by hand.
+array.door_back_sprite =
+{
+  filename = IA .. "door-back.png",
+  priority = "medium",
+  width = 144, height = 134,
+  shift = { 0.20312, -0.53125 },
+  scale = 0.5
+}
+array.door_front_sprite =
+{
+  filename = IA .. "door-front.png",
+  priority = "medium",
+  width = 144, height = 134,
+  shift = { -0.25000, -0.23438 },
+  scale = 0.5
+}
+array.hole_sprite =
+{
+  filename = IA .. "hole.png",
+  priority = "medium",
+  width = 177, height = 157,
+  shift = { -0.02344, -0.38281 },
+  scale = 0.5
+}
+array.hole_light_sprite =
+{
+  filename = IA .. "hole-light.png",
+  priority = "medium",
+  draw_as_glow = true,
+  width = 434, height = 388,
+  shift = { -0.03125, -0.39062 },
+  scale = 0.5
+}
+-- The shadow a rocket casts on the pad while it sits there. Nothing sits on this
+-- pad, and there is no rocket to cast it.
 array.rocket_shadow_overlay_sprite = util.empty_sprite()
-array.rocket_glow_overlay_sprite = util.empty_sprite()
+-- The deck lit by what is coming out of it. This slot is drawn additively over
+-- the whole building as the discharge leaves, and on a planet held at permanent
+-- midnight it is most of what the player sees of the ignition.
+array.rocket_glow_overlay_sprite =
+{
+  filename = IA .. "ignition-glow.png",
+  priority = "medium",
+  blend_mode = "additive",
+  draw_as_glow = true,
+  width = 520, height = 470,
+  shift = { -0.03125, -0.39062 },
+  scale = 0.5
+}
 array.red_lights_back_sprites = util.empty_sprite()
 array.red_lights_front_sprites = util.empty_sprite()
 array.satellite_animation = nil
