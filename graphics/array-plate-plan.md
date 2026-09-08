@@ -51,13 +51,26 @@ Taking the deck plate as the reference canvas, the **entity origin sits at
 | `door_back` canvas | x 228 … 540, y 180 … 466 |
 | `door_front` canvas | x 88 … 420, y 215 … 515 |
 
-As proportions of the deck plate, which is what a generator can actually work
-to: the opening is **63.7% of the width and 44.1% of the height**, with its
-centre **47.8% across and 54.1% down**. It is *not* centred — it sits low and a
-little left, and drawing it centred is the single easiest way to get this wrong.
+### The numbers to put in a prompt
 
-The opening's aspect is **1.481**. That number has been the whole difficulty of
-this building; it is fixed here by construction.
+Percentages and fractions do not survive: "about two thirds wide" and "a fifth
+taller" produced a hole at aspect 1.76 against a 1.48 target. Give arithmetic on
+a round base instead, so the generator has a sum to check itself against rather
+than a judgement to make.
+
+> **If the building is 1000 units wide, it is 975 tall.**
+> **The hole is 637 wide and 430 tall — exactly 1.4815 : 1.**
+> **Its centre is 478 from the left edge and 527 from the top.**
+> **Its edges: left 159, right 796, top 312, bottom 742.**
+
+Every one of those is the same geometry as the table above, scaled so the deck's
+width is 1000. `concept/plate-plan-deck.png` carries them as labelled dimension
+lines on the drawing itself.
+
+The hole is **not centred** — it sits low and a little left, because vanilla's
+opening is half a tile south of the entity origin. Drawing it centred is the
+single easiest way to get this wrong, and 478 / 527 rather than 500 / 487 is what
+says so.
 
 ---
 
@@ -86,6 +99,9 @@ for two halves that fit together is not.
 under the collar instead of butting against it. Measured at exactly the
 opening's size it covered 87% and left a hairline of ring showing all the way
 round.
+
+On the same 1000-unit base: **the lid is 669 wide and 452 tall**, again exactly
+1.4815 : 1, centred on the hole at 478 / 527.
 
 **The seam runs at 108° from horizontal** — steep, leaning left at the top,
 right at the bottom. This is a correction to every sheet drawn so far, which
@@ -134,9 +150,10 @@ is what produced five mutually inconsistent numbers last time.
 
 | Check | Target |
 | --- | --- |
-| Opening aspect | 1.45 – 1.52 |
-| Opening width, as a fraction of deck width | 0.60 – 0.68 |
-| Opening centre, across / down | 46–50% / 52–57% |
+| Opening aspect | 1.45 – 1.52 (target **1.4815**) |
+| Opening width, on a 1000-wide building | 600 – 680 (target **637**) |
+| Opening height, on a 1000-wide building | 405 – 460 (target **430**) |
+| Opening centre, on a 1000-wide building | 460–500 across (target **478**), 505–555 down (target **527**) |
 | Seam angle | 100° – 116° |
 | Background | flat magenta, keys with no holes or ledges |
 | Lit anything | none |
