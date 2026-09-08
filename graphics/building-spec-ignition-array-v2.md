@@ -10,6 +10,12 @@
 > R-suspended-core.md`), which has no shaft, no iris and no lid, so there is no
 > mouth to measure against vanilla's and nothing here to adopt.
 >
+> **The tools it instructs you to run no longer exist.** `cut-array-iris.py`,
+> `build-array-shaft.py`, `build-array-glow.py`, `build-array-plates.py`,
+> `build-array-plan.py`, `check-array-plate.py` and `fit-array-to-silo.py` were
+> deleted with the design they served; git has them if the deck ever comes back.
+> Its §12 and §18 checklists are therefore unrunnable, and are history.
+>
 > It is kept for two things that outlived it. The **side-by-side rig in §20** is
 > how any question about what a building looks like beside a vanilla one gets
 > answered. And the **measurement it made** — that a plate generated under the

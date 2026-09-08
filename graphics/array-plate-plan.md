@@ -1,12 +1,32 @@
 # Ignition Array — the plate plan
 
-**What this is.** Every dimension the Array's art must hit, so a generation round
-can be drawn *to* the slots rather than fitted into them afterwards.
+> ## SUPERSEDED — the design this plans for was rejected
+>
+> This plans the **v3 deck-and-shaft** Array: a ring with a hole through it, an
+> iris closing over the hole, and a lid. The Array is now the **Suspended Core**
+> (`array-options/R-suspended-core.md`), which has none of those, so nothing here
+> is a constraint on anything that ships.
+>
+> **The seven tools this document names have been deleted** —
+> `build-array-plan.py`, `build-array-plates.py`, `check-array-plate.py`,
+> `cut-array-iris.py`, `build-array-shaft.py`, `build-array-glow.py` and
+> `fit-array-to-silo.py`. They served the rejected design and nothing else; they
+> are recoverable from git if the deck ever comes back. The numbers below are
+> therefore a record, not something you can re-derive by running anything.
+>
+> **What is worth reading it for**, and why it was kept: it is the worked example
+> of *planning* a plate before commissioning it — deriving every dimension from
+> vanilla's own prototype so the art is drawn to the slots rather than fitted into
+> them afterwards — and it carries the measurement that a generator will not hit a
+> stated ratio no matter how the ratio is phrased. Both outlived the design.
 
-**`tools/build-array-plan.py` is the source of all of it.** Every number in this
-document is derived there from vanilla's `rocket-silo` prototype, and the three
-images it emits are drawn from the same constants — so the prose, the diagrams
-and the template cannot drift apart. Run it after changing anything here.
+**What this was.** Every dimension the Array's art had to hit, so a generation
+round could be drawn *to* the slots rather than fitted into them afterwards.
+
+**`tools/build-array-plan.py` was the source of all of it** (deleted; see above).
+Every number in this document was derived there from vanilla's `rocket-silo`
+prototype, and the three images it emitted were drawn from the same constants, so
+the prose, the diagrams and the template could not drift apart.
 
   * `concept/plate-paint-template.png` — **the one to attach to a prompt.**
   * `concept/plate-plan-deck.png` — the dimensioned drawing, for a human.

@@ -362,8 +362,8 @@ array.rocket_entity = "sae-ignition-discharge"
 -- is the defect the arc mast still carries.
 --
 -- The deck-and-shaft geometry that earlier versions of this file described --
--- vanilla's five silo slots, tied together by one affine transform out of
--- tools/fit-array-to-silo.py -- went with the v3 ring it was measured for. The
+-- vanilla's five silo slots, tied together by one affine transform -- went with
+-- the v3 ring it was measured for, and so did the seven tools that cut it. The
 -- Suspended Core has no deck and no hole, so there is nothing to register
 -- against vanilla's, and the slots that carried it are emptied below.
 array.base_day_sprite =

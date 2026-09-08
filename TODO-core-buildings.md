@@ -134,7 +134,8 @@ here as they land; this file is deleted when the list is empty.
       assembly glow went with that design when the Suspended Core replaced it.
       What survived the change is the launch — the light column and its entity —
       and the screenshot rig, which is now the standard way this repo answers a
-      question about what a building looks like. The charge display that replaced
+      question about what a building looks like. The seven tools named below and
+      in the v3 sections are **deleted**; git has them if the deck ever returns. The charge display that replaced
       the glow is in `control.lua`; see "The Ignition Array — settled" below.
 
       **The iris.** A rocket-silo's deck is a *ring* — vanilla's own
@@ -276,7 +277,8 @@ and `tools/build-ignition-array.py` for the plates.
   machine on the ground were different objects. Re-keyed off `array-render.png`,
   which makes it the shipped building by construction.
 * **The prototype still described the v3 ring**, in comments that named
-  `tools/fit-array-to-silo.py`, an affine transform onto vanilla's hole and a
+  `tools/fit-array-to-silo.py` (since deleted), an affine transform onto
+  vanilla's hole and a
   32-frame trunk glow, none of which survive. Rewritten to what is there.
 * **The spec described a building that was never built.**
   `building-spec-ignition-array.md` §0, §6, §12, §13, §14, §15, §16, §17 and §18
