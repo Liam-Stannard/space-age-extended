@@ -313,6 +313,29 @@ schreibersite have no consumer yet. Their consumers — prepreg, the cryostat co
 and phosphide flux — are tier 4+ in `design/06-core-production-tree.md` and are
 not implemented. They are produced but not yet wanted.
 
+### C3 review of the nine, after C2
+
+Four checks, all against a data dump rather than by reading the Lua.
+
+**Every new prototype was missing its locale — 29 of them.** In game they would
+have read `Unknown key: item-name.sae-drop-crusher`. Names and descriptions are
+written for all of them. The 60 that still appear "missing" are generated barrel
+and recycling recipes, which localise themselves from the names above:
+`sae-drop-crusher-recycling` resolves to `["recipe-name.recycling",
+["entity-name.sae-drop-crusher"]]`. False positives, checked rather than assumed.
+
+**All eight machines match their specs exactly** — energy, module slots and
+crafting categories compared field by field against section 2 of each master
+spec. 8/8.
+
+**No recipe asks for more fluid connections than its machine has.** Checked
+across every `sae-*` recipe against every machine carrying its category, which
+is the failure `check-recipes.py` exists for and the one that fails silently at
+runtime rather than at load.
+
+**The spoilage mechanic is wired as designed:** the charge carries 600 ticks and
+no spoil result, and the Field Coil Segment recipe genuinely lists it.
+
 ## Raised by Liam, not yet done
 
 - [ ] **Group the Core's buildings and items together in the crafting menu**, the
