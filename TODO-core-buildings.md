@@ -127,6 +127,46 @@ here as they land; this file is deleted when the list is empty.
       **Two art questions raised, not decided** — see the note under the nine
       buildings below.
 
+- [x] **B4 · The Ignition Array had no animations — DONE.** It inherited nothing
+      but suppressed slots after B3, so it crafted and fired without a single
+      thing moving. Built and verified in-engine:
+
+      **The iris.** A rocket-silo's deck is a *ring* — vanilla's own
+      `06-rocket-silo.png` has a hole through the middle, `hole_sprite` draws the
+      shaft inside it, and the doors sit over the hole. Our plate had the closed
+      iris painted on, so the doors would have parted to reveal a second iris
+      underneath. `tools/cut-array-iris.py` now lifts the blades out of the
+      approved plate — fitted at centre (302, 276), semi-axes 100 × 88, 93% of
+      sampled rim points dark, bolts found at r = 88 by a brightness sweep, so the
+      cut is at 83 × 73 and the collar stays on the deck. Closed, the two leaves
+      are the plate again pixel for pixel. `tools/build-array-shaft.py` draws the
+      shaft and its light on the same ellipse. Rendered: the iris parts on the
+      NW-SE seam, along two cable trunks, and opens over 255 ticks.
+
+      **The assembly glow.** `tools/build-array-glow.py` finds the four cable
+      trunks in the plate by their copper and pulses violet inward along them,
+      with the iris seams breathing in time. Derived from one plate, so no lit
+      twin had to be generated and nothing can drift. Budget measured against
+      vanilla rather than guessed: the silo's own crafting sheet is 2.9 Mpx, the
+      full plate at 64 frames would be 23 Mpx, so it is drawn at half resolution
+      and shipped at `scale = 1.0` — identical on screen, a quarter of the pixels
+      — at 32 frames, landing on 3.29 Mpx.
+
+      **The launch.** `tools/build-array-column.py` draws the discharge as a
+      column of violet-white light: `rocket_sprite`, its glare, an 8-frame
+      flicker at its foot, and the deck lit additively from its own shaft. Two
+      inherited numbers were wrong and were found by rendering, not reasoning —
+      `rocket_initial_offset` put the column eleven tiles south of the deck as a
+      smear on the ground, and `rocket_visible_distance_from_center` at 0 left the
+      parked discharge standing lit in the open shaft forever.
+
+      **A screenshot rig, which is how any of this was checked.** The headless
+      server cannot render — `take_screenshot` returns cleanly and writes nothing
+      — so the graphical binary runs under xvfb with a `steam_appid.txt` to stop
+      Steam relaunching it, a scratch mod driving the launch, and a watchdog that
+      kills it on its own DONE line so it releases the write-data lock. Every
+      number above came off a render.
+
 ### Raised by the B3 sweep, for Liam to decide
 
 Neither is a leftover to delete — both are art calls, so they are written down
@@ -142,17 +182,99 @@ rather than acted on.
    `sae-seeded-chunk` is a `carbonic-asteroid-chunk` copy, so the parent and the
    fragment are made of visibly different material.
 
+### Raised by the Array animation work, for Liam to decide
+
+1. **The Array never fires by itself, and this is a gameplay gap, not an art
+   one.** Measured over several thousand ticks: it assembles a rocket, reaches
+   `waiting_to_launch_rocket` and stays there while it goes on making parts for
+   the next one. Something must call `launch_rocket()`. With
+   `launch_to_space_platforms = false` there is no destination to send it to, so
+   whether the player has any way at all to trigger the win condition needs
+   checking in a real game. **Until this is answered the whole ignition sequence
+   is art the player may never see.**
+2. **Does the Array's camera need to match the rocket silo's?** Photographed side
+   by side in-engine: the silo's shaft mouth is 1.485 wide-to-tall, ours is
+   1.127, so ours is about 30% too round, and where the silo shows its far inner
+   wall ours shows a lid. This is template rule zero working as written — "mostly
+   roof" — not a defect, but a vanilla silo has no surface conditions and can be
+   built on the Core, so a player can see them together.
+   `graphics/building-spec-ignition-array-v2.md` is a complete alternative spec
+   at the silo's camera. **Nothing is adopted.** Taking it costs a re-plate plus
+   the icon; the four tools rebuild every other asset from it.
+3. **`hole_light_sprite` was never observed drawing.** Wired, file present, and
+   across two full rendered launches no light from it appeared at any phase. The
+   ignition read currently rests on `rocket_glow_overlay_sprite` and the column.
+4. **Cumulative cradle lamps may not be possible.** The spec wants one lamp per
+   completed segment, lit and staying lit, but `red_lights_back_sprites` is a
+   single sprite driven by `light_blinking_speed` and `times_to_blink` — a blink
+   cycle, not a counter.
+
+### The Ignition Array's v3 art — where it stands
+
+Stage 0 passed: `concept/v3-r2-sheet.png` is the locked design, mouth measured at
+**1.48** against vanilla's 1.481. Stage 1 took eight failed re-renders before the
+method was found — hand the generator **vanilla's own hole sprite on flat
+magenta** and ask it to build the machine around it, in one positive sentence.
+Describing a proportion never survived a re-render; handing over the object did.
+
+Two plates are now in hand and measured — `concept/v3-around-hole.png` (the deck
+ring, mouth 1.48) and `concept/v3-lid.png` (the closed lid, 1.346). What is left
+is assembly, not generation, and the full list with its ordering is in
+`graphics/building-spec-ignition-array-v2.md` under **"What is left on the
+Ignition Array"**. Nothing about the Array is committed.
+
 ## The nine buildings
 
-- [ ] **N1 · Drop Crusher** — `assembling-machine`, 3×3, `sae-crushing`, gravity ≥ 45
-- [ ] **N2 · Ballast Drill** — `mining-drill`, 5×5, `resource_drain_rate_percent = 50`
-- [ ] **N3 · Dross Classifier** — `assembling-machine`, 3×3, `sae-classification`
-- [ ] **N4 · Coil Separator** — `assembling-machine`, 3×3, `sae-separation`
-- [ ] **N5 · Whisker Comber** — `assembling-machine`, 3×3, `sae-fibre`
-- [ ] **N6 · Helium Concentrator** — `assembling-machine`, 3×3, `sae-degassing`, 3 fluid boxes
-- [ ] **N7 · Vacuum Furnace** — `furnace`, 3×3, `smelting` + `sae-sintering`, flux fluid box
+All in `prototypes/core/machines.lua`, with their items and build recipes beside
+them, and their crafting recipes in `recipes.lua`. Art is a **documented
+stand-in**: each wears a size-matched vanilla machine's sprites until its plate
+exists, marked by a `derive.placeholder_art` call so every one is greppable and
+logged at data stage.
+
+- [x] **N1 · Drop Crusher** — `assembling-machine`, 3×3, `sae-crushing`, gravity ≥ 45
+- [x] **N2 · Ballast Drill** — `mining-drill`, 5×5, `resource_drain_rate_percent = 50`
+- [x] **N3 · Dross Classifier** — `assembling-machine`, 3×3, `sae-classification`
+- [x] **N4 · Coil Separator** — `assembling-machine`, 3×3, `sae-separation`
+- [x] **N5 · Whisker Comber** — `assembling-machine`, 3×3, `sae-fibre`
+- [x] **N6 · Helium Concentrator** — `assembling-machine`, 3×3, `sae-degassing`, 3 fluid boxes
+- [x] **N7 · Vacuum Furnace** — `furnace`, 3×3, `smelting` + `sae-sintering`, flux fluid box
 - [ ] **N8 · Crust Tap** — `offshore-pump`, 2×2, + `sae-crust-gas` fluid + `sae-crust-turbine`
-- [ ] **N9 · Ignition Ring Mast** — `assembling-machine`, 3×3, fixed recipe, helium fluid box
+      — the only one outstanding, and the largest: it needs a fluid, a **sited
+      vent tile** (S10: an offshore pump draws from `TilePrototype::fluid`, not
+      from its own filter) and the companion `burns_fluid` turbine.
+- [x] **N9 · Ignition Ring Mast** — `assembling-machine`, 3×3, fixed recipe, helium fluid box
+
+### Review of the eight, and what it found
+
+Audited against a data dump rather than by reading the Lua, because that is the
+only way the last round of these bugs was visible either.
+
+**One real leak, and it was invisible in the source.** The Coil Separator is
+copied from the electromagnetic plant for its art, and it silently arrived with
+that plant's **+50% base productivity** — `effect_receiver` is inherited and
+nothing in the file mentions it. Caught in the dump, fixed in
+`prototypes/derive.lua`, which now strips it for every derived prototype.
+
+`derive.lua` is the other output of this stage: it encodes the B3 findings as
+code rather than as a memory, clearing inherited `localised_name` (the "Tree"
+bug), `factoriopedia_simulation` (the vanilla-machine-on-our-page bug), frozen
+art, water reflections, emissions on a planet with no pollutant, and now
+`effect_receiver`. Verified clean across all eight.
+
+**Two required re-sourcings, both demanded by a spec rather than chosen.** Plate
+smelting now takes crushed kamacite instead of raw ore, or tier one is skippable
+and the Drop Crusher is decoration. Whisker beds are laid on bed-grade dross
+instead of raw dross, or the Dross Classifier has nothing that needs it.
+
+**The ring mechanic is live.** The Field Coil Segment recipe now takes an
+ignition charge, and the charge spoils in ten seconds with no spoil result — so
+a mast has to stand within a few seconds of belt of the Array. Nothing in the
+engine can require one building to be near another; real belt time does it.
+
+**Three items are still dead ends**, and knowingly: whisker tow, whisker felt and
+schreibersite have no consumer yet. Their consumers — prepreg, the cryostat core
+and phosphide flux — are tier 4+ in `design/06-core-production-tree.md` and are
+not implemented. They are produced but not yet wanted.
 
 ## Closing out
 
