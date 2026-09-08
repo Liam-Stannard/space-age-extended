@@ -237,7 +237,18 @@ rather than acted on.
    stalls. So a charging animation can replace the doors outright rather than
    sitting alongside them.
 
-### The Ignition Array's v3 art — where it stands
+### The Ignition Array — settled
+
+**The Array is the Suspended Core**, chosen from twenty concepts across four sets
+and implemented: plates cut, doors and shaft removed, charge drawn from
+`control.lua`, and the whole thing exercised on a headless server through charge
+and launch to the ending. See `graphics/array-options/` for the decision record
+and `tools/build-ignition-array.py` for the plates.
+
+Everything below this line describes **v3, which was rejected**, and is kept only
+because its measurements explain why the plate plan exists.
+
+### The Ignition Array's v3 art — superseded, kept for the record
 
 Stage 0 passed: `concept/v3-r2-sheet.png` is the locked design, mouth measured at
 **1.48** against vanilla's 1.481. Stage 1 took eight failed re-renders before the
@@ -402,17 +413,19 @@ no spoil result, and the Field Coil Segment recipe genuinely lists it.
 
 ## Closing out
 
-- [ ] **C1 · Recipes, categories and items** for everything above — *nearly done.*
-      Every building has an item, a build recipe and a crafting category, and
-      every category has recipes in it **except one**: `sae-sintering` is carried
-      by the Vacuum Furnace and nothing runs in it. The sintered preform is the
-      missing recipe, and it is half the furnace's reason to exist — see
-      `building-spec-vacuum-furnace.md`, "the exclusive work".
+- [x] **C1 · Recipes, categories and items** for everything above — done. Every
+      building has an item, a build recipe and a crafting category, and every
+      category now has recipes in it. The last gap was `sae-sintering`, carried
+      by the Vacuum Furnace with nothing running in it; the sintered preform
+      fills it (`prototypes/core/recipes.lua`), which is half that furnace's
+      reason to exist.
 - [x] **C2 · Technologies** placing each building on the ladder at its tier — done;
       two new techs, and the whole ladder walked in dependency order to prove every
       recipe is reachable and nothing unlocks before its ingredients exist.
 - [x] **C3 · Review each implementation for correctness**, one at a time — done
       after each stage. Found the inherited +50% productivity on the Coil
       Separator, the missing locale for all 29 prototypes, and four N8 bugs.
-- [ ] **C4 · `tools/check-data-stage.sh` green**, including the recipe and
-      graphics checks
+- [x] **C4 · `tools/check-data-stage.sh` green**, including the recipe and
+      graphics checks — passing on 2.1.17: data stage loads clean, all 70
+      referenced graphics files exist, 568 dumped references resolve, and every
+      mod recipe fits a machine that can hold its fluids.

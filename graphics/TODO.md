@@ -268,11 +268,11 @@ the art; each is recorded in the building's own §8.
       their animations in its own right. It is not part of `graphics_set` and
       cannot be replaced by editing the building plate. Ship the hub first; the
       arm stays inherited and visibly mismatched until its own pass.
-- [ ] **Ignition Array's rocket is a real problem** and §6.1 of its spec scopes
-      it: the engine spawns a `rocket-silo-rocket` and plays a launch sequence on
-      a world where the whole point is that nothing leaves. The fix is a custom
-      `sae-ignition-column` entity — a column of light rising out of the shaft,
-      not a vehicle. Separate asset, after the building.
+- [x] **Ignition Array's rocket** — done. `sae-ignition-discharge` is vanilla's
+      rocket with its sprite, shadow, flame, glare and five smoke plumes emptied
+      and its explosion removed, and `rocket_sprite` re-pointed at `column.png`:
+      a column of light leaving, not a vehicle. Confirmed on a headless server —
+      the launch runs and the ignition fires.
 - [ ] Cosmetic: the Ignition Array v2 sheet carries a *Factorio Space Age*
       wordmark the generator added unasked. Harmless on an internal document;
       remove it before the sheet is shown anywhere outside the repo, and never
