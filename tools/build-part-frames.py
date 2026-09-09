@@ -55,10 +55,26 @@ Usage:
 """
 
 import argparse
+import importlib.util
 import math
+import os
 import sys
 
 from PIL import Image, ImageChops, ImageStat
+
+
+def _shadow_fn():
+    """Borrow process-building-art.py's shadow projection rather than restating it.
+
+    Its kx/ky/blur are measured off vanilla's lightning collector; a second copy
+    of those numbers here is a second copy to drift.
+    """
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "process-building-art.py")
+    spec = importlib.util.spec_from_file_location("pba", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.shadow
 
 
 def centroid(im):
@@ -190,6 +206,12 @@ def main():
     ap.add_argument("--centre", nargs=2, type=float,
                     help="spin only: rotation centre; default is the part's centroid")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--shadow-out",
+                    help="also write the matching draw_as_shadow sheet. A part "
+                         "that moves casts a shadow that moves with it, and "
+                         "vanilla ships one per phase -- the electromagnetic "
+                         "plant has shadow-warm-up, shadow-rotate, "
+                         "shadow-rotate-continue and shadow-cool-down.")
     a = ap.parse_args()
 
     im = Image.open(a.part).convert("RGBA")
@@ -219,6 +241,24 @@ def main():
     for i, f in enumerate(fr):
         sheet.paste(f, ((i % a.line_length) * w, (i // a.line_length) * h))
     sheet.save(a.out)
+
+    if a.shadow_out:
+        # shadow() returns its own canvas and shift, because a cast shadow leans
+        # out past the colour plate. Every frame gets the same canvas and the
+        # same shift -- they must, or the shadow would swim under the part.
+        project = _shadow_fn()
+        shadows = [project(f) for f in fr]
+        sw, sh_h = shadows[0][0].size
+        dx, dy = shadows[0][1], shadows[0][2]
+        sheet_s = Image.new("RGBA", (cols * sw, rows * sh_h), (0, 0, 0, 0))
+        for i, (plate_i, _, _) in enumerate(shadows):
+            sheet_s.paste(plate_i, ((i % a.line_length) * sw,
+                                    (i // a.line_length) * sh_h))
+        sheet_s.save(a.shadow_out)
+        print(f"  ok  {a.shadow_out}  {sheet_s.width}×{sheet_s.height}  "
+              f"{sw}×{sh_h} each, draw_as_shadow")
+        print(f"      shift it by {dx/2/32:+.5f}, {dy/2/32:+.5f} tiles at "
+              f"scale 0.5 relative to the colour sheet")
 
     moved = [ImageStat.Stat(ImageChops.difference(
         f.convert("RGB"), fr[0].convert("RGB"))).mean[0] for f in fr]
