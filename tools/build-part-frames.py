@@ -177,7 +177,41 @@ def scroll_frame(im, region, turn, horizontal=False):
 
 
 
-def split_ribs(im, region, window=5):
+def measure_pitch(resid, region, bins=180):
+    """The angular spacing of the ribs, by autocorrelation, in radians.
+
+    Measured rather than counted. Counting them off a 40-pixel drum by eye gave
+    24 and the answer is 18, and the difference decides whether the cycle closes.
+
+    The signal has to be built in *angle* space, not row space: on a cylinder the
+    ribs crowd together toward the rim, so a row-space autocorrelation of an
+    evenly-ribbed drum finds no clean period at all.
+    """
+    x0, y0, x1, y1 = (int(v) for v in region)
+    r = (y1 - y0) / 2.0
+    yc = y0 + r
+    sig = []
+    for i in range(bins):
+        th = -math.pi / 2 + (i + 0.5) * math.pi / bins
+        y = int(round(yc + r * math.sin(th)))
+        vals = [resid[x, y][0] for x in range(x0, x1) if (x, y) in resid]
+        sig.append(sum(vals) / len(vals) if vals else 128.0)
+    mean = sum(sig) / bins
+    sig = [v - mean for v in sig]
+
+    def ac(lag):
+        n = bins - lag
+        return sum(sig[i] * sig[i + lag] for i in range(n)) / n
+
+    vals = [(lag, ac(lag)) for lag in range(2, bins // 2)]
+    for i in range(1, len(vals) - 1):
+        lag, v = vals[i]
+        if v > vals[i - 1][1] and v > vals[i + 1][1] and v > 0:
+            return lag * math.pi / bins
+    return None
+
+
+def split_ribs(im, region, window=5, phase_bins=48):
     """Split a barrel into the shading that stays and the ribs that turn.
 
     **The shading must not rotate.** A barrel's light and shade belong to the
@@ -189,10 +223,19 @@ def split_ribs(im, region, window=5):
     So the region is separated first. Smoothing each column along the axis of
     travel leaves the low-frequency part -- the barrel's own light and shade,
     the *frozen base*. Subtracting that leaves the high-frequency part, which is
-    the ribs and nothing else. The base is then drawn at rest in every frame and
-    only the residual is carried round, so nothing outside the ribs can flicker.
+    the ribs and nothing else.
 
-    Returns (base, residual). The residual is signed and offset by 128.
+    **And the ribs are then folded into one canonical rib.** The plate holds
+    only the front half of the drum, so carrying the residual round directly
+    means repeating that half behind -- and the two ends do not match, because
+    one is the top rim and the other is the bottom. The join is a seam, it
+    travels across the face as the drum turns, and it is the jump you see when
+    the loop comes round. Averaging every rib in the plate into a single profile
+    indexed by phase removes it by construction: the surface becomes exactly
+    periodic, so it wraps seamlessly and closes on any whole number of pitches.
+    It also averages out the noise in nine ribs' worth of 40-pixel samples.
+
+    Returns (base, canonical, pitch).
     """
     x0, y0, x1, y1 = (int(v) for v in region)
     src = im.load()
@@ -203,7 +246,6 @@ def split_ribs(im, region, window=5):
         for k, (y, px) in enumerate(col):
             if px[3] == 0:
                 base[x, y] = px
-                resid[x, y] = (128, 128, 128)
                 continue
             acc = [0, 0, 0]
             n = 0
@@ -215,12 +257,41 @@ def split_ribs(im, region, window=5):
                     n += 1
             sm = tuple(a // n for a in acc) if n else px[:3]
             base[x, y] = (sm[0], sm[1], sm[2], px[3])
-            resid[x, y] = tuple(max(0, min(255, px[c] - sm[c] + 128)) for c in range(3))
-    return base, resid
+            resid[x, y] = tuple(px[c] - sm[c] for c in range(3))
+
+    pitch = measure_pitch({k: (v[0] + 128,) for k, v in resid.items()}, region)
+    if not pitch:
+        return base, None, None
+
+    r = (y1 - y0) / 2.0
+    yc = y0 + r
+    acc = {}
+    for (x, y), d in resid.items():
+        u = max(-1.0, min(1.0, (y + 0.5 - yc) / r))
+        phase = (math.asin(u) % pitch) / pitch
+        b = min(phase_bins - 1, int(phase * phase_bins))
+        a = acc.setdefault((x, b), [0, 0, 0, 0])
+        for c in range(3):
+            a[c] += d[c]
+        a[3] += 1
+    canonical = {}
+    for x in range(x0, x1):
+        have = [(b, acc[x, b]) for b in range(phase_bins) if (x, b) in acc]
+        if not have:
+            continue
+        for b in range(phase_bins):
+            if (x, b) in acc:
+                a = acc[x, b]
+                canonical[x, b] = tuple(a[c] / a[3] for c in range(3))
+            else:                       # a phase no rib in the plate landed on
+                near = min(have, key=lambda h: min(abs(h[0] - b),
+                                                   phase_bins - abs(h[0] - b)))[1]
+                canonical[x, b] = tuple(near[c] / near[3] for c in range(3))
+    return base, canonical, pitch
 
 
-def ribs_frame(im, region, turn, base, resid):
-    """One phase: the frozen base, with the rib residual carried round on to it."""
+def ribs_frame(im, region, turn, base, canonical, pitch, phase_bins=48):
+    """One phase: the frozen base, with the canonical rib laid back on to it."""
     x0, y0, x1, y1 = (int(v) for v in region)
     out = im.copy()
     dst = out.load()
@@ -228,17 +299,17 @@ def ribs_frame(im, region, turn, base, resid):
     yc = y0 + r
     for y in range(y0, y1):
         u = max(-1.0, min(1.0, (y + 0.5 - yc) / r))
-        theta = ((math.asin(u) - turn + math.pi / 2) % math.pi) - math.pi / 2
-        sy = max(y0, min(y1 - 1, int(round(yc + r * math.sin(theta) - 0.5))))
+        phase = ((math.asin(u) - turn) % pitch) / pitch
+        b = min(phase_bins - 1, int(phase * phase_bins))
         for x in range(x0, x1):
-            b = base[x, y]
-            if b[3] == 0:
+            bs = base[x, y]
+            if bs[3] == 0 or (x, b) not in canonical:
                 continue
-            d = resid[x, sy]
-            dst[x, y] = (max(0, min(255, b[0] + d[0] - 128)),
-                         max(0, min(255, b[1] + d[1] - 128)),
-                         max(0, min(255, b[2] + d[2] - 128)),
-                         b[3])
+            d = canonical[x, b]
+            dst[x, y] = (max(0, min(255, int(bs[0] + d[0]))),
+                         max(0, min(255, int(bs[1] + d[1]))),
+                         max(0, min(255, int(bs[2] + d[2]))),
+                         bs[3])
     return out
 
 
@@ -246,6 +317,24 @@ def frames_for(im, mode, n, amp, axis_deg, centre, secondary, region=None,
                turns=1.0, window=5):
     out = []
     split = split_ribs(im, region, window) if mode == "ribs" else None
+    if mode == "ribs":
+        if split[2] is None:
+            sys.exit("  no repeating feature found in that region -- nothing to turn")
+        pitch = split[2]
+        one = pitch / (2 * math.pi)
+        print("  rib pitch %.2f deg -> %.1f round the drum; one pitch is %.4f of a turn"
+              % (math.degrees(pitch), 2 * math.pi / pitch, one))
+        # Does the cycle close? The surface is periodic with one pitch, so the
+        # last frame leads back into the first only if the sequence covers a
+        # whole number of them. Off by a third of a pitch and the loop visibly
+        # jumps -- which is not something the per-frame difference below can see,
+        # because a third of a pitch and one frame's step are the same size.
+        k = turns / one
+        if abs(k - round(k)) > 0.02:
+            near = max(1, round(k))
+            print("  WARNING: --turns %.5f is %.2f pitches, not a whole number, so "
+                  "the last frame will not lead back into the first. Use %.5f for "
+                  "%d pitch%s." % (turns, k, near * one, near, "" if near == 1 else "es"))
     ang = math.radians(axis_deg)
     for i in range(n):
         t = i / n                                  # 0 <= t < 1, so frame n == frame 0
