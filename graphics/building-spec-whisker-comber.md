@@ -338,3 +338,24 @@ junction box, more skirt fittings and bolt rings, and it measures warmth **+40**
 which was the condition the option page set: everything separating it from the
 Sealed Roboport had to survive. On the plate it did. At icon size it did not —
 see §16.
+
+---
+
+# 25. The accent, and why a cold machine needs paint
+
+**This machine makes no light, so it had nothing to be told apart by.** Measured
+across ten of our icons: they sat in a nine-degree hue band at a mean pairwise
+RGB distance of 13.2, where vanilla's six production icons span 27°–98° at 32.6.
+The Core's palette is one warm iron-nickel body plus copper, and the only things
+that break it are emissive — heat, frost, a field, a charge.
+
+**So the accent is paint:** service blue `#2E5A8C`, on the shoulder band, the lid's toggle dogs and the drive skirt's access panel. Blue is the colour a guarded machine's service furniture carries, and these are the parts a person touches on a machine handling something that would cut you. Paint is reflective, chipped and worn;
+it never glows, and it is not a status light.
+
+**Measured after the repaint:** the icon now carries **7 blue** distinct-hue pixels
+at 16 px out of about 150 lit, where it carried none. That is the number that
+matters — an accent has to be an *area* to survive to icon size, which a lit port
+or a rime band does not.
+
+See the template's *"Every machine gets an accent"* note for the rule and the
+assignment table.

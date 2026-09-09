@@ -326,3 +326,24 @@ describe no adopted design.
   should, or classifying is optional and the building is decoration. That is a
   one-line change to `recipes.lua:sae-whisker-bed`, and it should land in the
   same commit.
+
+---
+
+# 25. The accent, and why a cold machine needs paint
+
+**This machine makes no light, so it had nothing to be told apart by.** Measured
+across ten of our icons: they sat in a nine-degree hue band at a mean pairwise
+RGB distance of 13.2, where vanilla's six production icons span 27°–98° at 32.6.
+The Core's palette is one warm iron-nickel body plus copper, and the only things
+that break it are emissive — heat, frost, a field, a charge.
+
+**So the accent is paint:** signal yellow `#C8A23A`, on the eccentric-drive guard, the four spring caps and the drive-end rail. Yellow is what a moving-part guard is painted, and this machine's whole read is that it shakes. Paint is reflective, chipped and worn;
+it never glows, and it is not a status light.
+
+**Measured after the repaint:** the icon now carries **11 yellow** distinct-hue pixels
+at 16 px out of about 150 lit, where it carried none. That is the number that
+matters — an accent has to be an *area* to survive to icon size, which a lit port
+or a rime band does not.
+
+See the template's *"Every machine gets an accent"* note for the rule and the
+assignment table.

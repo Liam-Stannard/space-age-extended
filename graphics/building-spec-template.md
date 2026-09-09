@@ -1314,6 +1314,73 @@ permitted. Words specify a design; only the image preserves it.
 
 ---
 
+### Every machine gets an accent, and a cold machine's accent is paint
+
+**Measured across ten of our icons:** they sit in a nine-degree hue band, mean
+pairwise RGB distance **13.2**, closest pair **1.6** apart, where vanilla's six
+production icons span 27°–98° at **32.6**. The cause is that the Core's palette
+is one warm iron-nickel body plus copper, and the only things that break it are
+*emissive*: melt heat, cryogenic frost, a violet field, a charge light. A machine
+whose process makes no light therefore has nothing to be told apart by.
+
+**So the rule is: an accent is either the light a process makes, or the paint the
+crew put on it — and paint never glows.** Paint is reflective, chipped, worn and
+sits on guards, service panels and moving-part covers, which is where real
+industrial equipment carries colour and where vanilla carries it too: its
+assembling machines are blue-grey with yellow, its chemical plant white and red,
+its centrifuge green and yellow.
+
+**The semantic colours are taken and paint must not borrow them.** Orange
+`#D96B29`–`#FFB25A` is heat. Pale blue `#B8C4C8`–`#EAF4FA` is frost and cryogenic
+jacketing. Violet `#6A5AC8`–`#B0A8F0` is a field. Pale gold `#F0E0A8` is stored
+charge. Copper `#8A5A32`–`#C88A4A` is a *material*, not an accent, and it is on
+every building.
+
+| Machine | Accent | Where | Why that colour |
+| ------- | ------ | ----- | --------------- |
+| Dross Classifier | **signal yellow `#C8A23A`** | eccentric drive guard, spring caps | The machine's whole read is that it *moves*; yellow is what a moving-part guard is painted |
+| Whisker Comber | **service blue `#2E5A8C`** | guard hood band, lid dogs | The material would cut you, so the machine is about being *guarded*; blue is the mandatory-action colour and nothing else in the mod is near 210° |
+| Bed Tender · Drop Crusher · Ballast Drill · Ignition Ring Mast | not yet assigned | — | Take a hue when the building is next touched, from this table's logic rather than from taste |
+
+**Correction, made the same day and measured: a light is not an accent at icon
+size.** The first version of this note said machines whose process makes light do
+not need paint. Counting distinct-hue pixels in each icon at 16 px says otherwise:
+
+| Icon | distinct pixels at 16 px, of ~150 lit |
+| ---- | --- |
+| Dross Classifier (painted) | **11 yellow** |
+| Coil Separator (field) | **8 violet, 7 frost** |
+| Whisker Comber (painted) | **7 blue** |
+| Vacuum Furnace (sight port) | 1 |
+| Helium Concentrator (frost) | 1 |
+| Crust Tap (frost + heat) | 1 |
+| Sealed Roboport (amber lamps) | **0** |
+| Bed Tender | **0** |
+
+**An accent that survives to icon size has to be an AREA, not a point.** Paint on
+a guard is an area. A lit port, a rime band on a pipe, a ring of small lamps are
+points, and they are gone by 16 px. The Coil Separator survives only because its
+field fills a whole slot.
+
+So the rule is the simple one: **every machine gets paint**, and a process light
+is a bonus on the plate rather than a substitute in the icon. Vanilla agrees —
+its chemical plant has both painted panels and lit windows.
+
+**Assignment, to be taken when each building is next touched:**
+
+| Machine | Accent | Status |
+| ------- | ------ | ------ |
+| Dross Classifier | signal yellow `#C8A23A` | **done** |
+| Whisker Comber | service blue `#2E5A8C` | **done** |
+| Sealed Roboport | — | measures 0 distinct px; its amber lamps do not survive |
+| Bed Tender | — | measures 0 distinct px |
+| Drop Crusher · Ballast Drill · Vacuum Furnace · Helium Concentrator · Crust Tap · Ring Mast | — | to assign |
+
+**Repainting a building that has derived layers is not a drive-by job.** The
+Sealed Roboport's lamps and the Bed Tender's bin are differenced or cut against
+their own plates, so a regenerated plate has to be followed by re-deriving them
+or they stop registering. Those two are a deliberate pass, not a quick edit.
+
 ### Icons are separated by colour, not by silhouette
 
 **Measured, on ten icons.** Our building icons overlap each other at a mean

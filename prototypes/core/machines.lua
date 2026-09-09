@@ -157,6 +157,10 @@ local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
 -- that it shakes, and vibration is carried by the springs and the eccentric
 -- drive being *drawn*, not by anything animating: dross is what settled out and
 -- is cold by the time it arrives, so nothing here is lit.
+--
+-- Which is why its accent is PAINT: signal yellow on the eccentric-drive guard,
+-- the four spring caps and the drive-end rail -- what a moving-part guard is
+-- painted, on the machine whose whole read is that it moves. Paint never glows.
 local DC = "__space-age-extended__/graphics/entity/dross-classifier/"
 classifier.icon = "__space-age-extended__/graphics/icons/dross-classifier.png"
 derive.own_graphics(classifier,
@@ -323,7 +327,13 @@ local comber = crafter("sae-whisker-comber", "assembling-machine-3", {
 -- 0.0 px, alpha zero on all four canvas edges. It stands 3.39 tiles tall, so the
 -- plate is shifted up to stand the drum's foot on the tile.
 --
--- Nothing is lit and nothing animates. The two recipes -- comb into tow, mat
+-- Nothing is lit, and this machine's accent is therefore PAINT rather than
+-- light: service blue on the lid's dogs, the shoulder band and the skirt's
+-- access panel -- the parts a person actually touches on a machine that handles
+-- something which would cut you. Paint never glows; see the template's
+-- "Every machine gets an accent" note for why a cold machine needs one at all.
+--
+-- The two recipes -- comb into tow, mat
 -- into felt -- are not drawn on this machine at all; that was the cost of the
 -- design and it is recorded in the spec's §3.2 rather than hidden. If the choice
 -- ever has to be visible it belongs in a working visualisation, which plays only
@@ -339,16 +349,16 @@ derive.own_graphics(comber,
       {
         filename = WC .. "base.png",
         priority = "high",
-        width = 200, height = 225,
-        shift = { 0, -0.19531 },
+        width = 200, height = 224,
+        shift = { 0, -0.18750 },
         scale = 0.5
       },
       {
         filename = WC .. "base-shadow.png",
         priority = "high",
         draw_as_shadow = true,
-        width = 374, height = 236,
-        shift = { 1.35938, -0.10938 },
+        width = 373, height = 235,
+        shift = { 1.35156, -0.10156 },
         scale = 0.5
       }
     }
