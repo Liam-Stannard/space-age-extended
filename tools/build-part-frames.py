@@ -140,7 +140,15 @@ def scroll_frame(im, region, turn, horizontal=False):
     yc = y0 + r
     for y in range(y0, y1):
         u = max(-1.0, min(1.0, (y + 0.5 - yc) / r))
-        sy = int(round(yc + r * math.sin(math.asin(u) - turn) - 0.5))
+        # Wrap the angle round the barrel rather than letting sin() fold it
+        # back. sin(pi - x) == sin(x), so the naive form mirrors at the rim
+        # instead of continuing, and a rib that should march off the bottom edge
+        # instead reverses and smears a single source row across half the face.
+        # Taking the angle modulo pi carries it round continuously. The far half
+        # of the drum is not in the plate, so this repeats the visible half
+        # behind -- invisible on a barrel whose ribs already repeat.
+        theta = ((math.asin(u) - turn + math.pi / 2) % math.pi) - math.pi / 2
+        sy = int(round(yc + r * math.sin(theta) - 0.5))
         sy = max(y0, min(y1 - 1, sy))
         for x in range(x0, x1):
             px = src[x, sy]
@@ -158,7 +166,8 @@ def scroll_frame(im, region, turn, horizontal=False):
     return out
 
 
-def frames_for(im, mode, n, amp, axis_deg, centre, secondary, region=None):
+def frames_for(im, mode, n, amp, axis_deg, centre, secondary, region=None,
+               turns=1.0):
     out = []
     ang = math.radians(axis_deg)
     for i in range(n):
@@ -167,8 +176,13 @@ def frames_for(im, mode, n, amp, axis_deg, centre, secondary, region=None):
             out.append(im.rotate(360.0 * t, resample=Image.BICUBIC,
                                  center=centre))
         elif mode == "scroll":
-            # One full turn across the sequence, so frame n lands on frame 0.
-            turn = 2 * math.pi * t * (1 if amp >= 0 else -1)
+            # `turns` of a revolution across the sequence. A full turn is not
+            # usually what you want: only the front half of a drum is in the
+            # plate, so a large rotation has to invent the back, and it shows.
+            # A ribbed barrel is periodic, so a few rib pitches land frame n
+            # back on frame 0 just as exactly as a whole revolution does, and
+            # stay inside the surface the plate actually has.
+            turn = 2 * math.pi * turns * t * (1 if amp >= 0 else -1)
             out.append(scroll_frame(im, region, turn,
                                     horizontal=(axis_deg % 180 == 0)))
         else:
@@ -200,6 +214,11 @@ def main():
                     help="degrees, 0 = east, 90 = south; the line of travel")
     ap.add_argument("--secondary", type=float, default=0.0,
                     help="shake only: perpendicular amplitude, in pixels")
+    ap.add_argument("--turns", type=float, default=1.0,
+                    help="scroll only: revolutions the sequence covers. Set it "
+                         "to a whole number of the surface's repeats -- four rib "
+                         "pitches of a 24-rib drum is 1/6 -- so the cycle closes "
+                         "without rotating past the half of the drum the plate has.")
     ap.add_argument("--region", nargs=4, type=float,
                     help="scroll only: x0 y0 x1 y1 of the surface that turns, "
                          "measured off the plate; default is the part's bbox")
@@ -223,7 +242,8 @@ def main():
     region = tuple(int(v) for v in a.region) if a.region else im.getchannel("A").getbbox()
     if a.mode == "scroll":
         print("  scrolling inside %s%s" % (region, "" if a.region else " (the part's own bbox)"))
-    fr = frames_for(im, a.mode, a.frames, a.amplitude, a.axis, centre, a.secondary, region)
+    fr = frames_for(im, a.mode, a.frames, a.amplitude, a.axis, centre, a.secondary,
+                    region, a.turns)
 
     # A cycle whose frames are not distinct is a still with extra file size.
     dup = sum(1 for i in range(len(fr))
