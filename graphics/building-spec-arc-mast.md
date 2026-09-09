@@ -499,6 +499,36 @@ leaving.
 
 **Loop Duration:** n/a — one-shot, engine-triggered
 
+## Correction: discharge is not one-shot, and never was
+
+Everything above holds for **charge**. It does not hold for **discharge**, and
+the difference was measured rather than reasoned about.
+
+`chargable_graphics` plays the discharge animation whenever energy *leaves* the
+buffer. The mast's `drain` is 100 kW, so a mast holding anything at all is
+discharging, so the sequence replays back to back for as long as the buffer
+lasts. Counted off a 60 UPS recording: three masts pulsed on a 24-tick period —
+the discharge frame count exactly — for fourteen unbroken seconds, with no
+lightning anywhere on the surface and the vanilla collector standing beside them
+completely still.
+
+So the paragraph at the top of this section is wrong about half the building.
+The mast is **not** "inert almost all the time": the discharge sheet is its
+idle appearance, and it is the sheet the player spends nearly all their time
+looking at. That is what the sheets were rebuilt against — see
+`tools/build-glow-frames.py`:
+
+* Charge keeps the decaying envelope. It really is the rare one-shot this
+  section assumes, and a strike that fades away is correct.
+* Discharge gets an arched envelope floored at 0.35, so the sequence begins and
+  ends at the same brightness and joins to its own next play. A decay envelope
+  on something the engine loops is a sawtooth, and a sawtooth over a single
+  still image is exactly what made the mast read as a static decal being
+  switched on and off.
+
+**Loop Duration (discharge, in practice):** 24 ticks, continuous while the
+buffer drains.
+
 ---
 
 # 10. Effects
@@ -819,7 +849,7 @@ graphics/
 └── entity/
     └── arc-mast/
         ├── concept/            generated concepts, not shipped
-        ├── base.png            224×365, the whole machine, unlit
+        ├── base.png            224×345, the whole machine, unlit
         ├── shadow.png          496×345, draw_as_shadow, its own wider canvas
         ├── charge.png          1792×1035, 19 frames, additive glow
         └── discharge.png       1792×1035, 24 frames, additive glow

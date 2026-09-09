@@ -16,7 +16,7 @@ off the unlit plate, and apply those same numbers to both.
 
 Usage:
   tools/derive-glow.py --lit concept/v12-charge.png --unlit concept/v11-idle.png \
-      --out graphics/entity/arc-mast/charge.png --width 224 --height 365 --top-margin 16
+      --out graphics/entity/arc-mast/charge.png --width 224 --height 345 --top-margin 16
 """
 
 import argparse
@@ -87,7 +87,7 @@ def main():
     ap.add_argument("--unlit", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--width", type=int, default=224)
-    ap.add_argument("--height", type=int, default=365)
+    ap.add_argument("--height", type=int, default=345)
     ap.add_argument("--top-margin", type=int, default=16)
     # These two must mirror process-building-art.py exactly. The placement here
     # has to be the one base.png was actually cut with, and a plate cut with a
