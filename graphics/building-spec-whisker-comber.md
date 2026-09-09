@@ -18,7 +18,8 @@ and §20 are unchanged, because none of them was ever about the art.
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/C-sheet.png`**, option C of five |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and clearly not the Sealed Roboport's dome** | ready — see §11 |
+| 1 | Canonical view | square | Silhouette approved against §3, **and clearly not the Sealed Roboport's dome** | **passed — `concept/plate-r1.png`**, an edit of the adopted hero, one round |
+| 2 | Idle plate (unlit) | — | Same machine, nothing lit | **passed — it is the same plate; nothing on this machine is ever lit** |
 | 5 | Working animation | portrait 2:3 | The comb stroke loops seamlessly | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -209,6 +210,33 @@ notes:
 
 ---
 
+# 13. Sprite Dimensions
+
+**Measured off the shipped plates, not targeted.**
+
+**Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
+
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 200 × 225 | 192 × 217 → **3.000 × 3.391 tiles** | `{ 0, −0.19531 }` | 0.5 |
+| `base-shadow.png` | 374 × 236 | sheared off the plate's own alpha | `{ 1.35938, −0.10938 }` | 0.5 |
+
+**Checked against the template's Appendix C, all four checks:** centred to
+**0.0 px**; alpha `0` on all four edges of both plates; `check-footprint.py
+--tiles 3` passes with the drawn machine 3.000 tiles wide and 3.39 tall ("above
+the box: 0.39 — expected on a tall building"); declared sizes equal the files'.
+
+**Three in a row at the real 3-tile pitch claim 0 px twice**, at alpha > 1 and at
+alpha > 80.
+
+**Camera:** trimmed aspect **1:1.13**, inside vanilla's 1.00–1.31 range.
+
+**Body metal `#57422F`, luminance 69, warmth R−B +40** — inside the
+`#4A463F`–`#6E685C` band, and the warmest plate of the three cut this round,
+which is the copper §3.3 asked for after the concept measured 0.180.
+
+---
+
 # 15. Factorio Prototype — sketch
 
 ```lua
@@ -236,6 +264,26 @@ silhouette and the arch must.
 *(The previous icon concept — aligned fibres against a tangle — drew the product,
 which the template's §8 rule 1 forbids on the building and which is a poor idea
 on an icon for the same reason: it promises a read the machine never shows.)*
+
+### The Sealed Roboport problem, measured
+
+**At 16 px this icon and the Sealed Roboport's overlap at IoU 0.85.** Both are
+round brown masses at that size, and the toggle dogs, balance bosses and louvred
+skirt that separate them on the plate are all below one pixel. The risk the
+option page named has landed exactly where it was pointed.
+
+**Two things still separate them in play, and neither is the icon.** The Roboport
+is a 4-tile building against this one's 3, so they differ by a third in width
+wherever they stand together; and this plate is the warmer of the two by
+measurement (R−B +40).
+
+**What would fix the icon is a plate change, and that is a design decision rather
+than a processing one** — raising the draw-off arch clear of the dome so the
+outline gains a notch, which is the one part of this machine that is not
+rotationally symmetrical. It is *not* taken here, because the design is locked and
+Appendix C's rule is that a locked design stops being re-prompted. Recorded for
+Liam: accept the collision at icon size, or spend one plate round on the
+silhouette.
 
 ---
 
@@ -274,3 +322,19 @@ Sealed Roboport's dome.
   `04-the-core.md` §7's rule that the answer to "faster" is more floor. The farm
   itself is already area-limited, so the comber is arguably the one place speed
   is legitimate — but it should be a decision, not an oversight.
+
+---
+
+# 22. What stage 1 found
+
+**One round, no refinements.** The plate is an edit of the adopted hero with two
+changes permitted: more hardware, because the concept measured **0.114** edge
+density against vanilla's 0.144 floor and a round shell gives the eye less to
+hold; and copper let out, because it measured **0.180** saturation against a
+floor of 0.230. Both landed — the plate carries gauges, an inspection port, a
+junction box, more skirt fittings and bolt rings, and it measures warmth **+40**.
+
+**The dome held its ground.** It came back squat and bolted rather than smooth,
+which was the condition the option page set: everything separating it from the
+Sealed Roboport had to survive. On the plate it did. At icon size it did not —
+see §16.

@@ -305,12 +305,56 @@ data:extend({ separator })
 -- standing decision rather than a solved one.
 --------------------------------------------------------------------------------
 
-data:extend({ crafter("sae-whisker-comber", "assembling-machine-3", {
+local comber = crafter("sae-whisker-comber", "assembling-machine-3", {
   categories = { "sae-fibre" },
   energy = "400kW",
   modules = 3,
   conditions = CORE
-}) })
+})
+
+-- Art: the Spinner, option C of five (graphics/whisker-comber-options/).
+--
+-- A squat standing drum rather than another low box, which is the entire reason
+-- it was picked: this machine sorts things standing next to the Dross
+-- Classifier, which also sorts things, and a round body is the one silhouette
+-- that separates them at any zoom without a single pixel of detail.
+--
+-- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
+-- 0.0 px, alpha zero on all four canvas edges. It stands 3.39 tiles tall, so the
+-- plate is shifted up to stand the drum's foot on the tile.
+--
+-- Nothing is lit and nothing animates. The two recipes -- comb into tow, mat
+-- into felt -- are not drawn on this machine at all; that was the cost of the
+-- design and it is recorded in the spec's §3.2 rather than hidden. If the choice
+-- ever has to be visible it belongs in a working visualisation, which plays only
+-- while the machine crafts.
+local WC = "__space-age-extended__/graphics/entity/whisker-comber/"
+comber.icon = "__space-age-extended__/graphics/icons/whisker-comber.png"
+derive.own_graphics(comber,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = WC .. "base.png",
+        priority = "high",
+        width = 200, height = 225,
+        shift = { 0, -0.19531 },
+        scale = 0.5
+      },
+      {
+        filename = WC .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 374, height = 236,
+        shift = { 1.35938, -0.10938 },
+        scale = 0.5
+      }
+    }
+  }
+})
+data:extend({ comber })
 
 --------------------------------------------------------------------------------
 -- N6. Helium Concentrator -- graphics/building-spec-helium-concentrator.md
@@ -443,6 +487,8 @@ local ICON = {
     "__space-age-extended__/graphics/icons/dross-classifier.png",
   ["sae-coil-separator"] =
     "__space-age-extended__/graphics/icons/coil-separator.png",
+  ["sae-whisker-comber"] =
+    "__space-age-extended__/graphics/icons/whisker-comber.png",
 }
 
 local function machine_item(name, order, ingredients, seconds)
