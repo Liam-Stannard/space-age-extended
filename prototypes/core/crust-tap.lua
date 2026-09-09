@@ -56,6 +56,7 @@
 -- vent and accepted on one. Anything testing a buildability rule has to pass
 -- that, or it is not testing the rule.
 
+local util = require("util")
 local derive = require("prototypes.derive")
 
 --------------------------------------------------------------------------------
@@ -158,7 +159,7 @@ data:extend({
 --------------------------------------------------------------------------------
 
 local tap = derive.from("offshore-pump", "offshore-pump", "sae-crust-tap")
-derive.placeholder_art(tap, "wears offshore-pump's sprites until its plate exists")
+tap.icon = "__space-age-extended__/graphics/icons/crust-tap.png"
 tap.minable = { mining_time = 0.3, result = "sae-crust-tap" }
 tap.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
 tap.selection_box = { { -1, -1 }, { 1, 1 } }
@@ -192,6 +193,69 @@ tap.tile_buildability_rules =
     colliding_tiles = { layers = {} }
   }
 }
+-- Art: the Bolted Collar, option A of five (graphics/crust-tap-options/).
+--
+-- FOUR PLATES, DRAWN RATHER THAN ROTATED, because on this building the riser is
+-- the fluid box and a riser pointing the wrong way is the fluid box in the wrong
+-- place. All four were drawn in one strip so they are unmistakably four
+-- rotations of one machine, and `tools/cut-crust-tap.py` splits them.
+--
+-- **Two things about the cut are not obvious.** The scale comes from the BASE
+-- SQUARE rather than from the content, because the riser leaves a different face
+-- in each view and fitting each view to its own content box would draw four
+-- machines at four sizes. And each plate is shifted so the base's centre, not
+-- the canvas's, lands on the tile: centre an east plate on its content and the
+-- whole building slides left to make room for a pipe that is meant to hang over
+-- the edge.
+--
+-- **The riser sits on a TILE CENTRE, half a tile off the middle of its face.**
+-- That is the correction stage 1 found: this is a 2x2, so the middle of a face
+-- is the seam between two tiles and a pipe connects to nothing there. The
+-- connection below is declared at { 0.5, -0.5 } -- a tile centre -- and the art
+-- now agrees with it in all four rotations.
+local CT = "__space-age-extended__/graphics/entity/crust-tap/"
+local function plate(dir, w, h, sx, shadow_w, shadow_h, ssx)
+  return
+  {
+    layers =
+    {
+      {
+        filename = CT .. "base-" .. dir .. ".png",
+        priority = "high",
+        width = w, height = h,
+        shift = { sx, 0 },
+        scale = 0.5
+      },
+      {
+        filename = CT .. "base-" .. dir .. "-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = shadow_w, height = shadow_h,
+        shift = { sx + ssx, 0 },
+        scale = 0.5
+      }
+    }
+  }
+end
+
+derive.own_graphics(tap,
+{
+  base_render_layer = "floor-mechanics",
+  animation =
+  {
+    north = plate("north", 148, 178,  0.00781, 305, 198, 1.07031),
+    east  = plate("east",  190, 132, -0.32812, 310, 152, 0.78125),
+    south = plate("south", 145, 175,  0.00000, 299, 195, 1.04688),
+    west  = plate("west",  180, 132,  0.28125, 300, 152, 0.78125)
+  }
+})
+-- Vanilla's pump is a machine standing in water and its graphics set says so:
+-- an underwater layer, a glass overlay, a fluid animation and a base picture,
+-- all of them describing a shoreline this planet does not have. Replacing the
+-- set removes every one of them.
+tap.fluid_box.pipe_covers = nil          -- the plate draws its own mouth
+tap.fluid_box.pipe_picture = util.empty_sprite()
+tap.always_draw_covers = false
 data:extend({ tap })
 
 --------------------------------------------------------------------------------

@@ -412,3 +412,75 @@ panel proving a pipe mates with it.
 connection is not drawn until a pipe can be drawn butted onto it.* Both failures
 looked fine in isolation. Both were only visible against the thing that has to
 mate with them.
+
+---
+
+# 13. Sprite Dimensions
+
+**Four plates, drawn rather than rotated**, cut from one strip by
+`tools/cut-crust-tap.py`.
+
+| Plate | Canvas | Base square | Shift | Shadow | Shadow shift |
+| ----- | ------ | ----------: | ----- | ------ | ------------ |
+| `base-north.png` | 148 × 178 | 2.016 tiles | `{ +0.00781, 0 }` | 305 × 198 | `{ +1.07812, 0 }` |
+| `base-east.png` | 190 × 132 | 2.000 tiles | `{ −0.32812, 0 }` | 310 × 152 | `{ +0.45313, 0 }` |
+| `base-south.png` | 145 × 175 | 1.953 tiles | `{ 0, 0 }` | 299 × 195 | `{ +1.04688, 0 }` |
+| `base-west.png` | 180 × 132 | 1.938 tiles | `{ +0.28125, 0 }` | 300 × 152 | `{ +1.06250, 0 }` |
+
+Alpha `0` on all four edges of all eight plates. The four base squares agree
+within 4% — 1.938 to 2.016 tiles — which is the check that they are four
+rotations of one machine rather than four machines.
+
+**Two things about the cut are not obvious, and both are in the tool.** Scale
+comes from the **base square**, not the content, because the riser leaves a
+different face in each view and fitting each view to its own content box would
+draw four machines at four sizes. And each plate is shifted so the **base's**
+centre lands on the tile: centre an east plate on its content and the building
+slides left to make room for a pipe that is meant to hang over the edge.
+
+### Compared against vanilla's offshore pump
+
+| | content | tiles | luminance | saturation |
+| --- | ---: | ---: | ---: | ---: |
+| vanilla offshore pump, one frame | 90 × 161 | 1.406 × 2.516 | 81 | 0.349 |
+| **ours, north** | 140 × 170 | **2.188 × 2.656** | 69 | 0.403 |
+
+**Vanilla's pump art reaches well past its own 1×2 collision box**, exactly as
+ours reaches past 2×2 with the riser — a fluid connector is *supposed* to arrive
+at the tile it connects on. Ours is darker (69 against 81), which is §21's open
+tier-0 question and not a defect of this plate.
+
+---
+
+# 24. What stage 1 found — and it was a defect in my own diagram
+
+**On a 2×2 footprint the middle of a face is not a connection point.** It is the
+seam between two tiles, and nothing connects there. The prototype has always
+declared the connection at `{ 0.5, −0.5 }` — a **tile centre** — while the
+geometry diagram used through three concept rounds told the generator to leave
+"through the middle of that edge". On an odd footprint those are the same place;
+on an even one they are half a tile apart.
+
+The first four plates were drawn to the diagram and were therefore half a tile
+out. They were re-rendered against a corrected diagram — four tiles with their
+centres marked, a cross over the middle of the face — and the riser now rotates
+around the machine the way the connection does:
+
+| Direction | Connection | Riser leaves |
+| --------- | ---------- | ------------ |
+| north | `{ 0.5, −0.5 }` | far edge, right-hand tile |
+| east | `{ 0.5, 0.5 }` | right edge, near tile |
+| south | `{ −0.5, 0.5 }` | near edge, left-hand tile |
+| west | `{ −0.5, −0.5 }` | left edge, far tile |
+
+**This is the same class of error as the Vacuum Furnace's flux flange and the
+Concentrator's second outlet** — art and prototype describing different tiles —
+and it is the third one this stage has caught. All three were invisible in the
+Lua and invisible in the sheet; all three were only visible when the plate was
+read *against* the prototype.
+
+**Vanilla's graphics set had to go with the water.** The offshore pump ships an
+underwater layer, a glass overlay, a fluid animation and a base picture, every
+one of them describing a shoreline this planet does not have. Replacing the set
+removes them, and `pipe_covers` is cleared with `pipe_picture` emptied because
+the plate draws its own mouth.
