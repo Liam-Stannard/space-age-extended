@@ -175,4 +175,5 @@ def main():
         print(f"  wrote {a.mask_out}")
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -268,4 +268,5 @@ def main():
           f"{min(moved):.1f} .. {max(moved):.1f}")
 
 
-main()
+if __name__ == "__main__":
+    main()

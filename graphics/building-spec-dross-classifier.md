@@ -289,6 +289,37 @@ an icon that disagrees with the plate. Recorded for Liam rather than decided:
 
 # 19. Design Notes / Iteration History
 
+**Round 3, 2026-09-09 — the drive, redrawn so it can turn.** Not a design
+change: the drive as drawn cannot be animated, and the reason is measurable. Its
+surface is one smooth luminance ramp with a single peak of 141 at rows 14–17
+falling to 20 at the bottom — that peak is a *baked specular*, and a highlight
+belongs to the lamp rather than to the metal, so rotating the texture drags the
+brightest thing in the frame around the drum. Nothing repeats around the
+circumference either, so there is nothing to track even with the lighting
+separated. See `graphics/animation-pipeline.md`, Stage 1.
+
+Regenerated as an edit of `base.png` carrying the pipeline's four Stage 1
+sections. **The drive came back right**: eight bolt heads evenly spaced around
+the wheel face, ribs across the barrel, an offset counterweight boss, and the
+specular gone — and all of it still legible when the render is brought down to
+the plate's 192×181. Filed as `concept/plate-r3-animatable-drive.png`.
+
+**Not adopted, pending a decision.** The edit redrew the whole machine, not one
+component: 52.4 % of pixels changed against a 6.1 % resample floor, and alpha
+drift 4.11 against 0.63. But every measure the pipeline actually checks is
+*identical* to the shipped plate — trimmed aspect 1:0.93 both, body metal
+`#634C3D` at luminance 80 and warmth +38 both, palette in range both — and the
+yellow accent, the hatches, the roofline and the springs all survive. So the
+52 % is texture-level redraw rather than design drift, and the choice is
+whether to take the new plate whole or keep the shipped one.
+
+**The middle path is blocked.** Compositing only the new drive onto the shipped
+housing needs a stencil, and two mask edits of the render came back
+byte-identical to their input — different file size, `ImageChops.difference`
+returning `None`, zero magenta. That is the null result Appendix B records, hit
+twice in a row on this image where the same prompt worked first time on the
+previous plate.
+
 **Round 1, 2026-09-08 — five options, compared rather than refined.** A Shaker
 Deck, B Trommel, C Rocker Beam, D Cascade Tower, E Spiral Rake; one generation
 each, no refinements, a fresh conversation per option so no design bled into the
