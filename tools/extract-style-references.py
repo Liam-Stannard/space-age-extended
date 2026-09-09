@@ -27,6 +27,11 @@ graphics/TODO.md; these are the three cut so far:
                          while that machine is the separator's anti-read and so
                          must not be attached to it at all.
   recycler               Whisker Comber
+  chemical-plant         Helium Concentrator
+  cryogenic-plant        Vacuum Furnace
+  pumpjack               Crust Tap -- and this one is also that building's
+                         anti-read, so the prompt must label it a camera
+                         reference and say what must not be taken from it.
 
 Use --only to cut a subset: the standard four plus the one this building owns.
 
@@ -91,6 +96,22 @@ REFERENCES = {
         # The recycler ships in its own data mod, not in space-age.
         ("recycler/graphics/entity/recycler/recycler-N.png",
          170, 304, 0.0625, -0.203125, 8, 0),
+    ],
+    "chemical-plant": [
+        ("base/graphics/entity/chemical-plant/chemical-plant-north-base.png",
+         204, 292, 0.03125, -0.28125, 1, 0),
+    ],
+    "cryogenic-plant": [
+        ("space-age/graphics/entity/cryogenic-plant/cryogenic-plant-main.png",
+         380, 396, 0.09375, -0.109375, 1, 0),
+        ("space-age/graphics/entity/cryogenic-plant/cryogenic-plant-glass.png",
+         274, 228, 0.125, -0.234375, 1, 0),
+    ],
+    "pumpjack": [
+        ("base/graphics/entity/pumpjack/pumpjack-base.png",
+         261, 273, -0.0703125, -0.1484375, 1, 0),
+        ("base/graphics/entity/pumpjack/pumpjack-horsehead.png",
+         206, 172, -0.140625, -0.90625, 8, 0),
     ],
 }
 

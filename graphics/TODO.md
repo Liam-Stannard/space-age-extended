@@ -192,7 +192,7 @@ next building drawn against a reference it has not seen.
 | Coil Separator | nuclear reactor | superconducting store v1 |
 | Whisker Comber | recycler | sealed roboport v2 |
 | Helium Concentrator | chemical plant | vent pump v4 |
-| Vacuum Furnace | cryogenic plant | ignition array v2 |
+| Vacuum Furnace | cryogenic plant | **ignition array `concept/adopted/R-sheet.png`** — the v2 sheet this row used to name is a rejected design carrying a generator-added wordmark |
 | Crust Tap | pumpjack | arc mast v4 |
 | Ignition Ring Mast | our own ignition array | radiant generator v1 |
 
