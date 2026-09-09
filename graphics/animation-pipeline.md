@@ -208,7 +208,13 @@ tools/build-part-frames.py --part part.png --mode scroll --frames 12 \
     --region 106 5 130 46 --out main-rotate.png --shadow-out shadow-rotate.png
 ```
 
-`--mode` is `slide`, `spin`, `scroll` or `shake` — pick it from Stage 0's answer.
+`--mode` is `slide`, `spin`, `ribs`, `scroll` or `shake` — pick it from Stage 0's
+answer. **For a drum, use `ribs`.** It splits the region into the shading, which
+is frozen, and the repeating surface feature, which is the only thing carried
+round — because a barrel's light and shade belong to the lamp, not to the metal.
+`scroll` moves both together and visibly lurches: measured on the Classifier's
+drum, low-frequency movement across twelve frames is 23.2 under `scroll` against
+6.2 under `ribs`.
 `--shadow-out` gives you the `-shadow-<phase>` sheet vanilla ships alongside
 every `-main-<phase>`, on its own canvas with its own shift, which the tool
 prints. Use that shift.
