@@ -258,3 +258,56 @@ Still open, and all of it is tuning rather than design:
   is already Core-locked by its ingredient. The condition is harmless but it is
   not doing any work, and `01-principles.md` is clear that manufacture alone is
   never a crossing.
+
+---
+
+# 13. Sprite Dimensions
+
+**Measured off the shipped plates.**
+
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 200 × 201 | 192 × 193 → **3.000 × 3.016 tiles** | `{ 0, 0 }` | 0.5 |
+| `base-shadow.png` | 355 × 212 | sheared off the plate's own alpha | `{ 1.21094, 0.08594 }` | 0.5 |
+| `skirt-glow.png` | 200 × 201 | the hot vessel's skirt joints, differenced | `{ 0, 0 }` | 0.5 |
+
+Centred to **0.0 px**, alpha `0` on all four edges of every plate, three in a row
+claim **0 px twice**, `check-footprint.py --tiles 3` passes with 0.02 tiles of
+height above the box.
+
+### Compared against vanilla
+
+| | tiles | aspect | luminance | edge density |
+| --- | ---: | ---: | ---: | ---: |
+| vanilla chemical plant | 3.188 × 4.563 | 1:1.43 | — | **0.164** |
+| **ours** | **3.000 × 3.016** | **1:1.00** | 67 | **0.262** |
+
+**The density problem the option page warned about is solved, and by more than
+the target.** The concept sheet measured 0.108 — the least detailed of its round
+— and the cut plate measures **0.262 against vanilla's chemical plant at
+0.164**. One instruction did it: *more hardware, without changing the shapes.*
+Gauge faces, jacket seams, ladder cleats, cable runs, valve blocks, bolt rings.
+
+**The vanilla comparison also shows why the sheet number was misleading.** A
+concept sheet is mostly charcoal page; a plate is all building.
+
+---
+
+# 21. What stage 1 found
+
+**The prototype declared both outputs on the north face.** Its own §8 says
+helium-3 leaves north on the riser and the settled melt leaves **west, low**, and
+the adopted plate draws exactly that. Fixed, and verified against the engine's own
+dump rather than the Lua: `input dir=8 (south)`, `output dir=0 (north)`,
+`output dir=12 (west)` — three ports on three faces.
+
+**All three fluid boxes now follow the foundry's pattern**: `pipe_picture`
+emptied and `always_draw_covers = false`, because the flange belongs to the
+building's own plate and a generic engine stub drawn over it is a second flange
+in the wrong place. The Vacuum Furnace's box was given the same treatment in the
+same pass.
+
+**Three pipe stubs, drawn to mate.** The Crust Tap's three rounds bought a rule
+and it was applied here first time: each connection ends in an open, full-diameter
+pipe mouth at ground level, flush with the middle of its tile edge. The
+pump-and-pipe reference went over with the prompt.

@@ -366,7 +366,19 @@ data:extend({ comber })
 -- vanilla machine.
 --------------------------------------------------------------------------------
 
-data:extend({ crafter("sae-helium-concentrator", "chemical-plant", {
+-- Three ports on three different faces, and each one is drawn on the plate.
+--
+-- The prototype used to put BOTH outputs on the north face, which its own §8 does
+-- not say and the adopted art does not draw: helium-3 leaves north on the riser,
+-- and the heavy settled melt leaves WEST, low. A port declared on one face and
+-- drawn on another is the same defect as the Vacuum Furnace's flux flange, and it
+-- was found the same way -- by reading the plate against the prototype rather
+-- than reading the Lua.
+--
+-- `pipe_picture` is emptied and `always_draw_covers` is false on all three,
+-- which is the foundry's pattern: the flange belongs to the building's own art,
+-- so the engine must not draw a generic stub over it.
+local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
   categories = { "sae-degassing" },
   energy = "1500kW",
   modules = 3,
@@ -376,20 +388,86 @@ data:extend({ crafter("sae-helium-concentrator", "chemical-plant", {
     {
       production_type = "input",
       volume = 1000,
+      pipe_picture = util.empty_sprite(),
+      always_draw_covers = false,
       pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
     },
     {
       production_type = "output",
       volume = 1000,
-      pipe_connections = { { flow_direction = "output", direction = defines.direction.north, position = { -1, -1 } } }
+      pipe_picture = util.empty_sprite(),
+      always_draw_covers = false,
+      pipe_connections = { { flow_direction = "output", direction = defines.direction.north, position = { 0, -1 } } }
     },
     {
       production_type = "output",
       volume = 1000,
-      pipe_connections = { { flow_direction = "output", direction = defines.direction.north, position = { 1, -1 } } }
+      pipe_picture = util.empty_sprite(),
+      always_draw_covers = false,
+      pipe_connections = { { flow_direction = "output", direction = defines.direction.west, position = { -1, 0 } } }
     }
   }
-}) })
+})
+
+-- Art: the Twin Bottles, option C of five (graphics/helium-concentrator-options/).
+--
+-- Two unequal vessels bridged at the waist, and the temperature split is drawn on
+-- the PIPE between them: frost on the cold half, bare warm metal on the hot half,
+-- and a clamp in the middle where it changes. The hot vessel's skirt joints carry
+-- the only warm light on the machine, and only while it is running.
+--
+-- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
+-- 0.0 px, alpha zero on all four canvas edges.
+--
+-- The concept measured as the least detailed sheet of its round, so stage 1 was
+-- allowed exactly one change beyond the light: more hardware on both shells,
+-- without touching their shapes. On the cut plate it now measures denser than
+-- vanilla's own chemical plant.
+local HC = "__space-age-extended__/graphics/entity/helium-concentrator/"
+concentrator.icon = "__space-age-extended__/graphics/icons/helium-concentrator.png"
+derive.own_graphics(concentrator,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = HC .. "base.png",
+        priority = "high",
+        width = 200, height = 201,
+        shift = { 0, 0 },
+        scale = 0.5
+      },
+      {
+        filename = HC .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 355, height = 212,
+        shift = { 1.21094, 0.08594 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    {
+      always_draw = false,
+      light = { intensity = 0.25, size = 2.5, color = { 0.85, 0.45, 0.18 } },
+      animation =
+      {
+        filename = HC .. "skirt-glow.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 200, height = 201,
+        frame_count = 1,
+        shift = { 0, 0 },
+        scale = 0.5
+      }
+    }
+  }
+})
+data:extend({ concentrator })
 
 --------------------------------------------------------------------------------
 -- N7. Vacuum Furnace -- graphics/building-spec-vacuum-furnace.md
@@ -426,6 +504,10 @@ furnace.fluid_boxes =
   {
     production_type = "input",
     volume = 2000,                         -- see the S12 note above
+    -- The plate draws its own frost-collared flange, so the engine must not draw
+    -- a generic stub over it. Foundry's pattern, same as the Concentrator's.
+    pipe_picture = util.empty_sprite(),
+    always_draw_covers = false,
     -- EAST, not south, and the art is why. The adopted plate draws the
     -- frost-collared flux flange low on the right flank, and section 8 of the
     -- spec never said which flank it was -- so the round pinned it east and the
@@ -580,6 +662,8 @@ local ICON = {
     "__space-age-extended__/graphics/icons/whisker-comber.png",
   ["sae-vacuum-furnace"] =
     "__space-age-extended__/graphics/icons/vacuum-furnace.png",
+  ["sae-helium-concentrator"] =
+    "__space-age-extended__/graphics/icons/helium-concentrator.png",
 }
 
 local function machine_item(name, order, ingredients, seconds)
