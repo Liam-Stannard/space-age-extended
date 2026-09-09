@@ -24,8 +24,21 @@ local sounds = require("__base__/prototypes/entity/sounds")
 -- A private category closes it from both ends: nothing vanilla can work a vent,
 -- and the Vent Pump can no longer be built on Nauvis crude oil as a pumpjack
 -- that happens to need helium.
+--
+-- The ore gets one too, for the mirror-image reason. `basic-solid` is what
+-- vanilla's drills work, and the big mining drill -- no surface conditions, 2.5
+-- mining speed, the same 50 per cent drain -- was strictly better than the
+-- Ballast Drill on every axis: faster, a third of the power, same penalty. The
+-- Core's own drill was a building nobody would ever build.
+--
+-- `sae-kamacite` is the fix, and it says something the planet should say anyway.
+-- Kamacite is not ore in a rock; it is the crust of a metal world, and it takes
+-- a machine that presses with its own weight under 50 g. Nothing shipped in from
+-- Nauvis works it, and since kamacite is the Core's only solid resource, an
+-- imported drill is now scrap the moment it lands.
 data:extend({
-  { type = "resource-category", name = "sae-vent" }
+  { type = "resource-category", name = "sae-vent" },
+  { type = "resource-category", name = "sae-kamacite" }
 })
 
 -- Each resource needs an autoplace control before a planet may name it.
@@ -41,7 +54,7 @@ data:extend({
     name = "sae-kamacite-ore",
     icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     flags = { "placeable-neutral" },
-    category = "basic-solid",
+    category = "sae-kamacite",
     order = "z[sae]-a[kamacite-ore]",
     tree_removal_probability = 0.8,
     tree_removal_max_distance = 32 * 32,

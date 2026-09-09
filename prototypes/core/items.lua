@@ -140,6 +140,26 @@ data:extend({
     weight = 500
   },
   {
+    -- A field emitter array: a plate of aligned whisker tips, sealed facing a
+    -- gate under the Core's own vacuum.
+    --
+    -- This is real, and it is the one electronic device that wants exactly what
+    -- this planet has. A sharp enough metal tip in a hard enough vacuum emits
+    -- electrons from a cold surface under field alone -- no heater, no
+    -- semiconductor, no copper. Sharp single-crystal metal tips, all pointing
+    -- the same way, are precisely what comes off the comber, and hard vacuum is
+    -- what the Core is. Everywhere else in the game an emitter array would need
+    -- a pump, an envelope and a getter to hold a vacuum that here is simply the
+    -- weather.
+    type = "item",
+    name = "sae-emitter-array",
+    icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
+    subgroup = "raw-material",
+    order = "z[sae]-g[emitter-array]",
+    stack_size = 100,
+    weight = 500
+  },
+  {
     -- Unaligned, and cheap. A use for whiskers not worth the comb.
     type = "item",
     name = "sae-whisker-felt",

@@ -118,10 +118,21 @@ derive.placeholder_art(drill, "wears big-mining-drill's sprites until its plate 
 drill.icon = data.raw["mining-drill"]["big-mining-drill"].icon
 drill.icons = nil
 drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
-drill.resource_categories = { "basic-solid" }
+-- The Core's only drill, now, and the only machine that will work kamacite at
+-- all -- see the `sae-kamacite` note in resources.lua. That is what lets it be
+-- generous: with nothing to be strictly worse than, its numbers can describe the
+-- machine instead of defending it.
+drill.resource_categories = { "sae-kamacite" }
 drill.resource_drain_rate_percent = 50
-drill.mining_speed = 1.3                  -- ~0.65 of the electric drill's, per ore
-drill.energy_usage = "900kW"
+-- 3.0, up from 1.3, and past the big mining drill's 2.5. The fiction was always
+-- that at 50 g this thing presses with its own mass rather than hammering; a
+-- number below the drill it is derived from said the opposite. (The old comment
+-- claimed "~0.65 of the electric drill's" -- the electric drill is 0.5, so 1.3
+-- was 2.6 times it. The comparison was to the big drill, and it was a penalty.)
+drill.mining_speed = 3.0
+-- Still heavy, because pressing 50 g of machine into a crust is not free, but
+-- 900kW on top of half the yield was two penalties for one building.
+drill.energy_usage = "600kW"
 drill.energy_source = { type = "electric", usage_priority = "secondary-input" }
 drill.module_slots = 4
 drill.surface_conditions = HIGH_G
@@ -705,19 +716,39 @@ local function plate(n) return { type = "item", name = "sae-kamacite-plate", amo
 local function welded(n) return { type = "item", name = "sae-welded-plate", amount = n } end
 local function gear(n) return { type = "item", name = "iron-gear-wheel", amount = n } end
 local function circuit(n) return { type = "item", name = "advanced-circuit", amount = n } end
+local function steel(n) return { type = "item", name = "steel-plate", amount = n } end
 
+-- **The Drop Crusher is priced in freight, and it has to be.** It is the only
+-- machine that fills `sae-crushing`, crushing is the only source of crushed
+-- kamacite and fines, and those two are the only route to a kamacite plate. A
+-- crusher costed in plate is therefore a crusher that can never be built: the
+-- first one has to come out of the corridor, exactly like the first
+-- electromagnetic plant in `06-core-production-tree.md` T1. Every other machine
+-- here is priced in plate because by then the player has some.
+--
+-- **Welded plate is off the four early machines**, and it was a real gate rather
+-- than a flavour note: `sae-welded-plate` needs whiskers, so it does not exist
+-- until `sae-cold-welding` -- three technologies after the Ballast Drill and the
+-- Vacuum Furnace unlock. That made the Vacuum Furnace unbuildable through
+-- exactly the stretch it exists to cover, since it is the only machine that will
+-- smelt the fines the crusher starts making on its first craft. It stays on the
+-- Coil Separator and the Ring Mast, which are endgame machines and have it.
 for _, spec in ipairs({
-  { "sae-drop-crusher", "a", { plate(40), gear(30), circuit(10) }, 6 },
-  { "sae-ballast-drill", "b", { plate(60), welded(10), gear(40), circuit(15) }, 10 },
+  { "sae-drop-crusher", "a", { steel(40), gear(30), circuit(10) }, 6 },
+  -- Freight-priced for the same reason the crusher is: it is now the only way to
+  -- get a kamacite ore out of the ground, so it sits on the critical path to the
+  -- first plate and cannot be costed in plate. That is the rule for the whole
+  -- landing kit -- on the path to the first plate, it comes out of the corridor.
+  { "sae-ballast-drill", "b", { steel(60), gear(40), circuit(15) }, 10 },
   { "sae-dross-classifier", "c", { plate(30), gear(20), circuit(10) }, 5 },
   { "sae-coil-separator", "d",
     { plate(40), welded(10), { type = "item", name = "sae-coil-assembly", amount = 1 },
       { type = "item", name = "processing-unit", amount = 20 } }, 12 },
   { "sae-whisker-comber", "e", { plate(30), gear(30), circuit(10) }, 6 },
   { "sae-helium-concentrator", "f",
-    { plate(40), welded(8), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
+    { plate(40), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
   { "sae-vacuum-furnace", "g",
-    { plate(50), welded(10), { type = "item", name = "processing-unit", amount = 10 } }, 10 },
+    { plate(50), { type = "item", name = "processing-unit", amount = 10 } }, 10 },
   { "sae-ring-mast", "i",
     { plate(60), welded(20), { type = "item", name = "sae-superconducting-winding", amount = 4 },
       { type = "item", name = "processing-unit", amount = 20 } }, 15 },

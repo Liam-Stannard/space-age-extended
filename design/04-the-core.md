@@ -69,6 +69,15 @@ network available at first, that makes **belts and rails** the answer, and it
 makes the Core a place the player expands across rather than a single pad they
 build on.
 
+**Only the Ballast Drill will work it.** The ore carries its own
+`resource-category`, `sae-kamacite`, so no drill shipped in from anywhere else
+touches it — the same lock the vents already had, for the same reason. Kamacite
+is not ore in a rock; it is the crust of a metal world, and it takes a machine
+that presses with its own weight under 50 g. Since kamacite is the Core's only
+solid resource, an imported drill is scrap the moment it lands. The drill is
+therefore on the critical path to the first plate, which is why it is priced in
+freight rather than in the plate it produces.
+
 ### Melt vents — a fluid, infinite but declining
 
 Scattered vents tapped by a **vent pump**, yielding **molten kamacite**: hot,
@@ -116,10 +125,16 @@ and nothing there burns.
 
 **No carbon, no water, no organics.** No coal, no oil, nothing that ever lived.
 
-Plastics, explosives, anything biological and every drop of water arrive from
-outside — ice caught on the corridor, organics from Gleba, the rest by freight.
-The vents give the Core an industry. They do not give it independence, and that
-is deliberate: the corridor has to keep running after the megaproject is built.
+No copper either. Plastics, explosives, anything biological and every drop of
+water arrive from outside — ice caught on the corridor, organics from Gleba, the
+rest by freight. The vents give the Core an industry. They do not give it
+independence, and that is deliberate: the corridor has to keep running after the
+megaproject is built.
+
+**Two of those absences are answered rather than merely endured**, and §11 is
+where: the Core builds the heavy half of a rocket and all of its own circuitry
+without copper, carbon or oil. What it can never build is a capstone, which is
+what §3 actually rests on.
 
 ## 3. Why the Core can never become self-sufficient
 
@@ -315,15 +330,16 @@ Three rules:
 
 ### The ladder
 
-Fifteen technologies in five tiers — comfortably past the ten-technology floor,
+Twenty-four technologies in five tiers — comfortably past the ten-technology
+floor,
 and shaped so the endgame builds rather than arriving flat.
 
 | Tier | Technologies | Notes |
 |---|---|---|
-| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Core Survey (vent pump, working the ore) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Helium Extraction (the gas vent) | Researched on packs the player already makes, since no geodynamic pack exists yet |
+| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Core Survey (vent pump, drill, crusher, smelting) · Crust Tapping (landing-day power) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Arc Masts · Cold Welding · **Orbital Lift** (§11) · **Vacuum Electronics** (§11) | Researched on packs the player already makes, since no geodynamic pack exists yet |
 | **1 — Integration** | Five technologies, one per capstone: each unlocks the recipe consuming that product with a local input to make an intermediate | **Researchable in any order**, so a player whose Gleba line is ahead of their Aquilo line is never blocked |
 | **2 — Geodynamic Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
-| **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
+| **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory. The roboport is priced in a coolant loop, so it lands *with* the end products rather than before them |
 | **4 — The goal** | Field Coil Segment · Ignition Array | Costs escalate steeply — the Array's research alone running into thousands of packs |
 
 ### Three things this shape gets right
@@ -426,6 +442,11 @@ power and cannot be hurried: the machine is a clamp, not a furnace.
 cost is **place and patience** rather than throughput — the game has never had
 one.
 
+The same condition now carries a second industry. **Vacuum electronics** (§11)
+is the Core's answer to having no copper, and it is only possible where the
+vacuum is free: a sealed emitter facing a gate across nothing at all. Cold
+welding joins in vacuum; field emission *switches* in it.
+
 ### Whisker growth — surface, on tiles
 
 Kamacite whiskers crystallise out of the melt over time on seeded plates, and are
@@ -479,3 +500,82 @@ into a milestone.
 - **The spike on `required_fluid` for a fluid resource** (§2).
 - **What the end products are**, and how many of them there should be.
 - **How many segments**, and how the 100 divides across the aging floor.
+
+## 11. What the Core makes instead of importing it
+
+Two absences looked like permanent freight and turned out to be design space.
+Both were found the same way: by walking the technology tree and asking, at each
+node, whether the recipes it unlocks can actually be crafted.
+
+### The lift pays for itself
+
+§4 puts half the endgame in orbit, and every trip up costs a rocket. A rocket
+part is a processing unit, a low density structure and a rocket fuel — and the
+Core could originally make **none of the three**. By weight that is the dominant
+freight problem in the game: fifty rocket parts need fifty structures at 5 t and
+fifty fuels at 10 t, which is **750 of the 1,000 tonnes a rocket lifts**. Three
+quarters of a cargo rocket, spent shipping the means to launch the next one.
+
+Two alternates fix the heavy end, in the shape vanilla already uses for exactly
+this — Vulcanus does not get a new rocket part, it gets
+`casting-low-density-structure`; Gleba gets `rocket-fuel-from-jelly`. A planet
+earns a different route to the same item.
+
+| Alternate | From | Where | Why here |
+|---|---|---|---|
+| **Whisker-cast structure** | settled melt + whisker tow | foundry | Single-crystal fibre in a cast matrix. Low density because of what is *in* it. Ties the lift to the farm, so "launch more often" means more floor |
+| **Crust-gas propellant** | crust gas + kamacite plate | chemical plant | Gives the crust vents a second job, so the tap stops being a building the player walks past after hour one. The lift is sited on the map, like everything else here |
+
+### Circuits without copper
+
+Every circuit in the game is copper and plastic. The way out is not to import
+copper; it is to **stop needing a solid conductor at all.**
+
+A sharp enough metal tip in a hard enough vacuum emits electrons under field
+alone — cold, no heater, no semiconductor. That is field emission, it is real,
+and vacuum microelectronics is prized in precisely the conditions this planet
+has: no atmosphere to break down, and a radiation hardness no doped wafer
+matches. **The switching element is a gap.**
+
+Which means the Core's two dead ends are the two ingredients:
+
+- **Whiskers are single-crystal metal fibres, and a field emitter is a sharp
+  single-crystal tip.** The comber already aligns them, because a composite wants
+  its fibres one way; an emitter array wants its tips one way for the same reason
+  and the same recipe serves both.
+- **Vacuum**, which `06-core-production-tree.md` T8 named as the Core's one free
+  advantage and then observed that nothing used. All three recipes carry
+  `pressure ≤ 9`, so they are refused everywhere else in the game. Aquilo, the
+  lowest vanilla planet, is 300. A pressure of 10 is a device full of air.
+
+```
+1 whisker tow + 2 kamacite plate            ->  2 field emitter array
+1 emitter array + 1 kamacite plate          ->  2 advanced circuit
+3 emitter array + 1 welded plate + 100 steam ->  1 processing unit
+```
+
+The steam is a **bake-out** — a sealed envelope holds its vacuum only once the
+surfaces inside it have been baked until they stop giving gas back — and it is
+required at 500 °C, which is the byproduct of settling. So electronics become a
+third claimant on the metal-or-steam split of §2, beside metal and electricity.
+Every processing unit is steam that did not turn a turbine.
+
+**This is a lateral trade, not a better circuit.** A processing unit costs about
+fourteen whiskers, and whiskers come at four per plant every four minutes — so
+the Core's electronics run at the speed of *growing area*, the constraint the
+whole planet is built around. A Nauvis copper line out-produces it and always
+should. What it buys is that the Ignition Array's two hundred processing units
+are a farm the player builds rather than a queue of cargo pods, and the corridor
+gets to carry the things that matter.
+
+### What this does not change
+
+The corridor still brings all five capstone products, and steel, gears, electric
+engines, pipe, accumulators, carbon and rockets besides. §3's guarantee was never
+about circuits; it rests on the capstones, and it is untouched.
+
+**One thing it does change, and deliberately.** Advanced circuits and processing
+units made here are ordinary items and can be shipped anywhere. The Core has
+never supplied anything outward before. The whisker rate keeps it from being an
+exploit, and the fiction is good — the dead world makes the radiation-hard
+computers — but it reverses the corridor's direction for the first time.

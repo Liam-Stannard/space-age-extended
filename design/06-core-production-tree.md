@@ -121,7 +121,7 @@ Mostly built already. One addition and one change.
 
 | Item | Made from | Where | Status |
 | ---- | --------- | ----- | ------ |
-| Kamacite plate | 2 kamacite ore | furnace | **exists** — should become 3 crushed kamacite, so T1 is not bypassable |
+| Kamacite plate | 3 crushed kamacite | furnace | **done** — re-sourced, so T1 is not bypassable. Note the consequence: this put the Drop Crusher on the critical path to its own ingredient, so the crusher and the Ballast Drill are priced in freight |
 | Settled melt · dross · steam | 100 molten kamacite | foundry | **exists**, two recipes (metal-heavy / steam-heavy) |
 | Cast ingot | 100 settled melt | foundry | **exists** |
 | **Phosphide flux** *(fluid)* | schreibersite concentrate + settled melt | foundry | New. Consumed in T3 and T8; the reason T1 is not optional. **A fluid, settled 2026-09-06** — see below |
@@ -132,9 +132,17 @@ Furnace sinter powder *and* flux while still picking its own recipe from what is
 inserted. The cost is that flux is piped rather than belted, and can be tanked but
 not chested. See `graphics/building-spec-vacuum-furnace.md`.
 
-**Make the plate recipe consume crushed ore.** Right now smelting takes raw ore,
-so the whole beneficiation tier can be skipped. Routing plate through crushed
-kamacite is a one-line change that makes T1 load-bearing.
+**Make the plate recipe consume crushed ore.** *Done.* It was a one-line change
+and it made T1 load-bearing — and it also made the mod unplayable for a while,
+because crushing is the only source of crushed kamacite and fines, those are the
+only routes to a plate, and the Drop Crusher was costed at 40 kamacite plate. The
+first crusher could never be built.
+
+**The rule that came out of it:** anything on the critical path to the first
+kamacite plate is priced in freight, and everything after it is priced in plate.
+That is the Drop Crusher, the Ballast Drill, the Vent Pump, the Crust Tap and the
+Crust Turbine. It is the same argument this tier already makes about the first
+electromagnetic plant, applied consistently.
 
 ---
 
@@ -249,10 +257,15 @@ from the prepreg and the dilution charge rather than from raw capstones.
 | **Coolant charge** | dilution charge + kamacite plate | **exists**, re-sourced from the dilution charge |
 | **Vacuum cell** | coil lamination + insulation sleeve | Sealed in vacuum — free on the Core and impossible anywhere else |
 
-**Vacuum is the Core's one free advantage** and nothing currently uses it. A step
-that is cheap here and would need an expensive sealed process on any other planet
-is worth having, because it gives the player something the Core is *good* at
-rather than only things it lacks.
+**Vacuum is the Core's one free advantage.** A step that is cheap here and would
+need an expensive sealed process on any other planet is worth having, because it
+gives the player something the Core is *good* at rather than only things it
+lacks.
+
+*Updated:* this used to read "and nothing currently uses it". Something does now
+— **vacuum electronics**, `04-the-core.md` §11, which is how the Core makes
+circuits without copper. The vacuum cell below is still worth building for the
+same reason; it is no longer the only claim on the advantage.
 
 ---
 

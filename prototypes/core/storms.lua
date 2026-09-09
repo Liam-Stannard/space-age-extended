@@ -29,7 +29,25 @@ data:extend({ arc })
 local mast = table.deepcopy(data.raw["lightning-attractor"]["lightning-collector"])
 mast.name = "sae-arc-mast"
 mast.minable = { mining_time = 0.5, result = "sae-arc-mast" }
-mast.efficiency = 0.35
+-- **0.12, down from 0.35, because the mast was the answer to every power
+-- question on the planet.** Measured before the change: 4000MJ a strike at 0.35
+-- is 1400MJ banked, one strike per chunk per 90 seconds, and a mast catches
+-- whatever lands inside `search_radius` 12 -- pi*12^2 = 452 of a chunk's 1024
+-- tiles. That is 6.9MW of average output per mast, for nothing, for ever.
+--
+-- What it cost is the Core's stated central problem. `04-the-core.md` §2 makes
+-- the melt's metal-or-steam split the planet's defining decision, and quenched
+-- settling nets **+2.96MW** -- 5.46MW of steam through a turbine, less the
+-- 2.5MW the foundry itself draws -- while consuming melt, helium and the metal
+-- that melt would have become. Against a free 6.9MW nobody takes that trade;
+-- against 2.3MW they have to think about it. The crust turbine's 1.8MW sits
+-- just under both, which is where a foothold belongs.
+--
+-- The burst is untouched, and the burst is the character: 4000MJ still arrives
+-- in one strike. At 0.12 a strike banks 480MJ, so one Superconducting Store
+-- holds one strike almost exactly -- which reads better than the three it took
+-- before.
+mast.efficiency = 0.12
 mast.range_elongation = 20
 mast.energy_source =
 {
@@ -188,7 +206,8 @@ data:extend({
     ingredients =
     {
       { type = "item", name = "sae-kamacite-plate", amount = 30 },
-      { type = "item", name = "sae-welded-plate", amount = 5 },
+      -- No welded plate. It needs whiskers, so it arrives three technologies
+      -- after this one does -- see the note in machines.lua.
       { type = "item", name = "processing-unit", amount = 10 },
       { type = "item", name = "accumulator", amount = 5 }
     },

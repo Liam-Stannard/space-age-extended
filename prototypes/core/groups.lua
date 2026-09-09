@@ -77,6 +77,7 @@ local CHAIN =
   ["sae-kamacite-whiskers"] = "cc",
   ["sae-whisker-tow"] = "cd",
   ["sae-whisker-felt"] = "ce",
+  ["sae-emitter-array"] = "cf",
 
   -- Carbonyl chemistry.
   ["sae-carbonyl-powder"] = "da",

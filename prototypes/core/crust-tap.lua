@@ -288,6 +288,13 @@ data:extend({ turbine })
 --
 -- Both are cheap and early on purpose: this is the pair a player builds on
 -- landing day, before there is a smelter to make anything better with.
+--
+-- **Which means neither can be priced in kamacite plate**, and both were. The
+-- technology says as much -- `sae-crust-tapping` hangs off Core Discovery
+-- rather than the Survey, "because it needs nothing the survey teaches" -- but
+-- the recipes needed 10 and 20 plate, and plate is the survey's whole output.
+-- A player who took the landing-day technology first got two recipes they could
+-- not craft. Steel, gears and pipe come out of the cargo pod, so now they can.
 --------------------------------------------------------------------------------
 
 data:extend({
@@ -308,7 +315,7 @@ data:extend({
     energy_required = 4,
     ingredients =
     {
-      { type = "item", name = "sae-kamacite-plate", amount = 10 },
+      { type = "item", name = "steel-plate", amount = 10 },
       { type = "item", name = "pipe", amount = 10 },
       { type = "item", name = "iron-gear-wheel", amount = 10 }
     },
@@ -332,7 +339,7 @@ data:extend({
     energy_required = 6,
     ingredients =
     {
-      { type = "item", name = "sae-kamacite-plate", amount = 20 },
+      { type = "item", name = "steel-plate", amount = 20 },
       { type = "item", name = "pipe", amount = 10 },
       { type = "item", name = "iron-gear-wheel", amount = 20 }
     },

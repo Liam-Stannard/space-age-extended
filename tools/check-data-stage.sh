@@ -93,6 +93,12 @@ if [ -f "$DUMP" ]; then
   # sprite paths are built that way. See tools/check-dumped-graphics.py.
   python3 "$REPO_ROOT/tools/check-dumped-graphics.py" "$DUMP" "$DATA_DIR" || exit 1
   "$REPO_ROOT/tools/check-recipes.py" "$DUMP" || exit 1
+  # And whether the game can be played, which is a different question from
+  # whether it loads. Everything above proves prototypes are well-formed and
+  # their assets exist; none of it notices a technology that unlocks a recipe
+  # whose ingredients no reachable machine can make. See the tool's own header
+  # for the one that got through.
+  "$REPO_ROOT/tools/check-tech-reachability.py" "$DUMP" || exit 1
 else
   echo "Checks skipped -- no data-raw dump at $DUMP" >&2
   exit 1

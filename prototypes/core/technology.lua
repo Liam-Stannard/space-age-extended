@@ -87,6 +87,12 @@ data:extend({
   -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
   -- recipes.lua), so unlocking smelting without the crusher would unlock a
   -- recipe whose ingredient the player cannot make.
+  --
+  -- **That re-sourcing also closed a loop nobody had walked.** Crushing is the
+  -- only source of crushed kamacite and fines, those are the only routes to a
+  -- kamacite plate, and the crusher was priced at 40 kamacite plate -- so the
+  -- first crusher could never be built, and with it nothing else on the planet.
+  -- The crusher is costed in freight now; see machines.lua.
   foothold("sae-core-survey", { "sae-core-discovery" },
     {
       { type = "unlock-recipe", recipe = "sae-vent-pump" },
@@ -135,7 +141,11 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-whisker-matting" }
     },
     "__space-age-extended__/graphics/technology/sae-whisker-beds.png"),
-  foothold("sae-sealed-roboports", { "sae-cold-welding" },
+  -- Off the field coils, not just cold welding: a sealed roboport is priced in a
+  -- coolant loop, and nothing makes one until `sae-field-coils`. `04-the-core.md`
+  -- §6 puts the roboport in tier 3 beside the Core's own goods for exactly this
+  -- reason -- it is the milestone that lands *with* them, not before them.
+  foothold("sae-sealed-roboports", { "sae-cold-welding", "sae-field-coils" },
     {
       { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
     }),
@@ -146,6 +156,33 @@ data:extend({
   foothold("sae-cold-welding", { "sae-whisker-beds" },
     {
       { type = "unlock-recipe", recipe = "sae-cold-welding" }
+    }),
+  -- The lift. `04-the-core.md` §4 puts half the endgame in orbit and every trip
+  -- costs a rocket, but a rocket part is a processing unit, a low density
+  -- structure and a rocket fuel -- and the Core could make none of the three, so
+  -- the whole lift was freight. These are the two alternates that fix the heavy
+  -- end of it; see recipes.lua for what they are and why the processing unit is
+  -- deliberately not among them.
+  --
+  -- Off the beds because the structure is fibre-reinforced, and off the tapping
+  -- because the propellant is crust gas.
+  foothold("sae-orbital-lift", { "sae-whisker-beds", "sae-crust-tapping" },
+    {
+      { type = "unlock-recipe", recipe = "sae-cast-structure" },
+      { type = "unlock-recipe", recipe = "sae-crust-propellant" }
+    }),
+  -- Circuits, on a world with no copper and no plastic. Field emission out of
+  -- combed whiskers, switching across a vacuum gap -- see recipes.lua for what
+  -- that is and why the Core is the only place it works.
+  --
+  -- Off cold welding rather than the beds, and both halves of that are load
+  -- bearing: cold welding is where the mod establishes that vacuum is a process
+  -- and not just an absence, and the processor is canned in a welded plate.
+  foothold("sae-vacuum-electronics", { "sae-cold-welding" },
+    {
+      { type = "unlock-recipe", recipe = "sae-emitter-array" },
+      { type = "unlock-recipe", recipe = "sae-valve-logic" },
+      { type = "unlock-recipe", recipe = "sae-valve-processor" }
     })
 })
 
@@ -176,7 +213,20 @@ data:extend({
   -- line is further along than their Aquilo line is never blocked. Each is
   -- researched on the packs they already make, because the geodynamic pack
   -- cannot exist until two of these are done.
-  foothold("sae-integration-conductor", { "sae-core-survey" },
+  -- **Both prerequisites are the recipe's own ingredients, and neither used to
+  -- be here.** A field conductor is two superconducting windings and a
+  -- homogenised ingot. The winding is made only by the Fulgora <-> Aquilo tree,
+  -- and the ingot only by orbital homogenisation, which is `sae-gravity-settling`
+  -- -- so this technology used to hang off the Survey and unlock a recipe with
+  -- neither of its ingredients reachable.
+  --
+  -- That mattered more than one dead recipe: the conductor feeds the geodynamic
+  -- pack and the pack gates everything after it, so the whole tree above tier 0
+  -- rested on a technology it never named. Nothing is lost by saying so --
+  -- cryogenic science is already a prerequisite of promethium science, so any
+  -- player standing on the Core can reach the winding chain. The other four
+  -- integrations will want the same treatment the day their stubs become real.
+  foothold("sae-integration-conductor", { "sae-gravity-settling", "sae-fa-superconducting-winding" },
     { { type = "unlock-recipe", recipe = "sae-field-conductor" } }),
   foothold("sae-integration-frame", { "sae-whisker-beds" },
     { { type = "unlock-recipe", recipe = "sae-reinforced-frame" } }),
@@ -201,9 +251,11 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-coil-assembly" },
       { type = "unlock-recipe", recipe = "sae-coolant-loop" },
-      { type = "unlock-recipe", recipe = "sae-field-coil-segment" },
-      -- The segment recipe takes an ignition charge, and only the Ring Mast
-      -- makes one, so the two unlock together or the segment is unbuildable.
+      -- The Ring Mast and its charge are infrastructure and land here; the
+      -- segment they feed is crafted *inside* the Ignition Array and unlocks
+      -- with it, the way vanilla unlocks `rocket-part` with the silo rather than
+      -- a technology earlier. `04-the-core.md` §6 already groups the two as
+      -- tier 4; this is the tree agreeing with it.
       { type = "unlock-recipe", recipe = "sae-ring-mast" },
       { type = "unlock-recipe", recipe = "sae-ignition-charge" }
     },
@@ -240,8 +292,15 @@ data:extend({
   -- Carbonyl chemistry is a prerequisite because the Array's recipe now takes
   -- sintered preforms. Without it the last technology would unlock a building
   -- the player cannot yet make a part of.
-  geodynamic("sae-ignition-array", { "sae-field-coils", "sae-carbonyl-chemistry" }, 1200,
-    { { type = "unlock-recipe", recipe = "sae-ignition-array" } })
+  -- `sae-arc-masts` because the Array's recipe takes four of them, and it was
+  -- not a prerequisite of anything: a player could finish the tree and find the
+  -- last building priced in a machine they had never unlocked.
+  geodynamic("sae-ignition-array",
+    { "sae-field-coils", "sae-carbonyl-chemistry", "sae-arc-masts" }, 1200,
+    {
+      { type = "unlock-recipe", recipe = "sae-ignition-array" },
+      { type = "unlock-recipe", recipe = "sae-field-coil-segment" }
+    })
 })
 
 -- Fulgora <-> Aquilo. Available once both worlds are running, which is what
@@ -255,8 +314,7 @@ data:extend({
     icon_size = 256,
     effects =
     {
-      { type = "unlock-recipe", recipe = "sae-cryogen" },
-      { type = "unlock-recipe", recipe = "sae-cryogen-recovery" }
+      { type = "unlock-recipe", recipe = "sae-cryogen" }
     },
     prerequisites = { "cryogenic-science-pack" },
     unit =
@@ -277,7 +335,14 @@ data:extend({
     name = "sae-fa-fluorinated-holmium",
     icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
     icon_size = 256,
-    effects = { { type = "unlock-recipe", recipe = "sae-fluorinated-holmium" } },
+    -- Recovery moved here from `sae-fa-cryogen`. Nothing makes spent cryogen
+    -- until fluorination does, so unlocking the loop-closer a technology early
+    -- put a recipe in the menu that could not run.
+    effects =
+    {
+      { type = "unlock-recipe", recipe = "sae-fluorinated-holmium" },
+      { type = "unlock-recipe", recipe = "sae-cryogen-recovery" }
+    },
     prerequisites = { "sae-fa-cryogen" },
     unit =
     {

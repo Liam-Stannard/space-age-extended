@@ -1,16 +1,21 @@
 # The Core — what is left to finish
 
-State as of 2026-09-06, written straight after the art pass that shipped five of
-the seven buildings. This is the working list for taking the Core from "loads and
-plays" to "finished", ordered by what blocks what.
+State as of 2026-09-09. This is the working list for taking the Core from "loads
+and plays" to "finished", ordered by what blocks what.
+
+**Updated 2026-09-09 after a balance pass on the opening hours.** The Core did
+not play at all before it: the technology tree contained a hard deadlock that
+made every building on the planet unreachable. §5 records what that was and what
+else the same analysis turned up.
 
 Everything here was checked against the engine's own data-raw dump rather than
 against the source, because most of this mod's asset paths are built by Lua
 rather than written out — see `tools/check-dumped-graphics.py`.
 
-**Where things stand.** 19 technologies, 35 items, 6 fluids, 39 recipes, seven
-buildings of which five have their own art. The mod loads clean: data stage,
-graphics, resolved-path and recipe checks all pass.
+**Where things stand.** 24 technologies, 52 items, 10 fluids, 64 recipes and
+sixteen buildings, of which five still wear borrowed art. The mod loads clean:
+data stage, graphics, resolved-path and recipe checks all pass, and the tree is
+now walked by a reachability check as well — see §5.
 
 ---
 
@@ -59,7 +64,13 @@ chemistry available to the Core and it is entirely unbuilt.
 
 ### 2.1 Vent Pump — not started
 
-The last building without its own art, and the most expensive of the seven: four
+**Five buildings still wear borrowed sprites** — measured off the dump by asking
+which entity graphics point at `__base__` or `__space-age__` rather than by
+trusting the placeholder log, which fires before `own_graphics` replaces it:
+the Vent Pump, the Drop Crusher, the Ballast Drill, the Ring Mast and the Crust
+Turbine.
+
+The Vent Pump is the one to do first, and the most expensive of them: four
 directional frames **plus** an animation, where every other building needed one
 or two plates.
 
@@ -128,15 +139,32 @@ Design §2 flags it: no vanilla prototype has both `minable.required_fluid` and 
 output fluid box at once. The Core's central siting problem — helium throttling
 melt — rests on that working. Spike it before depending on it further.
 
-### 3.2 The melt's metal-or-steam split has no pressure on it yet
+### 3.2 The melt's metal-or-steam split — partly addressed
 
 Two settling recipes exist and differ correctly (60 melt + 150 steam against 25
-melt + 900 steam). But nothing yet forces the choice to hurt, because power
-demand on the Core is low. It becomes the central problem only when the line is
-long enough to want the metal and hungry enough to want the steam — i.e. after
-§1.2.
+melt + 900 steam). This used to read "nothing yet forces the choice to hurt,
+because power demand on the Core is low", and it blamed the wrong side of the
+ledger. **Demand was never the binding constraint; supply that cost nothing
+was.** An arc mast produced 6.9 MW on average, for free, for ever — against
++2.96 MW net from a quenched vessel that consumes melt, helium and the metal the
+melt would have become. Nobody was ever going to take that trade.
 
-### 3.3 The sixth tree is 19 technologies, but shallow in places
+Two changes since:
+
+- **Mast efficiency 0.35 → 0.12**, putting a mast at 2.36 MW. The order is now
+  crust turbine 1.80 < mast 2.36 < quenched settling 2.96, so the melt route is
+  the best sustained power on the planet again and the split is a decision. The
+  4000 MJ burst is untouched, because the burst is the character.
+- **A third claimant on the steam.** The valve processor
+  (`04-the-core.md` §11) takes 100 steam at 500 °C as a bake-out, so electronics
+  now compete with electricity for the same byproduct.
+
+Still open: the radiant generator is 10 MW on free corridor asteroid fuel and
+works on the Core (`pressure ≤ 9`). It is the same shape of leak the mast was,
+arriving later. Restricting it to gravity 0 would keep its stated purpose — the
+corridor's own power, made where it is spent — and close the surface bypass.
+
+### 3.3 The sixth tree is 24 technologies, but shallow in places
 
 Five of them are the integration techs, one per capstone, and four of those gate
 recipes whose inputs are stubs. Their real cost cannot be judged until 1.1 lands.
@@ -159,3 +187,94 @@ a real line, so the most important number in the tree is still a guess.
 5. **Metal carbonyl** — best done with 4, since it feeds it.
 6. **A full client playtest**, then tune geodynamic science against it.
 7. The remaining Ignition Array art, and the crane's movement.
+
+---
+
+## 5. The balance pass of 2026-09-09
+
+### 5.1 What was wrong
+
+The tree was walked mechanically: for every technology, with only its transitive
+prerequisites researched, can each recipe it unlocks actually be crafted — every
+ingredient obtainable, and a machine of its category buildable? The check found
+**thirty failures, and one of them was fatal.**
+
+**Kamacite plate could not be made at all**, and it is an ingredient in twenty
+recipes:
+
+```
+sae-drop-crusher      cost 40 kamacite plate
+  └─ only machine with category sae-crushing
+       └─ sae-crushing is the only source of crushed kamacite and fines
+            └─ which are the only two routes to a kamacite plate
+```
+
+Nothing else in the game makes kamacite plate, so it could not be imported
+either. Every one of the Core's technologies unlocked recipes that were
+unreachable. The mod loaded, passed every check in the repo, and could not be
+played past the landing pad.
+
+It was introduced by a change that was right in itself — re-sourcing plate onto
+crushed kamacite so beneficiation could not be skipped — which nobody followed
+through to the crusher's own price.
+
+### 5.2 What changed
+
+| | Fix |
+|---|---|
+| **The deadlock** | Drop Crusher priced in steel rather than kamacite plate. The rule now: **on the critical path to the first plate, it comes out of the corridor** — crusher, drill, vent pump, crust tap, crust turbine |
+| **Welded plate** | Off the Ballast Drill, Vacuum Furnace, Helium Concentrator and Arc Mast. It needs whiskers, so it arrived three technologies after those unlocked — which left the Vacuum Furnace unbuildable through exactly the stretch it exists to cover |
+| **Landing-day power** | Crust tap and turbine priced in steel, so `sae-crust-tapping` is reachable when its own prerequisites say it is |
+| **Six prerequisites** | `sae-integration-conductor` ← gravity settling *and* `sae-fa-superconducting-winding`; `sae-sealed-roboports` ← field coils; `sae-ignition-array` ← arc masts; the Field Coil Segment moved to unlock with the Array it is crafted inside; `sae-cryogen-recovery` moved one technology later, to sit with the thing that makes spent cryogen |
+| **Power** | Arc mast efficiency 0.35 → 0.12 — see §3.2 |
+| **The Ballast Drill** | Was strictly worse than an imported big mining drill on every axis. Kamacite now carries its own `resource-category`, so nothing but the Ballast Drill works it; speed 1.3 → 3.0 and 900 → 600 kW |
+| **The lift and the circuits** | Four new recipes and two technologies — `04-the-core.md` §11 |
+
+The check is now `tools/check-tech-reachability.py`, run by
+`check-data-stage.sh` alongside the others. It is the only check in the repo
+that can see this class of fault: the data stage proves the mod loads,
+`check-dumped-graphics.py` proves every asset resolves, and neither has any
+opinion about whether the game can be played.
+
+### 5.3 What testing the checker found
+
+A check that has never failed proves nothing, so the deadlock was reintroduced
+deliberately to watch the new tool catch it. **It did not.** The tool was right
+and the mod was wrong in a second way: kamacite plate really was obtainable, via
+`advanced-circuit-recycling`.
+
+`__recycler__` walks every recipe in the game and generates `<product>-recycling`
+by inverting it. When two recipes make the same product, whichever the iteration
+reaches last silently becomes the recycling result **for everyone**. The Core's
+four alternates had therefore rewritten vanilla's own:
+
+| Recycling recipe | Was returning | Should return |
+| --- | --- | --- |
+| `advanced-circuit-recycling` | emitter array, kamacite plate | electronic circuit, plastic, copper cable |
+| `processing-unit-recycling` | emitter array, welded plate | electronic circuit, advanced circuit |
+| `low-density-structure-recycling` | whisker tow | steel, copper, plastic |
+| `rocket-fuel-recycling` | kamacite plate | solid fuel |
+
+So recycling an advanced circuit on Fulgora returned kamacite — the Core's
+exclusive metal, in every scrap line in the game, on every planet. Nothing in
+the repo could have caught that except a check that asks what is obtainable.
+
+The fix is `auto_recycle = false`, which is the opt-out the generator actually
+reads; Space Age sets it on 73 of its own recipes. **`allow_decomposition` is
+not it** — the recycler sets that flag on the recipes it *creates* and never
+reads it on the ones it consumes, so setting it looks right, changes nothing,
+and the dump still shows the damage. Any future alternate route to a vanilla
+item needs the same line.
+
+### 5.4 Still open from the same pass
+
+- **The radiant generator is free power on the Core** — §3.2.
+- **The mast's buffer no longer means what it says.** `buffer_capacity` is
+  4000 MJ, sized to hold one strike; at 0.12 a strike banks 480 MJ, so it now
+  holds eight. Harmless, and arguably good — the mast rides out the 90-second
+  gaps itself — but it makes the Superconducting Store less necessary than the
+  design intends. Drop it to ~500 MJ if the store should stay load-bearing.
+- **The four capstone stubs still make every integration technology's real cost
+  unknowable** (§1.1), and the other four integrations will each need the
+  cross-tree prerequisite the conductor just got.
+
