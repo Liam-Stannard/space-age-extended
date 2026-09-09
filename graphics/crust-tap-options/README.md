@@ -273,3 +273,33 @@ and chipped edges lifted it from 0.084 to 0.098 and cleared its flag.
 **The luminance finding from round 1 stands unchanged**: every option sits
 between 49.8 and 57.9 against a floor of 63.2, because §3.3 sets this building's
 body darker than the mod's usual chassis. Accept it, or lift the tier 0 range.
+
+---
+
+## CHOSEN — option A, the Bolted Collar
+
+Picked by Liam on 2026-09-09, after two regenerations of the whole set. Its page
+is the only one left in this directory; the other four are deleted with their
+full-size sheets. What survives of the round is this README, the winner's page
+with its production notes, and
+`graphics/entity/crust-tap/concept/five-options-contact-sheet.png`.
+
+The adopted sheet is `graphics/entity/crust-tap/concept/adopted/A-sheet.png`.
+
+**Chosen because it is the wellhead.** A thick armoured collar over a capped
+bore, four anchors pulling it down, one choked riser leaving a face — every
+feature exists to hold something back, which is the building's argument, and
+nothing about it needs explaining. The other four are all more distinctive
+silhouettes and all say *pressure* less directly.
+
+**What the round cost, and what it bought.** Five generations, then two full
+regenerations of all five for the pipe connection — fifteen sheets for one
+building. What that bought is a rule the repo did not have written down: **a
+fluid connection is not drawn until a pipe can be drawn butted onto it.** Both
+failures looked fine in isolation and were only visible against the thing that
+has to mate with them.
+
+**The runner-up worth recording is E, the Flush Plate** — best-measured sheet of
+the set at 0.256 saturation and 0.131 density, and the clearest connection of the
+five because the pipe is the only thing on it with any height. If the Bolted
+Collar cannot be made dense enough at stage 1, E is where to go.

@@ -1,4 +1,50 @@
-# Option A — the Bolted Collar
+%s
+
+> ## ADOPTED — this is the Crust Tap
+>
+> Chosen 2026-09-09 by Liam from five options drawn against each other, after the
+> whole set was regenerated twice for the pipe connection. The sheet is locked at
+> `graphics/entity/crust-tap/concept/adopted/A-sheet.png`. Every other option in
+> this directory is rejected and its page has been deleted; the README keeps the
+> record of what the five were, what the round measured, and what the two
+> regenerations cost.
+
+### Why it won
+
+**It is the wellhead.** A thick armoured collar clamped over a capped bore with
+four ground anchors pulling it down — every feature on it exists to hold
+something back, which is this building's whole argument. Nothing has to be
+explained.
+
+The other four each traded that away for a shape: a wedge sealed by its own
+weight (B), a cross-yoke that reads as an X from the map (C), a screwed stuffing
+box (D), or a plate pressed almost flat (E). Every one of them is a more
+distinctive silhouette, and every one of them says *pressure* less directly.
+
+**It also survived the regeneration best.** The riser leaves square through the
+middle of an edge, drops to ground level and ends in an open full-diameter mouth
+behind a flange collar — and the rotations move it face to face without the
+collar itself changing, which is exactly what four directional plates need.
+
+### What to fix in production, found on review
+
+1. **Detail density, 0.099 against a floor of 0.144.** Two tiles is a quarter of
+   a 3×3's canvas and the pipe stub that fixed the connection replaced fussier
+   geometry. Stage 1 must load the collar: bolt rings, cleats, tag plates, grease
+   nipples, lock wire, chipped cast edges, weld spatter. This is the single most
+   important thing about that round.
+2. **Luminance 50.6 against a floor of 63.2**, and that is §3.3's doing rather
+   than the render's — the spec deliberately sets a tier-0 body darker than the
+   mod's usual chassis. **Not fixed here**: it is a decision about the whole tier,
+   recorded in the spec's §21 for Liam.
+3. **Four plates, and the riser is the fluid box.** Every rotation must be drawn,
+   not rotated in software, and `fluid_source_offset` measured off each one. A
+   riser drawn on one face and declared on another is the arc mast's
+   `lightning_strike_offset` defect wearing different clothes.
+4. **The scorched ring in §3.3 must not be baked into the plate.** Ground scatter
+   belongs in its own layer — vanilla does this with `mining_drill_scorch_mark` —
+   and at 2×2 a ring drawn on the plate would cross the collision box.
+
 
 **One line.** A low armoured collar clamped over the bore by four heavy ground anchors, with a choked riser leaving one side.
 

@@ -1,8 +1,10 @@
 # Factorio Building — Art & Implementation Specification
 
-**Crust Tap.** First draft — a brief, enough to commission and judge a concept
-sheet. Not a specification: §6, §12 and §13 stay open until a sheet is approved
-and a canonical plate has been measured.
+**Crust Tap.** The design is locked: **option A, the Bolted Collar**, chosen
+2026-09-09 from five drawn against each other and regenerated twice for the pipe
+connection. The decision record is `crust-tap-options/`, the sheet is
+`concept/adopted/A-sheet.png`, and the four rejected designs are gone. §6, §12
+and §13 stay open until a canonical plate exists and has been measured.
 
 **This brief covers two prototypes**, and that is a design decision rather than
 an accident — see §2. The tap raises a gas; a companion turbine burns it. The tap
@@ -148,6 +150,11 @@ armoured collar clamped over a hole in the crust — and every feature on it exi
 to contain pressure: heavy ground anchors, a thick collar, and a single choked
 riser leaving one side.
 
+**This is the adopted design and it beat four alternatives**: a driven wedge, a
+cross-yoke, a screwed gland stack and a flush plate. It won because it is the
+most direct statement of the building's argument, not the most distinctive
+shape — see `crust-tap-options/README.md`.
+
 **The anti-read is the offshore pump.** Vanilla's is a light open frame standing
 in water with a visible impeller, and every part of that is wrong: there is no
 water, no impeller, and nothing about this should look light.
@@ -184,7 +191,12 @@ rather than *heat* in one glance, which is the whole point of the building.
 | Frost jacket | `#BFD8E8` → `#EAF4FA` | riser, downstream of the choke only |
 | Seam heat | `#C8541E` → `#E8A24A` | ground joint only, dull |
 | Burst disc | `#C8A23A` | one small plate |
-| Scorched ground | `#2E2A26` | tight ring at the base |
+| Scorched ground | `#2E2A26` | tight ring at the base — **its own layer, never the plate** |
+
+**The scorched ring is ground scatter and belongs in its own layer**, the way
+vanilla does it with `mining_drill_scorch_mark`. Baked into a 2×2 plate it would
+cross the collision box, which is the template's §8 rule 4. The concept sheets
+draw no ground at all, deliberately.
 
 **Dull orange, not bright, and only at ground level.** This is conducted heat
 through metal, not a flame. The frost must be close enough to the seam that both
@@ -225,47 +237,53 @@ wrong way is the fluid box in the wrong place.
 
 | Connection | Where | Notes |
 | ---------- | ----- | ----- |
-| `sae-crust-gas` out | the riser's tip, per `fluid_source_offset` | must match the art in all four directions |
+| `sae-crust-gas` out | the riser's tip, at `fluid_box.pipe_connections` | must match the art in all four directions |
 | Electric | none | the tap draws no power |
 | Items | none | no inserter ever touches this building |
 
-`fluid_source_offset` has to be measured off each directional plate, exactly as
+**A correction, checked against vanilla's own offshore pump rather than
+remembered.** This table used to say the gas leaves at `fluid_source_offset`. It
+does not: on an `offshore-pump` that field is where the pump *draws from*
+(vanilla's is `{0, -1}`), while the player's pipe attaches at
+`fluid_box.pipe_connections`. The riser's tip is a **pipe connection**, and it is
+that field the art has to agree with.
+
+Either way the number has to be measured off each directional plate, exactly as
 the Ballast Drill's `vector_to_place_result` does. A riser drawn on one face and
 declared on another is the same class of defect as the arc mast's first
 `lightning_strike_offset`.
+
+**And the connection has to be drawn as something a pipe can join.** Three
+generations were spent learning this: a riser aimed between two edges connects to
+no tile at all, and a riser that ends in a nozzle or a cap connects to nothing
+even when the angle is right. The adopted sheet ends in an open, full-diameter
+pipe mouth behind a flange collar, flush with the middle of a tile edge — the
+same thing vanilla's pump does — and carries a panel with an ordinary pipe butted
+onto it.
 
 ---
 
 # 11. Generation Requirements
 
-## Concept Sheet Prompt
+**The concept prompt lives with the design it drew:**
+`crust-tap-options/A-bolted-collar.md`, in the form that finally worked — with
+the geometry diagram and the pump-and-pipe connection reference both named.
 
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial wellhead, every panel drawn from the game's
-characteristic 45-degree top-down perspective. The machine is a low squat two-
-by-two armoured collar clamped over a bore in dark metallic ground on an
-airless world, and the entire machine including its pipework fits inside the
-two-by-two footprint. Heavy ground anchors bolt it down. A short pale pipe
-rises from the collar, turns, and comes straight back down to a flange flush
-with the ground at the edge of the footprint; it is visibly narrowed at a
-choke, and beyond the choke it carries a pale blue frost jacket. A small
-bulging yellow burst disc sits on the collar's shoulder. A thin dull orange
-line of conducted heat glows in the joint where the collar meets the ground,
-and nowhere else on the machine. Very dark grey-brown armour, pale grey pipe.
-No water, no impeller, no open frame, no lava, no flame, no smoke, no bright
-fire. Panels: main view, top-down view showing the pipe flange at the
-footprint edge, side elevation, a detail of the collar seam and the frosted
-pipe together, and a lit/unlit pair. Title the sheet CRUST TAP. Draw no loose
-material anywhere: no ore, powder, fibre, grit, debris or product on the
-ground, in bins, at chutes, on trays or spilling from the machine. Factorio
-machines never show what they make, so every chute, port, bin and tray is
-drawn as empty machinery. Every pipe connection must run down to ground level
-and stop flush at the edge of the tile footprint; no pipe may end in mid-air
-and none may leave the top of the building. Nothing may extend past the tile
-footprint, pipework included, and the tile-grid panel must show the whole
-machine inside the grid with no overhang.
-```
+**Do not re-prompt this design.** Appendix C's rule applies: crop the approved
+view out of the sheet, attach it, and give a numbered list of permitted changes.
+
+**Two changes are permitted at stage 1**, from the option page's production
+notes:
+
+1. **Much more hardware on the collar** — bolt rings, cleats, tag plates, grease
+   nipples, lock wire, chipped cast edges, weld spatter. It measured 0.099 edge
+   density against vanilla's 0.144 floor, and a 2×2 has a quarter of a 3×3's
+   canvas to work with.
+2. **Nothing else.** The collar, the four anchors, the burst disc, the choked
+   riser and its open pipe mouth are the design.
+
+**Four plates, drawn not rotated**, and `fluid_box.pipe_connections` measured off
+each one — see §8.
 
 ---
 
@@ -354,3 +372,43 @@ attempted.
   atmosphere for sealed processes, which `04-the-core.md` §2 currently gives to
   helium-3. Left alone for now — helium is the scarce one and should stay the
   interesting one — but recorded so it is a decision rather than an oversight.
+
+---
+
+# 21. Open, and it is a tier decision rather than a building one
+
+**Every one of this building's five concepts measured under vanilla's luminance
+floor** — 49.8 to 57.9 against 63.2 — and the cause is §3.3, which sets the body
+at `#3E3B36`–`#5E584E` because this is tier 0 and half buried. That is darker
+than the mod's usual `#4A463F`–`#6E685C` chassis on purpose.
+
+Two honest options, and neither is a stage-1 prompt's business:
+
+* **Accept it.** The Crust Tap is the darkest thing on the Core, which suits a
+  machine that is mostly underground on a planet at permanent midnight.
+* **Lift the tier-0 range** by a few points, here and on every other tier-0
+  building, so the whole landing-day set sits inside vanilla's band.
+
+Recorded for Liam. Whichever way it goes, it should be decided once for the tier
+rather than per building.
+
+---
+
+# 22. Design notes / iteration history
+
+**Round 1, 2026-09-09 — five options.** The Bolted Collar, the Wedge Cap, the
+Yoke, the Gland Stack, the Flush Plate. One generation each.
+
+**Rounds 2 and 3 — the whole set regenerated, twice, for the connection.** Round
+1 drew every riser heading toward a *corner* of the footprint. Round 2 fixed the
+angle with a flat geometry diagram — the 2×2 square, its four edge midpoints
+marked, an arrow leaving one, crosses on the diagonals — and produced risers that
+were square and still ended in nozzles and bulbs. Round 3 added a vanilla **pump
+with vanilla pipes butted onto it**, captioned as the connection to copy and
+nothing else, and every sheet came back with an open full-diameter mouth and a
+panel proving a pipe mates with it.
+
+**The rule that came out of it, and it is not written anywhere else:** *a fluid
+connection is not drawn until a pipe can be drawn butted onto it.* Both failures
+looked fine in isolation. Both were only visible against the thing that has to
+mate with them.
