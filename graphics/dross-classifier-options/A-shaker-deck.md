@@ -23,12 +23,16 @@ two frames, which is a real animation and a cheap one.
 
 ### What to fix in production, found on review
 
-1. **The roof is arched, not stepped.** The prompt asked for three distinct
-   descending planes and the render gave a ribbed, slightly domed cover. The
-   stepped profile is this design's signature -- §3.2 calls it "three descending
-   planes" and it is the only thing separating this silhouette from every other
-   low grey box on the Core. Stage 1 must land it, and it is worth one explicit
-   regeneration rather than an edit.
+1. ~~**The roof is arched, not stepped.**~~ **Wrong, and corrected before
+   anything was drawn from it.** That reading came off the contact sheet at 512
+   px. At full resolution the roof steps in **three distinct descending planes**
+   from the drive end to the discharge end, each carrying a bolted hatch, with
+   mesh strips down both flanks — which is exactly what §3.2 asks for. No
+   regeneration is needed and stage 1 is a plate cut, not a redraw.
+
+   Worth keeping as a method note: *a defect found by looking at a thumbnail is
+   not a defect.* The repo's own rule is to judge by measurement, and a panel
+   read at a third of its size is the same error in a different costume.
 2. **Let the copper out.** At saturation 0.150 this is one of the least saturated
    sheets in the round, under vanilla's 0.230 floor. The cause is a prompt line I
    wrote -- copper "used sparingly on the drive end only". The adopted Array
@@ -175,5 +179,9 @@ an honest lumpy rectangle -- which is the finding, not a complaint.
 
 **What to weigh.** It is the safest of the five and the least distinctive: at a
 glance it is a box with a stepped lid, and the Vacuum Furnace and Drop Crusher
-are also boxes. The roof steps read more as an arched ribbed cover than as three
-flat planes.
+are also boxes.
+
+*(An earlier version of this note said the roof read as an arched ribbed cover
+rather than three flat planes. That was read off a 512 px contact sheet and is
+wrong: at full size the three planes are there, stepping down from the drive end,
+each with its own hatch.)*

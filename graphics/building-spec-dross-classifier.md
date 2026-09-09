@@ -13,7 +13,8 @@
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/A-sheet.png`**, option A of five |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and the three roof planes actually distinct** | ready — see §11 |
+| 1 | Canonical view | square | Silhouette approved against §3 | **passed — `concept/plate-r1.png`**, an edit of the adopted hero, transparent, one round |
+| 2 | Idle plate (unlit) | — | Same machine, nothing lit | **passed — it is the same plate; nothing on this machine is ever lit** |
 | 5 | Working animation | portrait 2:3 | The sort loop reads as sorting | blocked on 1 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
@@ -107,11 +108,11 @@ box.
 silhouette nothing else in the mod has, and it is legible even at the 45-degree
 camera where flat machines all look alike.
 
-**It is also the one thing the adopted sheet did not land.** The concept came
-back with a ribbed, slightly domed cover rather than three flat planes, and since
-the roofline is the only feature separating this silhouette from every other low
-grey box on the Core, stage 1 has to fix it. That is a regeneration, not an edit
-— an edit preserves the shape being rejected.
+**The adopted sheet landed it.** Three descending planes from the drive end to
+the discharge end, each with a bolted hatch, mesh strips down both flanks. (A
+first reading of the sheet said otherwise; it was made at a third of the sheet's
+size and was wrong.) Stage 1 is therefore a plate cut rather than a redraw, and
+the roofline is the thing that must survive processing intact.
 
 ## 3.3 Colour Palette
 
@@ -203,9 +204,47 @@ preserves it.
 **Two changes are permitted at stage 1**, and both are in the option page's
 production notes:
 
-1. **The roof must step**, in three distinct flat planes, walls staying vertical.
-   This one is a regeneration rather than an edit, because it is the silhouette.
-2. **More copper**, on bus runs, spring fittings and hatch furniture — see §3.3.
+1. **More copper**, on bus runs, spring fittings and hatch furniture — see §3.3.
+   This is the only change the design needs.
+2. **Nothing else.** The three roof planes, the four spring stacks and the
+   eccentric drive are the design; if a round moves any of them it is a failed
+   round however good it looks.
+
+---
+
+# 13. Sprite Dimensions
+
+**Measured off the shipped plates, not targeted.**
+
+**Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
+
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 200 × 189 | 192 × 181 → **3.000 × 2.828 tiles** | `{ 0, 0 }` | 0.5 |
+| `base-shadow.png` | 345 × 200 | leans up and right off the plate's own alpha | `{ 1.13281, 0.08594 }` | 0.5 |
+
+**Checked against the template's Appendix C, all four checks:**
+
+1. **Centred** — content centre equals canvas centre to **0.0 px**.
+2. **Not clipped** — alpha `0` down both edge columns and along both edge rows,
+   on the colour plate *and* on the shadow.
+3. **Fits the box** — `check-footprint.py --tiles 3` passes; the drawn machine is
+   192 px at a 64 px pitch, which is 3.000 tiles on the nose.
+4. **Declared equals actual** — the two `width`/`height` pairs in
+   `prototypes/core/machines.lua` are the files' own sizes.
+
+**Three in a row at the real 3-tile pitch claim 0 px twice**, at alpha > 1 and at
+alpha > 80. This building cannot interleave with its neighbours, which is the
+failure the Arc Mast is the standing lesson for.
+
+**Camera, measured against vanilla rather than judged:** trimmed aspect
+**1:0.94**, against a vanilla 3×3 plate's 1:0.96. That is the check the Bed
+Tender's first plate failed at 1:0.61, and it is why the concept sheet's hero was
+edited rather than re-prompted.
+
+**Body metal `#5A4639`, luminance 73, warmth R−B +33** — inside the
+`#4A463F`–`#6E685C` band, and the warmth is the copper this round deliberately
+let out.
 
 ---
 
@@ -228,9 +267,23 @@ production notes:
 
 # 16. Icon
 
-The three stepped trays seen from the side, coarse grit on top and pale powder
-below. Must read at 32 px as *"three descending steps"* — the springs and drive
-will not survive and should not be attempted.
+**What ships** is the plate itself, keyed and downsampled by
+`tools/key-icons.py` — the same derivation every other building icon in this mod
+uses, so the item in your hand cannot disagree with the machine on the ground.
+
+**Judged at 16 px, and it is honest about what it loses:** the icon reads as a
+warm trapezoidal mass with a bright rim. The stepped roof does *not* survive that
+size, and neither do the springs or the drive.
+
+**So the concept below is unbuilt, and it is a real choice, not an oversight.**
+It asked for the three stepped trays seen *from the side* — a view the building
+never presents in game — which would read as "three descending steps" at 16 px
+where the derived icon does not. Taking it costs one bespoke generation and buys
+an icon that disagrees with the plate. Recorded for Liam rather than decided:
+
+> The three stepped trays seen from the side, coarse grit on top and pale powder
+> below. Must read at 32 px as *"three descending steps"* — the springs and drive
+> will not survive and should not be attempted.
 
 ---
 

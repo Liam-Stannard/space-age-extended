@@ -137,12 +137,56 @@ data:extend({ drill })
 -- density.
 --------------------------------------------------------------------------------
 
-data:extend({ crafter("sae-dross-classifier", "assembling-machine-3", {
+local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
   categories = { "sae-classification" },
   energy = "150kW",          -- the sort is gravity; the shake is not
   modules = 2,
   conditions = HIGH_G
-}) })
+})
+
+-- Art: the Shaker Deck, option A of five (graphics/dross-classifier-options/).
+--
+-- The plate replaces assembling-machine-3's entirely, so the placeholder call is
+-- gone with it and this machine no longer logs at data stage. Two layers, both
+-- cut by tools/process-building-art.py from one approved render: 192 px of drawn
+-- machine, **3.000 tiles**, centred to 0.0 px, with alpha zero on all four
+-- canvas edges. The 4 px rim a side is the difference between a plate with an
+-- antialiased edge and one that ends on a razor line.
+--
+-- There is no working visualisation and no glow. The machine's whole read is
+-- that it shakes, and vibration is carried by the springs and the eccentric
+-- drive being *drawn*, not by anything animating: dross is what settled out and
+-- is cold by the time it arrives, so nothing here is lit.
+local DC = "__space-age-extended__/graphics/entity/dross-classifier/"
+classifier.icon = "__space-age-extended__/graphics/icons/dross-classifier.png"
+classifier.graphics_set =
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = DC .. "base.png",
+        priority = "high",
+        width = 200, height = 189,
+        shift = { 0, 0 },
+        scale = 0.5
+      },
+      {
+        filename = DC .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        -- Leans up and to the right, so it is wider than the colour plate and
+        -- carries its own shift. Both numbers come out of the tool rather than
+        -- being chosen; the y offset is the room the blur needs below the foot.
+        width = 345, height = 200,
+        shift = { 1.13281, 0.08594 },
+        scale = 0.5
+      }
+    }
+  }
+}
+data:extend({ classifier })
 
 --------------------------------------------------------------------------------
 -- N4. Coil Separator -- graphics/building-spec-coil-separator.md
@@ -302,13 +346,20 @@ data:extend({ mast })
 -- material. Nothing else in the mod has an ingredient list that means something.
 --------------------------------------------------------------------------------
 
+-- Item icons, for the machines whose art exists. Anything not listed here is
+-- still wearing a vanilla icon on purpose, and is greppable by its absence.
+local ICON = {
+  ["sae-dross-classifier"] =
+    "__space-age-extended__/graphics/icons/dross-classifier.png",
+}
+
 local function machine_item(name, order, ingredients, seconds)
   return
   {
     {
       type = "item",
       name = name,
-      icon = data.raw["item"]["assembling-machine-3"].icon,
+      icon = ICON[name] or data.raw["item"]["assembling-machine-3"].icon,
       subgroup = "production-machine",
       order = "z[sae]-" .. order .. "[" .. name .. "]",
       place_result = name,

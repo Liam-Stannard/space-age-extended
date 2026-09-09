@@ -18,6 +18,7 @@ Usage:
 """
 
 import argparse
+import math
 import os
 import statistics
 import sys
@@ -258,7 +259,13 @@ def shadow(colour, kx=0.79, ky=0.25, blur=3.5, opacity=155):
     a = colour.getchannel("A")
     w, h = a.size
     foot = a.getbbox()[3] - 1                      # last row the object touches
-    dx, dy = round(foot * kx), 0
+    # The projection lands on the foot row and the blur then spreads about three
+    # sigma past it, off the bottom of a canvas sized for the colour plate. Left
+    # alone the shadow ends on a hard clipped line along the canvas floor, which
+    # is Appendix C's check 2 failing on the plate nobody thinks to measure. The
+    # canvas grows downward by that much; the shift the caller prints already
+    # accounts for dy, it had simply never been anything but zero.
+    dx, dy = round(foot * kx), math.ceil(blur * 3)
 
     canvas = Image.new("L", (w + dx, h + dy), 0)
     src, dst = a.load(), canvas.load()
