@@ -159,7 +159,7 @@ local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
 -- is cold by the time it arrives, so nothing here is lit.
 local DC = "__space-age-extended__/graphics/entity/dross-classifier/"
 classifier.icon = "__space-age-extended__/graphics/icons/dross-classifier.png"
-classifier.graphics_set =
+derive.own_graphics(classifier,
 {
   animation =
   {
@@ -185,7 +185,7 @@ classifier.graphics_set =
       }
     }
   }
-}
+})
 data:extend({ classifier })
 
 --------------------------------------------------------------------------------
@@ -199,12 +199,102 @@ data:extend({ classifier })
 -- of it" made literal.
 --------------------------------------------------------------------------------
 
-data:extend({ crafter("sae-coil-separator", "electromagnetic-plant", {
+local separator = crafter("sae-coil-separator", "electromagnetic-plant", {
   categories = { "sae-separation" },
   energy = "2500kW",         -- generating a field from nothing is the cost
   modules = 3,
   conditions = CORE
-}) })
+})
+
+-- Art: the Cold Plant, option D of five (graphics/coil-separator-options/).
+--
+-- The design is the argument: nine tenths refrigeration and one tenth magnet,
+-- with the coil buried inside the vessel and never drawn. What the player sees
+-- of the separation itself is one narrow slot at the base of the vessel, and
+-- that slot is the only thing distinguishing this building from a cold plant --
+-- which is why stage 1 was allowed exactly two changes and one of them was
+-- making it wider and brighter.
+--
+-- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
+-- 0.0 px, alpha zero on all four canvas edges. It stands 3.25 tiles tall, so the
+-- plate is shifted a quarter tile up to put its foot on the tile rather than its
+-- middle: height above the footprint is what Factorio does everywhere, sideways
+-- overhang is what makes a row of machines interleave.
+--
+-- Replacing the graphics set wholesale also removes what this prototype was
+-- deep-copied from, and that matters more here than anywhere else in the file:
+-- the electromagnetic plant is this building's *anti-read* -- a clean lab-white
+-- box whose whole point in the fiction is that the player had to import it --
+-- so wearing its sprites was a placeholder saying the opposite of the design.
+local CS = "__space-age-extended__/graphics/entity/coil-separator/"
+separator.icon = "__space-age-extended__/graphics/icons/coil-separator.png"
+derive.own_graphics(separator,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = CS .. "base.png",
+        priority = "high",
+        width = 200, height = 216,
+        shift = { 0, -0.12500 },
+        scale = 0.5
+      },
+      {
+        filename = CS .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 367, height = 227,
+        shift = { 1.30469, -0.03906 },
+        scale = 0.5
+      }
+    }
+  },
+  -- The field, and only while the field is on.
+  --
+  -- Differenced out of a lit and an unlit render of the same plate, so it
+  -- registers over `base` by construction rather than by alignment -- the method
+  -- the sealed roboport's lamps use, and the reason nothing here had to be drawn
+  -- by hand. `always_draw` is false: a machine with nothing to separate is a
+  -- machine with the field off, and 2.5 MW should look like it costs something
+  -- when it runs and nothing when it does not.
+  working_visualisations =
+  {
+    {
+      always_draw = false,
+      light = { intensity = 0.35, size = 3.5, color = { 0.42, 0.35, 0.78 } },
+      animation =
+      {
+        filename = CS .. "slot-glow.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 200, height = 216,
+        frame_count = 1,
+        shift = { 0, -0.12500 },
+        scale = 0.5
+      }
+    }
+  }
+})
+
+-- The hum, chosen rather than inherited.
+--
+-- `derive.own_graphics` drops the electromagnetic plant's three sounds, because
+-- every one of them is cued to a vanilla animation this machine no longer has --
+-- and a 2.5 MW machine standing silent is a regression, not a decision. This is
+-- the cryogenic plant's ambient loop, which is ungated and is the right noise
+-- for a building that is nine tenths refrigeration. Its own smoke-puff accents
+-- are left behind: nothing puffs on a world with no atmosphere.
+separator.working_sound =
+{
+  sound = { filename = "__space-age__/sound/entity/cryogenic-plant/cryogenic-plant.ogg",
+            volume = 0.7 },
+  fade_in_ticks = 4,
+  fade_out_ticks = 30
+}
+data:extend({ separator })
 
 --------------------------------------------------------------------------------
 -- N5. Whisker Comber -- graphics/building-spec-whisker-comber.md
@@ -351,6 +441,8 @@ data:extend({ mast })
 local ICON = {
   ["sae-dross-classifier"] =
     "__space-age-extended__/graphics/icons/dross-classifier.png",
+  ["sae-coil-separator"] =
+    "__space-age-extended__/graphics/icons/coil-separator.png",
 }
 
 local function machine_item(name, order, ingredients, seconds)

@@ -94,4 +94,56 @@ function derive.placeholder_art(p, note)
   return p
 end
 
+--- Give a derived machine its own graphics set, and take the old one's audio
+--- cues with the art they were cued to.
+---
+--- `working_sound.sound_accents` name the working visualisation each accent
+--- plays for -- `play_for_working_visualisation = "warm-up"`, and a frame number
+--- to fire on. The names refer to the *vanilla* set, so the moment a derived
+--- machine replaces `graphics_set` the accents point at animations that no
+--- longer exist, and the game refuses to load:
+---
+---     Error while loading entity prototype "sae-coil-separator"
+---     (assembling-machine): Working visualisation "warm-up" doesn't exist
+---
+--- The Ignition Array hit exactly this with the rocket silo's welder accents and
+--- it was fixed there by hand. It is not a one-off: it is what happens to every
+--- building in this file the day its plate arrives, so it belongs here.
+---
+--- `main_sounds` are gated the same way, through
+--- `play_for_working_visualisations`, and that is the half that is easy to miss:
+--- the electromagnetic plant's warm-up, loop and cool-down are each tied to a
+--- named vanilla animation, so clearing only the accents leaves the load error
+--- exactly where it was.
+---
+--- Both are stripped here. A gated sound cannot survive the art it was cued to,
+--- and the alternative -- ungating them -- plays a warm-up, a loop and a
+--- cool-down all at once, for ever. If a derived machine should hum, its own
+--- file says so explicitly, which is better than inheriting three loops and
+--- hoping.
+--- @param p table            the prototype
+--- @param set table          its new graphics_set
+function derive.own_graphics(p, set)
+  p.graphics_set = set
+  local ws = p.working_sound
+  if ws then
+    ws.sound_accents = nil
+    if ws.main_sounds then
+      local kept = {}
+      for _, sound in ipairs(ws.main_sounds) do
+        if sound.play_for_working_visualisations == nil
+           and sound.play_for_working_visualisation == nil then
+          kept[#kept + 1] = sound
+        else
+          log("[sae] " .. p.name .. ": dropped a working sound cued to a "
+              .. "vanilla working visualisation")
+        end
+      end
+      ws.main_sounds = #kept > 0 and kept or nil
+    end
+    if ws.main_sounds == nil and ws.sound == nil then p.working_sound = nil end
+  end
+  return p
+end
+
 return derive

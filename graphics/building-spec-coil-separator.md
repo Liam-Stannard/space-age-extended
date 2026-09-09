@@ -19,10 +19,10 @@ because none of them was ever about the art.
 | # | Asset | Canvas | Gate before moving on | State |
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/adopted/D-sheet.png`**, option D of five |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3, **and the base slot unmistakable at normal zoom** | ready — see §11 |
-| 2 | Idle plate (unlit) | portrait 2:3 | Same machine, field dead | blocked on 1 |
-| 4 | Glow plate | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+| 1 | Canonical view | square | Silhouette approved against §3, **and the base slot unmistakable** | **passed — `concept/plate-r1-lit.png`**, an edit of the adopted hero, one round |
+| 2 | Idle plate (unlit) | square | Same machine, field dead | **passed — `concept/plate-r1-unlit.png`**, an edit of the lit plate, so the two register |
+| 4 | Glow plate | — | Differenced against stage 2 | **passed — `slot-glow.png`**, lit minus unlit: 2.3% of the canvas, and it is the slot |
+| 6 | Icon | square | Legible at 16 px | **passed — keyed off the lit plate**, so the slot survives at icon size |
 
 ---
 
@@ -205,6 +205,50 @@ the only way to know.
 
 ---
 
+# 13. Sprite Dimensions
+
+**Measured off the shipped plates, not targeted.**
+
+**Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
+
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 200 × 216 | 192 × 208 → **3.000 × 3.250 tiles** | `{ 0, −0.125 }` | 0.5 |
+| `base-shadow.png` | 367 × 227 | sheared off the plate's own alpha | `{ 1.30469, −0.03906 }` | 0.5 |
+| `slot-glow.png` | 200 × 216 | the difference, registered on the base by construction | `{ 0, −0.125 }` | 0.5 |
+
+**The shift is solved, not chosen.** The machine is 3.25 tiles tall on a 3-tile
+box, so it rises a quarter tile above its footprint — which is what Factorio does
+everywhere, and is not the sideways overhang that makes a row of machines
+interleave. Putting its *foot* on the tile rather than its middle means the plate
+moves up an eighth of a tile: `−0.125`.
+
+**Checked against the template's Appendix C, all four checks:**
+
+1. **Centred** — content centre equals canvas centre to **0.0 px**.
+2. **Not clipped** — alpha `0` down both edge columns and along both edge rows,
+   on all three plates.
+3. **Fits the box** — `check-footprint.py --tiles 3` reports **0.00 tiles**
+   overhang left and right, 3.25 tiles tall, "expected on a tall building".
+4. **Declared equals actual** — every `width`/`height` pair in
+   `prototypes/core/machines.lua` is the file's own size.
+
+**Three in a row at the real 3-tile pitch claim 0 px twice**, at alpha > 1 and at
+alpha > 80.
+
+**Camera:** trimmed aspect **1:1.08**, inside vanilla's own range of 1.00
+(rocket silo) to 1.31 (electromagnetic plant) and appropriate for a machine whose
+vessel stands above its base.
+
+**Body metal `#655344`, luminance 86, warmth R−B +33** — inside the
+`#4A463F`–`#6E685C` band, and the warmth is the copper §3.3 demanded after the
+concept measured 0.136 saturation.
+
+**The glow is 2.3% of the canvas.** That is the containment rule, measured: the
+light is in the slot and nowhere else.
+
+---
+
 # 15. Factorio Prototype — sketch
 
 ```lua
@@ -266,3 +310,36 @@ plant at stage 1, E is where to go.
 - **Does it need the imported plant to exist at all?** If the first separation
   recipe runs in an electromagnetic plant and the second in this, the two need
   different recipes or different categories, or the player will simply wait.
+
+---
+
+# 21. What stage 1 found in the prototype
+
+**A hard load error, and it was not this building's fault alone.** Replacing the
+graphics set on a machine derived from the electromagnetic plant produces:
+
+```
+Error while loading entity prototype "sae-coil-separator" (assembling-machine):
+Working visualisation "warm-up" doesn't exist
+```
+
+Vanilla's plant gates its audio on named animations — `sound_accents` carry
+`play_for_working_visualisation`, and `main_sounds` carry
+`play_for_working_visualisations`. Both name the vanilla set. The moment our
+plate replaces it, all of them point at animations that are gone.
+
+**Fixed in `prototypes/derive.lua`, not here**, as `derive.own_graphics`: it
+assigns the new graphics set and strips every sound cued to a working
+visualisation. This is the same failure the Ignition Array hit with the rocket
+silo's welder accents and had fixed by hand; it is not a one-off but what happens
+to *every* building in `machines.lua` on the day its plate arrives, so it belongs
+in the shared file.
+
+**The half that is easy to miss** is `main_sounds`. Clearing only the accents
+leaves the error exactly where it was, because the warm-up, loop and cool-down
+are each gated too.
+
+**The Separator's hum is therefore chosen rather than inherited**: the cryogenic
+plant's ambient loop, which is ungated and is the right noise for a building that
+is nine tenths refrigeration. Its smoke-puff accents are left behind — nothing
+puffs on a world with no atmosphere.
