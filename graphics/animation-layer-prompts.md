@@ -67,6 +67,46 @@ the plate's own alpha.
 
 ---
 
+## Before you write any of them: is this type applicable?
+
+Found by trying to run all five against real buildings in the tree. Three of
+the five turned out not to apply to the building they were first aimed at, and
+none of the three failures is visible from the template alone.
+
+**Type 1 needs the building to glow.** Check §3.3 first. The Dross Classifier's
+palette section ends *"**No glow.** Dross is cold by the time it gets here — it
+is what settled out."* A lit twin of that machine is a spec violation however
+good the plate is, and the prompt would have got one anyway, because the
+generator has no way to know. If §3.3 says no glow, write `Not required — see
+§3.3` and stop.
+
+**Type 3 needs the lamp to already exist on the plate.** The template says
+"locate it", which quietly assumes there is something to locate. The Dross
+Classifier has no indicator lens anywhere on `base.png`, and an *edit* cannot
+add one — asking for it is asking the generator to invent geometry, which is
+the failure mode this whole document is built to avoid. A building that wants a
+status lamp it does not have needs the lamp in the **base plate**, added at
+plate-cut time and then isolated by Type 3; or drawn separately and positioned
+by hand against measured coordinates.
+
+**Type 2 must pass its own table before it gets a prompt.** The Dross
+Classifier's one moving part is the eccentric flywheel, and it turns about a
+horizontal axle seen three-quarters on — out of the view plane, which the
+table in Type 2 marks **No**. The honest layer for that machine is not a
+generated part at all: the whole housing rides on leaf springs, so the working
+animation is `base.png` itself translated a pixel or two on a cycle, derived by
+transform with nothing generated. Run the table before writing the prompt, not
+after.
+
+**Type 5 has no run, by design.** It is `base.png`. If a filled spec has
+anything else under it, something has gone wrong.
+
+The general shape: **three of the five types are edits of an approved plate,
+and an edit can only ever subtract or relight.** Anything the layer needs that
+is not already in `base.png` has to get there at plate-cut time.
+
+---
+
 # Type 1 — Lit twin (working glow)
 
 The default for this mod. Almost every building here is a box that glows when
