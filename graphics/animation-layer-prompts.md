@@ -57,7 +57,7 @@ The *frames* are then derived mechanically, by tools that cannot drift.
 | # | Type | Generated? | Frames it becomes | Prototype slot |
 | - | ---- | ---------- | ----------------- | -------------- |
 | 1 | **Lit twin** — the whole machine, working | Yes, as an edit of `base.png` | N, by mask | `working_visualisations[].animation` |
-| 2 | **Moving part** — a piston, drum, fan, belt | Only if the motion is in-plane | N, by transform | `graphics_set.animation` layer |
+| 2 | **Moving part** — a piston, drum, fan, belt | As a *mask*, not as art | N, by transform | `graphics_set.animation` layer |
 | 3 | **Status lamp** — one neutral lamp | Yes, tiny, once | 1, `repeat_count = N` | `working_visualisations[]` + `status_colors` |
 | 4 | **Effect** — plume, dust, discharge | Yes, alone on transparency | N, by mask | `working_visualisations[]`, `fadeout = true` |
 | 5 | **Idle overlay** — body drawn under both states | Rarely; usually `base.png` itself | 1 | `idle_animation` + `always_draw_idle_animation` |
@@ -257,57 +257,97 @@ What *is* derivable from one drawing is motion that stays in the view plane:
 | Light travelling along a run | Yes | `build-glow-frames.py` |
 | Drum, turntable, arm swinging | **No** | 3D model, or recolour vanilla |
 
-So the prompt asks for **the part, once, in its neutral position, isolated**,
-and the frames are made by transform.
+### Do not ask for the part. Ask for a mask of it.
+
+**The obvious prompt does not work, and it was tried.** "Draw the component by
+itself, on transparency, at exactly the size and position it occupies" returns
+the component correct in every particular and **centred on its own canvas**.
+Measured on the Dross Classifier's drive: it came back at x 0.28–0.76, y
+0.20–0.58 of a square canvas, where on the plate it sits up at the top of the
+roofline. The art was fine. Nothing in the file said where it went, and the
+prompt had asked in as many words.
+
+That is the general result: the generator is reliable about *what* to draw and
+unreliable about *where* to put it. So ask it only for the *what* — **which
+pixels** — and do the *where* yourself.
+
+The prompt therefore returns the **whole machine, unmoved**, with the one
+component flooded in flat magenta. The magenta is a stencil, and
+`tools/cut-part-by-mask.py` fits it to the plate and cuts the part out of
+`base.png` with it. Every pixel that ships is the approved pixel; the generator
+never draws anything that survives into the game.
+
+Magenta because §11 of the template already picked `#FF00FF` as the key colour
+for this mod, *"chosen because it appears nowhere on the building"*.
 
 ### Prompt
 
 ```text
-FACTORIO SPACE AGE BUILDING -- ISOLATED MOVING PART
+FACTORIO SPACE AGE BUILDING -- COMPONENT MASK
 
 == SOURCE ==
-The attached image is the finished, approved sprite for this machine. Draw ONE
-component of it, by itself, on a fully transparent background, at exactly the
-size and position it occupies in the attached image. Everything else in the
-frame is empty.
+The attached image is the finished, approved sprite for this machine. Return
+the SAME image, at the same size, with the machine in exactly the same place in
+the frame. Change ONE thing and nothing else.
 
-== THE PART ==
-[Name it and locate it: "the ribbed vertical ram on the front face, the one
-between the two upright guides".]
+== THE ONE CHANGE ==
+Fill [name and locate the component: "the eccentric drive assembly -- the dark
+offset flywheel and its copper-banded hub, on the raised pedestal at the high
+end of the roofline"] with FLAT, UNIFORM, PURE MAGENTA #FF00FF.
 
-== CAMERA ==
-Unchanged from the attached image. Viewed from the game's characteristic
-45-degree top-down perspective, square to the tile grid.
+Flat means flat: one single colour, no shading, no gradient, no highlight, no
+texture, no outline, no edge darkening. A solid silhouette of that component
+and nothing more.
 
-== POSITION ==
-Drawn at [rest / mid-stroke / fully extended]. One position only. Do not draw
-a sequence, do not draw motion blur, do not draw the part in several places.
+== EVERYTHING ELSE ==
+Unchanged. Same pixels, same position, same size, same framing, same
+transparent background. Do not redraw [the housing, the springs, the bins].
+Do not move, rescale, crop or re-centre the machine. Do not change any other
+colour anywhere in the image.
 
-== EXTENT ==
-The part must be drawn complete, including the [N] pixels of it that are hidden
-behind [the housing] in the attached image, because it [slides out from
-under / rotates past] that edge.
-
-== MATERIALS ==
-- [Role: #HEX, one per line]
-- Same metal, same wear, same finish as the attached image.
+== WHY THIS MATTERS ==
+This is a segmentation mask, not artwork. The magenta region will be used to
+cut that component out of the original image, so its EDGE is the only thing
+that carries any value: it must follow the true outline of [the part] exactly,
+including where it passes behind [the housing].
 
 == FORBIDDEN ==
-No housing, no frame, no neighbouring components, no ground, no shadow. If it
-is not the part, it is not in the image.
+No magenta anywhere except on that one component. No magenta glow, no magenta
+spill, no magenta fringe, no magenta on [the pedestal or the roofline]. No
+partial transparency in the magenta.
 
 == OUTPUT ==
-One image, same aspect ratio and pixel dimensions as the attached plate,
-fully transparent background, no text, no logos, no UI, no ground texture,
-no background scenery, no baked drop shadow.
+One image, [aspect], same aspect ratio and pixel dimensions as the attached
+plate, fully transparent background, no text, no logos, no UI, no ground
+texture, no background scenery, no baked drop shadow.
 ```
 
 ### Accept or reject
 
-The part must sit where it sits on the base plate. Check its bounding box
-against the region it occupies there — if the generator has re-centred it on
-the canvas, which is the usual failure, it is unusable, because registration is
-the entire point.
+`tools/cut-part-by-mask.py` gates it for you and refuses three ways: a
+silhouette IoU below `--min-iou` (it returned a different shape, not a recolour
+of this one), a keyed region under 0.2 % (nothing was flooded — check the key
+colour), and one over 60 % (it flooded the machine, not a component).
+
+Measured on the Dross Classifier's drive, first attempt: **silhouette IoU
+0.9871**, keyed region **5.9 %** of the machine, and the cut part landing at
+(77, 5)–(131, 49) on a 200×189 plate — the top of the roofline, which is where
+the drive is. The fit is what absorbs the generator's drift: the render came
+back at 1254×1254 and re-proportioned, and the search found the scale and offset
+that put its silhouette back on the plate's to within 1.3 %.
+
+**What it does not fix.** The flooded edge is approximate — the generator paints
+a rough silhouette, so the stencil ran a little wide into the roofline above the
+drive. That matters less than it looks, and the reason is worth knowing:
+
+* **The housing layer stays whole.** In the layered prototype `base.png` is
+  drawn complete underneath, so an over-wide stencil paints identical pixels
+  back over themselves and is invisible.
+* **It only matters where the part moves off its own hole.** A wheel rotating
+  about its centre covers the same disc in every frame, so the hole never shows
+  and the edge can be sloppy. A piston that *translates* exposes what was behind
+  it, and there the housing has to be repainted behind the part by hand — which
+  is a plate-cut job, not a prompt.
 
 ### Turning it into frames
 
