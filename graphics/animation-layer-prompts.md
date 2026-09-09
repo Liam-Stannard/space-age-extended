@@ -247,15 +247,21 @@ angles where vanilla draws none — "the crane arm is all messed up". Anything
 that rotates **out of the view plane** needs a 3D model or a recolour of
 vanilla's sheet; `tools/recolour-crane.py` is what that looks like.
 
-What *is* derivable from one drawing is motion that stays in the view plane:
+**The test is whether the silhouette changes, not whether the motion is in the
+view plane.** That was this document's first answer and it was wrong — it put
+"drum" in the same row as "arm", and they are not the same thing at all. A
+cylinder turning about its own axis never changes outline and occludes nothing
+new; an arm presents a different shape at every angle. The first is derivable,
+the second is not.
 
 | Motion | Derivable from one plate? | How |
 | ------ | ------------------------- | --- |
 | Piston, ram, shuttle | Yes | translate along its axis |
 | Wheel or fan seen face-on | Yes | rotate about the view axis |
+| **Drum or roller about its own axis** | **Yes** | warp the visible face (`--mode scroll`) |
 | Belt, chain, conveyor | Yes | scroll a masked strip |
 | Light travelling along a run | Yes | `build-glow-frames.py` |
-| Drum, turntable, arm swinging | **No** | 3D model, or recolour vanilla |
+| Arm, crane, turntable | **No** | 3D model, or recolour vanilla |
 
 ### Do not ask for the part. Ask for a mask of it.
 
@@ -374,12 +380,41 @@ Three modes, and the fourth case that is not one:
 | `shake` | the whole machine oscillating on its mounts | sine plus a perpendicular at twice the rate — a figure of eight, because a straight line reads as the sprite sliding rather than the machine shaking |
 | *(none)* | **a drum, turntable or arm turning out of the view plane** | **there isn't one** |
 
-**The last row, demonstrated.** `spin` was run on the Dross Classifier's drive
-— a three-quarter-view drum — and the result is a barrel tumbling end over end,
-because rotating a picture of a cylinder in the image plane rotates its
-highlights and its foreshortening with it. It reads as a sticker on a
-turntable, which is `build-crane-sheets.py`'s finding arrived at from the other
-direction. **`spin` is only honest when the axis points at the camera.**
+**`spin` is only honest when the axis points at the camera.** Run on the
+Classifier's drive — a drum seen from the side — it produces a barrel tumbling
+end over end, because rotating a picture of a cylinder rotates its foreshortening
+with it. `scroll` is the mode for that part: it samples each row of the visible
+face from where that surface point was one turn earlier, so points near the axis
+move fastest and points near the rim barely move, and the silhouette is put back
+untouched afterwards.
+
+### A drum can only be turned if the plate gives it something to turn
+
+`scroll` is correct and the Classifier's drive still cannot use it, for three
+reasons that are all properties of the **plate** rather than of the tool. They
+are worth stating because they are the specification for any part that is meant
+to rotate:
+
+1. **The specular must not be painted on the surface.** A highlight is fixed in
+   world space; the surface moves under it. Baked into the texture it travels
+   with the rotation, which is precisely backwards. Measured on the drive: the
+   drum's surface is one smooth luminance ramp with a single peak of 141 at rows
+   14–17 falling to 20 at the bottom, and that peak is the highlight. Rotating
+   it drags the brightest thing in the frame around the drum.
+2. **There must be a feature that repeats around the circumference.** A bolt
+   circle, flutes, spokes, a keyway. The drive has none — the same profile shows
+   no second peak anywhere on the surface — so there is nothing whose movement
+   would read as turning even if the lighting were separable.
+3. **Only the front half of a drum is in the plate.** `scroll` repeats the
+   visible half behind, which is invisible on a banded drum and shows as a mark
+   appearing twice per turn on one that carries a single feature.
+
+So a part that is meant to spin has to be *drawn to spin*, and that is a
+plate-cut requirement to put in §6.2 before the plate is generated, not
+something a transform can add later. Vanilla does exactly this: the whole point
+of `assembling-machine-3`'s 140×160 animated layer is that it is full of big,
+high-contrast, repeating mechanism, and the housing's baked lighting is in the
+*other* layer, the one that never moves.
 
 **There is no free shift.** `animated_shift` on a working visualisation is
 parsed by a crafting machine, but what it follows is
