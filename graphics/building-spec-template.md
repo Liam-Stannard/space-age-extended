@@ -1275,6 +1275,17 @@ Measured across roughly a dozen rounds on one building:
    saturation, and a prompt that rations it fails the band by arithmetic rather
    than by taste.
 
+3a-i. **Measure a plate against a sprite, never a sheet against a sprite.**
+   `check-sheet-style.py` compares whatever you hand it against four vanilla
+   *sprites*. Hand it a concept sheet and you are comparing a charcoal page full
+   of grey panels against a machine on transparency, and the answer is wrong in a
+   predictable direction: fifteen sheets measured 0.14–0.27 saturation and were
+   reported as under vanilla's floor, while the plates cut from three of them
+   measure **0.29–0.41 against vanilla's 0.20–0.49** — inside the band, and
+   richer than vanilla's own electric furnace. Use the sheet numbers to compare
+   sheets *with each other*, which is what they are good for; use a cut plate
+   when the question is whether the building matches the game.
+
 3b. **When a proportion matters, attach a measured diagram, not a description.**
    The Ignition Array's mouth took four rounds of prose to get wrong four
    different ways -- 1.48, then 1.77, 1.66, 1.55 -- and a fifth round that
@@ -1300,6 +1311,35 @@ So: crop the approved view out of whatever it lives in, attach it as the
 source, and give an explicit, numbered list of exactly which changes are
 permitted. Words specify a design; only the image preserves it.
 
+
+---
+
+### Icons are separated by colour, not by silhouette
+
+**Measured, on ten icons.** Our building icons overlap each other at a mean
+silhouette IoU of **0.83** at 16 px — and vanilla's own overlap at **0.75**, with
+its assembling machine 3 and electric furnace at **0.88**, worse than our worst
+pair. Silhouette is simply not how an icon is told apart at that size, and
+chasing it is chasing the wrong number.
+
+**What vanilla does instead is spread the hue.** Its six production icons sit
+between hue 27° and 98° with a mean pairwise RGB distance of **32.6**. Ours sit
+between **22° and 31°** — a nine-degree band — at a mean distance of **13.2**,
+and the closest pair are **1.6** apart. That is the Core's one palette doing
+exactly what it was designed to do, on the one surface where it hurts.
+
+**The cheap fix is already in every spec.** Each building has an accent its
+process gives it — the separator's violet field, the furnace's amber sight port,
+the crust tap's frost and heat seam, the whisker line's pale tow. Key the icon
+off the **lit** plate wherever a building has one, so the accent is in the icon;
+the coil separator and the vacuum furnace are both keyed that way and are the
+only two of ours that carry any hue at all.
+
+**Where a building has no accent, say so rather than pretending.** The Dross
+Classifier and the Bed Tender are warm grey machines that do a warm grey thing,
+and no amount of icon processing will separate them. That is a design decision to
+take deliberately — give the machine an accent, or accept that its icon is told
+apart by its name and its place in the menu.
 
 ---
 

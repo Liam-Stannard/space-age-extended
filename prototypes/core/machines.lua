@@ -426,10 +426,99 @@ furnace.fluid_boxes =
   {
     production_type = "input",
     volume = 2000,                         -- see the S12 note above
-    pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
+    -- EAST, not south, and the art is why. The adopted plate draws the
+    -- frost-collared flux flange low on the right flank, and section 8 of the
+    -- spec never said which flank it was -- so the round pinned it east and the
+    -- prototype follows the picture rather than the other way round. A flange
+    -- drawn on one face and declared on another is the arc mast's
+    -- `lightning_strike_offset` defect in a different costume.
+    pipe_connections = { { flow_direction = "input", direction = defines.direction.east, position = { 1, 0 } } }
   }
 }
 furnace.fluid_boxes_off_when_no_fluid_recipe = true
+
+-- Art: the Pot, option A of five (graphics/vacuum-furnace-options/).
+--
+-- A sealed welded drum with one clamped hatch, and the whole design is the
+-- absence of an opening: no door, no throat, no chimney. The one thing that
+-- glows is a sight port low on the near face, and it glows ONLY while the
+-- furnace is running -- `always_draw = false` -- because a lit port on an idle
+-- machine says it is working when it is not.
+--
+-- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
+-- 0.0 px, alpha zero on all four canvas edges. Vanilla's own electric furnace
+-- draws 3.25 tiles on the same footprint, so ours is the more conservative cut.
+local VF = "__space-age-extended__/graphics/entity/vacuum-furnace/"
+furnace.icon = "__space-age-extended__/graphics/icons/vacuum-furnace.png"
+derive.own_graphics(furnace,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = VF .. "base.png",
+        priority = "high",
+        width = 200, height = 194,
+        shift = { 0, 0 },
+        scale = 0.5
+      },
+      {
+        filename = VF .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 349, height = 205,
+        shift = { 1.16406, 0.08594 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    -- The sight port, differenced out of a lit and an unlit render of the same
+    -- plate so it registers by construction. 0.5% of the canvas: this machine's
+    -- entire heat budget is one circle, and if light appears anywhere else the
+    -- seal it is built around is a lie.
+    {
+      always_draw = false,
+      light = { intensity = 0.3, size = 2.5, color = { 0.91, 0.64, 0.29 } },
+      animation =
+      {
+        filename = VF .. "port-glow.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 200, height = 194,
+        frame_count = 1,
+        shift = { 0, 0 },
+        scale = 0.5
+      }
+    },
+    -- The fault lamp, and the first one in this mod.
+    --
+    -- `apply_tint = "status"` hands the colour to the engine, which is why the
+    -- lens is drawn WHITE on the plate and cut white here: a colour baked into
+    -- the plate would be that colour in every state for ever. `always_draw` is
+    -- true because a lamp that only appears while working cannot report that the
+    -- machine has stopped -- which is the one thing it exists to say.
+    --
+    -- Copied from vanilla's electric mining drill, which does exactly this.
+    {
+      always_draw = true,
+      apply_tint = "status",
+      animation =
+      {
+        filename = VF .. "status-lamp.png",
+        priority = "high",
+        draw_as_glow = true,
+        width = 200, height = 194,
+        frame_count = 1,
+        shift = { 0, 0 },
+        scale = 0.5
+      }
+    }
+  }
+})
 data:extend({ furnace })
 
 --------------------------------------------------------------------------------
@@ -489,6 +578,8 @@ local ICON = {
     "__space-age-extended__/graphics/icons/coil-separator.png",
   ["sae-whisker-comber"] =
     "__space-age-extended__/graphics/icons/whisker-comber.png",
+  ["sae-vacuum-furnace"] =
+    "__space-age-extended__/graphics/icons/vacuum-furnace.png",
 }
 
 local function machine_item(name, order, ingredients, seconds)

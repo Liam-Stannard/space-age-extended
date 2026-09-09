@@ -364,3 +364,63 @@ a furnace loads it.
   That argues for the **sight port being visible even when idle-but-blocked**, so a
   latched machine does not read as a working one. Worth settling before the glow
   plate is drawn, since §3.2 currently gives the building exactly one lit state.
+
+---
+
+# 13. Sprite Dimensions
+
+**Measured off the shipped plates.**
+
+| Plate | Canvas | Drawn content | Shift | Scale |
+| ----- | ------ | ------------- | ----- | ----- |
+| `base.png` | 200 × 194 | 192 × 186 → **3.000 × 2.906 tiles** | `{ 0, 0 }` | 0.5 |
+| `base-shadow.png` | 349 × 205 | sheared off the plate's own alpha | `{ 1.16406, 0.08594 }` | 0.5 |
+| `port-glow.png` | 200 × 194 | the sight port, differenced | `{ 0, 0 }` | 0.5 |
+| `status-lamp.png` | 200 × 194 | the lens, cut white | `{ 0, 0 }` | 0.5 |
+
+Centred to **0.0 px**, alpha `0` on all four edges of every plate, three in a row
+claim **0 px twice**, `check-footprint.py --tiles 3` passes.
+
+### Compared against vanilla, which is the point of this section
+
+| | content | tiles | aspect | luminance | saturation |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| vanilla electric furnace | 208 × 204 | 3.250 × 3.188 | 1:0.98 | 74 | 0.200 |
+| vanilla cryogenic plant | 349 × 360 | 5.453 × 5.625 | 1:1.03 | 81 | 0.271 |
+| **ours** | 192 × 186 | **3.000 × 2.906** | **1:0.97** | **75** | **0.376** |
+
+**Aspect and luminance land on vanilla's own numbers** — 1:0.97 against 1:0.98,
+75 against 74. That is the camera check the Bed Tender failed at 1:0.61.
+
+**Vanilla's electric furnace overhangs its 3-tile footprint by a quarter tile**
+and ours does not. We are the conservative one; the lip
+`check-footprint.py` tolerates is vanilla's own habit, not a concession.
+
+**And the saturation story is the opposite of what the concept round reported.**
+`check-sheet-style.py` measured our *sheets* at 0.14–0.27 and called them under
+vanilla's floor. On the cut plate this building measures **0.376** against
+vanilla's furnace at 0.200 — richer, not poorer. The sheet numbers were a whole
+charcoal page with grey panels being compared against a single sprite. See the
+template's Appendix B 3a, which now says so.
+
+---
+
+# 23. What stage 1 found
+
+**A prototype that disagreed with its own art.** The flux inlet was declared on
+the SOUTH face and the adopted plate draws the frost-collared flange low on the
+RIGHT flank. §8 never said which flank, so the concept round pinned it east and
+the prototype now follows the picture. A flange drawn on one face and declared on
+another is the arc mast's `lightning_strike_offset` defect wearing different
+clothes.
+
+**The first fault lamp in the mod.** `apply_tint = "status"` with
+`always_draw = true`, copied from vanilla's electric mining drill, which does
+exactly this. The lens is drawn white on the plate and cut white by
+`tools/cut-status-lamp.py` — new, and reusable for the other eight — because the
+engine multiplies the sprite by the status colour, so a colour baked into the
+plate would be that colour in every state for ever.
+
+**The sight port is `always_draw = false`.** A lit port on an idle machine says
+it is working when it is not, and this building's whole argument is that you can
+only tell what it is doing from the outside.
