@@ -163,3 +163,18 @@ in the style of a game art bible page. Title the sheet CRUST TAP -- WEDGE CAP --
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/crust-tap/concept/options/B-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **57.6**, saturation **0.235**, edge density **0.121**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** A symmetric truncated pyramid with drive scars, a capped crown
+and the riser leaving low — and the base still reads as a square, which was the
+failure this shape invites. Brightest and joint-highest saturation of the set.
+
+**What to weigh.** It is the simplest object here, and simple is close to
+"monument". The scars and the burst disc are doing all the work that stops it.

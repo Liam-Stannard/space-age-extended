@@ -151,3 +151,20 @@ in the style of a game art bible page. Title the sheet HELIUM CONCENTRATOR -- WA
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/helium-concentrator/concept/options/A-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **70.1**, saturation **0.145**, edge density **0.119**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The belt at exactly half height, hot slot joints below it and
+frost above, and the split drawn as a hard line at the belt rather than a fade —
+which was the rule most likely to be lost. The gas riser turns over and comes
+back down to a ground flange, as the pipe rules demand.
+
+**What to weigh.** It is the plainest silhouette of the five: a fat pot with a
+band round it, and the band is the only thing separating it from any other
+vessel on the Core. Lowest detail density of the round after C.

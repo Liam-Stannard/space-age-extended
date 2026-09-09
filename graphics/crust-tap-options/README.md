@@ -191,3 +191,45 @@ buttresses at 120° is the better-looking object and the wrong one: on a square
 the base must read as a square rather than as a diamond. A cross-yoke whose four
 arms run to the four face midpoints stays axis-aligned by construction, which is
 the same reasoning that put the Dross Classifier's slope in the roof.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Luminance | Saturation | Edge density |
+| ------ | --------: | ---------: | -----------: |
+| A — the Bolted Collar | 50.9 | 0.229 | 0.112 |
+| B — the Wedge Cap | 57.6 | **0.235** | 0.121 |
+| C — the Yoke | 52.7 | 0.213 | 0.097 |
+| D — the Gland Stack | 53.0 | 0.207 | **0.084 — flagged `detail low`** |
+| E — the Flush Plate | 55.1 | **0.260** | 0.113 |
+| **vanilla band** | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+The sheets are at `graphics/entity/crust-tap/concept/options/`, and
+`concept/five-options-contact-sheet.png` holds all five at reduced size.
+
+**Every option in this set is under vanilla's luminance floor**, between 50.9
+and 57.6 against 63.2, and that is a *spec consequence rather than a generation
+failure*: §3.3 sets this building's body at `#3E3B36`–`#5E584E`, which is
+deliberately darker than the mod's usual chassis because it is tier 0 and half
+buried. Two honest options — accept that the Crust Tap is the darkest thing on
+the Core, or lift the tier-0 body range by a few points. It is a decision for
+Liam, not something to fix quietly in a stage-1 prompt.
+
+**Detail density is the other cost of 2 x 2.** Four of the five are under the
+floor and the Gland Stack is the only sheet in thirty that the checker flags
+outright. A two-tile building has a quarter of the canvas a 3 x 3 has, and
+concentric rings are the least edge-dense shape in the set.
+
+**The four-rotation row came back as rotations on all five** — same camera,
+building turned underneath, riser moving face to face — never the elevations the
+engine cannot produce.
+
+### The copper instruction worked, and it is measurable
+
+The previous round put every one of its fifteen sheets under vanilla's
+saturation floor, because each prompt confined copper to one place. These prompts
+say copper and brass are visible and used freely, and **six of this round's
+fifteen sheets are now inside the band** — where none of the last round's were.
+The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
+worst of 0.136. Appendix B item 3a earned its place.

@@ -178,3 +178,19 @@ in the style of a game art bible page. Title the sheet VACUUM FURNACE -- BELL --
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/vacuum-furnace/concept/options/C-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **63.2**, saturation **0.235**, edge density **0.122**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The taper stayed in the bell and the base stayed square — the
+failure this design was most exposed to — and the clamp ring with its draw dogs
+reads as the first thing on the machine. Inside vanilla's saturation band.
+
+**What to weigh.** The crown came back as a solid capped dome with lugs rather
+than the funnel mouth the page feared, which is the whole anti-read cleared. It
+is the tallest of the five, so it will lean into frame more than its neighbours.

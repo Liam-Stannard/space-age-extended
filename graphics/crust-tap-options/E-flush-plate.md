@@ -173,3 +173,21 @@ in the style of a game art bible page. Title the sheet CRUST TAP -- FLUSH PLATE 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/crust-tap/concept/options/E-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **55.1**, saturation **0.260**, edge density **0.113**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The plate came back dense — panel breaks, fastener wells,
+lifting slots, an inspection boss — and it stands proud of the ground on a bolted
+rim rather than reading as a decal, which was the whole risk. **Highest
+saturation of this set at 0.260**, inside vanilla's band.
+
+**What to weigh.** The heat seam runs right round the rim and the rime sits
+directly above it, so the hot/cold adjacency is closer here than on any other
+option. Its silhouette is a square, which is the least distinctive shape
+available — the riser is what breaks it.

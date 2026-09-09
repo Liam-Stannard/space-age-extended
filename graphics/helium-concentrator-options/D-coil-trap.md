@@ -166,3 +166,20 @@ in the style of a game art bible page. Title the sheet HELIUM CONCENTRATOR -- CO
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/helium-concentrator/concept/options/D-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **69.9**, saturation **0.153**, edge density **0.113**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The helix, and it is the most distinctive silhouette in this
+set by a distance — nothing else on the Core is a spiral. The lowest turns carry
+orange in their lagging joints and the top turns are frosted.
+
+**What to weigh.** The change of temperature reads more as a gradient up the coil
+than as the clean turn-boundary the prompt asked for, which is a stage-1 fix
+rather than a design fault. And a coil is a shape that invites the "still" read
+the page warned about; the clamped collars are what argue against it.

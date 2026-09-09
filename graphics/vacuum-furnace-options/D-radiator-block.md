@@ -174,3 +174,20 @@ in the style of a game art bible page. Title the sheet VACUUM FURNACE -- RADIATO
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/vacuum-furnace/concept/options/D-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **59.6**, saturation **0.270**, edge density **0.143**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** Everything the option asked for, and it is **the best-measured
+sheet of the fifteen**: saturation 0.270, comfortably inside vanilla's band and
+the highest of the round, with the highest edge density of this set. The crucible
+plug is small and dark against the fin field and still dominates the roof.
+
+**What to weigh.** The fins are cast and heavy rather than an automotive grille,
+which was the risk. Luminance 59.6 is under the floor — the design is a dark
+frame carrying pale fins, so it reads darker than it looks.

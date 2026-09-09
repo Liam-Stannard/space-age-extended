@@ -161,3 +161,21 @@ in the style of a game art bible page. Title the sheet HELIUM CONCENTRATOR -- CO
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/helium-concentrator/concept/options/B-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **73.7**, saturation **0.173**, edge density **0.136**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The proportion, which was the whole idea: a wide dark slab
+carrying one small frosted bell, roughly nine tenths to one tenth. Orange sits in
+the slab's plate joints and nowhere else, and the frost ring stops at the bell's
+skirt.
+
+**What to weigh.** Brightest and most detailed sheet of this set, and the only
+one whose top-down view is instantly distinguishable from the rest. The bell is
+close to the Sealed Roboport's dome in kind, though at a fraction of the size —
+worth a side-by-side before locking.

@@ -174,3 +174,19 @@ in the style of a game art bible page. Title the sheet VACUUM FURNACE -- RETORT 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/vacuum-furnace/concept/options/B-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **57.6**, saturation **0.219**, edge density **0.127**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** Three tubes in a bolted cradle behind three machined plugs, with
+the common radiator manifold at the far end taking about a third of the mass. The
+centre plug alone carries the sight port, exactly as asked.
+
+**What to weigh.** **Darkest sheet of the fifteen at 57.6**, under vanilla's
+luminance floor. And the anti-read is not fully beaten: at a glance the row of
+three round plugs still carries a whiff of the bottle rack the page named.

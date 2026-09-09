@@ -172,3 +172,21 @@ in the style of a game art bible page. Title the sheet HELIUM CONCENTRATOR -- SU
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/helium-concentrator/concept/options/E-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **72.1**, saturation **0.154**, edge density **0.133**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The deck came back genuinely dense — instrument bosses, panel
+breaks, recessed lenses, a bus run — which was the condition for a flat design to
+work at all. The frost ring sits on the well's rim and the heat is a thin line in
+the ground joint, a quarter tile below it.
+
+**What to weigh.** It is the only option here that cannot be confused with a
+vessel, and the only one whose signature feature is on the roof where the camera
+looks. Whether it reads as a *machine* rather than a hatch at normal zoom is the
+open question, and the sheet argues its case better than expected.

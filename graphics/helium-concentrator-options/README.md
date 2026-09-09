@@ -168,3 +168,43 @@ which was locked on 2026-09-08 as a jacketed vessel with a condenser stack and
 frost collars. It is the other tier 3 machine on the same floor and it already
 owns "pale jacketing on a dark shell". Options B, D and E each move the read
 somewhere that building cannot follow — proportion, a helix, and the roof.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Luminance | Saturation | Edge density |
+| ------ | --------: | ---------: | -----------: |
+| A — the Waist | 70.1 | 0.145 | 0.119 |
+| B — the Cold Cap | 73.7 | **0.173** | 0.136 |
+| C — Twin Bottles | 65.4 | 0.143 | 0.108 |
+| D — the Coil Trap | 69.9 | 0.153 | 0.113 |
+| E — the Sunken Well | 72.1 | 0.154 | 0.133 |
+| **vanilla band** | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+The sheets are at `graphics/entity/helium-concentrator/concept/options/`, and
+`concept/five-options-contact-sheet.png` holds all five at reduced size.
+
+**This set is the one that stayed under the saturation floor**, and the reason
+is the design rather than the prompt: the palette is a dark shell, pale frost and
+one dull orange, and frost is the least saturated thing a building can wear. The
+Cold Cap gets closest at 0.173 because it has the most bare metal showing.
+
+**Two options are under vanilla's detail floor by a distance** — Twin Bottles at
+0.108 and the Coil Trap at 0.113 — because both are made of smooth curved
+vessels. That is the Whisker Comber's round-shell problem again, and it is fixable
+at stage 1 with instrumentation rather than by changing the design.
+
+**Every option held the hard temperature line.** Nothing warm appears above the
+belt, the bell's skirt, the cross-over clamp, the boundary collar or the deck.
+That was the rule most likely to be lost to a gradient, and it survived five
+times out of five.
+
+### The copper instruction worked, and it is measurable
+
+The previous round put every one of its fifteen sheets under vanilla's
+saturation floor, because each prompt confined copper to one place. These prompts
+say copper and brass are visible and used freely, and **six of this round's
+fifteen sheets are now inside the band** — where none of the last round's were.
+The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
+worst of 0.136. Appendix B item 3a earned its place.

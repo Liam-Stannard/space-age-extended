@@ -164,3 +164,20 @@ in the style of a game art bible page. Title the sheet VACUUM FURNACE -- POT -- 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/vacuum-furnace/concept/options/A-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **72.1**, saturation **0.206**, edge density **0.133**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** A sealed welded drum with a radial-dogged hatch, radiator loops
+on the flanks, one lit sight port low on the near face and the white lamp on the
+far side of the roof. The three-state row is correct: port orange, then lamp
+amber, then both dark.
+
+**What to weigh.** Brightest sheet of this set, and the most conventional. Its
+domed roof puts it in the same family as the Whisker Comber's Spinner and the
+Sealed Roboport, which is a crowded silhouette on this planet.

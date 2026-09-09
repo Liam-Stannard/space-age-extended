@@ -184,3 +184,41 @@ locked on 2026-09-08 as a low stepped grey box on this same factory floor. Its o
 adopted page flags the collision. Options B, C, D and E each move somewhere that
 building cannot follow — parallel tubes, a bell on a base, a fin block, and a
 bolted spine.
+
+---
+
+## Round 1 measured, all five
+
+| Option | Luminance | Saturation | Edge density |
+| ------ | --------: | ---------: | -----------: |
+| A — the Pot | 72.1 | 0.206 | 0.133 |
+| B — the Retort Bank | 57.6 | 0.219 | 0.127 |
+| C — the Bell | **63.2** | **0.235** | 0.122 |
+| D — the Radiator Block | 59.6 | **0.270** | 0.143 |
+| E — the Clamshell | 68.0 | **0.244** | 0.142 |
+| **vanilla band** | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 |
+
+The sheets are at `graphics/entity/vacuum-furnace/concept/options/`, and
+`concept/five-options-contact-sheet.png` holds all five at reduced size.
+
+**The strongest-measured set of the round.** Three of the five are inside
+vanilla's saturation band and the Radiator Block is the best-measured sheet of
+all fifteen.
+
+**The three-state row worked on every one.** RUNNING with the sight port lit and
+the lamp dark, BLOCKED with the port dark and the lamp amber, IDLE with both out
+— which settles the conflict this README opened with in §11's favour, and means
+§20's last bullet should be struck rather than reconciled.
+
+**The fault lamp stayed white everywhere except the state row**, as instructed,
+so whoever cuts the plate will not bake in a colour the engine is supposed to
+apply.
+
+### The copper instruction worked, and it is measurable
+
+The previous round put every one of its fifteen sheets under vanilla's
+saturation floor, because each prompt confined copper to one place. These prompts
+say copper and brass are visible and used freely, and **six of this round's
+fifteen sheets are now inside the band** — where none of the last round's were.
+The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
+worst of 0.136. Appendix B item 3a earned its place.

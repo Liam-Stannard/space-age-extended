@@ -170,3 +170,21 @@ in the style of a game art bible page. Title the sheet HELIUM CONCENTRATOR -- TW
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/helium-concentrator/concept/options/C-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **65.4**, saturation **0.143**, edge density **0.108**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** Two visibly unequal vessels on one base with a single lagged
+cross-over between them, frost on the left half and bare metal on the right — the
+temperature boundary drawn *on the pipe*, which is the sharpest version of this
+building's read.
+
+**What to weigh.** **Least detailed sheet of the fifteen at 0.108**, well under
+vanilla's floor: two smooth vessels give the eye very little, and the round shell
+problem the Whisker Comber hit is the same problem here. It would need
+instrumentation and panel breaks at stage 1.

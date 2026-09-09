@@ -170,3 +170,20 @@ in the style of a game art bible page. Title the sheet CRUST TAP -- YOKE -- use 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/crust-tap/concept/options/C-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **52.7**, saturation **0.213**, edge density **0.097**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The X reads instantly in the silhouette panel — the strongest
+map-zoom read of the fifteen — and the arms run to the face midpoints rather than
+the diagonals, so nothing is drawn off-axis.
+
+**What to weigh.** **0.097 edge density**, third-lowest of the round: an open
+cross has less material than any other option, so there is less to detail. And
+the arms came back slightly slenderer than "deep cast beams", which is the exact
+axis the page said it was risking.

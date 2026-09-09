@@ -165,3 +165,20 @@ in the style of a game art bible page. Title the sheet CRUST TAP -- GLAND STACK 
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/crust-tap/concept/options/D-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **53.0**, saturation **0.207**, edge density **0.084**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** Four stepped rings with wrench flats and jack bolts, under half
+a tile tall, with the riser leaving the second ring at its choke.
+
+**What to weigh.** **The only sheet of the thirty drawn across both rounds that
+the checker flags as `detail low`** — 0.084 against a floor of 0.144. Concentric
+rings are a shape with very little edge in them, and at 2 x 2 there is not much
+canvas to add any. That is a real finding about the design, not about this
+render.

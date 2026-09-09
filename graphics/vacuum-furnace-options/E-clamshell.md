@@ -177,3 +177,20 @@ in the style of a game art bible page. Title the sheet VACUUM FURNACE -- CLAMSHE
 that name, do not invent a generic descriptive title. Panel labels only; no
 other text anywhere on the sheet.
 ```
+
+## Round 1 — what came back
+
+`graphics/entity/vacuum-furnace/concept/options/E-sheet.png`, generated 2026-09-09 from the prompt above with the four attachments named
+in the README. One generation, no refinements.
+
+**Measured:** luminance **68.0**, saturation **0.244**, edge density **0.142**.
+Band from the four vanilla references: luminance 63.2-90.4, saturation 0.230-0.490, edge density 0.144-0.261. The *aspect* column and its "perspective low" verdict are ignored, as they are on every sheet in this repo: they measure the panel bounds, not the building.
+
+**What landed.** The bright seam rib with its row of draw bolts is unmistakable
+from directly above, which is where Factorio's camera is, and the shells read as
+bolted rather than hinged. Inside vanilla's saturation band, second-best edge
+density of the set.
+
+**What to weigh.** Nothing in the sheet glows in the seam, which was the rule
+that would have contradicted the design. The two half-shells give it a rounded
+back that is close to the Pot's from some angles.
