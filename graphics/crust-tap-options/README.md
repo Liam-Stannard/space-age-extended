@@ -233,3 +233,43 @@ say copper and brass are visible and used freely, and **six of this round's
 fifteen sheets are now inside the band** — where none of the last round's were.
 The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
 worst of 0.136. Appendix B item 3a earned its place.
+
+---
+
+## Round 2 measured — regenerated for the pipe connection
+
+| Option | Luminance | Saturation | Edge density | vs round 1 |
+| ------ | --------: | ---------: | -----------: | ---------- |
+| A — the Bolted Collar | 50.6 | 0.211 | 0.099 | connection fixed; density down |
+| B — the Wedge Cap | 56.4 | 0.219 | 0.095 | connection fixed; density down |
+| C — the Yoke | 49.8 | 0.174 | **0.077 — flagged `detail low`** | connection fixed; **worst sheet in the repo** |
+| D — the Gland Stack | 54.6 | 0.189 | 0.098 | connection fixed; **flag cleared**, 0.084 → 0.098 |
+| E — the Flush Plate | 57.9 | **0.256** | 0.131 | connection fixed; best of the set |
+| **vanilla band** | 63.2–90.4 | 0.230–0.490 | 0.144–0.261 | |
+
+**Why there was a round 2.** Liam rejected round 1 on the connection, twice. The
+first fault was the angle: every riser left toward a *corner* of the footprint,
+and in game a fluid connection lands on the tile boundary the prototype names, so
+a pipe aimed between two edges is aimed at no tile at all. The re-prompt fixed
+the angle and produced risers ending in nozzles and bulbs — square, and still
+impossible to plumb. Same failure in a different costume: a connection that
+cannot be connected to.
+
+**What fixed it was two attachments, not more words.** A flat geometry diagram of
+the 2 x 2 footprint — four edge midpoints marked, a green arrow leaving one, red
+crosses on the diagonals — and a **vanilla pump with vanilla pipes butted onto
+it**, captioned as the connection to copy and nothing else. That is Appendix B
+item 3b working exactly as written: *ratios in words do not survive; a shape on a
+grid does.* Every sheet now carries a connection detail panel with an ordinary
+pipe mated to the stub, which is a check the sheet performs on itself.
+
+**The cost is measurable and worth stating.** Four of the five lost edge density
+against round 1, because a proper pipe stub is a plain cylinder and it replaced
+fussier geometry. The Yoke is now the least dense sheet in this repo at 0.077 —
+an open cross has almost no material to detail, and the fix took some away. The
+Gland Stack went the other way: asking for grease nipples, lock wire, tag plates
+and chipped edges lifted it from 0.084 to 0.098 and cleared its flag.
+
+**The luminance finding from round 1 stands unchanged**: every option sits
+between 49.8 and 57.9 against a floor of 63.2, because §3.3 sets this building's
+body darker than the mod's usual chassis. Accept it, or lift the tier 0 range.

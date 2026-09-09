@@ -33,6 +33,14 @@ graphics/TODO.md; these are the three cut so far:
                          anti-read, so the prompt must label it a camera
                          reference and say what must not be taken from it.
 
+Two more are **connection references** rather than style ones:
+
+  pump, pipe             how vanilla draws a fluid connector, and the pipe that
+                         has to mate with it. Attach these when the thing being
+                         got right is the stub itself: a player's pipe arrives at
+                         the tile boundary and nowhere else, so the building's
+                         own art has to end in something that meets it.
+
 Use --only to cut a subset: the standard four plus the one this building owns.
 
 **These files are Wube's art and must never be copied into the repo.** They are
@@ -106,6 +114,17 @@ REFERENCES = {
          380, 396, 0.09375, -0.109375, 1, 0),
         ("space-age/graphics/entity/cryogenic-plant/cryogenic-plant-glass.png",
          274, 228, 0.125, -0.234375, 1, 0),
+    ],
+    # Connection references: how vanilla draws a fluid connector that a player's
+    # pipe actually mates with. Attached when a building's pipe stub is the thing
+    # being got right, not its style.
+    "pump": [
+        ("base/graphics/entity/pump/pump-north.png",
+         103, 164, 0.25, -0.0265625, 8, 0),
+    ],
+    "pipe": [
+        ("base/graphics/entity/pipe/pipe-straight-vertical.png",
+         128, 128, 0, 0, 1, 0),
     ],
     "pumpjack": [
         ("base/graphics/entity/pumpjack/pumpjack-base.png",

@@ -69,6 +69,42 @@ design, shape or components. The attached sheet of our own is a FORMAT reference
 only: match its panel layout and information panels. The machine in it is a
 different building of ours and this one must look like nothing else.
 
+== THE RISER'S ALIGNMENT -- READ THE ATTACHED DIAGRAM ==
+One attachment is a flat GEOMETRY DIAGRAM of this building's 2x2 footprint seen
+from directly above: a black square with its four face midpoints marked, a green
+arrow leaving one of them, and red crosses over all four diagonals. It is a
+geometry reference ONLY -- do not copy its flat colours, its lines, its arrows or
+its text into the sheet.
+
+What it says is the hardest rule on this building. THE RISER LEAVES AT NINETY
+DEGREES TO ONE EDGE OF THE SQUARE BASE, THROUGH THE MIDDLE OF THAT EDGE. Its
+centreline runs parallel to the other two edges of the base. It NEVER points at a
+corner, NEVER leaves on a diagonal, and NEVER runs at an angle between two edges.
+The base's four edges must stay straight and legible so that alignment can be
+judged at a glance.
+
+This is not a stylistic preference. In game a pipe connection lands on the tile
+boundary the prototype names, and a player's pipe arrives there and nowhere else,
+so a riser aimed between two edges is aimed at no tile at all. The first round of
+this building failed on exactly this point -- every one of the five drew the
+riser heading toward a corner -- which is why the diagram is attached.
+
+== THE PIPE CONNECTION -- IT MUST ACTUALLY CONNECT ==
+The other attachment is a vanilla PUMP with vanilla PIPES butted onto it. Copy
+the CONNECTION from it and nothing else -- not the machine, not its shape, not
+its colours.
+
+The riser's last section IS A PIPE. It is a straight, open-ended, cylindrical
+pipe stub of THE SAME DIAMETER as the vanilla pipe in that image, running
+horizontally at ground level, its open mouth flush with the middle of the tile
+edge and square to it, so that a pipe placed on the next tile meets it END TO
+END and the two read as one run.
+
+It does NOT end in a cap, a plug, a nozzle, a gland, a bulb, a taper, a cone or a
+closed face. It does not narrow at the mouth. It does not stop short of the edge
+and it does not overshoot it. A flange collar just behind the mouth is right and
+vanilla does exactly that; the mouth itself stays open and full width.
+
 == BUILDING ==
 Crust Tap -- option C, the Yoke.
 A very low two-by-two wellhead: a small capped plug over the bore, held down by a
@@ -187,3 +223,33 @@ the diagonals, so nothing is drawn off-axis.
 cross has less material than any other option, so there is less to detail. And
 the arms came back slightly slenderer than "deep cast beams", which is the exact
 axis the page said it was risking.
+
+## Round 2 — regenerated, because the pipe could not be connected to
+
+`graphics/entity/crust-tap/concept/options/C-sheet.png`, generated 2026-09-09. **This
+sheet replaces round 1's**, whose numbers above are superseded.
+
+**Two defects, both Liam's, both about the same thing.** Round 1 drew every riser
+heading toward a *corner* of the footprint — in game a fluid connection lands on
+the tile boundary the prototype names, so a pipe aimed between two edges is aimed
+at no tile at all. The first re-prompt fixed the angle and produced risers that
+ended in nozzles and bulbs: square, and still impossible to plumb.
+
+**What fixed it was two attachments rather than more words**, which is Appendix
+B's own lesson about geometry. A flat diagram of the 2 x 2 footprint with the
+four edge midpoints marked, a green arrow leaving one and red crosses on the
+diagonals; and a vanilla **pump with vanilla pipes butted onto it**, captioned as
+the connection to copy and nothing else. Three rounds of prose had not landed it;
+one picture of the mating did.
+
+**Measured:** luminance **49.8**, saturation **0.174**, edge density **0.077**.
+
+**The connection is right now** — the riser runs out beneath the near arm, at
+ground level, ending in an open mouth at the edge midpoint, with the arms still
+running to the four face midpoints rather than the corners.
+
+**But the measurements got worse, not better**, and this is the finding: 0.077
+edge density, the lowest of any sheet in this repo, and saturation down to 0.174.
+A cross is mostly empty space; adding a proper pipe stub took material *away*
+from the arms rather than adding any. The `detail low` flag is now on this option
+rather than the Gland Stack.
