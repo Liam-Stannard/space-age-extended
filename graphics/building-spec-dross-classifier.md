@@ -220,7 +220,7 @@ production notes:
 
 | Plate | Canvas | Drawn content | Shift | Scale |
 | ----- | ------ | ------------- | ----- | ----- |
-| `base.png` | 200 × 189 | 192 × 181 → **3.000 × 2.828 tiles** | `{ 0, 0 }` | 0.5 |
+| `base.png` | 200 × 189 | 192 × 179 → **3.000 × 2.797 tiles** | `{ 0, 0 }` | 0.5 |
 | `base-shadow.png` | 345 × 200 | leans up and right off the plate's own alpha | `{ 1.13281, 0.08594 }` | 0.5 |
 
 **Checked against the template's Appendix C, all four checks:**
@@ -229,7 +229,10 @@ production notes:
 2. **Not clipped** — alpha `0` down both edge columns and along both edge rows,
    on the colour plate *and* on the shadow.
 3. **Fits the box** — `check-footprint.py --tiles 3` passes; the drawn machine is
-   192 px at a 64 px pitch, which is 3.000 tiles on the nose.
+   192 px at a 64 px pitch, which is 3.000 tiles on the nose. **This is what set
+   the margins on the round-3 cut**: at the round-2 margins of 4 px a side the
+   new render trimmed to 194 px — 3.031 tiles — and a row of them would have
+   overlapped by two pixels each. Five a side brings it back to 192 exactly.
 4. **Declared equals actual** — the two `width`/`height` pairs in
    `prototypes/core/machines.lua` are the files' own sizes.
 
@@ -238,13 +241,14 @@ alpha > 80. This building cannot interleave with its neighbours, which is the
 failure the Arc Mast is the standing lesson for.
 
 **Camera, measured against vanilla rather than judged:** trimmed aspect
-**1:0.94**, against a vanilla 3×3 plate's 1:0.96. That is the check the Bed
+**1:0.92**, against a vanilla 3×3 plate's 1:0.96. That is the check the Bed
 Tender's first plate failed at 1:0.61, and it is why the concept sheet's hero was
 edited rather than re-prompted.
 
-**Body metal `#5A4639`, luminance 73, warmth R−B +33** — inside the
+**Body metal `#654C3D`, luminance 80, warmth R−B +40** — inside the
 `#4A463F`–`#6E685C` band, and the warmth is the copper this round deliberately
-let out.
+let out. The round-2 painted plate measured `#634C3D`, 80, +38 on the same
+tool, so round 3 moved the metal by two points of warmth and nothing else.
 
 ---
 
@@ -304,21 +308,31 @@ the wheel face, ribs across the barrel, an offset counterweight boss, and the
 specular gone — and all of it still legible when the render is brought down to
 the plate's 192×181. Filed as `concept/plate-r3-animatable-drive.png`.
 
-**Not adopted, pending a decision.** The edit redrew the whole machine, not one
-component: 52.4 % of pixels changed against a 6.1 % resample floor, and alpha
-drift 4.11 against 0.63. But every measure the pipeline actually checks is
-*identical* to the shipped plate — trimmed aspect 1:0.93 both, body metal
-`#634C3D` at luminance 80 and warmth +38 both, palette in range both — and the
-yellow accent, the hatches, the roofline and the springs all survive. So the
-52 % is texture-level redraw rather than design drift, and the choice is
-whether to take the new plate whole or keep the shipped one.
+**Adopted.** The edit redrew the whole machine rather than one component —
+52.4 % of pixels changed against a 6.1 % resample floor, alpha drift 4.11
+against 0.63 — but every measure the pipeline checks came back level with the
+round-2 plate: trimmed aspect 1:0.93 against 1:0.92, body metal `#634C3D` at
+luminance 80 and warmth +38 against `#654C3D`, 80, +40, palette in range both.
+The yellow accent, the hatches, the roofline, the bins and the four spring
+stacks all survive. So the 52 % is texture-level redraw, not design drift, and
+what the round buys is a drive that can be animated.
 
-**The middle path is blocked.** Compositing only the new drive onto the shipped
-housing needs a stencil, and two mask edits of the render came back
-byte-identical to their input — different file size, `ImageChops.difference`
-returning `None`, zero magenta. That is the null result Appendix B records, hit
-twice in a row on this image where the same prompt worked first time on the
-previous plate.
+Cut at five pixels of margin a side rather than four — see §13 check 3 — and
+installed over `base.png` and `base-shadow.png`. **No prototype change:** the
+canvases are the same 200 × 189 and 345 × 200, and the tool's derived shadow
+shift resolves to the `{ 1.13281, 0.08594 }` already declared.
+
+**The middle path was tried first and is blocked.** Compositing only the new
+drive onto the round-2 housing needs a stencil, and two mask edits of the render
+came back byte-identical to their input — different file size,
+`ImageChops.difference` returning `None`, zero magenta. That is the null result
+Appendix B records, hit twice running on this image where the same prompt worked
+first time on the round-2 plate. Taking the whole plate avoided needing it.
+
+**Still to do:** the drive is now *drawable* as an animation and is not yet
+animated. `animation-pipeline.md` stages 2–4 — mask, cut, `--mode scroll` — are
+what turn it, and the drum's region wants re-measuring off this plate rather
+than the round-2 one.
 
 **Round 1, 2026-09-08 — five options, compared rather than refined.** A Shaker
 Deck, B Trommel, C Rocker Beam, D Cascade Tower, E Spiral Rake; one generation
