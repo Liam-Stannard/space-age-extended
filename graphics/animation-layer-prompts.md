@@ -185,11 +185,36 @@ print('lit area: %.1f%% of pixels changed by more than 8'
 EOF
 ```
 
-**Pass:** alpha drift mean under ~1, and the changed area confined to the
-regions the prompt named — typically 5–20 % of the plate. **Fail:** alpha drift
-in the tens (it redrew the silhouette), or 60 %+ changed (it relit the whole
-machine, or returned a different machine). Say *regenerate* rather than *edit*
-when the silhouette is wrong; an edit preserves the shape being rejected.
+**Two things this needs that the first draft of it did not say**, both found by
+running it:
+
+1. **Normalise first.** The result does not come back at the plate's size — a
+   1024×1536 or 1254×1254 canvas is what you get, whatever the prompt asked
+   for. Trim both images to their own alpha bbox and scale the result to the
+   plate's before differencing, or run it through
+   `tools/process-building-art.py` first.
+2. **Measure the noise floor, don't guess a threshold.** That rescale changes
+   every edge by itself. Round-trip the *unmodified* plate through the
+   generator's output size and back, run the same numbers, and read the real
+   measurement against that:
+
+   ```python
+   rt = plate.resize((1024, 1536), Image.LANCZOS).resize(plate.size, Image.LANCZOS)
+   ```
+
+   Measured on the arc mast's 224×345 plate the floor is **alpha drift 0.56,
+   changed area 3.4 %**. Anything near those numbers is the resample, not the
+   generator.
+
+**Pass:** alpha drift within about twice the floor, and the changed area
+confined to the regions the prompt named. **Fail:** alpha drift an order of
+magnitude over the floor — it re-proportioned the machine, and `derive-glow.py`
+will land the result off-register, which is the exact bug that tool's docstring
+records. Check the **trimmed aspect** of both while you are there; a few per
+cent of drift there is the same defect stated more legibly.
+
+Say *regenerate* rather than *edit* when the silhouette is wrong; an edit
+preserves the shape being rejected.
 
 Watch for the null result too: the superconducting store's lit twin came back
 pixel-identical five rounds running, re-encoded each time so the file size
@@ -340,6 +365,13 @@ exactly the size and position it occupies in the attached image.
 
 == THE LAMP ==
 [Locate it: "the round lens on the left shoulder of the housing".]
+
+== CAMERA ==
+Unchanged from the attached image. Viewed from the game's characteristic
+45-degree top-down perspective, square to the tile grid. [If the lamps run
+around something round, say so explicitly: "a ring of lamps around a dome is
+therefore an ELLIPSE, wider than it is tall, not a circle seen from directly
+above."]
 
 == COLOUR -- THIS IS THE IMPORTANT PART ==
 The lens is NEUTRAL WHITE, #FFFFFF at its centre, falling to a soft neutral
@@ -546,3 +578,60 @@ Vanilla's `working_sound` accents name the vanilla animations they are cued to,
 and a machine that replaces its graphics set while keeping them refuses to
 load — `Working visualisation "warm-up" doesn't exist`. That helper strips both
 the accents and the gated `main_sounds`.
+
+---
+
+# First test run — what each type actually returned
+
+Four prompts, filled from the templates above and run through the browser route
+of Appendix B against real plates in this tree. Recorded because the numbers are
+the calibration, and because three of the four failed in ways the templates did
+not predict.
+
+| Type | Building | Verdict |
+| ---- | -------- | ------- |
+| 1 lit twin | Arc Mast | **Art excellent, registration failed** |
+| 2 moving part | Dross Classifier | **Isolation passed, registration failed** |
+| 3 status lamp | Sealed Roboport | **Colour passed, camera failed** |
+| 4 effect | Dross Classifier | **Passed, grid partially compliant** |
+
+**Type 1.** The best of the four to look at: light in exactly the four places
+the prompt named, violet with white cores, electrical rather than fiery, the
+silhouette and the unlit metal apparently untouched. The gate disagreed —
+alpha drift 5.41 against a 0.56 floor, changed area 39 % against 3.4 %, and a
+trimmed-aspect drift of **4.7 %**. The machine was quietly re-proportioned by
+about a twentieth, which no one would catch by eye and which puts every glow
+pixel off-register. **This is the case the gate exists for**, and it is why the
+thresholds above are now expressed against a measured floor.
+
+**Type 2.** The isolation worked perfectly — the flywheel and hub alone, no
+housing, no springs, right metal, clean alpha. And it came back centred on its
+own canvas at x 0.28–0.76, y 0.20–0.58, where on the plate the drive sits up at
+the top of the roofline. Exactly the "usual failure" the template names. The
+part is usable, but only after being placed by measurement; nothing about the
+returned file says where it goes.
+
+**Type 3.** Passed the hue gate at spread **5.5**, against **62.0** for the
+amber `lamps.png` already in the tree — the gate discriminates, though 5.5
+against a threshold of 6 is closer than it looks and the threshold may want
+loosening to 8 with more samples. It failed on geometry: the returned ring has
+a bbox aspect of **0.984**, a circle in plan view, where the shipped plate's
+ring is **1.290**, an ellipse at the 45-degree camera. The cause was a missing
+`== CAMERA ==` section — Types 1 and 2 had one, Type 3 did not. Appendix B is
+already explicit that the camera is "the rule most often lost, and the one
+whose loss is least obvious"; it went missing from a template written by
+someone who had just read that sentence. The section is now in.
+
+**Type 4.** The one unqualified success, and the only type that is a real
+multi-frame generation. Twelve cells, dust lifting and falling back in a
+ballistic arc with readable grains and no billowing — the vacuum physics in the
+FORBIDDEN section landed — and cell 12 loops back into cell 1. The grid was
+partially compliant: gutters at 2 of the 3 column seams, one of them landing
+exactly on the declared pitch and one 16 px off, and no gutter at all at the
+third. Cut on the measured gutters, which is what this document already says to
+do, and it is usable as it stands.
+
+**The pattern across all four:** the generator is good at *what to draw* and
+unreliable at *where to put it*. Every one of the four failures was positional —
+proportion, placement, projection, pitch. None was artistic. Budget the review
+effort accordingly, and keep every gate geometric.
