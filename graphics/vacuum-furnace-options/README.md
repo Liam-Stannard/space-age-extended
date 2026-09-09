@@ -222,3 +222,29 @@ say copper and brass are visible and used freely, and **six of this round's
 fifteen sheets are now inside the band** — where none of the last round's were.
 The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
 worst of 0.136. Appendix B item 3a earned its place.
+
+---
+
+## CHOSEN — option A, the Pot
+
+Picked by Liam on 2026-09-09. Its page is the only one left in this directory;
+the other four are deleted, and so are their full-size sheets. What survives of
+the round is this README, the winner's page with its production notes, and
+`graphics/entity/vacuum-furnace/concept/five-options-contact-sheet.png`, which holds all five
+at reduced size.
+
+The adopted sheet is `graphics/entity/vacuum-furnace/concept/adopted/A-sheet.png`.
+
+**Chosen because the sealed read is the building** and this is the sealed one:
+a welded drum with no door, no throat and no chimney, one clamped hatch, one lit
+sight port. Its three-state row is the cleanest of the five, which matters more
+here than on any other machine in the mod — S12's latch is only worth having if a
+player can see it.
+
+**What the round cost, and what it bought.** Five generations, no refinements,
+and the strongest-measured set of the fifteen: three of the five inside vanilla's
+saturation band. The runner-up is **D, the Radiator Block** at 0.270 saturation
+and 0.143 density, the best-measured sheet of the whole round — it draws the
+argument (a furnace on a world with no air is mostly radiator) where the Pot
+draws the machine. If the Pot's dome proves too close to the Spinner and the
+Roboport at stage 1, D is where to go.

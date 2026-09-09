@@ -1,5 +1,47 @@
 # Option A — the Pot
 
+> ## ADOPTED — this is the Vacuum Furnace
+>
+> Chosen 2026-09-09 by Liam from five options drawn against each other. The sheet
+> is locked at `graphics/entity/vacuum-furnace/concept/adopted/A-sheet.png`. Every other option in this directory is rejected and its
+> page has been deleted; the README keeps the record of what the five were and
+> what the round measured.
+
+### Why it won
+
+**The sealed read is the building, and this is the sealed one.** A welded drum
+with no door, no throat and no chimney, closed by a single clamped hatch, with
+one lit sight port low on the near face doing all the work. Nothing about it
+suggests an open-fronted furnace, which is the anti-read that matters.
+
+**Its three-state row is the cleanest of the five.** Sight port orange with the
+lamp dark, port dark with the lamp amber, both out and the machine cold — legible
+at a glance in all three, which is what S12's latch needs to be.
+
+It is also the brightest sheet of this set at 72.1, on a planet where this
+building is meant to be dark but not lost.
+
+### What to fix in production, found on review
+
+1. **The domed roof puts it in a crowded family.** The Whisker Comber's Spinner
+   and the Sealed Roboport are both round-topped and both stand on the Core. The
+   Pot is lower and wider than either, and its clamped hatch with radial dogs is
+   what separates it — that hatch must stay the dominant feature of the roof, and
+   a stage-1 round that smooths it toward a plain dome has failed.
+2. **The fault lamp must stay painted white** everywhere except inside the state
+   row. The engine tints it via `status_colors`, and a plate with an amber lamp
+   baked in will be amber in every state for ever.
+3. **The heat budget is one circle.** The sight port is the only warm light. If
+   stage 1 puts orange in a seam, a vent or the hatch gap, the seal — this
+   machine's entire argument — is a lie.
+4. **The flux flange stays small and unremarkable.** This furnace runs with
+   nothing plumbed to it half the time, so a flange drawn as a feature makes an
+   unplumbed machine look broken.
+5. **§20's last bullet should be struck.** It says the sight port stays visible
+   when idle-but-blocked; §11's three-state row says BLOCKED is port-dark,
+   lamp-amber, and that is what all five sheets drew and what the engine's own
+   status colours support. Fix the spec rather than the art.
+
 **One line.** A squat welded drum with one big clamped hatch on its roof, radial dogs round the rim, and radiator loops on two flanks.
 
 ## The idea

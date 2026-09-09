@@ -1,5 +1,50 @@
 # Option C — the Twin Bottles
 
+> ## ADOPTED — this is the Helium Concentrator
+>
+> Chosen 2026-09-09 by Liam from five options drawn against each other. The sheet
+> is locked at `graphics/entity/helium-concentrator/concept/adopted/C-sheet.png`. Every other option in this directory is rejected and its
+> page has been deleted; the README keeps the record of what the five were and
+> what the round measured.
+
+### Why it won
+
+**It draws the temperature split on the pipe rather than on the shell**, and
+that is the sharpest form of this building's read. Two unequal vessels, one hot
+and one cold, joined by a single lagged cross-over with frost on the left half
+and bare warm metal on the right — the change of state happens at a clamp you can
+point at.
+
+The other four each put the split somewhere less legible: a band round one drum
+(A), a proportion between a slab and a bell (B), a gradient up a coil (D), or a
+quarter-tile of vertical distance in a ground joint (E). This one puts it at eye
+level in the middle of the machine.
+
+Two unequal vessels also give it a plan silhouette nothing else on the Core has:
+every other 3×3 here is one mass.
+
+### What to fix in production, found on review
+
+1. **It is the least detailed sheet of the fifteen, at 0.108** against
+   vanilla's 0.144 floor, and the reason is structural: two smooth vessels give
+   the eye almost nothing to hold. This is the Whisker Comber's round-shell
+   problem again. Stage 1 must load both shells with hardware — instrument
+   bosses, panel breaks, ladder cleats, jacket seams, clamped collars — and it is
+   the single most important thing about that round.
+2. **Saturation 0.143, the lowest of this set.** The palette is dark shell, pale
+   frost and one dull orange, and frost carries no chroma at all. Copper has to
+   do the work: flange faces, the cross-over's clamps, terminal blocks, the
+   ladder furniture. Do not let a stage-1 prompt ration it.
+3. **The cross-over must not become a walkway.** It is a lagged duct with clamped
+   flanges at both ends, and the moment it grows a handrail this reads as a tank
+   farm — which is the anti-read the option page named.
+4. **Three fluid connections, and the spec is wrong about one of them.** §8 puts
+   the helium-3 outlet "north face, high" and §3.2 has the riser leaving at the
+   top; the template forbids both, because a connection lands on a tile edge at
+   ground level. The sheet draws the riser turning over and coming back down,
+   which is the legal form. **Correct §8 before the plate is cut**, or the
+   prototype and the art will disagree.
+
 **One line.** Two unequal sealed vessels standing side by side, one dark and hot, one pale and frosted, bridged by a short heavy cross-over at the waist.
 
 ## The idea

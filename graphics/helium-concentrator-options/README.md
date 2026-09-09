@@ -208,3 +208,28 @@ say copper and brass are visible and used freely, and **six of this round's
 fifteen sheets are now inside the band** — where none of the last round's were.
 The Vacuum Furnace's Radiator Block measures **0.270**, against a previous-round
 worst of 0.136. Appendix B item 3a earned its place.
+
+---
+
+## CHOSEN — option C, the Twin Bottles
+
+Picked by Liam on 2026-09-09. Its page is the only one left in this directory;
+the other four are deleted, and so are their full-size sheets. What survives of
+the round is this README, the winner's page with its production notes, and
+`graphics/entity/helium-concentrator/concept/five-options-contact-sheet.png`, which holds all five
+at reduced size.
+
+The adopted sheet is `graphics/entity/helium-concentrator/concept/adopted/C-sheet.png`.
+
+**Chosen because it draws the temperature split on the pipe**, at a clamp
+halfway along a lagged cross-over, rather than on a shell where it has to be
+inferred. Two unequal vessels also give it a plan silhouette no other 3 x 3 on
+the Core has: every one of them is a single mass.
+
+**What the round cost, and what it bought.** Five generations, no refinements.
+The set's finding was that this building's palette fights the measurement: dark
+shell, pale frost and one dull orange put all five under the saturation floor, and
+the two smooth-vessel designs under the detail floor as well. The runner-up worth
+recording is **B, the Cold Cap** — the best-measured sheet of this set at 0.173
+and 0.136, and the only one whose top-down view is instantly distinguishable —
+which is where to go if the Twin Bottles cannot be made dense enough at stage 1.

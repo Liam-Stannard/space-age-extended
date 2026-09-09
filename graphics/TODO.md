@@ -129,7 +129,10 @@ four rules now live in the template's §8 and in every prompt.
 | Dross Classifier | **LOCKED — option A, the Shaker Deck**, chosen from five on 2026-09-08. `concept/adopted/A-sheet.png` |
 | Coil Separator | **LOCKED — option D, the Cold Plant**, chosen from five. The coil is buried; the machine is the refrigeration it needs. `concept/adopted/D-sheet.png` |
 | Whisker Comber | **LOCKED — option C, the Spinner**, chosen from five. A standing drum, not a low box. `concept/adopted/C-sheet.png` |
-| The other four | not yet redrawn — Helium Concentrator, Vacuum Furnace, Crust Tap, Ignition Ring Mast |
+| Helium Concentrator | **LOCKED — option C, the Twin Bottles**, chosen from five on 2026-09-09. Two unequal vessels, hot and cold, bridged at the waist. `concept/adopted/C-sheet.png` |
+| Vacuum Furnace | **LOCKED — option A, the Pot**, chosen from five. A sealed welded drum with one clamped hatch and one lit sight port. `concept/adopted/A-sheet.png` |
+| Crust Tap | five drawn and **regenerated twice for the pipe connection**; awaiting a pick. See `crust-tap-options/README.md` |
+| Ignition Ring Mast | not yet redrawn |
 
 ### The five-option round, and what it is worth repeating for
 
