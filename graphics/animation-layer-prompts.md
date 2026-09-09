@@ -349,25 +349,70 @@ drive. That matters less than it looks, and the reason is worth knowing:
   it, and there the housing has to be repainted behind the part by hand — which
   is a plate-cut job, not a prompt.
 
-### Turning it into frames
+### Getting it moving
 
-Write the transform as a small tool beside `build-glow-frames.py`, taking the
-part plate and emitting `frame_count` frames on the same canvas. Then layer it
-under vanilla's own arrangement:
+`tools/build-part-frames.py`. It takes the cut part on the plate's canvas and
+writes the sheet, and because every frame is the same pixels under a different
+transform, nothing can drift.
+
+```bash
+tools/cut-part-by-mask.py --plate base.png --mask concept/vN-mask.png \
+    --out part.png --housing-out housing.png
+tools/build-part-frames.py --part part.png --mode spin --frames 16 --out drive.png
+```
+
+`--housing-out` matters: a part that moves must not leave a second, stationary
+copy of itself showing through from underneath, so the static layer is the plate
+**with the part removed**, not the plate.
+
+Three modes, and the fourth case that is not one:
+
+| `--mode` | For | Cycle |
+| -------- | --- | ----- |
+| `slide` | a piston, ram or shuttle along its axis | sine, so it returns |
+| `spin` | a wheel or fan whose face is toward the camera | full turn about a measured centroid |
+| `shake` | the whole machine oscillating on its mounts | sine plus a perpendicular at twice the rate — a figure of eight, because a straight line reads as the sprite sliding rather than the machine shaking |
+| *(none)* | **a drum, turntable or arm turning out of the view plane** | **there isn't one** |
+
+**The last row, demonstrated.** `spin` was run on the Dross Classifier's drive
+— a three-quarter-view drum — and the result is a barrel tumbling end over end,
+because rotating a picture of a cylinder in the image plane rotates its
+highlights and its foreshortening with it. It reads as a sticker on a
+turntable, which is `build-crane-sheets.py`'s finding arrived at from the other
+direction. **`spin` is only honest when the axis points at the camera.**
+
+**There is no free shift.** `animated_shift` on a working visualisation is
+parsed by a crafting machine, but what it follows is
+`shift_animation_waypoints`, which is a `MiningDrillPrototype` field — probed on
+2.1.17, an assembling machine silently ignores it on both `graphics_set` and the
+prototype root. A machine that moves costs frames.
+
+That is worth stating plainly because `shake` breaks this document's own rule:
+it stores the whole plate once per frame. The rule stands for everything else,
+and `shake` is the exception that has no alternative — measured at 8 frames of a
+200×189 plate it costs 91 KB, which is the right trade for a building whose
+entire read is that it is vibrating. Keep the frame count low; the offsets are
+integers and a two-pixel amplitude only has so many distinct positions in it
+(the tool warns when consecutive frames come out identical).
+
+### Wiring it up
 
 ```lua
 graphics_set = {
   animation = {
     layers = {
-      { filename = ART .. "base.png",  repeat_count = N, ... },  -- static housing
-      { filename = ART .. "part.png",  frame_count  = N, ... },  -- the motion
+      { filename = ART .. "housing.png", repeat_count = N, ... },  -- part removed
+      { filename = ART .. "drive.png",   frame_count  = N, ... },  -- the motion
       { filename = ART .. "base-shadow.png", repeat_count = N, draw_as_shadow = true, ... },
     }
   }
 }
 ```
 
-`repeat_count` on the housing is the whole trick. It is one stored frame.
+`repeat_count` on the housing is the whole trick: it is one stored frame. For
+`shake` there is no part layer at all — the shake sheet *is* the animation, and
+the shadow wants shaking with it or the machine reads as sliding over its own
+shadow.
 
 ---
 

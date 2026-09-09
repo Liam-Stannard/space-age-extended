@@ -114,6 +114,9 @@ def main():
     ap.add_argument("--mask", required=True, help="the generator's flooded render")
     ap.add_argument("--out", required=True, help="the component, on the plate's canvas")
     ap.add_argument("--mask-out", help="also write the fitted stencil, for inspection")
+    ap.add_argument("--housing-out",
+                    help="also write the plate with the part removed: the static "
+                         "layer the moving part is drawn over")
     ap.add_argument("--tol", type=int, default=90)
     ap.add_argument("--min-iou", type=float, default=0.90,
                     help="reject the fit below this; the mask is not this machine")
@@ -158,6 +161,15 @@ def main():
     bb = stencil.getbbox()
     print(f"  wrote {a.out}  part occupies {bb} of {plate.size}, "
           f"{100 * count(stencil) / count(p_sil):.1f}% of the machine")
+    if a.housing_out:
+        # The static layer: everything the part is not. Needed because a part
+        # that moves must not leave a second, stationary copy of itself showing
+        # through from underneath.
+        housing = plate.copy()
+        housing.putalpha(ImageChops.multiply(
+            plate.getchannel("A"), stencil.point(lambda v: 255 - v)))
+        housing.save(a.housing_out)
+        print(f"  wrote {a.housing_out}  (the plate with the part removed)")
     if a.mask_out:
         stencil.save(a.mask_out)
         print(f"  wrote {a.mask_out}")
