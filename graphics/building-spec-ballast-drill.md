@@ -135,6 +135,7 @@ disclaimer.
 
 ---
 
+
 # 5. Building Orientation
 
 * [x] North · [x] East · [x] South · [x] West
@@ -149,13 +150,43 @@ mining building can do.
 
 | Connection | Where | Notes |
 | ---------- | ----- | ----- |
-| Ore out | the boom tip, per `vector_to_place_result` | must match the art in all four directions |
+| Ore out | `vector_to_place_result` `{ 0, −2.85 }` — the **north** face, centred | must match the boom tip in all four directions |
+| Mining fluid in | four connections, vanilla's big-mining-drill layout | **declared, and nothing uses them yet** |
 | Electric | no visible connector | poles reach it wirelessly |
-| Fluids | none | no `input_fluid_box`; this drill takes no reagent |
+| Items in | none | no inserter feeds this building |
+
+```
+          . . O . .        O = ore out, north face, centre
+          . . . . .        W = fluid in, west face, one tile north of centre
+      W . . . . . . E      E = fluid in, east face, one tile north of centre
+          . . . . .        S = fluid in, south face, either side of centre
+          . S . S .
+```
 
 **`vector_to_place_result` is the one number that cannot be guessed.** It has to
 be measured off each directional plate so the ore appears at the boom's tip and
 not through the chassis.
+
+**This table used to say "Fluids: none; no `input_fluid_box`; this drill takes no
+reagent".** That was true of the mechanic and wrong about the prototype, which
+inherited four connections from the big mining drill all along. They were briefly
+cleared and are now kept deliberately: **a mining fluid for this drill is wanted
+later, and the layout has to be settled before the plate is cut.** A flange added
+to a finished plate is a repaint of all four directions.
+
+**The layout is vanilla's, verbatim**, and that is the reason to use it — a player
+who has plumbed a big mining drill has already learned this one. North takes no
+connection, because north is where the ore comes out.
+
+**Draw them small and unremarkable.** The Vacuum Furnace's §8 has the rule: a
+machine that runs with nothing plumbed to it needs a flange that looks
+unremarkable, or an unplumbed machine reads as broken. This drill is unplumbed
+*always*, for now, so that is not a nicety — it is the whole brief for these four
+fittings. No hoses, no pipework, no valve trees, no capped stubs.
+
+**Each flange sits square to its edge and points straight out of it**, stopping
+flush at the middle of its own tile edge. There is no diagonal hookup on a
+Factorio pipe; the Vent Pump's §19 records what believing otherwise cost.
 
 ---
 

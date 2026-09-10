@@ -112,9 +112,17 @@ mass, so it is low and wide.
 - Draw NO loose material anywhere: no ore, rock, spoil, powder, grit, dust or
   debris on the ground, under the head, at the boom, in trays, or falling from
   the machine. It is a mining machine and it must still be drawn EMPTY.
-- NO PIPES AND NO FLUID CONNECTION ANYWHERE. This machine has no fluid box, so a
-  drawn flange would be a socket a player can never plumb. No pipe, no flange, no
-  hose, no hydraulic line, no coolant run.
+- FOUR FLUID FLANGES, in vanilla's own big-mining-drill layout so a player who
+  has plumbed one already knows this one: ONE on the LEFT face and ONE on the
+  RIGHT face, each ONE TILE NORTH OF CENTRE; and TWO on the BOTTOM face, flanking
+  the centre tile. NONE on the top face -- that is where the ore comes out.
+- Each flange sits SQUARE to the edge it is on and points STRAIGHT out of it,
+  stopping flush at the middle of its own tile edge. Axis-aligned, never
+  diagonal, never out of a corner, never elbowed across a shoulder.
+- KEEP THEM SMALL AND UNREMARKABLE. Nothing is plumbed to this machine today --
+  the fluid it will take has not been added yet -- so a flange drawn as a feature
+  makes an unplumbed drill look broken. They are fittings, not features. No
+  hoses, no visible pipework, no valve trees, no manifolds, no capped stubs.
 - ONE OUTPUT BOOM, on the NORTH face, centred, short and stubby, reaching just
   past the edge of the footprint. It is DRAWN EMPTY. There is no second boom and
   no chute anywhere else.
@@ -146,6 +154,7 @@ mass, so it is low and wide.
 - A top-down view from directly overhead, WITHOUT grid lines drawn on it
 - Two close-up detail panels: one screw's coarse thread running through its bronze nut and bevel gear; and the sprung trip lever disengaging its nut
 - A NORTH-FACE view showing the output boom, drawn empty, reaching just past the footprint
+- A TOP-DOWN CONNECTION panel marking all four fluid flanges on their tile edges, small and unremarkable, with nothing plumbed to them
 - A FOUR-FRAME MOTION ROW of the same view: platen high with the screws part-turned; winding down, gears meshing; platen hard down on the head with the trip about to release; dropped free, the nuts spun clear and the gears freewheeling
 - A THREE-STATE ROW of the same view, three frames: RUNNING with the lamp lens
   glowing GREEN; BLOCKED with the lamp glowing AMBER; IDLE with the lamp dark and

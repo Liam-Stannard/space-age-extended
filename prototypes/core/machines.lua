@@ -206,19 +206,28 @@ drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- generous: with nothing to be strictly worse than, its numbers can describe the
 -- machine instead of defending it.
 drill.resource_categories = { "sae-kamacite" }
--- **Four inherited fluid connections, all of them unreachable, and they are
--- gone.** The big mining drill takes a fluid because vanilla has resources that
--- demand one -- uranium wants sulfuric acid. Kamacite does not: its `minable`
--- carries no `required_fluid`, so the four boxes accepted nothing, did nothing,
--- and offered the player four flanges on a 5x5 that could never be plumbed.
+-- **The four inherited fluid connections stay, and the art draws them.**
 --
--- This is the Vent Pump's lesson on a bigger footprint. Its §19 records the same
--- trap: "seven possible hookups on a 3x3, of which a player uses two, and no
--- arrangement of art can make the other five look intended." Here it is four of
--- four. Clearing them before the plate is commissioned is the whole point --
--- otherwise the art draws flanges for sockets that do not exist, and the art
--- becomes the spec.
-drill.input_fluid_box = nil
+-- Nothing uses them yet: kamacite's `minable` carries no `required_fluid`, so
+-- today they accept nothing. They are kept deliberately, because a mining fluid
+-- for this drill is wanted later and the layout has to be settled *before* the
+-- plate is cut. A flange added to a finished plate is a repaint of all four
+-- directions, and the Vent Pump is the standing proof of how expensive
+-- rearranging plumbing after the fact is.
+--
+-- **Inherited verbatim from the big mining drill, and that is the point.** The
+-- shape is vanilla's, so a player who has plumbed one has already learned this
+-- one: west and east take a connection a tile north of centre, the south face
+-- takes two flanking the centre, and north takes none -- because north is where
+-- the ore comes out (`vector_to_place_result` is { 0, -2.85 }).
+--
+-- **The rule that comes with keeping them** is the Vacuum Furnace's, whose §8
+-- puts it in as many words: a machine that runs with nothing plumbed to it half
+-- the time needs its flange drawn *small and unremarkable*, or an unplumbed
+-- machine looks broken. Here it is unplumbed **always**, for now -- so that
+-- instruction is not a nicety, it is the entire brief for these four fittings.
+drill.input_fluid_box = table.deepcopy(
+  data.raw["mining-drill"]["big-mining-drill"].input_fluid_box)
 drill.resource_drain_rate_percent = 50
 -- 3.0, up from 1.3, and past the big mining drill's 2.5. The fiction was always
 -- that at 50 g this thing presses with its own mass rather than hammering; a

@@ -40,14 +40,35 @@ knowing.
 
 ## Four engine facts that are not style opinions
 
-**No fluid connection, and no flange anywhere in the art.** The drill inherited
-**four** input fluid boxes from the big mining drill and every one of them was
-unreachable: kamacite's `minable` carries no `required_fluid`, so they accepted
-nothing and offered the player four sockets on a 5 × 5 that could never be
-plumbed. They were cleared on 2026-09-10, before this round, precisely so the art
-would not draw flanges for them. **The Vent Pump's §19 is the standing lesson** —
-"seven possible hookups on a 3×3, of which a player uses two, and no arrangement
-of art can make the other five look intended."
+**Four fluid flanges, drawn now, for a fluid that does not exist yet.**
+
+The drill inherits four input fluid connections from the big mining drill, and
+today every one of them is unreachable — kamacite's `minable` carries no
+`required_fluid`, so they accept nothing. **They are kept deliberately.** A mining
+fluid for this drill is wanted later, and the layout has to be settled *before*
+the plate is cut: a flange added to a finished plate is a repaint of all four
+directions, and the Vent Pump is the standing proof of how expensive rearranging
+plumbing after the fact is.
+
+The layout is **vanilla's, verbatim**, which is the point — a player who has
+plumbed a big mining drill has already learned this one:
+
+```
+          . . O . .        O = ore out, north face, centre
+          . . . . .        W = fluid in, west face, one tile north of centre
+      W . . . . . . E      E = fluid in, east face, one tile north of centre
+          . . . . .        S = fluid in, south face, either side of centre
+          . S . S .
+```
+
+**North takes no connection**, because north is where the ore comes out.
+
+**And the rule that comes with keeping them is the Vacuum Furnace's.** Its §8:
+a machine that runs with nothing plumbed to it half the time needs its flange
+drawn *small and unremarkable*, or an unplumbed machine looks broken. Here it is
+unplumbed **always**, for now — so that instruction is not a nicety, it is the
+entire brief for these four fittings. Every prompt says so, and says no hoses, no
+pipework, no valve trees and no capped stubs.
 
 **The ore leaves at `vector_to_place_result = [0, −2.85]`** — the north face,
 centred, just outside the footprint. That is a real output *position*, unlike the

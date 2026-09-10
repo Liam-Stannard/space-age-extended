@@ -311,12 +311,15 @@ Grounding five designs in a brief means reading the brief against the prototype,
 and that found six things wrong. None was noticed while the documents sat
 unused.
 
-**The Ballast Drill had four fluid connections it could never use.** Inherited
-from the big mining drill, which takes a fluid because vanilla has resources that
-demand one. Kamacite does not — its `minable` carries no `required_fluid` — so
-the four boxes accepted nothing and offered four flanges on a 5 × 5 that could
-never be plumbed. Cleared before the round, precisely so the art would not draw
-them. This is the Vent Pump's §19 on a bigger footprint.
+**The Ballast Drill's four fluid connections do nothing — and they stay.**
+Inherited from the big mining drill, and unreachable today because kamacite's
+`minable` carries no `required_fluid`. They were briefly cleared, then kept: a
+mining fluid for this drill is wanted later, and the layout has to be settled
+*before* the plate is cut, because a flange added to a finished plate is a repaint
+of all four directions. They are declared in vanilla's own layout so a player who
+has plumbed a big mining drill already knows this one, and the art draws them
+**small and unremarkable** per the Vacuum Furnace's §8 — a machine that runs
+unplumbed and shows a flange as a feature looks broken.
 
 **§3.2 of the same brief asked for "a rim of disturbed ground".** Disturbed
 ground is terrain; a building sprite cannot draw it. The prompts ask for a
