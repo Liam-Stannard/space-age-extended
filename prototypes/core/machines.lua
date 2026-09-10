@@ -221,11 +221,20 @@ drill.resource_categories = { "sae-kamacite" }
 -- takes two flanking the centre, and north takes none -- because north is where
 -- the ore comes out (`vector_to_place_result` is { 0, -2.85 }).
 --
--- **The rule that comes with keeping them** is the Vacuum Furnace's, whose §8
--- puts it in as many words: a machine that runs with nothing plumbed to it half
--- the time needs its flange drawn *small and unremarkable*, or an unplumbed
--- machine looks broken. Here it is unplumbed **always**, for now -- so that
--- instruction is not a nicety, it is the entire brief for these four fittings.
+-- **And the plate draws none of them**, which is the part worth writing down.
+-- Vanilla's own drills carry no plumbing in their art at all -- checked, the big
+-- mining drill's north sprite is a gantry and two ladders and nothing else. The
+-- fitting is the fluid box's `pipe_covers`, and the ENGINE stamps it at whichever
+-- connections are live: on an ore that needs no fluid it draws nothing.
+--
+-- That is why keeping the box costs the art nothing. Today the covers never
+-- appear, because kamacite asks for no fluid; the day a recipe does ask, the
+-- flanges appear by themselves, in the right places, in all four directions, and
+-- no plate is repainted. The covers come across with the deepcopy.
+--
+-- The alternative -- painting flanges into the plate -- would put four visible
+-- sockets on a machine that has no use for them, which is the Vent Pump's §19
+-- complaint exactly.
 drill.input_fluid_box = table.deepcopy(
   data.raw["mining-drill"]["big-mining-drill"].input_fluid_box)
 drill.resource_drain_rate_percent = 50
@@ -631,7 +640,13 @@ furnace.fluid_boxes =
     production_type = "input",
     volume = 2000,                         -- see the S12 note above
     -- The plate draws its own frost-collared flange, so the engine must not draw
-    -- a generic stub over it. Foundry's pattern, same as the Concentrator's.
+    -- a generic stub over it. Same as the Concentrator's.
+    --
+    -- **This used to say "foundry's pattern" and the foundry does the opposite:**
+    -- it has `pipe_covers` AND `pipe_picture`, like every other vanilla machine.
+    -- What we do here is a deliberate departure, not an imitation -- our flange is
+    -- drawn and distinctive, and a generic cover stamped over it would be two
+    -- flanges in one place. Worth knowing which of the two you are doing.
     pipe_picture = util.empty_sprite(),
     always_draw_covers = false,
     -- EAST, not south, and the art is why. The adopted plate draws the
@@ -756,6 +771,21 @@ local mast = crafter("sae-ring-mast", "assembling-machine-3", {
     {
       production_type = "input",
       volume = 400,
+      -- Same choice as the Vacuum Furnace and the Concentrator, made here before
+      -- the plate exists rather than after: this building's brief makes the
+      -- frost-jacketed inlet a design feature, so the plate draws its own flange
+      -- and the engine must not stamp a generic one over it.
+      --
+      -- **The two patterns and when to use which.** Vanilla gives every machine
+      -- `pipe_covers`, and for good reason -- the engine then caps an unconnected
+      -- port for you, and on a mining drill it also *hides* the fitting entirely
+      -- when the recipe wants no fluid, which is why the Ballast Drill keeps its
+      -- covers and draws no plumbing at all. That is the right answer whenever
+      -- the port is generic or conditional. It is the wrong answer when the port
+      -- is the *character*: a frost-jacketed cryogenic inlet with a vanilla brass
+      -- cover on top of it is two flanges in the same place.
+      pipe_picture = util.empty_sprite(),
+      always_draw_covers = false,
       pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
     }
   }

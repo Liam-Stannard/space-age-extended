@@ -108,17 +108,13 @@ mass, so it is low and wide.
 - Draw NO loose material anywhere: no ore, rock, spoil, powder, grit, dust or
   debris on the ground, under the head, at the boom, in trays, or falling from
   the machine. It is a mining machine and it must still be drawn EMPTY.
-- FOUR FLUID FLANGES, in vanilla's own big-mining-drill layout so a player who
-  has plumbed one already knows this one: ONE on the LEFT face and ONE on the
-  RIGHT face, each ONE TILE NORTH OF CENTRE; and TWO on the BOTTOM face, flanking
-  the centre tile. NONE on the top face -- that is where the ore comes out.
-- Each flange sits SQUARE to the edge it is on and points STRAIGHT out of it,
-  stopping flush at the middle of its own tile edge. Axis-aligned, never
-  diagonal, never out of a corner, never elbowed across a shoulder.
-- KEEP THEM SMALL AND UNREMARKABLE. Nothing is plumbed to this machine today --
-  the fluid it will take has not been added yet -- so a flange drawn as a feature
-  makes an unplumbed drill look broken. They are fittings, not features. No
-  hoses, no visible pipework, no valve trees, no manifolds, no capped stubs.
+- DRAW NO FLUID FITTINGS AT ALL: no flange, no pipe stub, no hose, no valve, no
+  manifold, no capped port, anywhere on the machine. This is how vanilla draws
+  its own drills -- the big mining drill's plate has no plumbing on it whatsoever
+  -- and the reason is that the ENGINE stamps the fitting itself at whichever
+  connections are live, and draws nothing at all on an ore that needs no fluid.
+  A flange painted into the plate would be a socket that is visible even when the
+  machine has no use for one.
 - ONE OUTPUT BOOM, on the NORTH face, centred, short and stubby, reaching just
   past the edge of the footprint. It is DRAWN EMPTY. There is no second boom and
   no chute anywhere else.
@@ -150,7 +146,7 @@ mass, so it is low and wide.
 - A top-down view from directly overhead, WITHOUT grid lines drawn on it
 - Two close-up detail panels: the ballast ring's shoe wrapping a guide column, with the winch gears beside it; and the hammered landing shoulder the ring seats on
 - A NORTH-FACE view showing the output boom, drawn empty, reaching just past the footprint
-- A TOP-DOWN CONNECTION panel marking all four fluid flanges on their tile edges, small and unremarkable, with nothing plumbed to them
+- A TOP-DOWN panel with the four fluid connection points MARKED WITH A SYMBOL, not drawn as hardware: the engine supplies the fitting, and this panel exists only to prove the plate leaves those four tile edges clear
 - A FOUR-FRAME MOTION ROW of the same view: ring lifted clear at the top of its travel; descending; seated hard on the shoulder with the shoulder's wear catching the light; lifting again with the winch gears turning
 - A THREE-STATE ROW of the same view, three frames: RUNNING with the lamp lens
   glowing GREEN; BLOCKED with the lamp glowing AMBER; IDLE with the lamp dark and

@@ -63,12 +63,23 @@ plumbed a big mining drill has already learned this one:
 
 **North takes no connection**, because north is where the ore comes out.
 
-**And the rule that comes with keeping them is the Vacuum Furnace's.** Its §8:
-a machine that runs with nothing plumbed to it half the time needs its flange
-drawn *small and unremarkable*, or an unplumbed machine looks broken. Here it is
-unplumbed **always**, for now — so that instruction is not a nicety, it is the
-entire brief for these four fittings. Every prompt says so, and says no hoses, no
-pipework, no valve trees and no capped stubs.
+**And the plate draws none of them.** That is the part that matters for this
+round, and it is vanilla's own answer: the big mining drill's sprite has **no
+plumbing on it whatsoever** — checked, its north plate is a gantry and two
+ladders. The fitting is the fluid box's `pipe_covers`, and the *engine* stamps it
+at whichever connections are live. **On an ore that needs no fluid it draws
+nothing at all.**
+
+So keeping the box costs the art nothing. Today the covers never appear, because
+kamacite asks for no fluid. The day a recipe does ask, the flanges appear by
+themselves, in the right places, in all four directions, and not one plate is
+repainted.
+
+Every prompt therefore says **draw no fluid fittings at all** — no flange, no
+stub, no hose, no valve, no capped port. Painting them in would put four visible
+sockets on a machine that has no use for them, which is the Vent Pump's §19
+complaint exactly. The connection panel marks the four points with a *symbol*, to
+prove the plate leaves those tile edges clear.
 
 **The ore leaves at `vector_to_place_result = [0, −2.85]`** — the north face,
 centred, just outside the footprint. That is a real output *position*, unlike the

@@ -178,15 +178,20 @@ to a finished plate is a repaint of all four directions.
 who has plumbed a big mining drill has already learned this one. North takes no
 connection, because north is where the ore comes out.
 
-**Draw them small and unremarkable.** The Vacuum Furnace's §8 has the rule: a
-machine that runs with nothing plumbed to it needs a flange that looks
-unremarkable, or an unplumbed machine reads as broken. This drill is unplumbed
-*always*, for now, so that is not a nicety — it is the whole brief for these four
-fittings. No hoses, no pipework, no valve trees, no capped stubs.
+**The plate draws none of them.** Vanilla's own drills carry no plumbing in their
+art at all — the big mining drill's north sprite is a gantry and two ladders and
+nothing else. The fitting is the fluid box's `pipe_covers`, and the engine stamps
+it at whichever connections are live; **on an ore that needs no fluid it draws
+nothing.**
 
-**Each flange sits square to its edge and points straight out of it**, stopping
-flush at the middle of its own tile edge. There is no diagonal hookup on a
-Factorio pipe; the Vent Pump's §19 records what believing otherwise cost.
+That is what makes keeping the box free. Today the covers never appear. The day a
+recipe asks for a fluid, the flanges appear by themselves, in the right places,
+in all four directions, and no plate is repainted — which is the whole reason to
+settle the layout now and draw nothing.
+
+So: **no flange, no stub, no hose, no valve, no capped port anywhere on the
+art.** Painting them in would put four visible sockets on a machine with no use
+for them.
 
 ---
 
