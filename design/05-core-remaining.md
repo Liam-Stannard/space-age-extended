@@ -86,10 +86,15 @@ which does not rotate" — the port is on the *riser*, which is the fluid box an
 therefore the one part that must turn. And §6.2 asked for a **steam** layer on a
 planet whose own §5 says there is no air. Both corrected.
 
-Of the three that remain, the **Ring Mast** and the **Ballast Drill** have no
-design chosen and need a five-option round each. The **Crust Turbine** has no
-spec section of its own — it lives inside the Crust Tap brief as "a companion
-generator" — so its brief has to be written before options can be drawn. The
+**All three remaining buildings now have their five-option round written**, so
+each is one generation away from a set of sheets to pick from:
+`graphics/ballast-drill-options/`, `graphics/ring-mast-options/` and
+`graphics/crust-turbine-options/`. The Crust Turbine also gained the spec it never
+had — it used to live inside the Crust Tap brief as "a companion generator", which
+was fine while it was one line of Lua.
+
+Each round's README records what its constraints are and what its building's
+brief got wrong; between them they raised six such things, listed in §5.5. The
 **crust vent tile** is the odd one out: three sheets at 1x/2x/4x with sixteen
 variants each, plus five transition groups and their masks, all of which must
 tile seamlessly. `tools/build-whisker-bed-tile.py` and the whisker bed are the
@@ -299,3 +304,40 @@ item needs the same line.
   unknowable** (§1.1), and the other four integrations will each need the
   cross-tree prerequisite the conductor just got.
 
+
+### 5.5 What writing the three option rounds turned up
+
+Grounding five designs in a brief means reading the brief against the prototype,
+and that found six things wrong. None was noticed while the documents sat
+unused.
+
+**The Ballast Drill had four fluid connections it could never use.** Inherited
+from the big mining drill, which takes a fluid because vanilla has resources that
+demand one. Kamacite does not — its `minable` carries no `required_fluid` — so
+the four boxes accepted nothing and offered four flanges on a 5 × 5 that could
+never be plumbed. Cleared before the round, precisely so the art would not draw
+them. This is the Vent Pump's §19 on a bigger footprint.
+
+**§3.2 of the same brief asked for "a rim of disturbed ground".** Disturbed
+ground is terrain; a building sprite cannot draw it. The prompts ask for a
+shrouded rim on the machine instead, and §3.2 should be reworded.
+
+**And its output boom had no side.** `vector_to_place_result` is `[0, −2.85]`:
+the north face, centred. A boom on a flank is a boom the ore does not come out
+of. The round pins it.
+
+**The Ring Mast's helium inlet fought its own §8.** §3.2 wants the pipe entering
+the charge band horizontally; §8 puts the connection at ground level on a tile
+edge. Both are satisfiable only if it runs up the face from the edge, which is
+what every prompt now says.
+
+**And nothing said what that building looks like when it is idle** — on a machine
+that will spend most of its life that way, because the charge it makes spoils and
+a player runs it in bursts. Every prompt asks for the idle state explicitly.
+
+**The Crust Turbine's real anti-read was not the one anyone would guess.** It is
+not vanilla's steam turbine as a piece of art — it is vanilla's steam turbine as
+the player meets it *on this planet*, because the melt-and-steam line runs real
+ones on the same factory floor. Two turbines, two fluids, and reversing them is a
+mistake a player can make. That is why the design is cold and frosted rather than
+merely different.

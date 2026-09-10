@@ -206,6 +206,19 @@ drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- generous: with nothing to be strictly worse than, its numbers can describe the
 -- machine instead of defending it.
 drill.resource_categories = { "sae-kamacite" }
+-- **Four inherited fluid connections, all of them unreachable, and they are
+-- gone.** The big mining drill takes a fluid because vanilla has resources that
+-- demand one -- uranium wants sulfuric acid. Kamacite does not: its `minable`
+-- carries no `required_fluid`, so the four boxes accepted nothing, did nothing,
+-- and offered the player four flanges on a 5x5 that could never be plumbed.
+--
+-- This is the Vent Pump's lesson on a bigger footprint. Its §19 records the same
+-- trap: "seven possible hookups on a 3x3, of which a player uses two, and no
+-- arrangement of art can make the other five look intended." Here it is four of
+-- four. Clearing them before the plate is commissioned is the whole point --
+-- otherwise the art draws flanges for sockets that do not exist, and the art
+-- becomes the spec.
+drill.input_fluid_box = nil
 drill.resource_drain_rate_percent = 50
 -- 3.0, up from 1.3, and past the big mining drill's 2.5. The fiction was always
 -- that at 50 g this thing presses with its own mass rather than hammering; a
