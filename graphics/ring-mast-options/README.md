@@ -59,9 +59,12 @@ connector angled across a shoulder is one the player can never join cleanly,
 however good it looks — which is exactly the mistake the Vent Pump's §19 records
 having made once already.
 
-The inlet is **frost-jacketed and pale**, because what comes down it is
-cryogenic, and it is the only cold thing on a building whose other light is warm.
-That contrast is the second cue, on top of position.
+The inlet is **bare machine metal**. It carries something cryogenic, and an
+earlier draft of these prompts frosted it for that reason — which was wrong twice
+over. The engine stamps its own neutral cover on an unconnected port, so a rimed
+stub ends up with a grey flange sitting in it; and a fluid box is a socket, not a
+fluid. See the template's convention 5. The inlet reads by *position* alone:
+south face, centre tile, square to the edge.
 
 ## The lights, and there are two
 

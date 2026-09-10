@@ -78,8 +78,8 @@ exotic machine and it stands beside the Ignition Array.
   way round its foot
 - A low CHARGE RING set into the deck beneath it, at floor level, with the light
   living INSIDE the ring and spilling out through the gap under the skirt
-- A frost-jacketed HELIUM INLET entering the deck at the SOUTH tile edge and
-  running in under the skirt, pale and rimed, square to the edge
+- A PLAIN HELIUM INLET entering the deck at the SOUTH tile edge and running in
+  under the skirt, bare machine metal, square to the edge
 - A small round white STATUS LENS on the dome's near face, high, well clear of
   the lit gap
 - Smooth dense material throughout, deep soft bevels, no fasteners anywhere
@@ -89,7 +89,6 @@ exotic machine and it stands beside the Ignition Array.
 - Charge ring: #8A5A32 to #C88A4A, copper and brass, unlit as material
 - Charge light: #F0E0A8 to #FFF8E0, warm white, INSIDE the band only
 - Emitter cap: #3B3B40, dark, closed, and never lit
-- Helium inlet frost: #BFD8E8, small, at the inlet only
 - Status lens: #FFFFFF, painted white
 - Copper and brass: #8A5A32 to #C88A4A, VISIBLE and used freely on the band's
   windings and its collars. This is what keeps the building warm. Do not ration
@@ -114,8 +113,12 @@ exotic machine and it stands beside the Ignition Array.
   SQUARE to the face and pointing STRAIGHT out of it. Axis-aligned, never
   diagonal, never out of a corner, never elbowed across a shoulder. It does not
   float clear of the building and it does not stop short inside it.
-- THE INLET IS FROST-JACKETED AND PALE: #BFD8E8, rimed, obviously cryogenic, and
-  obviously the cold thing on a warm machine. It does NOT glow.
+- THE FLUID CONNECTIONS THEMSELVES ARE BARE. Every flange, stub and port is
+  plain machine metal: no frost, no rime, no ice, no heat glow, no scorch, no
+  lagging, no colour treatment of any kind. Whatever the fluid does to the
+  body of the building, it STOPS SHORT of the connection. The engine caps an
+  unconnected port with its own neutral flange, and a treated stub would not
+  match it.
 - A small round white STATUS LENS on the mass, well clear of the charge band, so
   the two lights are never confused. It is PAINTED WHITE in the hero view, the
   top-down view, the detail panels and the silhouette -- the engine colours it in
@@ -139,7 +142,7 @@ exotic machine and it stands beside the Ignition Array.
   it is readable with no detail at all
 - A top-down view from directly overhead, WITHOUT grid lines drawn on it
 - Two close-up detail panels: the gap under the bell's skirt with light spilling from the ring beneath; and the dome's unbroken crown, dark and closed
-- A SOUTH-FACE view showing the frost-jacketed helium inlet meeting the tile edge square-on
+- A SOUTH-FACE view showing the bare helium inlet meeting the tile edge square-on
 - A FOUR-FRAME MOTION ROW of the same view: the gap dark; light waking in the ring; the gap fully lit all the way round; the light dying back. The dome is DARK in all four
 - A THREE-STATE ROW of the same view, three frames: RUNNING with the charge band
   lit warm white and the status lens GREEN; BLOCKED with the band dark and the

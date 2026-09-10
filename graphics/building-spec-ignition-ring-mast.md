@@ -107,7 +107,8 @@ waist, where the helium enters, and its top is closed.
 * A **charge band** at waist height: a thick ring of banded coils around the
   shaft, the widest part of the machine.
 * A **short capped emitter** at the top, closed and blunt.
-* A **helium inlet** entering the charge band horizontally, frost-jacketed.
+* A **helium inlet** entering the charge band horizontally, bare machine metal
+  — see the template's convention 5: connections carry no frost, heat or tint.
 
 ### Signature Feature
 
@@ -123,7 +124,6 @@ single clearest way to say *this is not the thing lightning hits*.
 | Charge band coils | `#8A5A32` → `#C88A4A` | waist only |
 | Emitter cap | `#3B3B40` | the closed top |
 | Charge light | `#F0E0A8` → `#FFF8E0` | inside the band only |
-| Helium inlet frost | `#BFD8E8` | the inlet, small |
 
 **Warm white, not violet and not green.** Violet belongs to the Coil Separator's
 field and green to the radiant family; the Array's own firing is the only other
@@ -191,14 +191,14 @@ Space Age industrial machine, every panel drawn from the game's characteristic
 three-by-three charging post standing on an airless metallic world. Four heavy
 buttresses splay from a wide base. At waist height a thick banded ring of
 copper-brown coils forms the widest part of the machine. Above it the shaft
-tapers to a short blunt closed charcoal cap. A slim frost-jacketed pale-blue
-pipe leaves the coil band, runs down the outside of one buttress, and stops at
+tapers to a short blunt closed charcoal cap. A slim bare metal pipe leaves the
+coil band, runs down the outside of one buttress, and stops at
 a flange flush with the ground at the edge of the footprint. Warm white light
 glows from inside the coil band only; the top of the machine is completely
 dark. Dark grey-brown armour. No cage, no open electrode, no lightning rod, no
 upward-reaching mast, no antenna, no arcs, no smoke, no flame. Panels: main
 view, front elevation, side elevation, a detail of the coil band with the
-frosted pipe running down to its ground flange, and the band shown unlit and
+bare pipe running down to its ground flange, and the band shown unlit and
 fully charged. Title the sheet IGNITION RING MAST. Draw no loose material
 anywhere: no ore, powder, fibre, grit, debris or product on the ground, in
 bins, at chutes, on trays or spilling from the machine. Factorio machines

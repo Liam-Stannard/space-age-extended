@@ -105,6 +105,12 @@ in the pressure difference. NOTHING BURNS. This is a COLD machine.
   the art must make chaining obvious. Each flange sits SQUARE to the end it is on
   and points STRAIGHT out of it, stopping flush at the middle of that tile edge.
   Axis-aligned, never diagonal, never out of a corner.
+- THE FLUID CONNECTIONS THEMSELVES ARE BARE. Every flange, stub and port is
+  plain machine metal: no frost, no rime, no ice, no heat glow, no scorch, no
+  lagging, no colour treatment of any kind. Whatever the fluid does to the
+  body of the building, it STOPS SHORT of the connection. The engine caps an
+  unconnected port with its own neutral flange, and a treated stub would not
+  match it.
 - NO OTHER PORTS. No pipe on the flanks, no stub, no cap, no blank, no spare
   socket, no valve tree. Two connections and no more.
 - A small round white STATUS LENS on the body. It is PAINTED WHITE in the hero

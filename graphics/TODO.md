@@ -37,6 +37,31 @@ Two tool gaps this exposed, both fixed:
   landed flush on the canvas floor and could not pass the pipeline's own check 2
   (alpha zero along both edge rows). The arc mast measures `B255` because of it.
 
+## Fluid connections carry no effects — audit the shipped plates
+
+Settled 2026-09-10 and written up as **convention 5** in the template: a flange,
+stub or port is bare machine metal. No frost, no ice, no heat glow, no scorch,
+no lagging, no fluid tint. The building's signature — the crust turbine's rime,
+the vacuum furnace's heat — stops a tile short of the edge.
+
+Two reasons: the engine stamps its **own** neutral cover
+(`derive.pipe_covers()`) over an unconnected port, so a treated stub ends up with
+a bare grey flange sitting in it; and a fluid box is a *socket*, not a fluid —
+the same port carries whatever the player pipes into it.
+
+The remaining option rounds were rewritten to match. **Still to check against
+plates that already shipped**, none of which were drawn under this rule:
+
+- [ ] Crust Tap — the spec calls its seam *frost + heat*; confirm neither reaches
+      a connection
+- [ ] Helium Concentrator — frosted, and it has fluid boxes on three faces
+- [ ] Vacuum Furnace — heat, same question
+- [ ] Ring Mast options A, B and C — generated before the rule, and all three
+      drew a frost-jacketed inlet. Whichever wins, the frost comes off at
+      **master-plate** stage, which is a separate generation anyway.
+
+---
+
 ---
 
 ## Done — items 1 to 4

@@ -604,6 +604,22 @@ its footprint — the Arc Mast is 5.14 tiles tall on a 3 tile box — and the en
 places it with a shift rather than by shrinking it. It is the left and right
 edges that make a row of machines interleave.
 
+**5. A fluid connection is bare metal.** Whatever the fluid does to the
+building — the crust turbine's rime, the vacuum furnace's heat — it stops short
+of the port. Flanges, stubs and covers are plain machine metal: no frost, no
+ice, no heat glow, no scorch, no lagging, no fluid tint.
+
+Two reasons, and the second is the one that bites. The engine caps an
+unconnected port with **its own** cover sprite (`derive.pipe_covers()`), which is
+neutral grey, and it stamps that cover on top of whatever the plate drew there —
+so a rimed stub is a rimed stub with a bare grey flange sitting in it. And a
+fluid box is a *socket*, not a fluid: the same port carries whatever the player
+pipes into it, and painting one fluid's signature onto it is the same lie as
+painting the product into the machine.
+
+The building's own signature belongs on the body, a tile back from the edge,
+where it reads as the machine being cold or hot rather than the fitting being so.
+
 **4. Nothing crosses the collision box** — not the machine, not a pipe run, and
 not spilled material or ground scatter. The Arc Mast is the standing lesson: at
 3.14 tiles on a 3-tile pitch, a row of them interleaved, and the fix was to cut

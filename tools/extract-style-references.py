@@ -126,6 +126,17 @@ REFERENCES = {
         ("base/graphics/entity/pipe/pipe-straight-vertical.png",
          128, 128, 0, 0, 1, 0),
     ],
+    # Added for the Ballast Drill and the Crust Turbine option rounds. The drill
+    # is this mod's own drill's parent; the turbine is the building the Crust
+    # Turbine exists to NOT be, attached so a sheet can be checked against it.
+    "big-mining-drill": [
+        ("space-age/graphics/entity/big-mining-drill/North/big-mining-drill-N-still.png",
+         324, 324, 0, -0.375, 1, 0),
+    ],
+    "steam-turbine": [
+        ("base/graphics/entity/steam-turbine/steam-turbine-H.png",
+         320, 245, 0, -0.0859375, 4, 0),
+    ],
     "pumpjack": [
         ("base/graphics/entity/pumpjack/pumpjack-base.png",
          261, 273, -0.0703125, -0.1484375, 1, 0),

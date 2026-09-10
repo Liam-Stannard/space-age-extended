@@ -19,7 +19,7 @@ up, warm white, the light escaping sideways between the plates. The plates
 themselves stay dark: they are insulators, and what is between them is the
 charge.
 
-The frost-jacketed inlet enters the plinth at the south tile edge.
+The bare inlet enters the plinth at the south tile edge.
 
 ## Why it suits this machine
 
@@ -85,8 +85,8 @@ exotic machine and it stands beside the Ignition Array.
 - The DISCS THEMSELVES ARE DARK and matte -- they are insulators. The LIGHT IS IN
   THE GAPS BETWEEN THEM, warm white, escaping sideways. The disc edges do NOT
   glow
-- A frost-jacketed HELIUM INLET entering the plinth at the SOUTH tile edge, pale
-  and rimed, square to the edge
+- A PLAIN HELIUM INLET entering the plinth at the SOUTH tile edge, bare machine
+  metal, square to the edge
 - A small round white STATUS LENS on the plinth's near face
 - Smooth dense material throughout, deep soft bevels, no fasteners anywhere
 
@@ -96,7 +96,6 @@ exotic machine and it stands beside the Ignition Array.
 - Gap collars: #8A5A32 to #C88A4A, copper and brass, unlit as material
 - Charge light: #F0E0A8 to #FFF8E0, warm white, INSIDE the band only
 - Emitter cap: #3B3B40, dark, closed, and never lit
-- Helium inlet frost: #BFD8E8, small, at the inlet only
 - Status lens: #FFFFFF, painted white
 - Copper and brass: #8A5A32 to #C88A4A, VISIBLE and used freely on the band's
   windings and its collars. This is what keeps the building warm. Do not ration
@@ -121,8 +120,12 @@ exotic machine and it stands beside the Ignition Array.
   SQUARE to the face and pointing STRAIGHT out of it. Axis-aligned, never
   diagonal, never out of a corner, never elbowed across a shoulder. It does not
   float clear of the building and it does not stop short inside it.
-- THE INLET IS FROST-JACKETED AND PALE: #BFD8E8, rimed, obviously cryogenic, and
-  obviously the cold thing on a warm machine. It does NOT glow.
+- THE FLUID CONNECTIONS THEMSELVES ARE BARE. Every flange, stub and port is
+  plain machine metal: no frost, no rime, no ice, no heat glow, no scorch, no
+  lagging, no colour treatment of any kind. Whatever the fluid does to the
+  body of the building, it STOPS SHORT of the connection. The engine caps an
+  unconnected port with its own neutral flange, and a treated stub would not
+  match it.
 - A small round white STATUS LENS on the mass, well clear of the charge band, so
   the two lights are never confused. It is PAINTED WHITE in the hero view, the
   top-down view, the detail panels and the silhouette -- the engine colours it in
@@ -146,7 +149,7 @@ exotic machine and it stands beside the Ignition Array.
   it is readable with no detail at all
 - A top-down view from directly overhead, WITHOUT grid lines drawn on it
 - Two close-up detail panels: two discs with a lit gap between them, the disc faces dark and matte; and the solid cap disc closing the top of the stack
-- A SOUTH-FACE view showing the frost-jacketed helium inlet meeting the tile edge square-on
+- A SOUTH-FACE view showing the bare helium inlet meeting the tile edge square-on
 - A FOUR-FRAME MOTION ROW of the same view: all gaps dark; the lowest gap lit; three gaps lit climbing the stack; every gap lit and holding. The cap disc is DARK in all four
 - A THREE-STATE ROW of the same view, three frames: RUNNING with the charge band
   lit warm white and the status lens GREEN; BLOCKED with the band dark and the

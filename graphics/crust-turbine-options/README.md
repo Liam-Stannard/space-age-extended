@@ -66,6 +66,12 @@ axis-aligned, stopping flush at the middle of that tile edge. There is no
 diagonal hookup on a Factorio pipe — the Vent Pump's §19 records what believing
 otherwise cost.
 
+**And the flanges stay bare metal.** Frost is this building's signature, so the
+temptation is to run it all the way out to the ends — but a connection carries no
+frost, heat or tint at all (template convention 5). The engine stamps its own
+neutral cover on an unconnected port, and rime under a grey flange reads as a
+mistake. The frost belongs on the body, a tile back from the edge.
+
 ## The lights
 
 **One white lens, engine-tinted**, and on this building it is the *only* light,
