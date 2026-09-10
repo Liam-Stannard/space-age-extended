@@ -1,17 +1,14 @@
 -- The Core's machinery: what draws the vents, and what tends the beds.
 
+local derive = require("prototypes.derive")
+
 -- The vent pump. A pumpjack with an input fluid box added, because drawing
 -- melt costs helium-3 -- the scarce vent throttling the rich one. The engine
 -- reports missing_required_fluid when the helium runs out, which is a legible
 -- failure the player can read without a wiki.
 local pump = table.deepcopy(data.raw["mining-drill"]["pumpjack"])
 pump.name = "sae-vent-pump"
-pump.icon = "__base__/graphics/icons/pumpjack.png"
--- Declared, so the end-of-data-stage report names it. It wears the pumpjack's
--- sprites and its icon, and it was the one building doing that without saying
--- so -- which is exactly what the report exists to catch.
-require("prototypes.derive").placeholder_art(
-  pump, "wears the pumpjack's sprites and icon until its own plates exist")
+pump.icon = "__space-age-extended__/graphics/icons/vent-pump.png"
 pump.minable = { mining_time = 0.5, result = "sae-vent-pump" }
 
 -- Both fluid boxes are replaced rather than inherited, and this is a decision
@@ -56,6 +53,68 @@ pump.energy_source.emissions_per_minute = nil
 -- Only the Core's vents, and only this machine on them. See the note beside the
 -- `sae-vent` resource category in resources.lua for what this closes.
 pump.resource_categories = { "sae-vent" }
+
+-- Art: four plates, drawn together and split by tools/cut-rotation-strip.py.
+--
+-- **The four are one machine with its plumbing moved, not four camera angles.**
+-- §5 is blunt about it: ask a generator for four viewpoints and it returns a
+-- turntable, which is unusable, because Factorio's camera never moves.
+--
+-- **And the plumbing has to match the prototype, because on this building the
+-- pipes are the fluid boxes.** Helium enters the south face and melt leaves the
+-- north face, both on the centre tile of their edge (see the fluid boxes above),
+-- and the four plates rotate that pair rigidly: north is riser-top/intake-bottom,
+-- east is riser-right/intake-left, south is riser-bottom/intake-top, west is
+-- riser-left/intake-right. Checked against the declared connections rather than
+-- trusted -- a plate whose plumbing disagrees is a building the player plumbs
+-- backwards, and the two fluids are not interchangeable.
+--
+-- **Every scale and shift is measured off the base plate, never off the
+-- content.** The pipes stick out further in some views than others, so content
+-- centring slides the machine off its own tile in exactly the views whose
+-- plumbing hangs furthest over the edge. The cutter fits the BASE SQUARE to
+-- 3.000 tiles and centres on it; the four came out at 3.000, 2.969, 2.984 and
+-- 2.953 tiles, all at or under the footprint, which is the safe side to miss on.
+--
+-- The y shifts differ between the axes and that is not a mistake: a riser
+-- leaving through the top edge is drawn standing up, so it adds height above the
+-- base and pushes the base low in its canvas. North needs a quarter tile of lift
+-- where east and west need almost none.
+local VP = "__space-age-extended__/graphics/entity/vent-pump/"
+local function vp_plate(dir, w, h, sx, sy, sw, sh, ssx)
+  return
+  {
+    layers =
+    {
+      {
+        filename = VP .. "base-" .. dir .. ".png",
+        priority = "high",
+        width = w, height = h,
+        shift = { sx, sy },
+        scale = 0.5
+      },
+      {
+        filename = VP .. "base-" .. dir .. "-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = sw, height = sh,
+        shift = { ssx, sy },
+        scale = 0.5
+      }
+    }
+  }
+end
+
+derive.own_graphics(pump,
+{
+  animation =
+  {
+    north = vp_plate("north", 203, 281,  0.00781, -0.23438, 441, 301, 1.71094),
+    east  = vp_plate("east",  248, 198,  0.00000, -0.02344, 420, 218, 1.18750),
+    south = vp_plate("south", 202, 265, -0.00781, -0.14844, 427, 285, 1.59375),
+    west  = vp_plate("west",  247, 198, -0.01562, -0.02344, 419, 218, 1.17188)
+  }
+})
 
 pump.fast_replaceable_group = nil
 pump.next_upgrade = nil

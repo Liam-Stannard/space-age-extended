@@ -64,9 +64,9 @@ chemistry available to the Core and it is entirely unbuilt.
 
 ### 2.1 Vent Pump — not started
 
-**Four buildings still wear borrowed sprites**, plus the crust vent tile: the
-Vent Pump, the Ballast Drill, the Ring Mast and the Crust Turbine. The Drop
-Crusher came off this list on 2026-09-10.
+**Three buildings still wear borrowed sprites**, plus the crust vent tile: the
+Ballast Drill, the Ring Mast and the Crust Turbine. The Drop Crusher and the Vent
+Pump both came off this list on 2026-09-10.
 
 **The data stage now says so itself, and it did not before.** `placeholder_art`
 logged the moment it was called — which is before a building's own plates are
@@ -76,9 +76,19 @@ it, was announcing nothing at all. It records intent now, `own_graphics` strikes
 a name off, and `derive.log_placeholders()` reports the survivors at the end of
 data.lua. The count is checkable rather than a thing to measure by hand.
 
-The Vent Pump is the one to do next, and the most expensive of them: four
-directional frames **plus** an animation, where every other building needed one
-or two plates.
+**The Vent Pump is done** — four directional plates and four shadows, cut from
+one rotation strip, with every shift measured off the base plate rather than the
+content. Its 32-frame working animation is still outstanding and is the only
+piece of it left; see its §9 and §13.
+
+Of the three that remain, the **Ring Mast** and the **Ballast Drill** have no
+design chosen and need a five-option round each. The **Crust Turbine** has no
+spec section of its own — it lives inside the Crust Tap brief as "a companion
+generator" — so its brief has to be written before options can be drawn. The
+**crust vent tile** is the odd one out: three sheets at 1x/2x/4x with sixteen
+variants each, plus five transition groups and their masks, all of which must
+tile seamlessly. `tools/build-whisker-bed-tile.py` and the whisker bed are the
+precedent.
 
 Its spec has already solved the hard part and this should be followed exactly:
 the four directions are the *same machine from the same camera* with only the

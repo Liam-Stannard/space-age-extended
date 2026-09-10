@@ -28,6 +28,13 @@ base's own centre is what lands on the tile.
 
   tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/crust-tap
   tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/vent-pump --tiles 3
+
+**One warning if you re-cut the Crust Tap.** `base_span` was rewritten for the
+Vent Pump (see its note below) and the new measurement moves the Crust Tap's
+plates by about a pixel in each dimension. The shipped plates predate it, their
+numbers are declared in `prototypes/core/crust-tap.lua`, and they were verified
+against that building's own §13 -- so they are deliberately NOT re-cut. Re-cut
+only together with those declarations, and re-measure afterwards.
 """
 
 import argparse
@@ -64,18 +71,45 @@ def split(strip, gap=12):
     return [strip.crop((a, 0, b, strip.height)) for a, b in runs]
 
 
-def base_span(view, share=0.45):
-    """The x range of the base plate: columns taller than `share` of the tallest.
+def rows(mask):
+    """(x0, x1) of the opaque run on each row, or None where the row is empty."""
+    w, h = mask.size
+    px = mask.load()
+    out = []
+    for y in range(h):
+        xs = [x for x in range(w) if px[x, y]]
+        out.append((min(xs), max(xs) + 1) if xs else None)
+    return out
 
-    The riser is a thin protrusion -- a few dozen pixels tall against a base that
-    is most of the view's height -- so a height threshold separates them cleanly
-    without knowing which way the riser points.
+
+def base_span(view, floor=0.5):
+    """The x range of the base plate, measured by the typical row rather than by
+    a column-height threshold.
+
+    **The threshold version failed on the Vent Pump, in both directions at once.**
+    It kept columns taller than a share of the tallest column, which works only
+    while the protruding part is short. This building's pipes are as tall as the
+    base in the north and south views -- they leave through the top and bottom
+    edges, straight at the camera -- so they raise `tallest` and push the real
+    base columns below the cut. In the east and west views the same pipes leave
+    sideways, are short, and drag the base *wider* instead. Measured on the v2
+    strip: 388, 401, 395, 401 px for four bases that are really 408, 401, 408,
+    401.
+
+    A row is a better witness than a column. The base plate is the widest thing
+    on most rows of the machine, and the pipes only widen the few rows they
+    actually cross -- so the median row is the base, whichever way the plumbing
+    points. Rows narrower than `floor` of the widest are dropped first: those are
+    the pipe stubs above and below the body, and they are not the base either.
     """
     mask = view.getchannel("A").point(lambda v: 255 if v > 20 else 0)
-    cols = columns(mask)
-    tallest = max(cols)
-    keep = [x for x, n in enumerate(cols) if n >= share * tallest]
-    return min(keep), max(keep) + 1
+    spans = [r for r in rows(mask) if r]
+    if not spans:
+        return 0, view.width
+    widest = max(b - a for a, b in spans)
+    body = [r for r in spans if (r[1] - r[0]) >= floor * widest]
+    body.sort(key=lambda r: r[1] - r[0])
+    return body[len(body) // 2]
 
 
 def main():

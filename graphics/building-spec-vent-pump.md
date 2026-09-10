@@ -583,22 +583,27 @@ unmistakably four rotations of one machine, then split by
 its **base square** rather than on its content — otherwise the view whose pipes
 stick out furthest is drawn smallest and sits off its own tile.
 
-### Where this got to, 2026-09-10
+### Round 1 — the strip, and what it took
 
-**The prompts above are corrected and unused.** Three generation attempts, no
-usable strip:
+**Generated 2026-09-10 from the prompt below**, attached to
+`concept/v4-sheet.png`, and cut with
+`tools/cut-rotation-strip.py --tiles 3`. Kept at
+`concept/rotation-strip-v2.png`.
 
-1. The first came back as **the reference sheet itself**, essentially unchanged.
-   The sheet already carries four sprites in a row across its top, so "draw four
-   sprites in a row" read as "return this". The `DO NOT RETURN THE ATTACHED
-   IMAGE` block above is the answer to that and has not yet had a fair run.
-2. and 3. Both attempts after it failed on ChatGPT's own *"Something went wrong.
-   Please try again."* — server-side, the same intermittent failure that cost
-   three attempts on the Drop Crusher's option D the day before.
+**The first attempt returned the reference sheet itself, essentially
+unchanged.** The sheet already carries four sprites in a row across its top, so
+"draw four sprites in a row" read as "return this". The `DO NOT RETURN THE
+ATTACHED IMAGE` block that opens the prompt is the answer, and the strip came
+back correct with it in place. Two attempts in between died on ChatGPT's own
+"Something went wrong" — server-side, and not worth reading anything into.
 
-**Nothing about the design is blocked.** `concept/v4-sheet.png` is locked and
-correct, the cut is a solved problem, and `tools/cut-rotation-strip.py --tiles 3`
-is waiting for the strip.
+**Checked against the prototype rather than trusted**, because on this building
+the pipes *are* the fluid boxes: north puts the riser out of the top edge and the
+intake out of the bottom, which is output `{0,-1}` facing north and input
+`{0,1}` facing south; east, south and west rotate the pair rigidly, exactly as
+the entity does. Both pipes sit on the centre line of their edge, square to it,
+with the flange passing through the connection tile. Rendered over a real grid
+with the declared connections marked, which is the only way to see it.
 
 ### Rotation strip
 
@@ -745,12 +750,43 @@ colour layer will double up against the engine's own.
 
 ---
 
-# 13. Sprite Dimensions
+# 13. Sprite Dimensions — measured
 
-Frame geometry is taken **verbatim from the pumpjack**, so the inherited
-`shift` values in the graphics set stay correct and the new art drops straight
-into the existing prototype. Sprites are authored at 2× and drawn at
-`scale = 0.5`.
+**This section used to say frame geometry was "taken verbatim from the
+pumpjack", so the inherited shifts would stay correct.** That was a plan, not a
+measurement, and it did not survive contact: the plates are cut from our own
+strip, every canvas is a different size, and each shift is measured off its own
+base plate. The pumpjack's numbers are gone from the prototype along with its
+sprites. Sprites are authored at 2× and drawn at `scale = 0.5`.
+
+| Direction | Colour plate | Shift | Shadow | Shadow shift | Base measured |
+| --------- | ------------ | ----- | ------ | ------------ | ------------: |
+| north | `base-north.png` 203 × 281 | `{ 0.00781, −0.23438 }` | 441 × 301 | `{ 1.71094, −0.23438 }` | **3.000** tiles |
+| east  | `base-east.png` 248 × 198  | `{ 0, −0.02344 }` | 420 × 218 | `{ 1.18750, −0.02344 }` | 2.969 tiles |
+| south | `base-south.png` 202 × 265 | `{ −0.00781, −0.14844 }` | 427 × 285 | `{ 1.59375, −0.14844 }` | 2.984 tiles |
+| west  | `base-west.png` 247 × 198  | `{ −0.01562, −0.02344 }` | 419 × 218 | `{ 1.17188, −0.02344 }` | 2.953 tiles |
+
+**Every number is measured off the base plate, never off the content.** The
+pipes reach further in some views than others — that is the whole point of them —
+so centring on content slides the machine off its own tile in exactly the views
+whose plumbing overhangs most. The scale is set once, from the north view's base
+square fitted to 3.000 tiles, and used for all four; the other three land at
+2.953–2.984, all *under* the footprint, which is the safe side to miss on. A base
+wider than its footprint interleaves with its neighbours, and the Arc Mast at
+3.14 tiles is the standing lesson.
+
+**The y shifts differ by axis and that is not an error.** A riser leaving through
+the top edge is drawn standing up, so it adds height above the base and pushes
+the base low in its canvas: north needs a quarter tile of lift where east and
+west need almost none.
+
+**`tools/check-footprint.py` reports 0.39 tiles of overhang on east and west, and
+that is the tool measuring the wrong thing.** It fits the declared box to the
+*visible* bounds, and in those two views the visible bounds include the pipes,
+which are supposed to hang over the edge and reach the next tile. The base is
+what has to fit, and it does.
+
+## The numbers this section used to carry
 
 **Tile Size:**
 `64` px authored / `32` px drawn
@@ -908,6 +944,13 @@ stack — check this before the art is signed off.
 
 # 16. Icon
 
+**Done 2026-09-10 — `graphics/icons/vent-pump.png`, derived from the north plate
+rather than generated separately**, so it cannot disagree with the building it is
+an icon for. The whole machine, riser and frosted intake included: both survive
+at 32 px, and they are what makes it unmistakably this building rather than
+another grey box. What follows is the record of what was asked for.
+
+
 **Icon Required:** ✓
 
 **Icon Size:**
@@ -1018,6 +1061,41 @@ The icon should remain recognisable at Factorio's normal inventory/UI scale.
 ---
 
 # 19. Design Notes / Iteration History
+
+### 2026-09-10 — the plates, and a prompt that described the wrong building
+
+**The four directional prompts in §11 were wrong and had to be replaced before
+anything could be generated.** They asked for the intake "from the left edge",
+the riser "elbowed out to the top-right corner", and "two capped, unused intake
+stubs" — the v3 design, which §8 of this same document argues against in as many
+words. The prototype had already moved to one connection in and one out on
+opposite centre tiles with no stubs; the prompts had not moved with it. Following
+them would have produced art the player cannot plumb.
+
+They are replaced by a single rotation-strip prompt that matches §8, and the
+strip was cut with `tools/cut-rotation-strip.py --tiles 3` — which is
+`cut-crust-tap.py` generalised, this building being its second user.
+
+**Its base detector had to be rewritten for this building, and the failure is
+worth recording.** It kept columns taller than a share of the tallest column,
+which works only while the protruding part is short. This machine's pipes are as
+tall as the base in the north and south views — they leave through the top and
+bottom edges, straight at the camera — so they raised the threshold and pushed
+the real base columns below it. In east and west the same pipes leave sideways,
+are short, and dragged the measured base *wider* instead. Four bases that are
+really 408, 401, 408 and 401 px measured as 388, 401, 395 and 401.
+
+A row is a better witness than a column: the base is the widest thing on most
+rows, and the pipes only widen the rows they actually cross, so the median row is
+the base whichever way the plumbing points. With that, the four cut to 3.000,
+2.969, 2.984 and 2.953 tiles instead of 3.016, 3.094, 3.047 and 3.094 — from
+overhanging on two views to under-running on three.
+
+**One consequence outside this building:** the new measurement moves the Crust
+Tap's plates by about a pixel. Those are shipped, declared in
+`prototypes/core/crust-tap.lua` and verified against that building's own §13, so
+they are deliberately not re-cut. The tool says so at the top.
+
 
 ### Version 0 — inherited pumpjack (current, in repo)
 
