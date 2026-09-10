@@ -790,6 +790,82 @@ local mast = crafter("sae-ring-mast", "assembling-machine-3", {
 })
 mast.fixed_recipe = "sae-ignition-charge"
 mast.allowed_effects = {}
+
+-- Art: the Braced Post, option A of five (graphics/ring-mast-options/).
+--
+-- Locked 2026-09-10. Four heavy buttresses splaying to the corners, a thick
+-- banded coil at waist height, and a short blunt CLOSED cap above it. The whole
+-- round exists to keep this building from reading as a lightning collector, and
+-- the closed dark top is the single line that does it -- the Arc Mast next door
+-- is the thing lightning hits, and these two must never be confused.
+--
+-- **The inlet was redrawn.** The adopted sheet drew it frost-jacketed, which was
+-- generated before the template's convention 5: a fluid connection carries no
+-- frost, heat or tint, because the engine stamps its own neutral cover over an
+-- unconnected port and a rimed stub ends up with a bare grey flange sitting in
+-- it. The master render draws it as a plain bored fitting instead -- the vanilla
+-- pump's own read.
+--
+-- **The shift is measured, and it is positive here.** 192 px of drawn machine,
+-- 3.000 tiles, checked by tools/check-footprint.py. Unlike the Drop Crusher this
+-- building is SHORTER than its own footprint -- 2.83 tiles of drawn height on a
+-- 3 tile box -- so the bottom-aligned box puts the footprint's centre 5.5 source
+-- px ABOVE the canvas centre and the plate is pushed DOWN by 2.75 in-game px.
+-- Vanilla agrees: assembling-machine-3, the other squat 3x3, ships
+-- `by_pixel(-0.5, 2.5)` -- +0.078 against our +0.086.
+--
+-- **The band is unlit and that is on purpose.** This plate is what the charge
+-- glow will be derived from, so a band drawn part-charged would bake a mid-cycle
+-- state into the still machine. Until that layer exists the status lamp carries
+-- the whole read, as it does on the Drop Crusher.
+local RM = "__space-age-extended__/graphics/entity/ring-mast/"
+mast.icon = "__space-age-extended__/graphics/icons/ring-mast.png"
+mast.icons = nil
+derive.own_graphics(mast,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = RM .. "base.png",
+        priority = "high",
+        width = 200, height = 191,
+        shift = { 0, 0.08594 },
+        scale = 0.5
+      },
+      {
+        filename = RM .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 346, height = 202,
+        shift = { 1.14062, 0.17188 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    -- Cut white from the plate's own canvas, so it registers by construction.
+    -- `apply_tint = "status"` hands the colour to the engine; `always_draw`
+    -- because a lamp that only appears while working cannot report that the
+    -- machine has stopped, which is the one thing it exists to say.
+    {
+      always_draw = true,
+      apply_tint = "status",
+      animation =
+      {
+        filename = RM .. "status-lamp.png",
+        priority = "high",
+        draw_as_glow = true,
+        width = 200, height = 191,
+        frame_count = 1,
+        shift = { 0, 0.08594 },
+        scale = 0.5
+      }
+    }
+  }
+})
 data:extend({ mast })
 
 --------------------------------------------------------------------------------

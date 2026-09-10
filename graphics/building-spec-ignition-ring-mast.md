@@ -212,6 +212,72 @@ the grid with no overhang.
 
 ---
 
+
+## Master Concept Prompt
+
+Stage 1. **Attach `graphics/entity/ring-mast/concept/adopted/A-sheet.png` and
+nothing else** — this is the same machine as the sheet's hero view, not a new
+design, and any second reference invites a second building (see
+`graphics/TODO.md`'s warning).
+
+**The band is UNLIT.** This plate is the machine the glow layer is derived from,
+so a band drawn part-charged would bake a mid-cycle state into the still.
+
+**The inlet is BARE.** The adopted sheet drew it frost-jacketed; that was
+generated before the template's convention 5 and is the one thing this render
+changes.
+
+```text
+FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
+
+Redraw the machine in the ATTACHED SHEET's hero view as a single clean game
+sprite. Same building, same design, same camera. Do not redesign it, do not
+add or remove parts, and do not draw any panels, labels, text, borders or
+background furniture.
+
+== WHAT IT IS ==
+The Ignition Ring Mast: a 3x3 charging post on an airless metal world. A wide
+braced base with four heavy buttresses splaying to the corners. At waist height
+a thick banded ring of close-wound copper-brown coils, the widest part of the
+machine. Above it the shaft tapers to a short blunt CLOSED charcoal cap. A slim
+pipe leaves the coil band, runs down the outside of one buttress, and stops at a
+flange flush with the ground at the middle of the SOUTH tile edge. A small round
+white status lens on the base, clear of the band.
+
+== CAMERA ==
+Looking steeply down from above, MOSTLY ROOF with only a shallow near face
+visible, square to the tile grid: the near face parallel to the bottom edge of
+the frame, the side faces parallel to the left and right edges. The square base
+reads as a SQUARE, never a diamond. Not rotated corner-on, not a front
+elevation. Match the attached sheet's hero view exactly.
+
+== HARD REQUIREMENTS ==
+- ONE machine, centred, filling the frame, nothing else in the image
+- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no shadow on the ground,
+  no grid, no vignette, no backdrop of any kind
+- THE CHARGE BAND IS UNLIT. Copper and brass as MATERIAL, dark, no glow at all.
+  The lit version is derived from this plate, not drawn into it
+- THE TOP IS CLOSED, BLUNT AND DARK. No cage, no electrode, no antenna, no rod,
+  no finial, nothing reaching upward, nothing lit
+- THE HELIUM INLET IS BARE MACHINE METAL. No frost, no rime, no ice, no pale
+  blue, no lagging, no colour treatment of any kind on the pipe or its flange.
+  It is the same metal as the machine
+- The inlet is AXIS-ALIGNED on the SOUTH face, centre tile, stopping flush at
+  the middle of that tile edge at GROUND LEVEL. Never diagonal, never out of a
+  corner, never floating clear
+- The STATUS LENS is PAINTED WHITE -- a plain white lens, not lit, not coloured,
+  not glowing. The engine colours it in game
+- NOTHING IS HOT AND NOTHING GLOWS anywhere on the machine
+- No output chute, spout, bin, tray or opening of any kind
+- No loose material, no charge, no cell, no canister, no cargo anywhere
+- Nothing extends sideways past the square base
+- No text, no labels, no logos, no wordmarks, no watermarks
+
+== OUTPUT ==
+One square image, the machine alone on transparency, sharp and clean at full
+resolution, in the rendering and finish of the attached sheet.
+```
+
 # 15. Factorio Prototype — sketch
 
 ```lua
@@ -240,6 +306,48 @@ And the item that makes the ring a ring:
   spoil_ticks = 60 * 10   -- ten seconds; no spoil_result, so it simply goes
 }
 ```
+
+---
+
+# 13. Sprite Dimensions — measured
+
+Every number here was measured off the cut plate, not chosen.
+
+| | |
+| --- | --- |
+| Master render | `concept/master-v1.png`, 1254 × 1254, transparent, trimmed to 1184 × 1115, aspect **1:0.94** against a vanilla 3×3's 1:0.96 |
+| Colour plate | `base.png`, **200 × 191**, `scale = 0.5` |
+| Drawn machine | **192 × 181 px** at (4, 5) — **exactly 3.000 tiles wide**, 2.83 tall |
+| Rim | 4 px left and right, 5 px top and bottom; alpha zero on all four edge rows |
+| Colour shift | **{ 0, +0.08594 }** |
+| Shadow plate | `base-shadow.png`, **346 × 202**, `draw_as_shadow` |
+| Shadow shift | **{ 1.14062, 0.17188 }** |
+| Status lamp | `status-lamp.png`, 200 × 191 — the plate's own canvas. Lens at (62, 132)–(70, 141) |
+| Icon | `graphics/icons/ring-mast.png`, 120 × 64 mipmap strip, from `icons/masters/ring-mast.png` |
+
+**The shift is positive, and that is the interesting part.** The Drop Crusher is
+taller than its footprint and needed pulling *up*; this building is **shorter**
+than its footprint — 2.83 tiles of drawn height on a 3 tile box — so the
+bottom-aligned box puts the footprint's centre 5.5 source px *above* the canvas
+centre, and the plate is pushed **down** by 2.75 in-game px.
+
+Vanilla agrees. `assembling-machine-3` is the other squat 3×3 and ships
+196 × 192 at `by_pixel(-0.5, 2.5)` — **+0.078 tiles** against our +0.086.
+
+**This is also what exposed a bug in `tools/check-footprint.py`.** It took the
+tile pitch from the *narrower* visible axis, on the reasoning that a building
+overhangs vertically and never horizontally — true of a tall building, false of a
+squat one. On this plate it read the height as the footprint, inferred a 60.3 px
+pitch instead of 64, and reported a plate cut to exactly 3.000 tiles as
+overhanging 0.09 each side. It now takes the pitch from the width, and accepts a
+rectangular footprint (`--tiles 2 5`) for the Crust Turbine.
+
+**The icon is derived, not drawn, and it is unlit.** §16 asks for the coil band
+*glowing*; the plate's band is unlit because the charge glow will be derived from
+it, and an icon promising a light the entity cannot yet show would be a lie for
+as long as that layer takes. The 32 px read and the Arc Mast test — §16's harder
+requirement — are both met without it: a fat banded copper drum against a thin
+lattice tower. Revisit when the charge animation is cut.
 
 ---
 

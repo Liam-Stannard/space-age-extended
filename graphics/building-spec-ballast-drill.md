@@ -226,6 +226,81 @@ overhang.
 
 ---
 
+
+## Master Concept Prompt
+
+Stage 1. **Attach `graphics/entity/ballast-drill/concept/adopted/B-sheet.png` and
+nothing else** — same machine as the sheet's hero view, not a new design.
+
+**The ring is RAISED.** This plate is the top of the press stroke and the frame
+the animation is cut from; a ring drawn seated would bake the bottom of the
+stroke into the still machine.
+
+**The output is rebuilt.** The adopted sheet drew an upright boom. It becomes a
+low drag-chain chute set into the north face — measured off vanilla, with the
+numbers in `ballast-drill-options/README.md`.
+
+```text
+FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
+
+Redraw the machine in the ATTACHED SHEET's hero view as a single clean game
+sprite. Same building, same design, same camera. Do not redesign it, do not
+add or remove parts except where this brief says so, and do not draw any
+panels, labels, text, borders or background furniture.
+
+== WHAT IT IS ==
+The Ballast Drill: a 5x5 mining machine on an airless metal world at fifty
+gravities. It does not hammer and it does not spin -- it brings weight to bear.
+A low riveted deck fills the footprint. A short capped central column rises from
+its middle, blunt and closed. A heavy cast BALLAST RING, an annulus almost the
+full width of the machine, rides around that column with deep chamfers and cast
+webs across its top face. Three guide columns spaced round the ring, each with a
+visible shoe wrapping it. A hammered landing shoulder at the base for the ring to
+seat on. Compact geared winch housings at two of the three columns, gears
+exposed. Riveted seams, bolt lines, lifting lugs, cable cleats, honest wear.
+
+== THE OUTPUT, WHICH IS THE ONE CHANGE FROM THE SHEET ==
+The attached sheet drew a tall upright boom. REPLACE IT. This machine gets a
+SHORT DRAG-CHAIN SCRAPER CONVEYOR SET INTO THE NORTH FACE at ground level:
+sloping down and forward out of the deck, a chain-and-flight bed running in a
+guarded channel, a small drive sprocket at its head. It is BUILT INTO the
+machine, not bolted on top of it. Its mouth is FLUSH WITH THE NORTH TILE EDGE.
+NOTHING about it rises above the roofline and NOTHING overhangs the footprint.
+It is drawn EMPTY -- the ore is placed by the engine in front of the mouth and is
+never painted into the sprite.
+
+== CAMERA ==
+Looking steeply down from above, MOSTLY ROOF with only a shallow near face
+visible, square to the tile grid: the near face parallel to the bottom edge of
+the frame, the side faces parallel to the left and right edges. The square deck
+reads as a SQUARE, never a diamond. Not rotated corner-on, not a front
+elevation. Match the attached sheet's hero view exactly.
+
+== HARD REQUIREMENTS ==
+- ONE machine, centred, filling the frame, nothing else in the image
+- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no shadow on the ground,
+  no grid, no vignette, no backdrop of any kind
+- THE BALLAST RING IS RAISED, clear of the landing shoulder, at the top of its
+  travel, with the guide columns visible beneath it
+- DRAW NO FLUID FITTINGS AT ALL: no flange, no pipe stub, no hose, no valve, no
+  manifold, no capped port, anywhere on the machine. Vanilla's own drills carry
+  no plumbing in their art; the engine stamps the fitting at whichever
+  connections are live, and draws nothing on an ore that needs no fluid
+- THE LAMP LENS is PAINTED WHITE -- a plain white lens, not lit, not coloured,
+  not glowing. The engine colours it in game
+- NOTHING IS HOT AND NOTHING GLOWS anywhere on the machine
+- The cutting head is PART OF THE MACHINE: a shrouded rim under the deck. No
+  disturbed earth, no crater, no spoil ring, no ground texture
+- No loose ore, rock, spoil, powder, grit, dust or debris anywhere
+- Nothing extends sideways past the 5x5 deck, the chute included
+- No tower, no headframe, no mast, nothing reaching upward
+- No text, no labels, no logos, no wordmarks, no watermarks
+
+== OUTPUT ==
+One square image, the machine alone on transparency, sharp and clean at full
+resolution, in the rendering and finish of the attached sheet.
+```
+
 # 15. Factorio Prototype — sketch
 
 ```lua

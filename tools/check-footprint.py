@@ -13,6 +13,7 @@ spills past the box in each direction.
 
   tools/check-footprint.py plate.png --tiles 3
   tools/check-footprint.py plate.png --tiles 5 --out check.png
+  tools/check-footprint.py plate.png --tiles 2 5      # a rectangular footprint
 """
 import argparse, sys
 from PIL import Image, ImageDraw
@@ -30,7 +31,8 @@ def visible_bounds(im):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("plate")
-    p.add_argument("--tiles", type=int, required=True, help="footprint edge, in tiles")
+    p.add_argument("--tiles", type=int, nargs="+", required=True,
+                   help="footprint in tiles: one number for a square, or WIDTH HEIGHT")
     p.add_argument("--out", help="write an annotated PNG here")
     a = p.parse_args()
 
@@ -38,10 +40,19 @@ def main():
     x0, y0, x1, y1 = visible_bounds(im)
     w, h = x1 - x0, y1 - y0
 
-    # The footprint is square, so the tile pitch comes from the *narrower*
-    # visible axis: a tall building overhangs vertically, never horizontally.
-    pitch = min(w, h) / a.tiles
-    box_w = box_h = pitch * a.tiles
+    tw = a.tiles[0]
+    th = a.tiles[1] if len(a.tiles) > 1 else tw
+
+    # The pitch comes from the WIDTH, always. An earlier version took the
+    # narrower visible axis, on the reasoning that a building overhangs
+    # vertically and never horizontally -- which is true of a tall building and
+    # false of a squat one. The Ring Mast is 2.83 tiles tall on a 3 tile box, so
+    # the narrower axis was its height, the inferred pitch came out at 60.3
+    # instead of 64, and a plate cut to exactly 3.000 tiles was reported as
+    # overhanging by 0.09 each side. Sideways is the measurement that matters and
+    # sideways is the axis to take it from.
+    pitch = w / tw
+    box_w, box_h = pitch * tw, pitch * th
     # Centre the box on the visible content horizontally, and sit it on the base.
     cx = (x0 + x1) / 2
     bx0, bx1 = cx - box_w / 2, cx + box_w / 2
@@ -57,7 +68,7 @@ def main():
 
     print(f"plate         {a.plate}")
     print(f"visible       {w} x {h} px at ({x0},{y0})")
-    print(f"tile pitch    {pitch:.2f} px  ->  {a.tiles}x{a.tiles} box = {box_w:.0f} px")
+    print(f"tile pitch    {pitch:.2f} px  ->  {tw}x{th} box = {box_w:.0f} x {box_h:.0f} px")
     # Only sideways overhang breaks tiling. A tall building is *supposed* to
     # rise above its footprint -- the arc mast stands 5.1 tiles tall on a 3 tile
     # box -- and the engine places it with a shift rather than by shrinking it.
@@ -65,7 +76,8 @@ def main():
         v = over[k]
         flag = "OK" if v < 0.02 else ("lip" if v < 0.25 else "OVERHANG")
         print(f"  {k:<7} {v:5.2f} tiles   {flag}")
-    print(f"  height  {h / pitch:5.2f} tiles   (above the box: {over['top']:.2f} -- expected on a tall building)")
+    print(f"  height  {h / pitch:5.2f} tiles   "
+          f"(box is {th}; above it: {over['top']:.2f} -- expected on a tall building)")
     worst = max(over["left"], over["right"])
     print()
     if worst < 0.02:

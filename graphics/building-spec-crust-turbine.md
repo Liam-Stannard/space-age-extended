@@ -173,6 +173,84 @@ track *state*, not time.
 
 ---
 
+
+# 11. Generation Requirements
+
+## Master Concept Prompt
+
+Stage 1. **Attach `graphics/entity/crust-turbine/concept/adopted/E-sheet.png` and
+nothing else** — same machine as the sheet's hero view, not a new design.
+
+**The frost comes off the collars.** The adopted sheet ran rime onto both end
+flanges, and those flanges *are* the two fluid connections. Template convention 5.
+
+**Measure the camera before cutting anything.** Every option in this round came
+back nearer side-on than Factorio's projection; check the trimmed aspect against
+a real 2×5 vanilla plate and regenerate with a vanilla sprite as camera reference
+if it misses. `TODO.md`, *The defect to expect on every remaining building*.
+
+```text
+FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
+
+Redraw the machine in the ATTACHED SHEET's hero view as a single clean game
+sprite. Same building, same design, same camera. Do not redesign it, do not
+add or remove parts, and do not draw any panels, labels, text, borders or
+background furniture.
+
+== WHAT IT IS ==
+The Crust Turbine: a 2x5 generator on an airless metal world, lying HORIZONTAL
+with its long axis running left to right. Gas comes up from the crust at depth
+pressure, expands through the machine, and leaves at nothing -- the power is in
+the pressure difference and NOTHING BURNS. A long low body of plain riveted
+plate, deliberately quiet. THREE HEAVY MACHINED COLLARS, all the same design: a
+bright machined ring with a full circle of bolts round it. Two of them are the
+end flanges; the third frames a window in the middle of the near flank with a
+dark rotor face behind it. The let-down stage sits UNDER the left-hand collar
+rather than beside it, with pale frost blooming from beneath it and running back
+along the body. A compact generator can at the right, low, with a brass terminal
+box and cleated cable runs. A small round white status lens on the middle
+collar's rim.
+
+== CAMERA ==
+Looking steeply down from above, MOSTLY ROOF with only a shallow near face
+visible, square to the tile grid: the near face parallel to the bottom edge of
+the frame, the side faces parallel to the left and right edges. The footprint
+reads as a RECTANGLE square to the grid, never a diamond or a rhombus. Not
+rotated corner-on, not a side elevation. Match the attached sheet's hero view
+exactly.
+
+== HARD REQUIREMENTS ==
+- ONE machine, centred, filling the frame, nothing else in the image
+- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no shadow on the ground,
+  no grid, no vignette, no backdrop of any kind
+- THE TWO END COLLARS ARE BARE MACHINED METAL. NO FROST, no rime, no ice, no
+  pale blue, no lagging, no colour treatment of any kind on either end collar or
+  the bolts round it. The frost STOPS SHORT of them. This is the one thing this
+  render changes from the attached sheet, and it matters because those two
+  collars are the machine's two fluid connections
+- The frost lives UNDER THE LEFT-HAND COLLAR and on the BODY behind it, matte,
+  never glowing -- a surface, not a light
+- The two end collars are IDENTICAL and square to the tile edges, so a row of
+  these machines reads as chaining end to end
+- The STATUS LENS is PAINTED WHITE -- a plain white lens, not lit, not coloured,
+  not glowing. The engine colours it in game
+- IT IS COLD AND NOTHING BURNS. No firebox, no burner, no flame, no exhaust
+  stack, no chimney, no smoke, no heat stain, no lagging, no insulation blanket.
+  NO GLOW OF ANY KIND ANYWHERE
+- NO OTHER PORTS. No pipe on the flanks, no stub, no cap, no blank, no spare
+  socket, no valve tree. Two connections and no more
+- No arcs, no sparks, no crackle, nothing at the terminal box, nothing on the
+  ground
+- Nothing extends sideways past the 2x5 footprint except the two end collars
+- It must NOT read as a STEAM TURBINE: no lagged pipework, no insulation
+  blankets, no boiler, no hot end
+- No text, no labels, no logos, no wordmarks, no watermarks
+
+== OUTPUT ==
+One landscape image, the machine alone on transparency, sharp and clean at full
+resolution, in the rendering and finish of the attached sheet.
+```
+
 # 20. Open questions
 
 - **Does it need a rotor window at all?** A sealed machine with nothing visible
