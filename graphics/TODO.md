@@ -79,6 +79,22 @@ prototype change — the Vent Pump's route: one rotation strip, cut by
 
 ---
 
+## The Crust Turbine's master plate is blocked on camera
+
+Two generations, both 1:0.33 — a flat plan view from directly overhead, with no
+near face at all. A 2×5 ground square *alone* is 1:0.40 and vanilla's
+`steam-turbine-H`, the same footprint, is 1:0.77, so both renders are shallower
+than the footprint they have to sit in. `--stretch-y` would need ~2.3 against a
+documented limit of 1.2.
+
+The design in them is right — three matching collars, bare end collars, frost
+stopping short, a white lens. Only the camera is wrong. Written up in
+`building-spec-crust-turbine.md` §12 with the measurements.
+
+- [ ] Crust Turbine master plate, redrawn with a visible near face
+
+---
+
 ---
 
 ## Done — items 1 to 4

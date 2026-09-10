@@ -251,6 +251,47 @@ One landscape image, the machine alone on transparency, sharp and clean at full
 resolution, in the rendering and finish of the attached sheet.
 ```
 
+# 12. Master plate — two attempts, both rejected on camera
+
+`concept/master-v1.png` and `concept/master-v2.png`, 2026-09-10. Both are kept
+because the *design* in them is right and only the camera is wrong; whoever picks
+this up next should redraw the camera, not the machine.
+
+**What is right in them.** Three matching machined collars, the two end ones
+bare metal with the frost stopping short of them — convention 5, and the whole
+reason E was adopted. A white status lens with a bezel on the middle collar. The
+terminal box and cleated runs. Nothing hot, nothing glowing, transparent
+background.
+
+**What is wrong.** Both are drawn as a flat plan view from directly overhead:
+there is no near face at all. Measured:
+
+| | width × height | aspect |
+| --- | --- | --- |
+| master-v1 | 1383 × 450 | **1:0.33** |
+| master-v2 | 1383 × 450 | **1:0.33** |
+| a 2×5 ground square, alone, seen straight down | — | 1:0.40 |
+| vanilla `steam-turbine-H`, the same 2×5 footprint | 320 × 245 | **1:0.77** |
+
+A drawing shallower than its own footprint cannot be right: at 1:0.33 the machine
+is drawn *longer relative to its depth than five tiles by two actually are*, so
+there is no scaling that makes both axes land, and `--stretch-y` would need to be
+about 2.3 — far past the 1.2 the tool's docstring calls the limit.
+
+**The regenerate did not move it.** The second attempt asked in as many words for
+a shallow near face and a deeper footprint, and came back byte-for-byte the same
+composition. Two attempts is where this stops; the next one should carry the
+vanilla steam turbine as a camera reference *and* say the near-face band is
+mandatory, or the plate should be built by editing the approved image's geometry
+rather than asking again.
+
+**Nothing is wired.** The Crust Turbine still wears its placeholder sprites and
+still appears in the data stage's placeholder report. That is deliberate: a plate
+cut from either of these would tile wrong against every other building on the
+planet.
+
+---
+
 # 20. Open questions
 
 - **Does it need a rotor window at all?** A sealed machine with nothing visible
