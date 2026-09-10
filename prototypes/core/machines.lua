@@ -126,12 +126,37 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- there is no glow here: the ore is cold, the fall is free, and the only light is
 -- the lens the engine tints.
 --
--- **The stroke is not animated yet, and that is the outstanding piece.** §3.2
--- calls the crown rising and falling "the entire read", and the plate draws it
--- standing proud of its collar -- but cutting it into its own layer needs a mask,
--- because the collar occludes its base and a rectangular cut takes collar pixels
--- with it. See the note at the end of graphics/building-spec-drop-crusher.md §9.
+-- **The stroke is animated, and it is drawn the way the biochamber is.** §3.2
+-- calls the crown rising and falling "the entire read". Rather than ship 24
+-- copies of a 200x206 plate, this is a static housing with one 48x54 window
+-- punched out of it and 24 frames of that window laid over the hole -- vanilla's
+-- own arrangement in `space-age/prototypes/entity/biochamber-pictures.lua`, and
+-- 103,408 px of atlas against 988,800 for a full-plate sheet. The pair is
+-- checked to reassemble exactly, frame by frame, by the tool that cuts it.
+--
+-- **The frames come from Animatorio** (github.com/Onoulade/Animatorio), driven by
+-- tools/build-animatorio-layers.py off graphics/entity/drop-crusher/stroke.json.
+-- The crown and the shank travel as one part, because the rack is cut into the
+-- shank -- and it is the rack's rungs travelling that sells the stroke, more
+-- than the crown does.
+--
+-- **Frame 0 is base.png, byte for byte** -- checked, not assumed. There is no
+-- `idle_animation`: §9 records that one would have to carry the same 24 frames,
+-- and an assembling machine simply stops on a frame instead. That the frame it
+-- stops on is the approved still is the whole reason this loop starts at the top
+-- of the stroke and falls, rather than starting at the bottom and rising.
+--
+-- **`animation_speed` is derived, not chosen.** 24 frames at 0.2 is a two-second
+-- loop, and `sae-crushing` is `energy_required = 2` at `crafting_speed = 1` -- so
+-- one drop is one craft at the base rate. `constant_speed` is left false on
+-- purpose, per §9: modules should make the hammer fall faster. That breaks the
+-- one-drop-one-craft correspondence, which §9 is explicit nobody notices.
+--
+-- base.png stays in the tree and is still the locked plate: it is what the icon
+-- is derived from, what the status lamp registers against, and what frame 0 is
+-- checked against. It is simply no longer what the entity draws.
 local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
+local DC_FRAMES = 24
 crusher.icon = "__space-age-extended__/graphics/icons/drop-crusher.png"
 derive.own_graphics(crusher,
 {
@@ -139,11 +164,32 @@ derive.own_graphics(crusher,
   {
     layers =
     {
+      -- The plate, less the window the stroke moves in. One frame, repeated to
+      -- meet the animated layer's count -- the biochamber does exactly this.
       {
-        filename = DC .. "base.png",
+        filename = DC .. "stroke-housing.png",
         priority = "high",
         width = 200, height = 206,
+        frame_count = 1,
+        repeat_count = DC_FRAMES,
+        animation_speed = 0.2,
         shift = { 0, -0.03125 },
+        scale = 0.5
+      },
+      -- The window's contents. Its shift is the plate's shift plus the offset of
+      -- the window's centre from the plate's: the window is 79..127 x 0..54 on a
+      -- 200x206 canvas, so its centre sits 3 px right and 76 px up of the
+      -- canvas centre. 64 source px to the tile at scale 0.5, giving 3/64 and
+      -- -76/64, and -0.03125 - 1.1875 = -1.21875. Every number is an exact
+      -- sixty-fourth; none of them was rounded to get there.
+      {
+        filename = DC .. "stroke.png",
+        priority = "high",
+        width = 48, height = 54,
+        frame_count = DC_FRAMES,
+        line_length = 6,
+        animation_speed = 0.2,
+        shift = { 0.046875, -1.21875 },
         scale = 0.5
       },
       {
@@ -152,7 +198,16 @@ derive.own_graphics(crusher,
         draw_as_shadow = true,
         -- Leans up and to the right, so it is wider than the colour plate and
         -- carries its own shift. Both numbers come out of the tool.
+        --
+        -- Still one frame. The crown's own shadow travels with it in life, but
+        -- the crown is 4.6% of the machine's drawn pixels and its shadow is a
+        -- smaller share of a plate that is nearly twice as wide -- cutting the
+        -- shadow apart to move that is a second mask for something no player
+        -- looks at. Recorded as a choice rather than an oversight.
         width = 358, height = 217,
+        frame_count = 1,
+        repeat_count = DC_FRAMES,
+        animation_speed = 0.2,
         shift = { 1.23438, 0.05469 },
         scale = 0.5
       }
@@ -250,6 +305,94 @@ drill.energy_usage = "600kW"
 drill.energy_source = { type = "electric", usage_priority = "secondary-input" }
 drill.module_slots = 4
 drill.surface_conditions = HIGH_G
+
+-- Art: the Ring Press, option B of five (graphics/ballast-drill-options/).
+--
+-- Locked 2026-09-10. A heavy cast annulus riding up and down three guide columns
+-- around a capped central shaft, on a low riveted deck. Nothing about it rises,
+-- because the anti-read for this building is a derrick.
+--
+-- **The output was rebuilt from vanilla, not from the sheet.** The adopted sheet
+-- drew an upright boom. Vanilla's drills do not, and the reason is geometric:
+-- `big-mining-drill` is the same 5x5 footprint, places its ore at
+-- `vector_to_place_result = {0, -2.85}` -- 0.35 tiles PAST the north edge -- and
+-- draws `big-mining-drill-N-output.png`, a 128x88 six-frame drag-chain shifted
+-- `by_pixel(-2, -66.5)`, which puts the chute INSIDE the footprint with its mouth
+-- flush to the edge. Ours is the same idea: a short chute mouth built into the
+-- back of the deck, drawn empty, with the ore an item entity the engine places in
+-- front of it. See the template's convention 1 -- draw the chute, never what
+-- comes out of it.
+--
+-- **The status lens was painted in.** Three generations of the master render came
+-- back with no lamp at all, and this building has no other feedback: the ring
+-- does not move in the still, nothing is hot, and the lens is the only thing that
+-- can say idle from blocked. It is a bezel and a flat white disc composited into
+-- the master at (340, 1015) before cutting, so it antialiases down with the rest
+-- of the plate rather than being pasted onto the sprite.
+--
+-- **The plate is stretched 1.05x vertically.** The render came back at aspect
+-- 1:0.90 against `big-mining-drill-N-still-front`'s 1:0.94 -- the camera defect
+-- graphics/TODO.md says to expect on every remaining building. 5% is inside the
+-- band the tool's own docstring calls invisible on details. 320 px of drawn
+-- machine, 5.000 tiles, checked by tools/check-footprint.py.
+--
+-- **The ring is RAISED in this plate**, so when the press stroke is animated this
+-- frame is the top of it and the frames fall from here -- the opposite of the
+-- Drop Crusher, whose plate is the bottom of its stroke because its crown can
+-- only travel up.
+--
+-- **One plate for all four directions, and that is a known gap.** A mining drill
+-- rotates, and `vector_to_place_result` rotates with it -- so a player who turns
+-- this drill east gets ore out of its east face while the art still shows the
+-- chute at the back. `graphics_set.animation` takes an Animation4Way, so the fix
+-- is four plates and no prototype change; it wants the Vent Pump's route, one
+-- rotation strip cut by tools/cut-rotation-strip.py. Until then the drill is
+-- honest in its default orientation and wrong in the other three, which is
+-- better than wearing big-mining-drill's sprites but is not finished.
+local BD = "__space-age-extended__/graphics/entity/ballast-drill/"
+drill.icon = "__space-age-extended__/graphics/icons/ballast-drill.png"
+drill.icons = nil
+derive.own_graphics(drill,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = BD .. "base.png",
+        priority = "high",
+        width = 328, height = 313,
+        shift = { 0, 0.13281 },
+        scale = 0.5
+      },
+      {
+        filename = BD .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 571, height = 324,
+        shift = { 1.89844, 0.21875 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    {
+      always_draw = true,
+      apply_tint = "status",
+      animation =
+      {
+        filename = BD .. "status-lamp.png",
+        priority = "high",
+        draw_as_glow = true,
+        width = 328, height = 313,
+        frame_count = 1,
+        shift = { 0, 0.13281 },
+        scale = 0.5
+      }
+    }
+  }
+})
 data:extend({ drill })
 
 --------------------------------------------------------------------------------

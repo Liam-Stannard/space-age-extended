@@ -65,6 +65,20 @@ plates that already shipped**, none of which were drawn under this rule:
 
 ---
 
+## The Ballast Drill needs four directions
+
+Its plate is wired as a single non-directional animation. A mining drill
+rotates and `vector_to_place_result` rotates with it, so turned east it drops
+ore out of its east face while the art still shows the chute at the back.
+
+`graphics_set.animation` takes an Animation4Way, so this is four plates and no
+prototype change — the Vent Pump's route: one rotation strip, cut by
+`tools/cut-rotation-strip.py`.
+
+- [ ] Ballast Drill rotation strip, four directions, chute following the facing
+
+---
+
 ---
 
 ## Done — items 1 to 4

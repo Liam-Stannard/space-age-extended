@@ -21,7 +21,7 @@ production tree needs and the first thing that should be built.
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v10-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
-| 5 | Working animation | portrait 2:3 | The drop loop reads as a drop | blocked on 1 |
+| 5 | Working animation | — | The drop loop reads as a drop | **built** — derived from the plate by Animatorio, not generated; see §9 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
 ---
@@ -649,42 +649,91 @@ pair with a 1-frame idle — the idle would have to be 24 frames of the machine
 sitting still, weight seated and pawl engaged. Budget for it, or omit
 `idle_animation` entirely and let the machine simply stop on a frame.
 
-### Where this stands, and exactly what the stroke still needs
+### Where this stands — the stroke, and what measuring it overturned
 
 **Shipped 2026-09-10:** the master plate, its cast shadow, the status lamp and
 the icon, all wired in `prototypes/core/machines.lua`. The building no longer
 wears `assembling-machine-3`'s sprites and no longer appears in the data stage's
 placeholder report.
 
-**The stroke is not animated.** The plate draws the crown standing proud of its
-collar, which is the read §3.2 asks for in a still frame, but nothing moves yet.
+**Shipped 2026-09-10, second pass: the stroke moves.** It came out of
+[Animatorio](https://github.com/Onoulade/Animatorio), a sprite-sheet generator
+for exactly this — declare a moving region in JSON and it renders the frames.
+The asset is `stroke.json` beside the plate; the cut is
+`tools/build-animatorio-layers.py`. **Three of the four things this section
+predicted turned out to be wrong**, and the corrections are worth more than the
+result:
 
-**Why it was not just cut and slid.** The honest reason, recorded so the next
-attempt does not rediscover it:
+1. **"It can only travel upward" — it cannot travel upward at all.** The crown is
+   the *topmost thing on the plate*: its first opaque row is **7**, against a
+   canvas rim that has to stay clear to row 4. Two pixels of headroom. Rising is
+   not available at this canvas size, and no mask recovers it. The plate is the
+   **top** of the stroke and the frames fall from it — the exact opposite of what
+   this section assumed.
+2. **"Sliding it down would draw it over the collar's front rim" — only if you
+   let it.** A fixed clip window ending on row 50, the rim's top edge, means
+   nothing below the rim can be touched, so the shank slides *behind* it. In
+   Animatorio that is one field (`mask_polygon`); the shaped case is a
+   `source_occluder` layer. The occlusion was never the hard part.
+3. **"The vacated region is not roof, it is shank" — the shank is already
+   drawn.** Look at the plate at 8×: below the crown is a full shank, rows 31 to
+   50, with the **rack cut into it**, running down into the collar throat. So the
+   crown and the shank travel as one rigid part, and the rack's rungs pay out of
+   the collar as the weight is hoisted. That travelling rack turned out to sell
+   the stroke better than the crown does.
 
-1. **The collar occludes the crown's base.** The crown is visible from roughly
-   row 6 to row 54 of the 200 × 206 plate, and the collar's front rim crosses it
-   at about row 36. A rectangular cut through that region takes collar pixels
-   with it, and they then slide with the crown.
-2. **It can only travel upward.** Sliding the crown *down* would draw it over
-   the collar's front rim, which is in front of it in the picture. Up is the only
-   direction the drawn geometry supports, so the plate is the bottom of the
-   stroke and the frames rise from it.
-3. **The vacated region is not roof, it is shank.** As the crown rises, what
-   appears below it is more of the racked shank and a dark collar throat —
-   neither of which exists in the plate, because the plate never shows them.
+What was *right* is point 1's premise — a rectangular cut takes collar pixels —
+and the frame-spacing rule above, which is the one thing the tool could not do.
 
-So this needs the pipeline's real route, not a shortcut: a magenta mask from a
-generation, `tools/cut-part-by-mask.py --plate base.png --mask … --out crown.png
---housing-out housing.png`, the throat and a length of shank painted into the
-housing, then `tools/build-part-frames.py --part crown.png --mode slide
---axis 90`, with §9's frame spacing above — two thirds of the frames to the rise,
-one third to the fall.
+**The tool's one real gap, and the way round it.** Animatorio's `piston` offers
+`sine` or `triangle`, both symmetric: the fall takes as long as the rise, which
+is precisely the "looks like it is being *lowered*" failure this section warns
+about. Its phase-to-displacement map is `t = 0.5 − 0.5·cos(2πp)`, monotonic on
+`p ∈ [0, ½]`, so it inverts — pick the displacement per frame, solve back for the
+phase, ask the tool for *that* frame. Nothing is patched. The loop is **16 frames
+of constant-speed geared rise and 8 of a fall whose distance goes as t²**, which
+is this section's two-thirds/one-third, and the last increment of the fall is the
+largest, which is the hard stop at impact.
 
-**And check the share of the box when it lands.** The moving part is about a
-third of the building's width (`drop-crusher-options/README.md`), against 72 %,
-101 % and 113 % on the three vanilla machines it stands beside. The mask is the
-last chance to make the crown's travel longer; nothing downstream can.
+**Frame 0 is `base.png`, byte for byte** — asserted by the tool, not hoped for.
+The handler returns without touching the frame at zero displacement, and the loop
+is ordered to start at the top of the stroke so that it does. This is what
+answers §9's `idle_animation` gotcha above: there is no idle animation, the
+machine stops on a frame, and the frame it stops on is the approved still.
+
+**Drawn the way the biochamber is.** Not 24 copies of a 200 × 206 plate: a static
+housing with a 48 × 54 window punched out and 24 frames of that window over the
+hole — `space-age/prototypes/entity/biochamber-pictures.lua` does the same with
+`frame_count = 1, repeat_count = 64`. **103,408 px of atlas against 988,800**,
+and the tool reassembles every frame from the two layers and requires it to match
+Animatorio's own composite exactly before it will write anything.
+
+**The share of the box, and it is not good.** Measured, against the 72 %, 101 %
+and 113 % of the three vanilla machines this stands beside:
+
+| | |
+| --- | --- |
+| Moving part | 34 × 46 px in a 192 × 196 machine |
+| Share of the machine's width | **17.7 %** |
+| Swept box, with the 14 px travel | 34 × 60 px — 30.6 % of its height |
+| Pixels that ever change | **4.6 %** of the drawn machine |
+
+That is the Dross Classifier's problem again, and better only in degree — its
+drum was 5.2 %. §3.2 asks this stroke to "carry the whole read" and be legible
+"across the base", and at 17.7 % of the width it will not be. **The cause is
+upstream of the animation**: §3.2 describes a weight that *climbs the posts*
+above the roofline, and the plate drew a sealed cylinder with a cap standing
+proud of a collar. Nothing downstream of the master plate can enlarge it — the
+options are to accept a subtle stroke or to re-cut the plate, and that is a
+decision for §20, not for this section.
+
+**What was left out, deliberately.** The two lift gears flanking the collar are
+large enough to change the share materially, and Animatorio has `mechanical_gear`
+for them — but a rack-driven gear has to *reverse with the stroke*, and that
+layer only spins continuously. It would be turning while the crown sits at the
+top. The cast shadow is also still one frame; the crown's shadow is a small part
+of a plate nearly twice the machine's width, and cutting it apart is a second
+mask for something no player looks at.
 
 ---
 
@@ -703,6 +752,26 @@ Every number here was measured off the cut plate, not chosen.
 | Shadow shift | **{ 1.23438, 0.05469 }** |
 | Status lamp | `status-lamp.png`, 200 × 206 — the plate's own canvas, so it registers by construction. Lens at (93, 81)–(105, 92) |
 | Icon | `graphics/icons/drop-crusher.png`, 120 × 64 mipmap strip |
+| Stroke housing | `stroke-housing.png`, **200 × 206** — the plate with the window cut out. Same canvas, same `scale` and `shift` as `base.png`, so it needs no numbers of its own |
+| Stroke frames | `stroke.png`, **288 × 216** — 24 frames of 48 × 54, `line_length = 6` |
+| Stroke window | **(79, 0)–(127, 54)** on the plate |
+| Stroke shift | **{ 0.046875, −1.21875 }** |
+
+**The stroke layer's shift is arithmetic, not a fit.** The window's centre is
+(103, 27) on a canvas whose centre is (100, 103) — 3 source px right and 76 up.
+At `scale = 0.5` there are 64 source px to the tile, giving 3/64 = 0.046875 and
+−76/64 = −1.1875, and the plate's own −0.03125 adds to the second to make
+−1.21875. Every one of those is an exact sixty-fourth; none was rounded to get
+there, which is the test that the window was placed on whole pixels.
+
+**The window must be even in both axes** or its centre lands on half an in-game
+pixel at `scale = 0.5`. `tools/build-animatorio-layers.py` refuses an odd one.
+
+**Verified in the engine, not just in the tool.** A layered animation whose
+layers disagree on frame count is a *sprite*-stage failure, and the data stage
+never opens an image — `tools/check-data-stage.sh` passes a mod that cannot draw.
+Loaded the client under a virtual framebuffer instead: **`Sprites loaded` at
+22.4 s, `Factorio initialised`, no error lines.**
 
 **The shift is measured rather than centred, and this is the part worth keeping.**
 The building is taller than it is deep, so the drawn 3 × 3 box is bottom-aligned
