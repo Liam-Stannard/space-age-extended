@@ -50,6 +50,15 @@ def main():
     ap.add_argument("--dilate", type=int, default=2,
                     help="pixels to grow the fill by, so no lit fringe survives "
                          "in the base under the glow")
+    ap.add_argument("--region", nargs=4, type=int, metavar=("X0","Y0","X1","Y1"),
+                    help="split only inside this box, and leave the rest of the "
+                         "plate untouched. Needed whenever the building carries "
+                         "warm MATERIAL as well as warm LIGHT: the Vent Pump's "
+                         "copper fittings and yellow hazard banding sit in the "
+                         "same hue window as its sight port, so a whole-plate "
+                         "split lifts the paint off the building along with the "
+                         "glow. Measured on it: 1157 'hot' pixels across a "
+                         "179x226 box when the port is 18x32.")
     ap.add_argument("--fill-darken", type=float, default=0.45,
                     help="how much darker than its surround the filled recess "
                          "is; a slot with the light off is not the same value "
@@ -62,11 +71,13 @@ def main():
     lo = (args.hue - args.hue_width / 2) / 360.0
     hi = (args.hue + args.hue_width / 2) / 360.0
 
+    rx0, ry0, rx1, ry1 = args.region if args.region else (0, 0, w, h)
+
     mask = Image.new("L", (w, h), 0)
     mp = mask.load()
     lit = 0
-    for y in range(h):
-        for x in range(w):
+    for y in range(ry0, min(ry1, h)):
+        for x in range(rx0, min(rx1, w)):
             r, g, b, a = px[x, y]
             if a < 40:
                 continue

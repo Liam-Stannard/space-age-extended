@@ -76,10 +76,15 @@ it, was announcing nothing at all. It records intent now, `own_graphics` strikes
 a name off, and `derive.log_placeholders()` reports the survivors at the end of
 data.lua. The count is checkable rather than a thing to measure by hand.
 
-**The Vent Pump is done** — four directional plates and four shadows, cut from
-one rotation strip, with every shift measured off the base plate rather than the
-content. Its 32-frame working animation is still outstanding and is the only
-piece of it left; see its §9 and §13.
+**The Vent Pump is done** — four directional plates, four shadows and a
+sixteen-frame working glow, all four directions, cut from one rotation strip with
+every shift measured rather than chosen.
+
+Two things its spec had wrong turned up on the way. It claimed the working layer
+needed **one** direction "because the sight port and flow disc sit on the stack,
+which does not rotate" — the port is on the *riser*, which is the fluid box and
+therefore the one part that must turn. And §6.2 asked for a **steam** layer on a
+planet whose own §5 says there is no air. Both corrected.
 
 Of the three that remain, the **Ring Mast** and the **Ballast Drill** have no
 design chosen and need a five-option round each. The **Crust Turbine** has no

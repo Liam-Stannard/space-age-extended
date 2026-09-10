@@ -105,6 +105,54 @@ local function vp_plate(dir, w, h, sx, sy, sw, sh, ssx)
   }
 end
 
+-- The one thing that moves: the melt rising and falling in the riser's sight
+-- glass, sixteen frames, four directions.
+--
+-- **Four directions, because the sight port is on the riser.** §6.1 used to say
+-- this layer needed one, "because the sight port and flow disc sit on the stack,
+-- which does not rotate" -- but the port is on the riser, and the riser is the
+-- fluid box, so it is the one part of this building that *must* turn. Measured
+-- off the cut plates: the glow sits top-centre in north, right in east, bottom
+-- in south, left in west.
+--
+-- **Sixteen frames, not thirty-two.** The glass is 12 x 29 plate px in the north
+-- view -- six by fifteen on screen -- so a rising level has at most sixteen
+-- distinct pictures in it. Thirty-two would be sixteen images and sixteen
+-- duplicates, which is the arithmetic that cut the Dross Classifier's shake from
+-- sixty-four frames to twelve.
+--
+-- **It is a brightening laid over a lit plate, not a glow lifted out of an unlit
+-- one.** That is the opposite of what this mod usually does, and the reason is
+-- the building: `split-glow.py` works when the emissive parts are strongly
+-- chromatic against near-neutral iron-nickel, and this riser is copper. Every
+-- threshold that saved the port took half the riser with it. So the plate keeps
+-- its glow and this sheet adds to it -- which is also the truer reading, since a
+-- wellhead full of melt is warm whether or not it is pumping. What changes when
+-- it runs is how much of the glass is full.
+--
+--   tools/build-fill-frames.py base-north.png --region 87 29 108 64 \
+--       --frames 16 --min-lightness 0.50 --out port-north.png
+--
+-- **And it is a small gesture, knowingly.** The port is 16.7 % of the building's
+-- own box against vanilla's 72-113 %, and the plate is cut, so it cannot grow.
+-- It is built because it costs sixteen tiny derived sprites and gives the
+-- machine a running-versus-stopped tell it otherwise has none of -- not under any
+-- illusion that it carries the read at play zoom. `04-the-core.md` §26 is the
+-- standing warning and this is the exception taken with its eyes open.
+local function vp_port(dir, w, h, sx, sy)
+  return
+  {
+    filename = VP .. "port-" .. dir .. ".png",
+    priority = "high",
+    draw_as_glow = true,
+    width = w, height = h,
+    frame_count = 16, line_length = 8,
+    animation_speed = 0.25,        -- the loop in a little over a second
+    shift = { sx, sy },
+    scale = 0.5
+  }
+end
+
 derive.own_graphics(pump,
 {
   animation =
@@ -113,6 +161,17 @@ derive.own_graphics(pump,
     east  = vp_plate("east",  248, 198,  0.00000, -0.02344, 420, 218, 1.18750),
     south = vp_plate("south", 202, 265, -0.00781, -0.14844, 427, 285, 1.59375),
     west  = vp_plate("west",  247, 198, -0.01562, -0.02344, 419, 218, 1.17188)
+  },
+  working_visualisations =
+  {
+    -- No `always_draw`, so it is drawn only while the pump is working. The
+    -- shifts are the port crop's own offset plus the plate's, both measured.
+    {
+      north_animation = vp_port("north", 21, 35, -0.05469, -1.70313),
+      east_animation  = vp_port("east",  24, 28,  1.39062, -0.35156),
+      south_animation = vp_port("south", 23, 29, -0.07812,  1.02344),
+      west_animation  = vp_port("west",  26, 28, -1.32031, -0.35156)
+    }
   }
 })
 

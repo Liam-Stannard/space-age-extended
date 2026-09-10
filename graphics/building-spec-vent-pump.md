@@ -294,13 +294,20 @@ wrong and will hand back a rotating turntable, which is unusable.
 | ------------- | -------: | -----: | ---------: |
 | Main building |        ✓ |    `1` |      `4` |
 | Shadow        |        ✓ |    `1` |      `4` |
-| Idle state    |        ✓ |    `1` |      `4` |
-| Working state |        ✓ |   `32` |      `1` |
+| Working glow  |        ✓ |   `16` |      `4` |
 
-The base is static and always drawn (`always_draw = true`), exactly as the
-pumpjack draws its base under its horsehead. Only the working layer animates,
-and it needs **one** direction because the sight port and flow disc sit on the
-stack, which does not rotate.
+**This table used to say the working layer needed one direction, "because the
+sight port and flow disc sit on the stack, which does not rotate".** The sight
+port is on the **riser**, and the riser is the fluid box — it is the one part of
+this building that *must* rotate. Measured off the cut plates, the port's glow
+sits at top-centre in north, right in east, bottom in south and left in west. It
+is four directions.
+
+**And sixteen frames, not thirty-two.** The port is 9 × 16 screen pixels in the
+north view and 12–13 tall in the others, so a rising level has at most sixteen
+distinct pictures in it. Thirty-two frames would be sixteen images and sixteen
+duplicates — the same arithmetic that cut the Dross Classifier's shake from
+sixty-four frames to twelve.
 
 ---
 
@@ -313,13 +320,24 @@ stack, which does not rotate.
 | Pistons        |      `—` |      `—` |    `—` |
 | Belts          |      `—` |      `—` |    `—` |
 | Fans           |      `—` |      `—` |    `—` |
-| Lights         |      `✓` |      `✓` |   `32` |
-| Glow           |      `✓` |      `✓` |   `32` |
-| Steam          |      `✓` |      `✓` |   `32` |
+| Glow           |      `✓` |      `✓` |   `16` |
+| Steam          |      `—` |      `—` |    `—` |
 
 **Animation FPS:**
-`animation_speed = 0.4` (24 frames of animation per second of game time at 60
-UPS, so the 32-frame loop runs in ~1.33 s). Slower than the pumpjack's 0.5.
+`animation_speed = 0.25` — a sixteen-frame loop in a little over one second,
+which is the same pace the 32-frame figure was aiming for and half the frames.
+
+**The steam row is struck.** §5 of this document and the planet brief both say
+there is no air here: no flame, no exhaust, no smoke, no steam plume. A steam
+layer was in this table by inheritance from a wellhead on a world that has an
+atmosphere.
+
+**And the moving part is small — knowingly.** At 16.7 % of the building's own
+box it is well under vanilla's 72–113 % band, and the plate is cut, so it cannot
+grow. It is built anyway because it costs sixteen tiny derived sprites and gives
+the building a running-versus-stopped tell it otherwise has none of; it is not
+built under any illusion that it carries the read at play zoom. `04-the-core.md`
+§26 is the standing warning, and this is the exception taken with its eyes open.
 
 **Animation Loop:**
 `Yes` — seamless. Nothing on this building has a stroke or a cycle start; it is
@@ -779,6 +797,32 @@ wider than its footprint interleaves with its neighbours, and the Arc Mast at
 the top edge is drawn standing up, so it adds height above the base and pushes
 the base low in its canvas: north needs a quarter tile of lift where east and
 west need almost none.
+
+### The working glow
+
+| Direction | Sheet | Frame | Shift | Glass measured |
+| --------- | ----- | ----- | ----- | -------------: |
+| north | `port-north.png` 168 × 70 | 21 × 35 | `{ −0.05469, −1.70313 }` | 12 × 29 px |
+| east  | `port-east.png` 192 × 56  | 24 × 28 | `{ 1.39062, −0.35156 }` | 16 × 12 px |
+| south | `port-south.png` 184 × 58 | 23 × 29 | `{ −0.07812, 1.02344 }` | 11 × 27 px |
+| west  | `port-west.png` 208 × 56  | 26 × 28 | `{ −1.32031, −0.35156 }` | 16 × 13 px |
+
+16 frames, `line_length` 8, `animation_speed = 0.25`, `draw_as_glow`, no
+`always_draw` — so it is drawn only while the pump is working. Each shift is the
+port crop's own offset plus its plate's, both measured. Built by
+`tools/build-fill-frames.py`, which is new and exists because
+`build-glow-frames.py`'s two modes are one-shot charge and discharge built round
+an envelope that starts and ends dark; a level in a sight glass loops and never
+goes out.
+
+**The plate keeps its glow and this sheet adds to it.** The first attempt split
+the port into an unlit base and a separate glow the way the rest of the mod does
+it, and it does not work here: `split-glow.py` wants emissive parts that are
+strongly chromatic against near-neutral iron-nickel, and this riser is copper.
+Every threshold that saved the port took half the riser with it — measured, 1157
+"hot" pixels across a 179 × 226 box when the port is 18 × 32. A brightening over
+a lit plate is also the truer reading, since a wellhead full of melt is warm
+whether or not it is pumping.
 
 **`tools/check-footprint.py` reports 0.39 tiles of overhang on east and west, and
 that is the tool measuring the wrong thing.** It fits the declared box to the
