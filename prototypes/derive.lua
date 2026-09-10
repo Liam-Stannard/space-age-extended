@@ -171,4 +171,27 @@ function derive.own_graphics(p, set)
   return p
 end
 
+--- Vanilla's own pipe covers, for a fluid box that wants the engine to cap it.
+---
+--- **Every vanilla machine has these and four of ours did not.** The cover is
+--- the little flange the engine stamps over an unconnected fluid port, and
+--- `always_draw_covers = false` is what stops it doubling up once a pipe is
+--- actually joined: capped when nothing is connected, gone when something is.
+---
+--- **This is the foundry's arrangement, and the foundry is worth reading before
+--- copying.** It carries its own drawn stub art in `pipe_picture` *and* the
+--- generic covers *and* `always_draw_covers = false`. The two are not
+--- alternatives: the machine's own art says what the fitting looks like, and the
+--- cover says what an unused one looks like. A building that draws its own
+--- flange and omits the covers has simply left the second job undone -- which is
+--- what four of ours were doing.
+---
+--- `pipecoverspictures` is a global the vanilla file defines as a side effect;
+--- the file returns nothing, so this requires it for the side effect and calls
+--- the global.
+function derive.pipe_covers()
+  require("__base__.prototypes.entity.pipecovers")
+  return pipecoverspictures()
+end
+
 return derive

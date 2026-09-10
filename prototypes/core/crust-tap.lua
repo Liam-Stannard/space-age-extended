@@ -253,7 +253,14 @@ derive.own_graphics(tap,
 -- an underwater layer, a glass overlay, a fluid animation and a base picture,
 -- all of them describing a shoreline this planet does not have. Replacing the
 -- set removes every one of them.
-tap.fluid_box.pipe_covers = nil          -- the plate draws its own mouth
+-- **The covers stay.** This line used to clear them -- "the plate draws its own
+-- mouth" -- and the plate does, but that is the wrong reason to drop them. The
+-- drawn mouth says what the fitting looks like; the cover says what an *unused*
+-- one looks like, and `always_draw_covers` being false means it is gone the
+-- moment a pipe is actually joined. Every vanilla machine carries both, the
+-- foundry included, and a tap standing on a vent with nothing plumbed to it is
+-- exactly the case the cover exists for.
+tap.fluid_box.always_draw_covers = false
 tap.fluid_box.pipe_picture = util.empty_sprite()
 tap.always_draw_covers = false
 data:extend({ tap })

@@ -524,6 +524,7 @@ local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
       production_type = "input",
       volume = 1000,
       pipe_picture = util.empty_sprite(),
+      pipe_covers = derive.pipe_covers(),
       always_draw_covers = false,
       pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
     },
@@ -531,6 +532,7 @@ local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
       production_type = "output",
       volume = 1000,
       pipe_picture = util.empty_sprite(),
+      pipe_covers = derive.pipe_covers(),
       always_draw_covers = false,
       pipe_connections = { { flow_direction = "output", direction = defines.direction.north, position = { 0, -1 } } }
     },
@@ -538,6 +540,7 @@ local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
       production_type = "output",
       volume = 1000,
       pipe_picture = util.empty_sprite(),
+      pipe_covers = derive.pipe_covers(),
       always_draw_covers = false,
       pipe_connections = { { flow_direction = "output", direction = defines.direction.west, position = { -1, 0 } } }
     }
@@ -639,15 +642,12 @@ furnace.fluid_boxes =
   {
     production_type = "input",
     volume = 2000,                         -- see the S12 note above
-    -- The plate draws its own frost-collared flange, so the engine must not draw
-    -- a generic stub over it. Same as the Concentrator's.
-    --
-    -- **This used to say "foundry's pattern" and the foundry does the opposite:**
-    -- it has `pipe_covers` AND `pipe_picture`, like every other vanilla machine.
-    -- What we do here is a deliberate departure, not an imitation -- our flange is
-    -- drawn and distinctive, and a generic cover stamped over it would be two
-    -- flanges in one place. Worth knowing which of the two you are doing.
+    -- The plate draws its own frost-collared flange, so `pipe_picture` is emptied
+    -- and no generic stub is laid over that art. The covers stay: they cap the
+    -- port only while nothing is plumbed to it. This is the foundry's own
+    -- arrangement -- see derive.pipe_covers.
     pipe_picture = util.empty_sprite(),
+    pipe_covers = derive.pipe_covers(),
     always_draw_covers = false,
     -- EAST, not south, and the art is why. The adopted plate draws the
     -- frost-collared flux flange low on the right flank, and section 8 of the
@@ -771,20 +771,18 @@ local mast = crafter("sae-ring-mast", "assembling-machine-3", {
     {
       production_type = "input",
       volume = 400,
-      -- Same choice as the Vacuum Furnace and the Concentrator, made here before
-      -- the plate exists rather than after: this building's brief makes the
-      -- frost-jacketed inlet a design feature, so the plate draws its own flange
-      -- and the engine must not stamp a generic one over it.
+      -- Same arrangement as the Vacuum Furnace and the Concentrator, and it is
+      -- the foundry's: the plate draws its own flange, `pipe_picture` is emptied
+      -- so no generic stub is laid over that art, and the covers stay.
       --
-      -- **The two patterns and when to use which.** Vanilla gives every machine
-      -- `pipe_covers`, and for good reason -- the engine then caps an unconnected
-      -- port for you, and on a mining drill it also *hides* the fitting entirely
-      -- when the recipe wants no fluid, which is why the Ballast Drill keeps its
-      -- covers and draws no plumbing at all. That is the right answer whenever
-      -- the port is generic or conditional. It is the wrong answer when the port
-      -- is the *character*: a frost-jacketed cryogenic inlet with a vanilla brass
-      -- cover on top of it is two flanges in the same place.
+      -- **The two are not alternatives, which took a detour to work out.** The
+      -- machine's own art says what the fitting looks like; the cover says what
+      -- an *unused* one looks like, and `always_draw_covers = false` means it is
+      -- gone the moment a pipe is joined. The foundry carries all three at once.
+      -- Four of our buildings had dropped the covers on the grounds that they
+      -- draw their own flange, which simply left the second job undone.
       pipe_picture = util.empty_sprite(),
+      pipe_covers = derive.pipe_covers(),
       always_draw_covers = false,
       pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
     }
