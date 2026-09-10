@@ -7,6 +7,11 @@
 local pump = table.deepcopy(data.raw["mining-drill"]["pumpjack"])
 pump.name = "sae-vent-pump"
 pump.icon = "__base__/graphics/icons/pumpjack.png"
+-- Declared, so the end-of-data-stage report names it. It wears the pumpjack's
+-- sprites and its icon, and it was the one building doing that without saying
+-- so -- which is exactly what the report exists to catch.
+require("prototypes.derive").placeholder_art(
+  pump, "wears the pumpjack's sprites and icon until its own plates exist")
 pump.minable = { mining_time = 0.5, result = "sae-vent-pump" }
 
 -- Both fluid boxes are replaced rather than inherited, and this is a decision

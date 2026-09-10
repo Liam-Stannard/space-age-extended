@@ -21,3 +21,7 @@ require("prototypes.corridor")
 -- Last, deliberately: it re-points every item and fluid the files above defined
 -- into the Core's own subgroups, so it has to run after all of them exist.
 require("prototypes.core.groups")
+
+-- And the placeholder report, which has to be last for the same reason: a
+-- building is only wearing borrowed sprites if nothing replaced them by the end.
+require("prototypes.derive").log_placeholders()

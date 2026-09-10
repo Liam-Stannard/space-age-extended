@@ -99,6 +99,89 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
   modules = 2,
   conditions = HIGH_G
 })
+
+-- Art: the Sealed Hammer, option A of five (graphics/drop-crusher-options/).
+--
+-- Locked 2026-09-09 and the first design in this mod picked by comparison rather
+-- than by refinement: versions 1 to 10 were all the same idea made better, and
+-- the round that replaced them drew it against a sibling instead. The decision
+-- record and the winner's prompt are in that directory; the sheet is
+-- `concept/adopted/A-sheet.png`.
+--
+-- Two plates cut by tools/process-building-art.py from one master render:
+-- **192 px of drawn machine, 3.000 tiles**, sitting 4 px from each side of the
+-- canvas and 5 px from top and bottom, with alpha zero along every edge row --
+-- checked, because a plate that ends on a razor line has no antialiased rim and
+-- the arc mast shipped that way once.
+--
+-- **The shift is measured, not centred.** This building is taller than it is
+-- deep, so the drawn 3x3 box is bottom-aligned in the content and its centre
+-- lands 2 source px below the canvas centre. Half a source pixel is half an
+-- in-game pixel at scale 0.5, so the plate is pulled up by 1 in-game px --
+-- `-0.03125` tiles -- to put the footprint's centre on the entity's origin. The
+-- shadow's shift comes out of the same tool rather than being chosen.
+--
+-- **Nothing on this machine is hot**, which makes it the one building in the set
+-- where the status lamp carries the whole read on its own. §3.3 is explicit that
+-- there is no glow here: the ore is cold, the fall is free, and the only light is
+-- the lens the engine tints.
+--
+-- **The stroke is not animated yet, and that is the outstanding piece.** §3.2
+-- calls the crown rising and falling "the entire read", and the plate draws it
+-- standing proud of its collar -- but cutting it into its own layer needs a mask,
+-- because the collar occludes its base and a rectangular cut takes collar pixels
+-- with it. See the note at the end of graphics/building-spec-drop-crusher.md §9.
+local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
+crusher.icon = "__space-age-extended__/graphics/icons/drop-crusher.png"
+derive.own_graphics(crusher,
+{
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = DC .. "base.png",
+        priority = "high",
+        width = 200, height = 206,
+        shift = { 0, -0.03125 },
+        scale = 0.5
+      },
+      {
+        filename = DC .. "base-shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        -- Leans up and to the right, so it is wider than the colour plate and
+        -- carries its own shift. Both numbers come out of the tool.
+        width = 358, height = 217,
+        shift = { 1.23438, 0.05469 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    -- The fault lamp. Drawn WHITE on the plate and cut white, because
+    -- `apply_tint = "status"` hands the colour to the engine and a colour baked
+    -- into the plate would be that colour in every state for ever.
+    -- `always_draw` is true because a lamp that only appears while working
+    -- cannot report that the machine has stopped, which is the one thing it
+    -- exists to say. Same canvas as the plate, so it registers by construction.
+    {
+      always_draw = true,
+      apply_tint = "status",
+      animation =
+      {
+        filename = DC .. "status-lamp.png",
+        priority = "high",
+        draw_as_glow = true,
+        width = 200, height = 206,
+        frame_count = 1,
+        shift = { 0, -0.03125 },
+        scale = 0.5
+      }
+    }
+  }
+})
 data:extend({ crusher })
 
 --------------------------------------------------------------------------------

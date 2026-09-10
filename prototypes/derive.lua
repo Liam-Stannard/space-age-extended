@@ -89,9 +89,32 @@ end
 --- art by grepping for one call rather than by eye.
 --- @param p     table   the prototype
 --- @param note  string  why, for the reader
+--- Prototypes still wearing somebody else's sprites, by name.
+---
+--- **Recorded rather than logged on the spot, and that is the fix.** This used
+--- to log the moment it was called, which is before the building's own plates
+--- are attached -- so five buildings that had shipped art were still announcing
+--- themselves as placeholders at every load, and the one thing this log exists
+--- for (grep finds every one of them) had quietly stopped being true.
+--- `derive.own_graphics` strikes a name off, and `derive.log_placeholders`
+--- reports whoever is left at the end of the data stage.
+derive.pending = {}
+
 function derive.placeholder_art(p, note)
-  log("[sae] placeholder art: " .. p.name .. " -- " .. note)
+  derive.pending[p.name] = note
   return p
+end
+
+--- Log the buildings that finished the data stage still wearing borrowed art.
+--- Called last from data.lua, once everything has had its chance to replace it.
+function derive.log_placeholders()
+  local names = {}
+  for name in pairs(derive.pending) do names[#names + 1] = name end
+  table.sort(names)
+  for _, name in ipairs(names) do
+    log("[sae] placeholder art: " .. name .. " -- " .. derive.pending[name])
+  end
+  log("[sae] " .. #names .. " prototype(s) still wear borrowed sprites")
 end
 
 --- Give a derived machine its own graphics set, and take the old one's audio
@@ -125,6 +148,8 @@ end
 --- @param set table          its new graphics_set
 function derive.own_graphics(p, set)
   p.graphics_set = set
+  -- This building has its own art now, so it is no longer a placeholder.
+  derive.pending[p.name] = nil
   local ws = p.working_sound
   if ws then
     ws.sound_accents = nil

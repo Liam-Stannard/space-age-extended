@@ -189,7 +189,7 @@ next building drawn against a reference it has not seen.
 
 | Building | Vanilla style reference | Format example |
 | -------- | ----------------------- | -------------- |
-| Drop Crusher | assembling machine 3 | radiant generator v2 |
+| Drop Crusher | assembling machine 3 | **none — see the warning below** |
 | Ballast Drill | big mining drill | sealed roboport v2 |
 | Dross Classifier | centrifuge | bed tender v2 |
 | Coil Separator | nuclear reactor | superconducting store v1 |
@@ -198,6 +198,15 @@ next building drawn against a reference it has not seen.
 | Vacuum Furnace | cryogenic plant | **ignition array `concept/adopted/R-sheet.png`** — the v2 sheet this row used to name is a rejected design carrying a generator-added wordmark |
 | Crust Tap | pumpjack | arc mast v4 |
 | Ignition Ring Mast | our own ignition array | radiant generator v1 |
+
+**The format example is the most dangerous attachment on the list.** On the Drop
+Crusher's five-option round one generation came back as the *Ignition Array* —
+the building in the attached format sheet — purple glow, charge sequence and all,
+on a machine whose spec says nothing is hot. The prompt already said the sheet
+was "a FORMAT reference only… the machine in it is a different building of ours",
+and that was not enough. Until a machine-free crop of the panel furniture exists,
+attach the format example only when the subject is plainly unlike it, and check
+the output against the prompt's own title line before believing it.
 
 **One thing to settle across all nine at lock time.** Every sheet titles itself
 with a generic descriptive name — ORE PRESS, VIBRATING CLASSIFIER, MAGNETIC

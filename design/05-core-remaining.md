@@ -64,13 +64,19 @@ chemistry available to the Core and it is entirely unbuilt.
 
 ### 2.1 Vent Pump — not started
 
-**Five buildings still wear borrowed sprites** — measured off the dump by asking
-which entity graphics point at `__base__` or `__space-age__` rather than by
-trusting the placeholder log, which fires before `own_graphics` replaces it:
-the Vent Pump, the Drop Crusher, the Ballast Drill, the Ring Mast and the Crust
-Turbine.
+**Four buildings still wear borrowed sprites**, plus the crust vent tile: the
+Vent Pump, the Ballast Drill, the Ring Mast and the Crust Turbine. The Drop
+Crusher came off this list on 2026-09-10.
 
-The Vent Pump is the one to do first, and the most expensive of them: four
+**The data stage now says so itself, and it did not before.** `placeholder_art`
+logged the moment it was called — which is before a building's own plates are
+attached — so five buildings that had shipped art were still announcing
+themselves as placeholders at every load, and the Vent Pump, which never called
+it, was announcing nothing at all. It records intent now, `own_graphics` strikes
+a name off, and `derive.log_placeholders()` reports the survivors at the end of
+data.lua. The count is checkable rather than a thing to measure by hand.
+
+The Vent Pump is the one to do next, and the most expensive of them: four
 directional frames **plus** an animation, where every other building needed one
 or two plates.
 

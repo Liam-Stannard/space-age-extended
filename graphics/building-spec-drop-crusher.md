@@ -1,8 +1,11 @@
 # Factorio Building — Art & Implementation Specification
 
-**Drop Crusher.** First draft — a brief, enough to commission and judge a concept
-sheet. Not a specification: §6, §12 and §13 stay open until a sheet is approved
-and a canonical plate has been measured.
+**Drop Crusher.** The design is locked: **option A, the Sealed Hammer**, chosen
+2026-09-09 from a five-option round drawn against itself. The decision record is
+`drop-crusher-options/`, the sheet is `concept/adopted/A-sheet.png`, and the four
+rejected designs are gone, and the plate is cut, measured and in the engine —
+see §13. What is left is the stroke: the crown does not move yet, and §9 records
+exactly what that needs.
 
 **This building is forced, not optional.** Vanilla's `crusher` carries
 `surface_conditions` of `gravity` min 0 **max 0** — it is space-only
@@ -79,7 +82,9 @@ Core variant should mean.
 
 ## 3.1 Design Concept
 
-**A sealed hammer.** *(Silhouette locked to variant B, `concept/variants-v4.png`.)*
+**A sealed hammer.** *(Locked to `concept/adopted/A-sheet.png`, the Sealed Hammer,
+2026-09-09. The earlier "variant B of `concept/variants-v4.png`" lock was a
+refinement of one idea; this one was drawn against a sibling.)*
 A **tall armoured cylinder** ringed by external buttresses, with the forged
 weight's crown seated in a collar at the centre of its flat roof. The crushing
 chamber, the anvil bed and the whole stroke are **inside**; what the player sees
@@ -156,8 +161,18 @@ read on its own.
 | Frame and posts | `#4A463F` → `#6E685C` | the structure |
 | Drop weight | `#2E2C29` body, chamfers up to `#6A6660` | the falling mass |
 | Anvil bed | `#9A948A` | struck surface, palest thing on the machine |
-| Hazard banding | `#C8A23A` | the drop zone's floor edge only |
-| Ore and fines | `#7A6A55` / `#A89A82` | the two chutes, coarse and fine |
+| Hazard banding | `#C8A23A` | the base plate edge only |
+| Lift gear | `#8A857C` | gears, rack, pawl and collar — brighter than the armour, so the mechanism reads as a separate assembly |
+| Lamp lens | `#FFFFFF` | painted white; the engine tints it via `status_colors` |
+| Copper and brass | `#8A5A32` → `#C88A4A` | bus runs, gear furniture, bearing caps, bolt lines |
+
+*The "ore and fines" row is gone with the chutes it described.* **The copper row
+is not decoration and is worth defending:** a building drawn to the four grey
+rows above measures below vanilla's saturation floor by arithmetic — fifteen
+sheets in an earlier round proved it, the worst at 0.136. The adopted sheet says
+copper is used freely and measures **0.264**, inside the band. The discipline
+that comes with it: copper is a *material* and never glows, so it can never be
+mistaken for the lamp.
 
 **No glow.** Nothing here is hot. The one bright note is the anvil, and it is
 bright because it is polished by impact.
@@ -210,9 +225,12 @@ chutes accept inserters from any tile.
 | Electric | no visible connector | poles reach it wirelessly |
 | Fluids | none | no fluid box anywhere; no pipe flange in the art |
 
-The chutes are **honest decoration** in the way a vanilla furnace's hopper is:
-they tell the player where the two streams conceptually go without constraining
-where an inserter may stand.
+**There are no chutes, and this line used to say there were.** §3.2 settled it —
+an `assembling-machine` has one output inventory and no output *position*, so a
+chute promises the player something the entity cannot keep, and the adopted sheet
+draws none. The old text here described them as "honest decoration in the way a
+vanilla furnace's hopper is"; a vanilla furnace's hopper is an *input* read, and
+this building's inputs are unconstrained too. Struck rather than reconciled.
 
 ---
 
@@ -220,37 +238,72 @@ where an inserter may stand.
 
 ## Concept Sheet Prompt
 
+**Stage 0 is done and the prompt that produced the adopted sheet lives with it**,
+at `drop-crusher-options/A-sealed-hammer.md`. It is not copied here, because two
+copies of a prompt is two copies to drift — the same reason
+`tools/generate-building-art.py` reads prompts out of the markdown rather than
+keeping its own.
+
+The prompt that used to sit here is superseded. It described the machine before
+the five-option round and before the status lamp existed, and it asked for a
+`3x3 tile grid top view` — a panel this project has stopped requesting, because
+a generator has no idea where the tile edges are and drew a grid that never lined
+up. Footprint is measured on the real plate with `tools/check-footprint.py`.
+
+## Master Concept Prompt
+
+Stage 1. **Attach `concept/adopted/A-sheet.png` and nothing else** — this is the
+same machine as the sheet's hero view, not a new design, and any second reference
+invites a second building (see `graphics/TODO.md`'s warning).
+
+**The crown is SEATED.** This plate is frame 0 of the stroke and the thing the
+animation is cut from; a crown drawn half-raised would bake a mid-stroke position
+into the still machine.
+
 ```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial machine. PROJECTION RULE, which overrides everything else
-and applies to every panel: draw the building SQUARE-ON to the tile grid
-exactly as Factorio draws its own sprites -- the front face parallel to the
-bottom edge of the panel, the side faces parallel to the left and right edges.
-Do NOT rotate the building so a corner points at the viewer, and do not draw
-it three-quarter or isometric. The machine is a sealed 3x3 impact crusher: a
-tall armoured cylinder with a slightly tapered wall, standing on a square base
-plate that fills the footprint, ringed by external buttresses that stand proud
-of the wall and run from the base plate to just under the roof. Its roof is
-flat, with a hard machined collar at the centre in which the forged drop
-weight's chamfered crown is seated. An armoured inspection hatch with radial
-locking dogs sits on the front face. PORT RULE: this machine holds its output
-in an inventory until an inserter takes it, so it has NO output chute, spout,
-boom, bin, tray or opening of any kind -- draw none at all. Its side and rear
-faces are plain armour, broken only by armour ribs, small louvred vents and
-bolt lines. Dark grey-brown armour, pale machined collar, dark forged crown,
-small yellow hazard banding at the base only. No open frame, no exposed anvil,
-no jaw plates, no conveyor, no silo or tank read, no glow, no flame, no smoke.
-Panels: main view, front elevation, side elevation, an in-game icon, a 3x3
-tile grid top view, a detail of the roof collar with the crown seated in it, a
-detail of the inspection hatch, a layer breakdown row separating shadow, base
-plate, cylinder body, buttresses, roof collar and drop weight, a colour
-palette row, and an animation row of four key frames showing the crown
-standing proud of the collar by most of its own height at the top of the
-stroke, descending, and finally seated flush so the collar rim is unbroken.
-Draw no loose material anywhere. Nothing may extend past the 3x3 tile
-footprint. Draw no logos, wordmarks or watermarks anywhere -- in particular no
-Factorio or Space Age logo. Title the sheet DROP CRUSHER.
+FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
+
+Redraw the machine in the ATTACHED SHEET's hero view as a single clean game
+sprite. Same building, same design, same camera. Do not redesign it, do not
+add or remove parts, and do not draw any panels, labels, text, borders or
+background furniture.
+
+== WHAT IT IS ==
+The Drop Crusher: a sealed 3x3 impact crusher on an airless metal world. A tall
+armoured cylinder with a slightly tapered wall on a square riveted base plate,
+ringed by external buttresses. A hard machined collar at the centre of its flat
+roof with the forged drop weight's chamfered crown SEATED FLUSH in it. Heavy
+toothed lift gears flanking the collar, meshing a vertical rack cut into the
+weight's shank, with a compact geared motor housing to one side and a sprung
+trip pawl engaging the rack. An armoured inspection hatch with radial locking
+dogs on the front face. Riveted seams, bolt lines, lifting lugs, cable cleats.
+
+== CAMERA ==
+Looking steeply down from above, MOSTLY ROOF with only a shallow near face
+visible, square to the tile grid: the near face parallel to the bottom edge of
+the frame, the side faces parallel to the left and right edges. The square base
+reads as a SQUARE, never a diamond. Not rotated corner-on, not a front
+elevation. Match the attached sheet's hero view exactly.
+
+== HARD REQUIREMENTS ==
+- ONE machine, centred, filling the frame, nothing else in the image
+- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no shadow on the ground,
+  no grid, no vignette, no backdrop of any kind
+- THE CROWN IS SEATED FLUSH in its collar and the collar's rim is UNBROKEN
+- The LAMP LENS is PAINTED WHITE -- a plain white lens, not lit, not coloured,
+  not glowing. The engine colours it in game
+- NOTHING IS HOT AND NOTHING GLOWS. No warm light anywhere on the machine
+- No output chute, spout, bin, tray or opening of any kind
+- No pipes, no flange, no hose, no fluid connection anywhere
+- No loose ore, powder, grit, dust or debris anywhere
+- Nothing extends sideways past the square base plate
+- No text, no labels, no logos, no wordmarks, no watermarks
+
+== OUTPUT ==
+One square image, the machine alone on transparency, sharp and clean at full
+resolution, in the rendering and finish of the attached sheet.
 ```
+
 
 ---
 
@@ -265,7 +318,20 @@ Factorio or Space Age logo. Title the sheet DROP CRUSHER.
   energy_usage = "200kW",
   energy_source = { type = "electric", usage_priority = "secondary-input" },
   surface_conditions = { { property = "gravity", min = 45 } },
-  module_slots = 2
+  module_slots = 2,
+  -- Shipped 2026-09-10; see prototypes/core/machines.lua for the real thing and
+  -- §13 for where every number came from.
+  graphics_set =
+  {
+    animation = { layers = { base.png 200x206 shift {0,-0.03125},
+                             base-shadow.png 358x217 draw_as_shadow
+                                             shift {1.23438,0.05469} } },
+    working_visualisations =
+    {
+      { always_draw = true, apply_tint = "status",
+        animation = { status-lamp.png 200x206, draw_as_glow = true } }
+    }
+  }
 }
 ```
 
@@ -273,28 +339,76 @@ Factorio or Space Age logo. Title the sheet DROP CRUSHER.
 
 # 16. Icon
 
-The carriage mid-fall between two posts, with the anvil beneath. Must read at
-32 px as *"something heavy dropping"* — the two chutes are too fine to survive at
-that size and should not be attempted.
+**Done 2026-09-10 — `graphics/icons/drop-crusher.png`, derived from the master
+render rather than generated separately (§13).** The instruction below stands as
+the record of what was asked for and why.
+
+**Redraw from the adopted sheet; the old text here described a building that no
+longer exists.** It asked for "the carriage mid-fall between two posts, with the
+anvil beneath" — the open-frame design that versions 3 to 6 replaced, with an
+anvil this machine has sealed inside it and posts it does not have.
+
+The icon should be the **crown standing proud of its collar**, cropped tight, on
+the buttressed roofline. Must read at 32 px as *"something heavy about to
+drop"* — the lift gear, the pawl and the hazard banding are all too fine to
+survive at that size and should not be attempted.
 
 ---
 
 # 20. Open questions
 
-- **One recipe or two?** The brief assumes one recipe with two products. An
-  alternative is two recipes — a coarse crush and a fine grind — letting the
-  player choose the ratio. That is a branch rather than a formality and would
-  suit `06-core-production-tree.md`'s own rule that every tier must branch, loop
-  or converge. Worth deciding before the art is commissioned, since it changes
-  whether the two chutes are simultaneous or alternate.
-- **Do the fines have a home yet?** They feed the carbonyl line (T3), which does
-  not exist. Until it does, fines are a dead-end item and the split is
-  cosmetic — so either land T3 alongside this, or give fines a stopgap use.
+**Both of the questions this section used to ask are now closed by the code, and
+neither affects the art.**
+
+- ~~**One recipe or two?**~~ **One**, with two products, as implemented:
+  `sae-crushing` takes 2 kamacite ore to 3 crushed kamacite and 1 fines. The
+  question mattered because it decided "whether the two chutes are simultaneous
+  or alternate" — and there are no chutes (§8), so it no longer touches the
+  plate. A coarse/fine split remains available as a branch if T1 ever wants one.
+- ~~**Do the fines have a home yet?**~~ **Yes, two.** `sae-fines-smelting` takes
+  4 fines to a kamacite plate, and `sae-metal-carbonyl` takes 4 more into the
+  carbonyl line. T3 exists.
+
+Still open, and this one is new: **the moving part is about a third of the box**,
+against 72–113 % on the three vanilla machines it stands beside. See the adopted
+option's page — it is the first thing stage 1 should push on.
 
 
 ---
 
 # 19. Design Notes / Iteration History
+
+### Round 11 — five options, and the first comparison this building ever had
+
+**Versions 1 to 10 are all the same idea.** That is the finding, and it took
+until now to say it: ten sheets of refinement, each a better version of its
+predecessor, and not one of them ever asked whether a sealed vertical hammer was
+the right answer. `drop-crusher-options/README.md` opens with the method the
+Ignition Array arrived at after four sets and twenty concepts — *compare, do not
+refine* — and this building had never been through it.
+
+Five designs were written against each other: the Sealed Hammer (the incumbent,
+carried as a fair comparison), the Twin Tower, the Beam Engine, the Ratchet Crown
+and the Skip Tower. Two were drawn. **A won**, and it is the incumbent — which is
+worth knowing, and is exactly the thing ten rounds of refinement could not have
+told anyone.
+
+**What the round added to the brief:**
+
+- **A status lamp**, which this building never had. §3.3 says nothing here is
+  hot, so the Drop Crusher is the one machine in the set where a single white
+  lens carries the whole idle/running/blocked read with no warm light to help it.
+- **The animation gate, applied before the plate exists.** Each option was
+  measured for how much of its own box moves. The adopted design is the weakest
+  of the five at ~33 %, against 72–113 % on the vanilla machines it stands
+  beside — see §20.
+- **Copper, unrationed.** The palette had no warm metal in it at all and would
+  have measured below vanilla's saturation floor by arithmetic.
+
+**And it found two contradictions in this document**, both now struck rather than
+reconciled: §8 still promised chutes that §3.2 had already argued away, and §16's
+icon described the open-frame design that versions 3 to 6 replaced.
+
 
 ### Version 1 — `concept/v1-sheet.png`
 
@@ -534,3 +648,76 @@ the same frame count as `animation`**. So a 24-frame working animation cannot
 pair with a 1-frame idle — the idle would have to be 24 frames of the machine
 sitting still, weight seated and pawl engaged. Budget for it, or omit
 `idle_animation` entirely and let the machine simply stop on a frame.
+
+### Where this stands, and exactly what the stroke still needs
+
+**Shipped 2026-09-10:** the master plate, its cast shadow, the status lamp and
+the icon, all wired in `prototypes/core/machines.lua`. The building no longer
+wears `assembling-machine-3`'s sprites and no longer appears in the data stage's
+placeholder report.
+
+**The stroke is not animated.** The plate draws the crown standing proud of its
+collar, which is the read §3.2 asks for in a still frame, but nothing moves yet.
+
+**Why it was not just cut and slid.** The honest reason, recorded so the next
+attempt does not rediscover it:
+
+1. **The collar occludes the crown's base.** The crown is visible from roughly
+   row 6 to row 54 of the 200 × 206 plate, and the collar's front rim crosses it
+   at about row 36. A rectangular cut through that region takes collar pixels
+   with it, and they then slide with the crown.
+2. **It can only travel upward.** Sliding the crown *down* would draw it over
+   the collar's front rim, which is in front of it in the picture. Up is the only
+   direction the drawn geometry supports, so the plate is the bottom of the
+   stroke and the frames rise from it.
+3. **The vacated region is not roof, it is shank.** As the crown rises, what
+   appears below it is more of the racked shank and a dark collar throat —
+   neither of which exists in the plate, because the plate never shows them.
+
+So this needs the pipeline's real route, not a shortcut: a magenta mask from a
+generation, `tools/cut-part-by-mask.py --plate base.png --mask … --out crown.png
+--housing-out housing.png`, the throat and a length of shank painted into the
+housing, then `tools/build-part-frames.py --part crown.png --mode slide
+--axis 90`, with §9's frame spacing above — two thirds of the frames to the rise,
+one third to the fall.
+
+**And check the share of the box when it lands.** The moving part is about a
+third of the building's width (`drop-crusher-options/README.md`), against 72 %,
+101 % and 113 % on the three vanilla machines it stands beside. The mask is the
+last chance to make the crown's travel longer; nothing downstream can.
+
+---
+
+# 13. Sprite Dimensions — measured
+
+Every number here was measured off the cut plate, not chosen.
+
+| | |
+| --- | --- |
+| Master render | `concept/master-v1.png`, 1254 × 1254, transparent, trimmed to 1154 × 1175 |
+| Colour plate | `base.png`, **200 × 206**, `scale = 0.5` |
+| Drawn machine | **192 × 196 px** at (4, 5) — **exactly 3.000 tiles wide**, 3.06 tall |
+| Rim | 4 px left and right, 5 px top and bottom; **alpha zero on all four edge rows**, checked |
+| Colour shift | **{ 0, −0.03125 }** |
+| Shadow plate | `base-shadow.png`, **358 × 217**, `draw_as_shadow` |
+| Shadow shift | **{ 1.23438, 0.05469 }** |
+| Status lamp | `status-lamp.png`, 200 × 206 — the plate's own canvas, so it registers by construction. Lens at (93, 81)–(105, 92) |
+| Icon | `graphics/icons/drop-crusher.png`, 120 × 64 mipmap strip |
+
+**The shift is measured rather than centred, and this is the part worth keeping.**
+The building is taller than it is deep, so the drawn 3 × 3 box is bottom-aligned
+inside the content: it occupies rows 9–201 of a plate whose canvas centre is row
+103, putting the footprint's centre 2 source px low. Two source px is one in-game
+px at `scale = 0.5`, which is `1/32` of a tile — hence −0.03125. Centring the
+plate instead would have put the building one screen pixel deep into its own
+southern tile.
+
+`tools/check-footprint.py base.png --tiles 3` reports 0.00 tiles of overhang left
+and right and passes.
+
+**The icon is derived, not drawn.** It is the crown-and-collar region of the
+master render, masked to the collar disc plus the crown, run through
+`tools/key-icons.py`. That follows §16's instruction — "the crown standing proud
+of its collar, cropped tight" — and follows this project's habit of deriving a
+layer from an approved plate rather than commissioning a second render that can
+disagree with the first.
