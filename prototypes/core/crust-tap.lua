@@ -198,7 +198,7 @@ tap.tile_buildability_rules =
 -- FOUR PLATES, DRAWN RATHER THAN ROTATED, because on this building the riser is
 -- the fluid box and a riser pointing the wrong way is the fluid box in the wrong
 -- place. All four were drawn in one strip so they are unmistakably four
--- rotations of one machine, and `tools/cut-crust-tap.py` splits them.
+-- rotations of one machine, and `tools/cut-rotation-strip.py` splits them.
 --
 -- **Two things about the cut are not obvious.** The scale comes from the BASE
 -- SQUARE rather than from the content, because the riser leaves a different face

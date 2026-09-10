@@ -569,47 +569,102 @@ no UI, no ground texture, no background scenery.
 
 ## Directional Prompts
 
-Four arrangements from **one fixed camera**, not four viewpoints. Generate the
-north frame first, approve it, then produce the other three by rotating the
-plumbing in the approved image rather than re-generating from scratch — that is
-the only reliable way to keep one machine across four frames.
+**The four prompts that used to sit here were wrong and have been replaced.**
+They asked for the intake "from the left edge", the riser "elbowed out to the
+top-right corner", and "two capped, unused intake stubs" — which is the v3
+design that §8 argues against in as many words: the corner-tile output was read
+as a diagonal hookup, the elbow was the result, and the prototype now declares
+one connection in and one out on opposite **centre** tiles with no stubs at all.
+Following them would have produced art the player cannot plumb.
 
-### North
+**One strip, four arrangements, one camera.** Generated together so they are
+unmistakably four rotations of one machine, then split by
+`tools/cut-rotation-strip.py --tiles 3`, which scales and centres every view on
+its **base square** rather than on its content — otherwise the view whose pipes
+stick out furthest is drawn smallest and sits off its own tile.
 
-```text
-[Master prompt] Plumbing arranged for the north-facing frame: the insulated
-frosted intake pipe enters the stack from the left edge of the base plate, and
-the hot glowing riser elbows out to the top-right corner of the base plate.
-Two additional capped, unused intake stubs sit at the right edge and the bottom
-edge, clearly sealed and idle.
-```
+### Where this got to, 2026-09-10
 
-### East
+**The prompts above are corrected and unused.** Three generation attempts, no
+usable strip:
 
-```text
-[Master prompt] The same machine, same camera, same size, same fittings, same
-lighting. Only the plumbing is rotated a quarter turn clockwise: the frosted
-intake enters from the top edge, the hot riser elbows out to the bottom-right
-corner, and the two capped idle stubs sit at the bottom edge and the left edge.
-```
+1. The first came back as **the reference sheet itself**, essentially unchanged.
+   The sheet already carries four sprites in a row across its top, so "draw four
+   sprites in a row" read as "return this". The `DO NOT RETURN THE ATTACHED
+   IMAGE` block above is the answer to that and has not yet had a fair run.
+2. and 3. Both attempts after it failed on ChatGPT's own *"Something went wrong.
+   Please try again."* — server-side, the same intermittent failure that cost
+   three attempts on the Drop Crusher's option D the day before.
 
-### South
+**Nothing about the design is blocked.** `concept/v4-sheet.png` is locked and
+correct, the cut is a solved problem, and `tools/cut-rotation-strip.py --tiles 3`
+is waiting for the strip.
 
-```text
-[Master prompt] The same machine, same camera, same size, same fittings, same
-lighting. Plumbing rotated a half turn from the north frame: the frosted intake
-enters from the right edge, the hot riser elbows out to the bottom-left corner,
-and the two capped idle stubs sit at the left edge and the top edge.
-```
-
-### West
+### Rotation strip
 
 ```text
-[Master prompt] The same machine, same camera, same size, same fittings, same
-lighting. Plumbing rotated a quarter turn anticlockwise from the north frame:
-the frosted intake enters from the bottom edge, the hot riser elbows out to the
-top-left corner, and the two capped idle stubs sit at the top edge and the
-right edge.
+FACTORIO SPACE AGE BUILDING SPRITE -- FOUR-DIRECTION STRIP
+
+== DO NOT RETURN THE ATTACHED IMAGE ==
+The attachment is a REFERENCE for the machine's design only. Produce a NEW
+image. Do not reproduce it, do not copy its layout, and do not return it with
+changes. The attachment is a design document with a title, captions, detail
+insets, an icon panel, a tile grid, a layer breakdown and a palette strip: the
+output has NONE of those. The output is four machine sprites on an empty
+transparent background and NOTHING else -- no title, no text, no captions, no
+panel boxes, no borders, no palette, no insets, no icon, no grid.
+
+Draw the machine from the attachment as four game sprites in ONE horizontal row,
+evenly spaced, with clear empty space between them. Same building, same design,
+same camera, same size and same lighting in all four. This is ONE machine drawn
+four times with its plumbing moved, NOT four camera angles and NOT a turntable.
+
+== THE MACHINE ==
+The Vent Pump: a sealed cryogenic gas-lift wellhead on an airless metal world.
+A heavy octagonal armoured base plate filling a 3x3 footprint, with a sealed
+valve stack and hand wheel over the bore collar at its centre. Two connections
+and no others:
+  - a HOT RISER: bare dark heat-stained metal, standing higher than the stack,
+    with an armoured sight port glowing orange, and a bolted flange at its mouth
+  - a FROSTED INTAKE: pale, ribbed, insulated pipe heavily rimed with white
+    frost, lower and squatter than the riser, with a bolted flange at its mouth
+
+== THE FOUR ARRANGEMENTS, IN THIS ORDER ==
+Left to right, and the riser and the intake are ALWAYS on OPPOSITE faces:
+  1. NORTH -- riser out of the TOP edge,    intake out of the BOTTOM edge
+  2. EAST  -- riser out of the RIGHT edge,  intake out of the LEFT edge
+  3. SOUTH -- riser out of the BOTTOM edge, intake out of the TOP edge
+  4. WEST  -- riser out of the LEFT edge,   intake out of the RIGHT edge
+
+== HOW THE PIPES MUST SIT -- THIS IS THE PART THAT MATTERS ==
+- Each pipe leaves from the CENTRE of its edge, on the middle tile of that edge,
+  square to the edge and pointing STRAIGHT out of it along the axis
+- NEVER diagonal, never out of a corner, never elbowed across a shoulder
+- The riser and the intake are on the SAME straight line through the machine
+- Each flange stops flush at the edge of the base plate. It does not float clear
+  of the building and it does not stop short inside it
+- NO other pipes, stubs, caps, blanks or spare ports anywhere. There are exactly
+  two connections on this building
+
+== CAMERA ==
+Looking steeply down from above, MOSTLY ROOF with only a shallow near face
+visible, square to the tile grid, identical in all four. The base plate reads as
+a SQUARE footprint, never a diamond. Not rotated corner-on. The camera does NOT
+move between the four -- only the plumbing does.
+
+== HARD REQUIREMENTS ==
+- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no cast shadow, no panel
+  borders, no labels, no text, no grid, no backdrop
+- The four machines are the same size and sit on the same horizontal line
+- The ONLY light is the riser's orange sight port and the faint heat at its
+  flange. The frost is pale blue-white and does NOT glow
+- No flame, no exhaust, no smoke, no steam plume, no dust: there is no air here
+- No loose material anywhere
+- Nothing extends past the base plate except the two pipes
+
+== OUTPUT ==
+One wide image, four sprites in a row on transparency, sharp and clean at full
+resolution, in the rendering and finish of the attached sheet.
 ```
 
 ---

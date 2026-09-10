@@ -418,7 +418,7 @@ mate with them.
 # 13. Sprite Dimensions
 
 **Four plates, drawn rather than rotated**, cut from one strip by
-`tools/cut-crust-tap.py`.
+`tools/cut-rotation-strip.py`.
 
 | Plate | Canvas | Base square | Shift | Shadow | Shadow shift |
 | ----- | ------ | ----------: | ----- | ------ | ------------ |

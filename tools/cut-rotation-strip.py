@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-"""Cut the Crust Tap's four directional plates out of one rotation strip.
+"""Cut a rotating building's four directional plates out of one strip.
 
-The Crust Tap is an `offshore-pump`, so it rotates, and section 5 of its spec is
-blunt about why the art has to rotate with it: *the riser is the fluid box, and a
-riser pointing the wrong way is the fluid box in the wrong place.* The four views
-are drawn together in one strip so they are unmistakably four rotations of one
-machine rather than four machines.
+Written for the Crust Tap and generalised for the Vent Pump, which is the same
+problem one tile bigger. Section 5 of the Crust Tap's spec is blunt about why the
+art has to rotate with the entity: *the riser is the fluid box, and a riser
+pointing the wrong way is the fluid box in the wrong place.* The Vent Pump has
+two of them, on opposite faces, carrying different fluids -- so a plate whose
+plumbing does not match the prototype is a building the player plumbs backwards.
+
+The four views are drawn together in one strip so they are unmistakably four
+rotations of one machine rather than four machines.
 
 Two things here are not obvious and both are why this is a tool rather than a
 one-liner.
@@ -22,7 +26,8 @@ the machine sits true; centre an east plate on its content and the whole buildin
 slides left to make room for a pipe that is supposed to hang over the edge. The
 base's own centre is what lands on the tile.
 
-  tools/cut-crust-tap.py STRIP.png --out-dir graphics/entity/crust-tap
+  tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/crust-tap
+  tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/vent-pump --tiles 3
 """
 
 import argparse
@@ -30,7 +35,6 @@ import os
 
 from PIL import Image, ImageFilter
 
-TILES = 2
 PX_PER_TILE = 64          # 32 in-game px at scale 0.5
 MARGIN = 4
 DIRECTIONS = ("north", "east", "south", "west")
@@ -78,6 +82,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("strip")
     ap.add_argument("--out-dir", required=True)
+    ap.add_argument("--tiles", type=int, default=2,
+                    help="the footprint's edge in tiles -- 2 for the Crust Tap, "
+                         "3 for the Vent Pump. This is what the base square is "
+                         "fitted to, and it is the number the whole cut hangs on")
     ap.add_argument("--report", action="store_true")
     args = ap.parse_args()
 
@@ -88,8 +96,9 @@ def main():
 
     # One scale for all four, taken from the north view's base square.
     b0, b1 = base_span(views[0])
-    scale = (TILES * PX_PER_TILE) / (b1 - b0)
-    print("north base %d px wide -> scale %.4f for 2.000 tiles" % (b1 - b0, scale))
+    scale = (args.tiles * PX_PER_TILE) / (b1 - b0)
+    print("north base %d px wide -> scale %.4f for %d.000 tiles"
+          % (b1 - b0, scale, args.tiles))
 
     plates = []
     for name, view in zip(DIRECTIONS, views):
