@@ -145,3 +145,13 @@ with these known deviations in hand rather than judging the sheets cold:
 - **D, the Flat Torus, answers the anti-read most completely**: nothing rises,
   the stud is plainly a cap, and the light travels round a ring rather than
   climbing a shaft. E is the same argument in steps.
+
+## Adopted: A, the Braced Post — with the inlet corrected
+
+Locked 2026-09-10. The sheet is `graphics/entity/ring-mast/concept/adopted/A-sheet.png`;
+the round survives as `concept/round-1-contact-sheet.png`.
+
+**One correction carries into the master plate.** A was generated before the
+bare-connection rule and drew its helium inlet frost-jacketed and pale blue. The
+inlet is **bare machine metal** — see the template's convention 5, and D and E of
+this round for what it should look like. Nothing else about A changes.

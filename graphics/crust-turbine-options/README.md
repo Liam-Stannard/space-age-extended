@@ -134,3 +134,23 @@ All five sheets are in `graphics/entity/crust-turbine/concept/options/`.
   wrong answer from the steam-turbine anti-read, but it is still a wrong answer.
 - **B and D both kept their promise to show no mechanism at all**, which makes
   them the honest options for a machine whose signature is a state, not a motion.
+
+## Adopted: E, the Collared Pair — with the flanges corrected
+
+Locked 2026-09-10. The sheet is `graphics/entity/crust-turbine/concept/adopted/E-sheet.png`;
+the round survives as `concept/round-1-contact-sheet.png`.
+
+**Two corrections carry into the master plate.**
+
+1. **The frost comes off the end collars.** E ran rime out onto both end flanges
+   despite the brief forbidding it, and the two end collars are precisely the two
+   fluid connections. Frost belongs under the left-hand collar and on the body,
+   and it stops before the machined ring. Template convention 5.
+2. **The camera.** Like every option in this round, E is drawn nearer side-on
+   than Factorio's projection. Measure the trimmed aspect against a real 2×5
+   vanilla plate before cutting, and fix it with a regenerate carrying a vanilla
+   sprite as camera reference — the procedure in the template's Appendix C.
+
+The three matching collars are why E won: the two that are flanges look exactly
+like the one that is a window, so a row of these chained end to end reads as one
+run of pipework rather than five separate machines.

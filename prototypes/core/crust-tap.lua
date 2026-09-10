@@ -69,7 +69,7 @@ local derive = require("prototypes.derive")
 --------------------------------------------------------------------------------
 
 data:extend({
-  { type = "collision-layer", name = "sae-crust-vent" }
+	{ type = "collision-layer", name = "sae-crust-vent" },
 })
 
 --------------------------------------------------------------------------------
@@ -81,18 +81,18 @@ data:extend({
 --------------------------------------------------------------------------------
 
 data:extend({
-  {
-    type = "fluid",
-    name = "sae-crust-gas",
-    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
-    subgroup = "fluid",
-    order = "z[sae]-e[crust-gas]",
-    default_temperature = 25,
-    base_color = { r = 0.55, g = 0.48, b = 0.30 },
-    flow_color = { r = 0.75, g = 0.68, b = 0.45 },
-    fuel_value = "200kJ",
-    auto_barrel = false
-  }
+	{
+		type = "fluid",
+		name = "sae-crust-gas",
+		icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+		subgroup = "fluid",
+		order = "z[sae]-e[crust-gas]",
+		default_temperature = 25,
+		base_color = { r = 0.55, g = 0.48, b = 0.30 },
+		flow_color = { r = 0.75, g = 0.68, b = 0.45 },
+		fuel_value = "200kJ",
+		auto_barrel = false,
+	},
 })
 
 --------------------------------------------------------------------------------
@@ -116,38 +116,36 @@ vent.localised_name = nil
 vent.localised_description = nil
 vent.order = "z[sae]-b[crust-vent]"
 vent.fluid = "sae-crust-gas"
-vent.minable = nil                       -- a vent is terrain, not a floor tile
+vent.minable = nil -- a vent is terrain, not a floor tile
 vent.can_be_part_of_blueprint = false
 vent.map_color = { r = 0.50, g = 0.42, b = 0.22 }
-vent.collision_mask =
-{
-  layers = { ground_tile = true, ["sae-crust-vent"] = true }
+vent.collision_mask = {
+	layers = { ground_tile = true, ["sae-crust-vent"] = true },
 }
-vent.autoplace =
-{
-  -- Rare and clustered, and decisive where it does fire. Tiles compete on
-  -- probability and the highest wins, so a gentle bump above zero loses to
-  -- whatever ground the temperature/moisture/aux system already wanted. Below
-  -- the threshold this is strongly negative and the vent never appears; above
-  -- it, it wins outright. The result is patches a player travels to rather than
-  -- a texture spread across the crust.
-  probability_expression = "(sae_core_crust_vent - 1.38) * 1000"
+vent.autoplace = {
+	-- Rare and clustered, and decisive where it does fire. Tiles compete on
+	-- probability and the highest wins, so a gentle bump above zero loses to
+	-- whatever ground the temperature/moisture/aux system already wanted. Below
+	-- the threshold this is strongly negative and the vent never appears; above
+	-- it, it wins outright. The result is patches a player travels to rather than
+	-- a texture spread across the crust.
+	probability_expression = "(sae_core_crust_vent - 1.38) * 1000",
 }
 data:extend({ vent })
 
 data:extend({
-  {
-    type = "noise-expression",
-    name = "sae_core_crust_vent",
-    expression = "multioctave_noise{x = x,\z
+	{
+		type = "noise-expression",
+		name = "sae_core_crust_vent",
+		expression = "multioctave_noise{x = x,\z
                                     y = y,\z
                                     seed0 = map_seed,\z
                                     seed1 = 6427,\z
                                     octaves = 2,\z
                                     persistence = 0.5,\z
                                     input_scale = 1/40,\z
-                                    output_scale = 1}"
-  }
+                                    output_scale = 1}",
+	},
 })
 
 --------------------------------------------------------------------------------
@@ -165,33 +163,30 @@ tap.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
 tap.selection_box = { { -1, -1 }, { 1, 1 } }
 tap.tile_width = 2
 tap.tile_height = 2
-tap.pumping_speed = 0.5                  -- ~30/s, per the spec
+tap.pumping_speed = 0.5 -- ~30/s, per the spec
 -- Squarely inside one of the four footprint tiles, not on the corner they meet
 -- at. Measured: at { 0, 0 } the offset lands on the point where four tiles meet
 -- and the tap drew nothing at all -- `status = working`, fluid 0.0, which is
 -- precisely the S10 silent failure this building was redesigned to avoid.
 tap.fluid_source_offset = { 0.5, 0.5 }
 tap.surface_conditions = { { property = "gravity", min = 45 } }
-tap.fluid_box =
-{
-  volume = 1000,
-  pipe_covers = tap.fluid_box.pipe_covers,
-  pipe_connections =
-  {
-    -- On a 2x2 the tile centres are at +/-0.5, and a pipe connection has to sit
-    -- inside the bounding box rather than on its edge.
-    { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
-  }
+tap.fluid_box = {
+	volume = 1000,
+	pipe_covers = tap.fluid_box.pipe_covers,
+	pipe_connections = {
+		-- On a 2x2 the tile centres are at +/-0.5, and a pipe connection has to sit
+		-- inside the bounding box rather than on its edge.
+		{ flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } },
+	},
 }
 -- Buildable only on a vent, and this is the rule that makes the tap sited. The
 -- area is the footprint itself, because the tap stands on its source.
-tap.tile_buildability_rules =
-{
-  {
-    area = { { -0.9, -0.9 }, { 0.9, 0.9 } },
-    required_tiles = { layers = { ["sae-crust-vent"] = true } },
-    colliding_tiles = { layers = {} }
-  }
+tap.tile_buildability_rules = {
+	{
+		area = { { -0.9, -0.9 }, { 0.9, 0.9 } },
+		required_tiles = { layers = { ["sae-crust-vent"] = true } },
+		colliding_tiles = { layers = {} },
+	},
 }
 -- Art: the Bolted Collar, option A of five (graphics/crust-tap-options/).
 --
@@ -215,39 +210,37 @@ tap.tile_buildability_rules =
 -- now agrees with it in all four rotations.
 local CT = "__space-age-extended__/graphics/entity/crust-tap/"
 local function plate(dir, w, h, sx, shadow_w, shadow_h, ssx)
-  return
-  {
-    layers =
-    {
-      {
-        filename = CT .. "base-" .. dir .. ".png",
-        priority = "high",
-        width = w, height = h,
-        shift = { sx, 0 },
-        scale = 0.5
-      },
-      {
-        filename = CT .. "base-" .. dir .. "-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = shadow_w, height = shadow_h,
-        shift = { sx + ssx, 0 },
-        scale = 0.5
-      }
-    }
-  }
+	return {
+		layers = {
+			{
+				filename = CT .. "base-" .. dir .. ".png",
+				priority = "high",
+				width = w,
+				height = h,
+				shift = { sx, 0 },
+				scale = 0.5,
+			},
+			{
+				filename = CT .. "base-" .. dir .. "-shadow.png",
+				priority = "high",
+				draw_as_shadow = true,
+				width = shadow_w,
+				height = shadow_h,
+				shift = { sx + ssx, 0 },
+				scale = 0.5,
+			},
+		},
+	}
 end
 
-derive.own_graphics(tap,
-{
-  base_render_layer = "floor-mechanics",
-  animation =
-  {
-    north = plate("north", 148, 178,  0.00781, 305, 198, 1.07031),
-    east  = plate("east",  190, 132, -0.32812, 310, 152, 0.78125),
-    south = plate("south", 145, 175,  0.00000, 299, 195, 1.04688),
-    west  = plate("west",  180, 132,  0.28125, 300, 152, 0.78125)
-  }
+derive.own_graphics(tap, {
+	base_render_layer = "floor-mechanics",
+	animation = {
+		north = plate("north", 148, 178, 0.00781, 305, 198, 1.07031),
+		east = plate("east", 190, 132, -0.32812, 310, 152, 0.78125),
+		south = plate("south", 145, 175, 0.00000, 299, 195, 1.04688),
+		west = plate("west", 180, 132, 0.28125, 300, 152, 0.78125),
+	},
 })
 -- Vanilla's pump is a machine standing in water and its graphics set says so:
 -- an underwater layer, a glass overlay, a fluid animation and a base picture,
@@ -280,7 +273,7 @@ turbine.minable = { mining_time = 0.3, result = "sae-crust-turbine" }
 turbine.burns_fluid = true
 turbine.max_power_output = "1800kW"
 turbine.effectivity = 1
-turbine.fluid_usage_per_tick = 0.15      -- 9/s at 200 kJ = 1.8 MW
+turbine.fluid_usage_per_tick = 0.15 -- 9/s at 200 kJ = 1.8 MW
 -- Mandatory even with burns_fluid, where it does nothing at all. Omitting it
 -- fails the data stage with `Key "maximum_temperature" not found`.
 turbine.maximum_temperature = 1000
@@ -305,52 +298,50 @@ data:extend({ turbine })
 --------------------------------------------------------------------------------
 
 data:extend({
-  {
-    type = "item",
-    name = "sae-crust-tap",
-    icon = data.raw["item"]["offshore-pump"].icon,
-    subgroup = "energy",
-    order = "z[sae]-b[crust-tap]",
-    place_result = "sae-crust-tap",
-    stack_size = 20,
-    weight = 20000
-  },
-  {
-    type = "recipe",
-    name = "sae-crust-tap",
-    categories = { "crafting" },
-    energy_required = 4,
-    ingredients =
-    {
-      { type = "item", name = "steel-plate", amount = 10 },
-      { type = "item", name = "pipe", amount = 10 },
-      { type = "item", name = "iron-gear-wheel", amount = 10 }
-    },
-    results = { { type = "item", name = "sae-crust-tap", amount = 1 } },
-    enabled = false
-  },
-  {
-    type = "item",
-    name = "sae-crust-turbine",
-    icon = data.raw["item"]["steam-turbine"].icon,
-    subgroup = "energy",
-    order = "z[sae]-c[crust-turbine]",
-    place_result = "sae-crust-turbine",
-    stack_size = 20,
-    weight = 40000
-  },
-  {
-    type = "recipe",
-    name = "sae-crust-turbine",
-    categories = { "crafting" },
-    energy_required = 6,
-    ingredients =
-    {
-      { type = "item", name = "steel-plate", amount = 20 },
-      { type = "item", name = "pipe", amount = 10 },
-      { type = "item", name = "iron-gear-wheel", amount = 20 }
-    },
-    results = { { type = "item", name = "sae-crust-turbine", amount = 1 } },
-    enabled = false
-  }
+	{
+		type = "item",
+		name = "sae-crust-tap",
+		icon = data.raw["item"]["offshore-pump"].icon,
+		subgroup = "energy",
+		order = "z[sae]-b[crust-tap]",
+		place_result = "sae-crust-tap",
+		stack_size = 20,
+		weight = 20000,
+	},
+	{
+		type = "recipe",
+		name = "sae-crust-tap",
+		categories = { "crafting" },
+		energy_required = 4,
+		ingredients = {
+			{ type = "item", name = "steel-plate", amount = 10 },
+			{ type = "item", name = "pipe", amount = 10 },
+			{ type = "item", name = "iron-gear-wheel", amount = 10 },
+		},
+		results = { { type = "item", name = "sae-crust-tap", amount = 1 } },
+		enabled = false,
+	},
+	{
+		type = "item",
+		name = "sae-crust-turbine",
+		icon = data.raw["item"]["steam-turbine"].icon,
+		subgroup = "energy",
+		order = "z[sae]-c[crust-turbine]",
+		place_result = "sae-crust-turbine",
+		stack_size = 20,
+		weight = 40000,
+	},
+	{
+		type = "recipe",
+		name = "sae-crust-turbine",
+		categories = { "crafting" },
+		energy_required = 6,
+		ingredients = {
+			{ type = "item", name = "steel-plate", amount = 20 },
+			{ type = "item", name = "pipe", amount = 10 },
+			{ type = "item", name = "iron-gear-wheel", amount = 20 },
+		},
+		results = { { type = "item", name = "sae-crust-turbine", amount = 1 } },
+		enabled = false,
+	},
 })

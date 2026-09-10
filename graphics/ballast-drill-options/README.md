@@ -177,3 +177,31 @@ All five sheets are in `graphics/entity/ballast-drill/concept/options/`.
 - **D, the Sled, is nearly featureless in silhouette**, which is the price of
   its no-moving-parts argument. Decide whether that reads as *heavy* or as
   *unfinished* before adopting it.
+
+## Adopted: B, the Ring Press — with the output corrected
+
+Locked 2026-09-10. The sheet is `graphics/entity/ballast-drill/concept/adopted/B-sheet.png`;
+the round survives as `concept/round-1-contact-sheet.png`.
+
+**One correction carries into the master plate: the output must be built the way
+vanilla's drills build theirs.** B drew an upright boom rising above the
+roofline. Vanilla does not do that, and the reason is geometric rather than
+stylistic.
+
+Measured off the real sprite, not remembered. The big mining drill is 5×5 —
+`selection_box` `{{-2.5,-2.5},{2.5,2.5}}`, the same footprint as ours — and its
+`vector_to_place_result` is `{0, -2.85}`: ore is placed 0.35 tiles **past** the
+north edge. Its output layer, `big-mining-drill-N-output.png`, is a 128×88
+six-frame sprite shifted `by_pixel(-2, -66.5)` — that is −2.08 tiles, so the
+chute spans roughly −2.42 to −1.73 and sits **inside** the footprint with its
+mouth flush to the north edge.
+
+What it draws is a **short drag-chain scraper conveyor set into the north face at
+ground level**, sloping down and forward, with a small drive sprocket at its
+head. Low, built in, overhanging nothing. The ore itself is a real item entity
+the engine places in front of the mouth — the plate draws the chute and never
+what comes out of it, which is convention 1.
+
+So: replace B's upright boom with that. A low built-in chain chute on the north
+face, mouth flush with the tile edge, nothing above the roofline, nothing past
+the footprint, and drawn empty.
