@@ -162,3 +162,18 @@ be reworded.
 `vector_to_place_result` is `[0, −2.85]`: centred on the north face. A boom drawn
 on a flank would be a boom the ore does not come out of. This round pins it, and
 the brief should say so before stage 1.
+
+## The round as rendered — 2026-09-10
+
+All five sheets are in `graphics/entity/ballast-drill/concept/options/`.
+
+- **The fluid rule held.** No option drew a flange, stub or hose anywhere. A, C,
+  D and E all marked the four connection points with a symbol on their own
+  panel, which is exactly the check that panel exists for.
+- **The output boom came back tall in A, C, D and E** — an upright chute rising
+  above the roofline rather than a stubby spout reaching past the north edge.
+  That is a real conflict with the anti-derrick rule, and it costs every one of
+  them some of the low-and-wide read. It is a master-plate fix.
+- **D, the Sled, is nearly featureless in silhouette**, which is the price of
+  its no-moving-parts argument. Decide whether that reads as *heavy* or as
+  *unfinished* before adopting it.

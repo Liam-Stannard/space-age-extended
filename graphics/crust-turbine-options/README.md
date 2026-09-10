@@ -117,3 +117,20 @@ round is partly asking which of the five looks like it arrived in the same crate
 **And then by the confusion test**, which is this building's own: put the
 silhouette beside a vanilla steam turbine. If you have to look twice, the option
 has failed the one thing it exists to get right.
+
+## The round as rendered — 2026-09-10
+
+All five sheets are in `graphics/entity/crust-turbine/concept/options/`.
+
+- **Every one of them is drawn nearer side-on than Factorio's projection.** This
+  is the defect `TODO.md` says to expect on every remaining building; measure the
+  trimmed aspect against a real 2×5 vanilla plate before cutting anything, and
+  fix it with a regenerate carrying a vanilla sprite as camera reference.
+- **The frost reached the end flanges in A, B, D and E**, despite the brief
+  saying in as many words that it must not. The rule is right and the generator
+  ignored it; strip the rime off the flange faces at master-plate stage.
+- **C, the Twin Rotor, risks reading as an air cooler** — two round grilles side
+  by side on a roof is a fan bank before it is a turbine. That is a different
+  wrong answer from the steam-turbine anti-read, but it is still a wrong answer.
+- **B and D both kept their promise to show no mechanism at all**, which makes
+  them the honest options for a machine whose signature is a state, not a motion.

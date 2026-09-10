@@ -127,3 +127,21 @@ charging**, and this building will spend most of its life idle: the charge spoil
 so a player runs it in bursts. Every prompt therefore asks for the idle state
 explicitly in the three-state row — band dark, emitter dark, status lens out —
 because a building whose entire read is a pulse needs to be legible without it.
+
+## The round as rendered — 2026-09-10
+
+All five sheets are in `graphics/entity/ring-mast/concept/options/`. Read them
+with these known deviations in hand rather than judging the sheets cold:
+
+- **B, the Lying Coil, did not draw its brief.** The drum came back standing on
+  end, not lying across the footprint, which makes B the *tallest* of the five
+  and breaks the one rule this whole round exists to serve: nothing vertical,
+  nothing that looks like it wants to be struck. Judge B on its banding and its
+  cradles, not on its silhouette — or drop it.
+- **A, B and C were generated before the bare-connection rule** and all three
+  drew a frost-jacketed inlet. D and E came back with a bare metal stub, which
+  is what the plate should carry. This is a master-plate fix, not a reason to
+  prefer D or E.
+- **D, the Flat Torus, answers the anti-read most completely**: nothing rises,
+  the stud is plainly a cap, and the light travels round a ring rather than
+  climbing a shaft. E is the same argument in steps.

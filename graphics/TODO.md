@@ -59,6 +59,9 @@ plates that already shipped**, none of which were drawn under this rule:
 - [ ] Ring Mast options A, B and C — generated before the rule, and all three
       drew a frost-jacketed inlet. Whichever wins, the frost comes off at
       **master-plate** stage, which is a separate generation anyway.
+- [ ] Crust Turbine options A, B, D and E — the brief carried the rule and the
+      generator ignored it: rime runs right out onto the end flanges. Same fix,
+      same stage.
 
 ---
 
