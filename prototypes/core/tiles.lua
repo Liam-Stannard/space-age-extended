@@ -117,7 +117,44 @@ data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("
 -- pool's fluid, so a Crust Tap stands on the shore and draws the brine exactly
 -- as it draws crust gas from a vent. map-gen.lua places both from elevation
 -- when the palette carries `pool`.
+-- The liquid's colour is the shader's, not the tile's: the lava effect draws
+-- its own colour texture, so the pool gets the same shader with that texture
+-- turned to blue (tools/build-crust-glow-tile.py --sheet), the noise texture
+-- copied unchanged, and lava's own specular and foam figures shifted cool.
+data:extend({
+  {
+    type = "tile-effect",
+    name = "sae-radiant",
+    shader = "water",
+    water =
+    {
+      shader_variation = "lava",
+      textures =
+      {
+        { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect-noise.png" },
+        { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect.png" }
+      },
+      texture_variations_columns = 1,
+      texture_variations_rows = 1,
+      secondary_texture_variations_columns = 4,
+      secondary_texture_variations_rows = 2,
+      animation_speed = 1.2,
+      animation_scale = { 0.7, 0.7 },
+      tick_scale = 1,
+      specular_lightness = { 17, 30, 55 },
+      foam_color = { 10, 30, 70 },
+      foam_color_multiplier = 1.3,
+      dark_threshold = { 0.755, 0.755 },
+      reflection_threshold = { 1, 1 },
+      specular_threshold = { 0.889, 0.291 },
+      near_zoom = 0.0625,
+      far_zoom = 0.0625
+    }
+  }
+})
+
 local pool = derive.tile_from("lava-hot", "sae-radiant-pool")
+pool.effect = "sae-radiant"
 pool.subgroup = "sae-core-tiles"
 pool.order = "d[radiant-pool]"
 pool.sprite_usage_surface = "any"
@@ -138,12 +175,37 @@ for _, v in pairs(pool.variants.main) do
   end
 end
 
+-- The shore is the lit border of the body: Vulcanus's cooler lava crust --
+-- dark plates with the melt showing between them, half the sheet alight --
+-- turned to blue, with a light sheet cut from it by the glow tool's --light
+-- mode, since that sheet ships without one. The crack art was tried here
+-- first and read as a black road with sparks in it.
 local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g = 0.45, b = 0.80 },
-  { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
-    light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" })
+  { main = "__space-age-extended__/graphics/terrain/radiant-pool/shore.png",
+    light = "__space-age-extended__/graphics/terrain/radiant-pool/shore-light.png" })
 shore.fluid = "sae-radiant-brine"
 shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
+
+-- Where the lit-crack art meets the pool it draws Vulcanus's ground-to-lava
+-- lip -- a dark crust edge with lit seams and its own lightmap -- turned to
+-- blue the way the rest of the art was. The copy's transition names lava-hot
+-- and lava; the pool is a third name, so it is added, and the sheets repointed.
+local function border_pool(tile)
+  for _, t in ipairs(tile.transitions or {}) do
+    local to_lava = false
+    for _, name in ipairs(t.to_tiles or {}) do if name == "lava-hot" then to_lava = true end end
+    if to_lava then
+      table.insert(t.to_tiles, "sae-radiant-pool")
+      t.spritesheet = "__space-age-extended__/graphics/terrain/radiant-pool/lip.png"
+      if t.lightmap_layout then
+        t.lightmap_layout.spritesheet = "__space-age-extended__/graphics/terrain/radiant-pool/lip-light.png"
+      end
+    end
+  end
+  return tile
+end
+border_pool(shore)
 data:extend({ pool, shore })
 
 -- The Core's cliff: Fulgora's geometry -- twenty seamed orientations nobody
@@ -168,10 +230,10 @@ end
 data:extend({ cliff })
 
 data:extend({
-  glow_tile("sae-crust-glow", "b[crust-glow]", { r = 0.85, g = 0.45, b = 0.20 }),
-  glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
+  border_pool(glow_tile("sae-crust-glow", "b[crust-glow]", { r = 0.85, g = 0.45, b = 0.20 })),
+  border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
     { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
-      light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" })
+      light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
 })
 
 data:extend({

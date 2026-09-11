@@ -19,6 +19,10 @@ Usage:
   tools/build-crust-glow-tile.py --sheet <in.png> <out.png> <hue degrees>
   any one sheet, the same rotation -- the radiant pool's surface is Vulcanus's
   lava-hot sheet turned to blue this way.
+  tools/build-crust-glow-tile.py --light <in.png> <out.png> <hue degrees>
+  a light sheet made from a lit main sheet: the bright, saturated pixels kept
+  (the lava between the crust), the rest black, then the same rotation. The
+  pool's shore wears Vulcanus's cooler lava crust, which ships without one.
 
 Writes graphics/terrain/crust-glow/<name>.png and <name>-light.png.
 """
@@ -40,7 +44,29 @@ def rotate_hue(path, out, degrees, min_sat=0.22):
     outim.save(out, optimize=True)
     return im.size
 
+def light_from(path, out, degrees, low=0.30, high=0.65):
+    im = Image.open(path).convert("RGBA")
+    rgb = im.convert("RGB"); a = im.getchannel("A")
+    h, s, v = rgb.convert("HSV").split()
+    # keep what glows: a soft ramp on value, gated on saturation so the grey
+    # crust never lights
+    lo, hi = int(low * 255), int(high * 255)
+    ramp = v.point(lambda x: 0 if x <= lo else 255 if x >= hi else int(255 * (x - lo) / (hi - lo)))
+    sat = s.point(lambda x: 255 if x >= 0.5 * 255 else 0)
+    mask = Image.composite(ramp, Image.new("L", im.size, 0), sat)
+    lit = Image.composite(rgb, Image.new("RGB", im.size, (0, 0, 0)), mask)
+    lit.putalpha(a)
+    tmp = out + ".unrotated.png"
+    lit.save(tmp)
+    size = rotate_hue(tmp, out, degrees)
+    os.remove(tmp)
+    return size
+
 def main():
+    if len(sys.argv) == 5 and sys.argv[1] == "--light":
+        os.makedirs(os.path.dirname(os.path.abspath(sys.argv[3])), exist_ok=True)
+        print(f"  {sys.argv[3]}  {light_from(sys.argv[2], sys.argv[3], float(sys.argv[4]))}")
+        return
     if len(sys.argv) == 5 and sys.argv[1] == "--sheet":
         os.makedirs(os.path.dirname(os.path.abspath(sys.argv[3])), exist_ok=True)
         print(f"  {sys.argv[3]}  {rotate_hue(sys.argv[2], sys.argv[3], float(sys.argv[4]))}")

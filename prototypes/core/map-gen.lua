@@ -1056,14 +1056,20 @@ local palettes =
     -- The jointed crust, lit: the joints are black dirt at their edges and the
     -- Core's own hot-crack tile down the middle, which glows at night -- in arc blue.
     -- The facet noise is normalised, not in tiles: 2.5 blackened everything.
-    dark        = { shape = "cells", amount = 0.72, grid = 28, width = 0.14, jitter = 0.8 },
+    -- Rims rather than cells (the cells version is wb-cells-arc): a band either
+    -- side of a noise threshold, so the dark -- and the glow down its middle --
+    -- rings the plates and leaves their interiors whole.
+    dark        = { shape = "rims", amount = 0.72, threshold = 0.45, width = 0.10, scale = 48, octaves = 2, persistence = 0.6, feather = { amplitude = 0.12, octaves = 2, persistence = 0.6, scale = 7 } },
     glow        = { gain = 3, cut = 1.2, colour = "arc" },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
                     "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose", "-black", "-rock-", "-rock" },
     cliff       = "sae-cliff-core",
-    -- The basins hold radiant brine; the band above the waterline is the shore.
-    pool        = { level = 98, shore = 8 },
+    -- The basins hold radiant brine; the band above the waterline is the
+    -- shore, in lit crust, so each body is ringed by the glow. Twelve units
+    -- of the basin term is a ring about three tiles wide (four gave one).
+    -- Level 76 is 6-30% brine over the rig's region by seed, 15% in the middle.
+    pool        = { level = 76, shore = 12 },
     tiles = {},
     without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
     alien_tiles =
@@ -1339,6 +1345,13 @@ local function dark_mask(dk)
   error("map-gen: unknown dark shape " .. tostring(shape))
 end
 
+-- Where the palette's pool lies, as a 0..1 mask, so the crust's own shapes
+-- can stop at the waterline: a liquid is not jointed.
+local function pool_mask(pal)
+  if not pal.pool then return "0" end
+  return string.format("clamp((%s - sae_core_basin) * 4, 0, 1)", pal.pool.level + pal.pool.shore)
+end
+
 local function clamped(field, seed, low, high)
   return string.format("clamp(%s + %s * %s, %s, %s)",
     field.centre, field.amplitude, noise(field, seed), low, high)
@@ -1359,7 +1372,7 @@ local function aux_expression(pal, seed)
     base = string.format("%s - max(0, %s - %s) * %s", base, plate_noise(p), p.threshold, p.drop)
   end
   if pal.dark then
-    base = string.format("%s + %s * %s", base, pal.dark.amount, dark_mask(pal.dark))
+    base = string.format("%s + %s * %s * (1 - %s)", base, pal.dark.amount, dark_mask(pal.dark), pool_mask(pal))
   end
   -- A seam may carry its own colour: `veins.aux` shifts the colour axis along
   -- the same contours the temperature spike follows, so a seam can land on a
@@ -1397,29 +1410,64 @@ data:extend({
     -- Where the crust's lit cracks go: the palette's dark shape, scaled so it
     -- beats every ground tile where the mask is strong and loses where it is
     -- weak -- so a joint is black dirt at its edges and lit down its centre.
+    -- The floor is deep for the reason the pool's is (below); at -1.2 the glow
+    -- tile won along the heat seams, where ground tiles go negative.
     -- Palettes without `glow` set it below every tile, so it never places.
     type = "noise-expression",
     name = "sae_core_glow",
     expression = (palette.glow and palette.dark)
-      and string.format("%s * %s - %s", palette.glow.gain or 3, dark_mask(palette.dark), palette.glow.cut or 1.2)
+      and string.format("(%s + 8) * %s * (1 - %s) - %s - 8", palette.glow.gain or 3, dark_mask(palette.dark), pool_mask(palette), palette.glow.cut or 1.2)
       or "-1000"
   },
   {
-    -- The radiant pool fills the basins: below `level` on the shared elevation
-    -- it beats every ground tile outright, and a `shore`-wide band above it is
-    -- the buildable rim. Palettes without `pool` place neither.
+    -- Where the brine lies: a noise of its own, not the elevation's broad
+    -- term. Tied to that term (520 tiles, then 320) the sea was one basin
+    -- wider than the whole region the rig looks at, and the landing site came
+    -- out under 0%, 45%, 72% or 98% brine by seed. At 160 tiles the pool is
+    -- bodies -- lakes a hundred tiles across, several in any region -- and
+    -- the share barely moves between seeds. The last term lifts the crust
+    -- around the landing site, as Nauvis does, so nobody lands in the brine:
+    -- the full lift out to 32 tiles, gone by 96.
+    type = "noise-expression",
+    name = "sae_core_basin",
+    expression = "140 + 90 * multioctave_noise{x = x,\z
+                                               y = y,\z
+                                               seed0 = map_seed,\z
+                                               seed1 = 8419,\z
+                                               octaves = 3,\z
+                                               persistence = 0.5,\z
+                                               input_scale = 1/80,\z
+                                               output_scale = 1}\z
+                  + 40 * clamp((96 - distance) / 64, 0, 1)"
+  },
+  {
+    -- The radiant pool fills the basins: below `level` on the basin term it
+    -- beats every ground tile outright, and a `shore`-wide band above it is the
+    -- buildable rim. Palettes without `pool` place neither.
+    --
+    -- The floors are deep on purpose. The engine places the tile with the
+    -- highest probability even when every probability is negative, and along
+    -- the seams and joints every ground tile IS negative -- the temperature
+    -- spike and the colour shift push them out of their windows. A floor of -1
+    -- won there, and the sea came out jointed; measured with
+    -- calculate_tile_properties, which said "pool" at none of 961 samples while
+    -- 157 of them were pool.
     type = "noise-expression",
     name = "sae_core_pool",
     expression = palette.pool
-      and string.format("clamp((%s - sae_core_elevation) * 4, 0, 1) * 6 - 1", palette.pool.level)
+      and string.format("clamp((%s - sae_core_basin) * 4, 0, 1) * 16 - 10", palette.pool.level)
       or "-1000"
   },
   {
+    -- The shore has no ramp on its inner side: it holds 5 right down to the
+    -- waterline and lets the pool's 6 take over below it. A ramp there gave
+    -- the ground tiles the last tile before the liquid, and the sea was rimmed
+    -- in white dirt with no lip drawn, since the ground art knows no pool.
     type = "noise-expression",
     name = "sae_core_shore",
     expression = palette.pool
-      and string.format("clamp((%s - sae_core_elevation) * 4, 0, 1) * clamp((sae_core_elevation - %s) * 4, 0, 1) * 5 - 1",
-                        palette.pool.level + palette.pool.shore, palette.pool.level)
+      and string.format("clamp((%s - sae_core_basin) * 4, 0, 1) * 15 - 10",
+                        palette.pool.level + palette.pool.shore)
       or "-1000"
   },
   {
