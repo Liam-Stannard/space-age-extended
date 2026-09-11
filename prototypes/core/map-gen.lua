@@ -507,7 +507,12 @@ local palettes =
     veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
     moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
-    plates      = { threshold = 0.5, drop = -0.72, warm = 100, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    -- The colour axis moves at 0.42 and the temperature at 0.56, so between the
+    -- two thresholds the ground is cold at high aux -- black dirt -- and every
+    -- plate wears a dark rim. The feather breaks the rim into fingers.
+    plates      = { threshold = 0.42, warm_threshold = 0.56, drop = -0.72, warm = 100,
+                    octaves = 2, persistence = 0.6, scale = 48, seed = 7781,
+                    feather = { amplitude = 0.35, octaves = 2, persistence = 0.6, scale = 7 } },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
                     "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
@@ -519,6 +524,7 @@ local palettes =
     {
       "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
       "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
       "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
     }
   },
@@ -725,6 +731,19 @@ local function noise(field, seed)
     field.stretch or 1, seed, field.octaves, field.persistence, field.scale)
 end
 
+-- The plates' driving noise, optionally feathered: a second, short-wavelength
+-- noise added before the threshold breaks the plate's contour into fingers and
+-- islands instead of a smooth blob, which is most of what makes an edge read
+-- as ground rather than as a stencil.
+local function plate_noise(pl)
+  local n = noise(pl, pl.seed)
+  if pl.feather then
+    local f = pl.feather
+    n = string.format("(%s + %s * %s)", n, f.amplitude, noise(f, f.seed or (pl.seed + 1)))
+  end
+  return n
+end
+
 local function clamped(field, seed, low, high)
   return string.format("clamp(%s + %s * %s, %s, %s)",
     field.centre, field.amplitude, noise(field, seed), low, high)
@@ -742,7 +761,7 @@ local function aux_expression(pal, seed)
   local base = string.format("%s + %s * %s", pal.aux.centre, pal.aux.amplitude, noise(pal.aux, seed))
   if pal.plates then
     local p = pal.plates
-    base = string.format("%s - max(0, %s - %s) * %s", base, noise(p, p.seed), p.threshold, p.drop)
+    base = string.format("%s - max(0, %s - %s) * %s", base, plate_noise(p), p.threshold, p.drop)
   end
   -- A seam may carry its own colour: `veins.aux` shifts the colour axis along
   -- the same contours the temperature spike follows, so a seam can land on a
@@ -764,9 +783,13 @@ local function temperature_expression(pal, seed, low, high)
   -- Plates may warm as well as pale: the mid-temperature colours (cream,
   -- beige, dustyrose, aubergine) sit in a 30..60 window a cold body never
   -- reaches, so a plate that wants one of them lifts its own temperature.
+  -- `warm_threshold`, if higher than `threshold`, makes the temperature climb
+  -- inside a band where the colour axis has already moved: the tile that answers
+  -- to the new axis at the OLD temperature appears as a rim around the plate --
+  -- the cold band's black around a blue-heat plate on white.
   if pal.plates and pal.plates.warm then
     local pl = pal.plates
-    base = string.format("%s + max(0, %s - %s) * %s", base, noise(pl, pl.seed), pl.threshold, pl.warm)
+    base = string.format("%s + max(0, %s - %s) * %s", base, plate_noise(pl), pl.warm_threshold or pl.threshold, pl.warm)
   end
   return string.format("clamp(%s, %s, %s)", base, low, high)
 end
