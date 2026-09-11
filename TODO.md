@@ -47,6 +47,10 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
   and audio before it can be filled.
 - **The vents wear crude oil's sheet and sounds**, and the ore iron ore's sheet.
+- **Twenty technologies wear vanilla icons** — every Core technology except
+  Core Discovery, Gravity Settling, Whisker Beds and Field Coils wears
+  Aquilo's, and the three Fulgora ↔ Aquilo technologies wear the cryogenic
+  science pack's. The data-stage placeholder report lists them by name.
 - **Paint accents still to assign** (template Appendix B): Drop Crusher, Ballast
   Drill, Vacuum Furnace, Helium Concentrator, Crust Tap, Ring Mast, Bed Tender,
   Sealed Roboport. The Roboport's lamps and the Bed Tender's bin are derived
@@ -62,9 +66,3 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **`changelog.txt` is empty** (the working tree deleted its contents). Restore
   from HEAD or write a 0.3.x entry for the reset.
 
-## Prototype review (2026-09-11) — against vanilla 2.1.17
-
-Work through in order; each step is reviewed before the next starts.
-
-- [ ] **8. Technology icons** — `util.technology_icon_constant_planet` for Core
-  Discovery; 17 technologies still wear Aquilo's icon.

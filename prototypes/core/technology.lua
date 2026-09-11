@@ -6,19 +6,31 @@
 -- the sixth tech tree's entry point, and it sits behind promethium science
 -- because the Core is past the point where that research already takes you.
 
+local derive = require("prototypes.derive")
+
+-- A technology still wearing a vanilla icon is a placeholder like a building
+-- wearing vanilla sprites, and it is recorded the same way, so the data-stage
+-- report counts it and grep finds it.
+local PLACEHOLDER_ICON = "__space-age__/graphics/technology/aquilo.png"
+local function tech_icon(tech, icon)
+  if icon then
+    tech.icon = icon
+  else
+    tech.icon = PLACEHOLDER_ICON
+    derive.placeholder_art(tech, "wears Aquilo's technology icon until its own exists")
+  end
+  tech.icon_size = 256
+  return tech
+end
+
 data:extend({
   {
     type = "technology",
     name = "sae-core-discovery",
-    icons =
-    {
-      { icon = "__space-age-extended__/graphics/technology/sae-core-discovery.png", icon_size = 256 },
-      {
-        icon = "__core__/graphics/icons/technology/constants/constant-planet.png",
-        icon_size = 128, scale = 0.5, shift = { 50, 50 }, floating = true
-      }
-    },
-    icon_size = 256,
+    -- The planet constant in the corner, as every planet-discovery technology
+    -- in Space Age carries it.
+    icons = util.technology_icon_constant_planet(
+      "__space-age-extended__/graphics/technology/sae-core-discovery.png"),
     essential = true,
     effects =
     {
@@ -56,12 +68,10 @@ data:extend({
 -- until the corridor is delivering.
 
 local function foothold(name, prereqs, effects, icon)
-  return
+  return tech_icon(
   {
     type = "technology",
     name = name,
-    icon = icon or "__space-age__/graphics/technology/aquilo.png",
-    icon_size = 256,
     effects = effects,
     prerequisites = prereqs,
     unit =
@@ -79,7 +89,7 @@ local function foothold(name, prereqs, effects, icon)
       },
       time = 60
     }
-  }
+  }, icon)
 end
 
 data:extend({
@@ -191,12 +201,10 @@ data:extend({
 -- supply, and every pack burned is a Field Coil Segment delayed.
 
 local function geodynamic(name, prereqs, count, effects, icon)
-  return
+  return tech_icon(
   {
     type = "technology",
     name = name,
-    icon = icon or "__space-age__/graphics/technology/aquilo.png",
-    icon_size = 256,
     effects = effects,
     prerequisites = prereqs,
     unit =
@@ -205,7 +213,7 @@ local function geodynamic(name, prereqs, count, effects, icon)
       ingredients = { { "sae-geodynamic-science-pack", 1 } },
       time = 60
     }
-  }
+  }, icon)
 end
 
 data:extend({
@@ -310,6 +318,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-cryogen",
+    -- Placeholder, recorded below with the others.
     icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
     icon_size = 256,
     effects =
@@ -333,6 +342,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-fluorinated-holmium",
+    -- Placeholder, recorded below with the others.
     icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
     icon_size = 256,
     -- Recovery moved here from `sae-fa-cryogen`. Nothing makes spent cryogen
@@ -360,6 +370,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-superconducting-winding",
+    -- Placeholder, recorded below with the others.
     icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
     icon_size = 256,
     essential = true,
@@ -383,3 +394,7 @@ data:extend({
     }
   }
 })
+
+for _, name in ipairs({ "sae-fa-cryogen", "sae-fa-fluorinated-holmium", "sae-fa-superconducting-winding" }) do
+  derive.placeholder_art(data.raw.technology[name], "wears the cryogenic science pack's technology icon until its own exists")
+end
