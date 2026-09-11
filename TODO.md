@@ -40,8 +40,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   icon in the mod that is not a 120×64 mipmap strip.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,
   and the two asteroids wear their chunks' icons.
-- **The Core has no cliff of its own.** `map-gen.lua` states Nauvis's cliff
-  explicitly; the design's metallic ridges need a `cliff` prototype and art.
 - **The planet has no procession sets or ambient sounds** (`planet.lua`):
   vanilla planets carry `planet_procession_set`, `platform_procession_set`,
   `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
