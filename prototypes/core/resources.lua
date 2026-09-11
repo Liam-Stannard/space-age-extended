@@ -271,11 +271,22 @@ boulder.autoplace =
                                                                   output_scale = 1}), 0, 0.01)"
 }
 
--- Cool and grey, so it reads as metal rather than as sandstone. A tint
--- multiplies, and the rock's texture is warm sandstone, so a gentle blue-grey
--- (0.62, 0.66, 0.74 -- the first try) left it brown on the ground; this one
--- pulls the red down far enough to read as dark metal. Deleting this line
--- returns it to the stand-in.
-tint_sprites(boulder, palette.boulder_tint or { r = 0.40, g = 0.55, b = 0.75, a = 1 })
+-- The Core's own material, not a tint. A tint multiplies, and the rock's
+-- texture is warm sandstone, so every blue-grey tried left it brown or black;
+-- tools/build-core-rocks.py rebuilds the sheets with the sandstone's shading
+-- remapped onto slate, and the prototype points at those. A palette may still
+-- tint on top with `boulder_tint`; none needs to now.
+do
+  local FROM = "__base__/graphics/decorative/huge-rock/"
+  local TO = "__space-age-extended__/graphics/entity/core-boulder/slate/"
+  local function repoint(t)
+    for k, v in pairs(t) do
+      if type(v) == "table" then repoint(v)
+      elseif type(v) == "string" and v:sub(1, #FROM) == FROM then t[k] = TO .. v:sub(#FROM + 1) end
+    end
+  end
+  repoint(boulder.pictures)
+end
+if palette.boulder_tint then tint_sprites(boulder, palette.boulder_tint) end
 
 data:extend({ boulder })

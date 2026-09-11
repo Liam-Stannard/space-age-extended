@@ -81,6 +81,56 @@ local function glow_tile(name, order, map_color, sheets)
   return glow
 end
 
+-- Shards of the crust: vanilla's medium, small and tiny rocks in the Core's
+-- material (tools/build-core-rocks.py), as the Core's own decoratives with the
+-- Core's own placement -- so the scatter no longer depends on an optional pack
+-- and no longer arrives in another planet's colours. `sae_core_shards` is the
+-- density; map-gen.lua's palettes include them by the "sae-crust" pattern.
+local function shards(kind, probability)
+  local d = derive.from("optimized-decorative", kind, "sae-crust-shards-" .. kind:gsub("%-rock$", ""))
+  local FROM = "__base__/graphics/decorative/" .. kind .. "/"
+  local TO = "__space-age-extended__/graphics/decorative/crust-shards/slate/"
+  local function repoint(t)
+    for k, v in pairs(t) do
+      if type(v) == "table" then repoint(v)
+      elseif type(v) == "string" and v:sub(1, #FROM) == FROM then t[k] = TO .. v:sub(#FROM + 1) end
+    end
+  end
+  repoint(d.pictures)
+  d.autoplace =
+  {
+    order = "z[sae]-shards",
+    -- Gathered rather than even: a short noise gates a flat chance, so shards
+    -- lie in drifts with bare ground between.
+    probability_expression = string.format(
+      "%s * clamp(2 * multioctave_noise{x = x, y = y, seed0 = map_seed, seed1 = 6101, octaves = 2, persistence = 0.6, input_scale = 1/9, output_scale = 1}, 0, 1)",
+      probability)
+  }
+  return d
+end
+data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("tiny-rock", 0.09) })
+
+-- The Core's cliff: Fulgora's geometry -- twenty seamed orientations nobody
+-- should redraw -- in the Core's material, the sheets rebuilt by
+-- tools/build-core-cliff.py. Shadows are shape, not material, so they stay
+-- vanilla's. The palette names it with `cliff = "sae-cliff-core"`.
+local cliff = derive.from("cliff", "cliff-fulgora", "sae-cliff-core")
+cliff.map_color = { r = 0.33, g = 0.37, b = 0.42 }
+do
+  local FROM = "__space-age__/graphics/terrain/cliffs/fulgora/cliff-fulgora-"
+  local TO = "__space-age-extended__/graphics/terrain/cliff-core/slate/cliff-"
+  local function repoint(t)
+    for k, v in pairs(t) do
+      if type(v) == "table" then repoint(v)
+      elseif type(v) == "string" and v:sub(1, #FROM) == FROM and not v:find("shadow", 1, true) then
+        t[k] = TO .. v:sub(#FROM + 1)
+      end
+    end
+  end
+  repoint(cliff.orientations)
+end
+data:extend({ cliff })
+
 data:extend({
   glow_tile("sae-crust-glow", "b[crust-glow]", { r = 0.85, g = 0.45, b = 0.20 }),
   glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },

@@ -40,13 +40,24 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   icon in the mod that is not a 120×64 mipmap strip.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,
   and the two asteroids wear their chunks' icons.
-- **The Core has no cliff of its own.** `map-gen.lua` states Nauvis's cliff
-  explicitly; the design's metallic ridges need a `cliff` prototype and art.
+- **The Core's cliff, boulder and shards are vanilla shapes in the Core's
+  material** — `sae-cliff-core` is Fulgora's twenty seamed orientations
+  rebuilt in slate by `tools/build-core-cliff.py`; the boulder and the three
+  shard decoratives are vanilla's rocks rebuilt by `tools/build-core-rocks.py`.
+  Shape is still borrowed; the material is ours. Drawing the Core's own rock
+  shapes is a concept-sheet job (`concept/core-boulder/`), and a cliff of its
+  own is the most demanding terrain asset in the game — weeks, not days.
 - **The planet has no procession sets or ambient sounds** (`planet.lua`):
   vanilla planets carry `planet_procession_set`, `platform_procession_set`,
   `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
   and audio before it can be filled.
 - **The vents wear crude oil's sheet and sounds**, and the ore iron ore's sheet.
+- **`core-crust` is the working palette** — white crust, arc-blue lit cell
+  joints, slate cliff, slate boulder and shards, craters only; two-scale
+  elevation with a 28-step cliff interval. Renders in
+  `concept/planet-core/terrain/core-crust/`. Joints are still wide (24% of
+  ground) and the crust vent's stone-path placeholder is now the loudest
+  thing on it.
 - **Twenty technologies wear vanilla icons** — every Core technology except
   Core Discovery, Gravity Settling, Whisker Beds and Field Coils wears
   Aquilo's, and the three Fulgora ↔ Aquilo technologies wear the cryogenic
