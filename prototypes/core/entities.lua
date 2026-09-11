@@ -226,8 +226,7 @@ plant.agricultural_tower_tint =
 plant.emissions_per_second = nil
 
 -- Art. Inherited, this drew Gleba's planted tree -- so the Core's one crop grew
--- as a tree, on a dead metal world with no air. See graphics/TODO.md section 6,
--- which flagged it with no art plan.
+-- as a tree, on a dead metal world with no air. It was flagged with no art plan.
 --
 -- What it is now: four clusters of kamacite whiskers, the same hard faceted
 -- silver-white needles on a dark grit base that the locked chain 2 icon draws,
@@ -395,7 +394,7 @@ repoint_crane(tender.crane)
 
 -- Art. Only the hub is ours: `crane` is a prototype in its own right and still
 -- draws vanilla's arm, so this building ships a custom hub under an inherited
--- arm until the crane gets its own pass. See graphics/building-spec-bed-tender.md
+-- arm until the crane gets its own pass. See concept/bed-tender/building-spec-bed-tender.md
 -- sections 6, 7 and 13.
 --
 -- Every number below is measured off the cut plate, not guessed. The hub's

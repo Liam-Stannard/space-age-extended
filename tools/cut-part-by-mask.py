@@ -7,7 +7,7 @@ component in the wrong place. Measured on the Dross Classifier's drive: the part
 came back correct in every particular and centred on its own canvas at x
 0.28-0.76, y 0.20-0.58, where on the plate it sits up at the top of the
 roofline. Nothing in the returned file says where it goes. That is the general
-result from the first test run of graphics/animation-layer-prompts.md -- the
+result from the first test run of the (since retired) animation-layer prompts -- the
 generator is good at *what* to draw and unreliable at *where* to put it.
 
 So it is asked for the *what* only. The prompt returns the whole machine,

@@ -342,7 +342,7 @@ ignition.flying_sound = nil
 data:extend({ ignition })
 array.rocket_entity = "sae-ignition-discharge"
 
--- Art. See graphics/building-spec-ignition-array.md sections 6.1 and 13.
+-- Art. See concept/ignition-array/building-spec-ignition-array.md sections 6.1 and 13.
 --
 -- Section 6.1 is the scoping decision and it still holds: vanilla's silo uses
 -- sixteen art slots, several of them 64-frame sheets running to millions of
@@ -518,7 +518,7 @@ port.spawn_and_station_height = 0.75
 -- above the crown rather than at vanilla's 0.87, which is halfway up our dome.
 port.stationing_render_layer_swap_height = 1.62
 
--- Art. See graphics/building-spec-sealed-roboport.md sections 6, 7 and 13.
+-- Art. See concept/sealed-roboport/building-spec-sealed-roboport.md sections 6, 7 and 13.
 --
 -- Measured off the cut plate: the deck's visible content is exactly 256 px --
 -- 4.00 tiles -- so a block of ports tiles without overlapping, and the shift is

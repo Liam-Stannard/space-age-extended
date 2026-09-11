@@ -1,0 +1,225 @@
+{
+  "name": "ballast-drill",
+  "source": "base.png",
+  "output": "stroke-frames.png",
+  "size": [
+    328,
+    313
+  ],
+  "frame_count": 24,
+  "motions": [
+    {
+      "type": "piston",
+      "_comment": "The ballast ring, as one rigid annulus. B-ring-press.md: 'the ring, dropping and rising around its column'. The column does NOT move -- the source_occluder below puts it back in front.",
+      "polygon": [
+        [
+          268.0,
+          140.0
+        ],
+        [
+          266.4,
+          157.7
+        ],
+        [
+          261.7,
+          174.9
+        ],
+        [
+          253.9,
+          191.0
+        ],
+        [
+          243.4,
+          205.6
+        ],
+        [
+          230.5,
+          218.1
+        ],
+        [
+          215.5,
+          228.3
+        ],
+        [
+          198.9,
+          235.8
+        ],
+        [
+          181.2,
+          240.5
+        ],
+        [
+          163.0,
+          242.0
+        ],
+        [
+          144.8,
+          240.5
+        ],
+        [
+          127.1,
+          235.8
+        ],
+        [
+          110.5,
+          228.3
+        ],
+        [
+          95.5,
+          218.1
+        ],
+        [
+          82.6,
+          205.6
+        ],
+        [
+          72.1,
+          191.0
+        ],
+        [
+          64.3,
+          174.9
+        ],
+        [
+          59.6,
+          157.7
+        ],
+        [
+          58.0,
+          140.0
+        ],
+        [
+          59.6,
+          122.3
+        ],
+        [
+          64.3,
+          105.1
+        ],
+        [
+          72.1,
+          89.0
+        ],
+        [
+          82.6,
+          74.4
+        ],
+        [
+          95.5,
+          61.9
+        ],
+        [
+          110.5,
+          51.7
+        ],
+        [
+          127.1,
+          44.2
+        ],
+        [
+          144.8,
+          39.5
+        ],
+        [
+          163.0,
+          38.0
+        ],
+        [
+          181.2,
+          39.5
+        ],
+        [
+          198.9,
+          44.2
+        ],
+        [
+          215.5,
+          51.7
+        ],
+        [
+          230.5,
+          61.9
+        ],
+        [
+          243.4,
+          74.4
+        ],
+        [
+          253.9,
+          89.0
+        ],
+        [
+          261.7,
+          105.1
+        ],
+        [
+          266.4,
+          122.3
+        ]
+      ],
+      "rail": [
+        0,
+        12
+      ],
+      "waveform": "sine",
+      "feather": 0.5,
+      "supersample": 4,
+      "clip": false,
+      "background_mode": "clone",
+      "_mask": "Stops on row 243, the top of the shoulder the ring drops onto, so the ring seats behind it rather than drawing over it.",
+      "mask_polygon": [
+        [
+          52,
+          18
+        ],
+        [
+          276,
+          18
+        ],
+        [
+          276,
+          243
+        ],
+        [
+          52,
+          243
+        ]
+      ],
+      "background_offset": [
+        0,
+        -18
+      ],
+      "_background": "The plate never drew the deck behind the ring, so the region the ring vacates has to come from somewhere. Cloning 18 px up lands real riveted plate there; the surrounding-inpaint alternative gives a grey smear. Compared side by side before choosing."
+    },
+    {
+      "type": "source_occluder",
+      "_comment": "The fixed central column, restored from the plate over the moving ring. This is the whole mechanism: weight surrounds the head, the head stays put.",
+      "polygon": [
+        [
+          131,
+          16
+        ],
+        [
+          207,
+          16
+        ],
+        [
+          213,
+          128
+        ],
+        [
+          213,
+          174
+        ],
+        [
+          123,
+          174
+        ],
+        [
+          123,
+          128
+        ]
+      ]
+    }
+  ]
+}

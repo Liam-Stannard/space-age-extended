@@ -22,7 +22,7 @@ shows up as a seam around the window.
 **Why the frames are not rendered at Animatorio's own phases.** Its `piston`
 offers `sine` or `triangle`, and both are symmetric: the fall takes as long as
 the rise, and a weight that falls at the speed it rose reads as being *lowered*.
-That is the exact failure `building-spec-drop-crusher.md` §9 warns about, and
+That is the exact failure `concept/drop-crusher/building-spec-drop-crusher.md` §9 warns about, and
 frames play at a constant rate, so the acceleration has to live in the spacing.
 
 Its phase-to-displacement map is `t = 0.5 - 0.5*cos(2*pi*p)`, which is monotonic

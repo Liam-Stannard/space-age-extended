@@ -22,8 +22,8 @@ is what keeps the corridor carrying something every hour of the endgame.
 
 ## 2. Seeding the field
 
-The corridor's own mechanic, described in full in
-[mechanics.md](mechanics.md#seeding-the-field--the-corridor).
+The corridor's own mechanic. ([mechanics.md](mechanics.md) will carry the
+full description once the mechanics are settled.)
 
 **Same rock, two harvests.**
 
@@ -46,32 +46,20 @@ it is needed.
 
 ## 3. Power out there
 
-Solar is nil, nothing burns, and vanilla's answer does not travel: a fusion cell
-needs 100 ammonia, which has no barrel, so cells can only be made on Aquilo and
-freighted the whole way.
+**Provisional.** What is built, and may yet change: the corridor's one new
+asteroid is the **radiant asteroid**, whose chunk crushes to **radiant fuel**,
+a fuel in its own category that only the **radiant generator** burns
+(`prototypes/corridor.lua`). The generator carries a pressure ≤ 9 condition,
+so it works on platforms and on the Core and nowhere else. None of it has been
+played, and the names and numbers are first guesses.
 
-The corridor's answer is the **power material** from the new asteroid — produced
-where it is consumed, from the one thing the far field has. It is the reason
-power is not a tree's problem: vanilla covers power to the Edge, and past the
-Edge the field covers it.
 
-## 4. The journey is a production step
-
-The run is measured in real time, so [maturation](mechanics.md#maturation--vulcanus--gleba)
-ripens en route: one cargo arrives worth more than it left. It is the only thing
-in the mod that makes the corridor's length an asset rather than a bill.
-
-A consequence worth keeping: **a heavier platform is a slower platform**, since
-vanilla speed is thrust against mass. Carrying more means arriving later, which
-means arriving with better metal. That trade is emergent rather than designed,
-and it should be left to emerge.
-
-## 5. Still open
+## 4. Still open
 
 - **How long the route is**, and whether it is one connection or several hops.
 - **Whether parked depots are part of the design**, or the corridor is flown
   end to end.
-- **What the power material is called**, and what it feeds.
+- **Whether the radiant chain above is the answer**, or a placeholder for one.
 - **The ammunition economy** — seeding costs missiles, harvesting costs ordinary
   ammunition, and both are freight until the field itself supplies them.
 - **The spike**: whether a projectile can destroy an asteroid and create another

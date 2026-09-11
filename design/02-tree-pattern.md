@@ -11,13 +11,12 @@ what a tree is made of, in what order, and what every tree owes the endgame.
 
 ## 1. Anatomy
 
-A tree is four stages and 4–10 technologies.
+A tree is four stages and 3–10 technologies.
 
 ### Stage 1 — The opening (1 technology)
 
 One recipe that cannot be completed without material from the other planet. It
-should be **cheap, early in the tree, and slightly annoying** — the player has to
-ship something before they have any infrastructure for shipping it.
+should be cheap, early in the tree — the player has to ship something.
 
 Its job is to teach the pairing in one recipe. A player who researches this and
 nothing else should already understand what these two worlds do for each other.
@@ -28,12 +27,11 @@ Each planet builds out its own side: processing the import, refining what it
 sends, dealing with what comes out that nobody asked for. This is the bulk of the
 tree and where its factory-design problems live.
 
-The two chains should be **researchable in either order**, so a player who has
-one planet developed further than the other is not blocked.
+The two chains should be researchable in production line order.
 
 ### Stage 3 — The convergence (1 technology)
 
-One technology whose prerequisites are the last technology of *both* chains. It
+One technology whose prerequisites are the last technology of both chains. It
 unlocks the intermediate that only exists when both sides are running — the point
 where the tree stops being two chains and becomes one.
 
@@ -80,52 +78,17 @@ recipes; a tree with three is a mod of its own.
 
 Three requirements:
 
-1. **It comes from the pairing.** The mechanic should be the thing those two
+1. It comes from the pairing. The mechanic should be the thing those two
    worlds together suggest, not a mechanic looking for a home.
-2. **It is taught alone.** The player meets it in that tree, in isolation, with
+2. It is taught alone. The player meets it in that tree, in isolation, with
    room to fail at it cheaply.
-3. **It is load-bearing at the end.** The Core, or the corridor to it, requires
+3. It is load-bearing at the end. The Core, or the corridor to it, requires
    it — so learning it was not a detour. The endgame is where the five combine.
 
 The mechanics themselves are in [mechanics.md](mechanics.md).
 
-## 4. The capstone contract
 
-The capstone is the only part of a tree that the rest of the mod depends on, so
-it is the part with rules.
-
-**The product**
-
-- It is what the final production line on the Core consumes, so the tree decides
-  how it gets there — including an answer for spoilage, if it spoils.
-- It has an explicit weight. That number is the freight cost of the endgame.
-- It is consumed by the tree's own building too, so demand for it never stops:
-  building more of the building costs more of the product.
-
-**The building**
-
-- **Made from the product**, so it cannot exist before the tree is finished.
-- **Uses the tree's materials and mechanic**, so it reads as that chain's
-  conclusion rather than a generic reward.
-- **Never a strict upgrade** to anything vanilla provides.
-
-A capstone building has a life across the whole rest of the game, in four steps:
-
-1. **Useful in the mid-game**, where the tree unlocks, for its own sake. A player
-   who never goes near the Core should still want it.
-2. **Useful in getting to the Core** — the same capability, applied to the
-   problem of crossing a distance nothing else crosses.
-3. **Useful in surviving the Core**, where almost nothing works and everything
-   arrives from somewhere else.
-4. **Expandable out there.** A building may gain a further use on the way to or
-   on the Core — an extension, a second recipe, a mode that only makes sense at
-   the far end.
-
-Step 4 is what keeps the endgame from being a checklist: the buildings the player
-already knows become the tools they solve the Core with, rather than five
-trophies plus a new toolkit.
-
-## 5. One reserved mechanic per tree
+## 4. One reserved mechanic per tree
 
 Five mechanics that each teach a different lesson make a toolkit. Five that are
 variations on one idea make a theme. So mechanics are **reserved up front**, like
@@ -146,9 +109,9 @@ The test for a candidate mechanic:
 **Power is not on the list.** Vanilla covers it to the Edge and fusion answers
 Aquilo; it only becomes hard past the Edge, where there is no sun and nothing
 burns. That is solved on the corridor by a new asteroid type, not by a pair —
-see [the problem catalogue](problems.md#power-is-not-one-of-the-five).
+see [the corridor](03-corridor.md#3-power-out-there).
 
-## 6. What a tree owes the Core
+## 5. What a tree owes the Core
 
 Every tree contributes exactly one product to the final production line. Beyond
 that:
@@ -160,7 +123,7 @@ that:
 
 ---
 
-## 7. The register
+## 6. The register
 
 | Pair | Available after | Mechanic taught | Anchor | Capstone product | Endgame role | Status |
 |---|---|---|---|---|---|---|
@@ -177,10 +140,10 @@ how each is integrated through a different local input.
 
 Every tree now has a mechanic and a capstone product. Each still owes a
 **building** made from that product, an **anchor** that forces its crossing, and
-its own 4–10 technology ladder. The corridor has a mechanic of its own —
-[seeding the field](mechanics.md#seeding-the-field--the-corridor).
+its own 3–10 technology ladder. The corridor has a mechanic of its own —
+[seeding the field](03-corridor.md#2-seeding-the-field).
 
-Vulcanus and Fulgora appear twice, Gleba and Fulgora three times; with four
+Vulcanus and Aquilo appear twice, Fulgora and Gleba three times; with four
 worlds and five pairs the even loop is not available, and Fulgora carrying three
 is the price of keeping the mid-game populated. Watch that Fulgora does not end
 up doing the same job in all three.
@@ -188,7 +151,7 @@ up doing the same job in all three.
 Each row fills in as its tree is designed. The empty columns are the decisions
 this document exists to force: a tree is not ready while any of them is blank.
 
-## 8. The per-tree document
+## 7. The per-tree document
 
 Each `design/trees/<pair>.md` follows the same headings, so the five can be read
 against each other:

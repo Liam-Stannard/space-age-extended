@@ -18,8 +18,7 @@ building can sit in:
 
 Three more are **per-building style references**, one machine each, because the
 nine-building set came back looking like one machine drawn nine times when they
-all shared a reference. The plan for which building gets which is in
-graphics/TODO.md; these are the three cut so far:
+all shared a reference. These are the ones cut so far:
 
   centrifuge             Dross Classifier
   nuclear-reactor        Coil Separator -- heavy, dark, contained power. It

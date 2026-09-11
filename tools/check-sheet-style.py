@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure a concept against vanilla's camera and finish, instead of eyeballing it.
 
-Appendix B of `building-spec-template.md` is blunt about why this exists: judging
+Appendix B of `templates/building-spec-template.md` is blunt about why this exists: judging
 a plate by looking at it produced "two confident and completely wrong findings"
 over five rounds on one building. A viewer composites a transparent PNG onto its
 own background, so the metal's apparent value moves with whatever is behind it.

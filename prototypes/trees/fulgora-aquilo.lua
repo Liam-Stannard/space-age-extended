@@ -150,7 +150,7 @@ store.energy_source =
 --
 -- Every number is measured off the cut plate. The drum's visible content is
 -- exactly 128 px -- 2.00 tiles -- so a row of stores touches rather than
--- overlaps. See graphics/building-spec-superconducting-store.md sections 9 and 13.
+-- overlaps. See concept/superconducting-store/building-spec-superconducting-store.md sections 9 and 13.
 local SCS = "__space-age-extended__/graphics/entity/superconducting-store/"
 local scs_plate = function(name, w, h, shift)
   return { filename = SCS .. name, priority = "high",

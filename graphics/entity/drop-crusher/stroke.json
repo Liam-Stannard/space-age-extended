@@ -16,7 +16,7 @@
       "feather": 0.4,
       "supersample": 4,
       "clip": false,
-      "_background": "Clone from 34 px above: the crown is the topmost thing on the plate, so what it uncovers as it sinks is sky.",
+      "_background": "Nothing is behind the crown. It is the topmost thing on the plate, so what it uncovers as it sinks is outside the machine's silhouette and the right value there is alpha zero. Cloning from 34 px above is only a way of reaching transparency out of a flattened plate -- on a separate Working Machinery layer this field would not exist.",
       "background_mode": "clone",
       "background_offset": [0, -34],
       "_mask": "A fixed window, not a moving part. It ends on row 50 -- the collar's front rim -- so the shank slides behind the rim instead of over it, and nothing outside the window can be touched.",

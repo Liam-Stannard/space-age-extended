@@ -29,7 +29,7 @@ The fluid prototype's base_color/flow_color were changed to match, so pipes
 and the fluid list agree with the icon.
 
 This is a stopgap: a real render for Quench Vapour would replace it, and the
-prompt for one belongs in graphics/icon-prompts.md.
+prompt for one belongs in templates/icon-sheet-prompts.md.
 
 Each entry in ICONS is (output name, ramp, levels). Hues are chosen against
 what the set already uses -- measured, not guessed: molten scrap 20, molten

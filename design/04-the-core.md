@@ -24,38 +24,21 @@ body in the system.
 | **day-night-cycle** | none / very long | A sky that does not move |
 
 **Pressure 5 is the load-bearing number.** It gives the Core its character in a
-single value: no combustion of any kind, and no roboport networks. Note that the
-conditions live on *those specific vanilla prototypes* — a mod could add a burner
-with no conditions at all. This mod deliberately does not. Nothing burns on the
-Core, and it costs the player no capability: surface power comes from the arc
-storms and from steam raised off the melt (§2), neither of which needs a flame.
-
-Working at pressure 5 without any change: foundry, electromagnetic plant,
+single value: no combustion of any kind, and no roboport networks. Working at
+pressure 5 without any change: foundry, electromagnetic plant,
 biochamber, recycler, chemical plant, assembler, electric furnace, nuclear
 reactor, heat exchanger, steam turbine, drills, labs, accumulators, rails,
 chests, cargo landing pad.
 
 ### Life and hazard
 
-**No living enemies.** Nothing ever grew here.
+Nothing lives here, and nothing attacks. **Provisional:** the hazard is the
+**arc storm** — lightning rarer and far heavier than Fulgora's (600 damage and
+4000 MJ a strike, one every ninety seconds), which unprotected buildings take
+in full and an **Arc Mast** catches and banks. The storm is therefore also half
+the planet's power. It is built and measured (`prototypes/core/storms.lua`), but
+it has not been played, and it is not yet confirmed as the final answer.
 
-The hazard is **arc storms** — the remnant dynamo discharging through a metallic
-crust. Damage arrives as weather rather than as an attack, and the answer is
-infrastructure, not turrets: arc masts that catch a strike and **bank it as
-power**. It is Fulgora's lesson on a world that looks nothing like Fulgora, and
-it means the thing that damages you is also the thing that runs you, once you
-have built for it.
-
-Tuned deliberately against Fulgora so it plays as a different problem: Fulgora
-takes 100 damage and 1000 MJ per strike, every ten seconds per chunk; the Core
-takes **600 damage and 4000 MJ, every ninety seconds**. A drizzle you harvest,
-against an event you survive and store.
-
-**Storage is not optional.** An attractor's buffer empties within seconds when
-nothing draws from it — measured, and vanilla's own collector does exactly the
-same. A mast standing alone loses what it caught, so accumulators come first.
-That suits the mechanic: the storms are episodic, so the grid has to swallow a
-strike and spend it slowly.
 
 ## 2. Resources
 
@@ -71,12 +54,7 @@ build on.
 
 **Only the Ballast Drill will work it.** The ore carries its own
 `resource-category`, `sae-kamacite`, so no drill shipped in from anywhere else
-touches it — the same lock the vents already had, for the same reason. Kamacite
-is not ore in a rock; it is the crust of a metal world, and it takes a machine
-that presses with its own weight under 50 g. Since kamacite is the Core's only
-solid resource, an imported drill is scrap the moment it lands. The drill is
-therefore on the critical path to the first plate, which is why it is priced in
-freight rather than in the plate it produces.
+touches it. 
 
 ### Melt vents — a fluid, infinite but declining
 
@@ -86,26 +64,8 @@ declines with draw the way crude oil does, so a vent is permanent, worth buildin
 around, and eventually wants company.
 
 **Drawing melt costs helium-3.** The melt vent requires an input of **helium-3**
-to draw, the way vanilla's uranium ore requires 10 sulfuric acid per mining
-operation (`minable.required_fluid`). The rarer resource therefore throttles the
-abundant one, and the two vent types become a single coupled siting problem
-rather than two independent ones.
+to draw (`minable.required_fluid`).
 
-*To verify:* vanilla only uses `required_fluid` on a solid resource. A vent pump
-needs both an input and an output fluid box, which the mining drill prototype
-supports, but no vanilla prototype does both at once — worth a spike before this
-is depended on.
-
-**Melt splits between metal and power, and the split is a recipe choice.**
-Settling comes in two forms: one yields more settled melt and a little steam, the
-other yields less melt and a great deal of steam at 500 °C, which drives ordinary
-turbines. Recipes may output a fluid at a fixed temperature — vanilla's
-`acid-neutralisation` emits steam at exactly 500 — so this needs no heat network,
-no heat pipes and nothing borrowed from Aquilo.
-
-Every megawatt is metal not cast, and the final line needs both. That competition
-for one sited, rate-limited resource is the Core's central factory problem, and
-nothing in vanilla poses it.
 
 ### Gas vents — volatiles, rare
 
@@ -117,9 +77,6 @@ vents.
 It is doubly load-bearing: melt cannot be drawn without it, so the rare resource
 throttles the abundant one. Beyond that it is the atmosphere for sealed processes
 (including the sealed roboport, §9) and an ingredient in the science pack.
-
-**What it is not** is a source of oxygen. The Core has no oxidiser of its own,
-and nothing there burns.
 
 ### What the Core never has
 
@@ -143,12 +100,6 @@ The structural guarantee, and the reason the whole mod holds together:
 > **Every capstone product can only be made on the two planets whose tree
 > produces it**, because each is anchored on a material or a condition exclusive
 > to those worlds. The final line consumes all five.
-
-So the Core is permanently dependent by construction, not by a rule. A player
-standing on it with a complete factory still needs Vulcanus, Fulgora, Gleba and
-Aquilo running, and still needs the corridor carrying their output the whole
-distance. Finishing the game does not switch the supply line off; it is what the
-supply line was for.
 
 ## 4. The line spans surface and orbit
 
@@ -216,11 +167,13 @@ technologies are five different problems rather than one repeated.
 
 | Tree | Capstone product | Local input | Intermediate | Coil part |
 |---|---|---|---|---|
-| Fulgora ↔ Aquilo | **Superconducting winding** | orbital homogenisation | **Field conductor** | Conductor |
+| Fulgora ↔ Aquilo | **Superconducting winding** | homogenised ingot — made in orbit | **Field conductor** | Conductor |
 | Vulcanus ↔ Fulgora | **Magnetar alloy** | settled melt | **Magnetic core billet** | Core |
-| Vulcanus ↔ Gleba | **Cultured alloy** | whiskers | **Reinforced frame** | Frame |
-| Fulgora ↔ Gleba | **Bio-polymer** | raw molten kamacite | **Insulation sleeve** | Insulation |
+| Vulcanus ↔ Gleba | **Cultured alloy** | whisker tow — combed whiskers | **Reinforced frame** | Frame |
+| Fulgora ↔ Gleba | **Bio-polymer** | whisker felt and raw molten kamacite | **Insulation sleeve** | Insulation |
 | Gleba ↔ Aquilo | **Cryoprotectant fluid** | helium-3 | **Coolant charge** | Coolant |
+
+As built in `prototypes/core/intermediates.lua`.
 
 Every capstone is therefore *visibly in the thing being built*. A player looking
 at a Field Coil Segment can trace each of its parts back to a pair of planets and
@@ -230,7 +183,7 @@ the chain that produced it.
 
 | End product | From | Made by |
 |---|---|---|
-| **Coil assembly** | field conductor + magnetic core billet + reinforced frame + insulation sleeve | **Cold welding** — joined in vacuum, slowly, at almost no power |
+| **Coil assembly** | field conductor + magnetic core billet + reinforced frame + insulation sleeve + welded plate | **Cold welding** — joined in vacuum, slowly, at almost no power |
 | **Coolant loop** | coolant charge + kamacite plate | Ordinary assembly on the surface |
 
 Cold welding earns its place here: research uses the material sciences
@@ -260,14 +213,14 @@ is the most interesting thing available to the Core: **metal that travels
 through pipes.**
 
 It cannot be a vent product, because forming it needs carbon and the Core has
-none — so it is an intermediate unlocked later and built from **imported
-carbon**. That is a feature rather than an obstacle: it gives the corridor a
+none — so it is unlocked late, by **Carbonyl Chemistry** after Magnetic
+Separation, and built from **imported carbon**. That is a feature rather than an obstacle: it gives the corridor a
 permanent cargo that has nothing to do with the capstones, and it means the
 Core's best chemistry is paid for with freight from home.
 
 ## 6. The sixth tech tree
 
-The Core carries the mod's **sixth technology tree** — at least ten technologies,
+The Core carries the mod's **sixth technology tree** — twenty-one technologies,
 and the only tree whose research currency is manufactured on site.
 
 ### Geodynamic science
@@ -275,72 +228,37 @@ and the only tree whose research currency is manufactured on site.
 A new science pack, crafted from the **intermediates** of the Core's own line
 (§5) — the same intermediates the end products need.
 
-> Research and construction draw on one supply. **Every pack burned is a segment
-> delayed.**
-
-That is the endgame's central decision, one layer above the melt's
-metal-or-steam split, and it is why the pack's cost is the most important number
-in the tree.
-Start it deliberately expensive and tune down: if the pack is cheap, research is
-a formality and the endgame collapses into a segment grind.
-
-*Geodynamic* after geodynamics, the study of planetary interiors and the fields
-they generate — which is precisely what the Ignition Array exists to restart. It
-also matches vanilla's habit of naming a pack after a field of study:
-metallurgic, electromagnetic, agricultural, cryogenic.
-
 ### The recipe
 
-**Geodynamic science pack** — 20 s, in an assembler, recipe locked to pressure
-1–9. One recipe, not five alternates.
+**Geodynamic science pack** — 1 field conductor + 1 reinforced frame +
+4 kamacite whiskers → 5 packs, 20 s, in an assembler, recipe locked to pressure
+1–9. One recipe.
 
-| Ingredient | Why it is there |
-|---|---|
-| **Field conductor** and **reinforced frame** | The two fixed intermediates. Every pack is a Field Coil Segment delayed |
-| **Kamacite whiskers** | Ties research rate to growing *area*, so knowledge costs ground |
-| **Homogenised alloy** | Made in orbit only, so the lift is load-bearing from the first technology |
-| **Helium-3** | From the rarer vent, which already throttles the melt |
-
-**Two intermediates rather than five.** Research opens once Fulgora ↔ Aquilo and
-Vulcanus ↔ Gleba are delivering, while the Field Coil Segment still needs all
-five. That keeps the goal maximally demanding without letting one lagging tree
-freeze the entire Core tech tree.
-
-Those two are deliberate: the conductor and the aged metal are the mod's two most
-distinctive ideas — superconduction and maturation — so the trees a player is
-pushed to finish first are the ones that teach the most.
-
-The pack touches three of the Core's four mechanics — settling, growth and
-orbital homogenisation — and leaves **cold welding** to the Field Coil Segment.
-Research uses the material sciences; construction uses the joining.
-
-Three rules:
+The pack touches three of the Core's four mechanics: the conductor carries
+orbital homogenisation, the frame carries whisker growth and the whiskers
+themselves carry the farm's tile. Two rules:
 
 - **Locked to pressure 1–9.** Labs carry no surface conditions, so research
   itself can happen anywhere; the *pack* cannot be made anywhere but here. The
   tree therefore has to be advanced by a factory genuinely running on the Core.
   Vanilla gates its own packs the same way — electromagnetic at magnetic field
   99, metallurgic at pressure 4000, cryogenic at 100–600.
-- **It does not mature.** Maturation belongs to the billet. Putting it on
-  research as well would make every rate in the endgame a function of floor
-  space, which is one turn of the screw too many.
-- **It should probably require one orbit-made intermediate**, so the platform
-  overhead is load-bearing from the first technology rather than switching on at
-  the end. Open, but preferred.
+- **It requires one orbit-made intermediate.** The field conductor needs a
+  homogenised ingot, so the platform overhead is load-bearing from the first
+  geodynamic technology rather than switching on at the end.
 
 ### The ladder
 
-Twenty-four technologies in five tiers — comfortably past the ten-technology
-floor,
-and shaped so the endgame builds rather than arriving flat.
+Twenty-one technologies in five tiers, shaped so the endgame builds rather
+than arriving flat.
 
 | Tier | Technologies | Notes |
 |---|---|---|
 | **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Core Survey (vent pump, drill, crusher, smelting) · Crust Tapping (landing-day power) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Arc Masts · Cold Welding · **Orbital Lift** (§11) · **Vacuum Electronics** (§11) | Researched on packs the player already makes, since no geodynamic pack exists yet |
-| **1 — Integration** | Five technologies, one per capstone: each unlocks the recipe consuming that product with a local input to make an intermediate | **Researchable in any order**, so a player whose Gleba line is ahead of their Aquilo line is never blocked |
-| **2 — Geodynamic Science** | The pack itself | Unlocked once the first intermediate exists; required by everything after |
-| **3 — The Core's own goods** | The end products, and the **pressurised roboport** (§9) | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory. The roboport is priced in a coolant loop, so it lands *with* the end products rather than before them |
-| **4 — The goal** | Field Coil Segment · Ignition Array | Costs escalate steeply — the Array's research alone running into thousands of packs |
+| **1 — Integration** | Five technologies, one per capstone. **Conductor** and **Frame** come first, on vanilla packs — the two the science pack needs. **Billet**, **Sleeve** and **Coolant** follow, on geodynamic packs, in any order |
+| **2 — Geodynamic Science** | The pack itself | Needs the Conductor and the Frame; required by everything after |
+| **3 — The Core's own goods** | **Field Coils** (coil assembly, coolant loop, the Ring Mast, the ignition charge) · Corridor Seeding · Magnetic Separation · Carbonyl Chemistry · the **sealed roboport** (§9), which needs Field Coils and cold welding | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
+| **4 — The goal** | Ignition Array, which also unlocks the Field Coil Segment | Costs escalate steeply — the Array's research alone running into thousands of packs |
 
 ### Three things this shape gets right
 
@@ -348,9 +266,9 @@ and shaped so the endgame builds rather than arriving flat.
 need a capstone product plus a local input — so the opening hours run on vanilla
 packs and local bootstrapping, and geodynamic science arrives only once the
 corridor is genuinely delivering. The tree's currency is earned rather than
-granted on landing.
+granted on landing. Some technologies will be trigger techs to aid players progress through the mod.
 
-**The climax is the last three technologies.** With costs escalating steeply, the
+**The climax is the last technologies.** With costs escalating steeply, the
 ramp is felt rather than announced, and the final stretch becomes one sustained
 decision about how to split a single production line between knowing more and
 building more.
@@ -358,14 +276,13 @@ building more.
 **The five integration technologies must not be five of the same technology.**
 They share a shape — capstone plus local input yields intermediate — so what
 saves them is that each integrates through a **different local input**: one
-through the settling line, one through the helium, one through an orbit-only step, one
-through matured billet, one through raw melt. Then each capstone lands somewhere
+through settled melt, one through the helium, one through an orbit-only ingot,
+one through combed whiskers, one through felt and raw melt. Then each capstone lands somewhere
 different in the Core's economy, and five reads as five.
 
 ## 7. The completion goal — restarting the dynamo
 
-The Core's field is dead: `magnetic-field` reads 0, and the arc storms are what a
-failing dynamo looks like. **The mod is completed by restarting it.**
+The Core's field is dead: `magnetic-field` reads 0. **The mod is completed by restarting it.**
 
 That is the one ending whose meaning depends on being *here*. It explains the
 hazard the player has been building against, it cannot be done anywhere else, and
@@ -394,17 +311,12 @@ production problem in the game more assemblers cannot solve.
 
 ### Winning
 
-The array launches, the mod catches `on_rocket_launched` for that entity and
-calls `game.set_game_state{game_finished = true, player_won = true,
-can_continue = true}`. Vanilla's Solar System Edge victory is disabled at init
-through the `space_finish_script` remote interface's `set_no_victory`.
+Once all parts are made the array should start to run the completion.
+
 
 ### What it leaves behind
 
-A restarted field **decays without upkeep**, so the array becomes a permanent
-consumer: windings replaced forever, which keeps all five trees and the whole
-corridor running after the credits. That is the difference between an ending and
-a switch-off.
+A final science pack which can be used for some of the endless research.
 
 ## 8. The Core's own mechanics
 
@@ -454,20 +366,9 @@ harvested like a crop. Growing area, not machine count, is the throughput.
 
 *Implementation:* the `plant` prototype with `growth_ticks` and a tile
 restriction — measured working on the Core, growing to maturity and yielding its
-products. **The harvester is the open piece:** vanilla's agricultural tower needs
-pressure 1000–2000 and is refused here, so the mod must supply its own tower.
-Gleba farms food; the Core farms metal.
-
-### Where maturation went
-
-Maturation — the Vulcanus ↔ Gleba mechanic — was previously written here as the
-Core's central process. It has moved: **its endgame home is the corridor**, where
-cargo ripens during a platform run measured in real time, so the journey pays for
-exactly one material.
-
-Two time-based material processes on one planet would have blurred into each
-other. Each now has a single home: maturation is a warehouse that ages, whisker
-growth is a field you build and harvest.
+products. Vanilla's agricultural tower needs pressure 1000–2000 and is refused
+here, so the mod supplies its own: the **Bed Tender**. Gleba farms food; the
+Core farms metal.
 
 ## 9. Bots are earned
 
@@ -475,8 +376,8 @@ Personal roboports work at pressure 5 — verified, the equipment carries no
 surface conditions — so the player can blueprint-build from their armour on day
 one, slowly, within their own radius. What does not exist is a network.
 
-A **pressurised roboport**, unlocked by a technology on the Core and built from
-capstone products and volatiles, restores it. Give it `surface_conditions` of
+A **sealed roboport**, unlocked by a technology on the Core after Field Coils
+and cold welding, restores it. Give it `surface_conditions` of
 pressure 1–9 and it works here and **nowhere else in the game**: not on platforms
 (pressure 0), not on any vanilla planet (Aquilo is the lowest at 300). It is a
 new building that competes with nothing, and it turns bots from an assumption
@@ -485,10 +386,6 @@ into a milestone.
 ## 10. Still open
 
 - **How rich, and how scattered**, in numbers.
-- **What the intermediates and end products actually are** — the two middle
-  stages of §5 are named but not designed.
-- **Which local input each of the five integration technologies uses** — the
-  fix for them reading as one technology repeated (§6).
 - **The geodynamic pack's cost**, which sets how sharply research competes with
   construction.
 - **What the promethium-space material is** — the working assumption is a
@@ -497,9 +394,7 @@ into a milestone.
 - **The capstone buildings.** The products are chosen; each tree still has to
   design the building made *from* its product, and prove it is useful when
   earned, on the way out, and again at the Core.
-- **The spike on `required_fluid` for a fluid resource** (§2).
-- **What the end products are**, and how many of them there should be.
-- **How many segments**, and how the 100 divides across the aging floor.
+- **Whether the arc storms stay** as the hazard and half the power (§1).
 
 ## 11. What the Core makes instead of importing it
 
@@ -507,14 +402,10 @@ Two absences looked like permanent freight and turned out to be design space.
 Both were found the same way: by walking the technology tree and asking, at each
 node, whether the recipes it unlocks can actually be crafted.
 
-### The lift pays for itself
-
+### Rocket Parts
 §4 puts half the endgame in orbit, and every trip up costs a rocket. A rocket
 part is a processing unit, a low density structure and a rocket fuel — and the
-Core could originally make **none of the three**. By weight that is the dominant
-freight problem in the game: fifty rocket parts need fifty structures at 5 t and
-fifty fuels at 10 t, which is **750 of the 1,000 tonnes a rocket lifts**. Three
-quarters of a cargo rocket, spent shipping the means to launch the next one.
+Core could originally make none.
 
 Two alternates fix the heavy end, in the shape vanilla already uses for exactly
 this — Vulcanus does not get a new rocket part, it gets
@@ -527,9 +418,6 @@ earns a different route to the same item.
 | **Crust-gas propellant** | crust gas + kamacite plate | chemical plant | Gives the crust vents a second job, so the tap stops being a building the player walks past after hour one. The lift is sited on the map, like everything else here |
 
 ### Circuits without copper
-
-Every circuit in the game is copper and plastic. The way out is not to import
-copper; it is to **stop needing a solid conductor at all.**
 
 A sharp enough metal tip in a hard enough vacuum emits electrons under field
 alone — cold, no heater, no semiconductor. That is field emission, it is real,
@@ -554,28 +442,9 @@ Which means the Core's two dead ends are the two ingredients:
 3 emitter array + 1 welded plate + 100 steam ->  1 processing unit
 ```
 
-The steam is a **bake-out** — a sealed envelope holds its vacuum only once the
-surfaces inside it have been baked until they stop giving gas back — and it is
-required at 500 °C, which is the byproduct of settling. So electronics become a
-third claimant on the metal-or-steam split of §2, beside metal and electricity.
-Every processing unit is steam that did not turn a turbine.
-
-**This is a lateral trade, not a better circuit.** A processing unit costs about
-fourteen whiskers, and whiskers come at four per plant every four minutes — so
-the Core's electronics run at the speed of *growing area*, the constraint the
-whole planet is built around. A Nauvis copper line out-produces it and always
-should. What it buys is that the Ignition Array's two hundred processing units
-are a farm the player builds rather than a queue of cargo pods, and the corridor
-gets to carry the things that matter.
-
 ### What this does not change
 
 The corridor still brings all five capstone products, and steel, gears, electric
 engines, pipe, accumulators, carbon and rockets besides. §3's guarantee was never
 about circuits; it rests on the capstones, and it is untouched.
 
-**One thing it does change, and deliberately.** Advanced circuits and processing
-units made here are ordinary items and can be shipped anywhere. The Core has
-never supplied anything outward before. The whisker rate keeps it from being an
-exploit, and the fiction is good — the dead world makes the radiation-hard
-computers — but it reverses the corridor's direction for the first time.

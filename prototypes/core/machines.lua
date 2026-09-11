@@ -85,7 +85,7 @@ local function crafter(name, from, opts)
 end
 
 --------------------------------------------------------------------------------
--- N1. Drop Crusher -- graphics/building-spec-drop-crusher.md
+-- N1. Drop Crusher -- concept/drop-crusher/building-spec-drop-crusher.md
 --
 -- Breaks ore by dropping a weight on it, so it works only where there is weight
 -- to drop. Vanilla's crusher spins and is locked to zero g; this one drops and
@@ -100,7 +100,7 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
   conditions = HIGH_G
 })
 
--- Art: the Sealed Hammer, option A of five (graphics/drop-crusher-options/).
+-- Art: the Sealed Hammer, option A of five (concept/drop-crusher/options/).
 --
 -- Locked 2026-09-09 and the first design in this mod picked by comparison rather
 -- than by refinement: versions 1 to 10 were all the same idea made better, and
@@ -240,7 +240,7 @@ derive.own_graphics(crusher,
 data:extend({ crusher })
 
 --------------------------------------------------------------------------------
--- N2. Ballast Drill -- graphics/building-spec-ballast-drill.md
+-- N2. Ballast Drill -- concept/ballast-drill/building-spec-ballast-drill.md
 --
 -- `resource_drain_rate_percent` is the whole building. It is the one mining-drill
 -- field that changes what a patch is *worth* rather than how fast it empties,
@@ -306,7 +306,7 @@ drill.energy_source = { type = "electric", usage_priority = "secondary-input" }
 drill.module_slots = 4
 drill.surface_conditions = HIGH_G
 
--- Art: the Ring Press, option B of five (graphics/ballast-drill-options/).
+-- Art: the Ring Press, option B of five (concept/ballast-drill/options/).
 --
 -- Locked 2026-09-10. A heavy cast annulus riding up and down three guide columns
 -- around a capped central shaft, on a low riveted deck. Nothing about it rises,
@@ -332,14 +332,42 @@ drill.surface_conditions = HIGH_G
 --
 -- **The plate is stretched 1.05x vertically.** The render came back at aspect
 -- 1:0.90 against `big-mining-drill-N-still-front`'s 1:0.94 -- the camera defect
--- graphics/TODO.md says to expect on every remaining building. 5% is inside the
+-- the template's Appendix C says to expect on every remaining building. 5% is inside the
 -- band the tool's own docstring calls invisible on details. 320 px of drawn
 -- machine, 5.000 tiles, checked by tools/check-footprint.py.
 --
--- **The ring is RAISED in this plate**, so when the press stroke is animated this
--- frame is the top of it and the frames fall from here -- the opposite of the
--- Drop Crusher, whose plate is the bottom of its stroke because its crown can
--- only travel up.
+-- **The ring is RAISED in this plate**, so this frame is the top of the press
+-- stroke and the frames fall from here. (The Drop Crusher's plate is the top of
+-- its stroke too, for a different reason: its crown is the topmost thing on its
+-- canvas, with two pixels of headroom, so it cannot rise at all. Its §9 assumed
+-- the opposite until that was measured.)
+--
+-- **The stroke is animated, from the same route as the Drop Crusher's** --
+-- Animatorio (github.com/Onoulade/Animatorio) driven by
+-- tools/build-animatorio-layers.py off graphics/entity/ballast-drill/stroke.json,
+-- cut into a static housing and a 228x230 window, checked to reassemble exactly.
+--
+-- **What moves is the ring and only the ring.** `concept/ballast-drill/options/B-ring-press.md`
+-- is explicit -- "a fixed central column ... around it rides a heavy cast ballast
+-- ring" -- so the column has to stay put while the mass drops around it. That is
+-- two Animatorio layers, not one: a `piston` carrying the whole disc down, then a
+-- `source_occluder` that paints the column back over it from the plate. The
+-- column standing still while the ring falls past it is the entire read.
+--
+-- **65.6% of the machine's width moves**, and 30.3% of its drawn pixels change.
+-- B-ring-press.md picked this design over four others precisely because it was
+-- "the largest moving part of the five and the only one inside vanilla's band",
+-- against 72%, 101% and 113% on assembling-machine-3, the centrifuge and the
+-- electromagnetic plant. The Drop Crusher, for comparison, manages 17.7%.
+--
+-- **The deck behind the ring is cloned, not invented.** The plate never drew it,
+-- so the band the ring uncovers has to come from somewhere: sampling 18 px up
+-- lands real riveted plate there. The alternative -- inpainting from surrounding
+-- colour -- gives a grey smear, and the two were rendered side by side before
+-- this was chosen.
+--
+-- **`animation_speed` is 0.4**: 24 frames over 60 ticks is the "slow, heavy,
+-- one-second stroke" §3.2 asks for, at `mining_speed = 3.0`.
 --
 -- **One plate for all four directions, and that is a known gap.** A mining drill
 -- rotates, and `vector_to_place_result` rotates with it -- so a player who turns
@@ -350,6 +378,7 @@ drill.surface_conditions = HIGH_G
 -- honest in its default orientation and wrong in the other three, which is
 -- better than wearing big-mining-drill's sprites but is not finished.
 local BD = "__space-age-extended__/graphics/entity/ballast-drill/"
+local BD_FRAMES = 24
 drill.icon = "__space-age-extended__/graphics/icons/ballast-drill.png"
 drill.icons = nil
 derive.own_graphics(drill,
@@ -358,18 +387,44 @@ derive.own_graphics(drill,
   {
     layers =
     {
+      -- The plate, less the window the ring moves in. One frame, repeated to meet
+      -- the animated layer's count -- vanilla's biochamber arrangement.
       {
-        filename = BD .. "base.png",
+        filename = BD .. "stroke-housing.png",
         priority = "high",
         width = 328, height = 313,
+        frame_count = 1,
+        repeat_count = BD_FRAMES,
+        animation_speed = 0.4,
         shift = { 0, 0.13281 },
+        scale = 0.5
+      },
+      -- The window's contents. Window is 50..278 x 16..246, so its centre sits
+      -- 25.5 source px above the canvas centre -- the half comes from the canvas
+      -- being an odd 313 tall. 64 source px to the tile at scale 0.5, and the
+      -- plate's own 0.13281 is a rounded 8.5/64, so the sum is exactly
+      -- (8.5 - 25.5)/64 = -17/64.
+      {
+        filename = BD .. "stroke.png",
+        priority = "high",
+        width = 228, height = 230,
+        frame_count = BD_FRAMES,
+        line_length = 6,
+        animation_speed = 0.4,
+        shift = { 0, -0.265625 },
         scale = 0.5
       },
       {
         filename = BD .. "base-shadow.png",
         priority = "high",
         draw_as_shadow = true,
+        -- Still one frame. The ring moves 12 source px within a shadow plate 571
+        -- wide; splitting the shadow to follow it is a second mask for something
+        -- the camera never looks at. A choice, not an oversight.
         width = 571, height = 324,
+        frame_count = 1,
+        repeat_count = BD_FRAMES,
+        animation_speed = 0.4,
         shift = { 1.89844, 0.21875 },
         scale = 0.5
       }
@@ -396,7 +451,7 @@ derive.own_graphics(drill,
 data:extend({ drill })
 
 --------------------------------------------------------------------------------
--- N3. Dross Classifier -- graphics/building-spec-dross-classifier.md
+-- N3. Dross Classifier -- concept/dross-classifier/building-spec-dross-classifier.md
 --
 -- Sorts settling dross by particle size. Shares the Drop Crusher's and the
 -- Ballast Drill's argument -- gravity doing mechanical work -- applied to
@@ -412,7 +467,7 @@ local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
   conditions = HIGH_G
 })
 
--- Art: the Shaker Deck, option A of five (graphics/dross-classifier-options/).
+-- Art: the Shaker Deck, option A of five (concept/dross-classifier/options/).
 --
 -- The plate replaces assembling-machine-3's entirely, so the placeholder call is
 -- gone with it and this machine no longer logs at data stage. Two layers, both
@@ -461,7 +516,7 @@ derive.own_graphics(classifier,
 data:extend({ classifier })
 
 --------------------------------------------------------------------------------
--- N4. Coil Separator -- graphics/building-spec-coil-separator.md
+-- N4. Coil Separator -- concept/coil-separator/building-spec-coil-separator.md
 --
 -- Magnetic beneficiation on a world with no magnetic field, which is why it is
 -- so expensive to run: the field has to be generated rather than borrowed. Its
@@ -478,7 +533,7 @@ local separator = crafter("sae-coil-separator", "electromagnetic-plant", {
   conditions = CORE
 })
 
--- Art: the Cold Plant, option D of five (graphics/coil-separator-options/).
+-- Art: the Cold Plant, option D of five (concept/coil-separator/options/).
 --
 -- The design is the argument: nine tenths refrigeration and one tenth magnet,
 -- with the coil buried inside the vessel and never drawn. What the player sees
@@ -569,7 +624,7 @@ separator.working_sound =
 data:extend({ separator })
 
 --------------------------------------------------------------------------------
--- N5. Whisker Comber -- graphics/building-spec-whisker-comber.md
+-- N5. Whisker Comber -- concept/whisker-comber/building-spec-whisker-comber.md
 --
 -- Splits one harvest into a quality-graded pair, both with real consumers: tow
 -- for the composite line, felt for the cryostat. Combing is four times slower per
@@ -584,7 +639,7 @@ local comber = crafter("sae-whisker-comber", "assembling-machine-3", {
   conditions = CORE
 })
 
--- Art: the Spinner, option C of five (graphics/whisker-comber-options/).
+-- Art: the Spinner, option C of five (concept/whisker-comber/options/).
 --
 -- A squat standing drum rather than another low box, which is the entire reason
 -- it was picked: this machine sorts things standing next to the Dross
@@ -635,7 +690,7 @@ derive.own_graphics(comber,
 data:extend({ comber })
 
 --------------------------------------------------------------------------------
--- N6. Helium Concentrator -- graphics/building-spec-helium-concentrator.md
+-- N6. Helium Concentrator -- concept/helium-concentrator/building-spec-helium-concentrator.md
 --
 -- A relief valve on a hard cap, and priced like one: worse than gravity settling
 -- at making melt *and* far worse than a gas vent at making helium. It is the bad
@@ -690,7 +745,7 @@ local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
   }
 })
 
--- Art: the Twin Bottles, option C of five (graphics/helium-concentrator-options/).
+-- Art: the Twin Bottles, option C of five (concept/helium-concentrator/options/).
 --
 -- Two unequal vessels bridged at the waist, and the temperature split is drawn on
 -- the PIPE between them: frost on the cold half, bare warm metal on the hot half,
@@ -751,7 +806,7 @@ derive.own_graphics(concentrator,
 data:extend({ concentrator })
 
 --------------------------------------------------------------------------------
--- N7. Vacuum Furnace -- graphics/building-spec-vacuum-furnace.md
+-- N7. Vacuum Furnace -- concept/vacuum-furnace/building-spec-vacuum-furnace.md
 --
 -- A `furnace`, not an assembling machine, so it picks its own recipe from what
 -- it is fed -- which is what makes a smelter a smelter. It does the two things
@@ -803,7 +858,7 @@ furnace.fluid_boxes =
 }
 furnace.fluid_boxes_off_when_no_fluid_recipe = true
 
--- Art: the Pot, option A of five (graphics/vacuum-furnace-options/).
+-- Art: the Pot, option A of five (concept/vacuum-furnace/options/).
 --
 -- A sealed welded drum with one clamped hatch, and the whole design is the
 -- absence of an opening: no door, no throat, no chimney. The one thing that
@@ -888,7 +943,7 @@ derive.own_graphics(furnace,
 data:extend({ furnace })
 
 --------------------------------------------------------------------------------
--- N9. Ignition Ring Mast -- graphics/building-spec-ignition-ring-mast.md
+-- N9. Ignition Ring Mast -- concept/ring-mast/building-spec-ignition-ring-mast.md
 --
 -- The opposite of the Arc Mast in every way that matters: that one catches
 -- something episodic and banks it, this spends something continuously and cannot
@@ -934,7 +989,7 @@ local mast = crafter("sae-ring-mast", "assembling-machine-3", {
 mast.fixed_recipe = "sae-ignition-charge"
 mast.allowed_effects = {}
 
--- Art: the Braced Post, option A of five (graphics/ring-mast-options/).
+-- Art: the Braced Post, option A of five (concept/ring-mast/options/).
 --
 -- Locked 2026-09-10. Four heavy buttresses splaying to the corners, a thick
 -- banded coil at waist height, and a short blunt CLOSED cap above it. The whole

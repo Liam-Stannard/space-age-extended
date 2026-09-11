@@ -28,21 +28,7 @@ and nowhere else. Both measured.
 
 **Recipe surface conditions are a second, independent lock**, and this is what
 gates most of the big machines — not where they can stand, but where they can be
-*made*:
-
-| Recipe | Condition | Which means |
-|---|---|---|
-| `foundry`, `big-mining-drill`, turbo belts | pressure 4000 | Vulcanus |
-| `electromagnetic-plant`, `recycler`, `lightning-rod` | magnetic field ≥ 99 | Fulgora |
-| `biochamber`, the soils, `pentapod-egg` | pressure 2000 | Gleba |
-| `cryogenic-plant`, `fusion-reactor`, `fusion-generator` | pressure 100–600 | Aquilo |
-| `biolab`, `tree-seed`, `fish-breeding` | pressure 1000 | Nauvis |
-| `acid-neutralisation` | pressure 4000 | Vulcanus |
-
-The distinction matters. A cryogenic plant is *manufactured* on Aquilo but can be
-*placed* anywhere, platforms included — so **manufacture alone is never a
-crossing**: the player builds the machine once, ships it, and runs the chain
-wherever they like. A boiler, by contrast, genuinely cannot exist in space.
+*made*.
 
 ### The four honest anchors
 
@@ -93,11 +79,7 @@ neither does this mod.
 
 ## 2. Both planets sending is the default, not the law
 
-A pair should not be a supply route with a mine at one end. When material moves
-only one way, the tree is really one planet's chain with an import, and the
-partner is interchangeable.
-
-So **two-way is the default, and the strongest form is a round trip** — something
+**two-way is the default, and the strongest form is a round trip** — something
 leaves, comes back changed, and leaves again, which keeps both legs alive for as
 long as the player uses the tree rather than only while they build it.
 
@@ -109,7 +91,7 @@ capstone itself, which only it can assemble.
 
 ## 3. A tree is small and finishable
 
-**4–10 technologies.** A tree is a chapter, not a second planetary tech tree.
+**3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
 The player should be able to see its end from its beginning.
 
 That budget is spent carefully:
@@ -117,10 +99,7 @@ That budget is spent carefully:
 - **New items** need a mechanical reason to be separate — it has to be a fluid,
   or it has to be storable and shippable on its own, or it carries a spoil
   clock. "The chain feels more substantial with another step" is not a reason.
-- **New buildings** are rarer still. If the behaviour can be a recipe on an
-  existing building, it is a recipe. The **capstone building is the tree's
-  budget of one**; a second needs a mechanic that genuinely has no home in
-  anything vanilla provides.
+- **New buildings** need a mechanical reason to be separate.
 - **No parallel tiers.** Never a better Foundry, a better Recycler, a better
   Assembler. New behaviour, not the same behaviour with bigger numbers.
 
@@ -142,12 +121,28 @@ known thing is content; changing the known thing is not.
 
 For capstone buildings specifically:
 
-- **An option, never a strict upgrade.** If installing one makes a vanilla
+- An option, never a strict upgrade. If installing one makes a vanilla
   building pointless, it is wrong. It should be better in some circumstances and
   worse in others, and the player should be able to say which.
-- **It must not deflate a vanilla resource.** A chain that makes holmium or
+- It must not deflate a vanilla resource. A chain that makes holmium or
   tungsten trivially abundant has not added a production line, it has removed
   one.
+- A capstone building has a life across the whole rest of the game, in four
+  steps:
+
+  1. **Useful in the mid-game**, where the tree unlocks, for its own sake. A
+     player who never goes near the Core should still want it.
+  2. **Useful in getting to the Core** — the same capability, applied to the
+     problem of crossing a distance nothing else crosses.
+  3. **Useful in surviving the Core**, where almost nothing works and everything
+     arrives from somewhere else.
+  4. **Expandable out there.** A building may gain a further use on the way to
+     or on the Core — an extension, a second recipe, a mode that only makes
+     sense at the far end.
+
+Step 4 is what keeps the endgame from being a checklist: the buildings the player
+already knows become the tools they solve the Core with, rather than five
+trophies plus a new toolkit.
 
 The single deliberate exception in the whole mod is the win condition, which
 moves to the Core. Everything else vanilla does, it keeps doing.
@@ -212,7 +207,7 @@ Before a tree's recipes are worth tuning, it should answer yes to all of these.
       rather than naming a planet? *(§1)*
 - [ ] Does material move both ways — or, if not, is the one-way shape a
       deliberate answer rather than an omission? *(§2)*
-- [ ] Is it 4–10 technologies, with every new item mechanically justified and at
+- [ ] Is it 3–10 technologies, with every new item mechanically justified and at
       most the one capstone building? *(§3)*
 - [ ] Can you name what each planet contributes that the other could not get by
       building differently? *(§4)*

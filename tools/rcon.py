@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Minimal Source-RCON client, for driving a headless Factorio server.
 
-See design/spikes.md "The rig". Two gotchas it exists to work around: the
+Drives the headless rig. Two gotchas it exists to work around: the
 server exits on stdin EOF, and with no client attached it free-runs, so
 measure against game.tick deltas rather than wall-clock sleeps.
 """

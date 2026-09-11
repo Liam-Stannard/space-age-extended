@@ -1,6 +1,6 @@
 -- N8. The Crust Tap, its vent, and the turbine that burns what it draws.
 --
--- graphics/building-spec-crust-tap.md. The largest of the nine, because it is
+-- concept/crust-tap/building-spec-crust-tap.md. The largest of the nine, because it is
 -- not one prototype: it is a fluid, a sited tile, a collision layer to identify
 -- that tile, the tap itself and a companion generator.
 --
@@ -188,7 +188,7 @@ tap.tile_buildability_rules = {
 		colliding_tiles = { layers = {} },
 	},
 }
--- Art: the Bolted Collar, option A of five (graphics/crust-tap-options/).
+-- Art: the Bolted Collar, option A of five (concept/crust-tap/options/).
 --
 -- FOUR PLATES, DRAWN RATHER THAN ROTATED, because on this building the riser is
 -- the fluid box and a riser pointing the wrong way is the fluid box in the wrong

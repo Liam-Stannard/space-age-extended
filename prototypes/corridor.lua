@@ -241,7 +241,7 @@ gen.working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_so
 
 -- Art. Two plates, because `burner-generator` maps north/south onto one
 -- animation and east/west onto the other -- see
--- graphics/building-spec-radiant-generator.md sections 5 and 13. They are the
+-- concept/radiant-generator/building-spec-radiant-generator.md sections 5 and 13. They are the
 -- same machine rotated on the ground, drawn twice rather than rotated in
 -- software: the camera looks down at an angle, so turning the building shows
 -- different faces of it.

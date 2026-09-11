@@ -97,7 +97,7 @@ mast.selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } }
 
 -- Art. The entity has no rotation, so there is one picture and the two
 -- one-shot glow sheets the prototype exposes -- see
--- graphics/building-spec-arc-mast.md sections 6 and 15. Geometry is measured
+-- concept/arc-mast/building-spec-arc-mast.md sections 6 and 15. Geometry is measured
 -- off the approved plate, not guessed: the sprite is 224x345 at scale 0.5, and
 -- the shift is by_pixel(0, -57) so the base plate's centre sits -0.13 tiles
 -- from the origin -- the same place vanilla's collector puts its own. The

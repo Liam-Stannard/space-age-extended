@@ -2,8 +2,8 @@
 """Cut a building's fault-lamp lens out of its own plate, as a tintable sprite.
 
 Nothing in this mod uses `status_colors` with `apply_tint = "status"`, and every
-machine in it can stall for a reason the player cannot see -- graphics/TODO.md
-records that as the cheapest legibility win in the set, one sprite per building.
+machine in it can stall for a reason the player cannot see. This is the cheapest
+legibility win in the set, one sprite per building.
 
 The lens is drawn WHITE on the plate on purpose: the engine multiplies the sprite
 by the status colour at runtime, so a colour baked into the plate would be that

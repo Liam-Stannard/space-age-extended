@@ -75,6 +75,9 @@ echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
 # The data stage never opens image files, so a mod with broken icon paths passes
 # here and is then refused outright by a client. Check them too.
 "$REPO_ROOT/tools/check-graphics.sh" || exit 1
+
+# And that concepts, specs, templates and tasks are where claude.md says they are.
+"$REPO_ROOT/tools/check-layout.sh" || exit 1
 DATA_DIR="$(dirname "$(dirname "$FACTORIO_BIN")")/../data"
 DATA_DIR="$(cd "$DATA_DIR" && pwd)"
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fire a filled-in building spec's image prompts at OpenAI's image API.
 
-The spec documents in graphics/ carry their generation prompts in fenced
-```text blocks under known headings (see building-spec-template.md §11 and
-§16). This reads those blocks straight out of the markdown, so the prompts
+The spec documents in concept/<building>/ carry their generation prompts in fenced
+```text blocks under known headings (see templates/building-spec-template.md §9 and
+§14). This reads those blocks straight out of the markdown, so the prompts
 that get generated are always the prompts in the document -- there is no
 second copy to drift.
 
@@ -17,15 +17,16 @@ rounds needed a browser for until now. See each `*-options/README.md` for what
 to attach and why the order matters.
 
 Usage:
-  tools/generate-building-art.py graphics/building-spec-vent-pump.md
-  tools/generate-building-art.py graphics/drop-crusher-options/A-*.md \
+  tools/generate-building-art.py concept/vent-pump/building-spec-vent-pump.md
+  tools/generate-building-art.py concept/drop-crusher/options/A-*.md \
       --attach ref/assembling-machine-3.png --attach ref/foundry.png \
-      --tag A --outdir graphics/entity/drop-crusher/concept/options
+      --tag A --outdir concept/drop-crusher/options
   tools/generate-building-art.py <spec> --only master,icon
   tools/generate-building-art.py <spec> --list
   tools/generate-building-art.py <spec> --tag v2 --quality medium
 
-Output lands in graphics/entity/<building>/concept/<tag>-<slug>.png.
+Output lands in concept/<building>/<tag>-<slug>.png. Nothing here ships:
+only signed-off or placeholder art lives under graphics/.
 Needs an OpenAI key in OPEN_API_KEY (or OPENAI_API_KEY).
 """
 
@@ -182,7 +183,7 @@ def main():
                          "art, so extract to a scratch directory and never "
                          "commit them.")
     ap.add_argument("--outdir", help="override the output directory. An option "
-                                     "round writes to concept/options/ rather "
+                                     "round writes to concept/<building>/options/ rather "
                                      "than sitting beside the numbered drafts.")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -192,8 +193,7 @@ def main():
 
     name = re.sub(r"^building-spec-|\.md$", "",
                   os.path.basename(args.spec))
-    outdir = args.outdir or os.path.join(repo, "graphics", "entity", name,
-                                        "concept")
+    outdir = args.outdir or os.path.join(repo, "concept", name)
 
     prompts = expand(blocks(spec_text))
     if args.only:
@@ -213,7 +213,7 @@ def main():
     if args.list or args.dry_run:
         for slug, body in prompts.items():
             print(f"--- {slug}  ({len(body)} chars) -> "
-                  f"graphics/entity/{name}/concept/{args.tag}-{slug}.png")
+                  f"concept/{name}/{args.tag}-{slug}.png")
             if args.dry_run:
                 print(body + "\n")
         return
@@ -247,7 +247,7 @@ def main():
     if failed:
         sys.exit(f"{failed} of {len(prompts)} prompt(s) failed.")
     print(f"Generated {len(prompts)} image(s) into "
-          f"graphics/entity/{name}/concept/")
+          f"concept/{name}/")
 
 
 if __name__ == "__main__":

@@ -2,7 +2,19 @@
 
 A draft of the Core's complete line, deep enough to be the mod's largest chain
 rather than its shortest. **This is a design document, not an implementation
-record.** Nothing here is built yet; `design/05-core-remaining.md` says what is.
+record.** Where the code stands against it, per tier:
+
+| Tier | Built |
+| ---- | ----- |
+| T1 | crushed kamacite, fines, schreibersite concentrate — all in |
+| T2 | plate, settling, cast ingot, phosphide flux — all in |
+| T3 | carbon monoxide, metal carbonyl, carbonyl powder, sintered preform — all in (Carbonyl Chemistry) |
+| T4 | homogenised ingot only; no boule, no wafer |
+| T5 | whisker tow and whisker felt; no prepreg |
+| T6 | nothing |
+| T7 | the five integrations, on their T2/T4/T5 inputs |
+| T8 | insulation sleeve and coolant charge; no lamination, winding pack or vacuum cell |
+| T9–T11 | coil assembly, coolant loop, Field Coil Segment, Ignition Array — all in |
 
 ---
 
@@ -292,7 +304,7 @@ along.
 
 ## What this adds
 
-**14 new items and 2 new fluids**, none of them filler:
+**15 new items and 3 new fluids**, none of them filler:
 
 > crushed kamacite · kamacite fines · schreibersite concentrate · phosphide flux ·
 > carbon monoxide *(fluid)* · metal carbonyl *(fluid)* · carbonyl powder ·

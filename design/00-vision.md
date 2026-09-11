@@ -12,27 +12,19 @@ completes when material from both worlds meets in the same recipe.
 
 ## Five pairs
 
-**Nauvis is not part of the mod.** It is the world the player already knows
-inside out, and a chain that starts there is a chain about iron plates; nothing
-about pairing it with another world produces a relationship worth building. The
-mod lives among the four worlds the player travels to.
-
-That leaves six possible pairs across Vulcanus, Fulgora, Gleba and Aquilo, and
-**five of them get trees** — enough that the endgame draws on the whole system,
-few enough that each can be built properly and actually played.
+The worlds that pair are Vulcanus, Fulgora, Gleba and Aquilo. That gives six
+possible pairs, and **five of them get trees**.
 
 ## A tree per pair
 
 Each chosen pair gets a **small tree of its own**:
 
-- **Around 4–10 technologies.** Small enough to be finished, not a second
-  planetary tech tree bolted onto the first.
+- **Around 3–10 technologies.**
 - **Its own production lines**, spanning both worlds, with material physically
   moving between them.
 - **New mechanics, buildings or items where the pairing calls for them** —
   themed to those two planets specifically, and to the chain that leads up to
-  them. What Vulcanus and Fulgora do together should not be re-skinnable onto
-  another pair.
+  them. 
 
 ## When a tree becomes available
 
@@ -93,9 +85,7 @@ once, at the far end of the longest supply line in the game.**
 
 **Every tree built is a tree required.** Because the final production line
 consumes an item from every capstone, none of the five is skippable. That is
-what makes the pairs add up to an ending rather than a menu — and it means a
-tree that plays badly blocks the ending instead of being ignored, so each one
-has to be played before the next is designed.
+what makes the pairs add up to an ending.
 
 **The win condition moving is a real change to vanilla**, and the only one the
 mod makes. Everything else is additive: a player can still reach the Solar
@@ -105,33 +95,7 @@ System Edge exactly as before, it simply is not where the game ends any more.
 ending; the ending is the final production line running and delivering. Arrival
 only earns the right to start building it.
 
-## The engine hook for the ending
-
-Space Age's victory is not hard-coded. It fires from
-`core/lualib/space-finish-script.lua` when a space platform's
-`last_visited_space_location` matches `victory_location`, which defaults to
-`solar-system-edge`, and it exposes a remote interface:
-
-```lua
-remote.call("space_finish_script", "set_no_victory", true)
-```
-
-Since the ending is completion rather than arrival, the mod **disables the
-vanilla trigger** and calls `game.set_game_state{game_finished = true,
-player_won = true, can_continue = true, victorious_force = ...}` itself when the
-final line delivers. `set_victory_location` exists too, but pointing it at the
-Core would fire the ending the moment a platform reached orbit, which is exactly
-what this design does not want.
-
 ## Which five pairs
-
-Two rules settle the shape:
-
-- **Every world both sends and receives.** No planet is only ever a supplier.
-- **Every tree is designed fresh.** No earlier design is carried forward,
-  including the one already implemented in this repository.
-
-The working set — five of the six available pairs:
 
 | Pair | Available after | Theme, in one phrase |
 |---|---|---|
@@ -144,26 +108,8 @@ The working set — five of the six available pairs:
 Three trees open once the player has developed two of Vulcanus, Fulgora and
 Gleba; two more open at Aquilo, which is where the run-up to the endgame sits.
 
-**Vulcanus ↔ Aquilo is the pair left out** — heat against cold is a strong theme,
-but taking it would have put three of the five trees behind Aquilo and left the
-mid-game with almost nothing. It is the reserve if one of the five fails in
-design.
-
-**The cost of dropping Nauvis, stated plainly:** the mod now begins later. There
-is no tree a player can start on their first trip out; the earliest needs two
-developed worlds. That is the price of not building a chain about iron plates,
-and it is worth paying, but it means the first tree has to be strong enough to
-be worth the wait.
-
-**On the existing Vulcanus ↔ Fulgora work:** the pair stays, the implementation
-does not. The technologies, recipes and the Quench Turbine currently in
-`prototypes/` were built to a design that no longer applies, and this tree is
-designed from scratch like the other four. Whether any of that code is worth
-salvaging is a question for when the tree is designed, not before.
-
 ## Still open
 
 - **What each capstone building is.** Per-pair variety is the intent; each is
-  decided with its own tree.
-- **What the final production line on the Core actually makes**, and what the
-  new Core and promethium-space materials are.
+  decided with its own tree. Fulgora ↔ Aquilo's is the superconducting store;
+  the other four are undecided.
