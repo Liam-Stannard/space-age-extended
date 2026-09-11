@@ -5,3 +5,4 @@
 5. Every outstanding task is logged in `./TODO.md` and removed once complete. Todos are logged nowhere else.
 6. Prompt templates live in `./templates/`. Nowhere else.
 7. Every piece of work goes on its own feature branch, named for the work. It is merged into `master` once it is ready, and the branch is deleted after the merge. Nothing is committed directly to `master`.
+8. No `.md` file — `TODO.md`, `README.md`, anything in `design/`, `templates/` or `concept/` — is written to, added to or reworded without my explicit agreement first. Propose the wording in the reply; write it only once agreed.
