@@ -65,6 +65,128 @@ local palettes =
   -- colour axis -- and the seams carry two lights: melt-orange where the crust
   -- is grey, arc-blue where it is dark, which is where a strike earths itself.
   -- The blue is the same heat mechanism; the tiles split it by colour axis.
+  -- Five without grey, drawn up from the coloured mineral tiles' windows.
+  -- Alien Biomes bands its colours by temperature -- cold 0..30: black, grey,
+  -- white; mid 30..60: beige, cream, dustyrose, aubergine; hot 60..100: brown,
+  -- tan, red, purple, violet -- and within a band by aux: 0.15 pale, 0.45 mid,
+  -- 0.7 red-ish, 0.85..0.95 dark and purple. A palette is a choice of band and
+  -- a spread across aux; the plates and seams machinery is shared.
+
+  -- Heat-treated iron shows temper colours -- straw, brown, purple, blue -- so
+  -- the ground itself says metal that has been hot. Brown body, violet and
+  -- purple blooms where aux runs high, straw-tan where it runs low.
+  ["tempered-steel"] =
+  {
+    temperature = { centre = 78, amplitude = 14, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.55, amplitude = 0.34, octaves = 3, persistence = 0.5, scale = 340 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-brown-dirt-1", "mineral-brown-dirt-2", "mineral-brown-dirt-3", "mineral-brown-sand-1",
+      "mineral-violet-dirt-1", "mineral-violet-dirt-2", "mineral-purple-dirt-1",
+      "mineral-tan-dirt-1", "mineral-tan-sand-1", "mineral-tan-sand-3",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2",
+      "volcanic-blue-heat-1", "volcanic-purple-heat-1"
+    }
+  },
+
+  -- The ore's own colour. A shattered iron core oxidised at the surface: red
+  -- and dusty-rose body, plates of tan where the crust is scoured bare, and
+  -- cooler dips that go dustyrose. Warm, dark, unmistakably iron.
+  ["rust-iron"] =
+  {
+    temperature = { centre = 72, amplitude = 22, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.70, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = 1.2, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-red-dirt-1", "mineral-red-dirt-2", "mineral-red-dirt-3", "mineral-red-sand-1",
+      "mineral-dustyrose-dirt-1", "mineral-dustyrose-dirt-2", "mineral-dustyrose-sand-1",
+      "mineral-brown-dirt-1", "mineral-tan-sand-1", "mineral-tan-dirt-1",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-blue-heat-1"
+    }
+  },
+
+  -- The design's own first tile list had a slag flat in it. Black glassy slag
+  -- for a body, and plates of pale warm slag foam -- cream, not white -- that
+  -- warm themselves into the mid band so cream answers rather than white.
+  ["slag-flats"] =
+  {
+    temperature = { centre = 14, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.45, amplitude = 0.18, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.86, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = 1.4, warm = 70, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-black-dirt-1", "mineral-black-dirt-2", "mineral-black-dirt-3",
+      "mineral-black-sand-1", "mineral-black-sand-3",
+      "mineral-cream-dirt-1", "mineral-cream-dirt-3", "mineral-cream-sand-1", "mineral-beige-dirt-1",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-blue-heat-1"
+    }
+  },
+
+  -- A cut meteorite: bronze-brown with crystalline banding. The bands come
+  -- from stretching the colour noise along one axis, so tan and red run in
+  -- streaks through the brown rather than pooling.
+  ["meteorite-face"] =
+  {
+    temperature = { centre = 76, amplitude = 16, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.16, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.42, amplitude = 0.34, octaves = 2, persistence = 0.5, scale = 220, stretch = 0.18 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-brown-dirt-1", "mineral-brown-dirt-2", "mineral-brown-dirt-3", "mineral-brown-sand-1",
+      "mineral-tan-dirt-1", "mineral-tan-dirt-3", "mineral-tan-sand-1",
+      "mineral-red-dirt-1", "mineral-red-sand-1",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-blue-heat-1"
+    }
+  },
+
+  -- The cool dark of a core whose field died. Aubergine and violet body in
+  -- the mid band, dustyrose plates, black where the ground dips cold, and the
+  -- seams come up blue because aux runs high. The most alien of the set, and
+  -- the one the machines' copper has to warm.
+  ["dead-dynamo"] =
+  {
+    temperature = { centre = 42, amplitude = 16, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.88, amplitude = 0.08, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = 0.35, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-aubergine-dirt-1", "mineral-aubergine-dirt-2", "mineral-aubergine-dirt-3", "mineral-aubergine-sand-1",
+      "mineral-dustyrose-dirt-1", "mineral-dustyrose-dirt-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-purple-heat-1", "volcanic-orange-heat-1"
+    }
+  },
+
   ["scoured-nickel"] =
   {
     temperature = { centre = 16, amplitude = 24, octaves = 2, persistence = 0.5, scale = 480 },
@@ -253,16 +375,18 @@ end
 local TEMPERATURE_RANGE = { -15, 125 }
 
 local function noise(field, seed)
+  -- `stretch` squeezes the noise along y, so a field of blobs becomes a field
+  -- of bands -- the crystalline banding of a cut meteorite.
   return string.format(
     "multioctave_noise{x = x,\z
-                       y = y,\z
+                       y = y * %s,\z
                        seed0 = map_seed,\z
                        seed1 = %d,\z
                        octaves = %d,\z
                        persistence = %s,\z
                        input_scale = 1/%d,\z
                        output_scale = 1}",
-    seed, field.octaves, field.persistence, field.scale)
+    field.stretch or 1, seed, field.octaves, field.persistence, field.scale)
 end
 
 local function clamped(field, seed, low, high)
@@ -293,6 +417,13 @@ local function temperature_expression(pal, seed, low, high)
   if pal.veins then
     local v = pal.veins
     base = string.format("%s + max(0, %s - abs(%s)) * %s", base, v.width, noise(v, v.seed), v.gain)
+  end
+  -- Plates may warm as well as pale: the mid-temperature colours (cream,
+  -- beige, dustyrose, aubergine) sit in a 30..60 window a cold body never
+  -- reaches, so a plate that wants one of them lifts its own temperature.
+  if pal.plates and pal.plates.warm then
+    local pl = pal.plates
+    base = string.format("%s + max(0, %s - %s) * %s", base, noise(pl, pl.seed), pl.threshold, pl.warm)
   end
   return string.format("clamp(%s, %s, %s)", base, low, high)
 end

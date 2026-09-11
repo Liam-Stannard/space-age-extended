@@ -58,7 +58,13 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Core terrain (`core-terrain` branch)
 
-- **Choose the palette.** `scoured-nickel` is the recommendation: built from
+- **Five palettes without grey were rendered for the choice** — `tempered-steel`,
+  `rust-iron`, `slag-flats`, `meteorite-face`, `dead-dynamo` — in
+  `concept/planet-core/terrain/`, contact sheet `five-without-grey-…`. First
+  cuts, one seed each; whichever is chosen gets the same two-seed tuning pass
+  `scoured-nickel` had. Note `tempered-steel` placed no violet or purple on its
+  seed (aux never reached their 0.85+ windows) and came out tan and brown.
+- **Choose the palette.** `scoured-nickel` was the grey recommendation: built from
   the renders of the other five, it drops frost entirely (the Core has no water
   to freeze) and gives the brief's read from what the planet does have — dark
   grey-to-black metal ground (two seeds: 71% black / 60% grey), plates of bare
