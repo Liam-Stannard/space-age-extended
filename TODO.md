@@ -58,19 +58,16 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Core terrain (`core-terrain` branch)
 
-- **Pick a palette by eye — renders are in `concept/planet-core/terrain/`**
-  (all four, close and wide, noon, Alien Biomes 0.8.0, fresh seeds). What they
-  show: in every palette ~80% of the ground is Space Age's dark volcanic ash,
-  because those tiles' own autoplace outcompetes Alien Biomes' mineral tiles,
-  which appear only as islands; the accent tiles each palette is named for
-  (struck-nickel's blue/purple heat, frozen-crust's orange veins) **never place
-  in any of them**; and the yellow sandstone Nauvis cliff is the most visibly
-  wrong thing on the ground. `frozen-crust` is the only one that reads as
-  something other than dark ash, and it reads as snow on black rather than the
-  brief's frost skin on grey-brown metal. To get the brief's look the volcanic
-  tiles have to come out of the list, not just the mineral ones go in.
-- **The boulder's cool-grey tint is unverified** — at zoom 0.5 it cannot be
-  told from the brown volcanic rock decoratives around it.
+- **Choose the palette.** `frosted-iron` was built from the renders of the
+  other four and is the first to give the brief's read — grey metal ground
+  (66–72% mineral dirt over two seeds), pale frost in patches (2–12%), heat only
+  along thin seams (1.2%, both seeds), grey and black rock scatter and craters,
+  no Vulcanus or Fulgora props. Renders: `concept/planet-core/terrain/frosted-iron/`.
+  `struck-nickel` is still the one `map-gen.lua` selects; switching is a
+  one-word design decision. Still unseen: a heat seam close up, and a full
+  playthrough's worth of ground.
+- **Frost varies a lot by seed** (2% against 12% over 256 chunks) because the
+  temperature noise is region-scale. Acceptable or not is a play question.
 - **The kamacite boulder is a drill-free ore route.** 25 ore by hand, about two
   a chunk, finite. 04 §2 says only the Ballast Drill works kamacite; if the
   boulder stays, that section owes a sentence (design change — needs agreement).

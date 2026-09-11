@@ -47,6 +47,61 @@ local PALETTE = "struck-nickel"
 
 local palettes =
 {
+  -- Built from the renders of the four below (concept/planet-core/terrain/):
+  -- every one of them came out four-fifths Space Age volcanic ash, because
+  -- those tiles' own autoplace beats the mineral ground, and none ever placed
+  -- the accent tile it was named for. So this one lists NO volcanic tile while
+  -- the pack is present, and puts its temperature where the tiles actually
+  -- answer: the mineral dirts want 0..30, frost wants below 0, and the orange
+  -- heat wants 100..135 -- unreachable by one gentle noise, so heat arrives as
+  -- `veins`: a second, long-wavelength noise whose rare peaks are added on top,
+  -- so the crust is cold nearly everywhere and split by a few hot seams. That
+  -- is the planet brief's own read -- grey-brown metal, pale frost in patches,
+  -- heat only through sparse fractures -- and the first palette to attempt it
+  -- with the tiles' windows in hand rather than guessed.
+  ["frosted-iron"] =
+  {
+    -- Centre 14, swing 30: mostly inside the dirts' 0..30, dipping under zero
+    -- for frost about a third of the time. The veins are the zero contours of
+    -- a second noise: within `width` of a crossing, temperature climbs by up
+    -- to `gain` * width -- +120 here -- into the orange heat's window. Contours
+    -- always exist, so the seams always appear; a peak-above-threshold version
+    -- gave 3% heat on one seed and none at all on the next.
+    -- Three renders in: amplitude 30 put a quarter of one seed under frost,
+    -- width 0.06 put 7% of the ground in the heat window. Both narrowed.
+    temperature = { centre = 16, amplitude = 26, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    -- Dirt wants 0.5 +/- 0.1; sand wants 0.2 +/- 0.2. A 0.14 swing keeps it
+    -- dirt with the odd sand flat.
+    -- First render: 0.50 +/- 0.14 gave 38% sand, a paler ground than the brief.
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    -- Aux is the colour axis: white at 0.15, grey at 0.5, black at 0.85. Leaning
+    -- past the middle keeps white dirt rare (23% in the first render) and lets
+    -- black through, which is where the brief's dark metal comes from.
+    aux         = { centre = 0.58, amplitude = 0.32, octaves = 3, persistence = 0.5, scale = 340 },
+
+    -- Craters and frost only; the brown volcanic rocks, sulfur crusts and
+    -- Fulgora stones are what made the other four read as borrowed ground.
+    decoratives = { "snow", "frost" },
+    -- "vulcanus" as well as "volcanic": the large rock decal is named after the
+    -- planet. And Aquilo's lithium icebergs answer to "ice" -- 56,000 of them in
+    -- 256 chunks on the first render, on a world with no lithium.
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium" },
+
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      -- No white dirt: on one seed it covered a third of the ground and read as
+      -- a snowfield. The pale in this palette is frost, in patches, on metal.
+      "mineral-grey-dirt-1", "mineral-grey-dirt-2", "mineral-grey-dirt-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "mineral-grey-sand-1", "mineral-grey-sand-3",
+      "frozen-snow-0", "frozen-snow-1", "frozen-snow-3",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2"
+    }
+  },
+
   -- Grey worked metal, cool unlit cracks, and a rare scorch where the dead
   -- dynamo still earths itself. The accent is electrical rather than molten,
   -- which ties the ground to the arc storms instead of to volcanism, and keeps
@@ -176,11 +231,25 @@ local function clamped(field, seed, low, high)
     field.centre, field.amplitude, noise(field, seed), low, high)
 end
 
+-- Temperature, with a palette's hot veins added if it has them: along the
+-- zero contours of a second noise, within `width` of the crossing, up to
+-- `gain` * `width` degrees are laid on top -- so a cold crust still reaches
+-- the heat tiles' window along a few thin seams.
+local function temperature_expression(pal, seed, low, high)
+  local base = string.format("%s + %s * %s", pal.temperature.centre,
+    pal.temperature.amplitude, noise(pal.temperature, seed))
+  if pal.veins then
+    local v = pal.veins
+    base = string.format("%s + max(0, %s - abs(%s)) * %s", base, v.width, noise(v, v.seed), v.gain)
+  end
+  return string.format("clamp(%s, %s, %s)", base, low, high)
+end
+
 data:extend({
   {
     type = "noise-expression",
     name = "sae_core_temperature",
-    expression = clamped(palette.temperature, 2291, TEMPERATURE_RANGE[1], TEMPERATURE_RANGE[2])
+    expression = temperature_expression(palette, 2291, TEMPERATURE_RANGE[1], TEMPERATURE_RANGE[2])
   },
   {
     type = "noise-expression",
@@ -227,7 +296,12 @@ local function core_tiles()
   end
 
   add(palette.tiles)
-  if mods["alien-biomes"] then add(palette.alien_tiles) end
+  if mods["alien-biomes"] then
+    add(palette.alien_tiles)
+  else
+    -- A palette that leans on the pack says what it wears without it.
+    add(palette.without_pack)
+  end
 
   -- Only if a palette somehow contributed nothing at all: vanilla's Aquilo
   -- ground is the wrong colour for this place, but it is ground.
@@ -293,9 +367,11 @@ local function matches_any(name, patterns)
 end
 
 local function core_decoratives()
-  local wanted = { }
+  local wanted, refused = {}, {}
   for _, pattern in pairs(DECORATIVE_WANTED) do wanted[#wanted + 1] = pattern end
   for _, pattern in pairs(palette.decoratives or {}) do wanted[#wanted + 1] = pattern end
+  for _, pattern in pairs(DECORATIVE_REFUSED) do refused[#refused + 1] = pattern end
+  for _, pattern in pairs(palette.refuse or {}) do refused[#refused + 1] = pattern end
 
   local settings = {}
   -- 2.0 renamed the type: decoratives are `optimized-decorative` in data.raw.
@@ -303,7 +379,7 @@ local function core_decoratives()
   for name, decorative in pairs(data.raw["optimized-decorative"] or {}) do
     if decorative.autoplace
        and matches_any(name, wanted)
-       and not matches_any(name, DECORATIVE_REFUSED) then
+       and not matches_any(name, refused) then
       settings[name] = {}
     end
   end

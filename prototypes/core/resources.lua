@@ -270,8 +270,11 @@ boulder.autoplace =
                                                                   output_scale = 1}), 0, 0.01)"
 }
 
--- Cool and grey, so it reads as metal rather than as sandstone. This is the
--- whole of the art pass on it; deleting this line returns it to the stand-in.
-tint_sprites(boulder, { r = 0.62, g = 0.66, b = 0.74, a = 1 })
+-- Cool and grey, so it reads as metal rather than as sandstone. A tint
+-- multiplies, and the rock's texture is warm sandstone, so a gentle blue-grey
+-- (0.62, 0.66, 0.74 -- the first try) left it brown on the ground; this one
+-- pulls the red down far enough to read as dark metal. Deleting this line
+-- returns it to the stand-in.
+tint_sprites(boulder, { r = 0.40, g = 0.55, b = 0.75, a = 1 })
 
 data:extend({ boulder })
