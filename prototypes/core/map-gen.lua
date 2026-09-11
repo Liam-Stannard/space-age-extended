@@ -59,6 +59,45 @@ local palettes =
   -- is the planet brief's own read -- grey-brown metal, pale frost in patches,
   -- heat only through sparse fractures -- and the first palette to attempt it
   -- with the tiles' windows in hand rather than guessed.
+  -- frosted-iron with the frost taken out, because the Core has no water to
+  -- freeze. The pale here is bare nickel -- the white dirt, but in plates the
+  -- size of a room rather than a snowfield, cut by a high-frequency dip in the
+  -- colour axis -- and the seams carry two lights: melt-orange where the crust
+  -- is grey, arc-blue where it is dark, which is where a strike earths itself.
+  -- The blue is the same heat mechanism; the tiles split it by colour axis.
+  ["scoured-nickel"] =
+  {
+    temperature = { centre = 16, amplitude = 24, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    -- Grey-to-black body, and the range starts above white dirt's window
+    -- (0.15 +/- 0.15) on purpose: a render centred at 0.52 let white in as
+    -- continents covering a quarter of the ground. Pale here comes only from
+    -- the plates term below. Orange heat wants aux below 0.7 and blue above
+    -- 0.8, so seams come out a mix of the two -- and neither glows: Alien
+    -- Biomes' heat tiles carry no light, so at night a seam is a black line.
+    -- Lit fissures need the Core's own tile art.
+    aux         = { centre = 0.58, amplitude = 0.26, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Bare plates: a short-wavelength noise whose peaks pull aux down toward
+    -- white dirt's 0.15 window, in patches a few tiles across.
+    plates      = { threshold = 0.45, drop = 1.2, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-grey-dirt-1", "mineral-grey-dirt-2", "mineral-grey-dirt-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "mineral-white-dirt-1", "mineral-white-dirt-3",
+      "mineral-grey-sand-1", "mineral-grey-sand-3",
+      "volcanic-orange-heat-1", "volcanic-orange-heat-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-purple-heat-1"
+    }
+  },
+
   ["frosted-iron"] =
   {
     -- Centre 14, swing 30: mostly inside the dirts' 0..30, dipping under zero
@@ -235,6 +274,19 @@ end
 -- zero contours of a second noise, within `width` of the crossing, up to
 -- `gain` * `width` degrees are laid on top -- so a cold crust still reaches
 -- the heat tiles' window along a few thin seams.
+-- The colour axis, with a palette's bare plates cut into it if it has them: a
+-- short-wavelength noise whose peaks above `threshold` pull aux down by up to
+-- `drop`, so small patches land in the pale tiles' window without the whole
+-- region going pale.
+local function aux_expression(pal, seed)
+  local base = string.format("%s + %s * %s", pal.aux.centre, pal.aux.amplitude, noise(pal.aux, seed))
+  if pal.plates then
+    local p = pal.plates
+    base = string.format("%s - max(0, %s - %s) * %s", base, noise(p, p.seed), p.threshold, p.drop)
+  end
+  return string.format("clamp(%s, 0, 1)", base)
+end
+
 local function temperature_expression(pal, seed, low, high)
   local base = string.format("%s + %s * %s", pal.temperature.centre,
     pal.temperature.amplitude, noise(pal.temperature, seed))
@@ -265,7 +317,7 @@ data:extend({
     name = "sae_core_aux",
     -- Aux is the axis the mineral grounds separate their colours along, so this
     -- is what decides grey against black against white within a palette.
-    expression = clamped(palette.aux, 5183, 0, 1)
+    expression = aux_expression(palette, 5183)
   },
   {
     type = "noise-expression",

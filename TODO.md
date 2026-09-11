@@ -58,25 +58,19 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Core terrain (`core-terrain` branch)
 
-- **Choose the palette.** `frosted-iron` was built from the renders of the
-  other four and is the first to give the brief's read — grey metal ground
-  (66–72% mineral dirt over two seeds), pale frost in patches (2–12%), heat only
-  along thin seams (1.2%, both seeds), grey and black rock scatter and craters,
-  no Vulcanus or Fulgora props. Renders: `concept/planet-core/terrain/frosted-iron/`.
-  `struck-nickel` is still the one `map-gen.lua` selects; switching is a
-  one-word design decision. Still unseen: a heat seam close up, and a full
-  playthrough's worth of ground.
-- **Frost varies a lot by seed** (2% against 12% over 256 chunks) because the
-  temperature noise is region-scale. Acceptable or not is a play question.
-- **The kamacite boulder is a drill-free ore route.** 25 ore by hand, about two
-  a chunk, finite. 04 §2 says only the Ballast Drill works kamacite; if the
-  boulder stays, that section owes a sentence (design change — needs agreement).
-- **Decorative scatter is Vulcanus's and Fulgora's.** The pattern match lets in
-  the volcanic rocks, craters, Fulgora rocks and the three sulfur rock
-  decoratives (~400 per chunk in total). Alien Biomes' coloured rocks are
-  enabled but never place. Decide whether sulfur belongs, and whether the
-  density is right, by eye.
-
+- **Choose the palette.** `scoured-nickel` is the recommendation: built from
+  the renders of the other five, it drops frost entirely (the Core has no water
+  to freeze) and gives the brief's read from what the planet does have — dark
+  grey-to-black metal ground (two seeds: 71% black / 60% grey), plates of bare
+  pale nickel where the crust is scoured (8–14%), thin dark seams along the
+  fractures (~1.7%), craters, grey and black rock scatter, dark boulders.
+  Renders: `concept/planet-core/terrain/scoured-nickel/`. `frosted-iron` is
+  kept as the frost-on-metal alternative. `struck-nickel` is still the one
+  `map-gen.lua` selects; switching is a one-word design decision.
+- **The seams do not glow.** Alien Biomes' heat tiles carry no light, so at
+  night a fracture is a black line (`v3-seam-night.png`). Heat showing through
+  the crust — the brief's third read — needs the Core's own lit tile, like the
+  crust vent's. Until then the seams are dark fractures with pale rims.
 ## Repository layout
 
 - **Untracked art in `graphics/entity/` awaiting a sign-off decision:**
