@@ -1,0 +1,1 @@
+mineral-dustyrose-dirt=0.5% sae-crust-vent=1.2% volcanic-green-heat=82.9% volcanic-orange-heat=15.4%

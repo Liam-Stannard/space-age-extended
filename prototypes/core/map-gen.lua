@@ -220,7 +220,10 @@ local palettes =
   ["cream-flats"] =
   {
     temperature = { centre = 45, amplitude = 10, octaves = 2, persistence = 0.5, scale = 480 },
-    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    -- The body sits at 45, so a seam needs only +55 to reach the heat window
+    -- and the standard 0.035 band came out three times as wide as on a cold
+    -- body (10% of the ground, in dark strips). Narrowed to match.
+    veins       = { width = 0.022, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
     moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.22, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 340 },
     plates      = { threshold = 0.5, drop = -0.7, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
@@ -348,11 +351,19 @@ local palettes =
   -- The whole body in the heat window, so Alien Biomes' GREEN heat tiles are the ground -- an unlit acid-green crust with orange where aux runs low. Nothing else in the game is this colour.
   ["green-heat"] =
   {
-    temperature = { centre = 112, amplitude = 6, octaves = 2, persistence = 0.5, scale = 480 },
-    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    -- Three green shades: heat-1 at 110, -2 at 127, -3 at 140, so the body has
+    -- to range across them or it is one tile everywhere, which the first
+    -- render was.
+    temperature = { centre = 126, amplitude = 16, octaves = 2, persistence = 0.5, scale = 300 },
+    -- Seams run COLD here: a negative gain drops the temperature into the mid
+    -- band along the contours, where dustyrose answers at this aux -- mauve
+    -- fractures through dark green.
+    veins       = { width = 0.035, gain = -2400, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
     moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
     -- Green heat is a narrow aux window, 0.75 +/- 0.05; anything wider is orange.
     aux         = { centre = 0.75, amplitude = 0.04, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Plates dip aux toward the orange window: darker, warmer patches.
+    plates      = { threshold = 0.5, drop = 0.5, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
     tiles = {},
@@ -363,6 +374,7 @@ local palettes =
       "volcanic-green-heat-2",
       "volcanic-green-heat-3",
       "volcanic-green-heat-4",
+      "mineral-dustyrose-dirt-1", "mineral-dustyrose-dirt-2", "mineral-black-dirt-1",
       "volcanic-orange-heat-1",
       "volcanic-orange-heat-2"
     }
