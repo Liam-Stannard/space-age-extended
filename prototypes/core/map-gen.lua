@@ -404,6 +404,36 @@ local palettes =
       "volcanic-orange-heat-1",
       "volcanic-orange-heat-2"
     }
+  },  -- The whole body in the heat window, so Alien Biomes' BLUE heat tiles are the ground -- an unlit blue-black crust, aubergine hairlines where the seams run cold, orange plates where aux dips. Nothing else in the game is this colour.
+  ["blue-heat"] =
+  {
+    -- Three green shades: heat-1 at 110, -2 at 127, -3 at 140, so the body has
+    -- to range across them or it is one tile everywhere, which the first
+    -- render was.
+    temperature = { centre = 126, amplitude = 16, octaves = 2, persistence = 0.5, scale = 300 },
+    -- Seams run COLD here: a negative gain drops the temperature into the mid
+    -- band along the contours, where dustyrose answers at this aux -- mauve
+    -- fractures through dark green.
+    veins       = { width = 0.035, gain = -2400, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    -- Blue heat is a narrow aux window, 0.85 +/- 0.05.
+    aux         = { centre = 0.85, amplitude = 0.04, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Plates dip aux toward the orange window: darker, warmer patches.
+    plates      = { threshold = 0.5, drop = 0.5, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "volcanic-blue-heat-1",
+      "volcanic-blue-heat-2",
+      "volcanic-blue-heat-3",
+      "volcanic-blue-heat-4",
+      "mineral-aubergine-dirt-1", "mineral-aubergine-dirt-2", "mineral-black-dirt-1",
+      "volcanic-orange-heat-1",
+      "volcanic-orange-heat-2"
+    }
   },
 
   -- Nauvis's red desert and dry dirt: rust-orange and khaki, no pack required.
