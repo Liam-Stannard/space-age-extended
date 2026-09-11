@@ -44,6 +44,50 @@ bed.map_color = { r = 0.42, g = 0.40, b = 0.36 }
 bed.can_be_part_of_blueprint = true
 data:extend({ bed })
 
+-- The crust's lit cracks. Vulcanus's hot crack tile carries a real light
+-- layer -- the one thing no Alien Biomes tile has -- so the Core takes its
+-- art through derive and places it by its own rule: `sae_core_glow`, a noise
+-- expression map-gen.lua defines from the selected palette's dark shape, so
+-- the glow runs exactly along the joints of the crust and nowhere else.
+-- Vulcanus's own autoplace is gone with the copy; only the sheets remain.
+--
+-- Two colours of it. Ember is the art as it ships; arc is the same sheets with
+-- the embers' hue rotated to blue by tools/build-crust-glow-tile.py, main and
+-- light sheet alike, so the night glow matches the day paint. The palette
+-- says which one the crust wears (`glow.colour`), and map-gen.lua lists it.
+local function glow_tile(name, order, map_color, sheets)
+  local glow = derive.tile_from("volcanic-cracks-hot", name)
+  glow.subgroup = "sae-core-tiles"
+  glow.order = order
+  glow.layer_group = "ground-natural"
+  -- The copy says its sprites are only wanted on Vulcanus; the Core wants them.
+  glow.sprite_usage_surface = "any"
+  glow.map_color = map_color
+  glow.autoplace = { probability_expression = "sae_core_glow" }
+  if sheets then
+    -- Repointed structurally, as the whisker bed is: the main sheet and the
+    -- light sheet each appear once, under `variants`.
+    local function repoint(t)
+      for k, v in pairs(t) do
+        if type(v) == "table" then repoint(v)
+        elseif type(v) == "string" then
+          if v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot.png" then t[k] = sheets.main
+          elseif v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot-light.png" then t[k] = sheets.light end
+        end
+      end
+    end
+    repoint(glow.variants)
+  end
+  return glow
+end
+
+data:extend({
+  glow_tile("sae-crust-glow", "b[crust-glow]", { r = 0.85, g = 0.45, b = 0.20 }),
+  glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
+    { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
+      light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" })
+})
+
 data:extend({
   {
     type = "item",

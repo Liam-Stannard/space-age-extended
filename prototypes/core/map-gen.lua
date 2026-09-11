@@ -836,6 +836,496 @@ local palettes =
       "mineral-black-dirt-1", "mineral-black-dirt-2",
       "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
     }
+  },  ["wb-cells-glow"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The jointed crust, lit: the joints are black dirt at their edges and the
+    -- Core's own hot-crack tile down the middle, which glows at night.
+    -- The facet noise is normalised, not in tiles: 2.5 blackened everything.
+    dark        = { shape = "cells", amount = 0.72, grid = 28, width = 0.14, jitter = 0.8 },
+    glow        = { gain = 3, cut = 1.2 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-craters"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Round pits at Voronoi cell centres, sized by the grid.
+    dark        = { shape = "craters", amount = 0.72, grid = 40, level = 0.15, jitter = 0.9 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-basins"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Dark low ground: below an elevation contour, so it agrees with the cliffs.
+    dark        = { shape = "basins", amount = 0.72, level = 139, softness = 6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-strata"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Long parallel bands: the hollows noise stretched along one axis.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.40, scale = 90, octaves = 2, persistence = 0.5, stretch = 0.12 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-grit"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Salt and pepper: a very short noise above a high threshold.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.55, sharpness = 20, scale = 4, octaves = 2, persistence = 0.6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-gradient"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The crust darkens with distance from the landing site.
+    dark        = { shape = "gradient", amount = 0.72, from = 100, over = 260 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-plates"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- A jointed crust with wide joints: the pyramid noise below a width.
+    dark        = { shape = "plates", amount = 0.72, grid = 40, width = 0.22, jitter = 0.9 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-basins"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Dark low ground: below an elevation contour, so it agrees with the cliffs.
+    dark        = { shape = "basins", amount = 0.72, level = 139, softness = 6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-strata"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Long parallel bands: the hollows noise stretched along one axis.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.40, scale = 90, octaves = 2, persistence = 0.5, stretch = 0.12 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-grit"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Salt and pepper: a very short noise above a high threshold.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.55, sharpness = 20, scale = 4, octaves = 2, persistence = 0.6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-gradient"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The crust darkens with distance from the landing site.
+    dark        = { shape = "gradient", amount = 0.72, from = 100, over = 260 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-cells-arc"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The jointed crust, lit: the joints are black dirt at their edges and the
+    -- Core's own hot-crack tile down the middle, which glows at night -- in arc blue.
+    -- The facet noise is normalised, not in tiles: 2.5 blackened everything.
+    dark        = { shape = "cells", amount = 0.72, grid = 28, width = 0.14, jitter = 0.8 },
+    glow        = { gain = 3, cut = 1.2, colour = "arc" },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-craters"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Round pits at Voronoi cell centres, sized by the grid.
+    dark        = { shape = "craters", amount = 0.72, grid = 40, level = 0.15, jitter = 0.9 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-basins"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Dark low ground: below an elevation contour, so it agrees with the cliffs.
+    dark        = { shape = "basins", amount = 0.72, level = 139, softness = 6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-strata"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Long parallel bands: the hollows noise stretched along one axis.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.40, scale = 90, octaves = 2, persistence = 0.5, stretch = 0.12 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-grit"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Salt and pepper: a very short noise above a high threshold.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.55, sharpness = 20, scale = 4, octaves = 2, persistence = 0.6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-gradient"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The crust darkens with distance from the landing site.
+    dark        = { shape = "gradient", amount = 0.72, from = 100, over = 260 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-plates"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- A jointed crust with wide joints: the pyramid noise below a width.
+    dark        = { shape = "plates", amount = 0.72, grid = 40, width = 0.22, jitter = 0.9 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-basins"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Dark low ground: below an elevation contour, so it agrees with the cliffs.
+    dark        = { shape = "basins", amount = 0.72, level = 139, softness = 6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-strata"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Long parallel bands: the hollows noise stretched along one axis.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.40, scale = 90, octaves = 2, persistence = 0.5, stretch = 0.12 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-grit"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- Salt and pepper: a very short noise above a high threshold.
+    dark        = { shape = "hollows", amount = 0.72, threshold = 0.55, sharpness = 20, scale = 4, octaves = 2, persistence = 0.6 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },  ["wb-gradient"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    -- The crust darkens with distance from the landing site.
+    dark        = { shape = "gradient", amount = 0.72, from = 100, over = 260 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
   },
 
   ["scoured-nickel"] =
@@ -1156,6 +1646,17 @@ end
 
 data:extend({
   {
+    -- Where the crust's lit cracks go: the palette's dark shape, scaled so it
+    -- beats every ground tile where the mask is strong and loses where it is
+    -- weak -- so a joint is black dirt at its edges and lit down its centre.
+    -- Palettes without `glow` set it below every tile, so it never places.
+    type = "noise-expression",
+    name = "sae_core_glow",
+    expression = (palette.glow and palette.dark)
+      and string.format("%s * %s - %s", palette.glow.gain or 3, dark_mask(palette.dark), palette.glow.cut or 1.2)
+      or "-1000"
+  },
+  {
     type = "noise-expression",
     name = "sae_core_temperature",
     expression = temperature_expression(palette, 2291, TEMPERATURE_RANGE[1], TEMPERATURE_RANGE[2])
@@ -1217,6 +1718,11 @@ local function core_tiles()
   if found == 0 then
     add({ "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy",
           "ice-rough", "ice-smooth" })
+  end
+
+  -- The lit cracks, when the palette asks for them, in the colour it asks for.
+  if palette.glow then
+    settings[palette.glow.colour == "arc" and "sae-crust-glow-arc" or "sae-crust-glow"] = {}
   end
 
   -- The crust vent is ours and always present, whatever tile pack is installed.

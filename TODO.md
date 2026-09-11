@@ -80,7 +80,15 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Renders: `concept/planet-core/terrain/scoured-nickel/`. `frosted-iron` is
   kept as the frost-on-metal alternative. `struck-nickel` is still the one
   `map-gen.lua` selects; switching is a one-word design decision.
-- **The seams do not glow.** Alien Biomes' heat tiles carry no light, so at
+- **The crust's lit cracks exist now** — `sae-crust-glow` (ember) and
+  `sae-crust-glow-arc` (blue), placed along the palette's cell joints; both
+  glow at night. They are Vulcanus's hot-crack sheets, the arc one hue-rotated
+  by `tools/build-crust-glow-tile.py` — the whisker bed's approach, vanilla
+  geometry with the material changed. Their own art is still owed if the
+  Core should not share Vulcanus's crack texture. The `wb-cells-glow` and
+  `wb-cells-arc` renders are in `concept/planet-core/terrain/white-and-blue/
+  cells-glow/`; joint width (22% of ground) and glow cut still want tuning.
+- **The heat seams on the other palettes do not glow.** Alien Biomes' heat tiles carry no light, so at
   night a fracture is a black line (`v3-seam-night.png`). Heat showing through
   the crust — the brief's third read — needs the Core's own lit tile, like the
   crust vent's. Until then the seams are dark fractures with pale rims.
