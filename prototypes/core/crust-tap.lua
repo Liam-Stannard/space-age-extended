@@ -58,6 +58,9 @@
 
 local util = require("util")
 local derive = require("prototypes.derive")
+-- Defines the `circuit_connector_definitions` and `universal_connector_template`
+-- globals the tap's wire post is built from, as base's own entities file does.
+require("circuit-connector-sprites")
 
 --------------------------------------------------------------------------------
 -- A collision layer, so the tap can require its own ground.
@@ -163,6 +166,18 @@ tap.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
 tap.selection_box = { { -1, -1 }, { 1, 1 } }
 tap.tile_width = 2
 tap.tile_height = 2
+-- The offshore pump is 1x2 and its rubble and wire post are placed for that.
+-- A 2x2's rubble, and a connector on the near corner as the accumulator's is.
+tap.corpse = "medium-small-remnants"
+tap.circuit_connector = circuit_connector_definitions.create_vector(
+	universal_connector_template,
+	{
+		{ variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
+		{ variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
+		{ variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
+		{ variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
+	}
+)
 tap.pumping_speed = 0.5 -- ~30/s, per the spec
 -- Squarely inside one of the four footprint tiles, not on the corner they meet
 -- at. Measured: at { 0, 0 } the offset lands on the point where four tiles meet
@@ -255,7 +270,6 @@ derive.own_graphics(tap, {
 -- exactly the case the cover exists for.
 tap.fluid_box.always_draw_covers = false
 tap.fluid_box.pipe_picture = util.empty_sprite()
-tap.always_draw_covers = false
 data:extend({ tap })
 
 --------------------------------------------------------------------------------

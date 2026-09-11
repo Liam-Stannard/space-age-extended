@@ -38,7 +38,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   its bottom row. Recut it with `process-building-art.py --bottom-margin`.
 - **Arc Mast icon:** `graphics/icons/arc-mast.png` is a bare 64×64, the only
   icon in the mod that is not a 120×64 mipmap strip.
-- **The space connection** `sae-shattered-planet-core` has no icon of its own.
+- **The space connection** `sae-shattered-planet-core` has no icon of its own,
+  and the two asteroids wear their chunks' icons.
 - **Paint accents still to assign** (template Appendix B): Drop Crusher, Ballast
   Drill, Vacuum Furnace, Helium Concentrator, Crust Tap, Ring Mast, Bed Tender,
   Sealed Roboport. The Roboport's lamps and the Bed Tender's bin are derived
@@ -58,12 +59,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **3. Every raw `table.deepcopy` through `derive` or rewritten as an
-  original** — radiant generator (copies hidden `burner-generator`) as an
-  original; asteroid/chunk inherited icon, order and descriptions; mast (3×3)
-  and tap (2×2) corpses match their footprint; the remaining hand-cleaned
-  copies (pump, plant, tender, array, roboport, store, arc, mast) through
-  `derive.from`.
 - [ ] **4. Items pass** — one icon path per building (drop-crusher,
   ballast-drill, ring-mast, vent pump, crust tap items wear vanilla icons);
   `item_sounds` on every item; weights as `N*kg`; `subgroup`/`order` on

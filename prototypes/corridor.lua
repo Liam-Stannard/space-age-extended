@@ -12,59 +12,97 @@
 -- destroys it and yields nothing, because its dying effect is terminal -- the
 -- field punishes reflexes and rewards intent.
 
+local derive = require("prototypes.derive")
+local hit_effects = require("__base__.prototypes.entity.hit-effects")
+local sounds = require("__base__.prototypes.entity.sounds")
+local item_sounds = require("__base__.prototypes.item_sounds")
+local item_tints = require("__base__.prototypes.item-tints")
+
 --------------------------------------------------------------------------------
 -- Chunks. A chunk needs BOTH an asteroid-chunk prototype and an item of the
 -- same name: the first is the thing that floats, the second is what a collector
 -- puts in its hold. Copying only the first gives a chunk with no item form.
 --------------------------------------------------------------------------------
 
-local radiant_chunk = table.deepcopy(data.raw["asteroid-chunk"]["promethium-asteroid-chunk"])
-radiant_chunk.name = "sae-radiant-chunk"
+-- The floating form keeps vanilla's chunk graphics (a chunk is a tumbling
+-- sprite set, and vanilla's tumble); everything that named the source goes.
+-- A chunk is not an entity, so its description does not come from
+-- [entity-description] by itself -- vanilla points each one at its asteroid's,
+-- and these point at their own item's, so the two forms of the rock say the
+-- same thing.
+local radiant_chunk = derive.from("asteroid-chunk", "promethium-asteroid-chunk", "sae-radiant-chunk")
 radiant_chunk.order = "z[sae]-a[radiant]"
 radiant_chunk.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
+radiant_chunk.localised_description = { "item-description.sae-radiant-chunk" }
 radiant_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-radiant-chunk", amount = 1 } } }
-data:extend({ radiant_chunk })
 
-local seeded_chunk = table.deepcopy(data.raw["asteroid-chunk"]["carbonic-asteroid-chunk"])
-seeded_chunk.name = "sae-seeded-chunk"
+local seeded_chunk = derive.from("asteroid-chunk", "carbonic-asteroid-chunk", "sae-seeded-chunk")
 seeded_chunk.order = "z[sae]-b[seeded]"
 seeded_chunk.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
+seeded_chunk.localised_description = { "item-description.sae-seeded-chunk" }
 seeded_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-seeded-chunk", amount = 1 } } }
-data:extend({ seeded_chunk })
 
-local radiant_item = table.deepcopy(data.raw.item["promethium-asteroid-chunk"])
-radiant_item.name = "sae-radiant-chunk"
-radiant_item.order = "z[sae]-a[radiant]"
-radiant_item.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
-data:extend({ radiant_item })
+-- The held form, on vanilla's chunk-item pattern: one to a stack, a hundred
+-- kilos, and the sounds of a sack of rock.
+local function chunk_item(name, icon, order, tint)
+  return
+  {
+    type = "item",
+    name = name,
+    icon = icon,
+    subgroup = "space-material",
+    order = order,
+    inventory_move_sound = item_sounds.sulfur_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.sulfur_inventory_move,
+    stack_size = 1,
+    weight = 100 * kg,
+    random_tint_color = tint
+  }
+end
 
-local seeded_item = table.deepcopy(data.raw.item["carbonic-asteroid-chunk"])
-seeded_item.name = "sae-seeded-chunk"
-seeded_item.order = "z[sae]-b[seeded]"
-seeded_item.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
-data:extend({ seeded_item })
+data:extend({
+  radiant_chunk,
+  seeded_chunk,
+  chunk_item("sae-radiant-chunk", "__space-age-extended__/graphics/icons/radiant-chunk.png",
+             "z[sae]-a[radiant]", item_tints.ice_blue),
+  chunk_item("sae-seeded-chunk", "__space-age-extended__/graphics/icons/seeded-chunk.png",
+             "z[sae]-b[seeded]", item_tints.bluish_grey)
+})
 
 --------------------------------------------------------------------------------
 -- The asteroids themselves.
 --------------------------------------------------------------------------------
 
-local radiant = table.deepcopy(data.raw.asteroid["small-promethium-asteroid"])
-radiant.name = "sae-radiant-asteroid"
+-- Both rocks keep the small promethium asteroid's graphics set. Its icon and
+-- its place in the menu they do not: until the far field has its own icon art,
+-- each asteroid shows the icon of the chunk it breaks into.
+--
+-- The preview on an asteroid's Factoriopedia page is a script naming the rock
+-- it launches, so `derive.from` drops the inherited one; each page gets the
+-- vanilla preview back with its own rock's name in it.
+local SMALL = data.raw.asteroid["small-promethium-asteroid"]
+local function own_preview(rock)
+  rock.factoriopedia_simulation = table.deepcopy(SMALL.factoriopedia_simulation)
+  rock.factoriopedia_simulation.init =
+    rock.factoriopedia_simulation.init:gsub(
+      'name="small%-promethium%-asteroid"', 'name="' .. rock.name .. '"')
+end
+
+local radiant = derive.from("asteroid", "small-promethium-asteroid", "sae-radiant-asteroid")
+radiant.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
+radiant.order = "z[sae]-a[radiant]"
 -- Terminal on purpose: destroyed by ordinary fire it leaves nothing behind.
 radiant.dying_trigger_effect =
 {
   { type = "create-explosion", entity_name = "promethium-asteroid-explosion-2", only_when_visible = true }
 }
--- The preview on this asteroid's Factoriopedia page is a script, and inherited
--- it launched a vanilla `small-promethium-asteroid` across the frame. Same for
--- the seeded rock below. Each page now shows its own rock.
-radiant.factoriopedia_simulation.init =
-  radiant.factoriopedia_simulation.init:gsub(
-    'name="small%-promethium%-asteroid"', 'name="sae-radiant-asteroid"')
+own_preview(radiant)
 data:extend({ radiant })
 
-local seeded = table.deepcopy(data.raw.asteroid["small-promethium-asteroid"])
-seeded.name = "sae-seeded-asteroid"
+local seeded = derive.from("asteroid", "small-promethium-asteroid", "sae-seeded-asteroid")
+seeded.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
+seeded.order = "z[sae]-b[seeded]"
 seeded.dying_trigger_effect =
 {
   { type = "create-explosion", entity_name = "promethium-asteroid-explosion-2", only_when_visible = true },
@@ -75,9 +113,7 @@ seeded.dying_trigger_effect =
     offsets = { { -0.125, -0.0625 }, { 0.125, -0.0625 } }
   }
 }
-seeded.factoriopedia_simulation.init =
-  seeded.factoriopedia_simulation.init:gsub(
-    'name="small%-promethium%-asteroid"', 'name="sae-seeded-asteroid"')
+own_preview(seeded)
 data:extend({ seeded })
 
 --------------------------------------------------------------------------------
@@ -85,8 +121,7 @@ data:extend({ seeded })
 -- place, in a single trigger and with no script.
 --------------------------------------------------------------------------------
 
-local missile = table.deepcopy(data.raw.projectile["rocket"])
-missile.name = "sae-seed-missile"
+local missile = derive.from("projectile", "rocket", "sae-seed-missile")
 missile.hidden_in_factoriopedia = true
 missile.action =
 {
@@ -222,22 +257,50 @@ data:extend({
 -- it is the one power source that is made where it is spent.
 --------------------------------------------------------------------------------
 
-local gen = table.deepcopy(data.raw["burner-generator"]["burner-generator"])
-gen.name = "sae-radiant-generator"
-gen.icon = "__space-age-extended__/graphics/icons/radiant-generator.png"
-gen.minable = { mining_time = 1, result = "sae-radiant-generator" }
-gen.max_power_output = "10MW"
-gen.energy_source = { type = "electric", usage_priority = "primary-output" }
-gen.burner =
+-- Written out rather than copied. Vanilla's only `burner-generator` is a
+-- hidden developer entity with half a machine's fields -- no impact category,
+-- no hit effect, no door sounds -- so the copy needed `hidden = false` to be
+-- seen and still fell short of what every visible vanilla machine carries.
+-- The field set below is the steam engine's, the same 3x5 footprint, which is
+-- also why its remnants fit.
+local gen =
 {
-  type = "burner",
-  fuel_categories = { "sae-radiant" },
-  effectivity = 1,
-  fuel_inventory_size = 2,
-  burnt_inventory_size = 0
+  type = "burner-generator",
+  name = "sae-radiant-generator",
+  icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
+  flags = { "placeable-neutral", "player-creation" },
+  minable = { mining_time = 1, result = "sae-radiant-generator" },
+  max_health = 400,
+  corpse = "steam-engine-remnants",
+  dying_explosion = "medium-explosion",
+  alert_icon_shift = util.by_pixel(0, -12),
+  resistances =
+  {
+    { type = "fire", percent = 70 },
+    { type = "impact", percent = 30 }
+  },
+  collision_box = { { -1.35, -2.35 }, { 1.35, 2.35 } },
+  selection_box = { { -1.5, -2.5 }, { 1.5, 2.5 } },
+  damaged_trigger_effect = hit_effects.entity(),
+  impact_category = "metal-large",
+  open_sound = sounds.machine_open,
+  close_sound = sounds.machine_close,
+  working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_sound),
+  perceived_performance = { minimum = 0.25, performance_to_activity_rate = 2.0 },
+  heating_energy = "50kW",
+  max_power_output = "10MW",
+  energy_source = { type = "electric", usage_priority = "primary-output" },
+  burner =
+  {
+    type = "burner",
+    fuel_categories = { "sae-radiant" },
+    effectivity = 1,
+    fuel_inventory_size = 2,
+    burnt_inventory_size = 0
+  },
+  -- Vacuum and the Core, and nowhere with an atmosphere to speak of.
+  surface_conditions = { { property = "pressure", max = 9 } }
 }
-gen.surface_conditions = { { property = "pressure", max = 9 } }
-gen.working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_sound)
 
 -- Art. Two plates, because `burner-generator` maps north/south onto one
 -- animation and east/west onto the other -- see
@@ -293,10 +356,6 @@ gen.animation =
   east = rg_horizontal,
   west = table.deepcopy(rg_horizontal)
 }
-gen.fast_replaceable_group = nil
-gen.next_upgrade = nil
-gen.hidden = false
-gen.hidden_in_factoriopedia = false
 data:extend({ gen })
 
 data:extend({

@@ -9,6 +9,8 @@
 -- Its part is the Field Coil Segment, and the segment is built from the Core's
 -- own end products, three stages below the capstones. See design/04-the-core.md.
 
+local derive = require("prototypes.derive")
+
 data:extend({
   {
     -- Its own category, so nothing else can be persuaded to make segments.
@@ -186,9 +188,8 @@ data:extend({
 -- The Ignition Array.
 --------------------------------------------------------------------------------
 
-local array = table.deepcopy(data.raw["rocket-silo"]["rocket-silo"])
+local array = derive.from("rocket-silo", "rocket-silo", "sae-ignition-array")
 local IA = "__space-age-extended__/graphics/entity/ignition-array/"
-array.name = "sae-ignition-array"
 array.icon = "__space-age-extended__/graphics/icons/ignition-array.png"
 array.minable = { mining_time = 5, result = "sae-ignition-array" }
 array.crafting_categories = { "sae-ignition" }
@@ -258,8 +259,7 @@ if array.working_sound then array.working_sound.sound_accents = nil end
 -- have one. This is vanilla's rocket with its sprite, flame, glare, shadow and
 -- five smoke plumes all emptied, and its explosion removed: nothing rises, and
 -- what the player sees is the Array firing and the game ending.
-local ignition = table.deepcopy(data.raw["rocket-silo-rocket"]["rocket-silo-rocket"])
-ignition.name = "sae-ignition-discharge"
+local ignition = derive.from("rocket-silo-rocket", "rocket-silo-rocket", "sae-ignition-discharge")
 for _, k in ipairs({
   "rocket_shadow_sprite",
   "rocket_flame_left_animation", "rocket_flame_right_animation",
@@ -482,8 +482,6 @@ array.alarm_sound = nil
 array.quick_alarm_sound = nil
 
 array.heating_energy = nil
-array.fast_replaceable_group = nil
-array.next_upgrade = nil
 data:extend({ array })
 
 --------------------------------------------------------------------------------
@@ -495,8 +493,7 @@ data:extend({ array })
 -- second tier.
 --------------------------------------------------------------------------------
 
-local port = table.deepcopy(data.raw.roboport["roboport"])
-port.name = "sae-sealed-roboport"
+local port = derive.from("roboport", "roboport", "sae-sealed-roboport")
 port.icon = "__space-age-extended__/graphics/icons/sealed-roboport.png"
 port.minable = { mining_time = 0.5, result = "sae-sealed-roboport" }
 port.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
@@ -557,8 +554,6 @@ port.stationing_render_layer_swap_height = 1.62
 --     freezes.
 --   * `water_reflection` -- vanilla's squat silhouette mirrored in water. Wrong
 --     shape for a dome, and there is no water on the Core to hold it.
-port.frozen_patch = nil
-port.water_reflection = nil
 
 -- And the sound of doors that no longer move. `open_door_trigger_effect` and
 -- `close_door_trigger_effect` fire the roboport's door clunk on the animations
@@ -609,8 +604,6 @@ port.door_animation_down = util.empty_sprite()
 port.recharging_animation = util.empty_sprite()
 port.recharging_light = { intensity = 0.2, size = 3, color = { 0.91, 0.64, 0.23 } }
 
-port.fast_replaceable_group = nil
-port.next_upgrade = nil
 data:extend({ port })
 
 data:extend({

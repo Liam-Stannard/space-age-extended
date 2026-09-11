@@ -11,14 +11,11 @@
 -- Fulgora's lightning is a drizzle you harvest. This is an event you survive
 -- and store, so masts are sited for coverage first and power second.
 
-local arc = table.deepcopy(data.raw.lightning["lightning"])
-arc.name = "sae-arc"
+local derive = require("prototypes.derive")
+
+local arc = derive.from("lightning", "lightning", "sae-arc")
 -- The strike itself is machinery, not something to browse.
 arc.hidden_in_factoriopedia = true
--- Vanilla's lightning carries a Factoriopedia preview that strikes with
--- `name = "lightning"`. The page it belongs to is hidden, so the preview can
--- never be opened; it is inherited weight and nothing else.
-arc.factoriopedia_simulation = nil
 arc.damage = { amount = 600, type = "electric" }
 arc.energy = "4000MJ"
 data:extend({ arc })
@@ -26,9 +23,11 @@ data:extend({ arc })
 -- Catches a strike and banks it. Worse than Fulgora's collector at converting
 -- what it catches, and far bigger, because out here the strikes are the
 -- exception rather than the weather.
-local mast = table.deepcopy(data.raw["lightning-attractor"]["lightning-collector"])
-mast.name = "sae-arc-mast"
+local collector = data.raw["lightning-attractor"]["lightning-collector"]
+local mast = derive.from("lightning-attractor", "lightning-collector", "sae-arc-mast")
 mast.minable = { mining_time = 0.5, result = "sae-arc-mast" }
+-- The collector's rubble is 2x2; this is a 3x3 (see the footprint note below).
+mast.corpse = "medium-remnants"
 -- **0.12, down from 0.35, because the mast was the answer to every power
 -- question on the planet.** Measured before the change: 4000MJ a strike at 0.35
 -- is 1400MJ banked, one strike per chunk per 90 seconds, and a mast catches
@@ -65,22 +64,16 @@ mast.energy_source =
   -- come before masts are worth building.
   drain = "100kW"
 }
-mast.fast_replaceable_group = nil
-mast.next_upgrade = nil
 
--- Two things the deepcopy brought that are pictures of a different building.
---
 -- The Factoriopedia preview is a script, and the script names its entities:
 -- inherited, opening the mast's page built a vanilla *lightning-collector* on
--- Fulgora and struck it with vanilla *lightning*. Both names are swapped for
--- ours, so the page shows the machine it is the page for.
---
--- `water_reflection` is the collector's silhouette mirrored in water. It is the
--- wrong silhouette for this mast, and there is no water on the Core to hold it.
+-- Fulgora and struck it with vanilla *lightning*. `derive.from` drops it for
+-- that reason; the mast takes vanilla's back with both names swapped for ours,
+-- so the page shows the machine it is the page for, struck by its own storm.
+mast.factoriopedia_simulation = table.deepcopy(collector.factoriopedia_simulation)
 mast.factoriopedia_simulation.init = mast.factoriopedia_simulation.init
   :gsub('name = "lightning%-collector"', 'name = "sae-arc-mast"')
   :gsub('name = "lightning"', 'name = "sae-arc"')
-mast.water_reflection = nil
 
 -- Footprint. The collector this copies is 2x2 with a 1.4 collision box, and
 -- its art matches: vanilla's widest row is 144 px at scale 0.5, so 2.25 tiles

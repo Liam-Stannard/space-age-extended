@@ -17,6 +17,8 @@
 -- conductor on the Core, and the superconducting store, which is what a world
 -- of spikes has always needed.
 
+local derive = require("prototypes.derive")
+
 data:extend({
   {
     type = "fluid",
@@ -129,8 +131,7 @@ data:extend({
 -- The capstone building. A world of spikes -- Fulgora's lightning when it is
 -- earned, the Core's arc storms at the end -- has always wanted somewhere to
 -- put a surge that arrives faster than anything can spend it.
-local store = table.deepcopy(data.raw.accumulator["accumulator"])
-store.name = "sae-superconducting-store"
+local store = derive.from("accumulator", "accumulator", "sae-superconducting-store")
 store.icon = "__space-age-extended__/graphics/icons/superconducting-store.png"
 store.minable = { mining_time = 0.5, result = "sae-superconducting-store" }
 store.energy_source =
@@ -233,12 +234,6 @@ store.chargable_graphics =
   discharge_cooldown = 60
 }
 
--- No water tile can place on the Core, so the inherited reflection is dead
--- weight -- section 6.
-store.water_reflection = nil
-
-store.fast_replaceable_group = nil
-store.next_upgrade = nil
 data:extend({ store })
 
 data:extend({

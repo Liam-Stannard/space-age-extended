@@ -6,8 +6,7 @@ local derive = require("prototypes.derive")
 -- melt costs helium-3 -- the scarce vent throttling the rich one. The engine
 -- reports missing_required_fluid when the helium runs out, which is a legible
 -- failure the player can read without a wiki.
-local pump = table.deepcopy(data.raw["mining-drill"]["pumpjack"])
-pump.name = "sae-vent-pump"
+local pump = derive.from("mining-drill", "pumpjack", "sae-vent-pump")
 pump.icon = "__space-age-extended__/graphics/icons/vent-pump.png"
 pump.minable = { mining_time = 0.5, result = "sae-vent-pump" }
 
@@ -45,11 +44,6 @@ pump.input_fluid_box =
     { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } }
   }
 }
--- Inherited from the pumpjack: 10 pollution a minute. Same reasoning as the Bed
--- Tender above -- the Core tracks no pollutant, so this is a tooltip line about
--- an atmosphere that is not there.
-pump.energy_source.emissions_per_minute = nil
-
 -- Only the Core's vents, and only this machine on them. See the note beside the
 -- `sae-vent` resource category in resources.lua for what this closes.
 pump.resource_categories = { "sae-vent" }
@@ -175,14 +169,11 @@ derive.own_graphics(pump,
   }
 })
 
-pump.fast_replaceable_group = nil
-pump.next_upgrade = nil
 data:extend({ pump })
 
 -- Whiskers: metal grown rather than smelted. Gleba farms food; the Core farms
 -- kamacite. Growth time is the throughput, so scaling means more ground.
-local plant = table.deepcopy(data.raw.plant["tree-plant"])
-plant.name = "sae-whisker-plant"
+local plant = derive.from("plant", "tree-plant", "sae-whisker-plant")
 plant.icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png"
 plant.growth_ticks = 4 * 60 * 60          -- four minutes
 plant.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
@@ -209,8 +200,6 @@ plant.map_color = { r = 0.75, g = 0.75, b = 0.80 }
 --   * `emissions_per_second` had it absorbing pollution. There is no
 --     pollutant on the Core at all -- `pollutant_type` is nil -- so it absorbs
 --     nothing anywhere it can be planted.
-plant.localised_name = nil
-plant.localised_description = nil
 plant.order = "z[sae]-a[whisker-plant]"
 plant.colors =
 {
@@ -329,16 +318,10 @@ data:extend({ plant })
 -- The bed tender plants seed plates and harvests what grew. The vanilla
 -- agricultural tower needs pressure 1000-2000 and is refused here, so the beds
 -- would otherwise be hand-worked.
-local tender = table.deepcopy(data.raw["agricultural-tower"]["agricultural-tower"])
-tender.name = "sae-bed-tender"
+local tender = derive.from("agricultural-tower", "agricultural-tower", "sae-bed-tender")
 tender.icon = "__space-age-extended__/graphics/icons/bed-tender.png"
 tender.minable = { mining_time = 0.5, result = "sae-bed-tender" }
 tender.surface_conditions = { { property = "pressure", min = 1, max = 9 } }
--- Gleba's tower vents 4 spores a minute, which is how its crop spreads. This
--- one is locked to the Core, where `pollutant_type` is nil and nothing is
--- tracked -- so the figure does nothing but sit in the tooltip claiming the
--- machine seeds the air of a world that has none.
-tender.energy_source.emissions_per_minute = nil
 
 -- Centre the crane's pivot. Inherited it is {0.5, -0.55, 4.6} -- half a tile
 -- east and just over half north of the building's middle, because vanilla's
@@ -451,7 +434,6 @@ tender.graphics_set =
   }
 }
 
-tender.fast_replaceable_group = nil
 tender.next_upgrade = nil
 data:extend({ tender })
 
