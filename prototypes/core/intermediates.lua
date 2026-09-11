@@ -8,6 +8,8 @@
 --
 -- A field coil has five parts. There are five trees. Each supplies one.
 
+local item_sounds = require("__base__.prototypes.item_sounds")
+
 data:extend({
   {
     type = "item",
@@ -15,8 +17,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/field-conductor.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[a-conductor]",
+    inventory_move_sound = item_sounds.wire_inventory_move,
+    pick_sound = item_sounds.wire_inventory_pickup,
+    drop_sound = item_sounds.wire_inventory_move,
     stack_size = 50,
-    weight = 4000
+    weight = 4 * kg
   },
   {
     type = "item",
@@ -24,8 +29,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/magnetic-core-billet.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[b-core-billet]",
+    inventory_move_sound = item_sounds.metal_large_inventory_move,
+    pick_sound = item_sounds.metal_large_inventory_pickup,
+    drop_sound = item_sounds.metal_large_inventory_move,
     stack_size = 50,
-    weight = 6000
+    weight = 6 * kg
   },
   {
     type = "item",
@@ -33,8 +41,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/reinforced-frame.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[c-frame]",
+    inventory_move_sound = item_sounds.mechanical_inventory_move,
+    pick_sound = item_sounds.mechanical_inventory_pickup,
+    drop_sound = item_sounds.mechanical_inventory_move,
     stack_size = 50,
-    weight = 6000
+    weight = 6 * kg
   },
   {
     type = "item",
@@ -42,8 +53,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/insulation-sleeve.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[d-sleeve]",
+    inventory_move_sound = item_sounds.brick_inventory_move,
+    pick_sound = item_sounds.brick_inventory_pickup,
+    drop_sound = item_sounds.brick_inventory_move,
     stack_size = 50,
-    weight = 2000
+    weight = 2 * kg
   },
   {
     type = "item",
@@ -51,8 +65,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/coolant-charge.png",
     subgroup = "intermediate-product",
     order = "z[sae]-i[e-coolant-charge]",
+    inventory_move_sound = item_sounds.metal_barrel_inventory_move,
+    pick_sound = item_sounds.metal_barrel_inventory_pickup,
+    drop_sound = item_sounds.metal_barrel_inventory_move,
     stack_size = 50,
-    weight = 4000
+    weight = 4 * kg
   },
 
   -- Fulgora / Aquilo, through the orbital step. The winding is drawn out in
@@ -179,8 +196,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/geodynamic-science-pack.png",
     subgroup = "science-pack",
     order = "z[sae]-geodynamic",
+    inventory_move_sound = item_sounds.science_inventory_move,
+    pick_sound = item_sounds.science_inventory_pickup,
+    drop_sound = item_sounds.science_inventory_move,
     stack_size = 200,
-    weight = 1000,
+    weight = 1 * kg,
     durability = 1,
     durability_description_key = "description.science-pack-remaining-amount-key",
     factoriopedia_durability_description_key = "description.factoriopedia-science-pack-remaining-amount-key",

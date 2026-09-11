@@ -59,10 +59,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **4. Items pass** — one icon path per building (drop-crusher,
-  ballast-drill, ring-mast, vent pump, crust tap items wear vanilla icons);
-  `item_sounds` on every item; weights as `N*kg`; `subgroup`/`order` on
-  multi-result recipes.
 - [ ] **5. Resources / planet / map-gen** — `tile-sounds` walking/driving sounds
   and `mining_visualisation_tint` (`sounds.ore` does not exist);
   `subgroup = "mineable-fluids"` and `map_grid = false` on the vents;

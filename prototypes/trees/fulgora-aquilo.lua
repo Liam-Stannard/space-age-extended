@@ -18,6 +18,7 @@
 -- of spikes has always needed.
 
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 data:extend({
   {
@@ -47,8 +48,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/fluorinated-holmium.png",
     subgroup = "raw-material",
     order = "z[sae]-fa[c-fluorinated-holmium]",
+    inventory_move_sound = item_sounds.metal_small_inventory_move,
+    pick_sound = item_sounds.metal_small_inventory_pickup,
+    drop_sound = item_sounds.metal_small_inventory_move,
     stack_size = 100,
-    weight = 2000
+    weight = 2 * kg
   },
 
   -- Aquilo only: ammonia has no barrel.
@@ -244,8 +248,11 @@ data:extend({
     subgroup = "energy",
     order = "z[sae]-c[superconducting-store]",
     place_result = "sae-superconducting-store",
+    inventory_move_sound = item_sounds.electric_large_inventory_move,
+    pick_sound = item_sounds.electric_large_inventory_pickup,
+    drop_sound = item_sounds.electric_large_inventory_move,
     stack_size = 20,
-    weight = 20000
+    weight = 20 * kg
   },
   {
     type = "recipe",

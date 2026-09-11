@@ -1,6 +1,7 @@
 -- Whisker beds: ground made from dross, and the only surface metal will grow on.
 --
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 -- A floor the player lays, so it keeps a floor's filing, mining and sounds --
 -- but not stone path's +30% walking speed. A bed of grit is not a footpath.
@@ -50,8 +51,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/whisker-bed.png",
     subgroup = "terrain",
     order = "z[sae]-a[whisker-bed]",
+    inventory_move_sound = item_sounds.brick_inventory_move,
+    pick_sound = item_sounds.brick_inventory_pickup,
+    drop_sound = item_sounds.brick_inventory_move,
     stack_size = 100,
-    weight = 500,
+    weight = 0.5 * kg,
     place_as_tile =
     {
       result = "sae-whisker-bed",

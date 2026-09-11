@@ -158,6 +158,30 @@ end
 for name, suffix in pairs(CHAIN) do place(name, "sae-core-processes", suffix) end
 for name, suffix in pairs(MACHINES) do place(name, "sae-core-machines", suffix) end
 
+--- Recipes with more than one product have no main product to borrow a place
+--- in the menu from, so the engine files them nowhere in particular. Each sits
+--- beside the product it exists for, as vanilla files oil processing beside oil.
+local RECIPES =
+{
+  ["sae-crushing"] = "ab",
+  ["sae-magnetic-separation"] = "ac",
+  ["sae-gravity-settling"] = "ba",
+  ["sae-quenched-settling"] = "ba",
+  ["sae-classification"] = "bb",
+  ["sae-degassing"] = "bc",
+  ["sae-carbonyl-powder"] = "da",
+  ["sae-seeded-crushing"] = "eb",
+  ["sae-radiant-crushing"] = "ec",
+  ["sae-fluorinated-holmium"] = "fa",
+  ["sae-superconducting-winding"] = "fb"
+}
+
+for name, suffix in pairs(RECIPES) do
+  local recipe = data.raw.recipe[name] or error("sae groups: no recipe named " .. name)
+  recipe.subgroup = "sae-core-processes"
+  recipe.order = "z[sae]-" .. suffix .. "[" .. name .. "]"
+end
+
 -- The fluids too. They have their own group in the menu, so they only need
 -- ordering relative to each other -- and the same chain order applies.
 local FLUIDS =

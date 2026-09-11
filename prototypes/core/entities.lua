@@ -1,6 +1,7 @@
 -- The Core's machinery: what draws the vents, and what tends the beds.
 
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 -- The vent pump. A pumpjack with an input fluid box added, because drawing
 -- melt costs helium-3 -- the scarce vent throttling the rich one. The engine
@@ -441,12 +442,15 @@ data:extend({
   {
     type = "item",
     name = "sae-vent-pump",
-    icon = "__base__/graphics/icons/pumpjack.png",
+    icon = "__space-age-extended__/graphics/icons/vent-pump.png",
     subgroup = "extraction-machine",
     order = "z[sae]-a[vent-pump]",
     place_result = "sae-vent-pump",
+    inventory_move_sound = item_sounds.pumpjack_inventory_move,
+    pick_sound = item_sounds.pumpjack_inventory_pickup,
+    drop_sound = item_sounds.pumpjack_inventory_move,
     stack_size = 20,
-    weight = 20000
+    weight = 20 * kg
   },
   {
     type = "item",
@@ -455,7 +459,10 @@ data:extend({
     subgroup = "agriculture",
     order = "z[sae]-b[bed-tender]",
     place_result = "sae-bed-tender",
+    inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+    pick_sound = item_sounds.mechanical_large_inventory_pickup,
+    drop_sound = item_sounds.mechanical_large_inventory_move,
     stack_size = 20,
-    weight = 20000
+    weight = 20 * kg
   }
 })

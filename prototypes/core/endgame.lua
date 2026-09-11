@@ -10,6 +10,7 @@
 -- own end products, three stages below the capstones. See design/04-the-core.md.
 
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 data:extend({
   {
@@ -45,8 +46,11 @@ for _, s in pairs(stub_items) do
       icon = s.icon,
       subgroup = "raw-material",
       order = "zz[sae-stub]-" .. s.order,
+      inventory_move_sound = item_sounds.metal_small_inventory_move,
+      pick_sound = item_sounds.metal_small_inventory_pickup,
+      drop_sound = item_sounds.metal_small_inventory_move,
       stack_size = 50,
-      weight = 2000
+      weight = 2 * kg
     },
     {
       type = "recipe",
@@ -100,8 +104,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/superconducting-winding.png",
     subgroup = "raw-material",
     order = "z[sae]-fa[d-winding]",
+    inventory_move_sound = item_sounds.wire_inventory_move,
+    pick_sound = item_sounds.wire_inventory_pickup,
+    drop_sound = item_sounds.wire_inventory_move,
     stack_size = 50,
-    weight = 2000
+    weight = 2 * kg
   },
   {
     type = "item",
@@ -109,8 +116,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/coil-assembly.png",
     subgroup = "intermediate-product",
     order = "z[sae]-a[coil-assembly]",
+    inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+    pick_sound = item_sounds.mechanical_large_inventory_pickup,
+    drop_sound = item_sounds.mechanical_large_inventory_move,
     stack_size = 20,
-    weight = 10000
+    weight = 10 * kg
   },
   {
     type = "item",
@@ -118,8 +128,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/coolant-loop.png",
     subgroup = "intermediate-product",
     order = "z[sae]-b[coolant-loop]",
+    inventory_move_sound = item_sounds.metal_barrel_inventory_move,
+    pick_sound = item_sounds.metal_barrel_inventory_pickup,
+    drop_sound = item_sounds.metal_barrel_inventory_move,
     stack_size = 20,
-    weight = 10000
+    weight = 10 * kg
   },
   {
     type = "item",
@@ -127,8 +140,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/field-coil-segment.png",
     subgroup = "intermediate-product",
     order = "z[sae]-c[field-coil-segment]",
+    inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+    pick_sound = item_sounds.mechanical_large_inventory_pickup,
+    drop_sound = item_sounds.mechanical_large_inventory_move,
     stack_size = 10,
-    weight = 20000
+    weight = 20 * kg
   },
 
   {
@@ -614,8 +630,11 @@ data:extend({
     subgroup = "production-machine",
     order = "z[sae]-z[ignition-array]",
     place_result = "sae-ignition-array",
+    inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+    pick_sound = item_sounds.mechanical_large_inventory_pickup,
+    drop_sound = item_sounds.mechanical_large_inventory_move,
     stack_size = 1,
-    weight = 500000
+    weight = 500 * kg
   },
   {
     type = "item",
@@ -624,8 +643,11 @@ data:extend({
     subgroup = "logistic-network",
     order = "z[sae]-a[sealed-roboport]",
     place_result = "sae-sealed-roboport",
+    inventory_move_sound = item_sounds.roboport_inventory_move,
+    pick_sound = item_sounds.roboport_inventory_pickup,
+    drop_sound = item_sounds.roboport_inventory_move,
     stack_size = 10,
-    weight = 40000
+    weight = 40 * kg
   },
 
   {

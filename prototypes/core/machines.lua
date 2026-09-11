@@ -26,6 +26,7 @@
 --     one -- nothing in the engine can express that directly.
 
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 --------------------------------------------------------------------------------
 -- Crafting categories.
@@ -1079,20 +1080,17 @@ data:extend({ mast })
 -- material. Nothing else in the mod has an ingredient list that means something.
 --------------------------------------------------------------------------------
 
--- Item icons, for the machines whose art exists. Anything not listed here is
--- still wearing a vanilla icon on purpose, and is greppable by its absence.
-local ICON = {
-  ["sae-dross-classifier"] =
-    "__space-age-extended__/graphics/icons/dross-classifier.png",
-  ["sae-coil-separator"] =
-    "__space-age-extended__/graphics/icons/coil-separator.png",
-  ["sae-whisker-comber"] =
-    "__space-age-extended__/graphics/icons/whisker-comber.png",
-  ["sae-vacuum-furnace"] =
-    "__space-age-extended__/graphics/icons/vacuum-furnace.png",
-  ["sae-helium-concentrator"] =
-    "__space-age-extended__/graphics/icons/helium-concentrator.png",
-}
+-- The item wears whatever icon its machine wears -- its own once the plate
+-- exists, the stand-in until then -- so the two can never disagree. Three
+-- machines had their own icon on the ground and assembling-machine-3's in the
+-- inventory before this read the entity instead of a second list.
+local function entity_icon(name)
+  for _, t in ipairs({ "assembling-machine", "furnace", "mining-drill" }) do
+    local e = data.raw[t] and data.raw[t][name]
+    if e then return e.icon end
+  end
+  error("sae machines: no machine named " .. name)
+end
 
 local function machine_item(name, order, ingredients, seconds)
   return
@@ -1100,12 +1098,15 @@ local function machine_item(name, order, ingredients, seconds)
     {
       type = "item",
       name = name,
-      icon = ICON[name] or data.raw["item"]["assembling-machine-3"].icon,
+      icon = entity_icon(name),
       subgroup = "production-machine",
       order = "z[sae]-" .. order .. "[" .. name .. "]",
       place_result = name,
+      inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+      pick_sound = item_sounds.mechanical_large_inventory_pickup,
+      drop_sound = item_sounds.mechanical_large_inventory_move,
       stack_size = 20,
-      weight = 40000
+      weight = 40 * kg
     },
     {
       type = "recipe",

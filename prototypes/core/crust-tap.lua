@@ -56,6 +56,8 @@
 -- vent and accepted on one. Anything testing a buildability rule has to pass
 -- that, or it is not testing the rule.
 
+local item_sounds = require("__base__.prototypes.item_sounds")
+
 local util = require("util")
 local derive = require("prototypes.derive")
 -- Defines the `circuit_connector_definitions` and `universal_connector_template`
@@ -315,12 +317,15 @@ data:extend({
 	{
 		type = "item",
 		name = "sae-crust-tap",
-		icon = data.raw["item"]["offshore-pump"].icon,
+		icon = "__space-age-extended__/graphics/icons/crust-tap.png",
 		subgroup = "energy",
 		order = "z[sae]-b[crust-tap]",
 		place_result = "sae-crust-tap",
+		inventory_move_sound = item_sounds.mechanical_inventory_move,
+		pick_sound = item_sounds.mechanical_inventory_pickup,
+		drop_sound = item_sounds.mechanical_inventory_move,
 		stack_size = 20,
-		weight = 20000,
+		weight = 20 * kg,
 	},
 	{
 		type = "recipe",
@@ -342,8 +347,11 @@ data:extend({
 		subgroup = "energy",
 		order = "z[sae]-c[crust-turbine]",
 		place_result = "sae-crust-turbine",
+		inventory_move_sound = item_sounds.mechanical_inventory_move,
+		pick_sound = item_sounds.mechanical_inventory_pickup,
+		drop_sound = item_sounds.mechanical_inventory_move,
 		stack_size = 20,
-		weight = 40000,
+		weight = 40 * kg,
 	},
 	{
 		type = "recipe",

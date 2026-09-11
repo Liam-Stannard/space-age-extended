@@ -146,8 +146,11 @@ data:extend({
     subgroup = "ammo",
     order = "z[sae]-a[seed-missile]",
     ammo_category = "rocket",
+    inventory_move_sound = item_sounds.ammo_large_inventory_move,
+    pick_sound = item_sounds.ammo_large_inventory_pickup,
+    drop_sound = item_sounds.ammo_large_inventory_move,
     stack_size = 100,
-    weight = 4000,
+    weight = 4 * kg,
     ammo_type =
     {
       target_type = "entity",
@@ -232,8 +235,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
     subgroup = "intermediate-product",
     order = "z[sae]-c[radiant-fuel]",
+    inventory_move_sound = item_sounds.fuel_cell_inventory_move,
+    pick_sound = item_sounds.fuel_cell_inventory_pickup,
+    drop_sound = item_sounds.fuel_cell_inventory_move,
     stack_size = 50,
-    weight = 2000,
+    weight = 2 * kg,
     fuel_category = "sae-radiant",
     -- 500MJ against a uranium cell's 8GJ and a fusion cell's 40GJ. Deliberately
     -- modest: the chunk it comes from is free, so the fuel has to be consumed
@@ -366,8 +372,11 @@ data:extend({
     subgroup = "energy",
     order = "z[sae]-b[radiant-generator]",
     place_result = "sae-radiant-generator",
+    inventory_move_sound = item_sounds.mechanical_large_inventory_move,
+    pick_sound = item_sounds.mechanical_large_inventory_pickup,
+    drop_sound = item_sounds.mechanical_large_inventory_move,
     stack_size = 10,
-    weight = 40000
+    weight = 40 * kg
   },
   {
     type = "recipe",

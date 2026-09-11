@@ -1,5 +1,7 @@
 -- Items the Core makes from what it has.
 
+local item_sounds = require("__base__.prototypes.item_sounds")
+
 data:extend({
   {
     type = "item",
@@ -7,8 +9,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     subgroup = "raw-resource",
     order = "z[sae]-a[kamacite-ore]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 50,
-    weight = 2000
+    weight = 2 * kg
   },
   {
     type = "item",
@@ -16,8 +21,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-b[kamacite-plate]",
+    inventory_move_sound = item_sounds.metal_small_inventory_move,
+    pick_sound = item_sounds.metal_small_inventory_pickup,
+    drop_sound = item_sounds.metal_small_inventory_move,
     stack_size = 100,
-    weight = 1000
+    weight = 1 * kg
   },
   {
     -- What sinks out of the melt. Not waste: it is what beds are made of, and
@@ -27,8 +35,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/dross.png",
     subgroup = "raw-material",
     order = "z[sae]-c[dross]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- Cast under 50g, where weight has already done the sorting.
@@ -37,8 +48,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/cast-ingot.png",
     subgroup = "raw-material",
     order = "z[sae]-d[cast-ingot]",
+    inventory_move_sound = item_sounds.metal_large_inventory_move,
+    pick_sound = item_sounds.metal_large_inventory_pickup,
+    drop_sound = item_sounds.metal_large_inventory_move,
     stack_size = 50,
-    weight = 4000
+    weight = 4 * kg
   },
   {
     -- The same ingot, alloyed evenly in orbit because nothing settles there.
@@ -47,8 +61,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/homogenised-ingot.png",
     subgroup = "raw-material",
     order = "z[sae]-e[homogenised-ingot]",
+    inventory_move_sound = item_sounds.metal_large_inventory_move,
+    pick_sound = item_sounds.metal_large_inventory_pickup,
+    drop_sound = item_sounds.metal_large_inventory_move,
     stack_size = 50,
-    weight = 4000
+    weight = 4 * kg
   },
   {
     -- Planted onto a bed; grows into whiskers.
@@ -57,8 +74,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/seed-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-f[seed-plate]",
+    inventory_move_sound = item_sounds.metal_small_inventory_move,
+    pick_sound = item_sounds.metal_small_inventory_pickup,
+    drop_sound = item_sounds.metal_small_inventory_move,
     stack_size = 50,
-    weight = 1000,
+    weight = 1 * kg,
     place_result = nil,
     plant_result = "sae-whisker-plant"
   },
@@ -68,8 +88,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
     subgroup = "raw-material",
     order = "z[sae]-g[whiskers]",
+    inventory_move_sound = item_sounds.wire_inventory_move,
+    pick_sound = item_sounds.wire_inventory_pickup,
+    drop_sound = item_sounds.wire_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- Joined cold, in vacuum, slowly. No heat anywhere in it.
@@ -78,8 +101,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/welded-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-h[welded-plate]",
+    inventory_move_sound = item_sounds.metal_small_inventory_move,
+    pick_sound = item_sounds.metal_small_inventory_pickup,
+    drop_sound = item_sounds.metal_small_inventory_move,
     stack_size = 50,
-    weight = 2000
+    weight = 2 * kg
   }
 })
 
@@ -102,8 +128,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     subgroup = "raw-material",
     order = "z[sae]-b[crushed-kamacite]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 2000
+    weight = 2 * kg
   },
   {
     -- The crusher's second stream and the classifier's recovery. Deliberately
@@ -114,8 +143,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/dross.png",
     subgroup = "raw-material",
     order = "z[sae]-b[kamacite-fines]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 1000
+    weight = 1 * kg
   },
   {
     -- Dross sorted to a usable grade. The whisker beds are laid on this rather
@@ -125,8 +157,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/dross.png",
     subgroup = "raw-material",
     order = "z[sae]-c[bed-dross]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- Whiskers combed into one direction. Strength is directional, so alignment
@@ -136,8 +171,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
     subgroup = "raw-material",
     order = "z[sae]-g[whisker-tow]",
+    inventory_move_sound = item_sounds.wire_inventory_move,
+    pick_sound = item_sounds.wire_inventory_pickup,
+    drop_sound = item_sounds.wire_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- A field emitter array: a plate of aligned whisker tips, sealed facing a
@@ -156,8 +194,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
     subgroup = "raw-material",
     order = "z[sae]-g[emitter-array]",
+    inventory_move_sound = item_sounds.electric_small_inventory_move,
+    pick_sound = item_sounds.electric_small_inventory_pickup,
+    drop_sound = item_sounds.electric_small_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- Unaligned, and cheap. A use for whiskers not worth the comb.
@@ -166,8 +207,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-whiskers.png",
     subgroup = "raw-material",
     order = "z[sae]-g[whisker-felt]",
+    inventory_move_sound = item_sounds.wire_inventory_move,
+    pick_sound = item_sounds.wire_inventory_pickup,
+    drop_sound = item_sounds.wire_inventory_move,
     stack_size = 100,
-    weight = 500
+    weight = 0.5 * kg
   },
   {
     -- The Core's only phosphorus, pulled out of crushed kamacite by a field the
@@ -177,8 +221,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/dross.png",
     subgroup = "raw-material",
     order = "z[sae]-d[schreibersite]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 1000
+    weight = 1 * kg
   },
   {
     -- The Ring Mast's product, and the only item in the mod that is *meant* to
@@ -191,8 +238,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/field-coil-segment.png",
     subgroup = "intermediate-product",
     order = "z[sae]-z[ignition-charge]",
+    inventory_move_sound = item_sounds.reactor_inventory_move,
+    pick_sound = item_sounds.reactor_inventory_pickup,
+    drop_sound = item_sounds.reactor_inventory_move,
     stack_size = 20,
-    weight = 2000,
+    weight = 2 * kg,
     spoil_ticks = 10 * 60,
     spoil_result = nil
   }
@@ -211,8 +261,11 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
     subgroup = "raw-material",
     order = "z[sae]-e[carbonyl-powder]",
+    inventory_move_sound = item_sounds.resource_inventory_move,
+    pick_sound = item_sounds.resource_inventory_pickup,
+    drop_sound = item_sounds.resource_inventory_move,
     stack_size = 100,
-    weight = 1000
+    weight = 1 * kg
   },
   {
     -- Powder pressed into a shape, and the only thing the `sae-sintering`
@@ -223,7 +276,10 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/homogenised-ingot.png",
     subgroup = "intermediate-product",
     order = "z[sae]-f[sintered-preform]",
+    inventory_move_sound = item_sounds.metal_large_inventory_move,
+    pick_sound = item_sounds.metal_large_inventory_pickup,
+    drop_sound = item_sounds.metal_large_inventory_move,
     stack_size = 50,
-    weight = 2000
+    weight = 2 * kg
   }
 })

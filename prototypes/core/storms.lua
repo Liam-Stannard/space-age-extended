@@ -12,6 +12,7 @@
 -- and store, so masts are sited for coverage first and power second.
 
 local derive = require("prototypes.derive")
+local item_sounds = require("__base__.prototypes.item_sounds")
 
 local arc = derive.from("lightning", "lightning", "sae-arc")
 -- The strike itself is machinery, not something to browse.
@@ -188,8 +189,11 @@ data:extend({
     subgroup = "energy",
     order = "z[sae]-a[arc-mast]",
     place_result = "sae-arc-mast",
+    inventory_move_sound = item_sounds.electric_large_inventory_move,
+    pick_sound = item_sounds.electric_large_inventory_pickup,
+    drop_sound = item_sounds.electric_large_inventory_move,
     stack_size = 10,
-    weight = 40000
+    weight = 40 * kg
   },
   {
     type = "recipe",
