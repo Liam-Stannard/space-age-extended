@@ -37,6 +37,12 @@ data:extend({
     name = "sae-core-machines",
     group = "production",
     order = "eb"
+  },
+  {
+    type = "item-subgroup",
+    name = "sae-core-tiles",
+    group = "tiles",
+    order = "z[sae]"
   }
 })
 

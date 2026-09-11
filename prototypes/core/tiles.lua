@@ -1,7 +1,13 @@
 -- Whisker beds: ground made from dross, and the only surface metal will grow on.
 --
-local bed = table.deepcopy(data.raw.tile["stone-path"])
-bed.name = "sae-whisker-bed"
+local derive = require("prototypes.derive")
+
+-- A floor the player lays, so it keeps a floor's filing, mining and sounds --
+-- but not stone path's +30% walking speed. A bed of grit is not a footpath.
+local bed = derive.tile_from("stone-path", "sae-whisker-bed")
+bed.subgroup = "artificial-tiles"
+bed.mined_sound = table.deepcopy(data.raw.tile["stone-path"].mined_sound)
+bed.build_sound = table.deepcopy(data.raw.tile["stone-path"].build_sound)
 
 -- Its own terrain, at last. The bed kept stone path's graphics for six phases,
 -- which meant a whisker farm on the Core was indistinguishable from a concrete

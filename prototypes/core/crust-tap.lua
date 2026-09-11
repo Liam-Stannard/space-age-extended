@@ -109,14 +109,14 @@ data:extend({
 -- doing this properly later.
 --------------------------------------------------------------------------------
 
-local vent = table.deepcopy(data.raw.tile["stone-path"])
-vent.name = "sae-crust-vent"
+-- Terrain, not a floor: natural ground, filed with the Core's tiles, never
+-- mined, never blueprinted.
+local vent = derive.tile_from("stone-path", "sae-crust-vent")
 derive.placeholder_art(vent, "wears stone-path's terrain sheets until its own exist")
-vent.localised_name = nil
-vent.localised_description = nil
-vent.order = "z[sae]-b[crust-vent]"
+vent.subgroup = "sae-core-tiles"
+vent.order = "a[crust-vent]"
+vent.layer_group = "ground-natural"
 vent.fluid = "sae-crust-gas"
-vent.minable = nil -- a vent is terrain, not a floor tile
 vent.can_be_part_of_blueprint = false
 vent.map_color = { r = 0.50, g = 0.42, b = 0.22 }
 vent.collision_mask = {

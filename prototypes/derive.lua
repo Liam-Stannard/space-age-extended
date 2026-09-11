@@ -26,10 +26,19 @@
 --
 -- `derive` clears each of those classes up front, so a new building starts from
 -- the vanilla art and nothing else. What it does *not* touch is the stuff that
--- is legitimate to reuse: open/close and working sounds, circuit connector
--- sprites, corpses and explosions. Reusing vanilla audio is ordinary modding.
-
-local util = require("util")
+-- is legitimate to reuse: open/close and working sounds, corpses and
+-- explosions. Reusing vanilla audio is ordinary modding.
+--
+-- Two inherited fields are left alone on purpose, and each building checks them
+-- itself:
+--
+--   * `heating_energy` -- vanilla sets it on nearly every entity for Aquilo's
+--     sake. Nothing here can stand on Aquilo, so it never fires, and stripping
+--     it would make our prototypes the odd ones out for no gain.
+--   * `circuit_connector` -- its sprites are placed for the *source's*
+--     footprint. Right when the footprint is kept, wrong when it is not (the
+--     Crust Tap is 2x2 on a 1x1 offshore pump's connector), and only the
+--     building's own file knows which.
 
 local derive = {}
 
@@ -78,17 +87,49 @@ function derive.from(base_type, base_name, new_name)
     p.energy_source.emissions_per_minute = nil
   end
 
+  -- A plume of exhaust belongs to the combustion that made it. The steam
+  -- turbine's `smoke` rode along on the Crust Turbine for months -- a steam
+  -- cloud on a world with no air -- and was only seen in a data dump.
+  p.smoke = nil
+
   return p
 end
 
---- Point a machine at another prototype's art, deliberately and visibly.
+--- Copy a vanilla tile and strip what belongs to the original.
 ---
---- Stand-in art is not the same thing as an inherited leftover: the Vent Pump
---- wears the pumpjack's sprites on purpose and says so. This marks that choice
---- in one place so a later audit can find every building still wearing borrowed
---- art by grepping for one call rather than by eye.
---- @param p     table   the prototype
---- @param note  string  why, for the reader
+--- A tile carries less life than a machine, but what it carries is worse: the
+--- two Core tiles were cut from `stone-path` and kept its `frozen_variant`, so a
+--- vent could freeze over into a paving slab; its **+30% walking speed**, so a
+--- bed of grit was a footpath; and its `artificial-tiles` filing, so a natural
+--- vent sat in the menu beside concrete. The terrain sheets and the sounds are
+--- what the copy is for -- a tile is three sheets, sixteen variants and five
+--- transition groups that have to seam against every neighbour, and vanilla's
+--- already do -- so those are kept and everything that says *stone path* goes.
+---
+--- The caller then says what the tile *is*: its `subgroup`, `order`,
+--- `layer_group`, and `minable` if a player can lift it.
+--- @param base_name string  the vanilla tile to copy
+--- @param new_name  string  this mod's name for it
+function derive.tile_from(base_name, new_name)
+  local t = table.deepcopy(data.raw.tile[base_name])
+  assert(t, "tile/" .. base_name .. " does not exist")
+  t.name = new_name
+  t.localised_name = nil
+  t.localised_description = nil
+  -- Aquilo's iced twin of the original, which would draw the wrong tile.
+  t.frozen_variant = nil
+  -- What made the original a floor rather than ground.
+  t.minable = nil
+  t.mined_sound = nil
+  t.build_sound = nil
+  t.walking_speed_modifier = nil
+  t.decorative_removal_probability = nil
+  -- Where it sat in the menu; the caller files it.
+  t.subgroup = nil
+  t.order = nil
+  return t
+end
+
 --- Prototypes still wearing somebody else's sprites, by name.
 ---
 --- **Recorded rather than logged on the spot, and that is the fix.** This used
@@ -100,6 +141,14 @@ end
 --- reports whoever is left at the end of the data stage.
 derive.pending = {}
 
+--- Point a machine at another prototype's art, deliberately and visibly.
+---
+--- Stand-in art is not the same thing as an inherited leftover: the Vent Pump
+--- wears the pumpjack's sprites on purpose and says so. This marks that choice
+--- in one place so a later audit can find every building still wearing borrowed
+--- art by grepping for one call rather than by eye.
+--- @param p     table   the prototype
+--- @param note  string  why, for the reader
 function derive.placeholder_art(p, note)
   derive.pending[p.name] = note
   return p
@@ -150,6 +199,11 @@ function derive.own_graphics(p, set)
   p.graphics_set = set
   -- This building has its own art now, so it is no longer a placeholder.
   derive.pending[p.name] = nil
+  -- The ground decal under the vanilla machine was drawn for the vanilla plate.
+  -- The Ballast Drill shipped the big mining drill's for a while, under a plate
+  -- that draws its own base.
+  p.integration_patch = nil
+  p.integration_patch_render_layer = nil
   local ws = p.working_sound
   if ws then
     ws.sound_accents = nil

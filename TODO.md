@@ -58,13 +58,12 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **2. Harden `derive.from`** — strip `smoke` and `integration_patch`,
-  review `circuit_connector` and `heating_energy`; add a natural-tile helper.
 - [ ] **3. Every raw `table.deepcopy` through `derive` or rewritten as an
-  original** — radiant generator (copies hidden `burner-generator`) and both
-  tiles (copy `stone-path`: frozen variant, artificial subgroup, +30% walk) as
-  originals; asteroid/chunk inherited icon, order and descriptions; mast (3×3)
-  and tap (2×2) corpses match their footprint; turbine `smoke = nil`.
+  original** — radiant generator (copies hidden `burner-generator`) as an
+  original; asteroid/chunk inherited icon, order and descriptions; mast (3×3)
+  and tap (2×2) corpses match their footprint; the remaining hand-cleaned
+  copies (pump, plant, tender, array, roboport, store, arc, mast) through
+  `derive.from`.
 - [ ] **4. Items pass** — one icon path per building (drop-crusher,
   ballast-drill, ring-mast, vent pump, crust tap items wear vanilla icons);
   `item_sounds` on every item; weights as `N*kg`; `subgroup`/`order` on
