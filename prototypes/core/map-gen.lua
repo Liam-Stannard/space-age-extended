@@ -494,6 +494,35 @@ local palettes =
     alien_tiles = { "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-blue-heat-1" }
   },
 
+  -- White ground, blue heat. The bare-metal white of the cold band as the
+  -- whole crust, and the blue heat tiles -- dark slate -- as both the seams and
+  -- the plates: the seams carry their own colour axis so they land on blue
+  -- rather than orange, and the plates lift both axis and temperature into the
+  -- blue window. Rocks are the pack's white and black only; the cliff is
+  -- Fulgora's dark stone rather than Nauvis's sandstone; the boulder is tinted
+  -- slate to sit with the seams.
+  ["white-and-blue"] =
+  {
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, aux = 0.72, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.50, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.15, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = -0.72, warm = 100, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
+                    "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose" },
+    cliff       = "cliff-fulgora",
+    boulder_tint = { r = 0.32, g = 0.40, b = 0.50, a = 1 },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
+      "mineral-white-sand-1", "mineral-white-sand-3",
+      "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+    }
+  },
+
   ["scoured-nickel"] =
   {
     temperature = { centre = 16, amplitude = 24, octaves = 2, persistence = 0.5, scale = 480 },
@@ -715,6 +744,13 @@ local function aux_expression(pal, seed)
     local p = pal.plates
     base = string.format("%s - max(0, %s - %s) * %s", base, noise(p, p.seed), p.threshold, p.drop)
   end
+  -- A seam may carry its own colour: `veins.aux` shifts the colour axis along
+  -- the same contours the temperature spike follows, so a seam can land on a
+  -- heat colour the body's aux would never reach -- blue seams through white.
+  if pal.veins and pal.veins.aux then
+    local v = pal.veins
+    base = string.format("%s + max(0, %s - abs(%s)) / %s * %s", base, v.width, noise(v, v.seed), v.width, v.aux)
+  end
   return string.format("clamp(%s, 0, 1)", base)
 end
 
@@ -877,7 +913,7 @@ local function core_decoratives()
   return settings
 end
 
-return function()
+local function settings()
   local controls =
   {
     ["sae-kamacite-ore"] = {},
@@ -903,7 +939,9 @@ return function()
     -- leaving it implied. A metallic ridge of the Core's own is outstanding.
     cliff_settings =
     {
-      name = "cliff",
+      -- A palette may name the cliff that suits its ground; Nauvis's sandstone
+      -- is the default the engine was taking anyway.
+      name = palette.cliff or "cliff",
       cliff_elevation_0 = 10,
       cliff_elevation_interval = 40,
       richness = 1
@@ -929,3 +967,7 @@ return function()
     }
   }
 end
+
+-- The planet takes `settings()`; resources.lua reads `palette` for the boulder's
+-- tint, so the rock on the ground matches the ground it lies on.
+return { settings = settings, palette = palette }
