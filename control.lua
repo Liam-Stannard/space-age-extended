@@ -17,9 +17,6 @@ local function disable_vanilla_victory()
   end
 end
 
-script.on_init(disable_vanilla_victory)
-script.on_configuration_changed(disable_vanilla_victory)
-
 -- Hold the Core at midnight, permanently.
 --
 -- Measured against the engine, not assumed: lightning is generated only while
@@ -44,8 +41,6 @@ local function hold_all_cores()
   for _, surface in pairs(game.surfaces) do hold_the_core_at_night(surface) end
 end
 
-script.on_init(hold_all_cores)
-script.on_configuration_changed(hold_all_cores)
 script.on_event(defines.events.on_surface_created, function(event)
   hold_the_core_at_night(game.surfaces[event.surface_index])
 end)
@@ -178,18 +173,27 @@ local function rescan()
   end
 end
 
-script.on_init(rescan)
-script.on_configuration_changed(rescan)
+-- The engine keeps ONE handler per lifecycle event: a second script.on_init
+-- replaces the first rather than adding to it. Registered separately, the
+-- three start-up jobs silently fell to the last one -- the Array registry was
+-- rebuilt and vanilla's Edge victory was never switched off. So they share a
+-- single registration, here, after the last of them is defined.
+local function on_start()
+  disable_vanilla_victory()
+  hold_all_cores()
+  rescan()
+end
+
+script.on_init(on_start)
+script.on_configuration_changed(on_start)
 
 for _, ev in ipairs({
   defines.events.on_built_entity, defines.events.on_robot_built_entity,
   defines.events.script_raised_built, defines.events.script_raised_revive,
   defines.events.on_space_platform_built_entity,
 }) do
-  if ev then
-    script.on_event(ev, function(event) remember(event.entity) end,
-                    { { filter = "name", name = ARRAY } })
-  end
+  script.on_event(ev, function(event) remember(event.entity) end,
+                  { { filter = "name", name = ARRAY } })
 end
 
 for _, ev in ipairs({
@@ -197,11 +201,9 @@ for _, ev in ipairs({
   defines.events.on_robot_mined_entity, defines.events.script_raised_destroy,
   defines.events.on_space_platform_mined_entity,
 }) do
-  if ev then
-    script.on_event(ev, function(event)
-      if event.entity and event.entity.unit_number then forget(event.entity.unit_number) end
-    end, { { filter = "name", name = ARRAY } })
-  end
+  script.on_event(ev, function(event)
+    if event.entity and event.entity.unit_number then forget(event.entity.unit_number) end
+  end, { { filter = "name", name = ARRAY } })
 end
 
 script.on_nth_tick(CHARGE_TICKS, function()

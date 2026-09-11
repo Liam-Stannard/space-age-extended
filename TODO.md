@@ -58,10 +58,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **1. `control.lua`** — one `on_init` and one `on_configuration_changed`
-  calling all three handlers (each is registered three times today, so only
-  `rescan` runs and vanilla's Edge victory still ends the game). Drop the dead
-  `if ev` guards.
 - [ ] **2. Harden `derive.from`** — strip `smoke` and `integration_patch`,
   review `circuit_connector` and `heating_energy`; add a natural-tile helper.
 - [ ] **3. Every raw `table.deepcopy` through `derive` or rewritten as an

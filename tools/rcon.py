@@ -4,6 +4,9 @@
 Drives the headless rig. Two gotchas it exists to work around: the
 server exits on stdin EOF, and with no client attached it free-runs, so
 measure against game.tick deltas rather than wall-clock sleeps.
+A third: the first Lua command a fresh server receives is swallowed by the
+"using Lua console commands will disable achievements, repeat to proceed"
+warning and returns an empty reply -- send a throwaway command first.
 """
 
 import socket
