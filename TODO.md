@@ -47,6 +47,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
   and audio before it can be filled.
 - **The vents wear crude oil's sheet and sounds**, and the ore iron ore's sheet.
+  A vent art plan was proposed in session (2026-09-11) and awaits agreement;
+  once agreed, the specs go in `concept/melt-vent/` and `concept/gas-vent/`
+  before any art is commissioned.
 - **Twenty technologies wear vanilla icons** — every Core technology except
   Core Discovery, Gravity Settling, Whisker Beds and Field Coils wears
   Aquilo's, and the three Fulgora ↔ Aquilo technologies wear the cryogenic
@@ -55,6 +58,14 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Drill, Vacuum Furnace, Helium Concentrator, Crust Tap, Ring Mast, Bed Tender,
   Sealed Roboport. The Roboport's lamps and the Bed Tender's bin are derived
   against their own plates, so repainting either means re-deriving those too.
+
+## Design
+
+- **The design still says the Core has no surface fluid.** The radiant pool,
+  its shore and its brine are in the mod (`prototypes/core/tiles.lua`,
+  `map-gen.lua`), and 04 §2, 03 §3 and the "no coastline" line need wording
+  that says what the pool is and why it is not a coastline. Wording to be
+  agreed before `design/` is touched.
 
 ## Repository layout
 
