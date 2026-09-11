@@ -415,16 +415,27 @@ local palettes =
   -- Vulcanus's soil and stone without its ash or lava: olive-black basalt, smooth stone, folds. No pack required.
   ["basalt-soil"] =
   {
-    temperature = { centre = 15, amplitude = 15, octaves = 2, persistence = 0.5, scale = 480 },
-    moisture    = { centre = 0.5, amplitude = 0.2, octaves = 3, persistence = 0.5, scale = 260 },
-    aux         = { centre = 0.5, amplitude = 0.3, octaves = 3, persistence = 0.5, scale = 300 },
+    -- Vulcanus's tiles read our aux and moisture on top of their own biome
+    -- noise: smooth stone and dark soil want aux LOW, pumice and folds want it
+    -- HIGH, and soil and pumice both want moisture high. The first render
+    -- varied aux at the 300-tile scale and came out as biome-sized flats; a
+    -- short scale mixes stone and pumice at the scale a player walks.
+    temperature = { centre = 15, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    -- Seams: Alien Biomes' heat tiles along the contours, as on the coloured
+    -- palettes -- the one thing here the Vulcanus set cannot supply.
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.70, amplitude = 0.15, octaves = 3, persistence = 0.5, scale = 200 },
+    aux         = { centre = 0.50, amplitude = 0.38, octaves = 3, persistence = 0.6, scale = 120 },
+    -- Vulcanus sizes its biomes from this slider; at 1 the flats are hundreds of
+    -- tiles across whatever our own noise does. 6 is the slider's maximum.
+    controls    = { vulcanus_volcanism = { frequency = 6, size = 1, richness = 1 } },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
     -- Space Age's own tiles, placed by their own autoplace; the climate above
     -- only matters where those expressions read it.
     tiles = { "volcanic-soil-dark", "volcanic-soil-light", "volcanic-smooth-stone", "volcanic-folds", "volcanic-folds-flat", "volcanic-jagged-ground", "volcanic-pumice-stones" },
     without_pack = {},
-    alien_tiles = {}
+    alien_tiles = { "volcanic-orange-heat-1", "volcanic-orange-heat-2", "volcanic-blue-heat-1" }
   },
 
   ["scoured-nickel"] =
@@ -811,6 +822,14 @@ local function core_decoratives()
 end
 
 return function()
+  local controls =
+  {
+    ["sae-kamacite-ore"] = {},
+    ["sae-melt-vent"] = {},
+    ["sae-gas-vent"] = {},
+    ["sae-core-rock"] = {}
+  }
+  for name, setting in pairs(palette.controls or {}) do controls[name] = setting end
   return
   {
     property_expression_names =
@@ -833,13 +852,10 @@ return function()
       cliff_elevation_interval = 40,
       richness = 1
     },
-    autoplace_controls =
-    {
-      ["sae-kamacite-ore"] = {},
-      ["sae-melt-vent"] = {},
-      ["sae-gas-vent"] = {},
-      ["sae-core-rock"] = {}
-    },
+    -- Palettes may carry extra controls: the Vulcanus tile set reads
+    -- `vulcanus_volcanism`'s frequency to size its biomes, and turning it up is
+    -- the only lever on how big its flats come out.
+    autoplace_controls = controls,
     autoplace_settings =
     {
       ["tile"] = { settings = core_tiles() },

@@ -1,0 +1,1 @@
+sae-crust-vent=1.9% volcanic-folds-flat=1.0% volcanic-folds=21.2% volcanic-jagged-ground=0.8% volcanic-orange-heat=0.2% volcanic-pumice-stones=46.6% volcanic-smooth-stone=22.9% volcanic-soil-dark=4.4% volcanic-soil-light=1.0%
