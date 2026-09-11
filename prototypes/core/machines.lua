@@ -254,8 +254,6 @@ data:extend({ crusher })
 
 local drill = derive.from("mining-drill", "big-mining-drill", "sae-ballast-drill")
 derive.placeholder_art(drill, "wears big-mining-drill's sprites until its plate exists")
-drill.icon = data.raw["mining-drill"]["big-mining-drill"].icon
-drill.icons = nil
 drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- The Core's only drill, now, and the only machine that will work kamacite at
 -- all -- see the `sae-kamacite` note in resources.lua. That is what lets it be
@@ -485,7 +483,7 @@ local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
 -- Which is why its accent is PAINT: signal yellow on the eccentric-drive guard,
 -- the four spring caps and the drive-end rail -- what a moving-part guard is
 -- painted, on the machine whose whole read is that it moves. Paint never glows.
-local DC = "__space-age-extended__/graphics/entity/dross-classifier/"
+local DCL = "__space-age-extended__/graphics/entity/dross-classifier/"
 classifier.icon = "__space-age-extended__/graphics/icons/dross-classifier.png"
 derive.own_graphics(classifier,
 {
@@ -494,14 +492,14 @@ derive.own_graphics(classifier,
     layers =
     {
       {
-        filename = DC .. "base.png",
+        filename = DCL .. "base.png",
         priority = "high",
         width = 200, height = 189,
         shift = { 0, 0 },
         scale = 0.5
       },
       {
-        filename = DC .. "base-shadow.png",
+        filename = DCL .. "base-shadow.png",
         priority = "high",
         draw_as_shadow = true,
         -- Leans up and to the right, so it is wider than the colour plate and
@@ -823,8 +821,6 @@ data:extend({ concentrator })
 
 local furnace = derive.from("furnace", "electric-furnace", "sae-vacuum-furnace")
 derive.placeholder_art(furnace, "wears electric-furnace's sprites until its plate exists")
-furnace.icon = data.raw["furnace"]["electric-furnace"].icon
-furnace.icons = nil
 furnace.minable = { mining_time = 0.5, result = "sae-vacuum-furnace" }
 furnace.collision_box = BOX_3x3
 furnace.selection_box = SEL_3x3
@@ -834,7 +830,7 @@ furnace.energy_usage = "1200kW"
 furnace.energy_source = { type = "electric", usage_priority = "secondary-input" }
 furnace.module_slots = 2
 furnace.surface_conditions = CORE
-furnace.source_inventory_size = 1          -- the prototype maximum
+furnace.source_inventory_size = 1          -- one, as the electric furnace has
 furnace.result_inventory_size = 1
 furnace.fluid_boxes =
 {

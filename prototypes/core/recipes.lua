@@ -9,12 +9,14 @@ data:extend({
   -- The settling line runs in a foundry: two fluid boxes in and two out, which
   -- an assembler does not have. A recipe with more fluid connections than its
   -- machine has boxes is accepted silently by set_recipe and then never runs.
+  -- Crushed ore, not raw: plate from raw ore made the Drop Crusher skippable,
+  -- and the crusher's own spec says so in as many words.
   {
     type = "recipe",
     name = "sae-kamacite-smelting",
     categories = { "smelting" },
     energy_required = 6.4,
-    ingredients = { { type = "item", name = "sae-kamacite-ore", amount = 2 } },
+    ingredients = { { type = "item", name = "sae-crushed-kamacite", amount = 3 } },
     results = { { type = "item", name = "sae-kamacite-plate", amount = 1 } },
     enabled = false
   },
@@ -91,6 +93,8 @@ data:extend({
     surface_conditions = { { property = "gravity", min = 45 } },
     enabled = false
   },
+  -- Bed-grade dross, not raw: beds laid on raw dross left the Dross Classifier
+  -- with nothing that needed it.
   {
     type = "recipe",
     name = "sae-whisker-bed",
@@ -98,7 +102,7 @@ data:extend({
     energy_required = 2,
     ingredients =
     {
-      { type = "item", name = "sae-dross", amount = 4 },
+      { type = "item", name = "sae-bed-dross", amount = 4 },
       { type = "item", name = "sae-kamacite-plate", amount = 1 }
     },
     results = { { type = "item", name = "sae-whisker-bed", amount = 4 } },
@@ -312,28 +316,6 @@ data:extend({
   }
 })
 
---------------------------------------------------------------------------------
--- Re-sourcing, so the new machines are not optional decoration.
---
--- Both of these are required by a spec rather than chosen here.
---
--- Plate smelting took raw ore, which made the Drop Crusher skippable: a player
--- could ignore tier one entirely and still have plate. It takes crushed kamacite
--- now, and the crusher's own spec says so in as many words.
---
--- Whisker beds were laid on raw dross, which left the Dross Classifier with
--- nothing that needed it. They are laid on bed-grade dross now.
---------------------------------------------------------------------------------
-
-data.raw.recipe["sae-kamacite-smelting"].ingredients =
-  { { type = "item", name = "sae-crushed-kamacite", amount = 3 } }
-
-data.raw.recipe["sae-whisker-bed"].ingredients =
-{
-  { type = "item", name = "sae-bed-dross", amount = 4 },
-  { type = "item", name = "sae-kamacite-plate", amount = 1 }
-}
-
 
 --------------------------------------------------------------------------------
 -- T3, carbonyl chemistry, and the flux that feeds it.
@@ -511,19 +493,8 @@ data:extend({
     -- decision again rather than a formality.
     type = "recipe",
     name = "sae-crust-propellant",
-    -- **`auto_recycle = false`, and it is not optional.** `__recycler__`
-    -- walks every recipe in the game and generates `<product>-recycling` by
-    -- inverting it -- so when two recipes make the same product, whichever the
-    -- iteration reaches last silently becomes the recycling result for
-    -- everyone. This one won, and rewrote vanilla's `rocket-fuel-recycling`
-    -- to return the Core's materials: recycling rocket fuel on Fulgora came
-    -- back as kamacite, which put this planet's exclusive metal into every
-    -- scrap line in the game.
-    --
-    -- `auto_recycle` is the opt-out the generator actually reads -- Space Age
-    -- sets it on 73 of its own recipes. (`allow_decomposition` is *not* it,
-    -- which cost an hour: the recycler sets that flag on the recipes it
-    -- creates, and never reads it on the recipes it consumes.)
+    -- Every alternate route to a vanilla item opts out of the recycler; the
+    -- paragraph on sae-cast-structure above says why.
     auto_recycle = false,
     categories = { "chemistry" },
     energy_required = 15,
@@ -601,19 +572,8 @@ data:extend({
     -- Switching. One array is a great many gaps.
     type = "recipe",
     name = "sae-valve-logic",
-    -- **`auto_recycle = false`, and it is not optional.** `__recycler__`
-    -- walks every recipe in the game and generates `<product>-recycling` by
-    -- inverting it -- so when two recipes make the same product, whichever the
-    -- iteration reaches last silently becomes the recycling result for
-    -- everyone. This one won, and rewrote vanilla's `advanced-circuit-recycling`
-    -- to return the Core's materials: recycling an advanced circuit on Fulgora came
-    -- back as kamacite, which put this planet's exclusive metal into every
-    -- scrap line in the game.
-    --
-    -- `auto_recycle` is the opt-out the generator actually reads -- Space Age
-    -- sets it on 73 of its own recipes. (`allow_decomposition` is *not* it,
-    -- which cost an hour: the recycler sets that flag on the recipes it
-    -- creates, and never reads it on the recipes it consumes.)
+    -- Every alternate route to a vanilla item opts out of the recycler; the
+    -- paragraph on sae-cast-structure above says why.
     auto_recycle = false,
     categories = { "crafting" },
     energy_required = 6,
@@ -651,19 +611,8 @@ data:extend({
     -- of any pipe.
     type = "recipe",
     name = "sae-valve-processor",
-    -- **`auto_recycle = false`, and it is not optional.** `__recycler__`
-    -- walks every recipe in the game and generates `<product>-recycling` by
-    -- inverting it -- so when two recipes make the same product, whichever the
-    -- iteration reaches last silently becomes the recycling result for
-    -- everyone. This one won, and rewrote vanilla's `processing-unit-recycling`
-    -- to return the Core's materials: recycling a processing unit on Fulgora came
-    -- back as kamacite, which put this planet's exclusive metal into every
-    -- scrap line in the game.
-    --
-    -- `auto_recycle` is the opt-out the generator actually reads -- Space Age
-    -- sets it on 73 of its own recipes. (`allow_decomposition` is *not* it,
-    -- which cost an hour: the recycler sets that flag on the recipes it
-    -- creates, and never reads it on the recipes it consumes.)
+    -- Every alternate route to a vanilla item opts out of the recycler; the
+    -- paragraph on sae-cast-structure above says why.
     auto_recycle = false,
     categories = { "crafting-with-fluid" },
     energy_required = 12,

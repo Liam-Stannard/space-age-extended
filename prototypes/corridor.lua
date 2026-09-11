@@ -412,10 +412,7 @@ local spawn =
   }
 }
 
-for _, connection in pairs(data.raw["space-connection"]) do
-  if connection.name == "sae-shattered-planet-core" then
-    local defs = connection.asteroid_spawn_definitions or {}
-    for _, d in pairs(spawn) do table.insert(defs, d) end
-    connection.asteroid_spawn_definitions = defs
-  end
-end
+local connection = data.raw["space-connection"]["sae-shattered-planet-core"]
+local defs = connection.asteroid_spawn_definitions or {}
+for _, d in pairs(spawn) do table.insert(defs, d) end
+connection.asteroid_spawn_definitions = defs

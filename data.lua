@@ -1,6 +1,9 @@
 -- Space Age Extended -- data stage.
 --
--- Phase 1: the Core as a place.  Phase 2: its local chain.
+-- The Core (prototypes/core), the one cross-planet tree that is built
+-- (prototypes/trees) and the corridor between them (prototypes/corridor.lua),
+-- in dependency order: fluids and tiles before the machines that use them,
+-- items before recipes, the planet before the technology that unlocks it.
 
 require("prototypes.core.fluids")
 require("prototypes.core.tiles")

@@ -79,7 +79,6 @@ data:extend({
     drop_sound = item_sounds.metal_small_inventory_move,
     stack_size = 50,
     weight = 1 * kg,
-    place_result = nil,
     plant_result = "sae-whisker-plant"
   },
   {
@@ -243,8 +242,7 @@ data:extend({
     drop_sound = item_sounds.reactor_inventory_move,
     stack_size = 20,
     weight = 2 * kg,
-    spoil_ticks = 10 * 60,
-    spoil_result = nil
+    spoil_ticks = 10 * 60
   }
 })
 

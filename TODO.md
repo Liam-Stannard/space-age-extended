@@ -66,10 +66,5 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **7. Style sweep** — `crust-tap.lua` tabs and trailing commas; unused
-  `local util` in `derive.lua`; duplicate `local DC`; dead icon assignments
-  overwritten later; the 12-line comment pasted four times in `recipes.lua`;
-  stale "Phase 1/2" header in `data.lua`; `crust-tap.lua:258` top-level
-  `always_draw_covers`.
 - [ ] **8. Technology icons** — `util.technology_icon_constant_planet` for Core
   Discovery; 17 technologies still wear Aquilo's icon.
