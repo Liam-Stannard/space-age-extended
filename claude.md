@@ -4,3 +4,4 @@
 4. All design documentation lives in `./design/`.
 5. Every outstanding task is logged in `./TODO.md` and removed once complete. Todos are logged nowhere else.
 6. Prompt templates live in `./templates/`. Nowhere else.
+7. Every piece of work goes on its own feature branch, named for the work. It is merged into `master` once it is ready, and the branch is deleted after the merge. Nothing is committed directly to `master`.
