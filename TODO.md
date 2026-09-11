@@ -40,6 +40,13 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   icon in the mod that is not a 120×64 mipmap strip.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,
   and the two asteroids wear their chunks' icons.
+- **The Core has no cliff of its own.** `map-gen.lua` states Nauvis's cliff
+  explicitly; the design's metallic ridges need a `cliff` prototype and art.
+- **The planet has no procession sets or ambient sounds** (`planet.lua`):
+  vanilla planets carry `planet_procession_set`, `platform_procession_set`,
+  `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
+  and audio before it can be filled.
+- **The vents wear crude oil's sheet and sounds**, and the ore iron ore's sheet.
 - **Paint accents still to assign** (template Appendix B): Drop Crusher, Ballast
   Drill, Vacuum Furnace, Helium Concentrator, Crust Tap, Ring Mast, Bed Tender,
   Sealed Roboport. The Roboport's lamps and the Bed Tender's bin are derived
@@ -59,10 +66,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **5. Resources / planet / map-gen** — `tile-sounds` walking/driving sounds
-  and `mining_visualisation_tint` (`sounds.ore` does not exist);
-  `subgroup = "mineable-fluids"` and `map_grid = false` on the vents;
-  `cliff_settings` for `cliffiness`, or drop it.
 - [ ] **6. Locale** — `[asteroid-chunk-name]` / `-description`; remove the
   orphan `sae-superconducting-winding-stub` keys; decide `auto_barrel` on
   `sae-cryoprotectant`.

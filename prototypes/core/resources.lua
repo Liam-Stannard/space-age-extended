@@ -10,7 +10,7 @@
 -- can be started.
 
 local resource_autoplace = require("resource-autoplace")
-local sounds = require("__base__/prototypes/entity/sounds")
+local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
 
 -- The vents get their own mining category, and that is a gameplay fix rather
 -- than tidiness.
@@ -64,7 +64,10 @@ data:extend({
       mining_time = 1,
       result = "sae-kamacite-ore"
     },
-    walking_sound = sounds.ore,
+    walking_sound = tile_sounds.walking.ore,
+    driving_sound = tile_sounds.driving.stone,
+    -- The colour the drill's mining beam takes: the ore's own grey-violet.
+    mining_visualisation_tint = { r = 0.62, g = 0.60, b = 0.66, a = 1 },
     collision_box = { { -0.1, -0.1 }, { 0.1, 0.1 } },
     selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
     autoplace = resource_autoplace.resource_autoplace_settings
@@ -88,8 +91,12 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     flags = { "placeable-neutral" },
     category = "sae-vent",
+    subgroup = "mineable-fluids",
     order = "z[sae]-b[melt-vent]",
     infinite = true,
+    -- A vent is one pool, not a field of tiles, so it is not snapped to the
+    -- resource grid -- as crude oil is not.
+    map_grid = false,
     highlight = true,
     minimum = 60000,
     normal = 300000,
@@ -108,6 +115,8 @@ data:extend({
         { type = "fluid", name = "sae-molten-kamacite", amount = 10 }
       }
     },
+    walking_sound = tile_sounds.walking.oil({}),
+    driving_sound = tile_sounds.driving.oil,
     collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
     selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
     autoplace = resource_autoplace.resource_autoplace_settings
@@ -133,8 +142,12 @@ data:extend({
     icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
     flags = { "placeable-neutral" },
     category = "sae-vent",
+    subgroup = "mineable-fluids",
     order = "z[sae]-c[gas-vent]",
     infinite = true,
+    -- A vent is one pool, not a field of tiles, so it is not snapped to the
+    -- resource grid -- as crude oil is not.
+    map_grid = false,
     highlight = true,
     minimum = 20000,
     normal = 100000,
@@ -150,6 +163,8 @@ data:extend({
         { type = "fluid", name = "sae-helium-3", amount = 10 }
       }
     },
+    walking_sound = tile_sounds.walking.oil({}),
+    driving_sound = tile_sounds.driving.oil,
     collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
     selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
     autoplace = resource_autoplace.resource_autoplace_settings

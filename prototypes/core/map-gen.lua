@@ -129,6 +129,17 @@ return function()
       cliffiness = "cliffiness_basic",
       cliff_elevation = "cliff_elevation_from_elevation"
     },
+    -- Which cliff the cliffiness above places. Vanilla planets each name their
+    -- own; the Core has none yet, so this states the default that was being
+    -- taken silently -- Nauvis's cliff, at Nauvis's spacing -- rather than
+    -- leaving it implied. A metallic ridge of the Core's own is outstanding.
+    cliff_settings =
+    {
+      name = "cliff",
+      cliff_elevation_0 = 10,
+      cliff_elevation_interval = 40,
+      richness = 1
+    },
     autoplace_controls =
     {
       ["sae-kamacite-ore"] = {},
