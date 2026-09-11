@@ -17,7 +17,7 @@
 -- keeps whatever terrain it was born with, and nothing you do here will change
 -- ground you have already walked on.
 
-local PALETTE = "struck-nickel"
+local PALETTE = "core-crust"
 
 -- Two sources, and they are not the same promise. The volcanic-* tiles ship
 -- with Space Age (they are Vulcanus's ground) and are always there; the
