@@ -73,6 +73,11 @@ data:extend({
     icon = "__space-age__/graphics/icons/fluid/fluoroketone-cold.png",
     subgroup = "fluid",
     order = "zz[sae-stub]-e",
+    -- Barrelled on purpose. This is a capstone, and a capstone has to reach
+    -- the Core (principles §8); a fluid travels in barrels or not at all. The
+    -- Core's own fluids say auto_barrel = false because they must never leave;
+    -- this one says the opposite for the same reason.
+    auto_barrel = true,
     default_temperature = -50,
     base_color = { r = 0.45, g = 0.70, b = 0.85 },
     flow_color = { r = 0.70, g = 0.88, b = 1.0 }

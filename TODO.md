@@ -66,9 +66,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 Work through in order; each step is reviewed before the next starts.
 
-- [ ] **6. Locale** — `[asteroid-chunk-name]` / `-description`; remove the
-  orphan `sae-superconducting-winding-stub` keys; decide `auto_barrel` on
-  `sae-cryoprotectant`.
 - [ ] **7. Style sweep** — `crust-tap.lua` tabs and trailing commas; unused
   `local util` in `derive.lua`; duplicate `local DC`; dead icon assignments
   overwritten later; the 12-line comment pasted four times in `recipes.lua`;
