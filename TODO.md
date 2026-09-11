@@ -56,6 +56,23 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Sealed Roboport. The Roboport's lamps and the Bed Tender's bin are derived
   against their own plates, so repainting either means re-deriving those too.
 
+## Core terrain (`core-terrain` branch)
+
+- **The palette is chosen blind.** `map-gen.lua` selects `struck-nickel`; none of
+  the four has been looked at in a client. Measured headlessly with Alien
+  Biomes: 80% of the ground is Space Age's volcanic tiles, 16% mineral dirt and
+  sand, and the white-dirt and blue/purple heat tiles never placed at all.
+  `frozen-crust` is the one that matches 04 §1's "frozen crust over a hot
+  interior". Generate a fresh surface per palette and pick by eye.
+- **The kamacite boulder is a drill-free ore route.** 25 ore by hand, about two
+  a chunk, finite. 04 §2 says only the Ballast Drill works kamacite; if the
+  boulder stays, that section owes a sentence (design change — needs agreement).
+- **Decorative scatter is Vulcanus's and Fulgora's.** The pattern match lets in
+  the volcanic rocks, craters, Fulgora rocks and the three sulfur rock
+  decoratives (~400 per chunk in total). Alien Biomes' coloured rocks are
+  enabled but never place. Decide whether sulfur belongs, and whether the
+  density is right, by eye.
+
 ## Repository layout
 
 - **Untracked art in `graphics/entity/` awaiting a sign-off decision:**
