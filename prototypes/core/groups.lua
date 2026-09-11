@@ -190,6 +190,7 @@ local FLUIDS =
   ["sae-settled-melt"] = "ab",
   ["sae-helium-3"] = "ac",
   ["sae-crust-gas"] = "ad",
+  ["sae-radiant-brine"] = "ae",
   ["sae-phosphide-flux"] = "ba",
   ["sae-carbon-monoxide"] = "bb",
   ["sae-metal-carbonyl"] = "bc",

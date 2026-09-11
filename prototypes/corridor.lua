@@ -364,6 +364,28 @@ gen.animation =
 }
 data:extend({ gen })
 
+-- The pool's brine, precipitated. Helium-3 is the reagent, and it is the
+-- governor: a tap on the shore gives brine faster than any use of it, so the
+-- fuel is priced in the rare gas the Core throttles everything else with.
+data:extend({
+  {
+    type = "recipe",
+    name = "sae-radiant-precipitation",
+    categories = { "chemistry" },
+    energy_required = 20,
+    ingredients =
+    {
+      { type = "fluid", name = "sae-radiant-brine", amount = 100 },
+      { type = "fluid", name = "sae-helium-3", amount = 20 }
+    },
+    results = { { type = "item", name = "sae-radiant-fuel", amount = 1 } },
+    icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
+    icon_size = 64,
+    surface_conditions = { { property = "pressure", min = 1, max = 9 } },
+    enabled = false
+  }
+})
+
 data:extend({
   {
     type = "item",

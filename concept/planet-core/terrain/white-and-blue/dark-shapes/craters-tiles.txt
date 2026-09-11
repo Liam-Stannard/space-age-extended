@@ -1,0 +1,1 @@
+mineral-black-dirt=43.4% mineral-white-dirt=47.8% mineral-white-sand=5.9% sae-crust-vent=1.5% volcanic-blue-heat=1.4%

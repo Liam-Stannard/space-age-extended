@@ -1,0 +1,1 @@
+mineral-aubergine-dirt=1.8% sae-crust-vent=2.0% volcanic-blue-heat=77.2% volcanic-orange-heat=18.9%

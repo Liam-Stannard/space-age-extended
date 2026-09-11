@@ -107,3 +107,21 @@ data:extend({
     auto_barrel = false
   }
 })
+
+-- Radiant brine: the corridor's decaying isotope, seeped into the Core's low
+-- ground as a liquid and pooled there. Drawn by a Crust Tap standing on the
+-- pool's shore; precipitated into radiant fuel with helium-3 (corridor.lua).
+-- Never barrelled: it is the Core's, like every fluid here.
+data:extend({
+  {
+    type = "fluid",
+    name = "sae-radiant-brine",
+    icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
+    subgroup = "fluid",
+    order = "z[sae]-ae[radiant-brine]",
+    default_temperature = 15,
+    base_color = { r = 0.12, g = 0.39, b = 1.0 },
+    flow_color = { r = 0.45, g = 0.68, b = 1.0 },
+    auto_barrel = false
+  }
+})

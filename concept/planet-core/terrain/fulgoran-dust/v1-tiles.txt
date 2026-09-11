@@ -1,0 +1,1 @@
+fulgoran-dunes=10.7% fulgoran-dust=4.5% fulgoran-rock=77.5% fulgoran-sand=5.8% sae-crust-vent=1.5%

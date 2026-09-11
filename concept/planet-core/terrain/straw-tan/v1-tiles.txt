@@ -1,0 +1,1 @@
+mineral-red-dirt=16.3% mineral-red-sand=1.6% mineral-tan-dirt=77.5% mineral-tan-sand=0.0% sae-crust-vent=2.3% volcanic-blue-heat=1.9% volcanic-orange-heat=0.4%

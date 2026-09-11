@@ -1,0 +1,1 @@
+mineral-beige-dirt=11.0% mineral-black-dirt=12.1% mineral-cream-dirt=73.0% mineral-cream-sand=0.0% sae-crust-vent=2.2% volcanic-blue-heat=0.3% volcanic-orange-heat=1.3%

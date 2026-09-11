@@ -1,0 +1,1 @@
+mineral-aubergine-dirt=8.2% mineral-beige-dirt=32.5% mineral-cream-dirt=56.2% mineral-cream-sand=0.0% sae-crust-vent=2.7% volcanic-blue-heat=0.1% volcanic-orange-heat=0.3%

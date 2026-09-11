@@ -1,4 +1,4 @@
--- The Core's three sited resources.
+-- The Core's three sited resources, and the scatter between them.
 --
 -- Ore is rich, widely spaced and genuinely finite, so the base spreads and
 -- rails matter. Both vents are infinite but decline with draw, the way crude
@@ -11,6 +11,7 @@
 
 local resource_autoplace = require("resource-autoplace")
 local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
+local derive = require("prototypes.derive")
 
 -- The vents get their own mining category, and that is a gameplay fix rather
 -- than tidiness.
@@ -45,7 +46,10 @@ data:extend({
 data:extend({
   { type = "autoplace-control", name = "sae-kamacite-ore", category = "resource", richness = true, order = "z[sae]-a" },
   { type = "autoplace-control", name = "sae-melt-vent",    category = "resource", richness = true, order = "z[sae]-b" },
-  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" }
+  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" },
+  -- Not a resource: boulders are terrain the way trees are, so they belong on
+  -- the terrain slider rather than among the ore controls.
+  { type = "autoplace-control", name = "sae-core-rock",   category = "terrain",  order = "z[sae]-d" }
 })
 
 data:extend({
@@ -185,3 +189,83 @@ data:extend({
     map_color = { r = 0.55, g = 0.80, b = 0.92 }
   }
 })
+
+-- Kamacite boulders: the scatter worth stopping for.
+--
+-- Vanilla's rocks are the wrong prop here twice over. They yield stone and
+-- coal, and the Core has no carbon at all -- coal lying on the ground would
+-- contradict the one fact the entire world is built on. And they are Nauvis
+-- sandstone to look at, on a crust of iron and nickel.
+--
+-- This is that silhouette with the Core's own contents: a lump of crust, hand
+-- mined for ore. It is the only ore on the planet obtainable before a drill is
+-- standing, which makes the scatter a genuine early move rather than decoration
+-- with a yield attached -- and it runs out, like everything else here.
+
+-- 2.0 renamed vanilla's rocks: these are the current names, biggest first.
+local ROCK_SOURCES = { "huge-rock", "big-rock", "big-sand-rock" }
+
+local rock_source
+for _, name in pairs(ROCK_SOURCES) do
+  if (data.raw["simple-entity"] or {})[name] then
+    rock_source = name
+    break
+  end
+end
+
+-- A base-game prototype, not an optional one: if none of these exist the game
+-- is not the game this mod was written against, and saying so beats shipping a
+-- planet with invisible rocks on it.
+if not rock_source then
+  error("prototypes/core/resources.lua: no base-game rock to copy from; looked for " ..
+        table.concat(ROCK_SOURCES, ", "))
+end
+
+-- Through derive, like every other copy of a vanilla prototype here: the rock's
+-- shape and sprites are what is wanted, not its name, its page or its yield.
+local boulder = derive.from("simple-entity", rock_source, "sae-core-boulder")
+boulder.subgroup = "sae-core-tiles"
+boulder.order = "z[sae]-a[core-boulder]"
+boulder.minable =
+{
+  mining_time = 2,
+  mining_particle = "iron-ore-particle",
+  results = { { type = "item", name = "sae-kamacite-ore", amount = 25 } }
+}
+boulder.map_color = { r = 0.62, g = 0.60, b = 0.66 }
+boulder.autoplace =
+{
+  control = "sae-core-rock",
+  order = "z[sae]-a[core-boulder]",
+  -- Roughly one or two to a chunk, gathered rather than evenly sprinkled:
+  -- enough to be worth a detour on the walk out, never enough to be a supply.
+  -- The multiplier is not linear in the count, so it was measured on the rig
+  -- rather than reasoned about: 0.002 gave 0.5 a chunk, 0.003 gave 1.0,
+  -- 0.0035 gave 255/144 = 1.8, 0.004 gave 3.9.
+  probability_expression = "clamp(0.0035 * (0.5 + multioctave_noise{x = x,\z
+                                                                  y = y,\z
+                                                                  seed0 = map_seed,\z
+                                                                  seed1 = 3907,\z
+                                                                  octaves = 3,\z
+                                                                  persistence = 0.55,\z
+                                                                  input_scale = 1/180,\z
+                                                                  output_scale = 1}), 0, 0.01)"
+}
+
+-- The Core's own material, not a tint. A tint multiplies, and the rock's
+-- texture is warm sandstone, so every blue-grey tried left it brown or black;
+-- tools/build-core-rocks.py rebuilds the sheets with the sandstone's shading
+-- remapped onto slate, and the prototype points at those.
+do
+  local FROM = "__base__/graphics/decorative/huge-rock/"
+  local TO = "__space-age-extended__/graphics/entity/core-boulder/"
+  local function repoint(t)
+    for k, v in pairs(t) do
+      if type(v) == "table" then repoint(v)
+      elseif type(v) == "string" and v:sub(1, #FROM) == FROM then t[k] = TO .. v:sub(#FROM + 1) end
+    end
+  end
+  repoint(boulder.pictures)
+end
+
+data:extend({ boulder })
