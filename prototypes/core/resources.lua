@@ -12,7 +12,6 @@
 local resource_autoplace = require("resource-autoplace")
 local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
 local derive = require("prototypes.derive")
-local palette = require("prototypes.core.map-gen").palette
 
 -- The vents get their own mining category, and that is a gameplay fix rather
 -- than tidiness.
@@ -222,24 +221,6 @@ if not rock_source then
         table.concat(ROCK_SOURCES, ", "))
 end
 
--- Sprite tables nest differently depending on which rock was copied -- sheets,
--- variation arrays and layers all appear -- so the tint is applied by walking
--- the prototype for anything with a filename rather than by reaching into a
--- structure this file would then have to be right about. Shadows and glow
--- layers are left alone: a tinted shadow is either ignored or wrong.
-local function tint_sprites(node, tint)
-  if type(node) ~= "table" then return end
-
-  if node.filename and not node.draw_as_shadow and not node.draw_as_glow then
-    node.tint = tint
-    node.apply_runtime_tint = false
-  end
-
-  for _, child in pairs(node) do
-    tint_sprites(child, tint)
-  end
-end
-
 -- Through derive, like every other copy of a vanilla prototype here: the rock's
 -- shape and sprites are what is wanted, not its name, its page or its yield.
 local boulder = derive.from("simple-entity", rock_source, "sae-core-boulder")
@@ -274,11 +255,10 @@ boulder.autoplace =
 -- The Core's own material, not a tint. A tint multiplies, and the rock's
 -- texture is warm sandstone, so every blue-grey tried left it brown or black;
 -- tools/build-core-rocks.py rebuilds the sheets with the sandstone's shading
--- remapped onto slate, and the prototype points at those. A palette may still
--- tint on top with `boulder_tint`; none needs to now.
+-- remapped onto slate, and the prototype points at those.
 do
   local FROM = "__base__/graphics/decorative/huge-rock/"
-  local TO = "__space-age-extended__/graphics/entity/core-boulder/slate/"
+  local TO = "__space-age-extended__/graphics/entity/core-boulder/"
   local function repoint(t)
     for k, v in pairs(t) do
       if type(v) == "table" then repoint(v)
@@ -287,6 +267,5 @@ do
   end
   repoint(boulder.pictures)
 end
-if palette.boulder_tint then tint_sprites(boulder, palette.boulder_tint) end
 
 data:extend({ boulder })

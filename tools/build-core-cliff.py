@@ -13,7 +13,7 @@ Usage:
   tools/build-core-cliff.py <space-age data dir> <material>
     material: slate | nickel      (or three hex stops: dark,mid,pale)
 
-Writes graphics/terrain/cliff-core/<material>/cliff-<part>[-lower].png for
+Writes graphics/terrain/cliff-core/cliff-<part>[-lower].png for
 sides, inner, outer and entrance.
 """
 import os, sys
@@ -46,13 +46,9 @@ def main():
     if len(sys.argv) != 3:
         sys.exit(__doc__)
     src, material = sys.argv[1], sys.argv[2]
-    if material in MATERIALS:
-        stops = MATERIALS[material]
-    else:
-        stops = tuple(tuple(int(h[i:i+2], 16) for i in (0, 2, 4)) for h in material.split(","))
-        material = "custom"
+    stops = MATERIALS.get(material) or tuple(tuple(int(h[i:i+2], 16) for i in (0, 2, 4)) for h in material.split(","))
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    outdir = os.path.join(repo, "graphics", "terrain", "cliff-core", material)
+    outdir = os.path.join(repo, "graphics", "terrain", "cliff-core")
     os.makedirs(outdir, exist_ok=True)
     srcdir = os.path.join(src, "graphics", "terrain", "cliffs", "fulgora")
     for part in ("sides", "inner", "outer", "entrance"):

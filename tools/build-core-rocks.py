@@ -11,8 +11,9 @@ Usage:
   tools/build-core-rocks.py <base data dir> <material>
     material: slate | nickel      (or three hex stops: dark,mid,pale)
 
-Writes graphics/entity/core-boulder/<material>/huge-rock-NN.png and
-graphics/decorative/crust-shards/<material>/{medium,small,tiny}-rock-NN.png.
+Writes graphics/entity/core-boulder/huge-rock-NN.png and
+graphics/decorative/crust-shards/{medium,small,tiny}-rock-NN.png -- the sheets
+the prototypes point at, whatever material was asked for.
 """
 import os, sys, glob
 from PIL import Image
@@ -36,10 +37,9 @@ def main():
         sys.exit(__doc__)
     src, material = sys.argv[1], sys.argv[2]
     stops = MATERIALS.get(material) or tuple(tuple(int(h[i:i+2], 16) for i in (0, 2, 4)) for h in material.split(","))
-    if material not in MATERIALS: material = "custom"
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    jobs = [("huge-rock", os.path.join("graphics", "entity", "core-boulder", material))]
-    jobs += [(k, os.path.join("graphics", "decorative", "crust-shards", material)) for k in ("medium-rock", "small-rock", "tiny-rock")]
+    jobs = [("huge-rock", os.path.join("graphics", "entity", "core-boulder"))]
+    jobs += [(k, os.path.join("graphics", "decorative", "crust-shards")) for k in ("medium-rock", "small-rock", "tiny-rock")]
     for kind, outdir in jobs:
         os.makedirs(os.path.join(repo, outdir), exist_ok=True)
         files = sorted(glob.glob(os.path.join(src, "graphics", "decorative", kind, f"{kind}-*.png")))

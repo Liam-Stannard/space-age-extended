@@ -25,7 +25,7 @@ data:extend({
     label_orientation = 0.15,
     order = "z[sae-core]",
     subgroup = "planets",
-    map_gen_settings = map_gen.settings(),
+    map_gen_settings = map_gen(),
     pollutant_type = nil,
     solar_power_in_space = 0,
     surface_properties =

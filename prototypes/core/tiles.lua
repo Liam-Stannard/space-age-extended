@@ -44,17 +44,11 @@ bed.map_color = { r = 0.42, g = 0.40, b = 0.36 }
 bed.can_be_part_of_blueprint = true
 data:extend({ bed })
 
--- The crust's lit cracks. Vulcanus's hot crack tile carries a real light
--- layer -- the one thing no Alien Biomes tile has -- so the Core takes its
--- art through derive and places it by its own rule: `sae_core_glow`, a noise
--- expression map-gen.lua defines from the selected palette's dark shape, so
--- the glow runs exactly along the joints of the crust and nowhere else.
--- Vulcanus's own autoplace is gone with the copy; only the sheets remain.
---
--- Two colours of it. Ember is the art as it ships; arc is the same sheets with
--- the embers' hue rotated to blue by tools/build-crust-glow-tile.py, main and
--- light sheet alike, so the night glow matches the day paint. The palette
--- says which one the crust wears (`glow.colour`), and map-gen.lua lists it.
+-- Tiles that glow. Vulcanus's hot crack tile carries a real light layer --
+-- the one thing no Alien Biomes tile has -- so the Core's lit tiles take
+-- their structure from it through derive and wear their own sheets, main and
+-- light alike, so the night glow matches the day paint. Vulcanus's own
+-- autoplace is gone with the copy; each tile is placed by a rule of its own.
 local function glow_tile(name, order, map_color, sheets)
   local glow = derive.tile_from("volcanic-cracks-hot", name)
   glow.subgroup = "sae-core-tiles"
@@ -63,33 +57,30 @@ local function glow_tile(name, order, map_color, sheets)
   -- The copy says its sprites are only wanted on Vulcanus; the Core wants them.
   glow.sprite_usage_surface = "any"
   glow.map_color = map_color
-  glow.autoplace = { probability_expression = "sae_core_glow" }
-  if sheets then
-    -- Repointed structurally, as the whisker bed is: the main sheet and the
-    -- light sheet each appear once, under `variants`.
-    local function repoint(t)
-      for k, v in pairs(t) do
-        if type(v) == "table" then repoint(v)
-        elseif type(v) == "string" then
-          if v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot.png" then t[k] = sheets.main
-          elseif v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot-light.png" then t[k] = sheets.light end
-        end
+  -- Repointed structurally, as the whisker bed is: the main sheet and the
+  -- light sheet each appear once, under `variants`.
+  local function repoint(t)
+    for k, v in pairs(t) do
+      if type(v) == "table" then repoint(v)
+      elseif type(v) == "string" then
+        if v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot.png" then t[k] = sheets.main
+        elseif v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot-light.png" then t[k] = sheets.light end
       end
     end
-    repoint(glow.variants)
   end
+  repoint(glow.variants)
   return glow
 end
 
 -- Shards of the crust: vanilla's medium, small and tiny rocks in the Core's
 -- material (tools/build-core-rocks.py), as the Core's own decoratives with the
 -- Core's own placement -- so the scatter no longer depends on an optional pack
--- and no longer arrives in another planet's colours. `sae_core_shards` is the
--- density; map-gen.lua's palettes include them by the "sae-crust" pattern.
+-- and no longer arrives in another planet's colours. map-gen.lua includes
+-- them by the "sae-crust" pattern.
 local function shards(kind, probability)
   local d = derive.from("optimized-decorative", kind, "sae-crust-shards-" .. kind:gsub("%-rock$", ""))
   local FROM = "__base__/graphics/decorative/" .. kind .. "/"
-  local TO = "__space-age-extended__/graphics/decorative/crust-shards/slate/"
+  local TO = "__space-age-extended__/graphics/decorative/crust-shards/"
   local function repoint(t)
     for k, v in pairs(t) do
       if type(v) == "table" then repoint(v)
@@ -110,17 +101,16 @@ local function shards(kind, probability)
 end
 data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("tiny-rock", 0.09) })
 
--- The radiant pool: a sea of the corridor's isotope in the Core's basins, drawn
--- by the lava shader in Cherenkov blue rather than by any sheet. Impassable and
--- unbuildable, as lava is; bridged with foundation. Its SHORE is a buildable
--- ring in the lit-crack art, carrying the crust vent's collision layer and the
--- pool's fluid, so a Crust Tap stands on the shore and draws the brine exactly
--- as it draws crust gas from a vent. map-gen.lua places both from elevation
--- when the palette carries `pool`.
--- The liquid's colour is the shader's, not the tile's: the lava effect draws
--- its own colour texture, so the pool gets the same shader with that texture
--- turned to blue (tools/build-crust-glow-tile.py --sheet), the noise texture
--- copied unchanged, and lava's own specular and foam figures shifted cool.
+-- The radiant pool: the corridor's isotope pooled in the Core's low ground,
+-- lava's tile and shader in Cherenkov blue. Impassable and unbuildable, as
+-- lava is; bridged with foundation. Its SHORE is a buildable ring of lit
+-- crust, carrying the crust vent's collision layer and the pool's fluid, so a
+-- Crust Tap stands on the shore and draws the brine exactly as it draws crust
+-- gas from a vent. map-gen.lua places both from its basin term.
+-- The shader draws its own colour texture, so the pool gets lava's shader
+-- with that texture turned to blue (tools/build-crust-glow-tile.py --sheet),
+-- the noise texture copied unchanged, and lava's own specular and foam
+-- figures shifted cool.
 data:extend({
   {
     type = "tile-effect",
@@ -166,9 +156,8 @@ pool.particle_tints = { primary = { r = 120, g = 170, b = 255 }, secondary = { r
 pool.map_color = { r = 0.12, g = 0.39, b = 1.0 }
 pool.autoplace = { probability_expression = "sae_core_pool" }
 pool.ambient_sounds = nil
--- The surface the player sees is the tile's own sheet, not the shader's
--- colours: lava-hot's, turned to blue by tools/build-crust-glow-tile.py
--- --sheet, the same rotation the arc glow tile had.
+-- Most of what the player sees is the tile's own sheet under the shader:
+-- lava-hot's, turned to blue with the same rotation the arc glow tile had.
 for _, v in pairs(pool.variants.main) do
   if v.picture == "__space-age__/graphics/terrain/vulcanus/lava-hot.png" then
     v.picture = "__space-age-extended__/graphics/terrain/radiant-pool/pool.png"
@@ -187,7 +176,7 @@ shore.fluid = "sae-radiant-brine"
 shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
 
--- Where the lit-crack art meets the pool it draws Vulcanus's ground-to-lava
+-- Where the lit crust meets the pool it draws Vulcanus's ground-to-lava
 -- lip -- a dark crust edge with lit seams and its own lightmap -- turned to
 -- blue the way the rest of the art was. The copy's transition names lava-hot
 -- and lava; the pool is a third name, so it is added, and the sheets repointed.
@@ -211,12 +200,12 @@ data:extend({ pool, shore })
 -- The Core's cliff: Fulgora's geometry -- twenty seamed orientations nobody
 -- should redraw -- in the Core's material, the sheets rebuilt by
 -- tools/build-core-cliff.py. Shadows are shape, not material, so they stay
--- vanilla's. The palette names it with `cliff = "sae-cliff-core"`.
+-- vanilla's. map-gen.lua names it in `cliff_settings`.
 local cliff = derive.from("cliff", "cliff-fulgora", "sae-cliff-core")
 cliff.map_color = { r = 0.33, g = 0.37, b = 0.42 }
 do
   local FROM = "__space-age__/graphics/terrain/cliffs/fulgora/cliff-fulgora-"
-  local TO = "__space-age-extended__/graphics/terrain/cliff-core/slate/cliff-"
+  local TO = "__space-age-extended__/graphics/terrain/cliff-core/cliff-"
   local function repoint(t)
     for k, v in pairs(t) do
       if type(v) == "table" then repoint(v)
@@ -229,8 +218,10 @@ do
 end
 data:extend({ cliff })
 
+-- The crust's lit cracks: Vulcanus's hot-crack sheets with the embers' hue
+-- rotated to arc blue by tools/build-crust-glow-tile.py, placed by
+-- `sae_core_glow` down the middle of the dark rims and nowhere else.
 data:extend({
-  border_pool(glow_tile("sae-crust-glow", "b[crust-glow]", { r = 0.85, g = 0.45, b = 0.20 })),
   border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
     { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
       light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
