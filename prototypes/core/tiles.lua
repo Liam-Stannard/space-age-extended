@@ -110,6 +110,42 @@ local function shards(kind, probability)
 end
 data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("tiny-rock", 0.09) })
 
+-- The radiant pool: a sea of the corridor's isotope in the Core's basins, drawn
+-- by the lava shader in Cherenkov blue rather than by any sheet. Impassable and
+-- unbuildable, as lava is; bridged with foundation. Its SHORE is a buildable
+-- ring in the lit-crack art, carrying the crust vent's collision layer and the
+-- pool's fluid, so a Crust Tap stands on the shore and draws the brine exactly
+-- as it draws crust gas from a vent. map-gen.lua places both from elevation
+-- when the palette carries `pool`.
+local pool = derive.tile_from("lava-hot", "sae-radiant-pool")
+pool.subgroup = "sae-core-tiles"
+pool.order = "d[radiant-pool]"
+pool.sprite_usage_surface = "any"
+pool.allowed_neighbors = nil
+pool.fluid = "sae-radiant-brine"
+pool.effect_color = { r = 30, g = 100, b = 255 }
+pool.effect_color_secondary = { r = 8, g = 24, b = 60 }
+pool.particle_tints = { primary = { r = 120, g = 170, b = 255 }, secondary = { r = 30, g = 100, b = 255 } }
+pool.map_color = { r = 0.12, g = 0.39, b = 1.0 }
+pool.autoplace = { probability_expression = "sae_core_pool" }
+pool.ambient_sounds = nil
+-- The surface the player sees is the tile's own sheet, not the shader's
+-- colours: lava-hot's, turned to blue by tools/build-crust-glow-tile.py
+-- --sheet, the same rotation the arc glow tile had.
+for _, v in pairs(pool.variants.main) do
+  if v.picture == "__space-age__/graphics/terrain/vulcanus/lava-hot.png" then
+    v.picture = "__space-age-extended__/graphics/terrain/radiant-pool/pool.png"
+  end
+end
+
+local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g = 0.45, b = 0.80 },
+  { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
+    light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" })
+shore.fluid = "sae-radiant-brine"
+shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
+shore.autoplace = { probability_expression = "sae_core_shore" }
+data:extend({ pool, shore })
+
 -- The Core's cliff: Fulgora's geometry -- twenty seamed orientations nobody
 -- should redraw -- in the Core's material, the sheets rebuilt by
 -- tools/build-core-cliff.py. Shadows are shape, not material, so they stay

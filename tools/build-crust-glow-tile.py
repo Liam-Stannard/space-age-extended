@@ -16,6 +16,9 @@ rotated by the same amount so the glow at night matches the paint by day.
 Usage:
   tools/build-crust-glow-tile.py <space-age data dir> <name> <hue degrees>
   e.g. tools/build-crust-glow-tile.py "$FACTORIO_DATA/space-age" arc 200
+  tools/build-crust-glow-tile.py --sheet <in.png> <out.png> <hue degrees>
+  any one sheet, the same rotation -- the radiant pool's surface is Vulcanus's
+  lava-hot sheet turned to blue this way.
 
 Writes graphics/terrain/crust-glow/<name>.png and <name>-light.png.
 """
@@ -38,6 +41,10 @@ def rotate_hue(path, out, degrees, min_sat=0.22):
     return im.size
 
 def main():
+    if len(sys.argv) == 5 and sys.argv[1] == "--sheet":
+        os.makedirs(os.path.dirname(os.path.abspath(sys.argv[3])), exist_ok=True)
+        print(f"  {sys.argv[3]}  {rotate_hue(sys.argv[2], sys.argv[3], float(sys.argv[4]))}")
+        return
     if len(sys.argv) != 4:
         sys.exit(__doc__)
     src, name, degrees = sys.argv[1], sys.argv[2], float(sys.argv[3])

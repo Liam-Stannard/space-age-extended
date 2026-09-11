@@ -1062,6 +1062,8 @@ local palettes =
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
                     "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose", "-black", "-rock-", "-rock" },
     cliff       = "sae-cliff-core",
+    -- The basins hold radiant brine; the band above the waterline is the shore.
+    pool        = { level = 98, shore = 8 },
     tiles = {},
     without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
     alien_tiles =
@@ -1403,6 +1405,24 @@ data:extend({
       or "-1000"
   },
   {
+    -- The radiant pool fills the basins: below `level` on the shared elevation
+    -- it beats every ground tile outright, and a `shore`-wide band above it is
+    -- the buildable rim. Palettes without `pool` place neither.
+    type = "noise-expression",
+    name = "sae_core_pool",
+    expression = palette.pool
+      and string.format("clamp((%s - sae_core_elevation) * 4, 0, 1) * 6 - 1", palette.pool.level)
+      or "-1000"
+  },
+  {
+    type = "noise-expression",
+    name = "sae_core_shore",
+    expression = palette.pool
+      and string.format("clamp((%s - sae_core_elevation) * 4, 0, 1) * clamp((sae_core_elevation - %s) * 4, 0, 1) * 5 - 1",
+                        palette.pool.level + palette.pool.shore, palette.pool.level)
+      or "-1000"
+  },
+  {
     type = "noise-expression",
     name = "sae_core_temperature",
     expression = temperature_expression(palette, 2291, TEMPERATURE_RANGE[1], TEMPERATURE_RANGE[2])
@@ -1478,6 +1498,12 @@ local function core_tiles()
   if found == 0 then
     add({ "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy",
           "ice-rough", "ice-smooth" })
+  end
+
+  -- The radiant pool and its shore, when the palette carries them.
+  if palette.pool then
+    settings["sae-radiant-pool"] = {}
+    settings["sae-radiant-shore"] = {}
   end
 
   -- The lit cracks, when the palette asks for them, in the colour it asks for.
