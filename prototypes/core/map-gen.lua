@@ -226,7 +226,7 @@ local palettes =
     veins       = { width = 0.022, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
     moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
     aux         = { centre = 0.22, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 340 },
-    plates      = { threshold = 0.5, drop = -0.7, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    plates      = { threshold = 0.5, drop = -0.65, warm = -45, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
     tiles = {},
@@ -239,7 +239,33 @@ local palettes =
       "mineral-cream-sand-1",
       "mineral-beige-dirt-1",
       "mineral-beige-dirt-2",
-      "mineral-aubergine-dirt-1",
+      "mineral-black-dirt-1", "mineral-black-dirt-2",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },["cream-flats-iron"] =
+  {
+    temperature = { centre = 45, amplitude = 10, octaves = 2, persistence = 0.5, scale = 480 },
+    -- The body sits at 45, so a seam needs only +55 to reach the heat window
+    -- and the standard 0.035 band came out three times as wide as on a cold
+    -- body (10% of the ground, in dark strips). Narrowed to match.
+    veins       = { width = 0.022, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.22, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = -0.25, warm = 40, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-cream-dirt-1",
+      "mineral-cream-dirt-2",
+      "mineral-cream-dirt-3",
+      "mineral-cream-sand-1",
+      "mineral-beige-dirt-1",
+      "mineral-beige-dirt-2",
+      "mineral-brown-dirt-1", "mineral-brown-dirt-2",
       "volcanic-orange-heat-1",
       "volcanic-blue-heat-1"
     }
