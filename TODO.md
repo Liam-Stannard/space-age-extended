@@ -64,6 +64,13 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   cuts, one seed each; whichever is chosen gets the same two-seed tuning pass
   `scoured-nickel` had. Note `tempered-steel` placed no violet or purple on its
   seed (aux never reached their 0.85+ windows) and came out tan and brown.
+- **Ten more palettes, no two sharing a body colour**, rendered one seed each:
+  beige-regolith, cream-flats, violet-bloom, deep-purple, mauve-dust,
+  straw-tan, green-heat (Alien Biomes' green heat tiles as ground), and three
+  on Space Age's own tiles with no pack needed — red-desert (Nauvis),
+  fulgoran-dust (Fulgora), basalt-soil (Vulcanus). Contact sheet
+  `concept/planet-core/terrain/ten-more-…`; each has its tile shares in
+  `v1-tiles.txt`. tempered-steel was retuned to reach its violet.
 - **Choose the palette.** `scoured-nickel` was the grey recommendation: built from
   the renders of the other five, it drops frost entirely (the Core has no water
   to freeze) and gives the brief's read from what the planet does have — dark

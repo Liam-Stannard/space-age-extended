@@ -80,7 +80,10 @@ local palettes =
     temperature = { centre = 78, amplitude = 14, octaves = 2, persistence = 0.5, scale = 480 },
     veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
     moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
-    aux         = { centre = 0.55, amplitude = 0.34, octaves = 3, persistence = 0.5, scale = 340 },
+    -- First render at 0.55 +/- 0.34 never reached violet's 0.85 +/- 0.05 and
+    -- came out tan and brown; the range now sits on the brown/violet boundary.
+    aux         = { centre = 0.72, amplitude = 0.24, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = 0.9, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
     decoratives = {},
     refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
     tiles = {},
@@ -88,7 +91,7 @@ local palettes =
     alien_tiles =
     {
       "mineral-brown-dirt-1", "mineral-brown-dirt-2", "mineral-brown-dirt-3", "mineral-brown-sand-1",
-      "mineral-violet-dirt-1", "mineral-violet-dirt-2", "mineral-purple-dirt-1",
+      "mineral-violet-dirt-1", "mineral-violet-dirt-2", "mineral-violet-dirt-3", "mineral-purple-dirt-1",
       "mineral-tan-dirt-1", "mineral-tan-sand-1", "mineral-tan-sand-3",
       "volcanic-orange-heat-1", "volcanic-orange-heat-2",
       "volcanic-blue-heat-1", "volcanic-purple-heat-1"
@@ -185,6 +188,231 @@ local palettes =
       "mineral-black-dirt-1", "mineral-black-dirt-2",
       "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-purple-heat-1", "volcanic-orange-heat-1"
     }
+  },
+
+  -- Warm pale neutral: beige regolith with dusty-rose plates and black where the ground dips cold. The quietest of the set.
+  ["beige-regolith"] =
+  {
+    temperature = { centre = 44, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.5, amplitude = 0.16, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = -0.35, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-beige-dirt-1",
+      "mineral-beige-dirt-2",
+      "mineral-beige-dirt-3",
+      "mineral-beige-sand-1",
+      "mineral-dustyrose-dirt-1",
+      "mineral-dustyrose-dirt-3",
+      "mineral-black-dirt-1",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- Pale cream flats -- the brightest ground the tiles offer -- with beige shading and aubergine hollows. A bleached world.
+  ["cream-flats"] =
+  {
+    temperature = { centre = 45, amplitude = 10, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.22, amplitude = 0.14, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = -0.7, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-cream-dirt-1",
+      "mineral-cream-dirt-2",
+      "mineral-cream-dirt-3",
+      "mineral-cream-sand-1",
+      "mineral-beige-dirt-1",
+      "mineral-beige-dirt-2",
+      "mineral-aubergine-dirt-1",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- Violet body -- the hot band's darkest colour -- with purple where it deepens and red-brown where it cools. Tempered metal all the way through.
+  ["violet-bloom"] =
+  {
+    temperature = { centre = 80, amplitude = 14, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.86, amplitude = 0.06, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.5, drop = 0.25, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-violet-dirt-1",
+      "mineral-violet-dirt-2",
+      "mineral-violet-dirt-3",
+      "mineral-violet-sand-1",
+      "mineral-purple-dirt-1",
+      "mineral-purple-dirt-2",
+      "mineral-red-dirt-1",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- Purple ground with tan plates cut into it -- the two ends of the hot band's colour axis side by side.
+  ["deep-purple"] =
+  {
+    temperature = { centre = 80, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.95, amplitude = 0.04, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = 1.0, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-purple-dirt-1",
+      "mineral-purple-dirt-2",
+      "mineral-purple-dirt-3",
+      "mineral-purple-sand-1",
+      "mineral-tan-dirt-1",
+      "mineral-tan-sand-1",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- Dusty rose body with cream plates and aubergine hollows: a mauve world, warm-grey without grey.
+  ["mauve-dust"] =
+  {
+    temperature = { centre = 45, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.72, amplitude = 0.08, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = 0.6, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-dustyrose-dirt-1",
+      "mineral-dustyrose-dirt-2",
+      "mineral-dustyrose-dirt-3",
+      "mineral-dustyrose-sand-1",
+      "mineral-cream-dirt-1",
+      "mineral-aubergine-dirt-1",
+      "mineral-aubergine-dirt-2",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- Straw-tan body with red plates -- the light end of the hot band, with iron showing through.
+  ["straw-tan"] =
+  {
+    temperature = { centre = 80, amplitude = 12, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.16, amplitude = 0.1, octaves = 3, persistence = 0.5, scale = 340 },
+    plates      = { threshold = 0.45, drop = -0.6, octaves = 2, persistence = 0.6, scale = 48, seed = 7781 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "mineral-tan-dirt-1",
+      "mineral-tan-dirt-2",
+      "mineral-tan-dirt-3",
+      "mineral-tan-sand-1",
+      "mineral-tan-sand-3",
+      "mineral-red-dirt-1",
+      "mineral-red-sand-1",
+      "volcanic-orange-heat-1",
+      "volcanic-blue-heat-1"
+    }
+  },
+
+  -- The whole body in the heat window, so Alien Biomes' GREEN heat tiles are the ground -- an unlit acid-green crust with orange where aux runs low. Nothing else in the game is this colour.
+  ["green-heat"] =
+  {
+    temperature = { centre = 112, amplitude = 6, octaves = 2, persistence = 0.5, scale = 480 },
+    veins       = { width = 0.035, gain = 3500, octaves = 2, persistence = 0.5, scale = 380, seed = 4471 },
+    moisture    = { centre = 0.55, amplitude = 0.10, octaves = 3, persistence = 0.5, scale = 260 },
+    -- Green heat is a narrow aux window, 0.75 +/- 0.05; anything wider is orange.
+    aux         = { centre = 0.75, amplitude = 0.04, octaves = 3, persistence = 0.5, scale = 340 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    tiles = {},
+    without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+    alien_tiles =
+    {
+      "volcanic-green-heat-1",
+      "volcanic-green-heat-2",
+      "volcanic-green-heat-3",
+      "volcanic-green-heat-4",
+      "volcanic-orange-heat-1",
+      "volcanic-orange-heat-2"
+    }
+  },
+
+  -- Nauvis's red desert and dry dirt: rust-orange and khaki, no pack required.
+  ["red-desert"] =
+  {
+    temperature = { centre = 15, amplitude = 15, octaves = 2, persistence = 0.5, scale = 480 },
+    -- Nauvis places red desert where it is dry and aux runs high; the first
+    -- render at moisture 0.5 and aux 0.5 gave 70% plain dirt and no red at all.
+    moisture    = { centre = 0.15, amplitude = 0.12, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.85, amplitude = 0.12, octaves = 3, persistence = 0.5, scale = 300 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    -- Space Age's own tiles, placed by their own autoplace; the climate above
+    -- only matters where those expressions read it.
+    tiles = { "red-desert-0", "red-desert-1", "red-desert-2", "red-desert-3", "dry-dirt", "dirt-5", "dirt-7", "sand-3" },
+    without_pack = {},
+    alien_tiles = {}
+  },
+
+  -- Fulgora's ground without its ruins: dust, sand, rock and dunes in dusty red-brown. No pack required.
+  ["fulgoran-dust"] =
+  {
+    temperature = { centre = 15, amplitude = 15, octaves = 2, persistence = 0.5, scale = 480 },
+    moisture    = { centre = 0.5, amplitude = 0.2, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.5, amplitude = 0.3, octaves = 3, persistence = 0.5, scale = 300 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    -- Space Age's own tiles, placed by their own autoplace; the climate above
+    -- only matters where those expressions read it.
+    tiles = { "fulgoran-dust", "fulgoran-sand", "fulgoran-rock", "fulgoran-dunes" },
+    without_pack = {},
+    alien_tiles = {}
+  },
+
+  -- Vulcanus's soil and stone without its ash or lava: olive-black basalt, smooth stone, folds. No pack required.
+  ["basalt-soil"] =
+  {
+    temperature = { centre = 15, amplitude = 15, octaves = 2, persistence = 0.5, scale = 480 },
+    moisture    = { centre = 0.5, amplitude = 0.2, octaves = 3, persistence = 0.5, scale = 260 },
+    aux         = { centre = 0.5, amplitude = 0.3, octaves = 3, persistence = 0.5, scale = 300 },
+    decoratives = {},
+    refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost" },
+    -- Space Age's own tiles, placed by their own autoplace; the climate above
+    -- only matters where those expressions read it.
+    tiles = { "volcanic-soil-dark", "volcanic-soil-light", "volcanic-smooth-stone", "volcanic-folds", "volcanic-folds-flat", "volcanic-jagged-ground", "volcanic-pumice-stones" },
+    without_pack = {},
+    alien_tiles = {}
   },
 
   ["scoured-nickel"] =

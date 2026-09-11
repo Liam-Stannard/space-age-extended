@@ -1,0 +1,1 @@
+mineral-purple-dirt=76.6% mineral-purple-sand=1.9% mineral-tan-dirt=13.4% mineral-tan-sand=3.3% sae-crust-vent=1.7% volcanic-blue-heat=1.9% volcanic-orange-heat=1.1%

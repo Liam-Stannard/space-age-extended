@@ -1,0 +1,1 @@
+mineral-purple-dirt=2.4% mineral-red-dirt=14.5% mineral-violet-dirt=78.2% sae-crust-vent=1.0% volcanic-blue-heat=2.8% volcanic-orange-heat=1.1%
