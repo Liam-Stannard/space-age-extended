@@ -92,7 +92,54 @@ local function foothold(name, prereqs, effects, icon)
   }, icon)
 end
 
+-- Landing day, which is a different problem from the rest of tier 0.
+--
+-- **Nothing on this planet works until two technologies are done, and neither
+-- of them could be earned here.** Solar is 0, no boiler or furnace will place
+-- at pressure 5, and an accumulator with nothing to charge it is a box -- so
+-- the first watt needs Crust Tapping, and the ore the player can already pick
+-- up by hand needs Core Survey before a single item can be made of it. Priced
+-- as footholds, both were 200 units of seven packs including promethium: the
+-- player lands, mines a boulder they cannot use, and flies home to research.
+--
+-- These two are trigger technologies instead. A technology takes `unit` *or*
+-- `research_trigger`, never both -- the trigger replaces the cost outright, and
+-- prerequisites still gate when it can fire, so the shape of the tree is
+-- unchanged and only the currency is. It is the same move vanilla makes on
+-- every new world: the first local technology is paid for by doing the local
+-- thing, not by shipping packs to a lab.
+--
+-- The two triggers chain into the landing hour `design/ideas.md` already
+-- describes as "exactly Nauvis's first hour": mine a boulder -> Crust Tapping
+-- -> hand-craft a tap and a turbine out of freight -> **power** -> Core Survey
+-- -> drill, crusher, smelter. Three placements, and the planet is running.
+local function landfall(name, prereqs, effects, trigger, icon)
+  return tech_icon(
+  {
+    type = "technology",
+    name = name,
+    effects = effects,
+    prerequisites = prereqs,
+    research_trigger = trigger
+  }, icon)
+end
+
 data:extend({
+  -- Landing-day power, and now literally the first thing the player does.
+  --
+  -- The boulder was already "the only ore on the planet obtainable before a
+  -- drill is standing" (resources.lua), described there as "a genuine early
+  -- move rather than decoration with a yield attached" -- which it was not,
+  -- because nothing consumed hand-mined ore until Core Survey. Triggering off
+  -- it makes the claim true: the first swing at a boulder is what opens the
+  -- planet, and the 25 ore it drops is waiting for the smelter two steps later.
+  landfall("sae-crust-tapping", { "sae-core-discovery" },
+    {
+      { type = "unlock-recipe", recipe = "sae-crust-tap" },
+      { type = "unlock-recipe", recipe = "sae-crust-turbine" }
+    },
+    { type = "mine-entity", entity = "sae-core-boulder" }),
+
   -- The landing kit, and the crusher is not optional in it. Plate smelting was
   -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
   -- recipes.lua), so unlocking smelting without the crusher would unlock a
@@ -103,7 +150,18 @@ data:extend({
   -- kamacite plate, and the crusher was priced at 40 kamacite plate -- so the
   -- first crusher could never be built, and with it nothing else on the planet.
   -- The crusher is costed in freight now; see machines.lua.
-  foothold("sae-core-survey", { "sae-core-discovery" },
+  --
+  -- **Off Crust Tapping now, and triggered by the tap itself.** The survey used
+  -- to hang off the discovery beside the tapping, on the grounds that tapping
+  -- "needs nothing the survey teaches" -- true, and it left the two as a pair
+  -- of unordered purchases. Everything this technology unlocks needs power, and
+  -- the only power on this planet is a crust tap, so the tap is both the real
+  -- prerequisite and the obvious trigger: build the thing that makes the
+  -- electricity, and the survey that spends it lands.
+  -- Only Crust Tapping is listed: it already carries the discovery, and a
+  -- redundant prerequisite draws a second arrow across the technology screen
+  -- for a dependency the first one already states.
+  landfall("sae-core-survey", { "sae-crust-tapping" },
     {
       { type = "unlock-recipe", recipe = "sae-vent-pump" },
       { type = "unlock-recipe", recipe = "sae-ballast-drill" },
@@ -114,16 +172,8 @@ data:extend({
       -- fines accumulate from the first craft with nowhere to go.
       { type = "unlock-recipe", recipe = "sae-vacuum-furnace" },
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
-    }),
-  -- Landing-day power, and deliberately the first thing available: a tap and a
-  -- turbine are what the player builds before there is a smelter to make
-  -- anything better with. Off the discovery rather than the survey, because it
-  -- needs nothing the survey teaches.
-  foothold("sae-crust-tapping", { "sae-core-discovery" },
-    {
-      { type = "unlock-recipe", recipe = "sae-crust-tap" },
-      { type = "unlock-recipe", recipe = "sae-crust-turbine" }
-    }),
+    },
+    { type = "craft-item", item = "sae-crust-tap" }),
   foothold("sae-gravity-settling", { "sae-core-survey" },
     {
       { type = "unlock-recipe", recipe = "sae-gravity-settling" },
