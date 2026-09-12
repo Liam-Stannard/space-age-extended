@@ -63,56 +63,54 @@ data:extend({
   }
 })
 
--- Tier 0 of the Core's tree: standing the foothold up. These are researched on
--- packs the player already makes, because the geodynamic pack cannot exist
--- until the corridor is delivering.
-
-local function foothold(name, prereqs, effects, icon)
-  return tech_icon(
-  {
-    type = "technology",
-    name = name,
-    effects = effects,
-    prerequisites = prereqs,
-    unit =
-    {
-      count = 200,
-      ingredients =
-      {
-        { "automation-science-pack", 1 },
-        { "logistic-science-pack", 1 },
-        { "chemical-science-pack", 1 },
-        { "production-science-pack", 1 },
-        { "utility-science-pack", 1 },
-        { "space-science-pack", 1 },
-        { "promethium-science-pack", 1 }
-      },
-      time = 60
-    }
-  }, icon)
-end
-
--- Landing day, which is a different problem from the rest of tier 0.
+-- Tier 0 of the Core's tree: standing the foothold up.
 --
--- **Nothing on this planet works until two technologies are done, and neither
--- of them could be earned here.** Solar is 0, no boiler or furnace will place
--- at pressure 5, and an accumulator with nothing to charge it is a box -- so
--- the first watt needs Crust Tapping, and the ore the player can already pick
--- up by hand needs Core Survey before a single item can be made of it. Priced
--- as footholds, both were 200 units of seven packs including promethium: the
--- player lands, mines a boulder they cannot use, and flies home to research.
+-- **Every technology here is a trigger technology, and the boundary is the
+-- science pack.** Tier 0 is the stretch in which the Core cannot yet fund its
+-- own research: the geodynamic pack is a field conductor, a reinforced frame
+-- and four whiskers, and until all three are in reach there is no pack to pay
+-- with. Priced in science, that stretch could only be billed to planets the
+-- player already left -- 200 units of seven packs each, promethium among them,
+-- twelve times over, for the privilege of bootstrapping a world that gives
+-- nothing back until it is running. The player lands, cannot make a watt,
+-- cannot use the ore they can already pick up, and flies home to research.
 --
--- These two are trigger technologies instead. A technology takes `unit` *or*
--- `research_trigger`, never both -- the trigger replaces the cost outright, and
--- prerequisites still gate when it can fire, so the shape of the tree is
--- unchanged and only the currency is. It is the same move vanilla makes on
--- every new world: the first local technology is paid for by doing the local
--- thing, not by shipping packs to a lab.
+-- So tier 0 is earned by doing rather than bought, and tier 1 and up is paid
+-- for in geodynamic packs. Two currencies, one boundary, and the boundary is
+-- the moment the Core can make its own science. `04-the-core.md` §6 already
+-- promised this in as many words -- "some technologies will be trigger techs
+-- to aid players progress through the mod" -- and nothing implemented it.
 --
--- The two triggers chain into the landing hour `design/ideas.md` already
--- describes as "exactly Nauvis's first hour": mine a boulder -> Crust Tapping
--- -> hand-craft a tap and a turbine out of freight -> **power** -> Core Survey
--- -> drill, crusher, smelter. Three placements, and the planet is running.
+-- **The mechanism.** A technology takes `unit` *or* `research_trigger`, never
+-- both: the trigger replaces the cost outright while prerequisites still gate
+-- when it can fire, so the shape of the tree is unchanged and only the currency
+-- is. It is the same move vanilla makes on every new world -- the first local
+-- technology is paid for by doing the local thing, not by shipping packs home.
+--
+-- **The rule every trigger below obeys**: the thing that fires it is reachable
+-- from that technology's own prerequisites and no further. A trigger needing
+-- something from a technology that is not a prerequisite is a technology that
+-- can never fire, and it would not look like a bug -- it would look like the
+-- tree simply stopping. Checked for all ten.
+--
+-- Only two trigger shapes are used, `mine-entity` and `craft-item`, and that is
+-- deliberate rather than incidental: they are the two whose field layout is
+-- unambiguous, and a trigger that fails to load takes the whole mod with it.
+--
+-- The chain they make is the mod's opening, and it is all one motion:
+--
+--   mine a boulder            -> Crust Tapping        (power at all)
+--   craft a Crust Tap         -> Core Survey          (drill, crusher, smelter)
+--   craft a kamacite plate    -> Gravity Settling     (the melt line)
+--   craft a Vent Pump         -> Arc Masts            (the storm as power)
+--   craft bed-grade dross     -> Whisker Beds         (the farm)
+--   craft a cast ingot        -> Orbital Lift         (the cargo that needs orbit)
+--   harvest a whisker plant   -> Cold Welding         (vacuum as a process)
+--   craft a welded plate      -> Vacuum Electronics   (circuits without copper)
+--   craft a combed tow        -> Integration: Frame
+--   craft a homogenised ingot -> Integration: Conductor
+--   craft a field conductor   -> Geodynamic Science   (the Core funds itself)
+--
 local function landfall(name, prereqs, effects, trigger, icon)
   return tech_icon(
   {
@@ -158,6 +156,7 @@ data:extend({
   -- the only power on this planet is a crust tap, so the tap is both the real
   -- prerequisite and the obvious trigger: build the thing that makes the
   -- electricity, and the survey that spends it lands.
+  --
   -- Only Crust Tapping is listed: it already carries the discovery, and a
   -- redundant prerequisite draws a second arrow across the technology screen
   -- for a dependency the first one already states.
@@ -174,7 +173,13 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
     },
     { type = "craft-item", item = "sae-crust-tap" }),
-  foothold("sae-gravity-settling", { "sae-core-survey" },
+  -- The melt line, earned by the first plate off the ore line.
+  --
+  -- Those are the survey's two halves: ore -> crusher -> smelter on one side,
+  -- vent pump -> molten kamacite on the other. The plate is the moment the
+  -- first half closes, and settling is the only thing to do with the second --
+  -- so a plate in the player's hand is exactly when this becomes the next move.
+  landfall("sae-gravity-settling", { "sae-core-survey" },
     {
       { type = "unlock-recipe", recipe = "sae-gravity-settling" },
       { type = "unlock-recipe", recipe = "sae-quenched-settling" },
@@ -190,8 +195,15 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-helium-concentrator" },
       { type = "unlock-recipe", recipe = "sae-degassing" }
     },
+    { type = "craft-item", item = "sae-kamacite-plate" },
     "__space-age-extended__/graphics/technology/sae-gravity-settling.png"),
-  foothold("sae-whisker-beds", { "sae-gravity-settling" },
+  -- The farm, earned by the ground it is laid on.
+  --
+  -- Beds are laid on bed-grade dross and nothing else, and classification is
+  -- the only source of it -- so the first classified batch is the player
+  -- holding a material with no consumer, which is the right moment to be told
+  -- what it is for.
+  landfall("sae-whisker-beds", { "sae-gravity-settling" },
     {
       { type = "unlock-recipe", recipe = "sae-whisker-bed" },
       { type = "unlock-recipe", recipe = "sae-seed-plate" },
@@ -200,23 +212,30 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-whisker-combing" },
       { type = "unlock-recipe", recipe = "sae-whisker-matting" }
     },
+    { type = "craft-item", item = "sae-bed-dross" },
     "__space-age-extended__/graphics/technology/sae-whisker-beds.png"),
-  -- Off the field coils, not just cold welding: a sealed roboport is priced in a
-  -- coolant loop, and nothing makes one until `sae-field-coils`. `04-the-core.md`
-  -- §6 puts the roboport in tier 3 beside the Core's own goods for exactly this
-  -- reason -- it is the milestone that lands *with* them, not before them.
-  foothold("sae-sealed-roboports", { "sae-cold-welding", "sae-field-coils" },
-    {
-      { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
-    }),
-  foothold("sae-arc-masts", { "sae-core-survey" },
+  -- The storm, earned by the first machine that has to run all the time.
+  --
+  -- A crust tap and a turbine are a landing, not a grid: 1.8 MW sized for
+  -- walking off the pod. The vent pump is the first thing the player builds
+  -- that draws continuously and that everything downstream waits on, so it is
+  -- the point at which the sky stops being only a hazard.
+  landfall("sae-arc-masts", { "sae-core-survey" },
     {
       { type = "unlock-recipe", recipe = "sae-arc-mast" }
-    }),
-  foothold("sae-cold-welding", { "sae-whisker-beds" },
+    },
+    { type = "craft-item", item = "sae-vent-pump" }),
+  -- Vacuum as a process, earned by the first harvest.
+  --
+  -- Welding is 4 plate and 2 whiskers, and the whisker is the half the player
+  -- does not have until a bed has grown one. `mine-entity` rather than
+  -- `craft-item` because a whisker is harvested, not crafted -- the Bed Tender
+  -- mines the plant, and so does a player who walks up and takes one by hand.
+  landfall("sae-cold-welding", { "sae-whisker-beds" },
     {
       { type = "unlock-recipe", recipe = "sae-cold-welding" }
-    }),
+    },
+    { type = "mine-entity", entity = "sae-whisker-plant" }),
   -- The lift. `04-the-core.md` §4 puts half the endgame in orbit and every trip
   -- costs a rocket, but a rocket part is a processing unit, a low density
   -- structure and a rocket fuel -- and the Core could make none of the three, so
@@ -226,7 +245,12 @@ data:extend({
   --
   -- Off the beds because the structure is fibre-reinforced, and off the tapping
   -- because the propellant is crust gas.
-  foothold("sae-orbital-lift", { "sae-whisker-beds", "sae-crust-tapping" },
+  --
+  -- Triggered by a cast ingot, because an ingot is the lift's entire cargo:
+  -- homogenisation is the one step that cannot happen on the ground, so the
+  -- first ingot out of the caster is the first thing on this planet that has
+  -- somewhere else to be.
+  landfall("sae-orbital-lift", { "sae-whisker-beds", "sae-crust-tapping" },
     {
       { type = "unlock-recipe", recipe = "sae-cast-structure" },
       { type = "unlock-recipe", recipe = "sae-crust-propellant" }
@@ -234,7 +258,8 @@ data:extend({
       -- helium-3 (Core Survey), and this is the first technology whose
       -- prerequisites carry both.
       , { type = "unlock-recipe", recipe = "sae-radiant-precipitation" }
-    }),
+    },
+    { type = "craft-item", item = "sae-cast-ingot" }),
   -- Circuits, on a world with no copper and no plastic. Field emission out of
   -- combed whiskers, switching across a vacuum gap -- see recipes.lua for what
   -- that is and why the Core is the only place it works.
@@ -242,12 +267,17 @@ data:extend({
   -- Off cold welding rather than the beds, and both halves of that are load
   -- bearing: cold welding is where the mod establishes that vacuum is a process
   -- and not just an absence, and the processor is canned in a welded plate.
-  foothold("sae-vacuum-electronics", { "sae-cold-welding" },
+  --
+  -- Triggered by a welded plate, which is both halves of the argument in one
+  -- item: the player has just proved that clean metal bonds in vacuum, and the
+  -- processor is canned in exactly that plate.
+  landfall("sae-vacuum-electronics", { "sae-cold-welding" },
     {
       { type = "unlock-recipe", recipe = "sae-emitter-array" },
       { type = "unlock-recipe", recipe = "sae-valve-logic" },
       { type = "unlock-recipe", recipe = "sae-valve-processor" }
-    })
+    },
+    { type = "craft-item", item = "sae-welded-plate" })
 })
 
 -- Tier 1 and up: researched on geodynamic science, which is itself made from
@@ -288,12 +318,28 @@ data:extend({
   -- cryogenic science is already a prerequisite of promethium science, so any
   -- player standing on the Core can reach the winding chain. The other four
   -- integrations will want the same treatment the day their stubs become real.
-  foothold("sae-integration-conductor", { "sae-gravity-settling", "sae-fa-superconducting-winding" },
-    { { type = "unlock-recipe", recipe = "sae-field-conductor" } }),
-  foothold("sae-integration-frame", { "sae-whisker-beds" },
-    { { type = "unlock-recipe", recipe = "sae-reinforced-frame" } }),
-  foothold("sae-geodynamic-science", { "sae-integration-conductor", "sae-integration-frame" },
-    { { type = "unlock-recipe", recipe = "sae-geodynamic-science-pack" } })
+  --
+  -- **All three are triggers, and that is what closes the bootstrap.** The pack
+  -- is a field conductor, a reinforced frame and four whiskers, so these are the
+  -- last technologies a player needs before the Core funds its own research --
+  -- and until they are done there is no geodynamic pack to pay for them with.
+  -- Priced in vanilla packs they were the tail of the promethium bill; priced
+  -- in nothing, the boundary between the two currencies is exactly the pack.
+  --
+  -- Each trigger is the ingredient the technology is about. The conductor is
+  -- earned by the homogenised ingot -- the orbital step, and the only half of
+  -- the conductor the Core makes itself. The frame is earned by the first
+  -- combed tow. And the pack is earned by the conductor, which is the hardest
+  -- of its three ingredients and the last one to come within reach.
+  landfall("sae-integration-conductor", { "sae-gravity-settling", "sae-fa-superconducting-winding" },
+    { { type = "unlock-recipe", recipe = "sae-field-conductor" } },
+    { type = "craft-item", item = "sae-homogenised-ingot" }),
+  landfall("sae-integration-frame", { "sae-whisker-beds" },
+    { { type = "unlock-recipe", recipe = "sae-reinforced-frame" } },
+    { type = "craft-item", item = "sae-whisker-tow" }),
+  landfall("sae-geodynamic-science", { "sae-integration-conductor", "sae-integration-frame" },
+    { { type = "unlock-recipe", recipe = "sae-geodynamic-science-pack" } },
+    { type = "craft-item", item = "sae-field-conductor" })
 })
 
 data:extend({
@@ -322,6 +368,21 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-ignition-charge" }
     },
     "__space-age-extended__/graphics/technology/sae-field-coils.png"),
+  -- Off the field coils, not just cold welding: a sealed roboport is priced in a
+  -- coolant loop, and nothing makes one until `sae-field-coils`. `04-the-core.md`
+  -- §6 puts the roboport in tier 3 beside the Core's own goods for exactly this
+  -- reason -- it is the milestone that lands *with* them, not before them.
+  --
+  -- **And it is paid for in geodynamic packs now, which is what tier 3 means.**
+  -- It was the one technology on the far side of the science pack still priced
+  -- as a foothold, so with tier 0 converted to triggers it would have been the
+  -- only research in the whole Core tree costing promethium -- a currency the
+  -- mod otherwise asks for exactly once, at Core Discovery. 300 to match
+  -- Corridor Seeding and Magnetic Separation, the siblings §6 groups it with.
+  geodynamic("sae-sealed-roboports", { "sae-cold-welding", "sae-field-coils" }, 300,
+    {
+      { type = "unlock-recipe", recipe = "sae-sealed-roboport" }
+    }),
   geodynamic("sae-corridor-seeding", { "sae-geodynamic-science" }, 300,
     {
       { type = "unlock-recipe", recipe = "sae-seed-missile" },
