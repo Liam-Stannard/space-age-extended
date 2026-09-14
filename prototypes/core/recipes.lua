@@ -31,10 +31,9 @@ data:extend({
   -- **Net of the foundry, which the six-times figure used to leave out.** The
   -- vessel itself draws 2.5MW, so quenched settling clears **+2.96MW** and the
   -- metal-heavy form runs at **-1.59MW**: one route is paid for power, the other
-  -- pays for metal. That is the real shape of the decision, and it is the number
-  -- the arc mast has to be tuned against -- see storms.lua, where a mast used to
-  -- out-earn a whole quenched vessel by more than two to one while costing
-  -- nothing at all.
+  -- pays for metal. That is the real shape of the decision, and every power
+  -- source on this planet has to be tuned against it: anything that out-earns a
+  -- quenched vessel while costing less than one makes the choice for the player.
   {
     type = "recipe",
     name = "sae-gravity-settling",

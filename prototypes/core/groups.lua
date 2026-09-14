@@ -127,7 +127,6 @@ local MACHINES =
   ["sae-helium-concentrator"] = "cb",
   ["sae-bed-tender"] = "da",
   ["sae-whisker-comber"] = "db",
-  ["sae-arc-mast"] = "ea",
   ["sae-superconducting-store"] = "eb",
   ["sae-radiant-generator"] = "ec",
   ["sae-sealed-roboport"] = "fa",

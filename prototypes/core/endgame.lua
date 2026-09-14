@@ -693,7 +693,13 @@ data:extend({
       -- preform in the segment would ask the player to make one before the
       -- research that allows it. The Array is built once, afterwards.
       { type = "item", name = "sae-sintered-preform", amount = 20 },
-      { type = "item", name = "sae-arc-mast", amount = 4 }
+      -- Four superconducting stores, and they are what the Array actually
+      -- needs: it fires a current into the crust, and the thing you want four
+      -- of is something that holds half a gigajoule. This is also the store's
+      -- reason to exist now that the storms are gone -- it was built to hold a
+      -- surge that arrived faster than anything could spend it, and this is the
+      -- largest surge on the planet.
+      { type = "item", name = "sae-superconducting-store", amount = 4 }
     },
     results = { { type = "item", name = "sae-ignition-array", amount = 1 } },
     enabled = false

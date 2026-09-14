@@ -91,7 +91,7 @@ data:extend({
 -- from that technology's own prerequisites and no further. A trigger needing
 -- something from a technology that is not a prerequisite is a technology that
 -- can never fire, and it would not look like a bug -- it would look like the
--- tree simply stopping. Checked for all ten.
+-- tree simply stopping. Checked for all nine.
 --
 -- Only two trigger shapes are used, `mine-entity` and `craft-item`, and that is
 -- deliberate rather than incidental: they are the two whose field layout is
@@ -102,7 +102,6 @@ data:extend({
 --   mine a boulder            -> Crust Tapping        (power at all)
 --   craft a Crust Tap         -> Core Survey          (drill, crusher, smelter)
 --   craft a kamacite plate    -> Gravity Settling     (the melt line)
---   craft a Vent Pump         -> Arc Masts            (the storm as power)
 --   craft bed-grade dross     -> Whisker Beds         (the farm)
 --   craft a cast ingot        -> Orbital Lift         (the cargo that needs orbit)
 --   harvest a whisker plant   -> Cold Welding         (vacuum as a process)
@@ -214,17 +213,6 @@ data:extend({
     },
     { type = "craft-item", item = "sae-bed-dross" },
     "__space-age-extended__/graphics/technology/sae-whisker-beds.png"),
-  -- The storm, earned by the first machine that has to run all the time.
-  --
-  -- A crust tap and a turbine are a landing, not a grid: 1.8 MW sized for
-  -- walking off the pod. The vent pump is the first thing the player builds
-  -- that draws continuously and that everything downstream waits on, so it is
-  -- the point at which the sky stops being only a hazard.
-  landfall("sae-arc-masts", { "sae-core-survey" },
-    {
-      { type = "unlock-recipe", recipe = "sae-arc-mast" }
-    },
-    { type = "craft-item", item = "sae-vent-pump" }),
   -- Vacuum as a process, earned by the first harvest.
   --
   -- Welding is 4 plate and 2 whiskers, and the whisker is the half the player
@@ -415,11 +403,12 @@ data:extend({
   -- Carbonyl chemistry is a prerequisite because the Array's recipe now takes
   -- sintered preforms. Without it the last technology would unlock a building
   -- the player cannot yet make a part of.
-  -- `sae-arc-masts` because the Array's recipe takes four of them, and it was
-  -- not a prerequisite of anything: a player could finish the tree and find the
-  -- last building priced in a machine they had never unlocked.
+  -- No prerequisite for the superconducting stores the Array is priced in:
+  -- `sae-fa-superconducting-winding` already unlocks them, and it is a
+  -- transitive ancestor of this through the conductor integration. Naming it
+  -- again would draw a second arrow for a dependency the tree already states.
   geodynamic("sae-ignition-array",
-    { "sae-field-coils", "sae-carbonyl-chemistry", "sae-arc-masts" }, 1200,
+    { "sae-field-coils", "sae-carbonyl-chemistry" }, 1200,
     {
       { type = "unlock-recipe", recipe = "sae-ignition-array" },
       { type = "unlock-recipe", recipe = "sae-field-coil-segment" }

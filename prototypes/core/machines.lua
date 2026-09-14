@@ -991,8 +991,9 @@ mast.allowed_effects = {}
 -- Locked 2026-09-10. Four heavy buttresses splaying to the corners, a thick
 -- banded coil at waist height, and a short blunt CLOSED cap above it. The whole
 -- round exists to keep this building from reading as a lightning collector, and
--- the closed dark top is the single line that does it -- the Arc Mast next door
--- is the thing lightning hits, and these two must never be confused.
+-- the closed dark top is the single line that does it. Nothing on this planet
+-- catches lightning any more, but vanilla's collector is a silhouette every
+-- player already knows, and a mast that fires charge sideways must not borrow it.
 --
 -- **The inlet was redrawn.** The adopted sheet drew it frost-jacketed, which was
 -- generated before the template's convention 5: a fluid connection carries no
