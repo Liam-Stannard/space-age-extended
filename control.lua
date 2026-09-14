@@ -17,34 +17,6 @@ local function disable_vanilla_victory()
   end
 end
 
--- Hold the Core at midnight, permanently.
---
--- Measured against the engine, not assumed: lightning is generated only while
--- a surface is dark. With surface_properties["day-night-cycle"] = 0 there is no
--- night, and a mast sat through 729 chunks and 7000 ticks catching nothing;
--- forced to darkness it charged inside 370. Arc storms are the Core's only
--- power source and its only hazard, so that silence was fatal.
---
--- The planet therefore declares a long cycle -- night has to be reachable --
--- and this pins it at midnight and freezes it. The design's "sky that does not
--- move" survives: it simply never moves off night, which suits a dead world
--- with solar-power = 0.
-local function hold_the_core_at_night(surface)
-  if surface and surface.valid and surface.name == "sae-core" then
-    surface.always_day = false
-    surface.daytime = 0.5
-    surface.freeze_daytime = true
-  end
-end
-
-local function hold_all_cores()
-  for _, surface in pairs(game.surfaces) do hold_the_core_at_night(surface) end
-end
-
-script.on_event(defines.events.on_surface_created, function(event)
-  hold_the_core_at_night(game.surfaces[event.surface_index])
-end)
-
 -- on_rocket_launch_ordered, not on_rocket_launched.
 --
 -- The player fires it, from the silo GUI's Launch button -- confirmed in a real
@@ -175,12 +147,11 @@ end
 
 -- The engine keeps ONE handler per lifecycle event: a second script.on_init
 -- replaces the first rather than adding to it. Registered separately, the
--- three start-up jobs silently fell to the last one -- the Array registry was
+-- start-up jobs silently fell to the last one -- the Array registry was
 -- rebuilt and vanilla's Edge victory was never switched off. So they share a
 -- single registration, here, after the last of them is defined.
 local function on_start()
   disable_vanilla_victory()
-  hold_all_cores()
   rescan()
 end
 

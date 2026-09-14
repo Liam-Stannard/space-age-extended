@@ -25,19 +25,12 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **Do chunks from a seeded asteroid reach a collector?** Chunks are not
   entities the search API can see, and the vanilla control failed identically,
   so the headless rig cannot answer it.
-- **Storm rate and damage.** No natural strike was ever observed headlessly, so
-  600 damage per strike every ninety seconds (`prototypes/core/storms.lua`) is
-  still an assertion.
 
 ## Art
 
 - **The Crust Turbine and the crust vent tile still wear vanilla art**
   (`derive.placeholder_art` in `prototypes/core/crust-tap.lua`). The data stage
   lists every survivor at the end of each load.
-- **Arc Mast plate:** `graphics/entity/arc-mast/base.png` has alpha 255 along
-  its bottom row. Recut it with `process-building-art.py --bottom-margin`.
-- **Arc Mast icon:** `graphics/icons/arc-mast.png` is a bare 64×64, the only
-  icon in the mod that is not a 120×64 mipmap strip.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,
   and the two asteroids wear their chunks' icons.
 - **The planet has no procession sets or ambient sounds** (`planet.lua`):
@@ -58,6 +51,16 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   against their own plates, so repainting either means re-deriving those too.
 
 ## Design
+
+- **The Core has no threat.** The arc storms went with the power rework — the
+  radiant cycle does not need them, and they were the planet's only hazard, so
+  the Core is now a world where nothing can go wrong. It needs a replacement:
+  something that threatens the factory or the player, that is not a fourth
+  spoil-timer mechanic, and that must not quietly become a power source again —
+  free power is what forced the mast's efficiency down twice.
+  `design/ideas.md` I1 (radiation and decontamination) is the one researched
+  candidate on file and was written as a replacement for these storms, so it is
+  where this starts rather than a blank page.
 
 - **The design still says the Core has no surface fluid.** The radiant pool,
   its shore and its brine are in the mod (`prototypes/core/tiles.lua`,
