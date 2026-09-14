@@ -27,10 +27,6 @@ standing on the shore gives solution, because the shore tile carries the fluid t
 way the vent tile carries gas. **There is no extraction building in this document
 that does not already exist.**
 
-*(The fluid is `sae-radiant-brine` in the prototypes. The rename to
-`sae-radiant-solution` is outstanding — "brine" collided with Aquilo's
-`lithium-brine` and read as a second brine rather than as its own substance.)*
-
 ## 3. The first watt
 
 The **crust turbine** burns crust gas for its `fuel_value` — 1.8 MW, three
