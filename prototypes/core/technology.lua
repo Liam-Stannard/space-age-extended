@@ -242,7 +242,7 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-cast-structure" },
       { type = "unlock-recipe", recipe = "sae-crust-propellant" }
-      -- Provisional home: the brine needs a Crust Tap (Crust Tapping) and
+      -- Provisional home: the solution needs a Crust Tap (Crust Tapping) and
       -- helium-3 (Core Survey), and this is the first technology whose
       -- prerequisites carry both.
       , { type = "unlock-recipe", recipe = "sae-radiant-precipitation" }

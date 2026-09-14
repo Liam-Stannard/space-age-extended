@@ -1,7 +1,7 @@
 -- Terrain for the Core.
 --
 -- The elevation never dips below sea level, so the engine's own water never
--- places; the one liquid on the surface is the radiant brine, placed by a
+-- places; the one liquid on the surface is the radiant solution, placed by a
 -- rule of its own below.
 --
 -- Everything else here is the palette: the tiles the crust wears *and* the
@@ -44,7 +44,7 @@
 --      table.sort(t) game.print(#t .. ": " .. table.concat(t, " "))
 
 -- A white crust, cold and pale, jointed by dark rims that glow arc-blue down
--- their middles, with blue heat seams and lakes of radiant brine in the low
+-- their middles, with blue heat seams and lakes of radiant solution in the low
 -- ground. Rocks, shards and cliffs are the Core's own, in slate.
 local palette =
 {
@@ -61,10 +61,10 @@ local palette =
   refuse      = { "volcanic", "vulcanus", "sulfur", "fulgora", "lithium", "snow", "ice", "frost",
                   "grey", "-red", "-tan", "-beige", "-brown", "-cream", "-purple", "-violet", "-aubergine", "-dustyrose", "-black", "-rock-", "-rock" },
   cliff       = "sae-cliff-core",
-  -- The basins hold radiant brine; the band above the waterline is the
+  -- The basins hold radiant solution; the band above the waterline is the
   -- shore, in lit crust, so each body is ringed by the glow. Twelve units
   -- of the basin term is a ring about three tiles wide (four gave one).
-  -- Level 76 is 6-30% brine over the rig's region by seed, 15% in the middle.
+  -- Level 76 is 6-30% solution over the rig's region by seed, 15% in the middle.
   pool        = { level = 76, shore = 12 },
   without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
   alien_tiles =
@@ -161,13 +161,13 @@ data:extend({
                                palette.glow.gain, dark_mask(palette.dark), pool_mask(palette), palette.glow.cut)
   },
   {
-    -- Where the brine lies: a noise of its own, not the elevation's broad
+    -- Where the solution lies: a noise of its own, not the elevation's broad
     -- term. Tied to that term (520 tiles, then 320) the sea was one basin
     -- wider than the whole region the rig looks at, and the landing site came
-    -- out under 0%, 45%, 72% or 98% brine by seed. At 160 tiles the pool is
+    -- out under 0%, 45%, 72% or 98% solution by seed. At 160 tiles the pool is
     -- bodies -- lakes a hundred tiles across, several in any region -- and
     -- the share barely moves between seeds. The last term lifts the crust
-    -- around the landing site, as Nauvis does, so nobody lands in the brine:
+    -- around the landing site, as Nauvis does, so nobody lands in the pool:
     -- the full lift out to 32 tiles, gone by 96.
     type = "noise-expression",
     name = "sae_core_basin",
@@ -232,7 +232,7 @@ data:extend({
     type = "noise-expression",
     name = "sae_core_elevation",
     -- Always well above zero: a crust with relief, and none of the engine's
-    -- water anywhere. The brine has its own basin term above.
+    -- water anywhere. The solution has its own basin term above.
     --
     -- Two scales of relief. The first cut was one noise at 55 over a cliff
     -- interval of 40, which drew a cliff line every few hundred tiles and read
