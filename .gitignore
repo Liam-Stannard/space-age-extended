@@ -5,3 +5,6 @@ __pycache__/
 
 # Local agent worktrees (not part of the mod)
 .claude/worktrees/
+
+# Per-task specs written by /pm; agreed in the session, not part of the mod
+.claude/tasks/
