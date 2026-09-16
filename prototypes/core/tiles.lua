@@ -105,7 +105,7 @@ data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("
 -- lava's tile and shader in Cherenkov blue. Impassable and unbuildable, as
 -- lava is; bridged with foundation. Its SHORE is a buildable ring of lit
 -- crust, carrying the crust vent's collision layer and the pool's fluid, so a
--- Crust Tap stands on the shore and draws the brine exactly as it draws crust
+-- Crust Tap stands on the shore and draws the solution exactly as it draws crust
 -- gas from a vent. map-gen.lua places both from its basin term.
 -- The shader draws its own colour texture, so the pool gets lava's shader
 -- with that texture turned to blue (tools/build-crust-glow-tile.py --sheet),
@@ -149,7 +149,7 @@ pool.subgroup = "sae-core-tiles"
 pool.order = "d[radiant-pool]"
 pool.sprite_usage_surface = "any"
 pool.allowed_neighbors = nil
-pool.fluid = "sae-radiant-brine"
+pool.fluid = "sae-radiant-solution"
 pool.effect_color = { r = 30, g = 100, b = 255 }
 pool.effect_color_secondary = { r = 8, g = 24, b = 60 }
 pool.particle_tints = { primary = { r = 120, g = 170, b = 255 }, secondary = { r = 30, g = 100, b = 255 } }
@@ -172,7 +172,7 @@ end
 local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g = 0.45, b = 0.80 },
   { main = "__space-age-extended__/graphics/terrain/radiant-pool/shore.png",
     light = "__space-age-extended__/graphics/terrain/radiant-pool/shore-light.png" })
-shore.fluid = "sae-radiant-brine"
+shore.fluid = "sae-radiant-solution"
 shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
 

@@ -364,8 +364,8 @@ gen.animation =
 }
 data:extend({ gen })
 
--- The pool's brine, precipitated. Helium-3 is the reagent, and it is the
--- governor: a tap on the shore gives brine faster than any use of it, so the
+-- The pool's solution, precipitated. Helium-3 is the reagent, and it is the
+-- governor: a tap on the shore gives solution faster than any use of it, so the
 -- fuel is priced in the rare gas the Core throttles everything else with.
 data:extend({
   {
@@ -375,7 +375,7 @@ data:extend({
     energy_required = 20,
     ingredients =
     {
-      { type = "fluid", name = "sae-radiant-brine", amount = 100 },
+      { type = "fluid", name = "sae-radiant-solution", amount = 100 },
       { type = "fluid", name = "sae-helium-3", amount = 20 }
     },
     results = { { type = "item", name = "sae-radiant-fuel", amount = 1 } },

@@ -30,32 +30,19 @@ data:extend({
     solar_power_in_space = 0,
     surface_properties =
     {
-      -- NOT zero, and this is load-bearing. Measured against the engine: arc
-      -- storms only strike at night, so a planet with no day-night cycle gets
-      -- no lightning at all -- which would leave the Core with no power source
-      -- and no hazard. The cycle exists so night exists; control.lua then
-      -- freezes it at midnight, so the sky still never moves.
-      ["day-night-cycle"] = 216000,
+      -- Zero: a sky that genuinely does not move. This used to be 216000
+      -- because arc storms only struck at night, so night had to be reachable
+      -- and control.lua pinned the surface at midnight to keep it there. With
+      -- the storms gone the engine holds the dark on its own, and the script
+      -- that held it goes with them.
+      ["day-night-cycle"] = 0,
       ["magnetic-field"] = 0,         -- a dead dynamo; restarting it is the goal
       ["solar-power"] = 0,            -- not a trickle: nothing
       pressure = 5,
       gravity = 50
     },
     asteroid_spawn_influence = 1,
-    asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.shattered_planet_trip, 0.8),
-    lightning_properties =
-    {
-      -- One strike per chunk every ninety seconds: nine times rarer than
-      -- Fulgora, and six times heavier when it lands.
-      lightnings_per_chunk_per_tick = 1 / (60 * 90),
-      search_radius = 12,
-      lightning_types = { "sae-arc" },
-      priority_rules =
-      {
-        { type = "id", string = "sae-arc-mast", priority_bonus = 10000 },
-        { type = "prototype", string = "lightning-attractor", priority_bonus = 1000 }
-      }
-    }
+    asteroid_spawn_definitions = asteroid_util.spawn_definitions(asteroid_util.shattered_planet_trip, 0.8)
   },
   {
     type = "space-connection",

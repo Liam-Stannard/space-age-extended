@@ -21,6 +21,7 @@ production line on the **Core of the Shattered Planet**, where the game is won.
 | [05 — What is left on the Core](design/05-core-remaining.md) | The capstone stubs, and why they block the line |
 | [06 — Core production tree](design/06-core-production-tree.md) | Draft of a deeper Core line |
 | [07 — Implementation plan](design/07-roadmap.md) | What gets built, in what order, and how it is proved |
+| [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in four stages |
 | [Mechanics](design/mechanics.md) | One new rule per tree, plus the corridor — to be decided |
 | [Ideas](design/ideas.md) | Proposals nobody has ruled on — **never built without being agreed first** |
 
@@ -54,7 +55,7 @@ locale/en/           strings
 migrations/          renames across versions
 tools/               data-stage checks, art generation and sprite pipeline
 data.lua             data stage entry point
-control.lua          runtime: the win condition, and holding the Core at night
+control.lua          runtime: the win condition
 TODO.md              every outstanding task
 info.json
 ```
