@@ -101,11 +101,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Repository layout
 
-- **Seven commits on `claude/core-production-line-review-hmdkx8` have not been
-  loaded against the engine** — ten trigger technologies, the storms' removal
-  (a planet property gone), and a fluid rename touching two tiles, none run
-  through `tools/check-data-stage.sh`. Run it before the branch merges, and
-  before anything is built on top of it.
 - **Untracked art in `graphics/entity/` awaiting a sign-off decision:**
   `ballast-drill/stroke.png`, `stroke-housing.png`, `stroke.json` (wired by the
   uncommitted `machines.lua` diff), `dross-classifier/base-animation.png` and
