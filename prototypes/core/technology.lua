@@ -135,7 +135,7 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-crust-tap" },
       { type = "unlock-recipe", recipe = "sae-crust-turbine" }
     },
-    { type = "mine-entity", entity = "sae-core-boulder" }),
+    { type = "mine-entity", entities = { "sae-core-boulder" } }),
 
   -- The landing kit, and the crusher is not optional in it. Plate smelting was
   -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
@@ -223,7 +223,7 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-cold-welding" }
     },
-    { type = "mine-entity", entity = "sae-whisker-plant" }),
+    { type = "mine-entity", entities = { "sae-whisker-plant" } }),
   -- The lift. `04-the-core.md` §4 puts half the endgame in orbit and every trip
   -- costs a rocket, but a rocket part is a processing unit, a low density
   -- structure and a rocket fuel -- and the Core could make none of the three, so
