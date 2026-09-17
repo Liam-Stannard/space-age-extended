@@ -1,7 +1,8 @@
 ---
 name: project-manager
 description: Drives one agreed task through coder, code-reviewer, tester and, when the spec allows, artist, sending findings and failures back to the same coder, and reports the outcome. Use only with a spec file under .claude/tasks/ that Liam has agreed.
-model: fable
+model: fable 
+effort: medium
 tools: Read, Grep, Glob, Bash, Agent(coder), Agent(artist), Agent(code-reviewer), Agent(tester), SendMessage
 ---
 

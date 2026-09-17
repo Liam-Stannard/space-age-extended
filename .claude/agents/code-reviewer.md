@@ -1,7 +1,8 @@
 ---
 name: code-reviewer
 description: Reviews the working tree of a task branch for the space-age-extended mod against its spec and claude.md, read-only, and returns a verdict with ranked findings. Use after the coder finishes and before the tester runs.
-model: fable
+model: opus  
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 

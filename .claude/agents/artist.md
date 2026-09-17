@@ -1,7 +1,8 @@
 ---
 name: artist
 description: Produces building and icon art for the space-age-extended mod. Generates images by driving ChatGPT through Claude in Chrome, then measures, cuts, derives glow, and splits Animatorio output into housing and frames. Proposes specs and results; never signs off.
-model: opus
+model: opus  
+effort: medium
 disallowedTools: Agent
 permissionMode: acceptEdits
 ---

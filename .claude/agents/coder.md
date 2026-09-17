@@ -1,7 +1,8 @@
 ---
 name: coder
 description: Implements one agreed task specification for the space-age-extended Factorio mod, in Lua for the data and control stages and Python for tools. Use with a spec path under .claude/tasks/.
-model: opus
+model: opus  
+effort: high
 tools: Read, Grep, Glob, Bash, Edit, Write
 permissionMode: acceptEdits
 ---
