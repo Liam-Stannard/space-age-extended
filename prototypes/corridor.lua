@@ -246,7 +246,13 @@ data:extend({
     -- fast enough that the field must actually be worked rather than sipped.
     -- One cell is fifty seconds of a generator at full output.
     fuel_value = "500MJ",
-    fuel_emissions_multiplier = 0
+    fuel_emissions_multiplier = 0,
+    -- Burning a cell does not end it. What is left is the isotope's daughter,
+    -- still in its casing, and the generator hands it back rather than
+    -- destroying it -- see `burnt_inventory_size` below, and items.lua for the
+    -- cell itself. Reprocessing it is a later stage's job; until that exists it
+    -- accumulates, which is the point of carrying it at all.
+    burnt_result = "sae-spent-cell"
   },
   {
     type = "fuel-category",
@@ -302,7 +308,11 @@ local gen =
     fuel_categories = { "sae-radiant" },
     effectivity = 1,
     fuel_inventory_size = 2,
-    burnt_inventory_size = 0
+    -- One slot for what the cell leaves behind. Without it the engine has
+    -- nowhere to put the fuel's `burnt_result` and simply drops it, so this and
+    -- that property only work as a pair. One is enough: an inserter empties the
+    -- slot faster than fifty seconds of burn refills it.
+    burnt_inventory_size = 1
   },
   -- Vacuum and the Core, and nowhere with an atmosphere to speak of.
   surface_conditions = { { property = "pressure", max = 9 } }

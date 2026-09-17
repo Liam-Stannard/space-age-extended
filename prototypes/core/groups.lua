@@ -93,7 +93,10 @@ local CHAIN =
   ["sae-radiant-chunk"] = "ea",
   ["sae-seeded-chunk"] = "eb",
   ["sae-radiant-fuel"] = "ec",
-  ["sae-seed-missile"] = "ed",
+  -- Straight after the cell it used to be: a player reading the menu sees the
+  -- fuel and what is left of it next to each other.
+  ["sae-spent-cell"] = "ed",
+  ["sae-seed-missile"] = "ee",
 
   -- Cross-planet integrations.
   ["sae-fluorinated-holmium"] = "fa",
