@@ -197,6 +197,13 @@ tap.fluid_box = {
 }
 -- Buildable only on a vent, and this is the rule that makes the tap sited. The
 -- area is the footprint itself, because the tap stands on its source.
+--
+-- The rule names a collision layer, and two tiles carry that layer: the
+-- `sae-crust-vent` tile above, and `sae-radiant-shore`
+-- (prototypes/core/tiles.lua). So this one rule
+-- lets the tap be built on either -- on a vent for gas, on the pool's shore for
+-- solution -- which is deliberate, and is why a change to the shore's
+-- `collision_mask` is a change to where the tap may stand.
 tap.tile_buildability_rules = {
   {
     area = { { -0.9, -0.9 }, { 0.9, 0.9 } },
