@@ -1,7 +1,8 @@
 ---
 name: tester
 description: Runs every pass criterion in a task spec for the space-age-extended mod against the real Factorio engine, headless server and client as needed, and reports PASS, FAIL or NOT RUN per criterion with evidence. Use after the code review passes.
-model: opus
+model: opus 
+effort: medium
 tools: Read, Grep, Glob, Bash
 ---
 
