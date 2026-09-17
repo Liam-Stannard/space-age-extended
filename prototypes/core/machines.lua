@@ -45,7 +45,8 @@ data:extend({
   { type = "recipe-category", name = "sae-fibre" },
   { type = "recipe-category", name = "sae-degassing" },
   { type = "recipe-category", name = "sae-sintering" },
-  { type = "recipe-category", name = "sae-ignition-charge" }
+  { type = "recipe-category", name = "sae-ignition-charge" },
+  { type = "recipe-category", name = "sae-reaction" }
 })
 
 --------------------------------------------------------------------------------
@@ -1065,6 +1066,58 @@ derive.own_graphics(mast,
 data:extend({ mast })
 
 --------------------------------------------------------------------------------
+-- The Reaction Plant. No N number, because the nine above each have a spec in
+-- concept/ and this one does not yet -- concept/reaction-plant/ is where it
+-- will be, and the machine wears the chemical plant's sprites until then.
+--
+-- Stage 1 of the radiant cycle. The Core's fuel was precipitated out of the
+-- pool with helium-3, which put the power line in the queue behind the Vent
+-- Pump for the one gas the planet rations. It is made from crust gas now: the
+-- shore gives the solution, a vent gives the gas, and neither is a thing
+-- anything else on the planet is waiting for.
+--
+-- Two boxes, both in. Precipitation takes solution and crust gas and gives back
+-- a solid, so nothing leaves this machine through a pipe and it is given no
+-- port to leave by. They sit on the north face at the two positions the chemical
+-- plant puts its own pair, which is the face the borrowed plate draws ports on;
+-- the plant's two outputs are simply not carried over.
+--
+-- `pipe_picture` is emptied and `always_draw_covers` is false, which is the
+-- Helium Concentrator's pattern and the foundry's before it: the flange belongs
+-- to the building's own art, so the engine must not draw a generic stub over it.
+-- That holds for the plate this machine is wearing as much as for the one it
+-- will get -- the chemical plant paints its ports into its sprite, and has no
+-- `pipe_picture` of its own for the same reason. `pipe_covers` caps a port
+-- nothing is joined to.
+--
+-- `sae-reaction` is private like every other category in this file, and here
+-- that cuts both ways: a vanilla chemical plant must not be able to make the
+-- Core's fuel, and this plant must not be able to run chemistry.
+--------------------------------------------------------------------------------
+
+local function reaction_box(position)
+  return
+  {
+    production_type = "input",
+    volume = 1000,
+    pipe_picture = util.empty_sprite(),
+    pipe_covers = derive.pipe_covers(),
+    always_draw_covers = false,
+    pipe_connections =
+    { { flow_direction = "input", direction = defines.direction.north, position = position } }
+  }
+end
+
+local reaction_plant = crafter("sae-reaction-plant", "chemical-plant", {
+  categories = { "sae-reaction" },
+  energy = "1500kW",
+  modules = 3,
+  conditions = CORE_ONLY,
+  fluid_boxes = { reaction_box({ -1, -1 }), reaction_box({ 1, -1 }) }
+})
+data:extend({ reaction_plant })
+
+--------------------------------------------------------------------------------
 -- The items, and what each costs to build.
 --
 -- Kept beside the machines rather than in items.lua, which is where the Arc Mast
@@ -1154,6 +1207,11 @@ for _, spec in ipairs({
     { plate(40), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
   { "sae-vacuum-furnace", "g",
     { plate(50), { type = "item", name = "processing-unit", amount = 10 } }, 10 },
+  -- The Helium Concentrator's price, for the same reason it is the same
+  -- silhouette: a 3x3 shell with fluid ports on it, built out of plate, pipe
+  -- and enough circuitry to meter what goes through.
+  { "sae-reaction-plant", "h",
+    { plate(40), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
   { "sae-ring-mast", "i",
     { plate(60), welded(20), { type = "item", name = "sae-superconducting-winding", amount = 4 },
       { type = "item", name = "processing-unit", amount = 20 } }, 15 },
