@@ -20,6 +20,11 @@ the reactor was first proposed and never checked. A `reactor` with
 `fuel_categories = { "sae-radiant" }` in a 2×2, and a look at the bonus in its
 GUI.
 
+**Confirmed against the engine on 2026-09-17:** a reactor whose burner takes
+only `sae-radiant` receives the full neighbour bonus. A 2×2 bank reads
+`neighbour_bonus` 2 on every reactor and heats at exactly 3× a lone reactor,
+identical to a vanilla uranium bank.
+
 **Every crafter here is an `assembling-machine`.** There is no centrifuge
 prototype in the engine: vanilla's centrifuge, chemical plant, foundry and
 electromagnetic plant are all instances of one type, and `crafter()` in
