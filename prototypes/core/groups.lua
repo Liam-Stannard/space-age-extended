@@ -125,6 +125,7 @@ local MACHINES =
   ["sae-vent-pump"] = "bd",
   ["sae-dross-classifier"] = "ca",
   ["sae-helium-concentrator"] = "cb",
+  ["sae-reaction-plant"] = "cc",
   ["sae-bed-tender"] = "da",
   ["sae-whisker-comber"] = "db",
   ["sae-superconducting-store"] = "eb",

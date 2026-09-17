@@ -364,19 +364,27 @@ gen.animation =
 }
 data:extend({ gen })
 
--- The pool's solution, precipitated. Helium-3 is the reagent, and it is the
--- governor: a tap on the shore gives solution faster than any use of it, so the
--- fuel is priced in the rare gas the Core throttles everything else with.
+-- The pool's solution, precipitated. Crust gas is the reagent, and a Crust Tap
+-- is all either half takes: one standing on a shore tile for the solution, one
+-- on a vent for the gas. The fuel costs the planet nothing it rations.
+--
+-- Helium-3 used to be the reagent and the governor, which put the power line in
+-- the queue behind the Vent Pump for the gas the Core is meanest with -- so the
+-- one thing a player has to have before anything else works was gated on the
+-- one thing the Core hands out last.
+--
+-- It runs in the Reaction Plant and nowhere else (machines.lua): the recipe's
+-- category is private, so no vanilla chemical plant will take this job.
 data:extend({
   {
     type = "recipe",
     name = "sae-radiant-precipitation",
-    categories = { "chemistry" },
+    categories = { "sae-reaction" },
     energy_required = 20,
     ingredients =
     {
       { type = "fluid", name = "sae-radiant-solution", amount = 100 },
-      { type = "fluid", name = "sae-helium-3", amount = 20 }
+      { type = "fluid", name = "sae-crust-gas", amount = 100 }
     },
     results = { { type = "item", name = "sae-radiant-fuel", amount = 1 } },
     icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",

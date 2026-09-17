@@ -101,6 +101,7 @@ data:extend({
 --
 --   mine a boulder            -> Crust Tapping        (power at all)
 --   craft a Crust Tap         -> Core Survey          (drill, crusher, smelter)
+--   craft a Vent Pump         -> Radiant power        (the fuel and what burns it)
 --   craft a kamacite plate    -> Gravity Settling     (the melt line)
 --   craft bed-grade dross     -> Whisker Beds         (the farm)
 --   craft a cast ingot        -> Orbital Lift         (the cargo that needs orbit)
@@ -172,6 +173,33 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
     },
     { type = "craft-item", item = "sae-crust-tap" }),
+  -- Power that does not run out, earned by the first machine that outgrows the
+  -- turbines.
+  --
+  -- A tap and a turbine are landing-day power and Crust Tapping says as much.
+  -- The Vent Pump is the first building on this planet that runs continuously
+  -- and the first that everything downstream waits on -- settling, casting and
+  -- the beds all stand on melt it lifts -- so crafting one is the moment a
+  -- player finds out what the turbines are worth. That is when the planet
+  -- should offer them the fuel it precipitates for itself.
+  --
+  -- The trigger obeys the rule this tier is built on: `sae-vent-pump` is Core
+  -- Survey's own recipe and Core Survey is this technology's only prerequisite,
+  -- so what fires it is reachable from its prerequisites and no further.
+  --
+  -- The three effects land together because none of them is worth anything
+  -- alone: a plant with no recipe is a shell, the recipe with no generator
+  -- makes a cell nothing will burn, and the generator on its own is a burner
+  -- whose fuel the Core cannot yet make. The generator used to arrive with
+  -- Corridor Seeding and the recipe with Orbital Lift, three and four
+  -- technologies apart, which is a power source assembled by accident.
+  landfall("sae-radiant-power", { "sae-core-survey" },
+    {
+      { type = "unlock-recipe", recipe = "sae-reaction-plant" },
+      { type = "unlock-recipe", recipe = "sae-radiant-precipitation" },
+      { type = "unlock-recipe", recipe = "sae-radiant-generator" }
+    },
+    { type = "craft-item", item = "sae-vent-pump" }),
   -- The melt line, earned by the first plate off the ore line.
   --
   -- Those are the survey's two halves: ore -> crusher -> smelter on one side,
@@ -242,10 +270,6 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-cast-structure" },
       { type = "unlock-recipe", recipe = "sae-crust-propellant" }
-      -- Provisional home: the solution needs a Crust Tap (Crust Tapping) and
-      -- helium-3 (Core Survey), and this is the first technology whose
-      -- prerequisites carry both.
-      , { type = "unlock-recipe", recipe = "sae-radiant-precipitation" }
     },
     { type = "craft-item", item = "sae-cast-ingot" }),
   -- Circuits, on a world with no copper and no plastic. Field emission out of
@@ -375,8 +399,7 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-seed-missile" },
       { type = "unlock-recipe", recipe = "sae-radiant-crushing" },
-      { type = "unlock-recipe", recipe = "sae-seeded-crushing" },
-      { type = "unlock-recipe", recipe = "sae-radiant-generator" }
+      { type = "unlock-recipe", recipe = "sae-seeded-crushing" }
     }),
   -- After the field coils, and not by accident: building a Coil Separator costs
   -- a coil assembly, so the recipe cannot be reached before the thing it is
