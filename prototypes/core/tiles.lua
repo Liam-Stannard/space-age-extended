@@ -173,6 +173,10 @@ local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g =
   { main = "__space-age-extended__/graphics/terrain/radiant-pool/shore.png",
     light = "__space-age-extended__/graphics/terrain/radiant-pool/shore-light.png" })
 shore.fluid = "sae-radiant-solution"
+-- `sae-crust-vent` is the Crust Tap's private layer (prototypes/core/crust-tap.lua),
+-- and it is here so the tap's `tile_buildability_rules` accept the shore: that
+-- rule requires the layer rather than naming a tile, so a tile that carries it
+-- is ground the tap may stand on.
 shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
 

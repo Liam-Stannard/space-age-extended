@@ -1076,35 +1076,82 @@ data:extend({ mast })
 -- shore gives the solution, a vent gives the gas, and neither is a thing
 -- anything else on the planet is waiting for.
 --
--- Two boxes, both in. Precipitation takes solution and crust gas and gives back
--- a solid, so nothing leaves this machine through a pipe and it is given no
--- port to leave by. They sit on the north face at the two positions the chemical
--- plant puts its own pair, which is the face the borrowed plate draws ports on;
--- the plant's two outputs are simply not carried over.
+-- Three boxes: two in on the north face at the two positions the chemical plant
+-- puts its own pair, and one out at the south face's centre.
 --
--- `pipe_picture` is emptied and `always_draw_covers` is false, which is the
--- Helium Concentrator's pattern and the foundry's before it: the flange belongs
--- to the building's own art, so the engine must not draw a generic stub over it.
--- That holds for the plate this machine is wearing as much as for the one it
--- will get -- the chemical plant paints its ports into its sprite, and has no
--- `pipe_picture` of its own for the same reason. `pipe_covers` caps a port
--- nothing is joined to.
+-- **`fluid_boxes_off_when_no_fluid_recipe` is false here, against `crafter`'s
+-- default, so that a plant with no recipe can be turned.** `crafter` sets the
+-- flag for every machine it hands boxes to; this one turns it off again below.
+-- With it true the engine gives a machine with no recipe no fluid boxes at all,
+-- and an entity with no fluid boxes has nothing to rotate: a freshly placed
+-- plant, before its recipe is chosen, took a direction and snapped straight
+-- back to north. Measured on a headless server, beside an assembling machine 2
+-- doing the same thing for the same reason. Vanilla agrees about which machines
+-- want the flag: the chemical plant, which this one is shaped after, does not
+-- set it; assembling machines 2 and 3 do, and they are the ones that spend most
+-- of their lives on recipes with no fluid in them at all.
+--
+-- **What the false flag buys, exactly.** It governs the no-recipe case and only
+-- that. With no recipe the plant now carries all three boxes, draws all three
+-- ports, keeps whatever direction it is given, and a pipe laid against the
+-- south face joins the output. The moment a recipe is set the engine assigns
+-- boxes to that recipe's own fluids and drops the ones it has no use for, so a
+-- plant running precipitation -- two fluids in, a solid out -- shows its two
+-- inputs and no output, and a pipe that had joined the south port goes quiet
+-- until the recipe is cleared again. No flag turns that off: it is how the
+-- engine handles a crafting machine's fluid boxes, and a vanilla chemical plant
+-- on a recipe whose products are solid behaves identically. Measured, both.
+--
+-- **The output box is still declared now rather than with stage 3's recipe.** A
+-- fluid box is a prototype property and not a recipe's, so declaring it later
+-- would change the entity's geometry under every plant already standing and
+-- every blueprint that holds one: the south face would turn from wall into
+-- port, and a layout that had run belts across it would have to be redrawn.
+-- Declared now, that face is spoken for, and the day stage 3's dissolve recipe
+-- -- which does return fluid -- is set on a plant, the port comes alive on a
+-- line the player already left room for.
+--
+-- **The ports are the engine's and turn with the building, which is the
+-- opposite of the Helium Concentrator on purpose.** That machine paints its
+-- flanges into its own plate, so it empties `pipe_picture` and the engine must
+-- not draw a stub over the art. This one is the other arrangement, the one
+-- assembling machines 2 and 3 use: `pipe_picture` is vanilla's
+-- `assembler2pipepictures`, a stub per direction that the engine draws and
+-- redraws whenever the player rotates the entity, and the plate paints no
+-- flange at all. That is what lets this building stay rotatable on ONE plate
+-- rather than the Crust Tap's four -- nothing in the still art has a facing,
+-- so there is nothing to draw four times. The entity therefore carries no
+-- `not-rotatable` flag. The plate that paints no flange is the one this
+-- building will get; the chemical plant's sprites it wears today paint flanges
+-- of their own at two north and two south positions, so until the real plate
+-- lands the engine's north stubs sit on top of painted flanges, and the south
+-- stub -- drawn whenever the plant has no recipe set, by the paragraph above --
+-- stands on solid body between the placeholder's painted southern pair.
+-- Expected of a stand-in, and not a bug to file.
+--
+-- `pipe_covers` caps a port nothing is joined to and
+-- `always_draw_covers = false` takes the cap away once a pipe arrives;
+-- `secondary_draw_orders = { north = -1 }` puts a north stub behind the
+-- building, as vanilla's assemblers set it.
 --
 -- `sae-reaction` is private like every other category in this file, and here
 -- that cuts both ways: a vanilla chemical plant must not be able to make the
 -- Core's fuel, and this plant must not be able to run chemistry.
 --------------------------------------------------------------------------------
 
-local function reaction_box(position)
+local assembler_pictures = require("__base__.prototypes.entity.assembler-pictures")
+
+local function reaction_box(flow, direction, position)
   return
   {
-    production_type = "input",
+    production_type = flow,
     volume = 1000,
-    pipe_picture = util.empty_sprite(),
+    pipe_picture = assembler_pictures.assembler2pipepictures,
     pipe_covers = derive.pipe_covers(),
     always_draw_covers = false,
+    secondary_draw_orders = { north = -1 },
     pipe_connections =
-    { { flow_direction = "input", direction = defines.direction.north, position = position } }
+    { { flow_direction = flow, direction = direction, position = position } }
   }
 end
 
@@ -1113,8 +1160,16 @@ local reaction_plant = crafter("sae-reaction-plant", "chemical-plant", {
   energy = "1500kW",
   modules = 3,
   conditions = CORE_ONLY,
-  fluid_boxes = { reaction_box({ -1, -1 }), reaction_box({ 1, -1 }) }
+  fluid_boxes =
+  {
+    reaction_box("input", defines.direction.north, { -1, -1 }),
+    reaction_box("input", defines.direction.north, { 1, -1 }),
+    reaction_box("output", defines.direction.south, { 0, 1 })
+  }
 })
+-- Undoing `crafter`'s blanket setting for this machine alone: a plant with no
+-- recipe has to keep a direction. See the block comment above.
+reaction_plant.fluid_boxes_off_when_no_fluid_recipe = false
 data:extend({ reaction_plant })
 
 --------------------------------------------------------------------------------

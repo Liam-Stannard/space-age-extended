@@ -26,7 +26,7 @@ fi
 
 # 3. Building specs and option rounds sit in concept/<building>/, never loose.
 if found="$(find . -name 'building-spec-*.md' -not -path './concept/*' -not -path './.git/*' \
-    -not -name 'building-spec-template.md' 2>/dev/null)" && [ -n "$found" ]; then
+    -not -path './.claude/*' -not -name 'building-spec-template.md' 2>/dev/null)" && [ -n "$found" ]; then
   echo "building specs outside concept/<building>/:" >&2; echo "$found" >&2; fail=1
 fi
 
