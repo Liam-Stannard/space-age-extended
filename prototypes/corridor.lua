@@ -7,10 +7,9 @@
 -- ice and ore remain freight from the inner system, which is what keeps the
 -- corridor carrying something every hour of the endgame.
 --
--- Same rock, two harvests. Shoot it plainly for the power material; fire a seed
--- missile into it first and it becomes a crop instead. Using the wrong weapon
--- destroys it and yields nothing, because its dying effect is terminal -- the
--- field punishes reflexes and rewards intent.
+-- One rock, one harvest: shoot it and crush what it drops for the power
+-- material. On master the same rock takes a seed missile and becomes a crop
+-- instead; that second harvest is not on this branch.
 
 local derive = require("prototypes.derive")
 local hit_effects = require("__base__.prototypes.entity.hit-effects")
@@ -36,12 +35,6 @@ radiant_chunk.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
 radiant_chunk.localised_description = { "item-description.sae-radiant-chunk" }
 radiant_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-radiant-chunk", amount = 1 } } }
 
-local seeded_chunk = derive.from("asteroid-chunk", "carbonic-asteroid-chunk", "sae-seeded-chunk")
-seeded_chunk.order = "z[sae]-b[seeded]"
-seeded_chunk.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
-seeded_chunk.localised_description = { "item-description.sae-seeded-chunk" }
-seeded_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-seeded-chunk", amount = 1 } } }
-
 -- The held form, on vanilla's chunk-item pattern: one to a stack, a hundred
 -- kilos, and the sounds of a sack of rock.
 local function chunk_item(name, icon, order, tint)
@@ -63,18 +56,15 @@ end
 
 data:extend({
   radiant_chunk,
-  seeded_chunk,
   chunk_item("sae-radiant-chunk", "__space-age-extended__/graphics/icons/radiant-chunk.png",
-             "z[sae]-a[radiant]", item_tints.ice_blue),
-  chunk_item("sae-seeded-chunk", "__space-age-extended__/graphics/icons/seeded-chunk.png",
-             "z[sae]-b[seeded]", item_tints.bluish_grey)
+             "z[sae]-a[radiant]", item_tints.ice_blue)
 })
 
 --------------------------------------------------------------------------------
 -- The asteroids themselves.
 --------------------------------------------------------------------------------
 
--- Both rocks keep the small promethium asteroid's graphics set. Its icon and
+-- The rock keeps the small promethium asteroid's graphics set. Its icon and
 -- its place in the menu they do not: until the far field has its own icon art,
 -- each asteroid shows the icon of the chunk it breaks into.
 --
@@ -100,92 +90,8 @@ radiant.dying_trigger_effect =
 own_preview(radiant)
 data:extend({ radiant })
 
-local seeded = derive.from("asteroid", "small-promethium-asteroid", "sae-seeded-asteroid")
-seeded.icon = "__space-age-extended__/graphics/icons/seeded-chunk.png"
-seeded.order = "z[sae]-b[seeded]"
-seeded.dying_trigger_effect =
-{
-  { type = "create-explosion", entity_name = "promethium-asteroid-explosion-2", only_when_visible = true },
-  {
-    type = "create-asteroid-chunk",
-    asteroid_name = "sae-seeded-chunk",
-    offset_deviation = { { -0.25, -0.25 }, { 0.25, 0.25 } },
-    offsets = { { -0.125, -0.0625 }, { 0.125, -0.0625 } }
-  }
-}
-own_preview(seeded)
-data:extend({ seeded })
-
---------------------------------------------------------------------------------
--- The seed missile. Its action destroys the rock and puts a seeded one in its
--- place, in a single trigger and with no script.
---------------------------------------------------------------------------------
-
-local missile = derive.from("projectile", "rocket", "sae-seed-missile")
-missile.hidden_in_factoriopedia = true
-missile.action =
-{
-  type = "direct",
-  action_delivery =
-  {
-    type = "instant",
-    target_effects =
-    {
-      { type = "damage", damage = { amount = 2000, type = "explosion" } },
-      { type = "create-entity", entity_name = "sae-seeded-asteroid" }
-    }
-  }
-}
-data:extend({ missile })
-
 data:extend({
-  {
-    type = "ammo",
-    name = "sae-seed-missile",
-    icon = "__space-age-extended__/graphics/icons/seed-missile.png",
-    subgroup = "ammo",
-    order = "z[sae]-a[seed-missile]",
-    ammo_category = "rocket",
-    inventory_move_sound = item_sounds.ammo_large_inventory_move,
-    pick_sound = item_sounds.ammo_large_inventory_pickup,
-    drop_sound = item_sounds.ammo_large_inventory_move,
-    stack_size = 100,
-    weight = 4 * kg,
-    ammo_type =
-    {
-      target_type = "entity",
-      action =
-      {
-        type = "direct",
-        action_delivery =
-        {
-          type = "projectile",
-          projectile = "sae-seed-missile",
-          starting_speed = 0.3,
-          max_range = 40
-        }
-      }
-    }
-  },
-
-  -- The payload is the Gleba/Aquilo chain's frozen culture, so the corridor's
-  -- biology traces to a planet that cannot be relocated. Light out, heavy back:
-  -- ship seed rather than hauling organics two million kilometres.
-  {
-    type = "recipe",
-    name = "sae-seed-missile",
-    categories = { "chemistry" },
-    energy_required = 8,
-    ingredients =
-    {
-      { type = "item", name = "rocket", amount = 1 },
-      { type = "fluid", name = "sae-cryoprotectant", amount = 20 }
-    },
-    results = { { type = "item", name = "sae-seed-missile", amount = 1 } },
-    enabled = false
-  },
-
-  -- What the two harvests are worth.
+  -- What the rock is worth.
   {
     type = "recipe",
     name = "sae-radiant-crushing",
@@ -205,26 +111,6 @@ data:extend({
     allow_productivity = true,
     enabled = false
   },
-  {
-    type = "recipe",
-    name = "sae-seeded-crushing",
-    categories = { "crushing" },
-    energy_required = 3,
-    ingredients = { { type = "item", name = "sae-seeded-chunk", amount = 1 } },
-    results =
-    {
-      { type = "item", name = "carbon", amount = 4 },
-      { type = "item", name = "spoilage", amount = 2 }
-    },
-    icons =
-    {
-      { icon = "__space-age-extended__/graphics/icons/seeded-chunk.png" },
-      { icon = "__space-age__/graphics/icons/carbon.png", scale = 0.25, shift = { 8, 8 } }
-    },
-    allow_productivity = true,
-    enabled = false
-  },
-
   -- The corridor's power. Solar is nil out here, nothing burns, and vanilla's
   -- answer does not travel: a fusion cell needs 100 ammonia, which has no
   -- barrel, so cells can only be made on Aquilo and freighted the whole way.

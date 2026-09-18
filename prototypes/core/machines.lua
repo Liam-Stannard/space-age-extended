@@ -1,16 +1,17 @@
--- The nine machines of the Core's own production line.
+-- The Core's machines, scaled back to the landing: the Drop Crusher, the
+-- Ballast Drill and the Vacuum Furnace. The rest are on master.
 --
 -- Each has a master spec under graphics/, and every number below is read off it
 -- rather than invented here; where this file and a spec disagree, the spec is
 -- right and this is a bug. Section 2 of each spec is the source.
 --
--- **The art is a stand-in and says so.** None of the nine has a plate yet. Each
+-- **The art is a stand-in and says so.** None of the three has a plate yet. Each
 -- borrows the sprites of a vanilla machine of the same footprint, marked by a
 -- `derive.placeholder_art` call so `grep` finds every one of them, and logged at
 -- data stage so the log does too. That is a different thing from an inherited
 -- leftover -- see prototypes/derive.lua, which strips those up front.
 --
--- Three of the nine are shaped by measurements that cost a spike each, and the
+-- Two of the three are shaped by measurements that cost a spike each, and the
 -- shapes are not obvious:
 --
 --   * The Vacuum Furnace is a `furnace`, not an assembling machine, and its flux
@@ -21,9 +22,6 @@
 --     beneath it and not from its own filter. S10 measured one built on bare
 --     ground reporting `working` and producing nothing. It is sited on a vent
 --     tile, and the tile is what carries the fluid.
---   * The Ring Mast holds no charge at all. Its product spoils in seconds with
---     no spoil result, which is how a building is made to matter *near* another
---     one -- nothing in the engine can express that directly.
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
@@ -39,20 +37,14 @@ local item_sounds = require("__base__.prototypes.item_sounds")
 --------------------------------------------------------------------------------
 
 data:extend({
-  { type = "recipe-category", name = "sae-crushing" },
-  { type = "recipe-category", name = "sae-classification" },
-  { type = "recipe-category", name = "sae-separation" },
-  { type = "recipe-category", name = "sae-fibre" },
-  { type = "recipe-category", name = "sae-degassing" },
-  { type = "recipe-category", name = "sae-sintering" },
-  { type = "recipe-category", name = "sae-ignition-charge" }
+  { type = "recipe-category", name = "sae-crushing" }
 })
 
 --------------------------------------------------------------------------------
 -- Surface conditions, named once.
 --
 -- Two distinct locks, and the difference is the design rather than a detail.
--- `HIGH_G` is the Core's surface alone: the three gravity machines cannot be
+-- `HIGH_G` is the Core's surface alone: the two gravity machines cannot be
 -- carried anywhere else, because gravity is the thing doing their work. `CORE`
 -- is the Core and space platforms, for machines whose argument is the absence of
 -- atmosphere rather than the presence of weight.
@@ -60,12 +52,12 @@ data:extend({
 
 local HIGH_G = { { property = "gravity", min = 45 } }
 local CORE = { { property = "pressure", max = 9 } }
-local CORE_ONLY = { { property = "pressure", min = 1, max = 9 } }
 
 local BOX_3x3 = { { -1.4, -1.4 }, { 1.4, 1.4 } }
 local SEL_3x3 = { { -1.5, -1.5 }, { 1.5, 1.5 } }
 
---- A 3x3 crafting machine, since six of the nine are exactly that.
+--- A 3x3 crafting machine. Only the Drop Crusher is one here, but the shape
+--- is the Core's default and the furnace below borrows its boxes.
 local function crafter(name, from, opts)
   local p = derive.from("assembling-machine", from, name)
   derive.placeholder_art(p, "wears " .. from .. "'s sprites until its plate exists")
@@ -450,361 +442,6 @@ derive.own_graphics(drill,
 data:extend({ drill })
 
 --------------------------------------------------------------------------------
--- N3. Dross Classifier -- concept/dross-classifier/building-spec-dross-classifier.md
---
--- Sorts settling dross by particle size. Shares the Drop Crusher's and the
--- Ballast Drill's argument -- gravity doing mechanical work -- applied to
--- separation rather than to breaking or extraction, so the three read as a
--- family leaning on one planetary fact. Nothing in vanilla sorts a solid by
--- density.
---------------------------------------------------------------------------------
-
-local classifier = crafter("sae-dross-classifier", "assembling-machine-3", {
-  categories = { "sae-classification" },
-  energy = "150kW",          -- the sort is gravity; the shake is not
-  modules = 2,
-  conditions = HIGH_G
-})
-
--- Art: the Shaker Deck, option A of five (concept/dross-classifier/options/).
---
--- The plate replaces assembling-machine-3's entirely, so the placeholder call is
--- gone with it and this machine no longer logs at data stage. Two layers, both
--- cut by tools/process-building-art.py from one approved render: 192 px of drawn
--- machine, **3.000 tiles**, centred to 0.0 px, with alpha zero on all four
--- canvas edges. The 4 px rim a side is the difference between a plate with an
--- antialiased edge and one that ends on a razor line.
---
--- There is no working visualisation and no glow. The machine's whole read is
--- that it shakes, and vibration is carried by the springs and the eccentric
--- drive being *drawn*, not by anything animating: dross is what settled out and
--- is cold by the time it arrives, so nothing here is lit.
---
--- Which is why its accent is PAINT: signal yellow on the eccentric-drive guard,
--- the four spring caps and the drive-end rail -- what a moving-part guard is
--- painted, on the machine whose whole read is that it moves. Paint never glows.
-local DCL = "__space-age-extended__/graphics/entity/dross-classifier/"
-classifier.icon = "__space-age-extended__/graphics/icons/dross-classifier.png"
-derive.own_graphics(classifier,
-{
-  animation =
-  {
-    layers =
-    {
-      {
-        filename = DCL .. "base.png",
-        priority = "high",
-        width = 200, height = 189,
-        shift = { 0, 0 },
-        scale = 0.5
-      },
-      {
-        filename = DCL .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        -- Leans up and to the right, so it is wider than the colour plate and
-        -- carries its own shift. Both numbers come out of the tool rather than
-        -- being chosen; the y offset is the room the blur needs below the foot.
-        width = 345, height = 200,
-        shift = { 1.13281, 0.08594 },
-        scale = 0.5
-      }
-    }
-  }
-})
-data:extend({ classifier })
-
---------------------------------------------------------------------------------
--- N4. Coil Separator -- concept/coil-separator/building-spec-coil-separator.md
---
--- Magnetic beneficiation on a world with no magnetic field, which is why it is
--- so expensive to run: the field has to be generated rather than borrowed. Its
--- own build recipe costs a coil assembly, two stages below the Field Coil
--- Segment -- the player spends endgame material to make more endgame material,
--- which is the production tree's "using the thing you are building to build more
--- of it" made literal.
---------------------------------------------------------------------------------
-
-local separator = crafter("sae-coil-separator", "electromagnetic-plant", {
-  categories = { "sae-separation" },
-  energy = "2500kW",         -- generating a field from nothing is the cost
-  modules = 3,
-  conditions = CORE
-})
-
--- Art: the Cold Plant, option D of five (concept/coil-separator/options/).
---
--- The design is the argument: nine tenths refrigeration and one tenth magnet,
--- with the coil buried inside the vessel and never drawn. What the player sees
--- of the separation itself is one narrow slot at the base of the vessel, and
--- that slot is the only thing distinguishing this building from a cold plant --
--- which is why stage 1 was allowed exactly two changes and one of them was
--- making it wider and brighter.
---
--- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
--- 0.0 px, alpha zero on all four canvas edges. It stands 3.25 tiles tall, so the
--- plate is shifted a quarter tile up to put its foot on the tile rather than its
--- middle: height above the footprint is what Factorio does everywhere, sideways
--- overhang is what makes a row of machines interleave.
---
--- Replacing the graphics set wholesale also removes what this prototype was
--- deep-copied from, and that matters more here than anywhere else in the file:
--- the electromagnetic plant is this building's *anti-read* -- a clean lab-white
--- box whose whole point in the fiction is that the player had to import it --
--- so wearing its sprites was a placeholder saying the opposite of the design.
-local CS = "__space-age-extended__/graphics/entity/coil-separator/"
-separator.icon = "__space-age-extended__/graphics/icons/coil-separator.png"
-derive.own_graphics(separator,
-{
-  animation =
-  {
-    layers =
-    {
-      {
-        filename = CS .. "base.png",
-        priority = "high",
-        width = 200, height = 216,
-        shift = { 0, -0.12500 },
-        scale = 0.5
-      },
-      {
-        filename = CS .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = 367, height = 227,
-        shift = { 1.30469, -0.03906 },
-        scale = 0.5
-      }
-    }
-  },
-  -- The field, and only while the field is on.
-  --
-  -- Differenced out of a lit and an unlit render of the same plate, so it
-  -- registers over `base` by construction rather than by alignment -- the method
-  -- the sealed roboport's lamps use, and the reason nothing here had to be drawn
-  -- by hand. `always_draw` is false: a machine with nothing to separate is a
-  -- machine with the field off, and 2.5 MW should look like it costs something
-  -- when it runs and nothing when it does not.
-  working_visualisations =
-  {
-    {
-      always_draw = false,
-      light = { intensity = 0.35, size = 3.5, color = { 0.42, 0.35, 0.78 } },
-      animation =
-      {
-        filename = CS .. "slot-glow.png",
-        priority = "high",
-        blend_mode = "additive",
-        draw_as_glow = true,
-        width = 200, height = 216,
-        frame_count = 1,
-        shift = { 0, -0.12500 },
-        scale = 0.5
-      }
-    }
-  }
-})
-
--- The hum, chosen rather than inherited.
---
--- `derive.own_graphics` drops the electromagnetic plant's three sounds, because
--- every one of them is cued to a vanilla animation this machine no longer has --
--- and a 2.5 MW machine standing silent is a regression, not a decision. This is
--- the cryogenic plant's ambient loop, which is ungated and is the right noise
--- for a building that is nine tenths refrigeration. Its own smoke-puff accents
--- are left behind: nothing puffs on a world with no atmosphere.
-separator.working_sound =
-{
-  sound = { filename = "__space-age__/sound/entity/cryogenic-plant/cryogenic-plant.ogg",
-            volume = 0.7 },
-  fade_in_ticks = 4,
-  fade_out_ticks = 30
-}
-data:extend({ separator })
-
---------------------------------------------------------------------------------
--- N5. Whisker Comber -- concept/whisker-comber/building-spec-whisker-comber.md
---
--- Splits one harvest into a quality-graded pair, both with real consumers: tow
--- for the composite line, felt for the cryostat. Combing is four times slower per
--- whisker than matting, so neither is the correct answer and the ratio is a
--- standing decision rather than a solved one.
---------------------------------------------------------------------------------
-
-local comber = crafter("sae-whisker-comber", "assembling-machine-3", {
-  categories = { "sae-fibre" },
-  energy = "400kW",
-  modules = 3,
-  conditions = CORE
-})
-
--- Art: the Spinner, option C of five (concept/whisker-comber/options/).
---
--- A squat standing drum rather than another low box, which is the entire reason
--- it was picked: this machine sorts things standing next to the Dross
--- Classifier, which also sorts things, and a round body is the one silhouette
--- that separates them at any zoom without a single pixel of detail.
---
--- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
--- 0.0 px, alpha zero on all four canvas edges. It stands 3.39 tiles tall, so the
--- plate is shifted up to stand the drum's foot on the tile.
---
--- Nothing is lit, and this machine's accent is therefore PAINT rather than
--- light: service blue on the lid's dogs, the shoulder band and the skirt's
--- access panel -- the parts a person actually touches on a machine that handles
--- something which would cut you. Paint never glows; see the template's
--- "Every machine gets an accent" note for why a cold machine needs one at all.
---
--- The two recipes -- comb into tow, mat
--- into felt -- are not drawn on this machine at all; that was the cost of the
--- design and it is recorded in the spec's §3.2 rather than hidden. If the choice
--- ever has to be visible it belongs in a working visualisation, which plays only
--- while the machine crafts.
-local WC = "__space-age-extended__/graphics/entity/whisker-comber/"
-comber.icon = "__space-age-extended__/graphics/icons/whisker-comber.png"
-derive.own_graphics(comber,
-{
-  animation =
-  {
-    layers =
-    {
-      {
-        filename = WC .. "base.png",
-        priority = "high",
-        width = 200, height = 224,
-        shift = { 0, -0.18750 },
-        scale = 0.5
-      },
-      {
-        filename = WC .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = 373, height = 235,
-        shift = { 1.35156, -0.10156 },
-        scale = 0.5
-      }
-    }
-  }
-})
-data:extend({ comber })
-
---------------------------------------------------------------------------------
--- N6. Helium Concentrator -- concept/helium-concentrator/building-spec-helium-concentrator.md
---
--- A relief valve on a hard cap, and priced like one: worse than gravity settling
--- at making melt *and* far worse than a gas vent at making helium. It is the bad
--- trade taken when one of the two is what has run out. Three fluid boxes -- one
--- in, two out -- which is why it is built fresh rather than copied from any
--- vanilla machine.
---------------------------------------------------------------------------------
-
--- Three ports on three different faces, and each one is drawn on the plate.
---
--- The prototype used to put BOTH outputs on the north face, which its own §8 does
--- not say and the adopted art does not draw: helium-3 leaves north on the riser,
--- and the heavy settled melt leaves WEST, low. A port declared on one face and
--- drawn on another is the same defect as the Vacuum Furnace's flux flange, and it
--- was found the same way -- by reading the plate against the prototype rather
--- than reading the Lua.
---
--- `pipe_picture` is emptied and `always_draw_covers` is false on all three,
--- which is the foundry's pattern: the flange belongs to the building's own art,
--- so the engine must not draw a generic stub over it.
-local concentrator = crafter("sae-helium-concentrator", "chemical-plant", {
-  categories = { "sae-degassing" },
-  energy = "1500kW",
-  modules = 3,
-  conditions = CORE,
-  fluid_boxes =
-  {
-    {
-      production_type = "input",
-      volume = 1000,
-      pipe_picture = util.empty_sprite(),
-      pipe_covers = derive.pipe_covers(),
-      always_draw_covers = false,
-      pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
-    },
-    {
-      production_type = "output",
-      volume = 1000,
-      pipe_picture = util.empty_sprite(),
-      pipe_covers = derive.pipe_covers(),
-      always_draw_covers = false,
-      pipe_connections = { { flow_direction = "output", direction = defines.direction.north, position = { 0, -1 } } }
-    },
-    {
-      production_type = "output",
-      volume = 1000,
-      pipe_picture = util.empty_sprite(),
-      pipe_covers = derive.pipe_covers(),
-      always_draw_covers = false,
-      pipe_connections = { { flow_direction = "output", direction = defines.direction.west, position = { -1, 0 } } }
-    }
-  }
-})
-
--- Art: the Twin Bottles, option C of five (concept/helium-concentrator/options/).
---
--- Two unequal vessels bridged at the waist, and the temperature split is drawn on
--- the PIPE between them: frost on the cold half, bare warm metal on the hot half,
--- and a clamp in the middle where it changes. The hot vessel's skirt joints carry
--- the only warm light on the machine, and only while it is running.
---
--- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
--- 0.0 px, alpha zero on all four canvas edges.
---
--- The concept measured as the least detailed sheet of its round, so stage 1 was
--- allowed exactly one change beyond the light: more hardware on both shells,
--- without touching their shapes. On the cut plate it now measures denser than
--- vanilla's own chemical plant.
-local HC = "__space-age-extended__/graphics/entity/helium-concentrator/"
-concentrator.icon = "__space-age-extended__/graphics/icons/helium-concentrator.png"
-derive.own_graphics(concentrator,
-{
-  animation =
-  {
-    layers =
-    {
-      {
-        filename = HC .. "base.png",
-        priority = "high",
-        width = 200, height = 201,
-        shift = { 0, 0 },
-        scale = 0.5
-      },
-      {
-        filename = HC .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = 355, height = 212,
-        shift = { 1.21094, 0.08594 },
-        scale = 0.5
-      }
-    }
-  },
-  working_visualisations =
-  {
-    {
-      always_draw = false,
-      light = { intensity = 0.25, size = 2.5, color = { 0.85, 0.45, 0.18 } },
-      animation =
-      {
-        filename = HC .. "skirt-glow.png",
-        priority = "high",
-        blend_mode = "additive",
-        draw_as_glow = true,
-        width = 200, height = 201,
-        frame_count = 1,
-        shift = { 0, 0 },
-        scale = 0.5
-      }
-    }
-  }
-})
-data:extend({ concentrator })
-
---------------------------------------------------------------------------------
 -- N7. Vacuum Furnace -- concept/vacuum-furnace/building-spec-vacuum-furnace.md
 --
 -- A `furnace`, not an assembling machine, so it picks its own recipe from what
@@ -824,7 +461,7 @@ derive.placeholder_art(furnace, "wears electric-furnace's sprites until its plat
 furnace.minable = { mining_time = 0.5, result = "sae-vacuum-furnace" }
 furnace.collision_box = BOX_3x3
 furnace.selection_box = SEL_3x3
-furnace.crafting_categories = { "smelting", "sae-sintering" }
+furnace.crafting_categories = { "smelting" }
 furnace.crafting_speed = 1.5
 furnace.energy_usage = "1200kW"
 furnace.energy_source = { type = "electric", usage_priority = "secondary-input" }
@@ -940,131 +577,6 @@ derive.own_graphics(furnace,
 data:extend({ furnace })
 
 --------------------------------------------------------------------------------
--- N9. Ignition Ring Mast -- concept/ring-mast/building-spec-ignition-ring-mast.md
---
--- The opposite of the Arc Mast in every way that matters: that one catches
--- something episodic and banks it, this spends something continuously and cannot
--- store it at all.
---
--- **Nothing in the engine can require a building to be near another one**, and
--- this is how that is expressed anyway: the charge it makes carries a very short
--- `spoil_ticks` and no `spoil_result`, so it simply ceases to exist. Belt travel
--- is real time, so a mast more than a few seconds of belt from the Array delivers
--- nothing. Pure data, no control-stage script -- see items.lua for the timer.
---
--- No modules and no effects at all. 12 MW is meant to hurt, and a productivity
--- module undoing that would undo the point.
---------------------------------------------------------------------------------
-
-local mast = crafter("sae-ring-mast", "assembling-machine-3", {
-  categories = { "sae-ignition-charge" },
-  energy = "12MW",
-  modules = 0,
-  conditions = CORE_ONLY,
-  fluid_boxes =
-  {
-    {
-      production_type = "input",
-      volume = 400,
-      -- Same arrangement as the Vacuum Furnace and the Concentrator, and it is
-      -- the foundry's: the plate draws its own flange, `pipe_picture` is emptied
-      -- so no generic stub is laid over that art, and the covers stay.
-      --
-      -- **The two are not alternatives, which took a detour to work out.** The
-      -- machine's own art says what the fitting looks like; the cover says what
-      -- an *unused* one looks like, and `always_draw_covers = false` means it is
-      -- gone the moment a pipe is joined. The foundry carries all three at once.
-      -- Four of our buildings had dropped the covers on the grounds that they
-      -- draw their own flange, which simply left the second job undone.
-      pipe_picture = util.empty_sprite(),
-      pipe_covers = derive.pipe_covers(),
-      always_draw_covers = false,
-      pipe_connections = { { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } } }
-    }
-  }
-})
-mast.fixed_recipe = "sae-ignition-charge"
-mast.allowed_effects = {}
-
--- Art: the Braced Post, option A of five (concept/ring-mast/options/).
---
--- Locked 2026-09-10. Four heavy buttresses splaying to the corners, a thick
--- banded coil at waist height, and a short blunt CLOSED cap above it. The whole
--- round exists to keep this building from reading as a lightning collector, and
--- the closed dark top is the single line that does it. Nothing on this planet
--- catches lightning any more, but vanilla's collector is a silhouette every
--- player already knows, and a mast that fires charge sideways must not borrow it.
---
--- **The inlet was redrawn.** The adopted sheet drew it frost-jacketed, which was
--- generated before the template's convention 5: a fluid connection carries no
--- frost, heat or tint, because the engine stamps its own neutral cover over an
--- unconnected port and a rimed stub ends up with a bare grey flange sitting in
--- it. The master render draws it as a plain bored fitting instead -- the vanilla
--- pump's own read.
---
--- **The shift is measured, and it is positive here.** 192 px of drawn machine,
--- 3.000 tiles, checked by tools/check-footprint.py. Unlike the Drop Crusher this
--- building is SHORTER than its own footprint -- 2.83 tiles of drawn height on a
--- 3 tile box -- so the bottom-aligned box puts the footprint's centre 5.5 source
--- px ABOVE the canvas centre and the plate is pushed DOWN by 2.75 in-game px.
--- Vanilla agrees: assembling-machine-3, the other squat 3x3, ships
--- `by_pixel(-0.5, 2.5)` -- +0.078 against our +0.086.
---
--- **The band is unlit and that is on purpose.** This plate is what the charge
--- glow will be derived from, so a band drawn part-charged would bake a mid-cycle
--- state into the still machine. Until that layer exists the status lamp carries
--- the whole read, as it does on the Drop Crusher.
-local RM = "__space-age-extended__/graphics/entity/ring-mast/"
-mast.icon = "__space-age-extended__/graphics/icons/ring-mast.png"
-mast.icons = nil
-derive.own_graphics(mast,
-{
-  animation =
-  {
-    layers =
-    {
-      {
-        filename = RM .. "base.png",
-        priority = "high",
-        width = 200, height = 191,
-        shift = { 0, 0.08594 },
-        scale = 0.5
-      },
-      {
-        filename = RM .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = 346, height = 202,
-        shift = { 1.14062, 0.17188 },
-        scale = 0.5
-      }
-    }
-  },
-  working_visualisations =
-  {
-    -- Cut white from the plate's own canvas, so it registers by construction.
-    -- `apply_tint = "status"` hands the colour to the engine; `always_draw`
-    -- because a lamp that only appears while working cannot report that the
-    -- machine has stopped, which is the one thing it exists to say.
-    {
-      always_draw = true,
-      apply_tint = "status",
-      animation =
-      {
-        filename = RM .. "status-lamp.png",
-        priority = "high",
-        draw_as_glow = true,
-        width = 200, height = 191,
-        frame_count = 1,
-        shift = { 0, 0.08594 },
-        scale = 0.5
-      }
-    }
-  }
-})
-data:extend({ mast })
-
---------------------------------------------------------------------------------
 -- The items, and what each costs to build.
 --
 -- Kept beside the machines rather than in items.lua, which is where the Arc Mast
@@ -1118,7 +630,6 @@ local function machine_item(name, order, ingredients, seconds)
 end
 
 local function plate(n) return { type = "item", name = "sae-kamacite-plate", amount = n } end
-local function welded(n) return { type = "item", name = "sae-welded-plate", amount = n } end
 local function gear(n) return { type = "item", name = "iron-gear-wheel", amount = n } end
 local function circuit(n) return { type = "item", name = "advanced-circuit", amount = n } end
 local function steel(n) return { type = "item", name = "steel-plate", amount = n } end
@@ -1131,13 +642,9 @@ local function steel(n) return { type = "item", name = "steel-plate", amount = n
 -- electromagnetic plant in `06-core-production-tree.md` T1. Every other machine
 -- here is priced in plate because by then the player has some.
 --
--- **Welded plate is off the four early machines**, and it was a real gate rather
--- than a flavour note: `sae-welded-plate` needs whiskers, so it does not exist
--- until `sae-cold-welding` -- three technologies after the Ballast Drill and the
--- Vacuum Furnace unlock. That made the Vacuum Furnace unbuildable through
--- exactly the stretch it exists to cover, since it is the only machine that will
--- smelt the fines the crusher starts making on its first craft. It stays on the
--- Coil Separator and the Ring Mast, which are endgame machines and have it.
+-- **Nothing here is priced in welded plate.** That plate needs whiskers, and
+-- neither exists on this branch; on master it was a real gate that once made
+-- the Vacuum Furnace unbuildable through exactly the stretch it exists to cover.
 for _, spec in ipairs({
   { "sae-drop-crusher", "a", { steel(40), gear(30), circuit(10) }, 6 },
   -- Freight-priced for the same reason the crusher is: it is now the only way to
@@ -1145,18 +652,8 @@ for _, spec in ipairs({
   -- first plate and cannot be costed in plate. That is the rule for the whole
   -- landing kit -- on the path to the first plate, it comes out of the corridor.
   { "sae-ballast-drill", "b", { steel(60), gear(40), circuit(15) }, 10 },
-  { "sae-dross-classifier", "c", { plate(30), gear(20), circuit(10) }, 5 },
-  { "sae-coil-separator", "d",
-    { plate(40), welded(10), { type = "item", name = "sae-coil-assembly", amount = 1 },
-      { type = "item", name = "processing-unit", amount = 20 } }, 12 },
-  { "sae-whisker-comber", "e", { plate(30), gear(30), circuit(10) }, 6 },
-  { "sae-helium-concentrator", "f",
-    { plate(40), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
   { "sae-vacuum-furnace", "g",
     { plate(50), { type = "item", name = "processing-unit", amount = 10 } }, 10 },
-  { "sae-ring-mast", "i",
-    { plate(60), welded(20), { type = "item", name = "sae-superconducting-winding", amount = 4 },
-      { type = "item", name = "processing-unit", amount = 20 } }, 15 },
 }) do
   data:extend(machine_item(spec[1], spec[2], spec[3], spec[4]))
 end

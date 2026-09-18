@@ -17,7 +17,7 @@
 --   * `sae-core-processes` under `intermediate-products` at order **q**, which
 --     is the next letter after Aquilo's p. Everything the Core's chain makes.
 --   * `sae-core-machines` under `production` at order **eb**, immediately after
---     `production-machine` (e), so the nine buildings sit together at the end of
+--     `production-machine` (e), so the Core's buildings sit together at the end of
 --     the machines the player already knows.
 --
 -- Ordering *within* each subgroup follows the production tree rather than the
@@ -63,55 +63,19 @@ data:extend({
 --- name -> order suffix, in the order the factory is built.
 local CHAIN =
 {
-  -- What the ground gives.
   ["sae-kamacite-ore"] = "aa",
   ["sae-crushed-kamacite"] = "ab",
   ["sae-kamacite-fines"] = "ac",
   ["sae-kamacite-plate"] = "ad",
-  ["sae-welded-plate"] = "ae",
 
-  -- Settling, and what falls out of it.
-  ["sae-dross"] = "ba",
-  ["sae-bed-dross"] = "bb",
-  ["sae-cast-ingot"] = "bc",
-  ["sae-homogenised-ingot"] = "bd",
-  ["sae-schreibersite"] = "be",
-
-  -- The beds.
-  ["sae-whisker-bed"] = "ca",
-  ["sae-seed-plate"] = "cb",
-  ["sae-kamacite-whiskers"] = "cc",
-  ["sae-whisker-tow"] = "cd",
-  ["sae-whisker-felt"] = "ce",
-  ["sae-emitter-array"] = "cf",
-
-  -- Carbonyl chemistry.
-  ["sae-carbonyl-powder"] = "da",
-  ["sae-sintered-preform"] = "db",
-
-  -- The corridor.
   ["sae-radiant-chunk"] = "ea",
-  ["sae-seeded-chunk"] = "eb",
   ["sae-radiant-fuel"] = "ec",
-  ["sae-seed-missile"] = "ed",
 
-  -- Cross-planet integrations.
   ["sae-fluorinated-holmium"] = "fa",
   ["sae-superconducting-winding"] = "fb",
   ["sae-magnetar-alloy"] = "fc",
   ["sae-cultured-alloy"] = "fd",
-  ["sae-bio-polymer"] = "fe",
-  ["sae-field-conductor"] = "ff",
-  ["sae-magnetic-core-billet"] = "fg",
-  ["sae-reinforced-frame"] = "fh",
-  ["sae-insulation-sleeve"] = "fi",
-  ["sae-coolant-charge"] = "fj",
-
-  -- The endgame, last because it is last.
-  ["sae-coil-assembly"] = "ga",
-  ["sae-coolant-loop"] = "gb",
-  ["sae-ignition-charge"] = "gc",
-  ["sae-field-coil-segment"] = "gd"
+  ["sae-bio-polymer"] = "fe"
 }
 
 --- The buildings, in the order the player unlocks them.
@@ -123,16 +87,8 @@ local MACHINES =
   ["sae-drop-crusher"] = "bb",
   ["sae-vacuum-furnace"] = "bc",
   ["sae-vent-pump"] = "bd",
-  ["sae-dross-classifier"] = "ca",
-  ["sae-helium-concentrator"] = "cb",
-  ["sae-bed-tender"] = "da",
-  ["sae-whisker-comber"] = "db",
   ["sae-superconducting-store"] = "eb",
-  ["sae-radiant-generator"] = "ec",
-  ["sae-sealed-roboport"] = "fa",
-  ["sae-coil-separator"] = "ga",
-  ["sae-ring-mast"] = "gb",
-  ["sae-ignition-array"] = "gc"
+  ["sae-radiant-generator"] = "ec"
 }
 
 local function place(name, subgroup, suffix)
@@ -163,13 +119,6 @@ for name, suffix in pairs(MACHINES) do place(name, "sae-core-machines", suffix) 
 local RECIPES =
 {
   ["sae-crushing"] = "ab",
-  ["sae-magnetic-separation"] = "ac",
-  ["sae-gravity-settling"] = "ba",
-  ["sae-quenched-settling"] = "ba",
-  ["sae-classification"] = "bb",
-  ["sae-degassing"] = "bc",
-  ["sae-carbonyl-powder"] = "da",
-  ["sae-seeded-crushing"] = "eb",
   ["sae-radiant-crushing"] = "ec",
   ["sae-fluorinated-holmium"] = "fa",
   ["sae-superconducting-winding"] = "fb"
@@ -186,13 +135,9 @@ end
 local FLUIDS =
 {
   ["sae-molten-kamacite"] = "aa",
-  ["sae-settled-melt"] = "ab",
   ["sae-helium-3"] = "ac",
   ["sae-crust-gas"] = "ad",
   ["sae-radiant-solution"] = "ae",
-  ["sae-phosphide-flux"] = "ba",
-  ["sae-carbon-monoxide"] = "bb",
-  ["sae-metal-carbonyl"] = "bc",
   ["sae-cold-cryogen"] = "ca",
   ["sae-spent-cryogen"] = "cb",
   ["sae-cryoprotectant"] = "cc"
