@@ -4,6 +4,14 @@ How `08-core-power.md` gets built: four stages, each on its own branch, each
 with the files it touches and the check that says it is done. Read 08 first;
 this document says nothing about *why*.
 
+> **Where this stands.** The branch `claude/core-production-line-review-hmdkx8`
+> is cut to the landing slice, and stage 1's technology row is already on it:
+> `sae-radiant-power` exists as a trigger off Core survey and unlocks the
+> generator, so the two `technology.lua` rows below are done. "Before any
+> stage" applies to that branch as the base; stages 2–4 name geodynamic
+> technologies and machines that are on `master` only, and wait for the slice
+> to merge back.
+
 ## Before any stage
 
 **Run the data stage on the branch as it stands.** Six commits sit between the

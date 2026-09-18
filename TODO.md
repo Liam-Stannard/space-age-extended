@@ -19,6 +19,23 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   building and 3–10 technologies — with
   [Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) as the worked example.
 
+## Landing slice
+
+- **Bring the landing slice to quality.** The branch is cut to Crust tapping,
+  Core survey and Radiant power, the three landing machines, the radiant chunk
+  line and the five capstone stubs. In order:
+  1. Load it: nine commits and the cut itself have never met the engine.
+     `tools/check-data-stage.sh`, then `tools/check-tech-reachability.py` and
+     `tools/check-recipes.py` on the dump.
+  2. Make precipitation stage 1: `100 radiant solution + 100 crust gas → 1
+     radiant fuel` in a reaction plant, per `production-line-plan.md`. It still
+     costs helium-3, which the slice has no reason to make.
+  3. Give molten kamacite and the vent pump a consumer, or accept that the pump
+     is only the Radiant power trigger while the melt line is away.
+  4. Decide how a slice with no Ignition Array ends. Vanilla victory is still
+     off in `control.lua`; either it comes back for the slice or the game is
+     accepted as endless until the Array returns.
+
 ## Power
 
 - **Build the radiant cycle.** `design/08-core-power.md` is the design and
@@ -101,11 +118,11 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Repository layout
 
-- **Seven commits on `claude/core-production-line-review-hmdkx8` have not been
-  loaded against the engine** — ten trigger technologies, the storms' removal
-  (a planet property gone), and a fluid rename touching two tiles, none run
-  through `tools/check-data-stage.sh`. Run it before the branch merges, and
-  before anything is built on top of it.
+- **Nothing on `claude/core-production-line-review-hmdkx8` has been loaded
+  against the engine** — ten trigger technologies, the storms' removal (a
+  planet property gone), a fluid rename touching two tiles, and now the cut to
+  the landing slice, none run through `tools/check-data-stage.sh`. Run it
+  before the branch merges, and before anything is built on top of it.
 - **Untracked art in `graphics/entity/` awaiting a sign-off decision:**
   `ballast-drill/stroke.png`, `stroke-housing.png`, `stroke.json` (wired by the
   uncommitted `machines.lua` diff), `dross-classifier/base-animation.png` and

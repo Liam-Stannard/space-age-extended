@@ -38,7 +38,14 @@ The Core exists as a planet with its own terrain, three sited resources and its
 mechanics; the corridor reaches it; the sixth technology tree and the geodynamic
 science pack are in; and the Ignition Array fires and wins the game. Of the five
 cross-planet trees, Fulgora ↔ Aquilo is real and the other four craft their
-capstone from a stub recipe.
+capstone from a stub recipe. That is `master`.
+
+**This branch is the landing slice.** It carries only what is being brought up
+to quality first: the three landing technologies (Crust tapping, Core survey,
+Radiant power), the crusher, drill and vacuum furnace, the radiant chunk line
+that feeds the generator, and the five cross-planet capstone products. The melt
+line, the geodynamic pack, the Array and everything past the landing stay on
+`master`, and the game does not end here.
 
 **Nothing has been played.** Every number in the mod is a first guess, verified against
 the engine but never against a person.
