@@ -581,9 +581,10 @@ derive.own_graphics(furnace,
 data:extend({ furnace })
 
 --------------------------------------------------------------------------------
--- The Reaction Plant. No N number, because the nine above each have a spec in
--- concept/ and this one does not yet -- concept/reaction-plant/ is where it
--- will be, and the machine wears the chemical plant's sprites until then.
+-- The Reaction Plant -- concept/reaction-plant/building-spec-reaction-plant.md
+--
+-- No N number: it arrived after the nine above were numbered. It wears its own
+-- art, rendered from a model rather than cut from a plate; see "Art" below.
 --
 -- Stage 1 of the radiant cycle. The Core's fuel was precipitated out of the
 -- pool with helium-3, which put the power line in the queue behind the Vent
@@ -630,39 +631,133 @@ data:extend({ furnace })
 -- opposite of the Helium Concentrator on purpose.** That machine paints its
 -- flanges into its own plate, so it empties `pipe_picture` and the engine must
 -- not draw a stub over the art. This one is the other arrangement, the one
--- assembling machines 2 and 3 use: `pipe_picture` is vanilla's
--- `assembler2pipepictures`, a stub per direction that the engine draws and
--- redraws whenever the player rotates the entity, and the plate paints no
--- flange at all. That is what lets this building stay rotatable on ONE plate
--- rather than the Crust Tap's four -- nothing in the still art has a facing,
--- so there is nothing to draw four times. The entity therefore carries no
--- `not-rotatable` flag. The plate that paints no flange is the one this
--- building will get; the chemical plant's sprites it wears today paint flanges
--- of their own at two north and two south positions, so until the real plate
--- lands the engine's north stubs sit on top of painted flanges, and the south
--- stub -- drawn whenever the plant has no recipe set, by the paragraph above --
--- stands on solid body between the placeholder's painted southern pair.
--- Expected of a stand-in, and not a bug to file.
+-- assembling machines 2 and 3 use: `pipe_picture` is a stub per direction
+-- that the engine draws and redraws whenever the player rotates the entity,
+-- and the plate paints no flange at all. That is what lets this building stay
+-- rotatable on ONE plate rather than the Crust Tap's four -- nothing in the
+-- still art has a facing, so there is nothing to draw four times. The entity
+-- therefore carries no `not-rotatable` flag. The stubs are the plant's own,
+-- rendered from the same model as the plate (see "Art"), not vanilla's
+-- `assembler2pipepictures`: that fitting is blue paint and polished brass at a
+-- size that does not meet this building's gutter.
 --
--- `pipe_covers` caps a port nothing is joined to and
--- `always_draw_covers = false` takes the cap away once a pipe arrives;
--- `secondary_draw_orders = { north = -1 }` puts a north stub behind the
--- building, as vanilla's assemblers set it.
+-- `pipe_covers` caps a port nothing is joined to -- the plant's own blind cap,
+-- rendered with the stubs -- and `always_draw_covers = false` takes the cap
+-- away once a pipe arrives; `secondary_draw_orders = { north = -1 }` puts a
+-- north stub behind the building, as vanilla's assemblers set it.
 --
 -- `sae-reaction` is private like every other category in this file, and here
 -- that cuts both ways: a vanilla chemical plant must not be able to make the
 -- Core's fuel, and this plant must not be able to run chemistry.
 --------------------------------------------------------------------------------
 
-local assembler_pictures = require("__base__.prototypes.entity.assembler-pictures")
+-- Art: rendered in Blender from concept/reaction-plant/model/reaction_plant.py,
+-- and signed off by Liam with the task that put it here, 2026-10-01.
+--
+-- **Rendered, not cut.** There is no master plate: every pass is rendered from
+-- one model, through one calibrated camera (tools/blender/rig.py), on one canvas
+-- with the entity origin at the canvas centre. So the layers register by
+-- construction, and every size and shift below is computed by the packer and
+-- copied from the meta.json it writes -- none of them was measured off a sheet.
+--
+-- To regenerate, with any Blender 5 binary:
+--
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/reaction-plant/model/reaction_plant.py <scratch> --ports
+--   <blender> -b --python concept/reaction-plant/model/reaction_plant.py \
+--       -- <scratch>/icon --icon
+--   tools/key-icons.py graphics/icons <scratch>/icon/icon.png:reaction-plant
+--
+-- then copy <scratch>/sheets/*.png and <scratch>/sheets/ports/*.png into
+-- graphics/entity/reaction-plant/ and the numbers out of the two meta.json
+-- files into this block. render.sh prints pack.py's checks; Appendix C's must
+-- hold exactly (centre_offset_px 0, edge_alpha_max 0, half_width_tiles 1.5),
+-- coupling_drift_px must stay under 1 and glow_white_px at 0.
+--
+-- **One plate, for all four directions.** Nothing on it has a facing: the ports
+-- are the engine's (above), and the one moving part is on the crown.
+--
+-- **The coupling is the animation, and the plate does not contain it.** The
+-- spider coupling on the drive tower is rendered alone, 12 frames through 60
+-- degrees -- six-fold symmetry makes that the whole loop -- with its shadow
+-- caught on the head beneath it, and base.png is the machine WITHOUT it. So it
+-- cannot be a working visualisation, which the engine stops drawing when the
+-- machine stops: the plant would stand idle with a hole in its crown. It is a
+-- layer of the main animation, which an assembling machine draws in every state
+-- and only advances while crafting -- shown when idle, turning only while
+-- working. The plate and shadow are one frame each, repeated 12 times so every
+-- layer carries the same count. 0.4 is the building spec's speed (section 13):
+-- one turn of the loop in half a second, a full revolution every three.
+--
+-- **The slot glow is working minus idle**, differenced by pack.py from a lit and
+-- an unlit render of the same scene, and drawn additively and only while
+-- crafting. The emission was turned down until the light kept its colour
+-- (glow_white_px 0), so the layer is green and not grey.
+--
+-- **The status lamp is cut white and tinted by the engine.** `always_draw`,
+-- because a lamp that only appears while working cannot report that the
+-- machine has stopped. Vanilla declares `status_colors` only on its mining
+-- drills, and an assembling machine without the table drew this lens dark in
+-- every state when the render was piloted, so it is set here, as vanilla's
+-- electric mining drill sets it.
+local RP = "__space-age-extended__/graphics/entity/reaction-plant/"
+local RP_FRAMES = 12
+local RP_SPEED = 0.4
+
+local function rp_sprite(file, width, height, shift)
+  return
+  {
+    filename = RP .. file .. ".png",
+    priority = "extra-high",
+    width = width, height = height,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- From sheets/ports/meta.json. Each fitting was rendered on the middle tile of
+-- its face, and its shift is taken from the tile outside the port -- the one a
+-- pipe picture is drawn relative to -- so the same sheet sits right at either
+-- port on a face.
+local RP_PORTS =
+{
+  north = rp_sprite("port-N", 56, 44, { 0.03125, 0.5 }),
+  east = rp_sprite("port-E", 35, 63, { -0.74219, 0.07031 }),
+  south = rp_sprite("port-S", 61, 55, { 0.07031, -0.83594 }),
+  west = rp_sprite("port-W", 29, 65, { 0.69531, 0.08594 })
+}
+local RP_COVERS =
+{
+  north = rp_sprite("cover-N", 54, 13, { 0.03125, 0.22656 }),
+  east = rp_sprite("cover-E", 9, 62, { -0.47656, 0.07812 }),
+  south = rp_sprite("cover-S", 60, 30, { 0.07812, -0.60938 }),
+  west = rp_sprite("cover-W", 8, 60, { 0.46875, 0.0625 })
+}
+
+-- The fault lamp's colours: the ones vanilla's electric mining drill uses
+-- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
+-- less `no_minable_resources`, the one state a drill has and a crafter does not.
+-- Red is short of input, yellow is blocked or browned out, green is working.
+local function rp_status_colors()
+  return
+  {
+    no_power = { 0, 0, 0, 0 },          -- dark: nothing to report with
+    idle = { 1, 0, 0, 1 },
+    insufficient_input = { 1, 0, 0, 1 },
+    full_output = { 1, 1, 0, 1 },
+    disabled = { 1, 1, 0, 1 },
+    working = { 0, 1, 0, 1 },
+    low_power = { 1, 1, 0, 1 }
+  }
+end
 
 local function reaction_box(flow, direction, position)
   return
   {
     production_type = flow,
     volume = 1000,
-    pipe_picture = assembler_pictures.assembler2pipepictures,
-    pipe_covers = derive.pipe_covers(),
+    pipe_picture = RP_PORTS,
+    pipe_covers = RP_COVERS,
     always_draw_covers = false,
     secondary_draw_orders = { north = -1 },
     pipe_connections =
@@ -685,6 +780,83 @@ local reaction_plant = crafter("sae-reaction-plant", "chemical-plant", {
 -- Undoing `crafter`'s blanket setting for this machine alone: a plant with no
 -- recipe has to keep a direction. See the block comment above.
 reaction_plant.fluid_boxes_off_when_no_fluid_recipe = false
+reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
+
+-- From sheets/meta.json.
+derive.own_graphics(reaction_plant,
+{
+  status_colors = rp_status_colors(),
+  animation =
+  {
+    layers =
+    {
+      {
+        filename = RP .. "base.png",
+        priority = "high",
+        width = 198, height = 214,
+        frame_count = 1,
+        repeat_count = RP_FRAMES,
+        animation_speed = RP_SPEED,
+        shift = { 0, -0.14062 },
+        scale = 0.5
+      },
+      {
+        filename = RP .. "coupling.png",
+        priority = "high",
+        width = 46, height = 37,
+        frame_count = RP_FRAMES,
+        line_length = 12,
+        animation_speed = RP_SPEED,
+        shift = { 0.10938, -0.78906 },
+        scale = 0.5
+      },
+      {
+        filename = RP .. "shadow.png",
+        priority = "high",
+        draw_as_shadow = true,
+        width = 208, height = 193,
+        frame_count = 1,
+        repeat_count = RP_FRAMES,
+        animation_speed = RP_SPEED,
+        shift = { 0.125, -0.00781 },
+        scale = 0.5
+      }
+    }
+  },
+  working_visualisations =
+  {
+    -- The three sight slots.
+    {
+      always_draw = false,
+      animation =
+      {
+        filename = RP .. "glow.png",
+        priority = "high",
+        blend_mode = "additive",
+        draw_as_glow = true,
+        width = 58, height = 13,
+        frame_count = 1,
+        shift = { 0, 0.82031 },
+        scale = 0.5
+      }
+    },
+    -- The status lamp, on its post at the west rim, clear of the alt-mode icon.
+    {
+      always_draw = true,
+      apply_tint = "status",
+      animation =
+      {
+        filename = RP .. "status-lamp.png",
+        priority = "high",
+        draw_as_glow = true,
+        width = 10, height = 12,
+        frame_count = 1,
+        shift = { -0.9375, -0.54688 },
+        scale = 0.5
+      }
+    }
+  }
+})
 data:extend({ reaction_plant })
 
 --------------------------------------------------------------------------------
