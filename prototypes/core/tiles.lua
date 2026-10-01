@@ -26,18 +26,26 @@ bed.build_sound = table.deepcopy(data.raw.tile["stone-path"].build_sound)
 -- Repointed structurally rather than by listing files: `variants` nests main,
 -- transitions and masks several levels deep, and enumerating them by hand would
 -- break silently the first time one is added.
-local STONE = "__base__/graphics/terrain/stone%-path/stone%-path"
-local BED = "__space-age-extended__/graphics/terrain/whisker-bed/whisker-bed"
-local function repoint(t)
+
+--- Walks `t` and every table under it, handing each string to `replacement_for`
+--- and putting what comes back in its place. Return nil to leave the string
+--- where it is; every repoint in this file is this walk with its own rule.
+local function repoint(t, replacement_for)
   for k, v in pairs(t) do
     if type(v) == "table" then
-      repoint(v)
-    elseif type(v) == "string" and v:find(STONE) then
-      t[k] = v:gsub(STONE, BED)
+      repoint(v, replacement_for)
+    elseif type(v) == "string" then
+      local replacement = replacement_for(v)
+      if replacement then t[k] = replacement end
     end
   end
 end
-repoint(bed.variants)
+
+local STONE = "__base__/graphics/terrain/stone%-path/stone%-path"
+local BED = "__space-age-extended__/graphics/terrain/whisker-bed/whisker-bed"
+repoint(bed.variants, function(v)
+  if v:find(STONE) then return (v:gsub(STONE, BED)) end
+end)
 bed.order = "z[sae]-a[whisker-bed]"
 bed.minable = { mining_time = 0.2, result = "sae-whisker-bed" }
 bed.map_color = { r = 0.42, g = 0.40, b = 0.36 }
@@ -50,6 +58,11 @@ data:extend({ bed })
 -- light alike, so the night glow matches the day paint. Vulcanus's own
 -- autoplace is gone with the copy; each tile is placed by a rule of its own.
 local function glow_tile(name, order, map_color, sheets)
+  -- Checked here rather than left to the repoint below, which leaves a string
+  -- alone when it is handed nothing to put there: a missing sheet would then
+  -- keep Vulcanus's path and ship a Core tile wearing Vulcanus art, quietly.
+  assert(sheets.main, name .. ": no main sheet")
+  assert(sheets.light, name .. ": no light sheet")
   local glow = derive.tile_from("volcanic-cracks-hot", name)
   glow.subgroup = "sae-core-tiles"
   glow.order = order
@@ -59,16 +72,10 @@ local function glow_tile(name, order, map_color, sheets)
   glow.map_color = map_color
   -- Repointed structurally, as the whisker bed is: the main sheet and the
   -- light sheet each appear once, under `variants`.
-  local function repoint(t)
-    for k, v in pairs(t) do
-      if type(v) == "table" then repoint(v)
-      elseif type(v) == "string" then
-        if v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot.png" then t[k] = sheets.main
-        elseif v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot-light.png" then t[k] = sheets.light end
-      end
-    end
-  end
-  repoint(glow.variants)
+  repoint(glow.variants, function(v)
+    if v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot.png" then return sheets.main
+    elseif v == "__space-age__/graphics/terrain/vulcanus/volcanic-cracks-hot-light.png" then return sheets.light end
+  end)
   return glow
 end
 
@@ -81,13 +88,9 @@ local function shards(kind, probability)
   local d = derive.from("optimized-decorative", kind, "sae-crust-shards-" .. kind:gsub("%-rock$", ""))
   local FROM = "__base__/graphics/decorative/" .. kind .. "/"
   local TO = "__space-age-extended__/graphics/decorative/crust-shards/"
-  local function repoint(t)
-    for k, v in pairs(t) do
-      if type(v) == "table" then repoint(v)
-      elseif type(v) == "string" and v:sub(1, #FROM) == FROM then t[k] = TO .. v:sub(#FROM + 1) end
-    end
-  end
-  repoint(d.pictures)
+  repoint(d.pictures, function(v)
+    if v:sub(1, #FROM) == FROM then return TO .. v:sub(#FROM + 1) end
+  end)
   d.autoplace =
   {
     order = "z[sae]-shards",
@@ -210,15 +213,11 @@ cliff.map_color = { r = 0.33, g = 0.37, b = 0.42 }
 do
   local FROM = "__space-age__/graphics/terrain/cliffs/fulgora/cliff-fulgora-"
   local TO = "__space-age-extended__/graphics/terrain/cliff-core/cliff-"
-  local function repoint(t)
-    for k, v in pairs(t) do
-      if type(v) == "table" then repoint(v)
-      elseif type(v) == "string" and v:sub(1, #FROM) == FROM and not v:find("shadow", 1, true) then
-        t[k] = TO .. v:sub(#FROM + 1)
-      end
+  repoint(cliff.orientations, function(v)
+    if v:sub(1, #FROM) == FROM and not v:find("shadow", 1, true) then
+      return TO .. v:sub(#FROM + 1)
     end
-  end
-  repoint(cliff.orientations)
+  end)
 end
 data:extend({ cliff })
 
