@@ -21,24 +21,23 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Power
 
-- **Build the radiant cycle.** `design/08-core-power.md` is the design and
-  `design/production-line-plan.md` is the plan: four stages on four branches.
-  Nothing of it exists yet — the storms are gone and the planet runs on 1.8 MW
-  turbines and a generator researched four technologies too late. Stage 1
-  alone puts the power back; build it, play it, and let it set the numbers for
+- **Play stage 1, then build the rest of the radiant cycle.**
+  `design/08-core-power.md` is the design and `design/production-line-plan.md`
+  is the plan: four stages on four branches. Stage 1 is in — the reaction
+  plant precipitates radiant fuel under Radiant power, and a burnt cell leaves
+  a spent cell behind. Play it before stage 2: the ratios in 08 are first
+  guesses, and whether crust gas or the pool binds first sets the numbers for
   the other three.
 - **Decide what happens to spent cells on space platforms.** The radiant
-  generator places at pressure ≤ 9, so once it emits a `burnt_result` every
-  platform accumulates cells it cannot reprocess until stage 3. Ship them down,
-  or give platforms a void. Blocks stage 1.
+  generator places at pressure ≤ 9 and now emits spent cells, so every platform
+  accumulates cells it cannot reprocess until stage 3. Ship them down, or give
+  platforms a void. Stage 1 shipped with this left open on purpose
+  (`auto_recycle = false` in `prototypes/core/items.lua`), so playing it is
+  what answers it.
 - **Decide whether the reactor may make steam.** A `reactor`'s output path is
   heat → exchanger → steam → turbine, which brings steam back at the top of a
   ladder that removed it everywhere else. Accept it in the reactor room, or find
   the reactor another output. Blocks stage 4.
-- **Spike: `neighbour_bonus` on a fuel category that is not uranium's.** A
-  `reactor` with `fuel_categories = { "sae-radiant" }` in a 2×2, and a look at
-  the bonus in its GUI. Assumed since the reactor was first proposed, never
-  checked, and stage 4's whole reward rests on it. Data stage.
 
 ## Checks only a client can make
 
@@ -65,10 +64,12 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Core Discovery, Gravity Settling, Whisker Beds and Field Coils wears
   Aquilo's, and the three Fulgora ↔ Aquilo technologies wear the cryogenic
   science pack's. The data-stage placeholder report lists them by name.
-- **Three power buildings need specs before art** — `concept/reaction-plant/`,
-  `concept/isotope-centrifuge/` and `concept/radiant-reactor/`, from
-  `templates/building-spec-template.md`. Each ships in placeholder art until
-  then, as every Core machine did. Both crafters derive from the chemical plant
+- **Three power buildings need specs before art.** The reaction plant's is
+  drafted — `concept/reaction-plant/` holds a building spec, a sprite brief and
+  four sheets, awaiting agreement. `concept/isotope-centrifuge/` and
+  `concept/radiant-reactor/` do not exist yet; both come from
+  `templates/building-spec-template.md`. Each building ships in placeholder art
+  until its spec is agreed, as every Core machine did. Both crafters derive from the chemical plant
   (`production-line-plan.md` says why), so their placeholders already draw the
   ports their fluid boxes connect to.
 - **Paint accents still to assign** (template Appendix B): Drop Crusher, Ballast
@@ -101,11 +102,11 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Repository layout
 
-- **Untracked art in `graphics/entity/` awaiting a sign-off decision:**
-  `ballast-drill/stroke.png`, `stroke-housing.png`, `stroke.json` (wired by the
-  uncommitted `machines.lua` diff), `dross-classifier/base-animation.png` and
-  `ignition-array/base-animation.png`. Only signed-off or placeholder art lives
-  in `graphics/`; anything not signed off moves to `concept/<building>/`.
-- **`changelog.txt` is empty** (the working tree deleted its contents). Restore
-  from HEAD or write a 0.3.x entry for the reset.
+- **Art committed to `graphics/entity/` with no recorded sign-off:**
+  `ballast-drill/stroke.png`, `stroke-housing.png`, `stroke.json`,
+  `dross-classifier/base-animation.png` and `ignition-array/base-animation.png`.
+  Only signed-off or placeholder art lives in `graphics/`; sign these off, or
+  move them to `concept/<building>/`.
+- **`changelog.txt` is empty**, and has been since the reset — HEAD holds
+  nothing to restore. Write a 0.3.x entry for the reset.
 
