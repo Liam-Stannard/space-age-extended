@@ -133,10 +133,7 @@ data:extend({
 })
 
 -- The capstone building. Fulgora's lightning is a surge that arrives faster
--- than anything can spend it, and this is where it goes -- then again at the
--- very end, where four of these are what the Ignition Array is priced in,
--- because firing a current into a planet's crust wants half a gigajoule
--- standing ready rather than trickling in.
+-- than anything can spend it, and this is where it goes.
 local store = derive.from("accumulator", "accumulator", "sae-superconducting-store")
 store.icon = "__space-age-extended__/graphics/icons/superconducting-store.png"
 store.minable = { mining_time = 0.5, result = "sae-superconducting-store" }

@@ -19,6 +19,14 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   building and 3–10 technologies — with
   [Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) as the worked example.
 
+## Landing slice
+
+- **Give molten kamacite and the vent pump a consumer**, or accept that the pump
+  is only the Radiant power trigger while the melt line is gone.
+- **Decide how the game ends without the Ignition Array.** Vanilla victory is
+  still off in `control.lua`; either it comes back, or the game is endless until
+  an ending is designed.
+
 ## Power
 
 - **Play stage 1, then build the rest of the radiant cycle.**
