@@ -34,11 +34,13 @@ live — is set out in [claude.md](claude.md). Outstanding work is in
 
 ## Status
 
-The Core exists as a planet with its own terrain, three sited resources and its
-mechanics; the corridor reaches it; the sixth technology tree and the geodynamic
-science pack are in; and the Ignition Array fires and wins the game. Of the five
-cross-planet trees, Fulgora ↔ Aquilo is real and the other four craft their
-capstone from a stub recipe.
+**The mod is being reworked from the ground up, starting at the landing.** It
+carries the three landing technologies (Crust tapping, Core survey, Radiant
+power), the crusher, drill, vacuum furnace and reaction plant, the radiant line
+that fuels the generator, the corridor, and the five cross-planet capstone
+products. Of the cross-planet trees, Fulgora ↔ Aquilo is real and the other four
+craft their capstone from a stub recipe. The melt line, the geodynamic pack and
+the Ignition Array were cut, and nothing yet ends the game.
 
 **Nothing has been played.** Every number in the mod is a first guess, verified against
 the engine but never against a person.

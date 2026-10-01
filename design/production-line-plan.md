@@ -4,6 +4,10 @@ How `08-core-power.md` gets built: four stages, each on its own branch, each
 with the files it touches and the check that says it is done. Read 08 first;
 this document says nothing about *why*.
 
+> **Where this stands.** Stage 1 is built. Stages 2–4 name geodynamic
+> technologies and machines that went in the cut back to the landing, so each
+> needs re-planning against what exists before it is built.
+
 ## Before any stage
 
 **Run the data stage on the branch as it stands.** Six commits sit between the
