@@ -600,6 +600,20 @@ the plate to exactly 3.00. Ground decals are the one legitimate exception, and
 they belong in their own layer rather than baked into the base plate — vanilla
 does this with `mining_drill_scorch_mark`.
 
+### Two more, set by Liam (2026-10-02)
+
+**6. A pipe input is vanilla's.** The fluid connection is drawn by the
+engine with vanilla's own pipe pictures and covers, the chemical plant's and
+the assembling machine's, never as a socket, pad, collar or flange modelled
+into the plate. Where a fluid box connects, the building's wall meets the
+footprint edge so the stub has something to butt against. A modelled
+fitting is a second design to keep in step with the first, and a pipe that
+looks different at every building reads as a different pipe.
+
+**7. No flat base.** A building is one structure filling its footprint, not
+a smaller machine standing on a slab. Size the structure itself to the
+footprint; a plinth around a small machine makes the machine read small.
+
 ## Item Inputs
 
 | Input    | Location      | Direction   |
