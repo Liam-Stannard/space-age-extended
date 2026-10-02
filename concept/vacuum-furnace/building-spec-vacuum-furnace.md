@@ -110,17 +110,23 @@ a sealed machine is a contradiction the player will notice.
 * A **welded drum** body, seams visible, deliberately without panel lines — it is
   one piece, because a seam is a leak.
 * A **clamped roof hatch**, heavy, with radial dogs around its rim.
-* **Radiator loops** on two flanks — the heat has nowhere to go but a radiator,
-  since there is no air to carry it.
-* A **sight port**, small and thick, the only place any *heat* glow escapes.
+* **Four radiator stacks**, one at each corner, set on the diagonal — the heat
+  has nowhere to go but a radiator, since there is no air to carry it —
+  leaving the middle of every face free for the inlet sockets.
+* A **sight port** set into the **roof** beside the hatch: a small, thick, deep
+  glass viewport, the only place any *heat* glow escapes.
 * A **fault lamp** on the hatch rim — a small neutral-white lens the engine
   tints. See below; it is drawn white and coloured at runtime, never painted.
-* A **flux inlet** on one flank, frost-jacketed, small.
+* **Four inlet sockets**, one at the middle of each face at plinth level,
+  identical. The furnace's one fluid input turns between them as the building
+  is rotated; the engine draws the pipe joint at the socket in use and the
+  other three stay capped. Frost shows on the socket in use, and only while
+  the furnace works.
 
 ### Signature Feature
 
-**The sight port.** One small deep-set circle of orange in an otherwise cold dark
-building. It is how the player tells a running furnace from an idle one at a
+**The sight port.** One small deep-set circle of orange in the roof, beside the
+hatch, in an otherwise cold dark building. It is how the player tells a running furnace from an idle one at a
 glance, and it is the entire *heat* lighting budget.
 
 ### The fault lamp — and the problem it exists to solve
@@ -162,10 +168,10 @@ sight port, so the two lights are never confused at a glance.
 | ---- | --- | ----- |
 | Drum body | `#3E3B36` → `#5E584E` | the mass; darker than the mod's usual chassis |
 | Hatch and dogs | `#8A8580` | roof only |
-| Radiator loops | `#6E685C` | two flanks |
-| Sight port glow | `#E8A24A` → `#FFD9A0` | the port, and nothing else |
+| Radiator loops | `#6E685C` | four corners |
+| Sight port glow | `#E8A24A` → `#FFD9A0` | the roof viewport, and nothing else |
 | Fault lamp lens | `#FFFFFF` | hatch rim — **painted white, tinted by the engine** |
-| Flux inlet frost | `#BFD8E8` | one flank, small |
+| Inlet frost | `#BFD8E8` | the socket in use, while working only |
 | Weld seams | `#7A7268` | fine lines on the drum |
 
 **The heat-glow budget is one circle.** If orange appears anywhere else on this
@@ -196,12 +202,12 @@ attach the electric furnace**; it is the anti-read.
 
 # 5. Building Orientation
 
-* [x] North only
+* [x] North · [x] East · [x] South · [x] West
 
-**Direction count:** `1` — **a choice, not a constraint.** The flux fluid box
-means the engine would allow rotation. One direction keeps the roof hatch, the
-fault lamp and the sight port in a fixed relationship, which is what makes the
-three lamp states legible at a glance..
+**Direction count:** `4`, **and the building does not turn.** It is drawn once;
+only its fluid input turns, between four identical sockets. The hatch, the lamp
+and the viewport keep their places, which is what one direction was for, and the
+input can face any side.
 
 ---
 
@@ -211,7 +217,7 @@ three lamp states legible at a glance..
 | ---------- | ----- | ----- |
 | Item in | any adjacent tile | `source_inventory_size = 1` |
 | Item out | any adjacent tile | `result_inventory_size = 1` |
-| Phosphide flux in | one flank, modelled flange | `pipe_picture` emptied, foundry pattern |
+| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` and `pipe_covers` are the furnace's own socket fittings, as the reaction plant's are |
 | Electric | no visible connector | poles reach it wirelessly |
 
 **A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
@@ -219,9 +225,9 @@ the prototype prevents it, but a player who feeds fines and ore onto one belt
 will watch the machine flip recipes. That is vanilla smelting's own behaviour and
 needs no fix, but the locale should not encourage it.
 
-**Smelting takes no flux; sintering does.** So the same machine runs with its
-pipe connected or not, depending on which job it is doing — and the flange has to
-look unremarkable when nothing is plumbed to it.
+**No recipe uses the input yet.** It is there so the furnace can take one
+without being redrawn, and the three unused sockets look the same as an idle one:
+capped, bare metal.
 
 ---
 
@@ -313,6 +319,11 @@ and should not be attempted.
 ---
 
 # 20. Decisions and open questions
+
+**Decided 2026-10-02 (Liam):** one rotatable fluid input over four identical
+sockets, four corner radiators, and the sight port moved into the roof. This
+replaces the adopted sheet's east flange and flank radiators;
+`concept/vacuum-furnace/model/` is the design from here on.
 
 **Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
 the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
