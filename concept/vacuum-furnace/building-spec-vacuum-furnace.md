@@ -118,8 +118,9 @@ a sealed machine is a contradiction the player will notice.
 * A **fault lamp** on the hatch rim — a small neutral-white lens the engine
   tints. See below; it is drawn white and coloured at runtime, never painted.
 * **One fluid input**, at the middle of whichever face the furnace is turned
-  to. Its pipe is vanilla's own stub and cover, drawn by the engine exactly as
-  the chemical plant's and the assembling machine's are; the structure's wall
+  to. Its pipe picture is the assembling machine's in shape, size and
+  placement, rendered in the furnace's own metal, and drawn by the engine; its
+  covers are vanilla's; the structure's wall
   meets the footprint edge at the middle of every face so the stub always has
   something to butt against. Frost shows at the input, and only while the
   furnace works.
@@ -220,7 +221,7 @@ input can face any side.
 | ---------- | ----- | ----- |
 | Item in | any adjacent tile | `source_inventory_size = 1` |
 | Item out | any adjacent tile | `result_inventory_size = 1` |
-| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` and `pipe_covers` are vanilla's chemical-plant pictures |
+| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` is rendered from the model to assembler 3's shape and shifts; `pipe_covers` are vanilla's |
 | Electric | no visible connector | poles reach it wirelessly |
 
 **A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
