@@ -112,16 +112,19 @@ a sealed machine is a contradiction the player will notice.
 * A **clamped roof hatch**, heavy, with radial dogs around its rim.
 * **Four radiator stacks**, one at each corner, set on the diagonal — the heat
   has nowhere to go but a radiator, since there is no air to carry it —
-  leaving the middle of every face free for the inlet sockets.
+  leaving the middle of every face free for the input.
 * A **sight port** set into the **roof** beside the hatch: a small, thick, deep
   glass viewport, the only place any *heat* glow escapes.
 * A **fault lamp** on the hatch rim — a small neutral-white lens the engine
   tints. See below; it is drawn white and coloured at runtime, never painted.
-* **Four inlet sockets**, one at the middle of each face at plinth level,
-  identical. The furnace's one fluid input turns between them as the building
-  is rotated; the engine draws the pipe joint at the socket in use and the
-  other three stay capped. Frost shows on the socket in use, and only while
-  the furnace works.
+* **One fluid input**, at the middle of whichever face the furnace is turned
+  to. Its pipe is vanilla's own stub and cover, drawn by the engine exactly as
+  the chemical plant's and the assembling machine's are; the structure's wall
+  meets the footprint edge at the middle of every face so the stub always has
+  something to butt against. Frost shows at the input, and only while the
+  furnace works.
+* **No base.** The drum and its corner radiators are one structure that fills
+  the 3×3; nothing stands on a slab.
 
 ### Signature Feature
 
@@ -171,7 +174,7 @@ sight port, so the two lights are never confused at a glance.
 | Radiator loops | `#6E685C` | four corners |
 | Sight port glow | `#E8A24A` → `#FFD9A0` | the roof viewport, and nothing else |
 | Fault lamp lens | `#FFFFFF` | hatch rim — **painted white, tinted by the engine** |
-| Inlet frost | `#BFD8E8` | the socket in use, while working only |
+| Inlet frost | `#BFD8E8` | at the input, while working only |
 | Weld seams | `#7A7268` | fine lines on the drum |
 
 **The heat-glow budget is one circle.** If orange appears anywhere else on this
@@ -205,7 +208,7 @@ attach the electric furnace**; it is the anti-read.
 * [x] North · [x] East · [x] South · [x] West
 
 **Direction count:** `4`, **and the building does not turn.** It is drawn once;
-only its fluid input turns, between four identical sockets. The hatch, the lamp
+only its fluid input turns, from face to face. The hatch, the lamp
 and the viewport keep their places, which is what one direction was for, and the
 input can face any side.
 
@@ -217,7 +220,7 @@ input can face any side.
 | ---------- | ----- | ----- |
 | Item in | any adjacent tile | `source_inventory_size = 1` |
 | Item out | any adjacent tile | `result_inventory_size = 1` |
-| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` and `pipe_covers` are the furnace's own socket fittings, as the reaction plant's are |
+| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` and `pipe_covers` are vanilla's chemical-plant pictures |
 | Electric | no visible connector | poles reach it wirelessly |
 
 **A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
@@ -226,8 +229,8 @@ will watch the machine flip recipes. That is vanilla smelting's own behaviour an
 needs no fix, but the locale should not encourage it.
 
 **No recipe uses the input yet.** It is there so the furnace can take one
-without being redrawn, and the three unused sockets look the same as an idle one:
-capped, bare metal.
+without being redrawn, and the faces not in use show vanilla's pipe cover, as an
+idle chemical plant's do.
 
 ---
 
@@ -320,8 +323,10 @@ and should not be attempted.
 
 # 20. Decisions and open questions
 
-**Decided 2026-10-02 (Liam):** one rotatable fluid input over four identical
-sockets, four corner radiators, and the sight port moved into the roof. This
+**Decided 2026-10-02 (Liam):** one rotatable fluid input, four corner
+radiators, and the sight port moved into the roof. Revised the same day: the
+input is vanilla's chemical-plant pipe, not a modelled socket, and the furnace
+has no base slab. This
 replaces the adopted sheet's east flange and flank radiators;
 `concept/vacuum-furnace/model/` is the design from here on.
 
