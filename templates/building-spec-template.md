@@ -602,13 +602,14 @@ does this with `mining_drill_scorch_mark`.
 
 ### Two more, set by Liam (2026-10-02)
 
-**6. A pipe input is vanilla's.** The fluid connection is drawn by the
-engine with vanilla's own pipe pictures and covers, the chemical plant's and
-the assembling machine's, never as a socket, pad, collar or flange modelled
-into the plate. Where a fluid box connects, the building's wall meets the
-footprint edge so the stub has something to butt against. A modelled
-fitting is a second design to keep in step with the first, and a pipe that
-looks different at every building reads as a different pipe.
+**6. A pipe input looks like vanilla's.** The fluid connection is an
+engine-drawn pipe picture and cover with vanilla's exact shape, size and
+placement — the assembling machine's — never a socket, pad or collar of the
+building's own design. Where a fluid box connects, the building's wall meets
+the footprint edge so the stub has something to butt against. Vanilla's own
+pictures carry their machine's livery (assembler 2's blue, assembler 3's
+green), so a building renders its own to vanilla's shape, in its own metal;
+a pipe that looks different at every building reads as a different pipe.
 
 **7. No flat base.** A building is one structure filling its footprint, not
 a smaller machine standing on a slab. Size the structure itself to the
