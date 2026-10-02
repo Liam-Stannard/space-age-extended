@@ -233,7 +233,15 @@ fluid tint), say so — it is not a free choice.
 `[hex, and what it is confined to]`
 
 **Working Glow:**
-`[hex, where, and whether anything glows at rest]`
+`[hex, and where — never at rest; see below]`
+
+**Frost and heat are working states.** Nothing that shows a process at work
+— frost, rime, a heat seam, a glowing throat or port — is painted into the
+idle plate. An idle machine shows bare metal; each such effect is its own
+layer, drawn only while the machine works. Most crafting machines do this
+with `working_visualisations`; some prototype types have no such hook (the
+`offshore-pump` has none), so check what the type offers before the art is
+planned. Liam, 2026-10-02.
 
 **Warning / Status Lights:**
 `[hex, what state drives it, or "decorative — the prototype offers no hook"]`
