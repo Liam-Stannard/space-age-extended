@@ -2,8 +2,9 @@
 
 Everything a building model needs to come out in the game's projection. One
 Blender unit is one tile. Models are built normally (Z up, north = +Y) and
-parented to STRETCH, which scales world Y by 1/sin(ELEVATION) so a ground square
-projects as a square -- Factorio draws the ground top-down and un-foreshortened.
+parented to the turntable inside STRETCH, which scales world Y by
+1/sin(ELEVATION) so a ground square projects as a square -- Factorio draws the
+ground top-down and un-foreshortened.
 
 Calibration, measured off vanilla rather than copied from a forum:
   ELEVATION  a round pipe is 53 px thick east-west, ~47 px north-south
@@ -65,6 +66,19 @@ def stretch_root():
     bpy.context.scene.collection.objects.link(root)
     root.scale = (1.0, 1.0 / math.sin(ELEVATION), 1.0)
     return root
+
+
+def turntable(stretch):
+    """The root a model builds under: an empty inside STRETCH, turned per direction.
+
+    contract.each_direction turns it about the vertical axis with the camera and
+    sun fixed. It turns inside the stretch, not with it: STRETCH's scale is the
+    projection, and has to stay on world Y whichever way the building faces.
+    """
+    turn = bpy.data.objects.new("TURN", None)
+    bpy.context.scene.collection.objects.link(turn)
+    turn.parent = stretch
+    return turn
 
 
 def camera(width_px, height_px, centre_px=None, ss=SS):

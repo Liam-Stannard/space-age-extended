@@ -1,8 +1,12 @@
 """Reaction plant (sae-reaction-plant), built from its spec, rendered in every pass.
 
-  tools/blender/render.sh concept/reaction-plant/model/reaction_plant.py <out-dir>
+  tools/blender/render.sh concept/reaction-plant/model/reaction_plant.py <out-dir> [--ports] [--icon]
   (or directly: blender -b --python reaction_plant.py -- <out-dir> [--icon | --ports | --idle])
   --idle renders idle.png and working.png only: the quick loop for tuning finish and light.
+
+It declares itself to the packers in render.json (tools/blender/contract.py): DECL
+below is the footprint, directions, passes, animation and ports, and each run
+writes it beside its renders with the canvas that run used.
 
 Units are tiles; north is +Y. Spec: concept/reaction-plant/building-spec-reaction-plant.md
 (section 3.1 bottom to top, 3.3 palette, 6.2 what moves, 8 hard constraints).
@@ -24,6 +28,7 @@ def swatch(name):
     return os.path.join(HERE, "swatches", f"concept_{name}.png")
 
 import rig  # noqa: E402
+import contract  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT_DIR = argv[0]
@@ -32,8 +37,28 @@ ICON = "--icon" in argv
 PORTS = "--ports" in argv
 IDLE = "--idle" in argv
 
+# What the packers get told (contract.py). One plate serves all four directions:
+# nothing on it has a facing, and the engine turns the ports. Each fitting is
+# built on the middle tile of its face.
+CANVAS = (256, 256)                   # entity origin at (128, 128)
+PORT_CANVAS = (320, 320)              # the fittings reach into the tile outside
+DECL = dict(
+    footprint=(3, 3),
+    directions="one",
+    passes=[
+        dict(name="idle", kind="plate", sheet="base"),
+        dict(name="still", kind="still"),
+        dict(name="working", kind="glow", over="idle", sheet="glow"),
+        dict(name="shadow", kind="shadow", sheet="shadow"),
+        dict(name="lamp", kind="light", sheet="status-lamp"),
+    ],
+    animations=[dict(name="coupling", frames=12, motion="turn")],
+    ports=[dict(tile=(0, -1), face="N"), dict(tile=(1, 0), face="E"),
+           dict(tile=(0, 1), face="S"), dict(tile=(-1, 0), face="W")],
+)
+
 sc = rig.reset()
-ROOT = rig.stretch_root()
+ROOT = rig.turntable(rig.stretch_root())
 
 # ---------------------------------------------------------------- materials
 
@@ -434,12 +459,14 @@ EW_LAT = -0.193      # E/W stubs sit south of the tile centre so, through this c
                      # Both are medians over the whole pipe sprite, not one row.
 
 
-def port(d):
-    """Fitting and blind cap for the port on face d (N, E, S, W)."""
+def port(d, tile):
+    """Fitting and blind cap for the port on face d (N, E, S, W), on its declared tile."""
     g, c = f"port-{d}", f"cover-{d}"
     ax = {"N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0)}[d]
     rot = (math.pi / 2, 0, 0) if ax[0] == 0 else (0, math.pi / 2, 0)
-    lat0 = NS_LAT if ax[0] == 0 else EW_LAT
+    # along the face: the tile's x for a north or south port; for east or west its
+    # y, which the contract counts down the screen and Blender counts north
+    lat0 = NS_LAT + tile[0] if ax[0] == 0 else EW_LAT - tile[1]
 
     def at(t, lat=0.0, z=AXZ):
         # t: distance out from the entity centre; lat: along the face
@@ -463,11 +490,13 @@ def port(d):
 
 
 if PORTS:
-    for d in "NESW":
-        port(d)
+    contract.declare(OUT_DIR, canvas=PORT_CANVAS, **DECL)
+    for p in DECL["ports"]:
+        port(p["face"], p["tile"])
     body = ("static", "slots", "lamp", "coupling")
-    rig.camera(320, 320)                          # entity origin at (160, 160)
-    for d in "NESW":
+    rig.camera(*PORT_CANVAS)
+    for p in DECL["ports"]:
+        d = p["face"]
         # north is drawn behind the machine by the engine, so it renders whole;
         # the others sit in front and let the body occlude them and catch their shadow
         catch = () if d == "N" else body
@@ -486,56 +515,81 @@ if ICON:
     rig.render(f"{OUT_DIR}/icon.png")
     sys.exit(0)
 
-W = H = 256
-rig.camera(W, H)                                  # entity origin at (128, 128)
+contract.declare(OUT_DIR, canvas=CANVAS, **DECL)
+rig.camera(*CANVAS)
 
-setup(visible=STATIC)
-glow(False)
-rig.render(f"{OUT_DIR}/idle.png")
-if IDLE:
-    glow(True)
-    rig.render(f"{OUT_DIR}/working.png")
-    sys.exit(0)
-# the stopped machine in one render, coupling at frame 0 and casting on the head:
-# what pack.py holds idle + coupling-00 to, since the spec wants frame 0 to be
-# the plate
-setup(visible=STATIC + ("coupling",))
-rig.render(f"{OUT_DIR}/still.png")
-setup(visible=STATIC)
-glow(True)
-rig.render(f"{OUT_DIR}/working.png")
-glow(False)
 
-# shadow: the whole machine casts, the camera sees only the ground catcher
-setup(visible=STATIC + ("coupling",), ground=True)
-for o in ALL:
-    o.visible_camera = False
-rig.render(f"{OUT_DIR}/shadow.png")
+def lamp_cut(on):
+    """The lens as the light pass wants it: lit white, for the engine to tint."""
+    bsdf = M["lens"].node_tree.nodes["Principled BSDF"]
+    if on:
+        LENS[:] = [bsdf.inputs["Emission Strength"].default_value,
+                   tuple(bsdf.inputs["Base Color"].default_value)]
+        bsdf.inputs["Emission Strength"].default_value = 1.0
+        bsdf.inputs["Base Color"].default_value = (0.9, 0.9, 0.9, 1)
+    else:
+        bsdf.inputs["Emission Strength"].default_value, bsdf.inputs["Base Color"].default_value = LENS
 
-# status lamp: the lens alone, white, with everything in front of it cut out
-setup(visible=("lamp",), holdouts=("static", "coupling"))
-M["lens"].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 1.0
-M["lens"].node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = (0.9, 0.9, 0.9, 1)
-rig.render(f"{OUT_DIR}/lamp.png")
 
-# coupling: 12 frames through 60 degrees (six-fold symmetry), with its own shadow
-# caught on the static machine beneath it
-setup(visible=("coupling",), catchers=("static", "slots", "lamp"))
+LENS = []
+
+# the coupling turns on the tower's own shaft: the tower sits south of the drum's
+# centre (TY), and a pivot at the origin swung the coupling round the head
+# instead of turning it
 pivot = bpy.data.objects.new("pivot", None)
 sc.collection.objects.link(pivot)
 pivot.parent = ROOT
-# on the tower's own shaft: the tower sits south of the drum's centre (TY), and a
-# pivot at the origin swung the coupling round the head instead of turning it
 pivot.location = (TX, TY, 0)
 for o in PARTS["coupling"]:
     o.parent = pivot
     o.location.x -= TX
     o.location.y -= TY
-# only the crown changes between frames, so render just that window
-sc.render.use_border = True
-sc.render.use_crop_to_border = False
-sc.render.border_min_x, sc.render.border_max_x = 0.36, 0.64
-sc.render.border_min_y, sc.render.border_max_y = 0.58, 0.9
-for f in range(12):
-    pivot.rotation_euler.z = -math.radians(5 * f)
-    rig.render(f"{OUT_DIR}/coupling-{f:02d}.png")
+COUPLING = DECL["animations"][0]
+
+for d in contract.each_direction(ROOT, DECL["directions"]):
+    def path(stem, d=d):
+        return f"{OUT_DIR}/{contract.named(stem, d)}.png"
+    sc.render.use_border = False
+    pivot.rotation_euler.z = 0.0
+
+    setup(visible=STATIC)
+    glow(False)
+    rig.render(path("idle"))
+    if IDLE:
+        glow(True)
+        rig.render(path("working"))
+        glow(False)
+        continue
+    # the stopped machine in one render, coupling at frame 0 and casting on the
+    # head: what pack.py holds idle + coupling-00 to, since the spec wants frame 0
+    # to be the plate
+    setup(visible=STATIC + ("coupling",))
+    rig.render(path("still"))
+    setup(visible=STATIC)
+    glow(True)
+    rig.render(path("working"))
+    glow(False)
+
+    # shadow: the whole machine casts, the camera sees only the ground catcher
+    setup(visible=STATIC + ("coupling",), ground=True)
+    for o in ALL:
+        o.visible_camera = False
+    rig.render(path("shadow"))
+
+    # status lamp: the lens alone, white, with everything in front of it cut out
+    setup(visible=("lamp",), holdouts=("static", "coupling"))
+    lamp_cut(True)
+    rig.render(path("lamp"))
+
+    # coupling: 12 frames through 60 degrees (six-fold symmetry), with its own
+    # shadow caught on the static machine beneath it
+    setup(visible=("coupling",), catchers=("static", "slots", "lamp"))
+    # only the crown changes between frames, so render just that window
+    sc.render.use_border = True
+    sc.render.use_crop_to_border = False
+    sc.render.border_min_x, sc.render.border_max_x = 0.36, 0.64
+    sc.render.border_min_y, sc.render.border_max_y = 0.58, 0.9
+    for f in range(COUPLING["frames"]):
+        pivot.rotation_euler.z = -math.radians(60 / COUPLING["frames"] * f)
+        rig.render(path(contract.frame(COUPLING["name"], f)))
+    lamp_cut(False)          # after the frames, which the lit lens shone on as a catcher
