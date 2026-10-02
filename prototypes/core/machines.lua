@@ -663,16 +663,16 @@ data:extend({ furnace })
 -- To regenerate, with any Blender 5 binary:
 --
 --   BLENDER=<blender> tools/blender/render.sh \
---       concept/reaction-plant/model/reaction_plant.py <scratch> --ports
---   <blender> -b --python concept/reaction-plant/model/reaction_plant.py \
---       -- <scratch>/icon --icon
---   tools/key-icons.py graphics/icons <scratch>/icon/icon.png:reaction-plant
+--       concept/reaction-plant/model/reaction_plant.py <scratch> --ports --icon
 --
--- then copy <scratch>/sheets/*.png and <scratch>/sheets/ports/*.png into
--- graphics/entity/reaction-plant/ and the numbers out of the two meta.json
--- files into this block. render.sh prints pack.py's checks; Appendix C's must
--- hold exactly (centre_offset_px 0, edge_alpha_max 0, half_width_tiles 1.5),
--- coupling_drift_px must stay under 1 and glow_white_px at 0.
+-- then copy <scratch>/sheets/icon.png to graphics/icons/reaction-plant.png (and
+-- its keyed master, sheets/masters/icon.png, to graphics/icons/masters/
+-- reaction-plant.png), the other <scratch>/sheets/*.png and
+-- <scratch>/sheets/ports/*.png into graphics/entity/reaction-plant/, and the
+-- numbers out of the two meta.json files into this block. render.sh prints
+-- pack.py's checks; Appendix C's must hold exactly (centre_offset_px 0,
+-- edge_alpha_max 0, half_width_tiles 1.5) and glow_white_px stay at 0, and the
+-- run stops if coupling_drift_px goes over 1.
 --
 -- **One plate, for all four directions.** Nothing on it has a facing: the ports
 -- are the engine's (above), and the one moving part is on the crown.

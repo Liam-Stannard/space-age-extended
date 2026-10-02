@@ -13,7 +13,9 @@
 #   downsample.py renders are 4x; this brings them to sprite size
 #   pack.py       plate/glow/shadow/light/animation sheets, shifts, geometry checks
 #   pack_ports.py pipe_picture / pipe_covers sheets
-#   finish.py, tonal.py, preview.py, port_preview.py   measures and review sheets
+#   finish.py, tonal.py, preview.py, port_preview.py   measures and review sheets:
+#                 preview.py <out-dir>/renders <sheet.png> [--adopted <png> ...]
+#                 port_preview.py <out-dir> <sheet.png>   (after --ports)
 #   test/box.py   a 2x2 test model that exercises every path through the packers
 #
 # The model is run as: blender -b --python <model.py> -- <dir> [--ports | --icon]
@@ -29,6 +31,10 @@
 #   <out-dir>/sheets/ports     with --ports
 #   <out-dir>/sheets/icon.png  with --icon: the 64 px mipmap strip
 #                              (tools/key-icons.py; its keyed master in sheets/masters/)
+# These directories, and the 4x renders behind them (<out-dir>/hi, ports-hi and
+# icon), belong to this script: each run empties them all first, so nothing a
+# model no longer renders, and no sheet packed from it, survives from an earlier
+# run. A run without --ports or --icon leaves none of those behind either.
 set -euo pipefail
 
 USAGE="usage: render.sh <model.py> <out-dir> [--ports] [--icon]"
@@ -47,6 +53,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
 
 mkdir -p "$OUT"
+rm -rf "${OUT:?}/hi" "${OUT:?}/renders" "${OUT:?}/sheets" \
+  "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon"
 "$BLENDER" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \
   || { tail -20 "$OUT/blender.log"; exit 1; }
 python3 "$HERE/downsample.py" "$OUT/hi" "$OUT/renders"
