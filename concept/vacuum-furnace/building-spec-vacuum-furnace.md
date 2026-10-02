@@ -122,8 +122,8 @@ a sealed machine is a contradiction the player will notice.
   placement, rendered in the furnace's own metal, and drawn by the engine; its
   covers are vanilla's; the structure's wall
   meets the footprint edge at the middle of every face so the stub always has
-  something to butt against. Frost shows at the input, and only while the
-  furnace works.
+  something to butt against. No frost: the input is bare metal in every
+  state.
 * **No base.** The drum and its corner radiators are one structure that fills
   the 3×3; nothing stands on a slab.
 
@@ -171,11 +171,11 @@ sight port, so the two lights are never confused at a glance.
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Drum body | `#3E3B36` → `#5E584E` | the mass; darker than the mod's usual chassis |
-| Hatch and dogs | `#8A8580` | roof only |
+| Hatch | `#958577`, warmed toward the adopted roof's beige | roof only |
+| Dogs (hatch clamps) | bronze, as the adopted plate draws them | the hatch rim |
 | Radiator loops | `#6E685C` | four corners |
 | Sight port glow | `#E8A24A` → `#FFD9A0` | the roof viewport, and nothing else |
 | Fault lamp lens | `#FFFFFF` | hatch rim — **painted white, tinted by the engine** |
-| Inlet frost | `#BFD8E8` | at the input, while working only |
 | Weld seams | `#7A7268` | fine lines on the drum |
 
 **The heat-glow budget is one circle.** If orange appears anywhere else on this
