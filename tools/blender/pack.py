@@ -12,6 +12,10 @@ measured and adjusted. Crops keep a 1 px transparent rim.
 Sheets are named for the pass's declared sheet (and the animation's name), with
 -<direction> after it when the model has more than one direction; meta.json
 keys are the sheet names. Its "checks" are per direction when there are several.
+
+Exits 1, naming the animation and the direction, when a turning part's centroid
+drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
+LIMIT_PX off its declared curve or off its line. meta.json is written first.
 """
 import json
 import math
@@ -21,7 +25,12 @@ from PIL import Image, ImageChops
 
 import contract
 
-NOISE = 24          # shadow catchers record faint sky occlusion everywhere; below this is noise
+# Shadow catchers record faint sky occlusion everywhere; below this is noise. The
+# animation checks lean on it: with no floor, that haze pulls box.py's slider
+# centroid 1.06 px off, past LIMIT_PX.
+NOISE = 24
+LIMIT_PX = 1.0      # a turning part's drift, a sliding part's miss off its curve or its line
+LAYER_FLOOR = 8     # a working layer's difference from its plate at or under this is sampling noise
 MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
 
 
@@ -29,6 +38,41 @@ def clean(im):
     a = im.getchannel("A").point(lambda v: 0 if v < NOISE else v)
     im.putalpha(a)
     return im
+
+
+def glow_layer(lit, under):
+    """A glow pass's sheet: lit minus the plate under it, opaque wherever that is above noise.
+
+    Drawn additively, so its colour is what the light adds.
+    """
+    diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
+    alpha = diff.convert("L").point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    return Image.merge("RGBA", (*diff.split(), alpha))
+
+
+def paint_layer(painted, under):
+    """A paint pass's sheet: the pass itself, wherever it differs from the plate under it.
+
+    Drawn as ordinary paint, so it keeps the pass's own colour and alpha there --
+    frost over a pipe, or past the plate's edge -- and is clear everywhere else.
+    """
+    diff = ImageChops.difference(painted, under).split()
+    most = diff[0]
+    for band in diff[1:]:
+        most = ImageChops.lighter(most, band)
+    keep = most.point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    return Image.merge("RGBA", (*painted.convert("RGB").split(), ImageChops.multiply(keep, painted.getchannel("A"))))
+
+
+def light_layer(lamp):
+    """What a light pass's sheet keeps, on the full canvas: its crop, the box of alpha
+    above 8 with a 1 px rim (Packer.box_of), and nothing outside it."""
+    bb = lamp.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
+    out = Image.new("RGBA", lamp.size)
+    if bb:
+        bb = (bb[0] - 1, bb[1] - 1, bb[2] + 1, bb[3] + 1)
+        out.paste(lamp.crop(bb), bb[:2])
+    return out
 
 
 def centroid(im):
@@ -46,6 +90,7 @@ class Packer:
         self.origin = (cw / 2, ch / 2)
         self.ppt = float(decl["rig"]["px_per_tile"])
         self.meta = {}
+        self.over = []      # every animation past LIMIT_PX, as a line to exit with
 
     def open(self, stem):
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
@@ -94,9 +139,8 @@ class Packer:
                 self.save(blk, self.box_of(a, what), sheet)
             elif p["kind"] == "glow":
                 under = renders[p["over"]]
-                diff = ImageChops.subtract(im.convert("RGB"), under.convert("RGB"))
-                ga = diff.convert("L").point(lambda v: 255 if v > 8 else 0)    # below 8 is sampling noise
-                self.save(Image.merge("RGBA", (*diff.split(), ga)), self.box_of(ga, what + " minus its plate"), sheet)
+                layer = glow_layer(im, under)
+                self.save(layer, self.box_of(layer.getchannel("A"), what + " minus its plate"), sheet)
                 # Light the glow drove to white: white in the lit pass and not already
                 # white under it (a glint on bare steel is). Over-driven emission clips
                 # there, and the glow layer, being lit minus unlit, comes out grey
@@ -106,6 +150,9 @@ class Packer:
                             if min(w) >= 245 and min(i) < 245)
                 checks[f"{p['sheet']}_white_px"] = (
                     white, "pixels the working light clipped to white; 0 = the light keeps its colour")
+            elif p["kind"] == "paint":
+                layer = paint_layer(im, renders[p["over"]])
+                self.save(layer, self.box_of(layer.getchannel("A"), what + " where it differs from its plate"), sheet)
             elif p["kind"] == "light":
                 self.save(im, self.box_of(im.getchannel("A"), what, 8), sheet)
 
@@ -134,9 +181,18 @@ class Packer:
                 # drifts frame to frame.
                 drift = max(math.hypot(cx - cs[0][0], cy - cs[0][1]) for cx, cy in cs)
                 checks[f"{name}_drift_px"] = (round(drift, 2), f"centroid travel across the {n} frames; "
-                                              "~0 = turning in place, must stay under 1")
+                                              "~0 = turning in place, must stay within 1")
+                if round(drift, 2) > LIMIT_PX:
+                    self.over.append(f"animation {name!r}, {where(d)}: its centroid drifts {round(drift, 2)} px "
+                                     f"across its frames; a part turning about its own axis stays within "
+                                     f"{LIMIT_PX:g}")
             else:
-                checks[f"{name}_path_px"] = self.slide(a, cs, d)
+                path = checks[f"{name}_path_px"] = self.slide(a, cs, d)
+                if max(path["off_curve"], path["off_line"]) > LIMIT_PX:
+                    self.over.append(f"animation {name!r}, {where(d)}: a frame is {path['off_curve']} px off "
+                                     f"its declared curve and {path['off_line']} px off its line; both stay "
+                                     f"within {LIMIT_PX:g} (declared {path['declared']}, measured "
+                                     f"{path['measured']})")
 
         if frame0:
             # The spec's frame-0 rule: the plate with every animation's frame 0 over
@@ -206,6 +262,10 @@ class Packer:
         return self.meta
 
 
+def where(d):
+    return f"direction {d}" if d else "its one direction"
+
+
 def missing(src, decl):
     """Every render the declaration promises that is not in src."""
     want = []
@@ -228,10 +288,14 @@ def main(src, out):
         sys.exit(f"pack.py: {src} is missing {len(gone)} declared render(s):\n" +
                  "\n".join(f"  {stem}.png  ({what})" for what, stem in gone))
     os.makedirs(out, exist_ok=True)
-    meta = Packer(src, out, decl).run()
+    packer = Packer(src, out, decl)
+    meta = packer.run()
     with open(os.path.join(out, "meta.json"), "w") as f:
         json.dump(meta, f, indent=1)
     print(json.dumps(meta, indent=1))
+    if packer.over:             # meta.json is written first, so the numbers can be read
+        sys.exit(f"pack.py: {len(packer.over)} animation check(s) over {LIMIT_PX:g} px "
+                 f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.over))
 
 
 if __name__ == "__main__":

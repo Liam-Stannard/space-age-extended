@@ -16,6 +16,10 @@ a pass: everything they act on is declared here.
                 plate   the machine; Appendix C is measured on it
                 shadow  the ground catcher alone; packed black
                 glow    this pass minus the `over` pass, drawn additively
+                paint   this pass where it differs from the `over` pass, drawn
+                        as ordinary paint over it: a working layer such as
+                        frost, rime or a heat seam that the idle plate must not
+                        carry, shown only while the machine works
                 light   a white-cut lens the engine tints (alpha above 8 kept)
                 still   every animation at frame 0 with the machine: the
                         reference for the frame-0 check; not packed
@@ -47,7 +51,8 @@ DIRECTIONS = {
     "four": [("north", 0), ("east", 90), ("south", 180), ("west", 270)],
     "horizontal-vertical": [("vertical", 0), ("horizontal", 90)],
 }
-KINDS = ("plate", "shadow", "glow", "light", "still")
+KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
+WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
 MOTIONS = ("turn", "slide")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
 FILE = "render.json"
@@ -89,11 +94,11 @@ def each_direction(root, directions):
 def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=()):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
-    decl = dict(footprint=list(footprint), canvas=list(canvas), directions=directions,
-                passes=[dict(p) for p in passes], animations=[dict(a) for a in animations],
-                ports=[dict(tile=list(p["tile"]), face=p["face"]) for p in ports],
+    decl = dict(footprint=footprint, canvas=canvas, directions=directions,
+                passes=passes, animations=animations, ports=ports,
                 rig=dict(elevation=math.degrees(rig.ELEVATION), px_per_tile=rig.PX_PER_TILE))
     validate(decl, out_dir)
+    decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, FILE), "w") as f:
         json.dump(decl, f, indent=1)
@@ -105,73 +110,143 @@ def load(render_dir):
     if not os.path.isfile(path):
         raise ContractError(f"{path} is missing: the model did not declare itself "
                             f"(contract.declare writes it beside the renders)")
-    with open(path) as f:
-        decl = json.load(f)
+    try:
+        with open(path) as f:
+            decl = json.load(f)
+    except (ValueError, UnicodeDecodeError) as e:
+        raise ContractError(f"{path}: is not JSON: {e}") from None
     validate(decl, path)
     return decl
 
 
+def _number(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+
+
+def _whole(v):
+    return isinstance(v, int) and not isinstance(v, bool)
+
+
+def _seq(v, n=None):
+    return isinstance(v, (list, tuple)) and (n is None or len(v) == n)
+
+
+def _stem(v):
+    """A name that can be a file stem: a non-empty string with no path in it."""
+    return isinstance(v, str) and v.strip() != "" and "/" not in v and "\\" not in v
+
+
 def validate(decl, where):
-    def bad(msg):
-        raise ContractError(f"{where}: {msg}")
+    """Hold a declaration to the contract, naming the field that breaks it.
+
+    Every field is checked for its type as well as its value, so nothing the
+    packers read can fail on them later with a bare KeyError or TypeError.
+    """
+    def bad(field, msg):
+        raise ContractError(f"{where}: {field}: {msg}")
+
+    if not isinstance(decl, dict):
+        raise ContractError(f"{where}: is a {type(decl).__name__}, not an object of fields")
     for key in ("footprint", "canvas", "directions", "passes", "animations", "ports", "rig"):
         if key not in decl:
-            bad(f"declares no {key!r}")
-    if decl["directions"] not in DIRECTIONS:
-        bad(f"directions {decl['directions']!r} is not one of {', '.join(DIRECTIONS)}")
-    if len(decl["footprint"]) != 2 or min(decl["footprint"]) <= 0:
-        bad(f"footprint {decl['footprint']} is not [w, h] in tiles")
-    if len(decl["canvas"]) != 2 or min(decl["canvas"]) <= 0:
-        bad(f"canvas {decl['canvas']} is not [w, h] in px")
-    names = set()
-    for p in decl["passes"]:
-        if p.get("kind") not in KINDS:
-            bad(f"pass {p.get('name')!r} has kind {p.get('kind')!r}, not one of {', '.join(KINDS)}")
-        if p["kind"] != "still" and not p.get("sheet"):
-            bad(f"pass {p['name']!r} names no sheet to pack into")
+            bad(key, "is not declared")
+    if not isinstance(decl["directions"], str) or decl["directions"] not in DIRECTIONS:
+        bad("directions", f"{decl['directions']!r} is not one of {', '.join(DIRECTIONS)}")
+    for key, unit in (("footprint", "tiles"), ("canvas", "px")):
+        v = decl[key]
+        if not (_seq(v, 2) and all(_whole(c) and c > 0 for c in v)):
+            bad(key, f"{v!r} is not [w, h], two whole numbers of {unit} above 0")
+    rig = decl["rig"]
+    if not isinstance(rig, dict):
+        bad("rig", f"{rig!r} is not an object {{elevation, px_per_tile}}")
+    if not (_number(rig.get("elevation")) and 0 < rig["elevation"] < 90):
+        bad("rig.elevation", f"{rig.get('elevation')!r} is not an angle in degrees between 0 and 90")
+    if not (_number(rig.get("px_per_tile")) and rig["px_per_tile"] > 0):
+        bad("rig.px_per_tile", f"{rig.get('px_per_tile')!r} is not a number of px above 0")
+    for key in ("passes", "animations", "ports"):
+        if not _seq(decl[key]):
+            bad(key, f"{decl[key]!r} is not a list")
+        for i, item in enumerate(decl[key]):
+            if not isinstance(item, dict):
+                bad(f"{key}[{i}]", f"{item!r} is not an object")
+
+    names, sheets = set(), set()
+    for i, p in enumerate(decl["passes"]):
+        field = f"passes[{i}]"
+        if "name" not in p:
+            bad(f"{field}.name", "is missing: every pass needs a name, its renders' file stem")
+        if not _stem(p["name"]):
+            bad(f"{field}.name", f"{p['name']!r} is not a name (a non-empty string, no path in it)")
         if p["name"] in names:
-            bad(f"pass {p['name']!r} is declared twice")
+            bad(f"{field}.name", f"{p['name']!r} is declared twice")
         names.add(p["name"])
+        if p.get("kind") not in KINDS:
+            bad(f"{field}.kind", f"{p.get('kind')!r} is not one of {', '.join(KINDS)}")
+        if p["kind"] != "still":
+            if not _stem(p.get("sheet")):
+                bad(f"{field}.sheet", f"{p.get('sheet')!r}: pass {p['name']!r} names no sheet to pack into")
+            if p["sheet"] in sheets:
+                bad(f"{field}.sheet", f"{p['sheet']!r} is already another pass's sheet")
+            sheets.add(p["sheet"])
     kinds = [p["kind"] for p in decl["passes"]]
     if decl["passes"] and kinds.count("plate") != 1:
-        bad(f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
-    for p in decl["passes"]:
-        if p["kind"] == "glow" and not any(q["name"] == p.get("over") and q["kind"] == "plate"
-                                           for q in decl["passes"]):
-            bad(f"glow pass {p['name']!r} is over {p.get('over')!r}, which is not a plate pass")
-    for a in decl["animations"]:
-        if not a.get("name") or int(a.get("frames", 0)) < 2:
-            bad(f"animation {a} needs a name and at least two frames")
+        bad("passes", f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
+    for i, p in enumerate(decl["passes"]):
+        if p["kind"] in WORKING and not any(q["name"] == p.get("over") and q["kind"] == "plate"
+                                            for q in decl["passes"]):
+            bad(f"passes[{i}].over", f"{p['kind']} pass {p['name']!r} is over {p.get('over')!r}, "
+                f"which is not a plate pass")
+
+    for i, a in enumerate(decl["animations"]):
+        field = f"animations[{i}]"
+        if "name" not in a:
+            bad(f"{field}.name", "is missing: every animation needs a name, its frames' file stem")
+        if not _stem(a["name"]):
+            bad(f"{field}.name", f"{a['name']!r} is not a name (a non-empty string, no path in it)")
+        if a["name"] in sheets:
+            bad(f"{field}.name", f"{a['name']!r} is already the name of a sheet: an animation packs "
+                f"into a sheet of its own name")
+        sheets.add(a["name"])
+        if not (_whole(a.get("frames")) and a["frames"] >= 2):
+            bad(f"{field}.frames", f"{a.get('frames')!r}: animation {a['name']!r} needs a whole "
+                f"number of frames, at least two")
         if a.get("motion") not in MOTIONS:
-            bad(f"animation {a['name']!r} has motion {a.get('motion')!r}, not one of {', '.join(MOTIONS)}")
+            bad(f"{field}.motion", f"{a.get('motion')!r} is not one of {', '.join(MOTIONS)}")
         if a["motion"] == "slide":
-            path = a.get("path") or []
-            if len(path) != int(a["frames"]) or any(len(p) != 3 for p in path):
-                bad(f"slide {a['name']!r} needs a path of {a['frames']} [x, y, z] offsets, one per frame")
+            path = a.get("path")
+            if not (_seq(path, a["frames"]) and all(_seq(p, 3) and all(_number(c) for c in p) for p in path)):
+                bad(f"{field}.path", f"slide {a['name']!r} needs a path of {a['frames']} [x, y, z] "
+                    f"offsets in tiles, one per frame")
             steps = [[c - c0 for c, c0 in zip(p, path[0])] for p in path]
             far = max(steps, key=lambda v: math.hypot(*v))
             if math.hypot(*far) == 0:
-                bad(f"slide {a['name']!r} has a path that does not move")
+                bad(f"{field}.path", f"slide {a['name']!r} has a path that does not move")
             for v in steps:             # every offset parallel to the longest: one straight line
                 cross = (v[1] * far[2] - v[2] * far[1], v[2] * far[0] - v[0] * far[2], v[0] * far[1] - v[1] * far[0])
                 if math.hypot(*cross) > 1e-6 * math.hypot(*far) * max(1.0, math.hypot(*v)):
-                    bad(f"slide {a['name']!r} has a path that is not a straight line")
+                    bad(f"{field}.path", f"slide {a['name']!r} has a path that is not a straight line")
     if decl["animations"] and decl["passes"] and "still" not in kinds:
-        bad("declares animations but no still pass to hold their frame 0 to")
+        bad("passes", "declares animations but no still pass to hold their frame 0 to")
+
     w, h = decl["footprint"]
-    faces = [p["face"] for p in decl["ports"]]
-    for p in decl["ports"]:
-        if p["face"] not in FACES:
-            bad(f"port {p} faces {p['face']!r}, not one of N, E, S, W")
-        if faces.count(p["face"]) > 1:
-            bad(f"two ports on face {p['face']}: the engine draws one picture per face")
+    faces = set()
+    for i, p in enumerate(decl["ports"]):
+        field = f"ports[{i}]"
+        if not isinstance(p.get("face"), str) or p["face"] not in FACES:
+            bad(f"{field}.face", f"{p.get('face')!r} is not one of N, E, S, W")
+        if p["face"] in faces:
+            bad(f"{field}.face", f"a second port on face {p['face']}: the engine draws one picture per face")
+        faces.add(p["face"])
+        if not (_seq(p.get("tile"), 2) and all(_number(c) for c in p["tile"])):
+            bad(f"{field}.tile", f"{p.get('tile')!r} is not [x, y] in tiles")
         x, y = p["tile"]
         edge = {"N": y == -h / 2 + 0.5, "S": y == h / 2 - 0.5,
                 "E": x == w / 2 - 0.5, "W": x == -w / 2 + 0.5}[p["face"]]
         inside = abs(x) <= w / 2 - 0.5 and abs(y) <= h / 2 - 0.5 and (x - (w - 1) / 2) % 1 == 0 \
             and (y - (h - 1) / 2) % 1 == 0
         if not (edge and inside):
-            bad(f"port tile {p['tile']} is not a tile centre on the {p['face']} edge of a {w}x{h} footprint")
+            bad(f"{field}.tile", f"{list(p['tile'])} is not a tile centre on the {p['face']} edge "
+                f"of a {w}x{h} footprint")
 
 
 def screen(decl, offset, direction):
