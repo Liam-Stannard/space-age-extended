@@ -69,8 +69,8 @@ nothing to seal."*
 **The flux box wants a generous volume.** S12 found that a furnace with a fluid
 ingredient refuses its *solid* ingredient outright until the fluid is already in
 the machine. A large buffer against a small per-craft draw makes that latch rare
-after first build; it does not remove it, and §3.2's status lamp is what makes it
-legible when it happens.
+after first build; it does not remove it, and §3.2's indicator, the viewport, is
+what makes it legible when it happens.
 
 ### The exclusive work — the reason it exists
 
@@ -109,14 +109,24 @@ a sealed machine is a contradiction the player will notice.
 
 * A **welded drum** body, seams visible, deliberately without panel lines — it is
   one piece, because a seam is a leak.
-* A **clamped roof hatch**, heavy, with radial dogs around its rim.
-* **Four radiator stacks**, one at each corner, set on the diagonal — the heat
-  has nowhere to go but a radiator, since there is no air to carry it —
-  leaving the middle of every face free for the input.
-* A **sight port** set into the **roof** beside the hatch: a small, thick, deep
-  glass viewport, the only place any *heat* glow escapes.
-* A **fault lamp** on the hatch rim — a small neutral-white lens the engine
-  tints. See below; it is drawn white and coloured at runtime, never painted.
+* A **clamped roof hatch**, heavy, round and **flat in the roof**: its deck is
+  level with the hull's rail, and it sits on the footprint's centre, so the
+  parapet runs round it evenly. Radial dogs around its rim. No dome, and no
+  lifting eye.
+* **Three radiator stacks**, at the north-west, north-east and south-west
+  corners, set on the diagonal — the heat has nowhere to go but a radiator,
+  since there is no air to carry it — leaving the middle of every face free for
+  the input.
+* A **vacuum pump** in the south-east corner niche, in place of the fourth
+  stack: a squat pump body with an **exposed flywheel** on its shaft. The
+  flywheel is drawn free — a visible gap all round it, its hub on the shaft,
+  nothing bridging it to the body — and the pump body and niche wall behind it
+  are fully modelled, because the turning wheel uncovers them.
+* A **vacuum gauge** on the pump body: a round dial facing the camera, its
+  needle drawn over the dial face (§6).
+* A **sight port** at the **centre of the hatch**: thick, deep glass set flat in
+  the roof. It is the only place any *heat* glow escapes, and it is the
+  building's **indicator** (below). There is no separate lamp.
 * **One fluid input**, at the middle of whichever face the furnace is turned
   to. Its pipe picture is the assembling machine's in shape, size and
   placement, rendered in the furnace's own metal, and drawn by the engine; its
@@ -129,11 +139,11 @@ a sealed machine is a contradiction the player will notice.
 
 ### Signature Feature
 
-**The sight port.** One small deep-set circle of orange in the roof, beside the
+**The sight port.** One small deep-set circle of orange at the centre of the
 hatch, in an otherwise cold dark building. It is how the player tells a running furnace from an idle one at a
 glance, and it is the entire *heat* lighting budget.
 
-### The fault lamp — and the problem it exists to solve
+### The viewport is the indicator — and the problem it exists to solve
 
 S12's latch is invisible without it. A furnace with no flux **refuses to accept
 powder at all**, so its input slot stays empty and the fault reads as an upstream
@@ -143,28 +153,24 @@ furnace that inserters will not load.
 The engine solves this directly, and vanilla proves the pattern on the electric
 mining drill (`base/prototypes/entity/mining-drill.lua:161` and `179`): a
 `working_visualisation` with `apply_tint = "status"` and **`always_draw = true`**,
-plus `status_colors` on the graphics set. The lamp is drawn once, in white, and
-the engine colours it per machine status.
+plus `status_colors` on the graphics set. What it tints here is the **viewport
+glass**, drawn once in white; there is no separate lens.
 
-**The lamp is a *fault* lamp, not a status lamp**, and that is what keeps §3.2's
-"one lit state" honest:
-
-| Status | Colour | Reads as |
-| ------ | ------ | -------- |
-| `working` | **clear** — invisible | The sight port already says this |
-| `insufficient_input` | amber | **The latch.** No flux, or no powder |
+| Status | The viewport | Reads as |
+| ------ | ------------ | -------- |
+| `working` | **orange** — the heat glow; the status layer is clear | Sintering |
+| `insufficient_input` | **magenta** | **The latch.** No flux, or no powder |
 | `full_output` | pale blue | Nothing is taking the preforms |
-| `idle`, `disabled` | dim grey | Off, on purpose |
-| `no_power`, `low_power` | clear / amber | The grid, not the machine |
+| `idle`, `disabled` | clear — **dark glass** | Off |
+| `no_power`, `low_power` | clear | The grid, not the machine |
 
-So the building has exactly one lit state when it is well — the orange port — and
-lights a second, differently coloured, differently placed lamp only when something
-is wrong. `always_draw = true` is **mandatory**: vanilla's own comment says the
+**Magenta, not amber**, because amber sits too close to the working orange in the
+same glass. The building still has exactly one lit circle; its colour is the
+state. `always_draw = true` is **mandatory**: vanilla's own comment says the
 non-working states will not draw without it.
 
-**The lamp sprite is not concept-art work.** It is a small white lens drawn once,
-at 32 px, `draw_as_glow`. It should be on the *hatch rim* rather than beside the
-sight port, so the two lights are never confused at a glance.
+**The indicator sprite is not concept-art work.** It is the viewport glass cut
+white from the model, `draw_as_glow`, and the engine colours it.
 
 ## 3.3 Colour Palette
 
@@ -173,14 +179,19 @@ sight port, so the two lights are never confused at a glance.
 | Drum body | `#3E3B36` → `#5E584E` | the mass; darker than the mod's usual chassis |
 | Hatch | `#958577`, warmed toward the adopted roof's beige | roof only |
 | Dogs (hatch clamps) | bronze, as the adopted plate draws them | the hatch rim |
-| Radiator loops | `#6E685C` | four corners |
-| Sight port glow | `#E8A24A` → `#FFD9A0` | the roof viewport, and nothing else |
-| Fault lamp lens | `#FFFFFF` | hatch rim — **painted white, tinted by the engine** |
+| Radiator loops | `#6E685C` | three corners |
+| Pump body | the hull's paint, `#3E3B36` | the south-east niche |
+| Flywheel | bare steel, `#77716A` → `#B4AEA4` | the pump |
+| Gauge dial | `#D8D2C4` | the pump |
+| Gauge needle | `#2B2E33` | the pump |
+| Sight port glow | `#E8A24A` → `#FFD9A0` | the viewport, and nothing else |
+| Viewport glass | `#2B2E33`, dark, unlit | the hatch's centre |
+| Indicator layer | `#FFFFFF` | the viewport glass only — **drawn white, tinted by the engine** |
 | Weld seams | `#7A7268` | fine lines on the drum |
 
 **The heat-glow budget is one circle.** If orange appears anywhere else on this
-building the seal is a lie — and the fault lamp is not an exception to that, since
-it is painted white and only the engine ever makes it amber.
+building the seal is a lie. The indicator's colours are that same circle, never a
+second light.
 
 ---
 
@@ -188,7 +199,7 @@ it is painted white and only the engine ever makes it amber.
 
 ## Technology tier and visual register
 
-**Tier 0–1.** Industrial: welded shell with visible seams, but a clean clamped hatch and a proper status lamp. Built, not improvised.
+**Tier 0–1.** Industrial: welded shell with visible seams, but a clean clamped hatch with its viewport as a proper status light. Built, not improvised.
 
 See the template's *"Technology tier sets the visual register"* — the player
 should be able to read their progress off the factory floor without opening the
@@ -209,9 +220,33 @@ attach the electric furnace**; it is the anti-read.
 * [x] North · [x] East · [x] South · [x] West
 
 **Direction count:** `4`, **and the building does not turn.** It is drawn once;
-only its fluid input turns, from face to face. The hatch, the lamp
-and the viewport keep their places, which is what one direction was for, and the
+only its fluid input turns, from face to face. The hatch, its
+viewport and the pump keep their places, which is what one direction was for, and the
 input can face any side.
+
+---
+
+# 6. Animation
+
+Decided at spec time, as the template asks: what moves, and what it uncovers.
+
+| Part | Motion | Frames | While | Made by |
+| ---- | ------ | ------ | ----- | ------- |
+| Flywheel | turns about its shaft | 16 | working; frozen on frame 0 otherwise | Blender, the contract's `turn` |
+| Gauge needle | swings between two angles and back | 16, the same loop | working; frozen on frame 0 otherwise | Animatorio's `gauge`: the model renders the dial without a needle, and Animatorio draws the needle over it |
+| Viewport glow | swells and settles | — | working only | first the engine's `effect` and `fadeout`; only if neither reads right, Animatorio's `pulse`, clipped to the glass |
+
+* The flywheel is rendered: a spoked wheel in the furnace's own metal, lit by the
+  rig, matches the plate, where Animatorio's `mechanical_rotor` draws flat
+  blades.
+* The needle and any pulse go through `tools/build-animatorio-layers.py`, as the
+  Drop Crusher's stroke did: a housing with a window punched out and the window's
+  frames over it, frame 0 checked against the plate.
+* Both moving parts share one 16-frame loop, so they are layers of one
+  `animation`, and the stopped machine is the plate with every frame 0.
+* The glow's effect is chosen in a real client: `effect = "flicker"` against
+  `effect = "uranium-glow"`, both with `fadeout = true`. Flicker is vanilla's
+  fire, and may read wrong for a vacuum furnace.
 
 ---
 
@@ -286,22 +321,26 @@ the grid with no overhang.
   fluid_boxes = { --[[ 1 in, phosphide flux, generous volume; see §2 ]] },
   graphics_set =
   {
+    animation = { layers = {
+      --[[ base, shadow; flywheel 16f; needle 16f ]]
+    } },
     status_colors =
     {
-      working            = { 0, 0, 0, 0 },        -- the sight port says this
-      insufficient_input = { 1, 0.65, 0.15, 1 },  -- the latch
+      working            = { 0, 0, 0, 0 },        -- the orange glow says this
+      insufficient_input = { 1, 0.3, 0.9, 1 },    -- the latch: magenta
       full_output        = { 0.4, 0.7, 1, 1 },
-      idle               = { 0.3, 0.3, 0.35, 1 },
-      disabled           = { 0.3, 0.3, 0.35, 1 },
-      no_power           = { 0, 0, 0, 0 }
+      idle               = { 0, 0, 0, 0 },        -- dark glass
+      disabled           = { 0, 0, 0, 0 },
+      no_power           = { 0, 0, 0, 0 },
+      low_power          = { 0, 0, 0, 0 }
     },
     working_visualisations =
     {
-      { --[[ the sight port glow, working only ]] },
+      { fadeout = true, effect = --[[ §6's pick ]], animation = { --[[ the viewport glow ]] } },
       {
         apply_tint = "status",
         always_draw = true,      -- mandatory, or the fault states never draw
-        animation = { --[[ the white lens, 32px, draw_as_glow ]] }
+        animation = { --[[ the viewport glass, white, draw_as_glow ]] }
       }
     }
   }
@@ -331,19 +370,25 @@ has no base slab. This
 replaces the adopted sheet's east flange and flank radiators;
 `concept/vacuum-furnace/model/` is the design from here on.
 
+**Decided 2026-10-07 (Liam):** the hatch is flat and flush with the rail, on the
+footprint's centre; the viewport moves to the hatch's centre and becomes the
+indicator, with magenta for the latch and no separate lamp; the south-east
+radiator stack becomes a vacuum pump with a turning flywheel and a vacuum gauge;
+the viewport's glow pulses while working (§6).
+
 **Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
 the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
 in `06-core-production-tree.md` T2, where flux stops being an item.
 
-**Settled: the latch gets a fault lamp**, not a redesign — §3.2. The engine's
-`apply_tint = "status"` does it, vanilla does it on the drills, and S13 confirmed
-a furnace loads it.
+**Settled: the latch is shown in the viewport**, not by a redesign — §3.2. The
+engine's `apply_tint = "status"` does it, vanilla does it on the drills, and S13
+confirmed a furnace loads it.
 
 - **Does it also take `sae-degassing` or `sae-crushing`?** No, and it should not
   be allowed to drift that way. A furnace that accumulates categories becomes the
   one machine that does everything, and the point of the Core's buildings is that
   each says something.
-- **The lamp is proven to load, not proven to render.** S13 read it back out of
+- **The status tint is proven to load, not proven to render.** S13 read it back out of
   the data dump; whether the renderer applies the tint on a furnace as it does on
   a drill needs eyes on a client. It is the cheapest possible check — build one,
   cut its flux, look at it — and it should happen the first time anyone plays this
