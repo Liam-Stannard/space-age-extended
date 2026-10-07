@@ -122,8 +122,9 @@ a sealed machine is a contradiction the player will notice.
   flywheel is drawn free — a visible gap all round it, its hub on the shaft,
   nothing bridging it to the body — and the pump body and niche wall behind it
   are fully modelled, because the turning wheel uncovers them.
-* A **vacuum gauge** on the pump body: a round dial facing the camera, its
-  needle drawn over the dial face (§6).
+* A **vacuum gauge** on the pump body: a round dial facing the camera, set
+  deep in a hooded case, its needle drawn over the dial face (§6). The dial is
+  dull, so the viewport stays the only light.
 * A **sight port** at the **centre of the hatch**: thick, deep glass set flat in
   the roof. It is the only place any *heat* glow escapes, and it is the
   building's **indicator** (below). There is no separate lamp.
@@ -182,7 +183,7 @@ white from the model, `draw_as_glow`, and the engine colours it.
 | Radiator loops | `#6E685C` | three corners |
 | Pump body | the hull's paint, `#3E3B36` | the south-east niche |
 | Flywheel | bare steel, `#77716A` → `#B4AEA4` | the pump |
-| Gauge dial | `#D8D2C4` | the pump |
+| Gauge dial | `#8E877B`, dull, recessed in a hooded case so it never reads as a light | the pump |
 | Gauge needle | `#2B2E33` | the pump |
 | Sight port glow | `#E8A24A` → `#FFD9A0` | the viewport, and nothing else |
 | Viewport glass | `#2B2E33`, dark, unlit | the hatch's centre |
