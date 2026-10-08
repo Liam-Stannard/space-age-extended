@@ -39,6 +39,13 @@ frame, and a stopped crusher should be the still that was approved -- the crown
 standing proud of its collar -- not a machine caught mid-stroke. It is checked
 below too.
 
+**Not every motion is a stroke.** `--phase linear` asks for frame i at phase
+i/N, for motions that loop evenly (a gauge needle, a pulse). `--frame0 still`
+is for a layer that draws something the plate leaves out on purpose -- the
+Vacuum Furnace's dial is rendered bare and the needle is Animatorio's -- so
+frame 0 is the stopped machine (the still) rather than the plate; the window
+still has to reassemble exactly on every frame.
+
 Usage:
   tools/build-animatorio-layers.py --asset graphics/entity/<b>/stroke.json \\
       --window 79 0 127 54 \\
@@ -110,6 +117,12 @@ def main():
     ap.add_argument("--fall", type=int, default=8,
                     help="frames given to the fall; the rest lift (default 8 of 24)")
     ap.add_argument("--columns", type=int, default=6)
+    ap.add_argument("--phase", choices=("stroke", "linear"), default="stroke",
+                    help="stroke: the drop crusher's lift and fall (default); "
+                         "linear: frame i at phase i/N")
+    ap.add_argument("--frame0", choices=("plate", "still"), default="plate",
+                    help="plate: frame 0 must be the plate (default); still: the layer "
+                         "draws what the plate leaves out, so frame 0 is the still")
     a = ap.parse_args()
 
     store, ga = load_animatorio(a.animatorio)
@@ -118,12 +131,13 @@ def main():
     plate = Image.open(here / asset["source"]).convert("RGBA")
     count = int(asset.get("frame_count", 24))
 
-    composites = [
-        ga.animate_frame(plate, asset["motions"],
-                         phase_for(displacement(i, count, a.fall)),
-                         asset.get("lighting"))
-        for i in range(count)
-    ]
+    def phase(i):
+        if a.phase == "linear":
+            return i / count
+        return phase_for(displacement(i, count, a.fall))
+
+    composites = [ga.animate_frame(plate, asset["motions"], phase(i), asset.get("lighting"))
+                  for i in range(count)]
 
     x0, y0, x1, y1 = a.window
     if (x1 - x0) % 2 or (y1 - y0) % 2:
@@ -145,7 +159,7 @@ def main():
         if rebuilt.tobytes() != composite.tobytes():
             sys.exit(f"build-animatorio-layers: frame {i} does not reassemble -- "
                      f"the window is too small for what the motion moves")
-    if composites[0].tobytes() != plate.tobytes():
+    if a.frame0 == "plate" and composites[0].tobytes() != plate.tobytes():
         sys.exit("build-animatorio-layers: frame 0 is not the plate; a stopped "
                  "machine would not show the still that was approved")
 
@@ -163,7 +177,8 @@ def main():
     print(f"frames  {a.frames_out.name}: {sheet.size}, {count} frames, "
           f"line_length {a.columns}, each {x1 - x0}x{y1 - y0}")
     print(f"window shift, to add to the plate's own: {{ {dx:g}, {dy:g} }}")
-    print(f"reassembles exactly on all {count} frames; frame 0 is the plate")
+    print(f"reassembles exactly on all {count} frames; frame 0 is "
+          + ("the plate" if a.frame0 == "plate" else "the still: the plate with the layer drawn"))
     px = sheet.size[0] * sheet.size[1] + housing.size[0] * housing.size[1]
     print(f"cost {px:,} px against {plate.width * plate.height * count:,} "
           f"for a full-plate sheet")
