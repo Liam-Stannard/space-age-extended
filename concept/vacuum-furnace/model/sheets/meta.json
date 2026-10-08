@@ -1,0 +1,79 @@
+{
+ "base": {
+  "size": [
+   198,
+   224
+  ],
+  "shift": [
+   0.0,
+   -0.20312
+  ]
+ },
+ "port-glow": {
+  "size": [
+   22,
+   21
+  ],
+  "shift": [
+   0.0,
+   -0.75781
+  ]
+ },
+ "base-shadow": {
+  "size": [
+   214,
+   197
+  ],
+  "shift": [
+   0.15625,
+   -0.02344
+  ]
+ },
+ "viewport-status": {
+  "size": [
+   22,
+   21
+  ],
+  "shift": [
+   0.0,
+   -0.75781
+  ]
+ },
+ "flywheel": {
+  "size": [
+   52,
+   74
+  ],
+  "shift": [
+   1.10938,
+   0.78125
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "checks": {
+  "centre_offset_px": 0.0,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   1.5,
+   "1.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   1.5,
+   "bottom edge below origin; 1.5 = on the footprint"
+  ],
+  "port-glow_white_px": [
+   0,
+   "pixels the working light clipped to white; 0 = the light keeps its colour"
+  ],
+  "flywheel_drift_px": [
+   0.02,
+   "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
+  ],
+  "frame0_vs_still": [
+   255,
+   0.0025,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ]
+ }
+}
