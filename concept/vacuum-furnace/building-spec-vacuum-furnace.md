@@ -122,8 +122,8 @@ a sealed machine is a contradiction the player will notice.
   flywheel is drawn free — a visible gap all round it, its hub on the shaft,
   nothing bridging it to the body — and the pump body and niche wall behind it
   are fully modelled, because the turning wheel uncovers them.
-* A **vacuum gauge** on the pump body: a round dial facing the camera, set
-  deep in a hooded case, its needle drawn over the dial face (§6). The dial is
+* A **vacuum gauge** on the pump body: a round dial lying flat on the barrel's
+  head, facing up at the roof's angle, set deep in a hooded case, its needle drawn over the dial face (§6). The dial is
   dull, so the viewport stays the only light.
 * A **sight port** at the **centre of the hatch**: thick, deep glass set flat in
   the roof. It is the only place any *heat* glow escapes, and it is the
