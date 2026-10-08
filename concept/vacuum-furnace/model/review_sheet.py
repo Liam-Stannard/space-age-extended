@@ -11,7 +11,8 @@ the input on every face.
 
 Layered as the engine draws them, on one ground at 64 px a tile with the tile grid:
 the shadow at 50 %, the north-facing picture or cover behind the building
-(secondary_draw_orders north = -1), the plate, the flywheel's frame, while working
+(secondary_draw_orders north = -1), the plate, the flywheel's frame, the gauge's
+needle (Animatorio's, from sheets/needle.png), while working
 the viewport's glow added, the indicator tinted by status, then the other pictures
 and covers. The input in use gets the furnace's own pipe picture (pipe_pictures.py:
 a stub on the pipe's centreline, on assembler 3's size and shift) and a vanilla
@@ -45,6 +46,10 @@ O = SIZE / 2
 GROUND = (74, 66, 58, 255)
 STATUS = {"idle": None, "working": None,                                         # spec 3.2: clear
           "latch": (1, 0.3, 0.9), "full": (0.4, 0.7, 1)}
+# the gauge's needle: Animatorio's layer (gauge.json), cut from sheets/base.png at this
+# window by tools/build-animatorio-layers.py, 16 frames in step with the flywheel
+SHEETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sheets")
+NEEDLE_WINDOW = (170, 158)
 FLY = (1.0, 1.17)                       # the flywheel's centre on screen, tiles right and down
 FACE_NAME = {"N": "north", "E": "east", "S": "south", "W": "west"}
 OUTSIDE = {"N": (0, -2), "E": (2, 0), "S": (0, 2), "W": (-2, 0)}
@@ -66,6 +71,11 @@ def strip_shadow(im):
 class Furnace:
     def __init__(self, src, pipes):
         self.src, self.pipes = src, pipes
+        meta = json.load(open(os.path.join(SHEETS, "meta.json")))
+        self.needles = Image.open(os.path.join(SHEETS, "needle.png")).convert("RGBA")
+        bw, bh = meta["base"]["size"]
+        sx, sy = meta["base"]["shift"]
+        self.needle_at = (round(sx * PPT - bw / 2) + NEEDLE_WINDOW[0], round(sy * PPT - bh / 2) + NEEDLE_WINDOW[1])
         self.meta = json.load(open(os.path.join(pipes, "meta.json")))
 
     def open(self, d, stem):
@@ -105,6 +115,9 @@ class Furnace:
                 put(c, im, tx, ty)
         c.alpha_composite(idle, pos)
         c.alpha_composite(self.open(src, f"flywheel-{frame:02d}"), pos)
+        n = self.needles.height
+        c.alpha_composite(self.needles.crop((frame * n, 0, frame * n + n, n)),
+                          (round(O + self.needle_at[0]), round(O + self.needle_at[1])))
         if working:
             glow = pack.glow_layer(self.open(src, "working"), idle).convert("RGB")
             g = Image.new("RGB", c.size)
