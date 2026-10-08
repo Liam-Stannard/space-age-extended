@@ -28,8 +28,8 @@ the palette, 5 four directions and a building that never turns, 6 what moves,
   - three radiator stacks across the corners, in niches cut into the hull;
   - the vacuum pump in the south-east niche: a barrel, a heavy flywheel upright in
     front of it on its drive motor's shaft (the animation: 16 frames through 60 degrees, its six-fold
-    symmetry), free all round, and a vacuum gauge, its dull dial recessed in a hood
-    and bare -- the needle is Animatorio's (spec 6);
+    symmetry), free all round, and a vacuum gauge flat on the barrel's head, its dull
+    dial recessed in a hood and bare -- the needle is Animatorio's (spec 6);
   - a copper ring on the deck round the hatch, with feeders down the diagonals to
     the three stacks, none crossing a face's middle;
   - no base and no socket: the input is the engine's pipe picture, rendered here
@@ -509,11 +509,11 @@ for k in range(6):                                                              
         rot=(0, 0, a), bevel=0.008, parent=WHEEL)
 cyl((0, 0, 0), HUB, 0.1, "wheel", group="flywheel", verts=32, bevel=0.01, parent=WHEEL)     # hub
 rivet((0, 0, 0.052), 0.024, group="flywheel", parent=WHEEL)                                # the shaft's nut
-# The vacuum gauge on the barrel's head, its dial facing the camera, set deep in a
-# hooded case so it sits in shade (spec 3.2). Bare: the needle is Animatorio's.
-GZ = 0.07 + BH + 0.16
-cyl((BX, BY, GZ - 0.08), 0.03, 0.1, "steel", verts=16)                                     # post
-GAUGE = empty("gauge", loc=(BX, BY - 0.02, GZ + 0.05), rot=TILT)
+# The vacuum gauge, flat on the barrel's head and facing up, at the roof's angle like
+# the viewport glass: a level circle draws as a full circle through this camera, so it
+# stays as readable as a dial facing the camera head-on (Liam, 2026-10-08). Set deep in
+# a hooded case so it sits in shade (spec 3.2). Bare: the needle is Animatorio's.
+GAUGE = empty("gauge", loc=(BX, BY, 0.07 + BH + 0.05 + 0.06))
 cyl((0, 0, -0.03), 0.13, 0.06, "brass", verts=48, bevel=0.01, parent=GAUGE)                 # case
 ring((0, 0, 0.02), 0.13, 0.1, 0.05, "brass", parent=GAUGE, verts=48)                        # the hood
 cyl((0, 0, 0.0), 0.1, 0.004, "dial", verts=48, bevel=0.0, parent=GAUGE)                     # dial face
