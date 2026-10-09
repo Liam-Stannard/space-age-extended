@@ -42,13 +42,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Vacuum Furnace** — redesigned 2026-10-02, and 2026-10-08 to take one flux
-  pass-through (two opposite `input-output` connections); finished model in
-  progress (`vacuum-furnace-model`), then wiring: rotatable pass-through fluid
-  box, rendered pipe pictures, `status_colors` per §3.2's viewport table.
-- **Drop Crusher** — model (`drop-crusher-model`), then wiring.
-- **Crust Tap** — model (`crust-tap-model`), then wiring once the engine test
-  says whether `fluid_animation` can carry the working-only frost and seam.
+- **Gas Pump** (was the Crust Tap) — model (`crust-tap-model`), then wiring:
+  four plates and shadows on the `sae-gas-pump` mining drill, no working
+  layers.
 - **Radiant Generator** — model (`radiant-generator-model`), then wiring with
   an `idle_animation`, so a fuelless generator stops glowing.
 - **Ballast Drill** — model (`ballast-drill-model`), then wiring: one plate,
@@ -56,9 +52,8 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   art committed without sign-off (`ballast-drill/stroke*`).
 - **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
   gutter base, rendered pipe pictures, vanilla covers.
-- **The Ballast Drill and Vacuum Furnace lamps have no `status_colors`**, so
-  they likely draw dark, as the reaction plant's did. Each wiring task sets
-  them; the Drop Crusher's are set (`dc-wiring`).
+- **The Ballast Drill's lamp has no `status_colors`**, so it likely draws
+  dark, as the reaction plant's did. Its wiring task sets them.
 
 ## Blender pipeline
 
