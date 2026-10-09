@@ -57,7 +57,12 @@ def reset():
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
     bg.inputs["Color"].default_value = (0.62, 0.56, 0.48, 1)  # warm fill: vanilla's shadows are
-    bg.inputs["Strength"].default_value = 0.14                # coloured, never black
+    # 0.26, raised from 0.14 (Liam, 2026-10-09): at 0.14 a detailed model's deep
+    # gaps and shadowed niches went black (the Vacuum Furnace's radiator niches,
+    # the Drop Crusher's gear wells), and all three finished models overrode it.
+    # Anything rendered at 0.14 before -- the Reaction Plant -- is lighter in its
+    # shadows if re-rendered now.
+    bg.inputs["Strength"].default_value = 0.26                # coloured, never black
     return sc
 
 
