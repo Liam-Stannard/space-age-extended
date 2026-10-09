@@ -130,7 +130,8 @@ class _G:
 
 def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
             wear=0.35, rust=0.35, dust=0.4, grime=0.6, jitter=0.10, pattern=None,
-            swatch=None, swatch_scale=1.0):
+            swatch=None, swatch_scale=1.0, ground=0.0, ground_h=0.45, swatch_gain=1.0,
+            drips=(), drip=0.0, patina=0.0):
     """A painted (or bare, with paint_metal high) part, worn in by use.
 
     pattern: optional callable(g) -> colour socket replacing the flat paint
@@ -138,6 +139,15 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
     swatch:  path to a tiling swatch baked from the building's concept sheet
              (concept/<building>/model/swatches/). It supplies the base colour
              AND grain, so the paint hex and the photo grain step aside.
+    ground:  splash and grime rising from the ground, strongest at z 0 and gone by
+             ground_h, broken up by noise -- a machine darkens where it meets the
+             floor. Off (0) by default, so a building that doesn't ask is unchanged.
+    swatch_gain: scales the swatch's colour, to set its value without rebaking it.
+    drips:   heights (z_top, length) that rust runs down from -- a rail, a row of
+             bolts: on vertical faces, streaks hanging below each z_top, fading
+             over length; drip is their strength (0, the default, draws none).
+    patina:  verdigris in copper's cavities and contact lines, broken up by noise;
+             0, the default, draws none.
     """
     m = bpy.data.materials.new(name)
     m.use_nodes = True
@@ -152,6 +162,8 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
     if swatch:
         # the concept sheet's own material: its colour and grain, our light
         base = g.image(swatch, pos, swatch_scale, data=False).outputs["Color"]
+        if swatch_gain != 1.0:
+            base = g.mulc(base, (swatch_gain, swatch_gain, swatch_gain, 1.0))
         blotch = g.remap(g.noise(pos, 5, detail=4), 0.35, 0.65, 0.9, 1.1)
         col = g.mulc(base, g.gray(g.math("MULTIPLY", part, blotch)))
     else:
@@ -197,11 +209,28 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
                        g.math("ADD", g.math("ADD", g.math("MULTIPLY", cavity, 1.6),
                                             g.math("MULTIPLY", streak, vertical)), blooms),
                        rust, clamp=True)
+    if drip:
+        z = g.node("ShaderNodeSeparateXYZ", Vector=pos).outputs["Z"]
+        runs = g.image(f"{TEX}/maps/rust_streak.png", stretch.outputs[0], 2.1).outputs["Color"]
+        hang = None
+        for z_top, length in drips:
+            below = g.math("MULTIPLY", g.remap(z, z_top - length, z_top), g.remap(z, z_top + 0.02, z_top))
+            hang = below if hang is None else g.math("MAXIMUM", hang, below)
+        drip_mask = g.math("MULTIPLY", g.math("MULTIPLY", hang, g.remap(runs, 0.45, 0.8)), vertical)
+        rust_mask = g.math("ADD", rust_mask, g.math("MULTIPLY", drip_mask, drip), clamp=True)
     rust_col = g.mixc(g.image(f"{TEX}/maps/grain.png", pos, 2.3).outputs["Color"],
                       rig.srgb("#44220F"), rig.srgb("#94501F"))
     col = g.mixc(rust_mask, col, rust_col)
     rough = g.mixf(rust_mask, rough, 0.9)
     metallic = g.mixf(rust_mask, metallic, 0.05)
+
+    if patina:
+        green = g.math("MULTIPLY", g.math("MULTIPLY", cavity, 2.4),
+                       g.remap(g.noise(pos, 17, detail=4), 0.3, 0.55), clamp=True)
+        green = g.math("MULTIPLY", green, patina, clamp=True)
+        col = g.mixc(green, col, g.mixc(g.noise(pos, 31, detail=2), rig.srgb("#3F6E5A"), rig.srgb("#6E9A7E")))
+        rough = g.mixf(green, rough, 0.85)
+        metallic = g.mixf(green, metallic, 0.0)
 
     # dust on upward faces
     up = g.remap(g.node("ShaderNodeSeparateXYZ", Vector=normal).outputs["Z"], 0.6, 0.95)
@@ -212,6 +241,14 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
 
     # grime, darkest in contact lines
     col = g.mixc(g.math("MULTIPLY", cavity, grime * 2.2, clamp=True), col, rig.srgb("#2A1F16"))
+
+    if ground:
+        z = g.node("ShaderNodeSeparateXYZ", Vector=pos).outputs["Z"]
+        rise = g.math("MULTIPLY", g.remap(z, ground_h, 0.0),
+                      g.remap(g.noise(pos, 9, detail=5), 0.3, 0.7, 0.55, 1.0))
+        splash = g.math("MULTIPLY", rise, ground, clamp=True)
+        col = g.mixc(splash, col, g.mixc(g.noise(pos, 14, detail=3), rig.srgb("#2A1F16"), rig.srgb("#4A2C18")))
+        rough = g.mixf(splash, rough, 0.92)
 
     g.l.new(col, bsdf.inputs["Base Color"])
     g.l.new(metallic, bsdf.inputs["Metallic"])
