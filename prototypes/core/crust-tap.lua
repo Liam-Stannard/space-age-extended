@@ -66,8 +66,12 @@ data:extend({
     subgroup = "fluid",
     order = "z[sae]-e[crust-gas]",
     default_temperature = 25,
-    base_color = { r = 0.55, g = 0.48, b = 0.30 },
-    flow_color = { r = 0.75, g = 0.68, b = 0.45 },
+    -- Chartreuse, #A8D82A (Liam, 2026-10-09): no vanilla fluid and no other in
+    -- this mod is a bright yellow-green, so siderane reads as itself in a pipe
+    -- and in the Gas Pump's sight glass. The ochre it had sank into the brown
+    -- steel round it.
+    base_color = { r = 0.66, g = 0.85, b = 0.16 },
+    flow_color = { r = 0.82, g = 0.95, b = 0.50 },
     fuel_value = "200kJ",
     auto_barrel = false
   }
@@ -100,7 +104,7 @@ data:extend({
 -- 2x2, under the pump that draws it.
 --
 -- **The sprite is the helium-3 vent's**, crude oil's sheet, tinted toward the
--- gas's own ochre, and the map colour is the helium vent's turned the same way.
+-- gas's own chartreuse, and the map colour is the helium vent's turned the same way.
 -- Both are the gas vent's stand-ins until a vent of the Core's own is drawn.
 --------------------------------------------------------------------------------
 
@@ -109,7 +113,7 @@ data:extend({
 })
 
 local vent_sheet = table.deepcopy(data.raw.resource["crude-oil"].stages.sheet)
-vent_sheet.tint = { r = 1.0, g = 0.82, b = 0.45 }
+vent_sheet.tint = { r = 0.85, g = 1.0, b = 0.45 }
 
 -- STARTING_FIELD: the landing's own wells, by offset from the field's centre in
 -- tiles. Each is one vent: wells are at least five tiles apart, so two never
@@ -229,7 +233,7 @@ local crust_vent =
   autoplace = vent_autoplace,
   stage_counts = { 0 },
   stages = { sheet = vent_sheet },
-  map_color = { r = 0.80, g = 0.66, b = 0.40 }
+  map_color = { r = 0.66, g = 0.85, b = 0.16 }
 }
 -- Marked, as the vent tile it replaces was: vanilla's sheet, until the Core's
 -- own vent is drawn.
