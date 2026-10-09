@@ -138,6 +138,11 @@ the moving crown are what stop it reading as storage.
   reads as a container.
 * An **armoured inspection hatch** with locking dogs on the front face — the only
   way to the anvil bed, which is never seen in normal operation.
+* **The status lamp**: a caged lamp on a bolted bracket on the roof's kerb at the
+  south-east, its lens white and domed under a wire cage, about 0.16 tiles
+  across, in front of the deck so nothing that moves passes before it. The
+  lamp's old boss above the hatch is blanked with a bolted cover (Liam,
+  2026-10-09: the lens there drew 7×4 px on screen and did not register).
 * **No output port of any sort.** This is an `assembling-machine`: inserters take
   from any adjacent tile, so a chute would promise something the entity cannot
   keep — see the template's §8 rule 3.
@@ -163,7 +168,7 @@ read on its own.
 | Anvil bed | `#9A948A` | struck surface, palest thing on the machine |
 | Hazard banding | `#C8A23A` | the base plate edge only |
 | Lift gear | `#8A857C` | gears, rack, pawl and collar — brighter than the armour, so the mechanism reads as a separate assembly |
-| Lamp lens | `#FFFFFF` | painted white; the engine tints it via `status_colors` |
+| Lamp lens | `#FFFFFF` | the caged lamp on the south-east kerb; painted white, the engine tints it via `status_colors` |
 | Copper and brass | `#8A5A32` → `#C88A4A` | bus runs, gear furniture, bearing caps, bolt lines |
 
 *The "ore and fines" row is gone with the chutes it described.* **The copper row

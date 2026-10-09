@@ -159,8 +159,10 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- purpose, per §9: modules should make the hammer fall faster. That breaks the
 -- one-drop-one-craft correspondence, which §9 is explicit nobody notices.
 --
--- **The status lamp is cut white and tinted by the engine**, on the wall face
--- under the roof's edge, above the inspection hatch. It is a status lamp, not a
+-- **The status lamp is cut white and tinted by the engine**: a caged lamp on a
+-- bracket on the roof's kerb at the south-east, where nothing that moves passes
+-- in front of it (moved from the wall above the hatch, where it drew 7x4 px on
+-- screen and did not register). It is a status lamp, not a
 -- fault lamp: it reports every state, working included, in vanilla's
 -- mining-drill colours (below).
 local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
@@ -256,9 +258,9 @@ derive.own_graphics(crusher,
         filename = DC .. "status-lamp.png",
         priority = "high",
         draw_as_glow = true,
-        width = 14, height = 9,
+        width = 13, height = 14,
         frame_count = 1,
-        shift = { 0, 0.66406 },
+        shift = { 0.38281, 0.29688 },
         scale = 0.5
       }
     }

@@ -21,12 +21,12 @@
  },
  "status-lamp": {
   "size": [
-   14,
-   9
+   13,
+   14
   ],
   "shift": [
-   0.0,
-   0.66406
+   0.38281,
+   0.29688
   ]
  },
  "stroke": {
@@ -112,7 +112,7 @@
   },
   "frame0_vs_still": [
    64,
-   0.0101,
+   0.0102,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }
