@@ -58,7 +58,7 @@ nothing to seal."*
 | | |
 | --- | --- |
 | Tile footprint | 3×3 (`collision_box {-1.4,-1.4},{1.4,1.4}`) |
-| Directions | 1 |
+| Directions | 4 — the body is drawn once; only the flux line turns (§5) |
 | Crafting categories | `smelting` **and** `sae-sintering` |
 | `source_inventory_size` | 1 (the prototype maximum) |
 | Fluid boxes | 1, a **pass-through** — **phosphide flux**, used by the sintering recipes only |
@@ -107,8 +107,11 @@ a sealed machine is a contradiction the player will notice.
 
 ## 3.2 Key Visual Features
 
-* A **welded drum** body, seams visible, deliberately without panel lines — it is
-  one piece, because a seam is a leak.
+* A **welded hull**: plates in two courses, every joint a continuous weld bead,
+  stiffened outside by riveted ribs and angle-iron corners. **Every seam is
+  welded, never bolted or gasketed**, because a gasketed seam is a leak and a
+  weld is not. The hatch's six radial seams are welds too: it is built from
+  plates, not cast, and reads as worked rather than perfect (Liam, 2026-10-08).
 * A **clamped roof hatch**, heavy, round and **flat in the roof**: its deck is
   level with the hull's rail, and it sits on the footprint's centre, so the
   parapet runs round it evenly. Radial dogs around its rim. No dome, and no
@@ -139,6 +142,31 @@ a sealed machine is a contradiction the player will notice.
 * **No base.** The drum and its corner radiators are one structure that fills
   the 3×3; nothing stands on a slab.
 
+### The working detail
+
+What the finished model adds, so the machine reads as used and maintained
+rather than new. None of it lights, and none of it moves.
+
+* On the roof, off symmetry: a **viewport cover**, hinged on a knuckle and
+  strapped back, its gasket showing; an upright **vacuum-break angle valve** with
+  its handwheel and vent; a **repair patch** set askew, beaded round.
+* A **hazard ring** on the hatch's outer band, worn through where the dogs are
+  worked, and **scuffs** either side of each dog.
+* The **radiator banks** are bulky oval cores with fins, steel caps banded in
+  brass, cap bolts and a bleed plug, on posts with brackets and a top rail. Their
+  **steel loops** rise from nozzles in the hull's cap rail, hug the wall on
+  stand-off brackets and enter each bank's top collar; none touches the copper
+  ring.
+* At the pump: the **suction valve** wheel stands upright toward the south-west; a
+  brass **gauge line** with its gland; a **starter box** with its lid and rivets,
+  and a conduit down to the motor.
+* The **evacuation hose**: a flanged port on the roof, a rigid steel elbow with a
+  brass clamp, then a ribbed hose down the east wall on a rail saddle and brass
+  clips to an inlet low on the flank.
+* A brass **maker's plate** on the near wall, bolt rows at the course line and the
+  foot, mitre-welded kerb round the rail, rust run down from fittings, ground dirt
+  at the foot, and patina on the copper.
+
 ### Signature Feature
 
 **The sight port.** One small deep-set circle of orange at the centre of the
@@ -160,15 +188,21 @@ glass**, drawn once in white; there is no separate lens.
 
 | Status | The viewport | Reads as |
 | ------ | ------------ | -------- |
-| `working` | **orange** — the heat glow; the status layer is clear | Sintering |
-| `insufficient_input` | **magenta** | **The latch.** No flux, or no powder |
-| `full_output` | pale blue | Nothing is taking the preforms |
-| `idle`, `disabled` | clear — **dark glass** | Off |
+| `working` | **orange** — the heat glow; the status layer is clear | Working |
+| `full_output` | pale blue | Nothing is taking the output |
+| `idle`, `disabled` | clear — **dark glass** | Off, or nothing to work on |
 | `no_power`, `low_power` | clear | The grid, not the machine |
 
-**Magenta, not amber**, because amber sits too close to the working orange in the
-same glass. The building still has exactly one lit circle; its colour is the
-state. `always_draw = true` is **mandatory**: vanilla's own comment says the
+**The latch has no colour, because the engine has no status for it** (tested
+2026-10-09). A furnace holding powder without flux reports `no_ingredients`,
+exactly as a furnace nobody has fed, and that takes the idle colour: dark glass.
+Colouring idle would colour every unfed furnace. Liam chose to accept it rather
+than add a runtime script: the **pass-through** (§8) keeps every furnace on a
+primed flux line topped up, which makes the latch rare, and a dry line darkens
+every furnace on it at once, which reads as the line rather than one machine.
+
+The building still has exactly one lit circle; its colour is the state.
+`always_draw = true` is **mandatory**: vanilla's own comment says the
 non-working states will not draw without it.
 
 **The indicator sprite is not concept-art work.** It is the viewport glass cut
@@ -234,8 +268,8 @@ Decided at spec time, as the template asks: what moves, and what it uncovers.
 
 | Part | Motion | Frames | While | Made by |
 | ---- | ------ | ------ | ----- | ------- |
-| Flywheel | turns about its shaft | 16 | working; frozen on frame 0 otherwise | Blender, the contract's `turn` |
-| Gauge needle | swings between two angles and back | 16, the same loop | working; frozen on frame 0 otherwise | Animatorio's `gauge`: the model renders the dial without a needle, and Animatorio draws the needle over it |
+| Flywheel | turns about its shaft | 16 | working; stops where it is otherwise | Blender, the contract's `turn` |
+| Gauge needle | swings between two angles and back | 16, the same loop | working; stops where it is otherwise | Animatorio's `gauge`: the model renders the dial without a needle, and Animatorio draws the needle over it |
 | Viewport glow | swells and settles | — | working only | first the engine's `effect` and `fadeout`; only if neither reads right, Animatorio's `pulse`, clipped to the glass |
 
 * The flywheel is rendered: a spoked wheel in the furnace's own metal, lit by the
@@ -245,10 +279,12 @@ Decided at spec time, as the template asks: what moves, and what it uncovers.
   Drop Crusher's stroke did: a housing with a window punched out and the window's
   frames over it, frame 0 checked against the plate.
 * Both moving parts share one 16-frame loop, so they are layers of one
-  `animation`, and the stopped machine is the plate with every frame 0.
-* The glow's effect is chosen in a real client: `effect = "flicker"` against
-  `effect = "uranium-glow"`, both with `fadeout = true`. Flicker is vanilla's
-  fire, and may read wrong for a vacuum furnace.
+  `animation`. Frame 0 is the still the plate was checked against, but a
+  stopped furnace freezes on whatever frame it reached, so the parts must look
+  right at rest on any frame (they do: a wheel and a needle).
+* The glow's effect is **`uranium-glow`**, with `fadeout = true`: a slow swell
+  and settle, heat behind thick glass. `flicker` is vanilla's fire and reads as an
+  open flame, which a sealed furnace has none of (Liam, 2026-10-09).
 
 ---
 
@@ -338,7 +374,6 @@ the grid with no overhang.
     status_colors =
     {
       working            = { 0, 0, 0, 0 },        -- the orange glow says this
-      insufficient_input = { 1, 0.3, 0.9, 1 },    -- the latch: magenta
       full_output        = { 0.4, 0.7, 1, 1 },
       idle               = { 0, 0, 0, 0 },        -- dark glass
       disabled           = { 0, 0, 0, 0 },
@@ -347,7 +382,7 @@ the grid with no overhang.
     },
     working_visualisations =
     {
-      { fadeout = true, effect = --[[ §6's pick ]], animation = { --[[ the viewport glow ]] } },
+      { fadeout = true, effect = "uranium-glow", animation = { --[[ the viewport glow ]] } },
       {
         apply_tint = "status",
         always_draw = true,      -- mandatory, or the fault states never draw
@@ -391,13 +426,21 @@ the viewport's glow pulses while working (§6).
 with two `input-output` connections on opposite faces, so furnaces chain off one
 line. No new art: the model already renders all four port pictures (§8).
 
+**Decided 2026-10-09 (Liam):** the latch shows no colour of its own (§3.2): the
+engine reports it as `no_ingredients`, the same as an unfed furnace, and a script
+to tell them apart was turned down. The glow's effect is `uranium-glow` (§6). The
+working detail the finished model added is part of the design (§3.2), and the
+hull's and hatch's seams are welds, which is what "a seam is a leak" was about.
+The flywheel and needle stop where they are when the furnace stops, not on frame
+0: a crafting machine's animation freezes on its current frame.
+
 **Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
 the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
 in `06-core-production-tree.md` T2, where flux stops being an item.
 
-**Settled: the latch is shown in the viewport**, not by a redesign — §3.2. The
-engine's `apply_tint = "status"` does it, vanilla does it on the drills, and S13
-confirmed a furnace loads it.
+~~**Settled: the latch is shown in the viewport.**~~ **Withdrawn 2026-10-09**:
+the engine has no status for the latch to colour; see the decision above. The
+viewport still shows working, full output and off.
 
 - **Does it also take `sae-degassing` or `sae-crushing`?** No, and it should not
   be allowed to drift that way. A furnace that accumulates categories becomes the
