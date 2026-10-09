@@ -114,35 +114,357 @@ DECL = dict(
 sc = rig.reset()
 ROOT = rig.turntable(rig.stretch_root())
 
+# ---------------------------------------------------------------- the hull's shape
+# Defined before the materials because the finish places its marks and streaks on
+# the hull's faces (the signature finish, below); the hull itself is built in 1.
+HZ, E, C, LEAN = 1.2, 1.482, 0.9, 0.22     # the foot band, 0.01 proud, lands at 1.492
+CT = C - LEAN * (2 - math.sqrt(2))     # the chamfer leans back by LEAN too, square to it
+
+
+def octagon(e, c):
+    return [(-e, -e + c), (-e + c, -e), (e - c, -e), (e, -e + c), (e, e - c), (e - c, e), (-e + c, e), (-e, e - c)]
+
+
+def at_lean(z):
+    """The hull's half-width, and chamfer, at height z."""
+    f = z / HZ
+    return E - LEAN * f, C + (CT - C) * f
+
+
+def wall_pt(i, f, z, out=0.0):
+    """On the hull's face i (octagon order, 1 the south face), f along it from its
+    west/south end, at height z, stood out from the wall by out."""
+    e, c = at_lean(z)
+    pts = octagon(e, c)
+    (ax, ay), (bx, by) = pts[i], pts[(i + 1) % 8]
+    nx, ny = by - ay, -(bx - ax)                  # outward: the octagon runs anticlockwise
+    n = math.hypot(nx, ny)
+    return (ax + (bx - ax) * f + out * nx / n, ay + (by - ay) * f + out * ny / n, z)
+
+
 # ---------------------------------------------------------------- materials
 
-from materials import layered, hazard_pattern  # noqa: E402
+from materials import TEX, layered, hazard_pattern  # noqa: E402
+
+# The signature finish (spec 3.3, Liam 2026-10-09): heat-tempered steel. Every Core
+# building keeps the shared base -- dark steel, the shared rust, dust and ground dirt,
+# all still materials.layered's -- and this one carries the temper colours of steel
+# that has been hot. Round 2 (Liam: "could be refined further"): the colours follow
+# the heat, visibly. Smooth graded bands, only a slight waver at their edges, in
+# temper's fixed sequence away from a source -- blue nearest (the hottest), then
+# purple, brown, a thin pale straw, then plain dark steel -- from three sources:
+#   the hatch flange   concentric rings out across the drum's top, the deck and the rail;
+#   the hull's top     level bands down the upper course, plain by the course line;
+#   each radiator      from its inlet at the top collar down, plain by the foot.
+# The purple step is what makes it read as temper and not as rust or paint, and the
+# straw is thin and pale so it cannot read as a stain or as warm light: the orange
+# viewport stays the only warm-bright thing, and nothing here emits.
+#
+# Rust keeps out of the bands: the dry orange on tops and the wet streaks below the
+# fittings only start where the steel is plain again, and the drip from the rail is
+# gone; rust and drips are on the cooler, lower and outer metal.
+#
+# Variation (3.3): two replacement plates, a shade lighter and untempered, so they
+# break the bands; one bold stencil on the south face and one on the hatch.
+#
+# Two strengths for Liam to choose between, by $VF_TEMPER ("subtle" or "bold"; the
+# default is TEMPER_DEFAULT): the bands and their order are the same, only their
+# strength differs.
+#
+# All of it goes through layered's `pattern` hook, which takes the place of a swatch:
+# so each pattern below starts from this building's own concept swatch, as the
+# materials did before, and lays the finish over it. layered then adds its own
+# blotch and grain on top (the swatch path skips them); COMP evens out the grain's
+# mean so the steel keeps its value.
+TEMPER_DEFAULT = "bold"
+TEMPER_STRENGTH = {"subtle": 0.6, "bold": 1.0}[os.environ.get("VF_TEMPER", TEMPER_DEFAULT)]
+# (hex, from, to, strength) over the heat distance t, 0 at the source, 1 plain steel
+TEMPER = (("#3E4A66", 0.00, 0.20, 0.90),    # blue, nearest the heat (spec 3.3)
+          ("#5C4A6E", 0.29, 0.42, 0.85),    # purple: between bronze and blue (round 2)
+          ("#8A5A3A", 0.51, 0.64, 0.75),    # bronze/brown (spec 3.3)
+          ("#B8964A", 0.72, 0.77, 0.32))    # straw (spec 3.3): thin and pale
+TEMPER_PLAIN = 0.88
+COMP = 1.03
+WET = ("#1E140E", "#3A2416")                # rust run wet below a fitting: dark, brown
+DRY = ("#8E4A1E", "#B4682E")                # rust dried on a top: orange, powdery
+PZ_ = HZ + 0.05                             # the deck and cap rail's top (PZ, in 1.)
+RAD_TOP = 1.1                               # the radiator stacks' top collar (RZ1, in 6.)
+FLANGE_R = 0.92                             # the hatch flange's rim (R + 0.03, in 2.)
+ROOF_SPAN = 0.36                            # from the flange to plain steel, across the roof
+WALL_SPAN = 0.62                            # from the hull's top to plain, down the walls
+RAD_SPAN = 0.85                             # from the inlet to plain, down a stack
+
+
+def _geometry(g):
+    """The shading point in the model's own units: the rig's STRETCH scales world Y by
+    1/sin(elevation) (the projection), so position and normal are taken back through
+    it before anything is placed by the model's coordinates."""
+    geo = g.node("ShaderNodeNewGeometry")
+    k = 1.0 / math.sin(rig.ELEVATION)
+    pos = _vmath(g, "MULTIPLY", geo.outputs["Position"], (1.0, 1.0 / k, 1.0))
+    nrm = g.n.new("ShaderNodeVectorMath")
+    nrm.operation = "NORMALIZE"
+    g.l.new(_vmath(g, "MULTIPLY", geo.outputs["Normal"], (1.0, k, 1.0)), nrm.inputs[0])
+    nrm = nrm.outputs["Vector"]
+    p = g.node("ShaderNodeSeparateXYZ", Vector=pos).outputs
+    n = g.node("ShaderNodeSeparateXYZ", Vector=nrm).outputs
+    return pos, nrm, (p["X"], p["Y"], p["Z"]), (n["X"], n["Y"], n["Z"])
+
+
+def _vmath(g, op, a, b):
+    nd = g.n.new("ShaderNodeVectorMath")
+    nd.operation = op
+    for i, v in enumerate((a, b)):
+        if isinstance(v, bpy.types.NodeSocket):
+            g.l.new(v, nd.inputs[i])
+        else:
+            nd.inputs[i].default_value = v
+    return nd.outputs["Value"] if op == "DOT_PRODUCT" else nd.outputs["Vector"]
+
+
+def _flat(g, hexcol):
+    nd = g.n.new("ShaderNodeRGB")
+    nd.outputs[0].default_value = rig.srgb(hexcol)
+    return nd.outputs[0]
+
+
+def _swatch(g, name, gain=1.0):
+    pos = g.node("ShaderNodeNewGeometry").outputs["Position"]
+    c = g.image(swatch(name), pos, 1.0, data=False).outputs["Color"]
+    k = (gain if isinstance(gain, tuple) else (gain,) * 3)
+    return g.mulc(c, tuple(v * COMP for v in k) + (1.0,))
+
+
+def _waver(g, pos, t):
+    """Only a slight waver at the bands' edges: one gentle, low-frequency nudge."""
+    return g.math("ADD", t, g.math("MULTIPLY", g.math("SUBTRACT", g.noise(pos, 2.2, detail=1), 0.5), 0.07))
+
+
+def heat_roof(g, pos, x, y):
+    """From the hatch flange, outward across the drum's top, the deck and the rail."""
+    r = g.math("SQRT", g.math("ADD", g.math("MULTIPLY", x, x), g.math("MULTIPLY", y, y)))
+    return _waver(g, pos, g.math("DIVIDE", g.math("MAXIMUM", g.math("SUBTRACT", r, FLANGE_R), 0.0), ROOF_SPAN))
+
+
+def heat_wall(g, pos, z):
+    """From the hull's top, down the upper course: plain by the course line."""
+    return _waver(g, pos, g.math("DIVIDE", g.math("MAXIMUM", g.math("SUBTRACT", HZ, z), 0.0), WALL_SPAN))
+
+
+def heat_hull(g, pos, x, y, z, nz):
+    """The roof's rings on what faces up (the deck), the walls' bands on what stands."""
+    return g.mixf(g.remap(nz, 0.5, 0.8), heat_wall(g, pos, z), heat_roof(g, pos, x, y))
+
+
+def heat_radiator(g, pos, z):
+    """From the inlet at the top collar (and the hot loop above it), down to the foot."""
+    return _waver(g, pos, g.math("DIVIDE", g.math("MAXIMUM", g.math("SUBTRACT", RAD_TOP, z), 0.0), RAD_SPAN))
+
+
+def cool(g, t):
+    """1 where the steel is plain again, 0 in the bands: where rust may be."""
+    return g.remap(t, TEMPER_PLAIN - 0.08, TEMPER_PLAIN + 0.05)
+
+
+def temper(g, col, mean_hex, t, strength=1.0):
+    """Lay the temper colours over col by heat distance t, keeping col's grain: each band
+    is its hex at col's own relative brightness, mixed in at the band's strength."""
+    ramp = g.n.new("ShaderNodeValToRGB")
+    ramp.color_ramp.interpolation = "EASE"
+    els = ramp.color_ramp.elements
+    stops = [(p, hx, a) for hx, p0, p1, a in TEMPER for p in (p0, p1)] + [(TEMPER_PLAIN, TEMPER[-1][0], 0.0)]
+    els[0].position, els[1].position = stops[0][0], stops[-1][0]
+    for p, hx, a in stops[1:-1]:
+        els.new(p)
+    for e, (p, hx, a) in zip(sorted(els, key=lambda e: e.position), stops):
+        e.color = (*rig.srgb(hx)[:3], a)
+    g.l.new(t, ramp.inputs["Fac"])
+    m = rig.srgb(mean_hex)
+    tinted = g.mulc(g.mulc(col, (1 / m[0], 1 / m[1], 1 / m[2], 1.0)), ramp.outputs["Color"])
+    return g.mixc(g.math("MULTIPLY", ramp.outputs["Alpha"], strength * TEMPER_STRENGTH, clamp=True), col, tinted)
+
+
+def face_frame(i, f, z):
+    """Face i's frame at (f, z): the point on the wall, the unit vector along it, and
+    its outward normal, leaning back with the wall."""
+    o = wall_pt(i, f, z)
+    a, b = wall_pt(i, 0, z), wall_pt(i, 1, z)
+    L = math.hypot(b[0] - a[0], b[1] - a[1])
+    t = ((b[0] - a[0]) / L, (b[1] - a[1]) / L, 0.0)
+    k = math.hypot(HZ, LEAN)
+    n = (t[1] * HZ / k, -t[0] * HZ / k, LEAN / k)
+    return o, t, n
+
+
+# The stencils: (mask, centre, the mask's across and up axes, the surface's normal,
+# width, height, paint, opacity). Masks are swatches/bake_stencils.py's. On the walls
+# the height is in z, which the camera halves (and the lean adds back a little).
+# One per face at most, bold enough to read at 2x (round 2).
+def _wall_mark(name, i, f, z, w, h, paint, opacity):
+    o, t, n = face_frame(i, f, z)
+    return (name, o, t, (0.0, 0.0, 1.0), n, w, h, paint, opacity)
+
+
+def _roof_mark(name, a_deg, r, z, w, h, paint, opacity):
+    a = math.radians(a_deg)
+    return (name, (r * math.cos(a), r * math.sin(a), z), (-math.sin(a), math.cos(a), 0.0),
+            (-math.cos(a), -math.sin(a), 0.0), (0.0, 0.0, 1.0), w, h, paint, opacity)
+
+
+# the unit's number on the south-east chamfer's upper plate, left of the starter box:
+# not the south face, whose upper course the south pipe picture's flange covers at rest
+WALL_MARKS = [_wall_mark("07", 2, 0.17, 0.9, 0.28, 0.22, "#CFC7B2", 0.95)]
+# on the hatch, in the free segment south-south-east of the viewport, along its ring
+HATCH_MARKS = [_roof_mark("vac", 300, 0.44, HZ + 0.05 + 0.09 + 0.03 * math.sqrt(1 - (0.44 / 0.78) ** 2),
+                          0.33, 0.13, "#2E2924", 1.0)]
+
+
+def stencils(g, col, pos, normal, marks):
+    """Paint each mark over col, where the surface faces its way and lies in its plane,
+    the paint a little broken, as an old stencil's is."""
+    for name, o, U, V, N, w, h, paint, opacity in marks:
+        rel = _vmath(g, "SUBTRACT", pos, o)
+        u = g.math("ADD", g.math("DIVIDE", _vmath(g, "DOT_PRODUCT", rel, U), w), 0.5)
+        v = g.math("ADD", g.math("DIVIDE", _vmath(g, "DOT_PRODUCT", rel, V), h), 0.5)
+        img = bpy.data.images.load(os.path.join(HERE, "swatches", f"stencil_{name}.png"), check_existing=True)
+        img.colorspace_settings.name = "Non-Color"
+        tex = g.n.new("ShaderNodeTexImage")
+        tex.image, tex.extension, tex.interpolation = img, "CLIP", "Linear"
+        g.l.new(g.node("ShaderNodeCombineXYZ", X=u, Y=v).outputs[0], tex.inputs["Vector"])
+        facing = g.remap(_vmath(g, "DOT_PRODUCT", normal, N), 0.8, 0.9)
+        inplane = g.remap(g.math("ABSOLUTE", _vmath(g, "DOT_PRODUCT", rel, N)), 0.03, 0.015)
+        worn = g.remap(g.noise(pos, 45, detail=3), 0.3, 0.5, 0.7, 1.0)
+        m = g.math("MULTIPLY", g.math("MULTIPLY", tex.outputs["Color"], g.math("MULTIPLY", facing, inplane)),
+                   g.math("MULTIPLY", worn, opacity), clamp=True)
+        col = g.mixc(m, col, _flat(g, paint))
+    return col
+
+
+# Wet rust: dark streaks run down the wall below its fittings, (face, f, the
+# fitting's foot, width, length); each fitting is where vacuum_furnace builds it.
+# They show only where the steel is plain (cool), so below the bands.
+WET_UNDER = [
+    (1, 0.27, 0.74, 0.17, 0.4),         # the maker's plate
+    (1, 0.9, 0.70, 0.05, 0.35),         # a stiffener's lower bolt
+    (2, 0.46, 0.83, 0.2, 0.55),         # the starter box
+    (2, 0.5, 0.685, 0.05, 0.35),        # the conduit's clip
+    (2, 0.8, 0.865, 0.09, 0.5),         # the hose's lower clip
+    (2, 0.62, 0.65, 0.05, 0.35),        # the gauge line's gland
+    (1, 0.5, 0.56, 0.6, 0.3),           # the girth weld, across the south face
+]
+
+
+def wet_streaks(g, col, pos, normal, z, under, where, strength=1.0):
+    stretch = g.node("ShaderNodeMapping", Vector=pos)
+    stretch.inputs["Scale"].default_value = (1.0, 1.0, 0.12)
+    runs = g.remap(g.image(f"{TEX}/maps/rust_streak.png", stretch.outputs[0], 2.6).outputs["Color"], 0.3, 0.6)
+    hang = None
+    for i, f, zb, w, L in under:
+        o, t, n = face_frame(i, f, zb)
+        rel = _vmath(g, "SUBTRACT", pos, o)
+        across = g.remap(g.math("ABSOLUTE", _vmath(g, "DOT_PRODUCT", rel, t)), w / 2, w * 0.15)
+        below = g.math("MULTIPLY", g.remap(z, zb - L, zb - 0.02), g.remap(z, zb + 0.005, zb - 0.005))
+        facing = g.remap(_vmath(g, "DOT_PRODUCT", normal, n), 0.75, 0.9)
+        inplane = g.remap(g.math("ABSOLUTE", _vmath(g, "DOT_PRODUCT", rel, n)), 0.06, 0.03)
+        m = g.math("MULTIPLY", g.math("MULTIPLY", across, below), g.math("MULTIPLY", facing, inplane))
+        hang = m if hang is None else g.math("MAXIMUM", hang, m)
+    wet = g.math("MULTIPLY", g.math("MULTIPLY", hang, runs), g.math("MULTIPLY", where, strength), clamp=True)
+    return g.mixc(wet, col, g.mixc(g.noise(pos, 19, detail=3), _flat(g, WET[0]), _flat(g, WET[1])))
+
+
+def dry_rust(g, col, pos, nz, amount, where):
+    """Rust dried on the tops, where the water stood and went: orange and powdery, in
+    patches, not a wash; only on cool metal."""
+    up = g.remap(nz, 0.75, 0.97)
+    patches = g.remap(g.noise(pos, 6, detail=6, rough=0.6), 0.56, 0.7)
+    chips = g.remap(g.image(f"{TEX}/maps/paint_mask.png", pos, 1.7).outputs["Color"], 0.5, 0.15)
+    m = g.math("MULTIPLY", up, g.math("MAXIMUM", patches, g.math("MULTIPLY", chips, 0.6)))
+    m = g.math("MULTIPLY", g.math("MULTIPLY", m, where), amount, clamp=True)
+    return g.mixc(m, col, g.mixc(g.noise(pos, 27, detail=3), _flat(g, DRY[0]), _flat(g, DRY[1])))
+
+
+def hull_finish(tempered=1.0, gain=1.0, marks=True):
+    """The hull's plates: the plinth swatch, tempered from the roof and the top course,
+    stencilled, and rusted only where it is cool."""
+    def pattern(g):
+        pos, normal, (x, y, z), (nx, ny, nz) = _geometry(g)
+        t = heat_hull(g, pos, x, y, z, nz)
+        col = temper(g, _swatch(g, "plinth", gain), "#3E3B36", t, tempered)
+        if marks:
+            col = stencils(g, col, pos, normal, WALL_MARKS)
+        where = cool(g, t) if tempered else 1.0
+        col = wet_streaks(g, col, pos, normal, z, WET_UNDER, where)
+        return dry_rust(g, col, pos, nz, 0.7, where)
+    return pattern
+
+
+def drum_finish(g):
+    pos, normal, (x, y, z), (nx, ny, nz) = _geometry(g)
+    t = heat_roof(g, pos, x, y)
+    return dry_rust(g, temper(g, _swatch(g, "drum"), "#5E584E", t), pos, nz, 0.6, cool(g, t))
+
+
+def radiator_finish(g):
+    pos, normal, (x, y, z), (nx, ny, nz) = _geometry(g)
+    return temper(g, _swatch(g, "radiator"), "#6E685C", heat_radiator(g, pos, z))
+
+
+def rail_finish(g):
+    """The cap rail: bare steel round the drum, so the roof's rings run onto it."""
+    pos, normal, (x, y, z), (nx, ny, nz) = _geometry(g)
+    t = heat_roof(g, pos, x, y)
+    return dry_rust(g, temper(g, _flat(g, "#77716A"), "#77716A", t, 0.8), pos, nz, 0.4, cool(g, t))
+
+
+def hatch_finish(g):
+    pos, normal, (x, y, z), (nx, ny, nz) = _geometry(g)
+    return stencils(g, _swatch(g, "hatch_warm"), pos, normal, HATCH_MARKS)
+
 
 M = {
-    # spec 3.3, each through the concept's own swatch (recentred on the 3.3 hex)
-    "drum":     layered("drum", "#5E584E", paint_metal=0.0, paint_rough=0.65, wear=0.45, rust=0.35,
-                        dust=0.2, swatch=swatch("drum")),
+    # spec 3.3, each on the concept's own swatch (recentred on the 3.3 hex), and the
+    # signature finish over it. Round 2: the layered rust (cavities, streaks, blooms)
+    # turned down on the tempered parts, so the bands stay clean; the cool metal
+    # carries the rust in the patterns above, and in the girth weld's and ground's drips
+    "drum":     layered("drum", "#5E584E", paint_metal=0.0, paint_rough=0.65, wear=0.45, rust=0.15,
+                        dust=0.2, pattern=drum_finish),
+    # the shell -- the hull's wall plates and its deck, and the south pipe picture's
+    # wall -- is what the heat reaches; the hull's paint on everything else (the pump's
+    # barrel and motor, the starter box, the stacks' feet, the hatch's grooves) stays
+    # plain, so no fitting stands striped in the walls' bands
+    "shell":    layered("shell", "#3E3B36", paint_metal=0.0, paint_rough=0.7, wear=0.5, rust=0.12,
+                        dust=0.3, pattern=hull_finish(), ground=0.7, jitter=0.12,
+                        # rust run down from the girth weld's bolts, wet and dark, below the bands
+                        drips=((0.6, 0.35),), drip=0.8, rust_tint=("#2E1A0E", "#6A3818")),
     "hull":     layered("hull", "#3E3B36", paint_metal=0.0, paint_rough=0.7, wear=0.5, rust=0.22,
-                        dust=0.3, swatch=swatch("plinth"), ground=0.7, jitter=0.16,
-                        # rust run down from the cap rail's top and the girth weld's bolts
-                        drips=((1.25, 0.5), (0.6, 0.35)), drip=0.8),
+                        dust=0.3, pattern=hull_finish(tempered=0.0, marks=False), ground=0.7, jitter=0.16,
+                        drips=((0.6, 0.35),), drip=0.8, rust_tint=("#2E1A0E", "#6A3818")),
     "radiator": layered("radiator", "#6E685C", metal="#9A9488", paint_metal=0.3, paint_rough=0.45,
-                        wear=0.4, rust=0.3, dust=0.15, grime=0.3, swatch=swatch("radiator")),
+                        wear=0.4, rust=0.15, dust=0.15, grime=0.3, pattern=radiator_finish),
     "seam":     layered("seam", "#7A7268", metal="#A49C90", paint_metal=0.7, paint_rough=0.4,
                         wear=0.3, rust=0.2, dust=0.0, jitter=0.04, ground=0.7),
     "steel":    layered("steel", "#77716A", metal="#B4AEA4", paint_metal=0.8, paint_rough=0.35,
                         wear=0.45, rust=0.25, dust=0.1, grime=0.5, ground=0.7),
     "rail":     layered("rail", "#77716A", metal="#B4AEA4", paint_metal=0.8, paint_rough=0.35,
-                        wear=0.45, rust=0.25, dust=0.1, grime=0.5),
+                        wear=0.45, rust=0.1, dust=0.1, grime=0.5, pattern=rail_finish),
     "copper":   layered("copper", "#94592C", metal="#C08452", paint_metal=0.9, paint_rough=0.38,
                         wear=0.4, rust=0.1, dust=0.15, grime=0.5, swatch=swatch("copper"),
                         patina=1.0),
     "brass":    layered("brass", "#9C7034", metal="#C49C5C", paint_metal=0.9, paint_rough=0.38,
                         wear=0.4, rust=0.15, dust=0.15, swatch=swatch("brass")),
 }
-# the roof warmed toward the adopted plate's beige and the dogs bronze (spec 3.3)
+# Two replacement plates (3.3's variation): newer steel, painted after the rest, so a
+# shade lighter and cooler, unstencilled and untempered -- they break the bands.
+# Both upper plates either side of the south-west corner: one repair, round the corner.
+REPLACED = {(0, 0.0, 0.58), (1, 0.0, 0.58)}          # (face, f0, z0) of the panels in 1.
+M["hull_new"] = layered("hull_new", "#45433E", paint_metal=0.0, paint_rough=0.65, wear=0.3, rust=0.12,
+                        dust=0.3, pattern=hull_finish(tempered=0.0, gain=(1.12, 1.13, 1.16), marks=False),
+                        ground=0.7, jitter=0.04, drips=((0.6, 0.35),), drip=0.5,
+                        rust_tint=("#2E1A0E", "#6A3818"))
+# the roof warmed toward the adopted plate's beige and the dogs bronze (spec 3.3);
+# a stencil on it (3.3's variation)
 M["hatch"] = layered("hatch", "#958577", metal="#B8B0A4", paint_metal=0.25, paint_rough=0.6,
-                     wear=0.35, rust=0.2, dust=1.0, grime=0.9, swatch=swatch("hatch_warm"))
+                     wear=0.35, rust=0.2, dust=1.0, grime=0.9, pattern=hatch_finish)
 M["dog"] = M["copper"]
 # a repair plate: plain steel, darker than the hatch's warm paint and dirtier
 M["patch"] = layered("patch", "#5C564D", metal="#A8A296", paint_metal=0.3, paint_rough=0.6,
@@ -366,21 +688,8 @@ def empty(name, loc=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1), parent=None):
 TILT = (math.atan2(0.8, 0.6), 0, 0)
 
 # 1. The hull: battered, octagonal, filling the footprint; its face middles stand on
-# the footprint edge, its corners cut into niches for the stacks.
-HZ, E, C, LEAN = 1.2, 1.482, 0.9, 0.22     # the foot band, 0.01 proud, lands at 1.492
-CT = C - LEAN * (2 - math.sqrt(2))     # the chamfer leans back by LEAN too, square to it
-
-
-def octagon(e, c):
-    return [(-e, -e + c), (-e + c, -e), (e - c, -e), (e, -e + c), (e, e - c), (e - c, e), (-e + c, e), (-e, e - c)]
-
-
-def at_lean(z):
-    """The hull's half-width, and chamfer, at height z."""
-    f = z / HZ
-    return E - LEAN * f, C + (CT - C) * f
-
-
+# the footprint edge, its corners cut into niches for the stacks. (Its shape, HZ to
+# wall_pt, is defined above the materials: the finish places marks on its faces.)
 # An open shell: the battered walls, 0.06 thick, with no lid -- the drum stands inside
 # them on a deck (below), and its front wall comes through the south face.
 def build_panel(i, f0, f1, z0, z1):
@@ -405,7 +714,8 @@ for i in range(8):
     cols = (0.0, 0.1, 0.9, 1.0) if i % 2 else (0.0, 1.0)
     for f0, f1 in zip(cols, cols[1:]):
         for z0, z1 in ((0.0, 0.58), (0.58, HZ)):
-            pl = mesh_object("hull", build_panel(i, f0, f1, z0, z1), "hull", "hull", bevel=0.0)
+            mat = "hull_new" if (i, f0, z0) in REPLACED else "shell"
+            pl = mesh_object("hull", build_panel(i, f0, f1, z0, z1), mat, "hull", bevel=0.0)
             sol = pl.modifiers.new("solid", "SOLIDIFY")
             sol.thickness = 0.06
             sol.offset = -1.0                    # inward: the outside is the approved hull
@@ -415,17 +725,6 @@ for z0, z1 in ((0.0, 0.07), (0.56, 0.6)):                         # a foot band 
     loft(octagon(e0 + 0.01, c0), octagon(e1 + 0.01, c1), z0, z1, "seam", group="hull", bevel=0.004)
 ER, CR = at_lean(HZ)
 ON_CHAMFER = (-math.atan2(LEAN, HZ), 0, math.radians(45))     # square to the south-east chamfer, leaning with it
-
-
-def wall_pt(i, f, z, out=0.0):
-    """On the hull's face i (octagon order, 1 the south face), f along it from its
-    west/south end, at height z, stood out from the wall by out."""
-    e, c = at_lean(z)
-    pts = octagon(e, c)
-    (ax, ay), (bx, by) = pts[i], pts[(i + 1) % 8]
-    nx, ny = by - ay, -(bx - ax)                  # outward: the octagon runs anticlockwise
-    n = math.hypot(nx, ny)
-    return (ax + (bx - ax) * f + out * nx / n, ay + (by - ay) * f + out * ny / n, z)
 
 
 def wall_strip(i, f, w, z0, z1, d, mat, group="hull"):
@@ -520,7 +819,7 @@ cyl((0, 0, H / 2), RD, H, "drum", verts=128, bevel=0.02, parent=BODY)
 torus((0, 0, 0.55), RD + 0.002, 0.011, "seam", parent=BODY, seg=128)                       # girth weld
 # the deck inside the hull's walls, level with the drum's top
 ED, CD = at_lean(H)
-deck = prism(octagon(ED - 0.05, CD), 0.0, H - 0.012, "hull", group="hull", bevel=0.0)
+deck = prism(octagon(ED - 0.05, CD), 0.0, H - 0.012, "shell", group="hull", bevel=0.0)
 # Where the drum comes through, the hull gives way to it: its walls, rail and deck are
 # cut by the drum's own shape (a hidden cutter), so nothing of the hull crosses the roof.
 bpy.ops.mesh.primitive_cylinder_add(vertices=128, radius=RD + 0.004, depth=4.0, location=(0, 0, 0))
@@ -1024,7 +1323,7 @@ def fitting_S():
     def lift(u, v):
         z = (v + E + 0.035) / k
         return Vector((u, -E + LEAN * z / HZ - 0.035, z))
-    slab("S", lift, "drum")
+    slab("S", lift, "shell")                        # the wall it stands in front of, bands and all
 
     def face_pt(x, z, out=0.0):
         return (x, -E + LEAN * z / HZ - out, z)
@@ -1104,10 +1403,10 @@ def fitting_N():
 # ---------------------------------------------------------------- passes
 
 rig.sun()
-# The shadows lifted (Liam, 2026-10-08): the rig's warm fill raised for this building
-# alone, so the walls turned from the sun -- the south-east chamfer, the radiator
-# niches -- stay coloured instead of crushing to black; the sunlit faces barely move.
-sc.world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.26   # the rig: 0.14
+# The shadows lifted (Liam, 2026-10-08): the warm fill at 0.26, so the walls turned
+# from the sun -- the south-east chamfer, the radiator niches -- stay coloured instead
+# of crushing to black. The rig's own default since dec5a59, so this changes nothing.
+sc.world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.26
 GROUND = rig.ground_catcher()
 GROUND.parent = ROOT
 BOUNCE = rig.bounce_ground()
