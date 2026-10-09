@@ -18,7 +18,7 @@ Nothing here burns.
 
 # 1. Building Overview
 
-**Building Name:** `Crust Turbine`
+**Building Name:** `Siderane Turbine` (was `Crust Turbine`)
 **Internal Prototype Name:** `sae-crust-turbine`
 
 **Building Type:** `generator`, derived from the steam turbine, with
@@ -293,6 +293,14 @@ planet.
 ---
 
 # 20. Open questions
+
+**Renamed 2026-10-09 (Liam): crust gas is now siderane.** An invented gas of
+the Core's own, named to sound like a real one: Greek *sideros*, iron, as in
+the siderite meteorites, with the *-ane* of a fuel that burns. The player-facing
+set is siderane, the siderane vent, the Siderane wellhead, the Siderane turbine
+and Siderane extraction. Only the locale changed; every internal name
+(`sae-crust-*`) stays, because renaming those costs a migration for nothing.
+Where this spec still says "crust gas", read siderane.
 
 - **Does it need a rotor window at all?** A sealed machine with nothing visible
   moving is defensible for a pressure let-down, and it would make the building
