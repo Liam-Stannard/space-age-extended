@@ -355,6 +355,20 @@ rather than *heat* in one glance, which is the whole point of the building.
 
 ## 3.3 Colour Palette
 
+**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
+steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
+Each also carries one material of its own on its main surfaces, so a player tells them
+apart by colour before shape, as vanilla's electric furnace, assembler and foundry
+are told apart. Within the building, variation comes from replacement panels in a
+slightly different shade, small stencilled markings, and rust that differs by place:
+dry orange on tops, dark wet streaks below fittings.
+
+**This building's: faded industrial green.** The collar and cap are painted
+`#4A5A44` → `#5E6E56`, sun-faded and worn to steel on edges and bolt heads, with a
+stencilled band round the collar for its gas, as real gas plant is colour-coded.
+The riser and fittings stay bare steel and brass.
+
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Collar and anchors | `#3E3B36` → `#5E584E` | the mass of the building |
