@@ -11,12 +11,12 @@
  },
  "port-glow": {
   "size": [
-   22,
-   21
+   19,
+   19
   ],
   "shift": [
-   0.0,
-   -0.75781
+   -0.00781,
+   -0.74219
   ]
  },
  "base-shadow": {
@@ -72,7 +72,7 @@
   ],
   "frame0_vs_still": [
    255,
-   0.0017,
+   0.0023,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }

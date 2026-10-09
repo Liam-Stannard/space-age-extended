@@ -383,6 +383,18 @@ def dry_rust(g, col, pos, nz, amount, where):
     return g.mixc(m, col, g.mixc(g.noise(pos, 27, detail=3), _flat(g, DRY[0]), _flat(g, DRY[1])))
 
 
+def grime_streaks(g, col, pos, z, where):
+    """Uneven grime (round 3: less machined): dirty water and oil run down the lower
+    course in streaks of uneven strength, never in the bands."""
+    stretch = g.node("ShaderNodeMapping", Vector=pos)
+    stretch.inputs["Scale"].default_value = (1.0, 1.0, 0.08)
+    runs = g.remap(g.image(f"{TEX}/maps/rust_streak.png", stretch.outputs[0], 1.7).outputs["Color"], 0.45, 0.8)
+    uneven = g.remap(g.noise(pos, 1.8, detail=2), 0.35, 0.65)
+    low = g.remap(z, 0.62, 0.45)
+    m = g.math("MULTIPLY", g.math("MULTIPLY", runs, uneven), g.math("MULTIPLY", low, where))
+    return g.mixc(g.math("MULTIPLY", m, 0.55, clamp=True), col, _flat(g, "#221C16"))
+
+
 def hull_finish(tempered=1.0, gain=1.0, marks=True):
     """The hull's plates: the plinth swatch, tempered from the roof and the top course,
     stencilled, and rusted only where it is cool."""
@@ -394,6 +406,7 @@ def hull_finish(tempered=1.0, gain=1.0, marks=True):
             col = stencils(g, col, pos, normal, WALL_MARKS)
         where = cool(g, t) if tempered else 1.0
         col = wet_streaks(g, col, pos, normal, z, WET_UNDER, where)
+        col = grime_streaks(g, col, pos, z, where)
         return dry_rust(g, col, pos, nz, 0.7, where)
     return pattern
 
@@ -432,8 +445,9 @@ M = {
     # wall -- is what the heat reaches; the hull's paint on everything else (the pump's
     # barrel and motor, the starter box, the stacks' feet, the hatch's grooves) stays
     # plain, so no fitting stands striped in the walls' bands
+    # grime 0.75: dark contact lines where the hoses, cables and fittings meet the walls
     "shell":    layered("shell", "#3E3B36", paint_metal=0.0, paint_rough=0.7, wear=0.5, rust=0.12,
-                        dust=0.3, pattern=hull_finish(), ground=0.7, jitter=0.12,
+                        dust=0.3, pattern=hull_finish(), ground=0.7, jitter=0.12, grime=0.75,
                         # rust run down from the girth weld's bolts, wet and dark, below the bands
                         drips=((0.6, 0.35),), drip=0.8, rust_tint=("#2E1A0E", "#6A3818")),
     "hull":     layered("hull", "#3E3B36", paint_metal=0.0, paint_rough=0.7, wear=0.5, rust=0.22,
@@ -491,35 +505,160 @@ M["rim"] = layered("rim", "#9A948C", metal="#D2CCC2", paint_metal=1.0, paint_rou
 M["dial"] = layered("dial", "#8E877B", paint_metal=0.0, paint_rough=0.75, wear=0.15, rust=0.05,
                     dust=0.4, grime=0.6)
 
+# Round 3 (Liam: "too well machined"; add wiring and hoses as vanilla layers them):
+# the services' materials. Hoses in dull rust-brown rubber, as the electromagnetic
+# plant's; cables insulated in muted colours, as the foundry's; zip ties black.
+# FFF #146's rule, done in the model: clear value separation, crisp light edges. The
+# hoses and cables sit a step lighter than the dark walls they lie on, and their
+# worn edges go lighter still (the `metal` colour is the edge's), so each reads as a
+# line at 1x (FFF #350) instead of sinking into the hull.
+M["rubber"] = layered("rubber", "#93603F", metal="#C89270", paint_metal=0.0, paint_rough=0.7, wear=0.4,
+                      rust=0.0, dust=0.35, grime=0.6, jitter=0.06)
+for _name, _hex, _edge in (("red", "#B24C38", "#E09078"), ("blue", "#5678A6", "#A0B8D8"),
+                           ("yellow", "#CCA848", "#EED898"), ("green", "#5E8452", "#A0C090"),
+                           ("black", "#3A3836", "#7A7672"), ("grey", "#4C4A47", "#7E7A74"),
+                           ("muted", "#4A5260", "#7A8290")):
+    M[f"cable-{_name}"] = layered(f"cable-{_name}", _hex, metal=_edge, paint_metal=0.0, paint_rough=0.5,
+                                  wear=0.3, rust=0.0, dust=0.25, grime=0.4, jitter=0.05)
+M["tie"] = layered("tie", "#1E1D1B", paint_metal=0.0, paint_rough=0.5, wear=0.0, rust=0.0, dust=0.2, grime=0.3)
+# a junction box in another maker's grey-green, bolted on later than the hull was built
+M["jbox"] = layered("jbox", "#5A6052", metal="#A8A498", paint_metal=0.1, paint_rough=0.6, wear=0.5, rust=0.25,
+                    dust=0.4, grime=0.7)
+# a mismatched newer plate: brighter steel, little worn
+M["newplate"] = layered("newplate", "#6E6A62", metal="#B4AEA4", paint_metal=0.5, paint_rough=0.45, wear=0.2,
+                        rust=0.05, dust=0.3, grime=0.5, jitter=0.02)
+
+
+def oil_material():
+    """Oil soaked into the ground under the pump: dark and glossy, its edge feathered
+    into the ground by noise, so it reads as a stain and not as a mat."""
+    m = bpy.data.materials.new("oil")
+    m.use_nodes = True
+    t = m.node_tree
+    b = t.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = rig.srgb("#16120E")
+    b.inputs["Roughness"].default_value = 0.22
+    co = t.nodes.new("ShaderNodeTexCoord")
+    ln = t.nodes.new("ShaderNodeVectorMath")
+    ln.operation = "LENGTH"
+    t.links.new(co.outputs["Object"], ln.inputs[0])
+    nz = t.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 6.0
+    nz.inputs["Detail"].default_value = 4.0
+    t.links.new(co.outputs["Object"], nz.inputs["Vector"])
+    add = t.nodes.new("ShaderNodeMath")
+    add.operation = "MULTIPLY_ADD"
+    t.links.new(nz.outputs["Fac"], add.inputs[0])
+    add.inputs[1].default_value = 0.6
+    t.links.new(ln.outputs["Value"], add.inputs[2])
+    rng = t.nodes.new("ShaderNodeMapRange")
+    rng.inputs["From Min"].default_value = 1.15
+    rng.inputs["From Max"].default_value = 0.75
+    rng.inputs["To Max"].default_value = 0.85
+    t.links.new(add.outputs[0], rng.inputs["Value"])
+    t.links.new(rng.outputs[0], b.inputs["Alpha"])
+    return m
+
+
+M["oil"] = oil_material()
+
 
 VIEW_R = 0.145                         # the porthole glass
 
 
 def port_material():
-    """The porthole glass: dark tinted glass when idle; working, filled with light,
-    #FFD9A0 at the centre to #E8A24A at the rim (spec 3.3), by the distance from the
-    glass's own centre."""
+    """The porthole: a furnace seen through thick glass, not a lamp (Liam, round 4:
+    "more like a furnace than a light"). Idle, dark smoky glass with a reflection
+    streak across it. Working, what the glass shows lights up: the sintering tray's
+    bed of powder and preforms glowing in uneven clumps with darker gaps between
+    them, hottest at the core -- #FFD9A0 to #E8A24A (spec 3.3) -- then orange, then
+    deep red where the chamber's walls fall away into the dark at the rim. Only the
+    emission changes between idle and working, so the glow pass (working minus
+    idle) holds the bed and nothing else; the streak is the same in both, so it
+    cancels out of it. A value node, "white", turns the whole glass white for the
+    indicator pass (indicator_cut)."""
     m = bpy.data.materials.new("port")
     m.use_nodes = True
     t = m.node_tree
-    b = t.nodes["Principled BSDF"]
-    b.inputs["Base Color"].default_value = rig.srgb("#2B2E33")         # dark glass (spec 3.3)
+    N, L = t.nodes, t.links
+    b = N["Principled BSDF"]
     b.inputs["Roughness"].default_value = 0.06
-    b.inputs["Coat Weight"].default_value = 1.0                         # a glassy sheen when idle
+    b.inputs["Coat Weight"].default_value = 1.0                         # thick glass's sheen
     b.inputs["Coat Roughness"].default_value = 0.03
-    co = t.nodes.new("ShaderNodeTexCoord")
-    ln = t.nodes.new("ShaderNodeVectorMath")
-    ln.operation = "LENGTH"
-    t.links.new(co.outputs["Object"], ln.inputs[0])
-    ramp = t.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].color = rig.srgb("#FFD9A0")
-    ramp.color_ramp.elements[1].color = rig.srgb("#E8A24A")
-    rng = t.nodes.new("ShaderNodeMapRange")
-    rng.inputs["From Max"].default_value = VIEW_R
-    t.links.new(ln.outputs["Value"], rng.inputs["Value"])
-    t.links.new(rng.outputs[0], ramp.inputs["Fac"])
-    t.links.new(ramp.outputs["Color"], b.inputs["Emission Color"])
+
+    def node(kind, **kw):
+        nd = N.new(kind)
+        for k, v in kw.items():
+            setattr(nd, k, v)
+        return nd
+
+    def math_(op, a_, b_=None, clamp=False):
+        nd = node("ShaderNodeMath", operation=op, use_clamp=clamp)
+        for i, v in enumerate((a_, b_)):
+            if v is None:
+                continue
+            if isinstance(v, bpy.types.NodeSocket):
+                L.new(v, nd.inputs[i])
+            else:
+                nd.inputs[i].default_value = v
+        return nd.outputs[0]
+
+    def remap(v, lo, hi, a_=0.0, b_=1.0):
+        nd = node("ShaderNodeMapRange")
+        L.new(v, nd.inputs["Value"])
+        nd.inputs["From Min"].default_value, nd.inputs["From Max"].default_value = lo, hi
+        nd.inputs["To Min"].default_value, nd.inputs["To Max"].default_value = a_, b_
+        return nd.outputs[0]
+
+    def noise(scale, detail):
+        nd = node("ShaderNodeTexNoise")
+        nd.inputs["Scale"].default_value = scale
+        nd.inputs["Detail"].default_value = detail
+        nd.inputs["Roughness"].default_value = 0.6
+        L.new(co.outputs["Object"], nd.inputs["Vector"])
+        return nd.outputs["Fac"]
+
+    co = node("ShaderNodeTexCoord")
+    xyz = node("ShaderNodeSeparateXYZ")
+    L.new(co.outputs["Object"], xyz.inputs[0])
+    x, y = xyz.outputs["X"], xyz.outputs["Y"]
+    rr = math_("DIVIDE", math_("SQRT", math_("ADD", math_("MULTIPLY", x, x), math_("MULTIPLY", y, y))), VIEW_R)
+    # the bed: hottest at the core, cooling outward to the chamber's walls; clumps of
+    # preforms brighter, the gaps between them darker
+    core = math_("SUBTRACT", 1.0, math_("POWER", math_("MINIMUM", rr, 1.0), 1.7))
+    clumps = remap(noise(30.0, 3.0), 0.3, 0.7, 0.6, 1.3)
+    gaps = remap(noise(70.0, 2.0), 0.55, 0.72, 1.0, 0.55)
+    heat = math_("MULTIPLY", math_("MULTIPLY", core, clumps), gaps, clamp=True)
+    ramp = node("ShaderNodeValToRGB")
+    els = ramp.color_ramp.elements
+    stops = [(0.0, "#000000"), (0.1, "#1E0603"), (0.24, "#6E1E0C"), (0.4, "#B8461A"), (0.56, "#E07E30"),
+             (0.68, "#E8A24A"), (0.84, "#FFD9A0")]
+    els[0].position, els[1].position = stops[0][0], stops[-1][0]
+    for p_, _ in stops[1:-1]:
+        els.new(p_)
+    for e, (p_, hx) in zip(sorted(els, key=lambda e: e.position), stops):
+        e.color = rig.srgb(hx)
+    L.new(heat, ramp.inputs["Fac"])
+    white = node("ShaderNodeValue", name="white", label="white")
+    white.outputs[0].default_value = 0.0
+    emit = node("ShaderNodeMix", data_type="RGBA")
+    L.new(white.outputs[0], emit.inputs[0])
+    L.new(ramp.outputs["Color"], emit.inputs[6])
+    emit.inputs[7].default_value = (1, 1, 1, 1)
+    L.new(emit.outputs[2], b.inputs["Emission Color"])
     b.inputs["Emission Strength"].default_value = 0.0
+    # the glass: smoky, and a reflection streak across it (and a fainter second one),
+    # fading before the rim; none of it in the indicator's white cut
+    band = math_("ADD", math_("MULTIPLY", x, 0.707), math_("MULTIPLY", y, 0.707))
+    s1 = math_("MULTIPLY", remap(math_("ABSOLUTE", math_("SUBTRACT", band, 0.06)), 0.016, 0.004), 0.7)
+    s2 = math_("MULTIPLY", remap(math_("ABSOLUTE", math_("SUBTRACT", band, 0.095)), 0.008, 0.002), 0.35)
+    streak = math_("MULTIPLY", math_("MAXIMUM", s1, s2), remap(rr, 0.95, 0.7))
+    streak = math_("MULTIPLY", streak, math_("SUBTRACT", 1.0, white.outputs[0]))
+    base = node("ShaderNodeMix", data_type="RGBA")
+    L.new(streak, base.inputs[0])
+    base.inputs[6].default_value = rig.srgb("#26292C")
+    base.inputs[7].default_value = rig.srgb("#7A8088")
+    L.new(base.outputs[2], b.inputs["Base Color"])
     return m
 
 
@@ -660,6 +799,119 @@ def pipe(pts, r, mat, bend=0.07, group="static"):
     return _finish(ob, mat, group, bevel=0)
 
 
+def spline(ctrl, per=10):
+    """A smooth path through ctrl (Catmull-Rom), sampled densely: hoses and cables
+    hang through their points, never overshooting them as Bezier handles would."""
+    P = [Vector(c) for c in ctrl]
+    P = [P[0] * 2 - P[1]] + P + [P[-1] * 2 - P[-2]]
+    out = []
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = P[i - 1], P[i], P[i + 1], P[i + 2]
+        for k in range(per):
+            t = k / per
+            out.append(0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t
+                              + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3))
+    out.append(P[-2])
+    return out
+
+
+def droop(a, b, sag, n=6):
+    """Control points for a slack run from a to b, hanging sag below the chord."""
+    a, b = Vector(a), Vector(b)
+    return [tuple(a + (b - a) * (k / n) - Vector((0, 0, sag * 4 * (k / n) * (1 - k / n)))) for k in range(n + 1)]
+
+
+def poly_tube(pts, r, mat, group="static", name="cable"):
+    cu = bpy.data.curves.new(name, "CURVE")
+    cu.dimensions = "3D"
+    cu.bevel_depth = r
+    cu.bevel_resolution = 3
+    cu.use_fill_caps = True
+    sp = cu.splines.new("POLY")
+    sp.points.add(len(pts) - 1)
+    for pt, co in zip(sp.points, pts):
+        pt.co = (*co, 1)
+    ob = bpy.data.objects.new(name, cu)
+    sc.collection.objects.link(ob)
+    return _finish(ob, mat, group, bevel=0)
+
+
+def _arc(pts):
+    s_ = [0.0]
+    for a, b in zip(pts, pts[1:]):
+        s_.append(s_[-1] + (b - a).length)
+    return s_
+
+
+def ferrule(pos, direction, r):
+    """A crimped hose end: a steel sleeve over the hose, pinched by two crimp rings."""
+    dv = Vector(direction).normalized()
+    rot = dv.to_track_quat("Z", "Y").to_euler()
+    cyl(tuple(pos), r + 0.012, 0.055, "steel", verts=20, rot=rot, bevel=0.004)
+    for o in (-0.014, 0.014):
+        torus(tuple(Vector(pos) + dv * o), r + 0.011, 0.005, "seam", rot=rot, seg=20)
+
+
+def hose(ctrl, r, mat="rubber", pitch=0.034, ends=True):
+    """A flexible hose, vanilla's way: corrugated, hanging slack through ctrl, a
+    crimped ferrule at each end."""
+    pts = spline(ctrl)
+    poly_tube(pts, r, mat, name="hose")
+    s_ = _arc(pts)
+    nxt = 0.07
+    for i in range(1, len(pts) - 1):
+        if nxt <= s_[i] <= s_[-1] - 0.07:
+            nxt = s_[i] + pitch
+            torus(tuple(pts[i]), r + 0.002, r * 0.16, mat, rot=(pts[i + 1] - pts[i - 1]).normalized()
+                  .to_track_quat("Z", "Y").to_euler(), seg=16)
+    if ends:
+        ferrule(pts[0] + (pts[3] - pts[0]).normalized() * 0.03, pts[3] - pts[0], r)
+        ferrule(pts[-1] + (pts[-4] - pts[-1]).normalized() * 0.03, pts[-4] - pts[-1], r)
+    return pts
+
+
+def bundle(ctrl, mats, r=0.011, gap=0.023, ties=0.11, lie=(0.0, 0.0, 1.0), rows=1):
+    """Insulated cables side by side through ctrl, zip-tied every `ties`: each cable
+    offset across the run, in the surface it lies on (whose normal is `lie`); with
+    rows=2, a chunky bundle, half the cables heaped on the other half."""
+    pts = spline(ctrl)
+    L = Vector(lie)
+    sides, prev = [], Vector((1, 0, 0))
+    for i in range(len(pts)):
+        t = (pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)]).normalized()
+        sd = t.cross(L)
+        sd = sd.normalized() if sd.length > 0.2 else prev
+        if sd.dot(prev) < 0:
+            sd = -sd
+        sides.append(sd)
+        prev = sd
+    n = len(mats)
+    per = (n + rows - 1) // rows
+    ups = []
+    for i, sd in enumerate(sides):
+        t = (pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)]).normalized()
+        u = sd.cross(t)
+        ups.append(u.normalized() if u.length > 0.2 else L)
+    for k, m in enumerate(mats):
+        row, col = divmod(k, per)
+        off = (col - (per - 1) / 2 + 0.35 * row) * gap
+        lift = row * gap * 0.85
+        poly_tube([p + sd * off + u * lift for p, sd, u in zip(pts, sides, ups)], r, m)
+    n = per
+    s_ = _arc(pts)
+    nxt = 0.05
+    for i in range(1, len(pts) - 1):
+        if nxt <= s_[i] <= s_[-1] - 0.04:
+            nxt = s_[i] + ties
+            rot = (pts[i + 1] - pts[i - 1]).normalized().to_track_quat("Z", "Y").to_euler()
+            bpy.ops.mesh.primitive_torus_add(major_radius=1.0, minor_radius=0.12, location=tuple(pts[i]),
+                                             rotation=rot, major_segments=16, minor_segments=6)
+            o = bpy.context.active_object
+            o.scale = ((n - 1) / 2 * gap + r + 0.004, r + 0.004 + (rows - 1) * gap * 0.45, 0.035)
+            _finish(o, "tie", "static", bevel=0, smooth=True)
+    return pts
+
+
 def oval(c, ra, rb, ang, z, h, mat, bevel=0.004, n=32):
     """A flat oval slab, ra along ang and rb across it, h thick, centred at height z."""
     ca, sa = math.cos(ang), math.sin(ang)
@@ -686,6 +938,9 @@ def empty(name, loc=(0, 0, 0), rot=(0, 0, 0), scale=(1, 1, 1), parent=None):
 
 # A face that lands on screen as a circle: tilted back 53.13 degrees, normal (0, -0.8, 0.6).
 TILT = (math.atan2(0.8, 0.6), 0, 0)
+
+import random  # noqa: E402
+PLATE_RNG = random.Random(1009)
 
 # 1. The hull: battered, octagonal, filling the footprint; its face middles stand on
 # the footprint edge, its corners cut into niches for the stacks. (Its shape, HZ to
@@ -719,6 +974,12 @@ for i in range(8):
             sol = pl.modifiers.new("solid", "SOLIDIFY")
             sol.thickness = 0.06
             sol.offset = -1.0                    # inward: the outside is the approved hull
+            # Plates hung by hand, not machined (round 3): each stands a few
+            # thousandths proud of its neighbours, so its edges step; the replaced
+            # ones, newer and thicker, a little more.
+            d = 0.012 if mat == "hull_new" else PLATE_RNG.uniform(0.0, 0.007)
+            n_ = face_frame(i, 0.5, 0.6)[2]
+            pl.location = (n_[0] * d, n_[1] * d, 0.0)
 for z0, z1 in ((0.0, 0.07), (0.56, 0.6)):                         # a foot band and a girth weld
     e0, c0 = at_lean(z0)
     e1, c1 = at_lean(z1)
@@ -1133,12 +1394,13 @@ tube([(hx, hy, hz0 + 0.03), (hx, hy, hz0 + 0.07), (hx + 0.04 * ux, hy + 0.04 * u
      0.042, "steel")                                                                       # the rigid elbow
 torus(EL, 0.044, 0.012, "brass", rot=Vector((ux, uy, 0)).to_track_quat("Z", "Y").to_euler(), seg=24)  # its clamp
 HF = 0.8                                     # where it comes down the chamfer
+HOSE_R = 0.044
 BIN = (BX - 0.02, BY + BR + 0.05, 0.6)       # the barrel's inlet, on its north side
 HOSE = [EL, (*on_body(math.radians(-22.5), 0.7, 0)[:2], H + 0.22),
         (*on_body(math.radians(-29), 1.0, 0)[:2], H + 0.17), wall_pt(2, HF, PZ + 0.07, -0.02),
         wall_pt(2, HF, HZ - 0.06, 0.05), wall_pt(2, HF, 0.86, 0.05),
         (BIN[0], BIN[1] + 0.12, BIN[2] + 0.1), (BIN[0], BIN[1] + 0.05, BIN[2])]
-tube(HOSE, 0.036, "wheel")
+tube(HOSE, HOSE_R, "rubber")                  # reinforced: heavier, and rubber (round 3)
 # its ribs: fine rings at an even pitch along the curve itself, square to it, clear
 # of both ends' fittings
 spl = PARTS["static"][-1].data.splines[0]
@@ -1163,7 +1425,12 @@ for i in range(1, len(_pts) - 1):
     if nxt <= _s[i] <= _s[-1] - 0.05:
         nxt = _s[i] + 0.032
         d = Vector(_pts[i + 1]) - Vector(_pts[i - 1])
-        torus(_pts[i], 0.037, 0.006, "wheel", rot=d.normalized().to_track_quat("Z", "Y").to_euler(), seg=16)
+        torus(_pts[i], HOSE_R + 0.002, 0.007, "rubber", rot=d.normalized().to_track_quat("Z", "Y").to_euler(),
+              seg=16)
+# crimped ferrules at both ends, where the hose meets the elbow and the inlet
+for k0, k1 in ((0, 6), (len(_pts) - 1, len(_pts) - 7)):
+    a_, b_ = Vector(_pts[k0]), Vector(_pts[k1])
+    ferrule(a_ + (b_ - a_).normalized() * 0.03, (b_ - a_), HOSE_R)
 box(wall_pt(2, HF, PZ + 0.03, -0.03), (0.1, 0.07, 0.04), "brass", rot=(0, 0, math.radians(45)),
     bevel=0.006)                                                                             # its saddle on the rail
 for z in (1.0, 0.88):                                                                       # clipped to the wall
@@ -1215,13 +1482,13 @@ def flange(pos, direction, r=LOOP_R, n=6):
             bevel=0.0, parent=F)
 
 
-def nozzle(base, direction, length, r=LOOP_R):
+def nozzle(base, direction, length, r=LOOP_R, mat="radiator"):
     """A stub out of a vessel at base along direction, its flange at the end; returns the end."""
     dv = Vector(direction).normalized()
     end = Vector(base) + dv * length
     rot = dv.to_track_quat("Z", "Y").to_euler()
-    cyl(tuple((Vector(base) + end) / 2), r + 0.006, length, "radiator", verts=24, rot=rot, bevel=0.0)
-    cyl(tuple(Vector(base) + dv * 0.012), r + 0.03, 0.024, "radiator", verts=24, rot=rot, bevel=0.006)  # its weld boss
+    cyl(tuple((Vector(base) + end) / 2), r + 0.006, length, mat, verts=24, rot=rot, bevel=0.0)
+    cyl(tuple(Vector(base) + dv * 0.012), r + 0.03, 0.024, mat, verts=24, rot=rot, bevel=0.006)  # its weld boss
     flange(tuple(end), dv, r)
     return tuple(end)
 
@@ -1251,6 +1518,209 @@ for cx, cy, px, py, d in STACKS:
     foot = nozzle((rx - (FB + 0.015) * dx, ry - (FB + 0.015) * dy, RZ0 + 0.01), (-dx, -dy, 0), 0.045)
     box((foot[0] - 0.03 * dx, foot[1] - 0.03 * dy, RZ0 + 0.01), (0.03, 0.16, 0.16), "steel", rot=(0, 0, d),
         bevel=0.008)                                                                              # its pad
+
+# 7b. Services (Liam, round 3: "add more wiring and hoses and things, to make it look
+# similar to vanilla factorio assets; these look too well machined" -- and "keep the
+# furnace low": everything here lies on the roof's rail, the walls or the ground, and
+# nothing rises above what was already drawn). Vanilla layers its services on in
+# plain view: the electromagnetic plant's slack corrugated hoses, the foundry's
+# bundled cables and boxes. Nothing crosses the hatch, its dogs or the viewport.
+
+
+def face_len(i, z):
+    a, b = wall_pt(i, 0, z), wall_pt(i, 1, z)
+    return math.hypot(b[0] - a[0], b[1] - a[1])
+
+
+def on_wall(i, f, z, out):
+    return Vector(wall_pt(i, f, z, out))
+
+
+def wall_dir(i):
+    """Face i's outward normal, level."""
+    n_ = face_frame(i, 0.5, 0.6)[2]
+    k = math.hypot(n_[0], n_[1])
+    return Vector((n_[0] / k, n_[1] / k, 0.0))
+
+
+# Round 4 (Liam: denser, higher contrast; vanilla makes its services a major part of
+# the image): fewer, chunkier pieces that survive at 1x. A tray round the front of
+# the rail and another round the back carry heaped four-colour bundles; a junction
+# box on each side; glands and clamps at each radiator bank, with short drops into
+# them; and two hoses -- the vacuum hose and a heavier one on the east -- lying on
+# the roof, the rail and the walls, not hung in the air to cast black.
+RAIL = octagon(ER - 0.06, CR - 0.025)          # the rail's middle line, vertex by vertex
+
+
+def rail_pt(i, f, inset=0.0):
+    (ax, ay), (bx, by) = RAIL[i], RAIL[(i + 1) % 8]
+    p_ = Vector((ax + (bx - ax) * f, ay + (by - ay) * f, 0.0))
+    return p_ - wall_dir(i) * inset
+
+
+TZ = PZ + 0.022                                 # a tray's floor
+
+
+def tray(path):
+    """An open steel channel along the rail through path (rail-level points), on
+    feet, its ends welded on."""
+    for a_, b_ in zip(path, path[1:]):
+        a_, b_ = Vector(a_), Vector(b_)
+        mid, d_ = (a_ + b_) / 2, b_ - a_
+        rot = (0, 0, math.atan2(d_.y, d_.x))
+        n_ = Vector((-d_.y, d_.x, 0)).normalized()
+        L_ = d_.length + 0.03
+        box((mid.x, mid.y, TZ - 0.002), (L_, 0.078, 0.006), "steel", rot=rot, bevel=0.002)
+        for sy in (-1, 1):
+            q = mid + n_ * (sy * 0.037)
+            box((q.x, q.y, TZ + 0.014), (L_, 0.006, 0.03), "steel", rot=rot, bevel=0.002)
+        for k in range(max(1, int(d_.length / 0.22))):
+            q = a_ + d_ * ((k + 0.5) / max(1, int(d_.length / 0.22)))
+            box((q.x, q.y, PZ + 0.009), (0.03, 0.05, 0.02), "steel", rot=rot, bevel=0.003)
+    for e_, o_ in ((Vector(path[0]), Vector(path[1])), (Vector(path[-1]), Vector(path[-2]))):
+        d_ = (e_ - o_).normalized()
+        q = e_ + d_ * 0.02
+        box((q.x, q.y, TZ + 0.01), (0.024, 0.084, 0.03), "seam", rot=(0, 0, math.atan2(d_.y, d_.x)), bevel=0.004)
+
+
+def in_tray(p_, dz=0.016):
+    return (p_.x, p_.y, TZ + dz)
+
+
+FOUR = ("cable-red", "cable-yellow", "cable-blue", "cable-green")
+CR_ = 0.014                                      # a cable's radius in the heaped bundles
+
+# Junction box 1, on a welded angle bracket on the south-west chamfer's upper plate.
+J1F, J1Z = 0.9, 1.0
+L0 = face_len(0, J1Z)
+SW_SQUARE = (-math.atan2(LEAN, HZ), 0, math.radians(-45))        # square to face 0, leaning with it
+box(tuple(on_wall(0, J1F, J1Z - 0.11, 0.035)), (0.2, 0.07, 0.02), "steel", rot=SW_SQUARE, bevel=0.004)   # bracket
+box(tuple(on_wall(0, J1F, J1Z - 0.11, 0.004)), (0.22, 0.012, 0.035), "seam", rot=SW_SQUARE, bevel=0.003)  # its weld
+box(tuple(on_wall(0, J1F, J1Z, 0.05)), (0.17, 0.08, 0.2), "jbox", rot=SW_SQUARE, bevel=0.01)
+box(tuple(on_wall(0, J1F, J1Z, 0.093)), (0.18, 0.01, 0.21), "jbox", rot=SW_SQUARE, bevel=0.004)          # lid
+for df in (-0.06, 0.06):
+    for dz in (-0.08, 0.08):
+        rivet(tuple(on_wall(0, J1F + df / L0, J1Z + dz, 0.1)), 0.009)
+cyl(tuple(on_wall(0, J1F, J1Z + 0.11, 0.05)), 0.03, 0.03, "brass", verts=10, bevel=0.0)        # the top gland
+side_gland = on_wall(0, J1F - 0.1 / L0, J1Z + 0.02, 0.05)
+cyl(tuple(side_gland), 0.016, 0.03, "brass", verts=8, rot=(0, math.pi / 2, math.radians(-45)), bevel=0.0)
+
+# The front tray: up the south-west chamfer from beyond its radiator's loop, along
+# the south rail, and on round the south-east chamfer to above the starter box.
+front = [rail_pt(0, 0.77), rail_pt(1, 0.0), rail_pt(2, 0.0), rail_pt(2, 0.42)]
+tray(front)
+SB_TOP = 0.93 + 0.1
+run = [tuple(on_wall(0, J1F, J1Z + 0.13, 0.05)), tuple(on_wall(0, J1F, HZ - 0.03, 0.055)),
+       tuple(on_wall(0, J1F, PZ + 0.05, 0.02)), in_tray(rail_pt(0, J1F - 0.02), 0.02),
+       in_tray(rail_pt(0, 0.97)), in_tray(rail_pt(1, 0.03)), in_tray(rail_pt(1, 0.5)), in_tray(rail_pt(1, 0.97)),
+       in_tray(rail_pt(2, 0.03)), in_tray(rail_pt(2, 0.36)), in_tray(rail_pt(2, 0.42), 0.03),
+       tuple(on_wall(2, 0.42, PZ + 0.05, 0.03)), tuple(on_wall(2, 0.42, HZ - 0.04, 0.06)),
+       tuple(on_wall(2, 0.41, 1.12, 0.05)), tuple(on_wall(2, 0.4, SB_TOP + 0.02, 0.045))]
+bundle(run, FOUR, r=CR_, gap=0.026, rows=2)
+# a P-clip holding the run to the south-west chamfer where it comes up to the rail
+box(tuple(on_wall(0, J1F, HZ - 0.08, 0.035)), (0.1, 0.05, 0.026), "steel", rot=SW_SQUARE, bevel=0.004)
+
+# The radiator banks' glands and clamps, each with a short drop into it. The
+# south-west bank's is a clamp on its post nearest the camera, fed from junction box 1.
+def stack(cx, cy):
+    return next(st for st in STACKS if st[:2] == (cx, cy))
+
+
+_, _, px_, py_, d_ = stack(-1, -1)
+t_ = d_ + math.pi / 2
+post = Vector((px_ + 0.29 * math.cos(t_), py_ + 0.29 * math.sin(t_), 1.12))
+box(tuple(post), (0.09, 0.12, 0.06), "jbox", rot=(0, 0, t_), bevel=0.008)                     # the clamp
+cl = post + Vector((-math.cos(d_), -math.sin(d_), 0.0)) * 0.065                                # its gland, hull-side
+cyl(tuple(cl), 0.018, 0.035, "brass", verts=8, rot=(0, math.pi / 2, d_), bevel=0.0)
+bundle(droop(side_gland + Vector((0, 0, 0.0)) - wall_dir(0) * 0.0 + wall_dir(0) * 0.02, cl, 0.03, n=4),
+       ("cable-yellow", "cable-red"), r=0.013, gap=0.026, lie=(0, 0, 1))
+
+# The back: junction box 2 on the north rail, a tray either side of it along the rail
+# and round the chamfers short of the lifting lugs, and from each tray's end a drop
+# out over the niche to a gland clamped on the radiator's top rail.
+J2 = Vector((0.12, RAIL[5][1] - 0.02, PZ + 0.035))
+box(tuple(J2), (0.22, 0.08, 0.07), "jbox", bevel=0.01)
+box(tuple(J2 + Vector((0, 0, 0.037))), (0.23, 0.085, 0.008), "jbox", bevel=0.003)             # lid
+for sx in (-1, 1):
+    for sy in (-1, 1):
+        rivet(tuple(J2 + Vector((sx * 0.09, sy * 0.028, 0.043))), 0.008)
+    cyl(tuple(J2 + Vector((sx * 0.12, 0, -0.005))), 0.022, 0.03, "brass", verts=10, rot=(0, math.pi / 2, 0),
+        bevel=0.0)
+back_e = [Vector((J2.x + 0.14, J2.y, 0)), rail_pt(4, 1.0), rail_pt(4, 0.78)]
+back_w = [Vector((J2.x - 0.14, J2.y, 0)), rail_pt(5, 0.0), rail_pt(6, 0.22)]
+tray(back_e)
+tray(back_w)
+for side, path, (cx, cy), i_, f_ in ((1, back_e, (1, 1), 4, 0.78), (-1, back_w, (-1, 1), 6, 0.22)):
+    _, _, px_, py_, d_ = stack(cx, cy)
+    top = Vector((px_, py_, 1.27 + 0.025))
+    box(tuple(top + Vector((0, 0, 0.012))), (0.1, 0.11, 0.024), "jbox", rot=(0, 0, d_ + math.pi / 2),
+        bevel=0.005)                                                                            # the clamp
+    gl_ = top + Vector((0, 0, 0.035))
+    cyl(tuple(gl_), 0.022, 0.03, "brass", verts=10, bevel=0.0)                                  # its gland
+    ends_ = [Vector((J2.x + side * 0.135, J2.y, 0))] + path[1:]
+    pts_ = [in_tray(ends_[0], 0.02)] + [in_tray(p_) for p_ in ends_[1:-1]] + [in_tray(ends_[-1], 0.03)]
+    out_ = Vector(wall_pt(i_, f_, PZ + 0.04, 0.04))
+    # Muted (Liam, round 4b): at 1x a four-colour bundle here drew a striped line along
+    # the top of the silhouette that read as trim. Two dark cables, one of them a
+    # dull blue-grey, lying low in the tray so its dark steel sides show more than
+    # they do, held down by straps.
+    bundle(pts_ + [tuple(out_)] + droop(out_, gl_ + Vector((0, 0, 0.03)), 0.04, n=4)[1:],
+           ("cable-black", "cable-grey") if side > 0 else ("cable-grey", "cable-muted"), r=0.012, gap=0.026,
+           ties=1.0)
+    for a_, b_ in zip(path, path[1:]):
+        a_, b_ = Vector(a_), Vector(b_)
+        d_ = b_ - a_
+        k_ = max(1, int(d_.length / 0.14))
+        for j in range(1, k_ + 1):
+            q = a_ + d_ * (j / (k_ + 1))
+            box((q.x, q.y, TZ + 0.034), (0.022, 0.086, 0.008), "steel", rot=(0, 0, math.atan2(d_.y, d_.x)),
+                bevel=0.002)                                                                   # a strap
+
+# The starter box's own cables: glands under it either side of the conduit, a slack
+# pair down to the drive motor, and a yellow instrument cable to the gauge's hood.
+L2 = face_len(2, 0.83)
+gl = [on_wall(2, JB + df / L2, 0.815, 0.05) for df in (-0.09, -0.045, 0.11)]
+for g_ in gl:
+    cyl(tuple(g_), 0.015, 0.03, "brass", verts=8, bevel=0.0)
+motor = Vector((WX - 0.06, WY + 0.26, WZ + 0.095))
+m0 = (gl[0] + gl[1]) / 2 + Vector((0, 0, -0.02))
+bundle([tuple(m0), tuple(m0 + Vector((0.01, -0.01, -0.12))),
+        tuple((m0 + motor) / 2 + Vector((-0.03, -0.03, -0.04))), tuple(motor + Vector((0, 0, 0.04))),
+        tuple(motor)], ("cable-red", "cable-black"), r=0.014, gap=0.028, lie=tuple(wall_dir(2)))
+gauge = Vector((BX - 0.12, BY - 0.07, 0.07 + BH + 0.12))
+bundle(droop(gl[2] + Vector((0, 0, -0.02)), gauge, 0.015, n=4), ("cable-yellow",), r=0.014, lie=(0, 0, 1))
+
+# The east hose: heavier than the vacuum hose, from a flanged stub standing on the
+# east rail, lying along the rail southward, over the rail's edge at the south-east
+# chamfer's end, down that wall beside the vacuum hose, and into the pump barrel's
+# north-east side.
+ER_R = 0.052
+stub = rail_pt(3, 0.82)
+nozzle((stub.x, stub.y, PZ - 0.005), (0, 0, 1), 0.05, r=0.036, mat="steel")
+bd = Vector((math.cos(math.radians(50)), math.sin(math.radians(50)), 0.0))
+be = Vector(nozzle(tuple(Vector((BX, BY, 0.5)) + bd * (BR - 0.01)), tuple(bd), 0.03, r=0.036, mat="steel"))
+hz = PZ + ER_R + 0.008
+hose([(stub.x, stub.y, PZ + 0.09), (stub.x, stub.y - 0.06, hz + 0.01), tuple(rail_pt(3, 0.45) + Vector((0, 0, hz))),
+      tuple(rail_pt(3, 0.08) + Vector((0, 0, hz))), tuple(rail_pt(2, 0.93) + Vector((0, 0, hz))),
+      tuple(on_wall(2, 0.93, PZ + 0.02, ER_R + 0.01)), tuple(on_wall(2, 0.93, 0.95, ER_R + 0.008)),
+      tuple(on_wall(2, 0.93, 0.68, ER_R + 0.01)), tuple(be + bd * 0.05 + Vector((0, 0.04, 0.06))),
+      tuple(be + bd * 0.03)], ER_R)
+for z_ in (1.02, 0.78):                                                                       # its wall clips
+    box(tuple(on_wall(2, 0.93, z_, 0.02)), (0.13, 0.04, 0.03), "steel", rot=ON_CHAMFER, bevel=0.005)
+
+# Less machined (round 3): a mismatched newer plate bolted over the south-west
+# chamfer's lower course beside the south corner, a little askew, and oil soaked into
+# the ground under the pump.
+wall_strip(0, 0.86, 0.19, 0.1, 0.42, 0.014, "newplate", group="hull")
+for df in (-0.075, 0.075):
+    for z in (0.14, 0.38):
+        rivet(tuple(on_wall(0, 0.86 + df / face_len(0, z), z + (0.01 if df > 0 else 0.0), 0.02)), 0.012)
+bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=1.0, depth=0.004, location=(BX - 0.1, BY - 0.12, 0.003),
+                                    rotation=(0, 0, math.radians(20)))
+OIL = bpy.context.active_object
+OIL.scale = (0.3, 0.2, 1.0)
+_finish(OIL, "oil", "static", bevel=0)
+
 
 # 8. The pipe pictures: the engine draws one at whichever face the input is turned
 # to. Each is a stub on the pipe's own centreline, ending in a flange the size of the
@@ -1473,17 +1943,8 @@ rig.camera(*CANVAS)
 def indicator_cut(on):
     """The viewport glass as the light pass wants it: lit white, for the engine to tint."""
     t = M["port"].node_tree
-    b = t.nodes["Principled BSDF"]
-    ramp = next(n for n in t.nodes if n.type == "VALTORGB")
-    if on:
-        indicator_cut.saved = [tuple(e.color) for e in ramp.color_ramp.elements]
-        for e in ramp.color_ramp.elements:
-            e.color = (1, 1, 1, 1)
-        b.inputs["Emission Strength"].default_value = 1.0
-    else:
-        for e, c in zip(ramp.color_ramp.elements, indicator_cut.saved):
-            e.color = c
-        b.inputs["Emission Strength"].default_value = 0.0
+    t.nodes["white"].outputs[0].default_value = 1.0 if on else 0.0
+    t.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = 1.0 if on else 0.0
 
 
 FLY = DECL["animations"][0]

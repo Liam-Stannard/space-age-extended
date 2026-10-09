@@ -694,21 +694,24 @@ derive.own_graphics(furnace,
   working_visualisations =
   {
     -- The heat glow, working minus idle, differenced by the packer so it
-    -- registers by construction. The building's entire heat budget is this one
-    -- circle; if light appears anywhere else, the seal is a lie.
+    -- registers by construction: a glowing sintering bed seen through thick
+    -- glass, white-yellow at the core to deep red at the chamber's edge, so it
+    -- reads as a furnace rather than a lamp. The building's entire heat budget
+    -- is this one circle; if light appears anywhere else, the seal is a lie.
+    -- The light it casts is a deep red-orange, the colour of the bed.
     {
       fadeout = true,
       effect = VF_GLOW_EFFECT,
-      light = { intensity = 0.3, size = 2.5, color = { 0.91, 0.64, 0.29 } },
+      light = { intensity = 0.3, size = 2.5, color = { 0.9, 0.45, 0.2 } },
       animation =
       {
         filename = VF .. "port-glow.png",
         priority = "high",
         blend_mode = "additive",
         draw_as_glow = true,
-        width = 22, height = 21,
+        width = 19, height = 19,
         frame_count = 1,
-        shift = { 0, -0.75781 },
+        shift = { -0.00781, -0.74219 },
         scale = 0.5
       }
     },
