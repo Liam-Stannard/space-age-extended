@@ -2,11 +2,11 @@
  "base": {
   "size": [
    198,
-   224
+   234
   ],
   "shift": [
    0.0,
-   -0.20312
+   -0.28125
   ]
  },
  "port-glow": {
@@ -21,12 +21,12 @@
  },
  "base-shadow": {
   "size": [
-   214,
-   197
+   223,
+   201
   ],
   "shift": [
-   0.15625,
-   -0.02344
+   0.22656,
+   -0.05469
   ]
  },
  "viewport-status": {
@@ -41,11 +41,11 @@
  },
  "flywheel": {
   "size": [
-   52,
+   54,
    74
   ],
   "shift": [
-   1.10938,
+   1.09375,
    0.78125
   ],
   "frames": 16,
@@ -67,12 +67,12 @@
    "pixels the working light clipped to white; 0 = the light keeps its colour"
   ],
   "flywheel_drift_px": [
-   0.02,
+   0.03,
    "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
   ],
   "frame0_vs_still": [
    255,
-   0.0025,
+   0.0017,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }

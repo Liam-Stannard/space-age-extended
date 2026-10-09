@@ -7,8 +7,8 @@
   "motions": [
     {
       "type": "gauge",
-      "_where": "The dial lies flat on the pump barrel's head, so through this camera it draws as a circle: centre and radius measured off sheets/base.png (the pivot at 178.5, 167.3; the face 5.2 px across the hood).",
-      "center": [178.5, 167.3],
+      "_where": "The dial lies flat on the pump barrel's head, so through this camera it draws as a circle: centre and radius measured off sheets/base.png (the pivot at 178.5, 177.3, re-measured 2026-10-08 after the radiators raised the plate 10 px; the face 5.2 px across the hood).",
+      "center": [178.5, 177.3],
       "plane_basis": [[5.2, 0.0], [0.0, 5.2]],
       "_reading": "A pump holding its vacuum: the needle sits at a working reading, up and to the right, and pulses a few degrees with the strokes -- once a loop, never sweeping the dial.",
       "minimum_angle_degrees": -66,

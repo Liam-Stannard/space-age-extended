@@ -29,6 +29,7 @@ the still render (spec 6: the stopped machine is the plate with every frame 0).
 Then one row per face: idle, working, and the join at 3x, idle and working.
 """
 import json
+import math
 import os
 import sys
 from PIL import Image, ImageChops, ImageDraw
@@ -49,7 +50,12 @@ STATUS = {"idle": None, "working": None,                                        
 # the gauge's needle: Animatorio's layer (gauge.json), cut from sheets/base.png at this
 # window by tools/build-animatorio-layers.py, 16 frames in step with the flywheel
 SHEETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sheets")
-NEEDLE_WINDOW = (170, 158)
+# The window is the 18 px square round the dial's pivot, read from gauge.json, so it
+# follows the dial when the plate's canvas changes (it moved 10 px down when the
+# radiators grew, 2026-10-08); build the needle with --window x y x+18 y+18.
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "gauge.json")) as _f:
+    _cx, _cy = json.load(_f)["motions"][0]["center"]
+NEEDLE_WINDOW = (math.floor(_cx) - 8, math.floor(_cy) - 9)
 FLY = (1.0, 1.17)                       # the flywheel's centre on screen, tiles right and down
 FACE_NAME = {"N": "north", "E": "east", "S": "south", "W": "west"}
 OUTSIDE = {"N": (0, -2), "E": (2, 0), "S": (0, 2), "W": (-2, 0)}
