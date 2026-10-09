@@ -37,9 +37,10 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Vacuum Furnace** — redesigned 2026-10-02 to take one rotatable fluid input;
-  finished model in progress (`vacuum-furnace-model`), then wiring: rotatable
-  fluid box, rendered pipe pictures, `status_colors` per §3.1's fault-lamp table.
+- **Vacuum Furnace** — redesigned 2026-10-02, and 2026-10-08 to take one flux
+  pass-through (two opposite `input-output` connections); finished model in
+  progress (`vacuum-furnace-model`), then wiring: rotatable pass-through fluid
+  box, rendered pipe pictures, `status_colors` per §3.2's viewport table.
 - **Drop Crusher** — model (`drop-crusher-model`), then wiring.
 - **Crust Tap** — model (`crust-tap-model`), then wiring once the engine test
   says whether `fluid_animation` can carry the working-only frost and seam.
