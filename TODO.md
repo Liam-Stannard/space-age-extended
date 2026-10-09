@@ -31,6 +31,11 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **Rename the melt vent to the kamacite vent.** The four player-facing
   strings, `sae-melt-vent` → `sae-kamacite-vent` with a migration, and "melt"
   in `design/` once the docs are rewritten for the rework.
+- **Rename crust gas to siderane in the docs.** The player-facing names
+  changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
+  extraction); `design/` and the other specs still say "crust gas", "crust
+  tap" and "crust turbine" about 50 times. Rewrite them with the rework.
+  Internal names (`sae-crust-*`) stay.
 
 ## Building art in Blender
 

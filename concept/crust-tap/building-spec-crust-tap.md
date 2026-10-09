@@ -26,7 +26,7 @@ sells **pressure, not heat**, and that single choice is what keeps it simple.
 
 # 1. Building Overview
 
-**Building Name:** `Crust Tap`
+**Building Name:** `Siderane Wellhead` (was `Crust Tap`)
 **Internal Prototype Name:** `sae-crust-tap`
 
 **Building Type:** `offshore-pump`. Chosen for one reason: an offshore pump is
@@ -344,6 +344,14 @@ attempted.
 ---
 
 # 20. Open questions
+
+**Renamed 2026-10-09 (Liam): crust gas is now siderane.** An invented gas of
+the Core's own, named to sound like a real one: Greek *sideros*, iron, as in
+the siderite meteorites, with the *-ane* of a fuel that burns. The player-facing
+set is siderane, the siderane vent, the Siderane wellhead, the Siderane turbine
+and Siderane extraction. Only the locale changed; every internal name
+(`sae-crust-*`) stays, because renaming those costs a migration for nothing.
+Where this spec still says "crust gas", read siderane.
 
 - **`auto_barrel = false` is not optional.** Crust gas must never leave the Core,
   or a player barrels a landing-day power source and ships it to Nauvis. It joins
