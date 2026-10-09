@@ -43,7 +43,8 @@ stroke. The task: .claude/tasks/drop-crusher-model.md.
   - the trip pawl: a sprung lever hung off the collar on a cheek bracket, its nose
     through the collar's window on the ratchet;
   - the armoured inspection hatch with eight locking dogs on the south face, and the
-    white status-lamp lens on the wall face just under the roof's edge above it;
+    status lamp: round 10, a caged lamp on the kerb at the south-east (its old boss
+    on the wall above the hatch blanked off);
   - copper and brass as the plate uses them, rust run down from every band and
     fitting, ground dirt at the foot, scuffs, a repair patch, a maker's plate.
 Round 4, finish (2026-10-08): the collar worked outside (a heavy riveted head flange
@@ -712,7 +713,7 @@ def stave(a0, a1, z0, z1, n=8):
 
 # the wall in plates, each its own object and so its own tone (the furnace's way); two
 # of them replaced since, in fresher primer (the signature finish's variation): the
-# upper course west of the lamp, and the middle course east of the hatch
+# upper course west of the old lamp boss, and the middle course east of the hatch
 REPLACED = {(236.25, COURSES[2]), (281.25, COURSES[1])}
 for a in SEAMS:
     for z0, z1 in zip(COURSES, COURSES[1:]):
@@ -1361,22 +1362,54 @@ for da, z, w in ((-4, 0.6, 0.16), (5, 0.52, 0.1), (-1, 1.72, 0.12)):
     loc, rot = on_wall(-90 + da, z, 0.003)
     box(loc, (w, 0.05, 0.004), "scuff", rot=rot, bevel=0.0)
 
-# the status lamp: on the wall face just under the roof's edge, above the hatch (the
-# plate's place for it): a white lens domed out of a brass bezel on a bolted boss
-# (spec 3.2, 3.3); the light pass is its lens, lit white
-LAMP = empty("lamp", *on_wall(-90, ZR - 0.2, 0.0))
-cyl((0, 0, 0.0), 0.14, 0.08, "frame", verts=32, bevel=0.01, parent=LAMP)                      # its boss
-cyl((0, 0, 0.05), 0.11, 0.04, "brass", verts=32, bevel=0.01, parent=LAMP)
-torus((0, 0, 0.07), 0.095, 0.014, "brass", parent=LAMP, seg=48)                              # the bezel's lip
-bpy.ops.mesh.primitive_uv_sphere_add(radius=0.085, location=(0, 0, 0), segments=32, ring_count=16)
-lens = bpy.context.active_object
-lens.scale.z = 0.7
-bpy.ops.object.transform_apply(scale=True)
-_finish(lens, "lens", "lens", bevel=0, smooth=True, parent=LAMP)
-lens.location = (0, 0, 0.065)
+# Where the status lamp was (round 10): its boss on the wall face above the hatch,
+# blanked off with a bolted steel cover now the lamp stands on the kerb.
+BLANK = empty("blank", *on_wall(-90, ZR - 0.2, 0.0))
+cyl((0, 0, 0.0), 0.14, 0.08, "frame", verts=32, bevel=0.01, parent=BLANK)                     # the boss
+cyl((0, 0, 0.05), 0.115, 0.028, "steel", verts=32, bevel=0.008, parent=BLANK)                 # its cover
 for k in range(4):
     u = 2 * math.pi * (k + 0.5) / 4
-    bolt((0.122 * math.cos(u), 0.122 * math.sin(u), 0.045), 0.012, 0.012, parent=LAMP)
+    bolt((0.085 * math.cos(u), 0.085 * math.sin(u), 0.068), 0.013, 0.012, parent=BLANK)
+
+# The status lamp (round 10): a caged lamp on a bolted bracket on the roof's kerb, at
+# the south-east, west of the maker's plate and the buttress's lifting eye -- in front of the deck, so
+# nothing that moves passes in front of it in any frame. A domed white lens in a brass
+# housing on a short post, a wire cage over the dome (Factorio's lamp, not a flat
+# disc); 0.19 tiles across, ~12 px in the sheet. The light pass is the lens, lit white,
+# the cage and everything else cut out of it.
+LAMP_A = 288                      # (the maker's plate is at 300, the eye at 315)
+_t = math.radians(LAMP_A)
+LAMP = empty("lamp", loc=((RL - 0.025) * math.cos(_t), YC + (RL - 0.025) * math.sin(_t), ROOF + 0.05),
+             rot=(0, 0, _t))
+box((0.0, 0, 0.008), (0.13, 0.15, 0.016), "frame", bevel=0.004, parent=LAMP)                   # the foot, over the kerb
+for dx in (-0.045, 0.045):
+    for dy in (-0.05, 0.05):
+        bolt((dx, dy, 0.022), 0.011, 0.01, parent=LAMP)
+cyl((0, 0, 0.07), 0.026, 0.11, "steel", verts=16, bevel=0.0, parent=LAMP)                     # the post
+LH = 0.15                                                                                        # the housing's top
+cyl((0, 0, LH - 0.025), 0.085, 0.05, "brass", verts=32, bevel=0.008, parent=LAMP)             # the housing
+torus((0, 0, LH), 0.088, 0.01, "brass", parent=LAMP, seg=48)                                   # its lip
+bpy.ops.mesh.primitive_uv_sphere_add(radius=0.082, location=(0, 0, 0), segments=32, ring_count=16)
+lens = bpy.context.active_object
+lens.scale.z = 0.95
+bpy.ops.object.transform_apply(scale=True)
+_finish(lens, "lens", "lens", bevel=0, smooth=True, parent=LAMP)
+lens.location = (0, 0, LH)
+# the cage: two wire hoops crossed over the dome, a ring round its waist, a knob on top
+for rz in (0.0, math.pi / 2):
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.092, minor_radius=0.0065, location=(0, 0, 0),
+                                     rotation=(math.pi / 2, 0, rz), major_segments=40, minor_segments=6)
+    hoop = bpy.context.active_object
+    bpy.ops.object.transform_apply(rotation=True)
+    bm = bmesh.new()
+    bm.from_mesh(hoop.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < -0.004], context="VERTS")
+    bm.to_mesh(hoop.data)
+    bm.free()
+    _finish(hoop, "steel", "static", bevel=0, smooth=True, parent=LAMP)
+    hoop.location = (0, 0, LH)
+torus((0, 0, LH + 0.045), 0.08, 0.006, "steel", parent=LAMP, seg=40)
+cyl((0, 0, LH + 0.094), 0.016, 0.014, "brass", verts=12, bevel=0.0, parent=LAMP)
 
 # ---------------------------------------------------------------- 11. the roof's furniture
 
@@ -1505,7 +1538,7 @@ for sx in (-1, 1):
         rivet((sx * 0.09, sy * 0.06, 0.01), 0.011, parent=wp)
 
 # Stencilled markings (the signature finish): the machine's number on the replaced
-# upper stave west of the lamp, a warning beside the hatch on the replaced middle stave,
+# upper stave west of the old lamp boss, a warning beside the hatch on the replaced middle stave,
 # and each motor's number on the south face of its pier.
 stencil("DC-03", *on_wall(-112, 1.47, 0.012), 0.085)        # (above 1.5 the roof's lip hides it)
 stencil("KEEP\nCLEAR", *on_wall(-62.5, 0.45, 0.012), 0.07)       # (clear of the dogs' swing)
