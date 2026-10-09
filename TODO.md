@@ -56,9 +56,9 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   art committed without sign-off (`ballast-drill/stroke*`).
 - **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
   gutter base, rendered pipe pictures, vanilla covers.
-- **The Drop Crusher, Ballast Drill and Vacuum Furnace lamps have no
-  `status_colors`**, so they likely draw dark, as the reaction plant's did.
-  Each wiring task sets them.
+- **The Ballast Drill and Vacuum Furnace lamps have no `status_colors`**, so
+  they likely draw dark, as the reaction plant's did. Each wiring task sets
+  them; the Drop Crusher's are set (`dc-wiring`).
 
 ## Blender pipeline
 

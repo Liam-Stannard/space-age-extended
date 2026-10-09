@@ -6,11 +6,15 @@
 -- rather than invented here; where this file and a spec disagree, the spec is
 -- right and this is a bug. Section 2 of each spec is the source.
 --
--- **The art is a stand-in and says so.** None of the three has a plate yet. Each
--- borrows the sprites of a vanilla machine of the same footprint, marked by a
--- `derive.placeholder_art` call so `grep` finds every one of them, and logged at
--- data stage so the log does too. That is a different thing from an inherited
--- leftover -- see prototypes/derive.lua, which strips those up front.
+-- **Every one wears its own plate**, through `derive.own_graphics`. The Drop
+-- Crusher's and the Reaction Plant's are rendered from Blender models
+-- (concept/<building>/model/); the Ballast Drill's and the Vacuum Furnace's are
+-- still the adopted generated plates until their models are wired. Each is
+-- derived from a vanilla machine of the same footprint and marked by a
+-- `derive.placeholder_art` call until `own_graphics` clears it, so a building
+-- that never gets its plate is still logged at data stage. That is a different
+-- thing from an inherited leftover -- see prototypes/derive.lua, which strips
+-- those up front.
 --
 -- Two of the three are shaped by measurements that cost a spike each, and the
 -- shapes are not obvious:
@@ -97,51 +101,57 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
   conditions = HIGH_G
 })
 
--- Art: the Sealed Hammer, option A of five (concept/drop-crusher/options/).
+-- Art: the Sealed Hammer, option A of five (concept/drop-crusher/options/),
+-- rendered in Blender from concept/drop-crusher/model/drop_crusher.py and signed
+-- off by Liam, 2026-10-09.
 --
--- Locked 2026-09-09 and the first design in this mod picked by comparison rather
--- than by refinement: versions 1 to 10 were all the same idea made better, and
--- the round that replaced them drew it against a sibling instead. The decision
--- record and the winner's prompt are in that directory; the sheet is
--- `concept/adopted/A-sheet.png`.
+-- The design was locked 2026-09-09 and was the first in this mod picked by
+-- comparison rather than by refinement: versions 1 to 10 were all the same idea
+-- made better, and the round that replaced them drew it against a sibling
+-- instead. The decision record and the winner's prompt are in that directory;
+-- the adopted sheet is `concept/drop-crusher/adopted/A-sheet.png`, and the model
+-- reproduces it.
 --
--- Two plates cut by tools/process-building-art.py from one master render:
--- **192 px of drawn machine, 3.000 tiles**, sitting 4 px from each side of the
--- canvas and 5 px from top and bottom, with alpha zero along every edge row --
--- checked, because a plate that ends on a razor line has no antialiased rim and
--- the arc mast shipped that way once.
+-- **Rendered, not cut**, as the Reaction Plant is: every pass comes off one model
+-- through one calibrated camera (tools/blender/rig.py) on one canvas with the
+-- entity origin at its centre, so the layers register by construction. Every
+-- size, shift, frame count and line length below is copied from the
+-- sheets/meta.json the packer writes; none was measured off a sheet. To
+-- regenerate, with any Blender 5 binary:
 --
--- **The shift is measured, not centred.** This building is taller than it is
--- deep, so the drawn 3x3 box is bottom-aligned in the content and its centre
--- lands 2 source px below the canvas centre. Half a source pixel is half an
--- in-game pixel at scale 0.5, so the plate is pulled up by 1 in-game px --
--- `-0.03125` tiles -- to put the footprint's centre on the entity's origin. The
--- shadow's shift comes out of the same tool rather than being chosen.
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/drop-crusher/model/drop_crusher.py <scratch> --icon
+--
+-- then copy <scratch>/sheets/icon.png to graphics/icons/drop-crusher.png, the
+-- other <scratch>/sheets/*.png into graphics/entity/drop-crusher/, and the
+-- numbers out of meta.json into this block.
 --
 -- **Nothing on this machine is hot**, which makes it the one building in the set
 -- where the status lamp carries the whole read on its own. §3.3 is explicit that
 -- there is no glow here: the ore is cold, the fall is free, and the only light is
 -- the lens the engine tints.
 --
--- **The stroke is animated, and it is drawn the way the biochamber is.** §3.2
--- calls the crown rising and falling "the entire read". Rather than ship 24
--- copies of a 200x206 plate, this is a static housing with one 48x54 window
--- punched out of it and 24 frames of that window laid over the hole -- vanilla's
--- own arrangement in `space-age/prototypes/entity/biochamber-pictures.lua`, and
--- 103,408 px of atlas against 988,800 for a full-plate sheet. The pair is
--- checked to reassemble exactly, frame by frame, by the tool that cuts it.
+-- **The stroke is the animation, and the plate does not contain it.** §3.2
+-- calls the crown rising and falling "the entire read". The moving parts -- the
+-- octagonal crown on its racked shank, the two upright gears in their housings
+-- east and west of the collar with the pinions that drive them, and the trip
+-- pawl -- are rendered alone, 24 frames of the window round the collar, with
+-- their shadows caught on the roof. base.png is the machine WITHOUT them, the
+-- collar complete beneath where the crown sits. So the stroke cannot be a
+-- working visualisation, which the engine stops drawing when the machine stops:
+-- the crusher would stand idle with no weight in it. It is a layer of the main
+-- animation, which an assembling machine draws in every state and advances only
+-- while crafting. The weight is wound up the rack over frames 0 to 16 with the
+-- gears turning, the pawl trips, and it falls through 17 to 23 with each frame's
+-- travel longer than the last. The gears stay meshed with the rack throughout,
+-- so they spin back fast as it drops. The packer tracks the crown in every frame
+-- against the declared curve (meta.json's `stroke_path_px`).
 --
--- **The frames come from Animatorio** (github.com/Onoulade/Animatorio), driven by
--- tools/build-animatorio-layers.py off graphics/entity/drop-crusher/stroke.json.
--- The crown and the shank travel as one part, because the rack is cut into the
--- shank -- and it is the rack's rungs travelling that sells the stroke, more
--- than the crown does.
---
--- **Frame 0 is base.png, byte for byte** -- checked, not assumed. There is no
+-- **Frame 0 is the still**: the weight seated in the collar, pawl engaged,
+-- checked against a single render of the whole stopped machine. There is no
 -- `idle_animation`: §9 records that one would have to carry the same 24 frames,
--- and an assembling machine simply stops on a frame instead. That the frame it
--- stops on is the approved still is the whole reason this loop starts at the top
--- of the stroke and falls, rather than starting at the bottom and rising.
+-- and an assembling machine simply stops on a frame instead. That frame 0 is the
+-- seat is why the loop winds up from the bottom and lands back on it.
 --
 -- **`animation_speed` is derived, not chosen.** 24 frames at 0.2 is a two-second
 -- loop, and `sae-crushing` is `energy_required = 2` at `crafting_speed = 1` -- so
@@ -149,75 +159,95 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- purpose, per §9: modules should make the hammer fall faster. That breaks the
 -- one-drop-one-craft correspondence, which §9 is explicit nobody notices.
 --
--- base.png stays in the tree and is still the locked plate: it is what the icon
--- is derived from, what the status lamp registers against, and what frame 0 is
--- checked against. It is simply no longer what the entity draws.
+-- **The status lamp is cut white and tinted by the engine**, on the wall face
+-- under the roof's edge, above the inspection hatch. It is a status lamp, not a
+-- fault lamp: it reports every state, working included, in vanilla's
+-- mining-drill colours (below).
 local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
 local DC_FRAMES = 24
+local DC_SPEED = 0.2
+
+-- The status lamp's colours: the ones vanilla's electric mining drill uses
+-- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
+-- less `no_minable_resources`, the one state a drill has and a crafter does not --
+-- the Reaction Plant's mapping, for the same reason. Red is idle or short of ore,
+-- yellow is blocked, disabled or browned out, green is working.
+local function dc_status_colors()
+  return
+  {
+    no_power = { 0, 0, 0, 0 },          -- dark: nothing to report with
+    idle = { 1, 0, 0, 1 },
+    insufficient_input = { 1, 0, 0, 1 },
+    full_output = { 1, 1, 0, 1 },
+    disabled = { 1, 1, 0, 1 },
+    working = { 0, 1, 0, 1 },
+    low_power = { 1, 1, 0, 1 }
+  }
+end
+
 crusher.icon = "__space-age-extended__/graphics/icons/drop-crusher.png"
+
+-- From sheets/meta.json.
 derive.own_graphics(crusher,
 {
+  status_colors = dc_status_colors(),
   animation =
   {
     layers =
     {
-      -- The plate, less the window the stroke moves in. One frame, repeated to
-      -- meet the animated layer's count -- the biochamber does exactly this.
+      -- The plate, less the moving parts. One frame, repeated to meet the
+      -- stroke's count.
       {
-        filename = DC .. "stroke-housing.png",
+        filename = DC .. "base.png",
         priority = "high",
-        width = 200, height = 206,
+        width = 198, height = 234,
         frame_count = 1,
         repeat_count = DC_FRAMES,
-        animation_speed = 0.2,
-        shift = { 0, -0.03125 },
+        animation_speed = DC_SPEED,
+        shift = { 0, -0.28125 },
         scale = 0.5
       },
-      -- The window's contents. Its shift is the plate's shift plus the offset of
-      -- the window's centre from the plate's: the window is 79..127 x 0..54 on a
-      -- 200x206 canvas, so its centre sits 3 px right and 76 px up of the
-      -- canvas centre. 64 source px to the tile at scale 0.5, giving 3/64 and
-      -- -76/64, and -0.03125 - 1.1875 = -1.21875. Every number is an exact
-      -- sixty-fourth; none of them was rounded to get there.
+      -- The weight, the gears, the pinions and the pawl, in the window round the
+      -- collar: one row of 24.
       {
         filename = DC .. "stroke.png",
         priority = "high",
-        width = 48, height = 54,
+        width = 191, height = 136,
         frame_count = DC_FRAMES,
-        line_length = 6,
-        animation_speed = 0.2,
-        shift = { 0.046875, -1.21875 },
+        line_length = 24,
+        animation_speed = DC_SPEED,
+        shift = { 0.02344, -0.9375 },
         scale = 0.5
       },
       {
         filename = DC .. "base-shadow.png",
         priority = "high",
         draw_as_shadow = true,
-        -- Leans up and to the right, so it is wider than the colour plate and
-        -- carries its own shift. Both numbers come out of the tool.
+        -- Leans to the right, so it is wider than the colour plate and carries
+        -- its own shift.
         --
-        -- Still one frame. The crown's own shadow travels with it in life, but
-        -- the crown is 4.6% of the machine's drawn pixels and its shadow is a
-        -- smaller share of a plate that is nearly twice as wide -- cutting the
-        -- shadow apart to move that is a second mask for something no player
-        -- looks at. Recorded as a choice rather than an oversight.
-        width = 358, height = 217,
+        -- Still one frame, rendered with the weight seated. The shadows the
+        -- moving parts throw on the roof are in the stroke layer and travel with
+        -- it; the crown's shadow on the ground does not. Cutting the ground
+        -- shadow into 24 frames to move a sliver of it is a second sheet for
+        -- something no player looks at. Recorded as a choice rather than an
+        -- oversight.
+        width = 254, height = 195,
         frame_count = 1,
         repeat_count = DC_FRAMES,
-        animation_speed = 0.2,
-        shift = { 1.23438, 0.05469 },
+        animation_speed = DC_SPEED,
+        shift = { 0.46875, -0.00781 },
         scale = 0.5
       }
     }
   },
   working_visualisations =
   {
-    -- The fault lamp. Drawn WHITE on the plate and cut white, because
+    -- The status lamp. Rendered WHITE and cut white, because
     -- `apply_tint = "status"` hands the colour to the engine and a colour baked
-    -- into the plate would be that colour in every state for ever.
+    -- into the sheet would be that colour in every state for ever.
     -- `always_draw` is true because a lamp that only appears while working
-    -- cannot report that the machine has stopped, which is the one thing it
-    -- exists to say. Same canvas as the plate, so it registers by construction.
+    -- cannot report that the machine has stopped.
     {
       always_draw = true,
       apply_tint = "status",
@@ -226,9 +256,9 @@ derive.own_graphics(crusher,
         filename = DC .. "status-lamp.png",
         priority = "high",
         draw_as_glow = true,
-        width = 200, height = 206,
+        width = 14, height = 9,
         frame_count = 1,
-        shift = { 0, -0.03125 },
+        shift = { 0, 0.66406 },
         scale = 0.5
       }
     }
