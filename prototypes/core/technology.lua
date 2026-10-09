@@ -83,7 +83,7 @@ data:extend({
 -- The mod is cut back to the landing and nothing past it, so the chain is short:
 --
 --   mine a boulder      -> Crust tapping    (power at all)
---   craft a crust tap   -> Core survey      (drill, crusher, smelter)
+--   craft a gas pump    -> Core survey      (drill, crusher, smelter)
 --   craft a vent pump   -> Radiant power    (the generator, and its fuel)
 --
 -- The melt line, the farm, the lift and everything geodynamic went with the cut.
@@ -110,7 +110,7 @@ data:extend({
   -- planet, and the 25 ore it drops is waiting for the smelter two steps later.
   landfall("sae-crust-tapping", { "sae-core-discovery" },
     {
-      { type = "unlock-recipe", recipe = "sae-crust-tap" },
+      { type = "unlock-recipe", recipe = "sae-gas-pump" },
       { type = "unlock-recipe", recipe = "sae-crust-turbine" }
     },
     { type = "mine-entity", entities = { "sae-core-boulder" } }),
@@ -126,13 +126,13 @@ data:extend({
   -- first crusher could never be built, and with it nothing else on the planet.
   -- The crusher is costed in freight now; see machines.lua.
   --
-  -- **Off Crust Tapping now, and triggered by the tap itself.** The survey used
-  -- to hang off the discovery beside the tapping, on the grounds that tapping
-  -- "needs nothing the survey teaches" -- true, and it left the two as a pair
-  -- of unordered purchases. Everything this technology unlocks needs power, and
-  -- the only power on this planet is a crust tap, so the tap is both the real
-  -- prerequisite and the obvious trigger: build the thing that makes the
-  -- electricity, and the survey that spends it lands.
+  -- **Off Crust Tapping now, and triggered by the Gas Pump itself.** The survey
+  -- used to hang off the discovery beside the tapping, on the grounds that
+  -- tapping "needs nothing the survey teaches" -- true, and it left the two as a
+  -- pair of unordered purchases. Everything this technology unlocks needs power,
+  -- and the only power on this planet starts at a gas pump on a siderane vent,
+  -- so the pump is both the real prerequisite and the obvious trigger: build the
+  -- thing that makes the electricity, and the survey that spends it lands.
   --
   -- Only Crust Tapping is listed: it already carries the discovery, and a
   -- redundant prerequisite draws a second arrow across the technology screen
@@ -149,11 +149,11 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-vacuum-furnace" },
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
     },
-    { type = "craft-item", item = "sae-crust-tap" }),
+    { type = "craft-item", item = "sae-gas-pump" }),
   -- Power that does not run out, earned by the first machine that outgrows the
   -- turbines.
   --
-  -- A tap and a turbine are landing-day power and Crust Tapping says as much.
+  -- A pump and a turbine are landing-day power and Crust Tapping says as much.
   -- The Vent Pump is the first building on this planet that runs continuously
   -- and the first that everything downstream waits on, so crafting one is the
   -- moment a player finds out what the turbines are worth. That is when the

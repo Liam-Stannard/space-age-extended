@@ -70,9 +70,9 @@ data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("
 -- The radiant pool: the corridor's isotope pooled in the Core's low ground,
 -- lava's tile and shader in Cherenkov blue. Impassable and unbuildable, as
 -- lava is; bridged with foundation. Its SHORE is a buildable ring of lit
--- crust, carrying the crust vent's collision layer and the pool's fluid, so a
--- Crust Tap stands on the shore and draws the solution exactly as it draws crust
--- gas from a vent. map-gen.lua places both from its basin term.
+-- crust. The solution is drawn as lava is on Vulcanus: an offshore pump on the
+-- shore, reaching into the pool, which keeps lava's `water_tile` layer for
+-- exactly that. map-gen.lua places both from its basin term.
 -- The shader draws its own colour texture, so the pool gets lava's shader
 -- with that texture turned to blue (tools/build-crust-glow-tile.py --sheet),
 -- the noise texture copied unchanged, and lava's own specular and foam
@@ -138,12 +138,11 @@ end
 local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g = 0.45, b = 0.80 },
   { main = "__space-age-extended__/graphics/terrain/radiant-pool/shore.png",
     light = "__space-age-extended__/graphics/terrain/radiant-pool/shore-light.png" })
-shore.fluid = "sae-radiant-solution"
--- `sae-crust-vent` is the Crust Tap's private layer (prototypes/core/crust-tap.lua),
--- and it is here so the tap's `tile_buildability_rules` accept the shore: that
--- rule requires the layer rather than naming a tile, so a tile that carries it
--- is ground the tap may stand on.
-shore.collision_mask = { layers = { ground_tile = true, ["sae-crust-vent"] = true } }
+-- Plain ground. It used to carry the old wellhead's private collision layer and
+-- the pool's fluid, so that an offshore pump standing on it drew solution; that
+-- pump is now the Gas Pump, a mining drill that stands on vents, and the layer
+-- went with it. The pool itself is where the solution is drawn from now.
+shore.collision_mask = { layers = { ground_tile = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
 
 -- Where the lit crust meets the pool it draws Vulcanus's ground-to-lava

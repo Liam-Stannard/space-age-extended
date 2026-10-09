@@ -1,10 +1,11 @@
--- The Core's three sited resources, and the scatter between them.
+-- The Core's sited resources, and the scatter between them. The siderane vent
+-- is the fourth, and lives with the Gas Pump in crust-tap.lua.
 --
 -- Ore is rich, widely spaced and genuinely finite, so the base spreads and
--- rails matter. Both vents are infinite but decline with draw, the way crude
+-- rails matter. Every vent is infinite but declines with draw, the way crude
 -- oil does, so a vent is permanent and worth building around.
 --
--- All three are placed in the starting area. That is not generosity: helium-3
+-- All of them are placed in the starting area. That is not generosity: helium-3
 -- cannot be barrelled, so it cannot be shipped in, and melt cannot be drawn
 -- without it. A landing site without a gas vent is a landing site where nothing
 -- can be started.
@@ -13,10 +14,10 @@ local resource_autoplace = require("resource-autoplace")
 local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
 local derive = require("prototypes.derive")
 
--- The vents get their own mining category, and that is a gameplay fix rather
+-- The vents get their own mining categories, and that is a gameplay fix rather
 -- than tidiness.
 --
--- Both vents were `basic-fluid`, the category vanilla's pumpjack works, and a
+-- The vents were `basic-fluid`, the category vanilla's pumpjack works, and a
 -- pumpjack has no surface conditions -- so a player could land on the Core,
 -- build an ordinary pumpjack on a melt vent and draw melt for nothing. The Vent
 -- Pump's entire reason to exist is that melt costs helium-3 (see the note at the
@@ -25,6 +26,12 @@ local derive = require("prototypes.derive")
 -- A private category closes it from both ends: nothing vanilla can work a vent,
 -- and the Vent Pump can no longer be built on Nauvis crude oil as a pumpjack
 -- that happens to need helium.
+--
+-- **Two of them, one per machine.** `sae-vent` is the melt vent's alone, and
+-- only the Vent Pump works it. `sae-gas` is every gas vent's -- helium-3 here,
+-- siderane in crust-tap.lua -- and only the Gas Pump works it. Neither machine
+-- can stand on the other's vent, and a new gas is a new resource in `sae-gas`
+-- rather than a new machine.
 --
 -- The ore gets one too, for the mirror-image reason. `basic-solid` is what
 -- vanilla's drills work, and the big mining drill -- no surface conditions, 2.5
@@ -39,6 +46,7 @@ local derive = require("prototypes.derive")
 -- imported drill is now scrap the moment it lands.
 data:extend({
   { type = "resource-category", name = "sae-vent" },
+  { type = "resource-category", name = "sae-gas" },
   { type = "resource-category", name = "sae-kamacite" }
 })
 
@@ -145,7 +153,8 @@ data:extend({
     name = "sae-gas-vent",
     icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
     flags = { "placeable-neutral" },
-    category = "sae-vent",
+    -- Drawn by the Gas Pump, with every other gas; see crust-tap.lua.
+    category = "sae-gas",
     subgroup = "mineable-fluids",
     order = "z[sae]-c[gas-vent]",
     infinite = true,
@@ -169,8 +178,9 @@ data:extend({
     },
     walking_sound = tile_sounds.walking.oil({}),
     driving_sound = tile_sounds.driving.oil,
-    collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
-    selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
+    -- 2x2, the Gas Pump's own footprint, since a vent sits under its machine.
+    collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
+    selection_box = { { -1, -1 }, { 1, 1 } },
     autoplace = resource_autoplace.resource_autoplace_settings
     {
       name = "sae-gas-vent",

@@ -84,7 +84,7 @@ local CHAIN =
 --- The buildings, in the order the player unlocks them.
 local MACHINES =
 {
-  ["sae-crust-tap"] = "aa",
+  ["sae-gas-pump"] = "aa",
   ["sae-crust-turbine"] = "ab",
   ["sae-ballast-drill"] = "ba",
   ["sae-drop-crusher"] = "bb",

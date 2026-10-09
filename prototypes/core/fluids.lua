@@ -35,8 +35,8 @@ data:extend({
 })
 
 -- Radiant solution: the corridor's decaying isotope, seeped into the Core's low
--- ground as a liquid and pooled there. Drawn by a Crust Tap standing on the
--- pool's shore; precipitated into radiant fuel with crust gas (corridor.lua).
+-- ground as a liquid and pooled there. Drawn by an offshore pump standing on
+-- the pool's shore; precipitated into radiant fuel with crust gas (corridor.lua).
 -- Never barrelled: it is the Core's, like every fluid here.
 data:extend({
   {

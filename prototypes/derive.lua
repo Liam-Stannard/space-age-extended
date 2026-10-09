@@ -37,8 +37,8 @@
 --     it would make our prototypes the odd ones out for no gain.
 --   * `circuit_connector` -- its sprites are placed for the *source's*
 --     footprint. Right when the footprint is kept, wrong when it is not (the
---     Crust Tap is 2x2 on a 1x1 offshore pump's connector), and only the
---     building's own file knows which.
+--     Gas Pump is 2x2 on a 3x3 pumpjack's connector), and only the building's
+--     own file knows which.
 
 local derive = {}
 

@@ -35,7 +35,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
   extraction); `design/` and the other specs still say "crust gas", "crust
   tap" and "crust turbine" about 50 times. Rewrite them with the rework.
-  Internal names (`sae-crust-*`) stay.
+  Internal names (`sae-crust-*`) stay. With it, `design/08-core-power.md`
+  lines 18 and 24–27: radiant solution is drawn by a vanilla offshore pump
+  at the pool, and siderane by the Gas Pump, not one tap drawing both.
 
 ## Building art in Blender
 
