@@ -30,6 +30,26 @@ pixels connected to its own core that lie within the fitting's span across the
 face -- screen x for a north or south port, screen y for an east or west one.
 That keeps the cap's shadow on its own stub and the fitting's contact shadow
 on the skirt beside it, and nothing that runs off along the face.
+
+A port may declare `neck: true` in render.json (contract.py), for a fitting with
+a thin part joined to the rest only by a neck: assembler 3's west outline has a
+strip like that, and a stub drawn to it renders the strip's join at sprite size
+at alpha 1 or 2 -- under the noise floor, so the strip is not connected to the
+core (its own opaque run is the smaller one, so it is not the core either), and
+its tip, two pixels wide, never reaches SOLID, so it is outside the span too.
+The Ballast Drill's west picture packed 7 px short of assembler 3's for it.
+
+With `neck`, the fitting is also every part of its drawn silhouette (alpha at
+or above DRAWN, as the engine draws it) joined to the core through pixels at or
+above NECK, however faint: the parts are kept as the core is, and the span is
+taken across them all. The neck's own pixels stay under the noise floor and are
+not drawn. The flood at NECK is not confined to the neck: on the drill's
+port-W it reaches 1587 of the render's 1658 non-zero pixels, so in practice
+any pixel at DRAWN or above anywhere around the fitting joins it -- a caught
+shadow that dark included, which would widen the span. The drill's renders have
+none; that is the only render it has been checked on. Use it only on a port
+whose picture comes out short of its outline by a part the render plainly has,
+and check the packed sheet. A port without it packs exactly as before.
 """
 import json
 import os
@@ -41,6 +61,8 @@ import contract
 
 NOISE = 24
 SOLID = 250         # an object's own pixel; caught shadow stays below this
+DRAWN = 128         # a port with `neck`: its silhouette, as the engine draws it
+NECK = 1            # ...joined to the core through pixels at or above this
 NEIGHBOURS = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
 KINDS = ("port", "cover")
 
@@ -73,6 +95,17 @@ def core(alpha, w, h):
     return best
 
 
+def joined(core_px, raw, w, h):
+    """`core_px` with every part of the drawn silhouette joined to it through a neck.
+
+    `raw` is the alpha before the noise floor. A part is an 8-connected run of
+    pixels at or above DRAWN; it joins if the core reaches it through pixels at
+    or above NECK.
+    """
+    reach = flood(list(core_px), lambda j: raw[j] >= NECK, w, h)
+    return core_px | {i for i in reach if raw[i] >= DRAWN}
+
+
 def pack(src, out, decl):
     cx, cy = decl["canvas"][0] / 2, decl["canvas"][1] / 2
     ppt = float(decl["rig"]["px_per_tile"])
@@ -86,10 +119,13 @@ def pack(src, out, decl):
                 sys.exit(f"pack_ports.py: {kind}-{d}.png is {im.size[0]}x{im.size[1]}, but render.json "
                          f"declares a {decl['canvas'][0]}x{decl['canvas'][1]} canvas")
             images[kind] = im
-            alphas[kind] = [0 if v < NOISE else v for v in im.getchannel("A").get_flattened_data()]
+            raw = im.getchannel("A").get_flattened_data()
+            alphas[kind] = [0 if v < NOISE else v for v in raw]
             cores[kind] = core(alphas[kind], im.width, im.height)
             if not cores[kind]:
                 sys.exit(f"pack_ports.py: {kind}-{d}.png has no opaque pixel to call its fitting")
+            if p.get("neck"):
+                cores[kind] = joined(cores[kind], raw, im.width, im.height)
         W, H = images["port"].size
         # across the face: x for a port on the north or south face, y for east or west
         across = (lambda i: i % W) if d in "NS" else (lambda i: i // W)

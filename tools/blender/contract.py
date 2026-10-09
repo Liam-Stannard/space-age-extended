@@ -35,10 +35,14 @@ a pass: everything they act on is declared here.
               driven by it) names one that does in `track`: frames
               <name>-<track>-NN.png render that part alone, and the curve is
               held to their centroid instead; they are measured, not packed
-  ports       [{tile, face}]: one fitting per face, `tile` the centre of the
+  ports       [{tile, face, neck}]: one fitting per face, `tile` the centre of the
               footprint tile it sits on (tiles, y down, entity centre 0,0, as a
               pipe connection's position), `face` N, E, S or W. Rendered with
-              the model facing north, as port-<face>.png and cover-<face>.png
+              the model facing north, as port-<face>.png and cover-<face>.png.
+              "neck": true (optional, off by default) keeps a part of the
+              fitting joined to the rest only by a neck too faint for the noise
+              floor -- a thin strip, as on assembler 3's west outline -- which
+              pack_ports.py otherwise drops (its docstring says when to use it)
   rig         {elevation, px_per_tile}: the camera's, copied from rig.py by
               declare(), so the packers can put a tile on the screen
 
@@ -250,6 +254,8 @@ def validate(decl, where):
         if p["face"] in faces:
             bad(f"{field}.face", f"a second port on face {p['face']}: the engine draws one picture per face")
         faces.add(p["face"])
+        if "neck" in p and not isinstance(p["neck"], bool):
+            bad(f"{field}.neck", f"{p['neck']!r} is not true or false")
         if not (_seq(p.get("tile"), 2) and all(_number(c) for c in p["tile"])):
             bad(f"{field}.tile", f"{p.get('tile')!r} is not [x, y] in tiles")
         x, y = p["tile"]
