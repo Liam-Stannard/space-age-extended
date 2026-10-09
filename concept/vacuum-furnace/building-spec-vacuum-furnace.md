@@ -210,6 +210,24 @@ white from the model, `draw_as_glow`, and the engine colours it.
 
 ## 3.3 Colour Palette
 
+**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
+steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
+Each also carries one material of its own on its main surfaces, so a player tells them
+apart by colour before shape, as vanilla's electric furnace, assembler and foundry
+are told apart. Within the building, variation comes from replacement panels in a
+slightly different shade, small stencilled markings, and rust that differs by place:
+dry orange on tops, dark wet streaks below fittings.
+
+**This building's: heat-tempered steel.** Temper colours graded smoothly away from
+the heat, in the order steel takes them: `#3E4A66` blue nearest, then `#5C4A6E`
+purple, `#8A5A3A` brown, a thin pale `#B8964A` straw, then plain dark steel. Three
+sources: rings out from the hatch flange across the roof and rail, bands down the
+hull's top course, and each radiator from its inlet down. Rust stays out of the
+tempered zones, so the brown cannot read as rust. The metal carries the heat a
+sealed furnace never shows. It is a colour of the steel, never a light: nothing here
+glows, and the viewport stays the one lit circle. Liam chose the bold strength.
+
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Drum body | `#3E3B36` → `#5E584E` | the mass; darker than the mod's usual chassis |
