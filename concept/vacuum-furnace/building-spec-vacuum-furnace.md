@@ -61,7 +61,7 @@ nothing to seal."*
 | Directions | 1 |
 | Crafting categories | `smelting` **and** `sae-sintering` |
 | `source_inventory_size` | 1 (the prototype maximum) |
-| Fluid boxes | 1 in — **phosphide flux**, used by the sintering recipes only |
+| Fluid boxes | 1, a **pass-through** — **phosphide flux**, used by the sintering recipes only |
 | Energy | 1.2 MW, electric |
 | Surface conditions | `pressure` ≤ 9 — the Core and platforms |
 | Module slots | 2 |
@@ -116,7 +116,7 @@ a sealed machine is a contradiction the player will notice.
 * **Three radiator stacks**, at the north-west, north-east and south-west
   corners, set on the diagonal — the heat has nowhere to go but a radiator,
   since there is no air to carry it — leaving the middle of every face free for
-  the input.
+  the flux line.
 * A **vacuum pump** in the south-east corner niche, in place of the fourth
   stack: a squat pump body with an **exposed flywheel** on its shaft. The
   flywheel is drawn free — a visible gap all round it, its hub on the shaft,
@@ -128,8 +128,9 @@ a sealed machine is a contradiction the player will notice.
 * A **sight port** at the **centre of the hatch**: thick, deep glass set flat in
   the roof. It is the only place any *heat* glow escapes, and it is the
   building's **indicator** (below). There is no separate lamp.
-* **One fluid input**, at the middle of whichever face the furnace is turned
-  to. Its pipe picture is the assembling machine's in shape, size and
+* **One flux line, passing through**: a port at the middle of two opposite
+  faces, so flux comes in one side and carries on out the other, and a row of
+  furnaces is fed off one line, as vanilla's boilers are. Its pipe picture is the assembling machine's in shape, size and
   placement, rendered in the furnace's own metal, and drawn by the engine; its
   covers are vanilla's; the structure's wall
   meets the footprint edge at the middle of every face so the stub always has
@@ -221,9 +222,9 @@ attach the electric furnace**; it is the anti-read.
 * [x] North · [x] East · [x] South · [x] West
 
 **Direction count:** `4`, **and the building does not turn.** It is drawn once;
-only its fluid input turns, from face to face. The hatch, its
+only its flux line turns, between north–south and east–west. The hatch, its
 viewport and the pump keep their places, which is what one direction was for, and the
-input can face any side.
+line can run either way across it.
 
 ---
 
@@ -257,7 +258,7 @@ Decided at spec time, as the template asks: what moves, and what it uncovers.
 | ---------- | ----- | ----- |
 | Item in | any adjacent tile | `source_inventory_size = 1` |
 | Item out | any adjacent tile | `result_inventory_size = 1` |
-| Fluid in | the middle of whichever face the player turns it to | one box, `{0, 1}` facing south at rest; `pipe_picture` is rendered from the model to assembler 3's shape and shifts; `pipe_covers` are vanilla's |
+| Fluid through | the middle of two opposite faces, north–south at rest, east–west turned | one box, two connections, both `input-output`: `{0, 1}` facing south and `{0, -1}` facing north at rest; `pipe_picture` is rendered from the model to assembler 3's shape and shifts, all four directions; `pipe_covers` are vanilla's |
 | Electric | no visible connector | poles reach it wirelessly |
 
 **A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
@@ -265,9 +266,18 @@ the prototype prevents it, but a player who feeds fines and ore onto one belt
 will watch the machine flip recipes. That is vanilla smelting's own behaviour and
 needs no fix, but the locale should not encourage it.
 
-**No recipe uses the input yet.** It is there so the furnace can take one
-without being redrawn, and the faces not in use show vanilla's pipe cover, as an
-idle chemical plant's do.
+**The line passes through whatever the furnace is smelting.** Tested
+2026-10-08 in a headless 2.1 game: pipe, furnace, pipe in a line, the furnace
+smelting iron (a recipe with no fluid), and the flux reached the far pipe and
+held it full; the engine made the two pipes and the furnace one fluid segment.
+It held with `fluid_boxes_off_when_no_fluid_recipe` both true and false, so the
+prototype may keep it. A port with nothing plumbed to it shows vanilla's pipe
+cover, as an idle chemical plant's do.
+
+**The pass-through softens S12's latch.** Every furnace on a chained line is
+topped up from it, so once the line is primed a furnace is rarely dry when
+powder arrives. It does not remove the latch: a dry line still latches every
+furnace on it, and the viewport still shows it (§3.2).
 
 ---
 
@@ -319,7 +329,7 @@ the grid with no overhang.
   energy_source = { type = "electric", usage_priority = "secondary-input" },
   surface_conditions = { { property = "pressure", max = 9 } },
   module_slots = 2,
-  fluid_boxes = { --[[ 1 in, phosphide flux, generous volume; see §2 ]] },
+  fluid_boxes = { --[[ 1 pass-through, phosphide flux, generous volume, two input-output connections; see §2, §8 ]] },
   graphics_set =
   {
     animation = { layers = {
@@ -376,6 +386,10 @@ footprint's centre; the viewport moves to the hatch's centre and becomes the
 indicator, with magenta for the latch and no separate lamp; the south-east
 radiator stack becomes a vacuum pump with a turning flywheel and a vacuum gauge;
 the viewport's glow pulses while working (§6).
+
+**Decided 2026-10-08 (Liam):** the flux input becomes a pass-through: one box
+with two `input-output` connections on opposite faces, so furnaces chain off one
+line. No new art: the model already renders all four port pictures (§8).
 
 **Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
 the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
