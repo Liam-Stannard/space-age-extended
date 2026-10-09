@@ -1,0 +1,119 @@
+{
+ "base": {
+  "size": [
+   198,
+   234
+  ],
+  "shift": [
+   0.0,
+   -0.28125
+  ]
+ },
+ "base-shadow": {
+  "size": [
+   254,
+   195
+  ],
+  "shift": [
+   0.46875,
+   -0.00781
+  ]
+ },
+ "status-lamp": {
+  "size": [
+   14,
+   9
+  ],
+  "shift": [
+   0.0,
+   0.66406
+  ]
+ },
+ "stroke": {
+  "size": [
+   191,
+   136
+  ],
+  "shift": [
+   0.02344,
+   -0.9375
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "checks": {
+  "centre_offset_px": 0.0,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   1.5,
+   "1.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   1.5,
+   "bottom edge below origin; 1.5 = on the footprint"
+  ],
+  "stroke_path_px": {
+   "declared": [
+    0.0,
+    1.4,
+    2.8,
+    4.2,
+    5.6,
+    7.0,
+    8.4,
+    9.8,
+    11.2,
+    12.6,
+    14.0,
+    15.4,
+    16.8,
+    18.2,
+    19.6,
+    21.0,
+    22.4,
+    22.05,
+    21.0,
+    19.25,
+    16.8,
+    13.65,
+    9.8,
+    5.25
+   ],
+   "measured": [
+    -0.0,
+    1.41,
+    2.8,
+    4.19,
+    5.61,
+    7.0,
+    8.42,
+    9.8,
+    11.19,
+    12.61,
+    14.0,
+    15.41,
+    16.8,
+    18.19,
+    19.61,
+    20.99,
+    22.41,
+    22.04,
+    20.99,
+    19.25,
+    16.8,
+    13.65,
+    9.8,
+    5.25
+   ],
+   "off_curve": 0.02,
+   "off_line": 0.0,
+   "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+   "tracked": "crown"
+  },
+  "frame0_vs_still": [
+   255,
+   0.0099,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ]
+ }
+}

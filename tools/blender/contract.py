@@ -30,7 +30,11 @@ a pass: everything they act on is declared here.
               [x, y, z] per frame, the part's offset in tiles as modelled
               (facing north; x east, y north, z up), the same numbers the model
               moves it by. Its centroid in every frame must land on that curve,
-              and on its line, to within 1 px
+              and on its line, to within 1 px. A slide whose layer carries
+              parts that do not move on the path (gears, a pawl, anything
+              driven by it) names one that does in `track`: frames
+              <name>-<track>-NN.png render that part alone, and the curve is
+              held to their centroid instead; they are measured, not packed
   ports       [{tile, face}]: one fitting per face, `tile` the centre of the
               footprint tile it sits on (tiles, y down, entity centre 0,0, as a
               pipe connection's position), `face` N, E, S or W. Rendered with
@@ -69,6 +73,11 @@ def named(stem, direction):
 
 def frame(anim, f, direction=""):
     return named(f"{anim}-{f:02d}", direction)
+
+
+def track_frame(anim, track, f, direction):
+    """A slide's tracked part, alone, in frame f: measured, never packed."""
+    return frame(f"{anim}-{track}", f, direction)
 
 
 def footprint_in(decl, direction):
@@ -219,6 +228,10 @@ def validate(decl, where):
                     f"offsets in tiles, one per frame")
             steps = [[c - c0 for c, c0 in zip(p, path[0])] for p in path]
             far = max(steps, key=lambda v: math.hypot(*v))
+            track = a.get("track")
+            if track is not None and not _stem(track):
+                bad(f"{field}.track", f"{track!r} is not a name: the part whose own frames the "
+                    f"slide is measured on")
             if math.hypot(*far) == 0:
                 bad(f"{field}.path", f"slide {a['name']!r} has a path that does not move")
             for v in steps:             # every offset parallel to the longest: one straight line

@@ -131,7 +131,7 @@ class _G:
 def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
             wear=0.35, rust=0.35, dust=0.4, grime=0.6, jitter=0.10, pattern=None,
             swatch=None, swatch_scale=1.0, ground=0.0, ground_h=0.45, swatch_gain=1.0,
-            drips=(), drip=0.0, patina=0.0):
+            drips=(), drip=0.0, patina=0.0, rust_tint=None):
     """A painted (or bare, with paint_metal high) part, worn in by use.
 
     pattern: optional callable(g) -> colour socket replacing the flat paint
@@ -146,6 +146,9 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
     drips:   heights (z_top, length) that rust runs down from -- a rail, a row of
              bolts: on vertical faces, streaks hanging below each z_top, fading
              over length; drip is their strength (0, the default, draws none).
+    rust_tint: (dark hex, light hex) for the rust's colour range in place of the default
+             #44220F -> #94501F -- a warmer orange-brown for a building whose rust
+             should read warmer; None, the default, leaves every building unchanged.
     patina:  verdigris in copper's cavities and contact lines, broken up by noise;
              0, the default, draws none.
     """
@@ -219,7 +222,8 @@ def layered(name, paint, metal="#948D80", paint_metal=0.15, paint_rough=0.5,
         drip_mask = g.math("MULTIPLY", g.math("MULTIPLY", hang, g.remap(runs, 0.45, 0.8)), vertical)
         rust_mask = g.math("ADD", rust_mask, g.math("MULTIPLY", drip_mask, drip), clamp=True)
     rust_col = g.mixc(g.image(f"{TEX}/maps/grain.png", pos, 2.3).outputs["Color"],
-                      rig.srgb("#44220F"), rig.srgb("#94501F"))
+                      rig.srgb(rust_tint[0] if rust_tint else "#44220F"),
+                      rig.srgb(rust_tint[1] if rust_tint else "#94501F"))
     col = g.mixc(rust_mask, col, rust_col)
     rough = g.mixf(rust_mask, rough, 0.9)
     metallic = g.mixf(rust_mask, metallic, 0.05)

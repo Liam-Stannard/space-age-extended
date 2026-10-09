@@ -187,7 +187,14 @@ class Packer:
                                      f"across its frames; a part turning about its own axis stays within "
                                      f"{LIMIT_PX:g}")
             else:
+                if a.get("track"):
+                    # the layer carries parts that do not ride the path; the
+                    # part that does was rendered alone for this
+                    cs = [centroid(clean(self.open(contract.track_frame(name, a["track"], f, d))))
+                          for f in range(n)]
                 path = checks[f"{name}_path_px"] = self.slide(a, cs, d)
+                if a.get("track"):
+                    path["tracked"] = a["track"]
                 if max(path["off_curve"], path["off_line"]) > LIMIT_PX:
                     self.over.append(f"animation {name!r}, {where(d)}: a frame is {path['off_curve']} px off "
                                      f"its declared curve and {path['off_line']} px off its line; both stay "
@@ -273,6 +280,9 @@ def missing(src, decl):
         want += [(f"pass {p['name']!r}", contract.named(p["name"], d)) for p in decl["passes"]]
         want += [(f"animation {a['name']!r}", contract.frame(a["name"], f, d))
                  for a in decl["animations"] for f in range(int(a["frames"]))]
+        want += [(f"animation {a['name']!r}, tracked part {a['track']!r}",
+                  contract.track_frame(a["name"], a["track"], f, d))
+                 for a in decl["animations"] if a.get("track") for f in range(int(a["frames"]))]
     return [(what, stem) for what, stem in want if not os.path.isfile(os.path.join(src, stem + ".png"))]
 
 
