@@ -20,10 +20,11 @@ straight pipe from the tile it points into; the other three faces get vanilla's 
 cover (pipecoverspictures()). Shadows of the pictures, covers and pipe are left off.
 
 The indicator is the viewport glass, tinted with spec 3.2's status_colors: clear
-while working (the orange glow says it), magenta for the latch, pale blue for full
-output, clear when idle (dark glass).
+while working (the orange glow says it), pale blue for full output, clear when idle
+(dark glass). The latch has no colour: the engine reports it as no_ingredients, the
+same as an unfed furnace (spec 3.2).
 
-Row 1: the adopted plate, then input south idle, working, latch and full output.
+Row 1: the adopted plate, then input south idle, working and full output.
 Row 2: the flywheel at 4x, frames 0, 4, 8 and 12, and the plate with frame 0 beside
 the still render (spec 6: the stopped machine is the plate with every frame 0).
 Then one row per face: idle, working, and the join at 3x, idle and working.
@@ -195,7 +196,6 @@ def main(src, pipes, out, gif=None):
     rows = [[label(adopted(), "adopted plate"),
              label(fur.panel("S", "idle"), "idle: dark glass"),
              label(fur.panel("S", "working"), "working: orange"),
-             label(fur.panel("S", "latch"), "insufficient input: magenta"),
              label(fur.panel("S", "full"), "full output: pale blue")]]
     rows.append([label(zoom(fur.panel("S", "working", f), FLY, 4), f"flywheel, frame {f}, 4x")
                  for f in (0, 4, 8, 12)] +
