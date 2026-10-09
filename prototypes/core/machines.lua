@@ -16,17 +16,15 @@
 -- thing from an inherited leftover -- see prototypes/derive.lua, which strips
 -- those up front.
 --
--- Two of the three are shaped by measurements that cost a spike each, and the
--- shapes are not obvious:
+-- Two shapes are not obvious, and each cost a spike or a redesign to find:
 --
 --   * The Vacuum Furnace is a `furnace`, not an assembling machine, and its flux
 --     box is deliberately large. S12 measured that a furnace with a fluid
 --     ingredient refuses its *solid* ingredient until the fluid is already in
 --     the machine; a big buffer against a small draw makes that latch rare.
---   * The Crust Tap is an `offshore-pump`, which draws its fluid from the *tile*
---     beneath it and not from its own filter. S10 measured one built on bare
---     ground reporting `working` and producing nothing. It is sited on a vent
---     tile, and the tile is what carries the fluid.
+--   * The Gas Pump (crust-tap.lua, not here) is a `mining-drill` on a vent
+--     resource, as the pumpjack is on oil, so the vent runs down as it is drawn.
+--     It replaced an `offshore-pump` on a vent tile, which never could.
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
@@ -785,7 +783,7 @@ data:extend({ furnace })
 -- assembling machines 2 and 3 use: `pipe_picture` is a stub per direction
 -- that the engine draws and redraws whenever the player rotates the entity,
 -- and the plate paints no flange at all. That is what lets this building stay
--- rotatable on ONE plate rather than the Crust Tap's four -- nothing in the
+-- rotatable on ONE plate rather than the Gas Pump's four -- nothing in the
 -- still art has a facing, so there is nothing to draw four times. The entity
 -- therefore carries no `not-rotatable` flag. The stubs are the plant's own,
 -- rendered from the same model as the plate (see "Art"), not vanilla's

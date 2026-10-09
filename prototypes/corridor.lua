@@ -260,9 +260,9 @@ gen.animation =
 }
 data:extend({ gen })
 
--- The pool's solution, precipitated. Crust gas is the reagent, and a Crust Tap
--- is all either half takes: one standing on a shore tile for the solution, one
--- on a vent for the gas. The fuel costs the planet nothing it rations.
+-- The pool's solution, precipitated. Crust gas is the reagent: an offshore pump
+-- on the shore draws the solution, a Gas Pump on a siderane vent the gas. The
+-- fuel costs the planet nothing it rations.
 --
 -- Helium-3 used to be the reagent and the governor, which put the power line in
 -- the queue behind the Vent Pump for the gas the Core is meanest with -- so the
