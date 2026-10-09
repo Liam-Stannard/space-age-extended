@@ -141,7 +141,7 @@ def strip_frame(cr, f, w_t=3.0, h_t=1.6, k=2):
 def main(out, review, gif):
     cr = Crusher(out)
     top = max(range(cr.n), key=lambda f: cr.lift[f])
-    rows = [[label(adopted(), "adopted plate (Animatorio frame 0)"),
+    rows = [[label(adopted(), "wired plate (graphics/entity/drop-crusher)"),
              label(cr.panel(0, "working"), "new plate, seated: working (green)"),
              label(cr.panel(top, "working"), f"top of the stroke, frame {top}: pawl clear"),
              label(cr.panel(0, "idle"), "idle (red)"),
