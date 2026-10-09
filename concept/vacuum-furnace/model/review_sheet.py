@@ -40,7 +40,7 @@ import pack  # noqa: E402
 
 VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
     "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity")
-ADOPTED = os.path.join(REPO, "graphics/entity/vacuum-furnace/base.png")
+ADOPTED = os.path.join(REPO, "concept/vacuum-furnace/adopted/base.png")
 PPT, TILES = 64, 5
 SIZE = PPT * TILES
 O = SIZE / 2

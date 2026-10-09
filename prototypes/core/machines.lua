@@ -461,7 +461,6 @@ data:extend({ drill })
 --------------------------------------------------------------------------------
 
 local furnace = derive.from("furnace", "electric-furnace", "sae-vacuum-furnace")
-derive.placeholder_art(furnace, "wears electric-furnace's sprites until its plate exists")
 furnace.minable = { mining_time = 0.5, result = "sae-vacuum-furnace" }
 furnace.collision_box = BOX_3x3
 furnace.selection_box = SEL_3x3
@@ -473,73 +472,203 @@ furnace.module_slots = 2
 furnace.surface_conditions = CORE
 furnace.source_inventory_size = 1          -- one, as the electric furnace has
 furnace.result_inventory_size = 1
+-- Every size and shift below is copied from the model's two meta.json files
+-- (concept/vacuum-furnace/model/sheets/ and sheets/ports/), as the Reaction
+-- Plant's are; none was measured off a sheet or typed from memory. The needle
+-- is the one layer meta.json does not carry; its own comment says where its
+-- numbers come from.
+local VF = "__space-age-extended__/graphics/entity/vacuum-furnace/"
+
+local function vf_sprite(file, width, height, shift)
+  return
+  {
+    filename = VF .. file .. ".png",
+    priority = "extra-high",
+    width = width, height = height,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The flux line passes THROUGH the furnace (spec sections 2 and 8): one box, a
+-- port at the middle of the south face and one at the middle of the north,
+-- both `input-output`, so flux comes in either side and carries on out the
+-- other and a row of furnaces is fed off one line, as vanilla's boilers are.
+-- Rotated once, the line runs east-west; the drawing does not turn with it.
+--
+-- `production_type` stays "input": the box is the recipe's flux, and it is the
+-- connections, not the box, that let the fluid on through. Measured on a
+-- headless 2.1 server, 2026-10-09: pipe, furnace, pipe in a line, fed at one
+-- end, and the far pipe filled and joined the furnace's fluid segment -- with
+-- the furnace smelting iron, a recipe with no fluid, both north-south and
+-- rotated east-west, and with no recipe at all.
+--
+-- **No `fluid_boxes_off_when_no_fluid_recipe`.** It is an assembling machine's
+-- property; the prototype docs list it there and not on the furnace, and a
+-- furnace with it true and one with it false behaved identically in the run
+-- above: both passed fluid and both turned with no recipe set.
+--
+-- The stubs are the engine's, drawn per direction and redrawn when the furnace
+-- is rotated: rendered from the model in the furnace's own metal, to assembler
+-- 3's shape, size and shifts, each in the tile outside its port, which is the
+-- tile a pipe picture is drawn relative to. The covers are vanilla's and cap a
+-- port only while nothing is plumbed to it; `secondary_draw_orders` puts a
+-- north stub behind the building, as assembler 3's does and as the review sheet
+-- drew it.
 furnace.fluid_boxes =
 {
   {
     production_type = "input",
     volume = 2000,                         -- see the S12 note above
-    -- The plate draws its own frost-collared flange, so `pipe_picture` is emptied
-    -- and no generic stub is laid over that art. The covers stay: they cap the
-    -- port only while nothing is plumbed to it. This is the foundry's own
-    -- arrangement -- see derive.pipe_covers.
-    pipe_picture = util.empty_sprite(),
+    pipe_picture =
+    {
+      north = vf_sprite("pipe-N", 52, 20, { 0.01562, 0.34375 }),
+      east = vf_sprite("pipe-E", 32, 74, { -0.71875, 0.0625 }),
+      south = vf_sprite("pipe-S", 64, 70, { 0, -0.76562 }),
+      west = vf_sprite("pipe-W", 32, 72, { 0.73438, 0.01562 })
+    },
     pipe_covers = derive.pipe_covers(),
     always_draw_covers = false,
-    -- EAST, not south, and the art is why. The adopted plate draws the
-    -- frost-collared flux flange low on the right flank, and section 8 of the
-    -- spec never said which flank it was -- so the round pinned it east and the
-    -- prototype follows the picture rather than the other way round. A flange
-    -- drawn on one face and declared on another is the arc mast's
-    -- `lightning_strike_offset` defect in a different costume.
-    pipe_connections = { { flow_direction = "input", direction = defines.direction.east, position = { 1, 0 } } }
+    secondary_draw_orders = { north = -1 },
+    pipe_connections =
+    {
+      { flow_direction = "input-output", direction = defines.direction.south, position = { 0, 1 } },
+      { flow_direction = "input-output", direction = defines.direction.north, position = { 0, -1 } }
+    }
   }
 }
-furnace.fluid_boxes_off_when_no_fluid_recipe = true
 
--- Art: the Pot, option A of five (concept/vacuum-furnace/options/).
+-- Art: rendered in Blender from concept/vacuum-furnace/model/vacuum_furnace.py,
+-- signed off by Liam and seen in game 2026-10-09.
 --
--- A sealed welded drum with one clamped hatch, and the whole design is the
--- absence of an opening: no door, no throat, no chimney. The one thing that
--- glows is a sight port low on the near face, and it glows ONLY while the
--- furnace is running -- `always_draw = false` -- because a lit port on an idle
--- machine says it is working when it is not.
+-- A sealed welded drum with a flat clamped hatch, and the whole design is the
+-- absence of an opening: no door, no throat, no chimney. One plate serves all
+-- four directions, because nothing on it has a facing -- the ports are the
+-- engine's, above.
 --
--- 192 px of drawn machine, **3.000 tiles** on a 3-tile footprint, centred to
--- 0.0 px, alpha zero on all four canvas edges. Vanilla's own electric furnace
--- draws 3.25 tiles on the same footprint, so ours is the more conservative cut.
-local VF = "__space-age-extended__/graphics/entity/vacuum-furnace/"
+-- **The viewport is the indicator.** The one light on the building is the glass
+-- at the centre of the hatch, and it carries two layers cut to the same 22x21
+-- canvas. While working it glows orange, additively, and fades out as the
+-- machine stops. In every other state it is tinted by status: `apply_tint =
+-- "status"` hands the colour to the engine, which is why the glass is cut WHITE
+-- -- a colour baked into it would be that colour in every state for ever -- and
+-- `always_draw` is true because an indicator that only draws while working
+-- cannot report that the machine has stopped. Vanilla's electric mining drill
+-- is the pattern.
+--
+-- **The latch does not draw magenta, measured in a client 2026-10-09.** The
+-- spec settles on magenta for it (sections 3.2 and 20), but a furnace dry of
+-- flux with powder in it reports `no_ingredients` and drops its recipe, and the
+-- engine colours that as `idle`: dark glass, the same as a furnace nobody fed.
+-- `full_output` drew pale blue on the same screenshot, so the tint itself
+-- works. `status_colors` below are section 15's as written; the spec needs
+-- updating to what the engine does.
+--
+-- **The flywheel and the gauge needle are the animation.** Both share one
+-- 16-frame loop, so they are layers of the main animation and not working
+-- visualisations, which the engine stops drawing when the machine stops: the
+-- pump would stand idle with no wheel on its shaft. A crafting machine draws its
+-- main animation in every state and advances it only while crafting, so the
+-- stopped furnace is the plate with every layer on the frame it stopped at --
+-- measured in a client: the wheel turned while smelting and held still, pixel
+-- for pixel, once the ore ran out or the output filled. The plate and the
+-- shadow are one frame each, repeated to the loop's count.
+--
+-- The flywheel is rendered: a spoked wheel on the pump's shaft, alone, with its
+-- shadow on the pump body behind it; the plate is the machine without it. The
+-- needle is Animatorio's (concept/vacuum-furnace/model/gauge.json), drawn over a
+-- dial the model renders bare: base-housing.png is the plate with the dial's
+-- 18 px window punched out, and needle.png is that window, 16 frames, cut by
+-- tools/build-animatorio-layers.py as the Drop Crusher's stroke was.
+local VF_FRAMES = 16
+local VF_SPEED = 0.5                      -- as Liam saw it in the preview
+local VF_SHIFT = { 0, -0.28125 }          -- the plate's, from meta.json's "base"
+
+-- The viewport glow's `effect`, spec section 6 (A1): "uranium-glow", a slow
+-- swell and settle, heat behind thick glass. "flicker" is vanilla's fire and
+-- reads as an open flame, which a sealed furnace has none of (Liam, 2026-10-09).
+local VF_GLOW_EFFECT = "uranium-glow"
+
 furnace.icon = "__space-age-extended__/graphics/icons/vacuum-furnace.png"
+furnace.icon_size = 64
 derive.own_graphics(furnace,
 {
   animation =
   {
     layers =
     {
+      -- The plate, less the needle's window. One frame, repeated.
       {
-        filename = VF .. "base.png",
+        filename = VF .. "base-housing.png",
         priority = "high",
-        width = 200, height = 194,
-        shift = { 0, 0 },
+        width = 198, height = 234,
+        frame_count = 1,
+        repeat_count = VF_FRAMES,
+        animation_speed = VF_SPEED,
+        shift = VF_SHIFT,
         scale = 0.5
       },
       {
         filename = VF .. "base-shadow.png",
         priority = "high",
         draw_as_shadow = true,
-        width = 349, height = 205,
-        shift = { 1.16406, 0.08594 },
+        width = 223, height = 201,
+        frame_count = 1,
+        repeat_count = VF_FRAMES,
+        animation_speed = VF_SPEED,
+        shift = { 0.22656, -0.05469 },
+        scale = 0.5
+      },
+      {
+        filename = VF .. "flywheel.png",
+        priority = "high",
+        width = 54, height = 74,
+        frame_count = VF_FRAMES,
+        line_length = 16,
+        animation_speed = VF_SPEED,
+        shift = { 1.09375, 0.78125 },
+        scale = 0.5
+      },
+      -- The needle's window. Not in meta.json: its size is the sheet's own
+      -- (288x18, sixteen 18 px frames), and its shift is the plate's plus the
+      -- window's offset from the plate's centre, 80 px right and 60 px down --
+      -- { 1.25, 0.9375 }, as review_sheet.py places it from gauge.json.
+      {
+        filename = VF .. "needle.png",
+        priority = "high",
+        width = 18, height = 18,
+        frame_count = VF_FRAMES,
+        line_length = 16,
+        animation_speed = VF_SPEED,
+        shift = { VF_SHIFT[1] + 1.25, VF_SHIFT[2] + 0.9375 },
         scale = 0.5
       }
     }
   },
+  -- Spec section 15, exactly. Clear while working, because the orange glow says
+  -- it; clear when idle, disabled or short of power, which is dark glass.
+  --
+  -- No colour for the latch. The engine has no status for it: a furnace holding
+  -- powder without flux reports `no_ingredients`, exactly as an unfed one does,
+  -- and that takes the idle colour (tested 2026-10-09). The pass-through keeps
+  -- every furnace on a primed line topped up, which is what makes it rare.
+  status_colors =
+  {
+    working = { 0, 0, 0, 0 },              -- the orange glow says this
+    full_output = { 0.4, 0.7, 1, 1 },
+    idle = { 0, 0, 0, 0 },                 -- dark glass
+    disabled = { 0, 0, 0, 0 },
+    no_power = { 0, 0, 0, 0 },
+    low_power = { 0, 0, 0, 0 }
+  },
   working_visualisations =
   {
-    -- The sight port, differenced out of a lit and an unlit render of the same
-    -- plate so it registers by construction. 0.5% of the canvas: this machine's
-    -- entire heat budget is one circle, and if light appears anywhere else the
-    -- seal it is built around is a lie.
+    -- The heat glow, working minus idle, differenced by the packer so it
+    -- registers by construction. The building's entire heat budget is this one
+    -- circle; if light appears anywhere else, the seal is a lie.
     {
-      always_draw = false,
+      fadeout = true,
+      effect = VF_GLOW_EFFECT,
       light = { intensity = 0.3, size = 2.5, color = { 0.91, 0.64, 0.29 } },
       animation =
       {
@@ -547,32 +676,24 @@ derive.own_graphics(furnace,
         priority = "high",
         blend_mode = "additive",
         draw_as_glow = true,
-        width = 200, height = 194,
+        width = 22, height = 21,
         frame_count = 1,
-        shift = { 0, 0 },
+        shift = { 0, -0.75781 },
         scale = 0.5
       }
     },
-    -- The fault lamp, and the first one in this mod.
-    --
-    -- `apply_tint = "status"` hands the colour to the engine, which is why the
-    -- lens is drawn WHITE on the plate and cut white here: a colour baked into
-    -- the plate would be that colour in every state for ever. `always_draw` is
-    -- true because a lamp that only appears while working cannot report that the
-    -- machine has stopped -- which is the one thing it exists to say.
-    --
-    -- Copied from vanilla's electric mining drill, which does exactly this.
+    -- The viewport glass, cut white and tinted by the engine.
     {
-      always_draw = true,
       apply_tint = "status",
+      always_draw = true,                  -- mandatory, or the fault states never draw
       animation =
       {
-        filename = VF .. "status-lamp.png",
+        filename = VF .. "viewport-status.png",
         priority = "high",
         draw_as_glow = true,
-        width = 200, height = 194,
+        width = 22, height = 21,
         frame_count = 1,
-        shift = { 0, 0 },
+        shift = { 0, -0.75781 },
         scale = 0.5
       }
     }
