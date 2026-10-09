@@ -216,29 +216,98 @@ def forged(name, body, edge, rough=0.42, metallic=0.6, bevel_r=0.012):
     return m
 
 
+# ---- the signature finish (spec 3.3, 2026-10-09): red-oxide primer
+#
+# The armour and the buttresses are painted #6E2E22 -> #8A3E2C, painted once and
+# battered since: chipped through to bare steel where the machine is struck or worked
+# (the buttresses' edges and angle iron, the ring of the hatch door the dogs swing
+# over). The deck, the collar, the gears and the weight keep their bare-metal colours.
+# Variation within it: two replacement staves in fresher primer, a few stencilled
+# markings, and rust by place -- dark wet streaks run down the walls from every band,
+# rivet row and fitting (the primer's own rust, tinted dark), dry orange on the tops
+# (the roof deck, the caps, the base plate: their rust tinted dry).
+PRIMER = ("#6E2E22", "#8A3E2C")
+FRESH = ("#86392A", "#A44C36")             # the replacement staves: newer primer, a shade brighter
+BARE = "#9C968C"                            # bare steel, where the primer is knocked off
+WET_RUST = ("#2C1610", "#5A2C18")           # streaks below fittings, on the walls
+DRY_RUST = ("#8A4A1E", "#D48C48")           # on the tops
+DECK_RUST = ("#6E3A1A", "#A8642E")          # the deck's: the same dry rust, quieter, so the deck stays steel
+_SIN_E = math.sin(math.radians(60.0))       # rig.ELEVATION: world Y is model Y / sin(elevation)
+# the hatch's centre, in world space (section 10 asserts it against the hatch itself)
+HATCH_C = (0.0, (-0.12 - (1.28 + (1.22 - 1.28) * (0.83 - 0.10) / (1.74 - 0.10))) / _SIN_E, 0.83)
+
+
+def primer(lo, hi, hatch=False):
+    """The primer's colour: two shades drifting across a plate, dry orange rust on any
+    face turned to the sky, and (hatch) the door chipped bare in a ring under its dogs,
+    which the crew knock open and shut."""
+    def pat(g):
+        geo = g.node("ShaderNodeNewGeometry")
+        pos, normal = geo.outputs["Position"], geo.outputs["Normal"]
+        col = g.mixc(g.remap(g.noise(pos, 1.7, detail=2), 0.35, 0.65), rig.srgb(lo), rig.srgb(hi))
+        up = g.remap(g.node("ShaderNodeSeparateXYZ", Vector=normal).outputs["Z"], 0.55, 0.9)
+        dry = g.math("MULTIPLY", up, g.remap(g.noise(pos, 9, detail=5), 0.45, 0.68), clamp=True)
+        col = g.mixc(g.math("MULTIPLY", dry, 0.85), col,
+                     g.mixc(g.noise(pos, 23, detail=3), rig.srgb(DRY_RUST[0]), rig.srgb(DRY_RUST[1])))
+        if hatch:
+            d = g.node("ShaderNodeVectorMath", Vector=pos)
+            d.operation = "DISTANCE"
+            d.inputs[1].default_value = HATCH_C
+            dist = d.outputs["Value"]
+            band = g.math("MULTIPLY", g.remap(dist, 0.2, 0.26), g.remap(dist, 0.44, 0.36))
+            chips = g.math("MULTIPLY", band, g.remap(g.noise(pos, 28, detail=4, rough=0.6), 0.4, 0.5), clamp=True)
+            col = g.mixc(chips, col, rig.srgb(BARE))
+        return col
+    return pat
+
+
+def stencil_paint(g):
+    """Stencilled paint, off-white, worn through to the primer in patches."""
+    pos = g.node("ShaderNodeNewGeometry").outputs["Position"]
+    worn = g.remap(g.noise(pos, 40, detail=4, rough=0.6), 0.5, 0.62)
+    return g.mixc(worn, rig.srgb("#D2C9B2"), rig.srgb(PRIMER[0]))
+
+
 M = {
-    # spec 3.3, through the adopted sheet's own chips (swatches/bake_concept.py)
-    # (round 5: rust toward the plate's orange-brown, run in streaks from the copper
-    # bands and rivet rows, rather than more rust overall)
-    "armour": layered("armour", "#6E685C", metal="#DAD4C8", paint_metal=0.05, paint_rough=0.6, wear=0.75,
-                      rust=0.55, swatch_gain=0.5, rust_tint=("#6A3212", "#CC7432"),
-                      dust=0.25, grime=0.7, swatch=swatch("armour"), ground=0.85, ground_h=0.6, jitter=0.16,
+    # spec 3.3: the wall's staves in red-oxide primer (the signature finish, above); its
+    # rust dark and wet, run in streaks from the copper bands, the rivet rows and the
+    # fittings (the drips), with dry orange only where a face turns up
+    "armour": layered("armour", PRIMER[1], metal=BARE, paint_metal=0.05, paint_rough=0.62, wear=0.6,
+                      rust=0.4, rust_tint=WET_RUST, pattern=primer(*PRIMER),
+                      dust=0.25, grime=0.6, ground=0.85, ground_h=0.6, jitter=0.12,
                       drips=((1.7, 0.7), (1.56, 0.35), (1.38, 0.55), (0.86, 0.35), (0.34, 0.25), (0.22, 0.12)),
-                      drip=1.0),
+                      drip=0.8),
+    # the replacement staves: newer primer, less worn and less rusted than the plates round them
+    "fresh": layered("fresh", FRESH[1], metal=BARE, paint_metal=0.05, paint_rough=0.55, wear=0.3,
+                     rust=0.3, rust_tint=WET_RUST, pattern=primer(*FRESH),
+                     dust=0.2, grime=0.6, ground=0.85, ground_h=0.6, jitter=0.06,
+                     drips=((1.7, 0.5), (1.38, 0.4), (0.86, 0.25)), drip=0.7),
+    # the buttresses: the same primer, struck more -- their edges chipped bare
+    "buttress": layered("buttress", PRIMER[1], metal=BARE, paint_metal=0.05, paint_rough=0.62, wear=0.95,
+                        rust=0.5, rust_tint=WET_RUST, pattern=primer(*PRIMER),
+                        dust=0.3, grime=0.7, ground=0.85, ground_h=0.6, jitter=0.12,
+                        drips=((1.5, 0.5), (1.12, 0.4), (0.78, 0.3)), drip=0.9),
+    # the hatch door: the primer, chipped bare in a ring under its dogs
+    "door": layered("door", PRIMER[1], metal=BARE, paint_metal=0.05, paint_rough=0.6, wear=0.8,
+                    rust=0.45, rust_tint=WET_RUST, pattern=primer(*PRIMER, hatch=True),
+                    dust=0.15, grime=0.7, jitter=0.06),
+    "stencil": layered("stencil", "#D2C9B2", metal=BARE, paint_metal=0.05, paint_rough=0.7, wear=0.25,
+                       rust=0.3, rust_tint=WET_RUST, dust=0.3, grime=0.5, jitter=0.05, pattern=stencil_paint),
     "frame": layered("frame", "#4A463F", metal="#BEB8AC", paint_metal=0.05, paint_rough=0.7, wear=0.6, rust=0.5,
                      dust=0.5, grime=0.7, swatch=swatch("frame"), swatch_gain=0.9, ground=0.8, jitter=0.12,
                      drips=((1.78, 0.6), (1.6, 0.6)), drip=0.7),
     # the roof: the hull's own paint, darker, dirty and greasy as a working deck is
+    # (signature finish: the deck stays bare metal; its rust is the tops' dry orange)
     "roof": layered("roof", "#6E685C", metal="#B8B2A6", paint_metal=0.05, paint_rough=0.65, wear=0.15,
-                    rust=0.6, swatch_gain=0.95, dust=0.2, grime=0.5, swatch=swatch("deck"), swatch_scale=2.2, jitter=0.14),
+                    rust=0.5, rust_tint=DECK_RUST, swatch_gain=0.95, dust=0.2, grime=0.5, swatch=swatch("deck"), swatch_scale=2.2, jitter=0.14),
     # the base plate: worn steel, scuffed pale where it is walked on, so the corners the
     # tower shades stay steel and not black
     "plate": layered("plate", "#6A655C", metal="#C8C2B6", paint_metal=0.3, paint_rough=0.6, wear=0.6,
-                     rust=0.4, dust=0.6, grime=0.6, swatch=swatch("deck"), swatch_gain=1.35, ground=0.4,
+                     rust=0.4, rust_tint=DRY_RUST, dust=0.6, grime=0.6, swatch=swatch("deck"), swatch_gain=1.35, ground=0.4,
                      jitter=0.1),
     # mid steel, the furnace's rail: the kerb, the ring plate, the lifting eyes (round 5)
     "rail": layered("rail", "#77716A", metal="#B4AEA4", paint_metal=0.8, paint_rough=0.35,
-                    wear=0.45, rust=0.25, dust=0.1, grime=0.5),
+                    wear=0.45, rust=0.25, rust_tint=DRY_RUST, dust=0.1, grime=0.5),
     # bright worn steel where real wear is: gear teeth, the kerb's lip, the lifting eyes (round 4)
     # (mostly diffuse: a metallic finish only glints at the mirror angle, which this
     # camera rarely sees, and otherwise reflects the dim sky as dark)
@@ -277,9 +346,12 @@ M = {
     # a repair plate, darker and dirtier than the armour round it
     "patch": layered("patch", "#5C564D", metal="#A8A296", paint_metal=0.3, paint_rough=0.6,
                      wear=0.5, rust=0.6, dust=0.15, grime=0.9),
-    # angle iron, knocked back to bare metal along its edges
-    "edge": layered("edge", "#5A554C", metal="#F0EAE0", paint_metal=0.3, paint_rough=0.5,
-                    wear=1.0, rust=0.35, dust=0.2, grime=0.5, ground=0.7),
+    # angle iron and caps on the buttresses and piers: primed with them, knocked back to
+    # bare metal along every edge (signature finish: the buttress edges); their rust
+    # the tops' dry orange
+    "edge": layered("edge", PRIMER[1], metal="#F0EAE0", paint_metal=0.05, paint_rough=0.55,
+                    wear=1.0, rust=0.35, rust_tint=DRY_RUST, pattern=primer(*PRIMER), dust=0.2, grime=0.5,
+                    ground=0.7),
     # bare steel, scuffed bright where boots and tools have rubbed the paint off
     "scuff": layered("scuff", "#8A847A", metal="#C4BEB4", paint_metal=0.9, paint_rough=0.3,
                      wear=0.6, rust=0.15, dust=0.3, grime=0.4),
@@ -529,6 +601,21 @@ def circle(r, n=64, cx=0.0, cy=0.0):
     return [(cx + r * math.cos(2 * math.pi * k / n), cy + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
 
 
+def stencil(text, loc, rot, size):
+    """A stencilled marking (the signature finish's variation): flat text a hair proud of
+    the surface, its local Z out of it, read along its local X."""
+    bpy.ops.object.text_add(location=(0, 0, 0))
+    t = bpy.context.active_object
+    t.data.body = text
+    t.data.size = size
+    t.data.align_x, t.data.align_y = "CENTER", "CENTER"
+    # a hair of thickness, so its face has an outward normal: a flat fill faced into the
+    # wall shades as an occluded cavity, black
+    t.data.extrude = 0.002
+    t.location, t.rotation_euler = loc, rot
+    return _finish(t, "stencil", "static", bevel=0)
+
+
 # ---------------------------------------------------------------- 1. the base plate
 
 BE, BH = 1.495, 0.10                 # half-width (the footprint, less a hair) and height
@@ -623,10 +710,14 @@ def stave(a0, a1, z0, z1, n=8):
     return build
 
 
-# the wall in plates, each its own object and so its own tone (the furnace's way)
+# the wall in plates, each its own object and so its own tone (the furnace's way); two
+# of them replaced since, in fresher primer (the signature finish's variation): the
+# upper course west of the lamp, and the middle course east of the hatch
+REPLACED = {(236.25, COURSES[2]), (281.25, COURSES[1])}
 for a in SEAMS:
     for z0, z1 in zip(COURSES, COURSES[1:]):
-        p = mesh_object("stave", stave(a, a + 22.5, z0, z1), "armour", "hull", bevel=0.0, smooth=True)
+        p = mesh_object("stave", stave(a, a + 22.5, z0, z1), "fresh" if (a, z0) in REPLACED else "armour", "hull",
+                        bevel=0.0, smooth=True)
         sol = p.modifiers.new("solid", "SOLIDIFY")
         sol.thickness = 0.07
         sol.offset = -1.0
@@ -1167,7 +1258,7 @@ for a in BUTT:
     def on_face(r_off, k, z, c=c, s=s, tx=tx, ty=ty):
         ro, hw = b_at(z)
         return (( ro + r_off) * c + k * hw * tx, YC + (ro + r_off) * s + k * hw * ty, z)
-    stack([section(r_in, r_out, hw, z, flare=0.5) for z, r_in, r_out, hw in BSEC], "armour", group="hull", bevel=0.045,
+    stack([section(r_in, r_out, hw, z, flare=0.5) for z, r_in, r_out, hw in BSEC], "buttress", group="hull", bevel=0.045,
           name="buttress")
     # its stepped plinth on the base plate, standing on the hazard band
     stack([section(1.02, 1.62, 0.255, BH - 0.01), section(1.02, 1.6, 0.25, 0.2), section(1.02, 1.5, 0.23, 0.32)],
@@ -1231,13 +1322,19 @@ for a in BUTT:
     _finish(top, "polish", "static", bevel=0, smooth=True, parent=lug)
     for k in (-1, 1):
         bolt((ex + k * 0.07 * c, ey + k * 0.07 * s, ZT + 0.182), 0.014, 0.014)
+    if a == 315:
+        # its rated load stencilled on the south-east buttress, between the strap and the band
+        stencil("8T", on_face(0.012, -0.25, 0.97), Matrix(((-s, c, 0), (0, 0, 1), (c, s, 0))).transposed().to_euler(),
+                0.09)
 
 # ---------------------------------------------------------------- 10. the hatch, the ladder and the lamp
 
 HATCH = empty("hatch", *on_wall(-90, HZ - 0.03, 0.0), scale=(1.15, 1.15, 1.15))
 ring((0, 0, -0.03), 0.36, 0.27, 0.16, "frame", parent=HATCH, verts=64, bevel=0.012)
-cyl((0, 0, 0.0), 0.28, 0.06, "armour", verts=64, bevel=0.012, parent=HATCH)                       # the door
-cyl((0, 0, 0.035), 0.2, 0.025, "armour", verts=64, bevel=0.01, parent=HATCH)                      # its boss
+bpy.context.view_layer.update()
+assert (HATCH.matrix_world.translation - Vector(HATCH_C)).length < 1e-3, "HATCH_C is not the hatch's centre"
+cyl((0, 0, 0.0), 0.28, 0.06, "door", verts=64, bevel=0.012, parent=HATCH)                         # the door
+cyl((0, 0, 0.035), 0.2, 0.025, "door", verts=64, bevel=0.01, parent=HATCH)                        # its boss
 torus((0, 0, 0.05), 0.31, 0.012, "seam", parent=HATCH, seg=64)
 for k in range(20):
     u = 2 * math.pi * (k + 0.5) / 20
@@ -1406,6 +1503,15 @@ box((0, 0, 0), (0.22, 0.16, 0.014), "patch", bevel=0.004, parent=wp)
 for sx in (-1, 1):
     for sy in (-1, 1):
         rivet((sx * 0.09, sy * 0.06, 0.01), 0.011, parent=wp)
+
+# Stencilled markings (the signature finish): the machine's number on the replaced
+# upper stave west of the lamp, a warning beside the hatch on the replaced middle stave,
+# and each motor's number on the south face of its pier.
+stencil("DC-03", *on_wall(-112, 1.47, 0.012), 0.085)        # (above 1.5 the roof's lip hides it)
+stencil("KEEP\nCLEAR", *on_wall(-62.5, 0.45, 0.012), 0.07)       # (clear of the dogs' swing)
+for sx, label in ((1, "M2"), (-1, "M1")):
+    # (on the strip of pier face clear of the tower's wall: x 1.27 to 1.43)
+    stencil(label, (sx * 1.355, YC - 0.128, 0.92), (math.pi / 2, 0, 0), 0.075)
 
 # ---------------------------------------------------------------- passes
 

@@ -111,8 +111,8 @@
    "tracked": "crown"
   },
   "frame0_vs_still": [
-   255,
-   0.0099,
+   64,
+   0.0101,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }
