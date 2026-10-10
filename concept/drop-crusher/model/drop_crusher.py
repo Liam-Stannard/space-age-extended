@@ -78,6 +78,7 @@ Units are tiles; north is +Y. A model point (x, y, z) lands on screen at
 import json
 import math
 import os
+import random
 import sys
 
 import bmesh
@@ -378,6 +379,131 @@ def plain(name, hexcol, rough=0.9, metal=0.0):
 
 
 M["dark"] = plain("dark", "#3E342A")            # the inside of the gear wells and the collar
+
+# ---- round 11: the retrofit layer's materials (hoses, cables, the hydraulic unit,
+# a newer plate, oil and grime), and a battered stave
+M["battered"] = layered("battered", PRIMER[0], metal=BARE, paint_metal=0.05, paint_rough=0.65, wear=0.95,
+                        rust=0.65, rust_tint=WET_RUST, pattern=primer(*PRIMER),
+                        dust=0.35, grime=0.75, ground=0.9, ground_h=0.7, jitter=0.1,
+                        drips=((1.7, 0.8), (1.38, 0.6), (0.86, 0.45), (0.34, 0.25)), drip=1.0)
+# rubber hydraulic hose: a warm dark grey, not black, so it separates from the deck's
+# contact shadows (FFF #146: shadows coloured, values kept apart); its ribs catch the
+# sun in a crisp sheen; dusty on top, scuffed paler where it rubs
+# (round 12: a lighter, warmer rust-brown rubber -- vanilla's foundry and electromagnetic
+# plant hoses -- that parts from both the grey deck and the red walls at 1x)
+M["hose"] = layered("hose", "#9A5C38", metal="#C89468", paint_metal=0.0, paint_rough=0.42, wear=0.3,
+                    rust=0.05, dust=0.45, grime=0.4, jitter=0.12)
+# insulated cable in muted colours, dusty
+# (round 12: clearer colours, less dust, so they survive at 1x)
+for _n, _c in (("red", "#B04A3A"), ("blue", "#4A74B0"), ("green", "#5C8E46"), ("yellow", "#D2A83E"),
+               ("black", "#2E2C29")):
+    M["cable_" + _n] = layered("cable_" + _n, _c, metal="#B0AA9E", paint_metal=0.0, paint_rough=0.45, wear=0.1,
+                               rust=0.0, dust=0.25, grime=0.3, jitter=0.06)
+M["tie"] = layered("tie", "#24221F", metal="#4A453E", paint_metal=0.0, paint_rough=0.4, wear=0.1, rust=0.0,
+                   dust=0.3, grime=0.3)
+# the hydraulic unit, bought in and bolted down later, in its maker's dull olive
+M["olive"] = layered("olive", "#5C6248", metal="#A8A496", paint_metal=0.05, paint_rough=0.55, wear=0.55,
+                     rust=0.35, dust=0.35, grime=0.7, jitter=0.08, drips=((2.05, 0.2),), drip=0.6)
+# a newer plate, unpainted galvanised steel, mismatched with the primer round it
+M["newplate"] = layered("newplate", "#7E8486", metal="#B8BEC0", paint_metal=0.45, paint_rough=0.45, wear=0.25,
+                        rust=0.12, dust=0.25, grime=0.5, jitter=0.05)
+
+
+def oil_material():
+    """Oil soaked into a surface: dark, glossy in the middle, thinning to nothing at its
+    edge (the decal's alpha falls off with distance from its middle and with noise)."""
+    m = bpy.data.materials.new("oil")
+    m.use_nodes = True
+    t = m.node_tree
+    n, ln = t.nodes, t.links
+    b = n["Principled BSDF"]
+    # (a warm dark brown, not black: in the collar's shadow a black stain crushes to
+    # nothing -- FFF #146, shadows stay coloured)
+    b.inputs["Base Color"].default_value = rig.srgb("#2E2219")
+    b.inputs["Roughness"].default_value = 0.18
+    tc = n.new("ShaderNodeTexCoord")
+    grad = n.new("ShaderNodeTexGradient")
+    grad.gradient_type = "SPHERICAL"
+    ln.new(tc.outputs["Object"], grad.inputs["Vector"])
+    noise = n.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 3.0
+    noise.inputs["Detail"].default_value = 4.0
+    ln.new(tc.outputs["Object"], noise.inputs["Vector"])
+    mix = n.new("ShaderNodeMath")
+    mix.operation = "MULTIPLY"
+    ln.new(grad.outputs["Fac"], mix.inputs[0])
+    rng = n.new("ShaderNodeMapRange")
+    rng.inputs["From Min"].default_value = 0.3
+    rng.inputs["From Max"].default_value = 0.65
+    rng.inputs["To Min"].default_value = 0.35
+    rng.inputs["To Max"].default_value = 1.2
+    ln.new(noise.outputs["Fac"], rng.inputs["Value"])
+    ln.new(rng.outputs[0], mix.inputs[1])
+    a = n.new("ShaderNodeMath")
+    a.operation = "MULTIPLY"
+    a.use_clamp = True
+    ln.new(mix.outputs[0], a.inputs[0])
+    a.inputs[1].default_value = 1.15
+    ln.new(a.outputs[0], b.inputs["Alpha"])
+    return m
+
+
+def streak_material():
+    """A grime streak run down a face from a fitting: dark brown, strongest at its top,
+    fading to nothing at its foot, in vertical runs (a decal in the decal's own UVs:
+    local Y up the streak, 0 at the foot, 1 at the top)."""
+    m = bpy.data.materials.new("streak")
+    m.use_nodes = True
+    t = m.node_tree
+    n, ln = t.nodes, t.links
+    b = n["Principled BSDF"]
+    b.inputs["Base Color"].default_value = rig.srgb("#1E140C")
+    b.inputs["Roughness"].default_value = 0.8
+    tc = n.new("ShaderNodeTexCoord")
+    sep = n.new("ShaderNodeSeparateXYZ")
+    ln.new(tc.outputs["Generated"], sep.inputs[0])
+    mp = n.new("ShaderNodeMapping")                 # stretched tall: streaks run down
+    mp.inputs["Scale"].default_value = (40.0, 2.0, 40.0)
+    ln.new(tc.outputs["Generated"], mp.inputs["Vector"])
+    noise = n.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 1.0
+    noise.inputs["Detail"].default_value = 3.0
+    ln.new(mp.outputs[0], noise.inputs["Vector"])
+    runs = n.new("ShaderNodeMapRange")
+    runs.inputs["From Min"].default_value = 0.42
+    runs.inputs["From Max"].default_value = 0.62
+    ln.new(noise.outputs["Fac"], runs.inputs["Value"])
+    fade = n.new("ShaderNodeMath")                  # Y up the streak: 0 at its foot
+    fade.operation = "POWER"
+    ln.new(sep.outputs["Y"], fade.inputs[0])
+    fade.inputs[1].default_value = 1.6
+    side = n.new("ShaderNodeMath")                  # thinning to its sides
+    side.operation = "SINE"
+    pi = n.new("ShaderNodeMath")
+    pi.operation = "MULTIPLY"
+    ln.new(sep.outputs["X"], pi.inputs[0])
+    pi.inputs[1].default_value = math.pi
+    ln.new(pi.outputs[0], side.inputs[0])
+    m1 = n.new("ShaderNodeMath")
+    m1.operation = "MULTIPLY"
+    ln.new(runs.outputs[0], m1.inputs[0])
+    ln.new(fade.outputs[0], m1.inputs[1])
+    m2 = n.new("ShaderNodeMath")
+    m2.operation = "MULTIPLY"
+    m2.use_clamp = True
+    ln.new(m1.outputs[0], m2.inputs[0])
+    ln.new(side.outputs[0], m2.inputs[1])
+    m3 = n.new("ShaderNodeMath")
+    m3.operation = "MULTIPLY"
+    m3.use_clamp = True
+    ln.new(m2.outputs[0], m3.inputs[0])
+    m3.inputs[1].default_value = 0.55
+    ln.new(m3.outputs[0], b.inputs["Alpha"])
+    return m
+
+
+M["oil"] = oil_material()
+M["streak"] = streak_material()
 
 
 def lens_material():
@@ -702,10 +828,21 @@ def near_buttress(a, by=14):
 
 
 def stave(a0, a1, z0, z1, n=8):
+    """A wall plate, hand-hung (round 11, less machined): its edges a little out of true
+    -- each edge vertex stood off or sunk by a few thousandths, its top and bottom
+    wandering in height under the bands -- and its face oil-canned, bowed between them."""
+    rnd = random.Random(f"{a0:.2f}/{z0:.2f}")
+
     def build(bm):
         rows = []
-        for z in (z0, z1):
-            rows.append([bm.verts.new(wall(a0 + (a1 - a0) * k / n, z)) for k in range(n + 1)])
+        for i, z in enumerate((z0, z1)):
+            row = []
+            for k in range(n + 1):
+                edge = k in (0, n)
+                out = rnd.uniform(-0.004, 0.006) if edge else 0.004 * math.sin(math.pi * k / n) * rnd.uniform(0.3, 1.0)
+                zz = z + rnd.uniform(-0.007, 0.007) * (0 if z in (Z0, ZR) else 1)
+                row.append(bm.verts.new(wall(a0 + (a1 - a0) * k / n, zz, out)))
+            rows.append(row)
         for k in range(n):
             bm.faces.new((rows[0][k], rows[0][k + 1], rows[1][k + 1], rows[1][k]))
     return build
@@ -715,10 +852,14 @@ def stave(a0, a1, z0, z1, n=8):
 # of them replaced since, in fresher primer (the signature finish's variation): the
 # upper course west of the old lamp boss, and the middle course east of the hatch
 REPLACED = {(236.25, COURSES[2]), (281.25, COURSES[1])}
+# and three that have had the worst of it (round 11: uneven wear), worn and rusted
+# further -- on the west flank and by the hatch, none in the east's shade (round 12:
+# there they crushed to black)
+BATTERED = {(213.75, COURSES[1]), (191.25, COURSES[1]), (303.75, COURSES[2])}
 for a in SEAMS:
     for z0, z1 in zip(COURSES, COURSES[1:]):
-        p = mesh_object("stave", stave(a, a + 22.5, z0, z1), "fresh" if (a, z0) in REPLACED else "armour", "hull",
-                        bevel=0.0, smooth=True)
+        mat = "fresh" if (a, z0) in REPLACED else "battered" if (a, z0) in BATTERED else "armour"
+        p = mesh_object("stave", stave(a, a + 22.5, z0, z1), mat, "hull", bevel=0.0, smooth=True)
         sol = p.modifiers.new("solid", "SOLIDIFY")
         sol.thickness = 0.07
         sol.offset = -1.0
@@ -1546,6 +1687,396 @@ for sx, label in ((1, "M2"), (-1, "M1")):
     # (on the strip of pier face clear of the tower's wall: x 1.27 to 1.43)
     stencil(label, (sx * 1.355, YC - 0.128, 0.92), (math.pi / 2, 0, 0), 0.075)
 
+# ---------------------------------------------------------------- 12. the retrofit (round 11)
+#
+# Liam, against vanilla: "we need to add more wiring and hoses and things ... these look
+# too well machined". Vanilla layers a working machine with what was added to it after
+# it was built (the electromagnetic plant's corrugated hoses round its rim, the foundry's
+# coloured cables and clamps): so here, a hydraulic unit bolted to the deck feeding the
+# gear housings and the pinions' bearings through drooping rubber hoses with crimped
+# fittings; a junction box on the deck, its cables in an open tray inside the kerb to
+# the lamp and over the edge to both motors, one bundle looping down the wall; a feed
+# cable down the south-west buttress's flank to the ground; welded brackets and clips
+# holding all of it; a newer plate on the wall; oil under the gears and the motors, and
+# grime run down from the fittings. Everything sits on something. Nothing enters the
+# volume any moving part sweeps in any frame: `--collide` checks it, below.
+RETRO_BEFORE = set(bpy.data.objects)
+
+
+def catmull(pts, step=0.008):
+    """A smooth path through pts (Catmull-Rom), sampled about every `step` tiles."""
+    P = [Vector(p) for p in pts]
+    ext = [2 * P[0] - P[1]] + P + [2 * P[-1] - P[-2]]
+    out = []
+    for i in range(1, len(ext) - 2):
+        p0, p1, p2, p3 = ext[i - 1:i + 3]
+        n = max(2, math.ceil((p2 - p1).length / step))
+        for k in range(n):
+            t = k / n
+            out.append(0.5 * (2 * p1 + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t
+                              + (3 * p1 - p0 - 3 * p2 + p3) * t * t * t))
+    out.append(P[-1])
+    return out
+
+
+def frames(P):
+    """Tangents and parallel-transported normals along a sampled path."""
+    T = [(P[min(i + 1, len(P) - 1)] - P[max(i - 1, 0)]).normalized() for i in range(len(P))]
+    up = Vector((0, 0, 1)) if abs(T[0].z) < 0.9 else Vector((1, 0, 0))
+    N = [T[0].cross(up).normalized()]
+    for i in range(1, len(P)):
+        n = N[-1] - T[i] * N[-1].dot(T[i])
+        N.append(n.normalized() if n.length > 1e-6 else N[-1])
+    B = [t.cross(n) for t, n in zip(T, N)]
+    return T, N, B
+
+
+def sweep_raw(P, r, mat, corr=0.0, pitch=0.03, seg=10, name="hose", group="static"):
+    """A tube along the sampled path P; corr ribs it (a corrugated hose)."""
+    T, N, B = frames(P)
+    s = [0.0]
+    for a_, b_ in zip(P, P[1:]):
+        s.append(s[-1] + (b_ - a_).length)
+
+    def build(bm):
+        rings = []
+        for i, p in enumerate(P):
+            rr = r * (1 + corr * (0.5 + 0.5 * math.cos(2 * math.pi * s[i] / pitch)))
+            rings.append([bm.verts.new(p + rr * (math.cos(2 * math.pi * k / seg) * N[i]
+                                                 + math.sin(2 * math.pi * k / seg) * B[i])) for k in range(seg)])
+        for a_, b_ in zip(rings, rings[1:]):
+            for k in range(seg):
+                j = (k + 1) % seg
+                bm.faces.new((a_[k], a_[j], b_[j], b_[k]))
+        bm.faces.new(list(reversed(rings[0])))
+        bm.faces.new(rings[-1])
+    return mesh_object(name, build, mat, group, bevel=0, smooth=True)
+
+
+def along(t):
+    """A rotation whose local Z runs along t."""
+    return Vector(t).normalized().to_track_quat("Z", "Y").to_euler()
+
+
+def hose(pts, r=0.032, mat="hose", ends=True):
+    """A rubber hydraulic hose, ribbed, through pts; a crimped ferrule and a hex nut at
+    each end, the nut at the end point (on the port)."""
+    P = catmull(pts)
+    sweep_raw(P, r, mat, corr=0.14, pitch=0.022, seg=12)
+    if ends:
+        for p, q in ((P[0], P[1]), (P[-1], P[-2])):
+            t = (p - q).normalized()                       # out of the hose, into the port
+            cyl(tuple(p - t * 0.03), r * 1.45, 0.055, "steel", verts=16, rot=along(t), bevel=0.004)   # ferrule
+            for d in (-0.045, -0.015):                     # its crimp rings
+                torus(tuple(p + t * d), r * 1.45, 0.004, "steel", rot=along(t), seg=16)
+            cyl(tuple(p + t * 0.002), r * 1.75, 0.022, "brass", verts=6, rot=along(t), bevel=0.0)      # the nut
+    return P
+
+
+CABLE = {"r": "cable_red", "b": "cable_blue", "g": "cable_green", "y": "cable_yellow", "k": "cable_black"}
+
+
+def bundle(pts, cols="rbgy", r=0.011, ties=0.16, twist=9.0, spread=None, flat=False):
+    """Insulated cables in muted colours, laid together through pts and zip-tied; flat
+    lays them side by side (in a tray) instead of twisted round each other."""
+    P = catmull(pts)
+    T, N, B = frames(P)
+    s = [0.0]
+    for a_, b_ in zip(P, P[1:]):
+        s.append(s[-1] + (b_ - a_).length)
+    n = len(cols)
+    sp = spread if spread is not None else (r * 1.25 if n > 1 else 0.0)
+    for k, c in enumerate(cols):
+        if flat:
+            off = [(k - (n - 1) / 2) * 2.05 * r * N[i] for i in range(len(P))]
+        else:
+            off = [sp * (math.cos(2 * math.pi * k / n + twist * s[i]) * N[i]
+                         + math.sin(2 * math.pi * k / n + twist * s[i]) * B[i]) for i in range(len(P))]
+        sweep_raw([p + o for p, o in zip(P, off)], r, CABLE[c], seg=8, name="cable")
+    if ties and not flat:
+        nxt = ties / 2
+        for i, p in enumerate(P):
+            if s[i] >= nxt and s[i] < s[-1] - 0.03:
+                torus(tuple(p), sp + r + 0.003, 0.0045, "tie", rot=along(T[i]), seg=16)
+                nxt += ties
+    return P
+
+
+def gland(p, t, r=0.016, mat="brass"):
+    """A cable or hose gland: a bushing out of a face along t, and its hex nut."""
+    t = Vector(t).normalized()
+    p = Vector(p)
+    cyl(tuple(p + t * 0.012), r, 0.024, mat, verts=12, rot=along(t), bevel=0.003)
+    cyl(tuple(p + t * 0.026), r * 1.25, 0.012, mat, verts=6, rot=along(t), bevel=0.0)
+    return p + t * 0.034
+
+
+def weld_bracket(loc, rot, size=(0.05, 0.04, 0.035), mat="steel"):
+    """A retrofitted bracket: a bent plate welded on, its bead along its foot."""
+    e = empty("bracket", loc=loc, rot=rot)
+    box((0, 0, size[2] / 2), size, mat, bevel=0.004, parent=e)
+    box((0, 0, 0.003), (size[0] + 0.012, size[1] + 0.012, 0.008), "seam", bevel=0.003, parent=e)
+    return e
+
+
+def saddle(p, t, r, z_floor):
+    """A strap clip holding a hose or cable down: a strap over it, a welded foot each side."""
+    t = Vector(t)
+    yaw = math.atan2(t.y, t.x)
+    e = empty("saddle", loc=(p.x, p.y, z_floor), rot=(0, 0, yaw))
+    top = p.z - z_floor + r
+    box((0, 0, top + 0.004), (0.022, 2 * r + 0.02, 0.008), "steel", bevel=0.002, parent=e)
+    for sy in (-1, 1):
+        box((0, sy * (r + 0.008), (top + 0.008) / 2), (0.022, 0.008, top + 0.008), "steel", bevel=0.0, parent=e)
+        box((0, sy * (r + 0.024), 0.004), (0.03, 0.03, 0.008), "seam", bevel=0.002, parent=e)
+
+
+def decal_plane(name, w, h, mat, loc, rot, top=True, group="static"):
+    """A flat decal (oil, a grime streak): local X across, local Y up, its top at loc
+    (top) or centred on it; it casts no shadow."""
+    y0, y1 = (-h, 0.0) if top else (-h / 2, h / 2)
+
+    def build(bm):
+        v = [bm.verts.new((x, y, 0.0)) for x, y in ((-w / 2, y0), (w / 2, y0), (w / 2, y1), (-w / 2, y1))]
+        bm.faces.new(v)
+    o = mesh_object(name, build, mat, group, bevel=0)
+    o.location, o.rotation_euler = loc, rot
+    o.visible_shadow = False
+    return o
+
+
+def oil(x, y, z, rx, ry, yaw=0.0, seed=0):
+    """An oil stain on a level surface: an irregular blob, soaked dark, thinning out."""
+    rnd = random.Random(seed)
+    ph = [rnd.uniform(0, 2 * math.pi) for _ in range(3)]
+
+    def build(bm):
+        n = 28
+        c = bm.verts.new((0, 0, 0))
+        ring_ = [bm.verts.new((math.cos(2 * math.pi * k / n) * (1 + 0.18 * math.sin(3 * 2 * math.pi * k / n + ph[0])
+                                                                 + 0.1 * math.sin(5 * 2 * math.pi * k / n + ph[1])),
+                               math.sin(2 * math.pi * k / n) * (1 + 0.18 * math.sin(3 * 2 * math.pi * k / n + ph[0])
+                                                                 + 0.1 * math.sin(7 * 2 * math.pi * k / n + ph[2])), 0))
+                 for k in range(n)]
+        for k in range(n):
+            bm.faces.new((c, ring_[k], ring_[(k + 1) % n]))
+    o = mesh_object("oil", build, "oil", "static", bevel=0)
+    o.location, o.rotation_euler, o.scale = (x, y, z), (0, 0, yaw), (rx, ry, 1.0)
+    o.visible_shadow = False
+    return o
+
+
+def polar(r, a, z):
+    t = math.radians(a)
+    return Vector((r * math.cos(t), YC + r * math.sin(t), z))
+
+
+# -- the hydraulic unit: bought in, in its maker's olive, on a newer galvanised mounting
+# plate on the south-east deck, its long axis along the deck's curve (between the ring
+# plate round the collar, r 0.56, and the copper ring main, r 0.93)
+HU_A, HU_R = 323.0, 0.74
+_hc = polar(HU_R, HU_A, ROOF)
+_tu = Vector((-math.sin(math.radians(HU_A)), math.cos(math.radians(HU_A)), 0))   # along the curve
+_ru = Vector((-math.cos(math.radians(HU_A)), -math.sin(math.radians(HU_A)), 0))  # inward
+HU = empty("hydraulic", loc=tuple(_hc), rot=(0, 0, math.atan2(_tu.y, _tu.x)))
+
+
+def hu(x, y, z):
+    """The unit's local point (x along the curve, y inward, z up from the deck) in model space."""
+    return _hc + _tu * x + _ru * y + Vector((0, 0, z))
+
+
+box((0, 0, 0.008), (0.27, 0.16, 0.016), "newplate", bevel=0.004, parent=HU)                    # mounting plate
+for sx in (-1, 1):
+    for sy in (-1, 1):
+        bolt((sx * 0.115, sy * 0.06, 0.02), 0.011, 0.01, parent=HU)
+    box((sx * 0.07, 0, 0.04), (0.03, 0.12, 0.05), "olive", bevel=0.005, parent=HU)                # saddles
+cyl((0, 0.01, 0.1), 0.058, 0.2, "olive", verts=32, rot=(0, math.pi / 2, 0), bevel=0.01, parent=HU)   # reservoir
+for sx in (-1, 1):
+    torus((sx * 0.07, 0.01, 0.1), 0.059, 0.006, "steel", rot=(0, math.pi / 2, 0), parent=HU, seg=32)  # straps
+cyl((0.04, 0.01, 0.165), 0.018, 0.02, "brass", verts=12, bevel=0.003, parent=HU)                # filler cap
+M["glass"] = plain("glass", "#9AA49C", rough=0.15)
+cyl((-0.03, -0.066, 0.1), 0.014, 0.006, "glass", verts=12, rot=(math.pi / 2, 0, 0), bevel=0.0, parent=HU)   # sight glass
+cyl((-0.085, -0.055, 0.06), 0.032, 0.07, "olive", verts=24, rot=(0, math.pi / 2, 0), bevel=0.006, parent=HU)   # pump motor
+for k in range(3):
+    torus((-0.07 - k * 0.015, -0.055, 0.06), 0.033, 0.004, "steel", rot=(0, math.pi / 2, 0), parent=HU, seg=24)
+cyl((0.1, -0.055, 0.055), 0.022, 0.07, "steel", verts=16, bevel=0.004, parent=HU)              # filter canister
+
+# -- the hoses (round 12: chunkier, rust-brown, and laid on the deck rather than looped
+# in the air in the collar's shade). Each gear housing carries a manifold block welded to
+# its south cheek low down, sitting on the collar's ring plate, two ports facing
+# south: the unit feeds each manifold along the deck, and each manifold feeds its
+# pinion's outboard bearing along the deck and over the kerb. Every hose stays
+# south of the gears' faces (y <= -0.24 against their -0.175) and below the pinions
+# (z <= 2.0 against their 2.15).
+MAN = {}
+for sx in (-1, 1):
+    c = Vector((sx * 0.552, YC - 0.115, ROOF + 0.065))
+    box(tuple(c), (0.1, 0.05, 0.09), "steel", bevel=0.006)
+    box((c.x, YC - 0.092, c.z + 0.045), (0.11, 0.012, 0.012), "seam", bevel=0.003)                # its weld
+    for dx in (-0.032, 0.032):
+        bolt((c.x + dx, c.y - 0.026, c.z + 0.026), 0.009, 0.008, rot=(math.pi / 2, 0, 0))
+    # (both ports face south: a port on its outer end reached under the gear's rim)
+    MAN[sx] = dict(south=gland(Vector((sx * 0.515, c.y - 0.025, ROOF + 0.06)), (0, -1, 0), 0.026, "steel"),
+                   out=gland(Vector((sx * 0.588, c.y - 0.025, ROOF + 0.06)), (0, -1, 0), 0.026, "steel"))
+# the pinions' bearing brackets take a port on their south faces
+BRG = {sx: gland(Vector((sx * MOTOR_X, YC - 0.0875, 1.98)), (0, -1, 0), 0.026, "steel") for sx in (-1, 1)}
+
+R_H = 0.042
+Z_DECK = ROOF + R_H                                   # a hose lying on the deck
+# (a) the unit to the east manifold: out of the reservoir's north end, down onto the
+# deck and in from the south
+p_a0 = gland(hu(0.1, 0.01, 0.09), _tu, 0.026, "steel")
+hose([p_a0, p_a0 + _tu * 0.04 + Vector((0, 0, -0.03)), Vector((0.63, -0.40, Z_DECK)), Vector((0.55, -0.36, Z_DECK + 0.012)),
+      MAN[1]["south"] + Vector((0, -0.04, 0)), MAN[1]["south"]], R_H)
+# (b) the unit to the west manifold: along the south deck, round the collar's ring plate
+# and the inspection plate's handles, clipped down, then in from the south
+p_b0 = gland(hu(-0.1, 0.01, 0.09), -_tu, 0.026, "steel")
+pb = [p_b0, p_b0 - _tu * 0.05 + Vector((0, 0, -0.03)), Vector((0.36, -0.78, Z_DECK)), Vector((0.12, -0.82, Z_DECK)),
+      Vector((-0.12, -0.80, Z_DECK)), Vector((-0.36, -0.76, Z_DECK)), Vector((-0.6, -0.71, Z_DECK)),
+      Vector((-0.71, -0.57, Z_DECK)), Vector((-0.64, -0.42, Z_DECK)), Vector((-0.55, -0.36, Z_DECK + 0.012)),
+      MAN[-1]["south"] + Vector((0, -0.04, 0)), MAN[-1]["south"]]
+P = hose(pb, R_H)
+for i in (len(P) * 2 // 7, len(P) * 3 // 7, len(P) * 5 // 7):
+    saddle(P[i], P[i + 1] - P[i], R_H, ROOF)
+# (c, d) each manifold to its pinion's bearing: out along the deck south of the gear,
+# over the kerb's lip in a welded saddle, and up into the bracket from the south
+for sx in (-1, 1):
+    m = MAN[sx]["out"]
+    P = hose([m, m + Vector((0, -0.035, 0)), Vector((sx * 0.70, YC - 0.2, Z_DECK)), Vector((sx * 0.86, YC - 0.175, Z_DECK)),
+              Vector((sx * 1.06, YC - 0.17, Z_DECK)), Vector((sx * 1.2, YC - 0.2, ROOF + 0.05 + R_H + 0.004)),
+              Vector((sx * 1.272, YC - 0.215, 1.95)), BRG[sx] + Vector((0, -0.06, -0.01)), BRG[sx]], R_H)
+    saddle(Vector((sx * 1.2, YC - 0.2, ROOF + 0.05 + R_H + 0.004)), Vector((sx, -0.15, 0)), R_H, ROOF + 0.05)
+    saddle(P[len(P) // 3], P[len(P) // 3 + 1] - P[len(P) // 3], R_H, ROOF)
+
+
+def clamp(P, i, r, wall_dir):
+    """A visible clamp on a cable run: a steel band round the bundle at P[i] and a welded
+    bracket from it back to the face it hangs on (wall_dir: from the face to the cable)."""
+    t = (P[min(i + 1, len(P) - 1)] - P[i]).normalized()
+    torus(tuple(P[i]), r + 0.006, 0.008, "steel", rot=along(t), seg=20)
+    w = Vector(wall_dir).normalized()
+    a = P[i] - w * (r + 0.03)
+    box(tuple(a), (0.03, 0.03, 0.03), "steel", rot=along(w), bevel=0.004)
+    box(tuple(a - w * 0.02), (0.05, 0.05, 0.008), "seam", rot=along(w), bevel=0.002)
+
+
+R_C = 0.011                                            # a cable, round 12: fewer, thicker
+
+# -- the junction box: on the south deck between the hose and the ring main, its glands
+# facing out to the tray
+JB_A, JB_R = 255.0, 0.84
+_jc = polar(JB_R, JB_A, ROOF)
+_jo = Vector((math.cos(math.radians(JB_A)), math.sin(math.radians(JB_A)), 0))      # out
+JB = empty("junction", loc=tuple(_jc), rot=(0, 0, math.radians(JB_A)))
+box((0, 0, 0.075), (0.11, 0.19, 0.15), "frame", bevel=0.008, parent=JB)
+box((0.002, 0, 0.155), (0.12, 0.2, 0.014), "newplate", bevel=0.004, parent=JB)                  # its lid, a later one
+for dy in (-0.08, 0.08):
+    for dx in (-0.045, 0.045):
+        bolt((dx, dy, 0.163), 0.009, 0.008, parent=JB)
+for dy in (-0.07, 0.07):                                                                        # its feet, welded down
+    box((0, dy, 0.006), (0.12, 0.03, 0.012), "frame", bevel=0.003, parent=JB)
+    box((0, dy, 0.002), (0.125, 0.04, 0.006), "seam", bevel=0.002, parent=JB)
+JG = {}
+for k, dy in enumerate((-0.045, 0.045)):
+    _p = _jc + _jo * 0.055 + Vector((0, 0, 0.095)) + Vector((-_jo.y, _jo.x, 0)) * dy
+    JG[k] = gland(_p, _jo, 0.028)
+
+# -- the open cable tray inside the kerb, south-west to south-east, on welded stools
+TR0, TR1, TRR, TRW = 206.0, 338.0, 1.128, 0.042
+arc_band(TRR + TRW, TRR - TRW, ROOF + 0.012, 0.008, TR0, TR1, "steel", n=96)
+for rr in (TRR + TRW, TRR - TRW + 0.006):
+    arc_band(rr, rr - 0.006, ROOF + 0.032, 0.04, TR0, TR1, "steel", n=96)
+for a in range(int(TR0) + 6, int(TR1), 22):
+    weld_bracket(tuple(polar(TRR + 0.062, a, ROOF + 0.004)), (0, 0, math.radians(a)), (0.03, 0.05, 0.03))
+# the cables in it, side by side, and out of the box into it, over the ring main
+TRAY_Z = ROOF + 0.016 + R_C
+tray_path = [polar(TRR, a, TRAY_Z) for a in range(int(TR0) + 2, int(TR1) - 1, 6)]
+bundle(tray_path, "yrb", r=R_C, flat=True)
+for k, cols in enumerate(("yr", "bk")):
+    g0 = JG[k]
+    a_in = JB_A + (k - 0.5) * 3.0
+    bundle([g0, polar(0.99, a_in, ROOF + 0.09), polar(1.07, a_in + 1.5, ROOF + 0.06),
+            polar(TRR, a_in + 3, TRAY_Z + 0.012)], cols, r=R_C, ties=0.08)
+# to the lamp: out of the tray and up its post
+bundle([polar(TRR, LAMP_A - 7, TRAY_Z + 0.006), polar(TRR + 0.012, LAMP_A - 4, ROOF + 0.068),
+        polar(RL - 0.065, LAMP_A - 1.2, ROOF + 0.092), polar(RL - 0.051, LAMP_A, ROOF + 0.12)], "y", r=0.01, ties=0)
+
+# -- a second junction box, on the west pier's south face beside the motor's stencil:
+# the feed comes up into it from the ground, the tray's west run drops into it from
+# the kerb, and the west motor's cable leaves it up the pier
+WB = Vector((-1.35, YC - 0.12 - 0.047, 1.25))
+box(tuple(WB), (0.15, 0.075, 0.24), "frame", bevel=0.01)
+box((WB.x, WB.y - 0.041, WB.z), (0.16, 0.012, 0.25), "newplate", bevel=0.004)                    # its door
+for dx in (-0.06, 0.06):
+    for dz in (-0.105, 0.105):
+        bolt((WB.x + dx, WB.y - 0.048, WB.z + dz), 0.009, 0.008, rot=(math.pi / 2, 0, 0))
+box((WB.x - 0.072, WB.y - 0.052, WB.z), (0.012, 0.02, 0.05), "brass", bevel=0.003)                 # its latch
+for dz in (-0.13, 0.13):                                                                         # welded on
+    box((WB.x, YC - 0.12 - 0.012, WB.z + dz), (0.12, 0.03, 0.02), "steel", bevel=0.003)
+    box((WB.x, YC - 0.12 - 0.004, WB.z + dz), (0.13, 0.012, 0.03), "seam", bevel=0.002)
+WG_in = gland(Vector((-1.30, WB.y, WB.z + 0.12)), (0, 0, 1), 0.024)
+WG_out = gland(Vector((-1.395, WB.y, WB.z + 0.12)), (0, 0, 1), 0.024)
+WG_feed = gland(Vector((-1.30, WB.y, WB.z - 0.12)), (0, 0, -1), 0.026)
+
+# -- the motors' cables. The tray's west end drops over the kerb, clamped to the wall,
+# into the west box; the west motor's leaves the box up the pier's face. The tray's
+# east end hangs in a slack loop down the wall beside the south-east buttress, clamped,
+# and climbs the east pier's face. Both run up the piers' tops, clear of the pinions
+# (y >= 0.0 against their -0.075 at z <= 1.95), into glands on the motors' stools.
+MG = {sx: gland(Vector((sx * (MOTOR_X + 0.07), YC + 0.24, 1.95)), (sx, 0, 0), 0.026) for sx in (-1, 1)}
+P = bundle([polar(TRR, TR0 + 3, TRAY_Z + 0.006), polar(TRR + 0.06, 201, ROOF + 0.075), polar(RL + 0.016, 198, ROOF + 0.09),
+            Vector(wall(197.5, 1.62, 0.085)), Vector(wall(196.5, 1.5, 0.09)), Vector((-1.29, -0.36, 1.46)),
+            WG_in + Vector((0, 0, 0.05)), WG_in], "yrb", r=R_C, ties=0.1)
+clamp(P, len(P) // 4, 2.3 * R_C, -Vector(wall(197.5, 1.62, 0.0)).xy.to_3d() + Vector(wall(197.5, 1.62, 0.1)))
+P = bundle([WG_out, WG_out + Vector((0, 0, 0.06)), Vector((-1.40, -0.262, 1.58)), Vector((-1.40, -0.245, 1.70)),
+            Vector((-1.39, -0.19, 1.745)), Vector((-1.39, 0.0, 1.745)), Vector((-1.43, YC + 0.24, 1.86)), MG[-1]],
+           "yrb", r=R_C, ties=0.1)
+clamp(P, len(P) // 5, 2.3 * R_C, (0, -1, 0))
+P = bundle([polar(TRR, TR1 - 3, TRAY_Z + 0.006), polar(TRR + 0.06, 342, ROOF + 0.075), polar(RL + 0.016, 345, ROOF + 0.09),
+            Vector(wall(343, 1.62, 0.085)), Vector(wall(341, 1.32, 0.09)), Vector(wall(343.5, 1.12, 0.09)),
+            Vector(wall(349, 1.17, 0.085)), Vector((1.37, -0.30, 1.3)), Vector((1.40, -0.29, 1.5)),
+            Vector((1.40, -0.262, 1.67)), Vector((1.39, -0.19, 1.755)), Vector((1.39, 0.0, 1.75)),
+            Vector((1.43, YC + 0.24, 1.86)), MG[1]], "yrb", r=R_C, ties=0.1)
+for f, wd in ((0.2, Vector(wall(342, 1.45, 0.1)) - Vector(wall(342, 1.45, 0.0))),
+              (0.33, Vector(wall(343.5, 1.12, 0.1)) - Vector(wall(343.5, 1.12, 0.0))), (0.55, Vector((0, -1, 0)))):
+    clamp(P, int(len(P) * f), 2.3 * R_C, wd)
+
+# the feed: one heavy black cable up out of a gland in the base plate, clamped up the
+# pier's face into the west box
+FEED_G = gland(Vector((-1.40, -0.40, BH)), (0, 0, 1), 0.03, "steel")
+P = bundle([FEED_G, FEED_G + Vector((0, 0, 0.08)), Vector((-1.36, -0.36, 0.34)), Vector((-1.30, -0.31, 0.62)),
+            Vector((-1.29, -0.30, 0.95)), WG_feed + Vector((0, 0, -0.06)), WG_feed], "k", r=0.02)
+clamp(P, int(len(P) * 0.6), 0.02, (0, -1, 0))
+
+# -- a newer plate, bolted over the primer between the south-west buttress and the hatch:
+# unpainted, a different steel, not quite square
+NP = empty("newplate", *on_wall(245.5, 1.0, 0.012))
+NP.rotation_euler.rotate_axis("Z", math.radians(2.5))
+box((0, 0, 0), (0.16, 0.28, 0.012), "newplate", bevel=0.003, parent=NP)
+for dx in (-0.06, 0.06):
+    for dy in (-0.11, 0.0, 0.11):
+        bolt((dx, dy, 0.009), 0.01, 0.01, parent=NP)
+
+# -- oil and grime: soaked into the deck south of the gears, round the hydraulic unit,
+# beside the junction box and on the piers' tops under the motors; run down the piers'
+# faces from the motors, and down the wall from the kerb and the bands
+for sx, sd in ((1, 1), (-1, 2)):
+    if sx < 0:                       # (round 12: the east one lay in the collar's shade and crushed to black)
+        oil(sx * 0.76, YC - 0.25, ROOF + 0.0015, 0.17, 0.075, yaw=sx * 0.12, seed=sd)
+    oil(sx * 1.335, YC + 0.1, PT + 0.0015, 0.06, 0.15, seed=sd + 10)
+    decal_plane("streak", 0.07, 0.6, "streak", (sx * 1.34, YC - 0.12 - 0.004, PT - 0.035), (math.pi / 2, 0, 0))
+_o = hu(-0.02, 0.06, 0.0)
+oil(_o.x, _o.y, ROOF + 0.0015, 0.16, 0.11, yaw=math.radians(HU_A + 90), seed=5)
+_o = polar(0.78, 262, 0)
+oil(_o.x, _o.y, ROOF + 0.0015, 0.07, 0.05, seed=6)
+for a, z, w, h in ((LAMP_A, 1.725, 0.07, 0.42), (247, 1.33, 0.06, 0.32), (299, 1.33, 0.08, 0.4),
+                   (205, 1.33, 0.07, 0.36), (264, 0.43, 0.05, 0.2), (343.5, 1.08, 0.05, 0.3)):
+    decal_plane("streak", w, h, "streak", *on_wall(a, z, 0.011))
+
+RETRO = [o for o in bpy.data.objects if o not in RETRO_BEFORE and o.type in ("MESH", "CURVE", "FONT")
+         and not o.hide_render]
+
 # ---------------------------------------------------------------- passes
 
 rig.sun()
@@ -1597,6 +2128,42 @@ def pose(f):
     SPRING.scale.z = tail.z - SPRING.location.z
     bpy.context.view_layer.update()
 
+
+if "--collide" in argv:
+    # Round 11's check: does anything the retrofit added enter the volume a moving part
+    # occupies, in any frame? Every added object against every moving one, as one BVH
+    # each, in world space; prints the clashes and exits.
+    from mathutils.bvhtree import BVHTree
+
+    def tree(objs):
+        dg = bpy.context.evaluated_depsgraph_get()
+        verts, polys, owner = [], [], []
+        for o in objs:
+            ev = o.evaluated_get(dg)
+            me = ev.to_mesh()
+            mw = ev.matrix_world
+            base = len(verts)
+            verts.extend(mw @ v.co for v in me.vertices)
+            for pl in me.polygons:
+                polys.append([base + i for i in pl.vertices])
+                owner.append(o.name)
+            ev.to_mesh_clear()
+        return BVHTree.FromPolygons(verts, polys), owner
+    retro, r_own = tree(RETRO)
+    moving = [o for g in MOVING for o in PARTS.get(g, []) if o.type in ("MESH", "CURVE")]
+    clashes = {}
+    for f in range(FRAMES):
+        pose(f)
+        mv, m_own = tree(moving)
+        for i, j in retro.overlap(mv):
+            clashes.setdefault((r_own[i], m_own[j]), []).append(f)
+    print(f"COLLIDE retro objects {len(RETRO)}, moving objects {len(moving)}, frames {FRAMES}")
+    for (a, b), fs in sorted(clashes.items()):
+        o = bpy.data.objects[a]
+        at = o.matrix_world.translation
+        print(f"COLLIDE {a} at ({at.x:.3f}, {at.y:.3f}, {at.z:.3f}) x {b}: frames {sorted(set(fs))}")
+    print(f"COLLIDE clashes {len(clashes)}")
+    sys.exit(0)
 
 if ICON:
     sc.cycles.samples = 128
