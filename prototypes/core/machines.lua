@@ -627,14 +627,15 @@ furnace.fluid_boxes =
 -- 18 px window punched out, and needle.png is that window, 16 frames, cut by
 -- tools/build-animatorio-layers.py as the Drop Crusher's stroke was.
 --
--- **`VF_SPEED = 0.5` plays at 0.375 frames a tick in game**, not the preview's
--- 0.5: a crafting machine advances by `animation_speed x crafting_speed x
+-- **`VF_SPEED` is 2/3 so the game plays the preview's 0.5 frames a tick.** A
+-- crafting machine advances by `animation_speed x crafting_speed x
 -- animation_progress`, and `animation_progress` defaults to 0.5 (see the Drop
--- Crusher's note), so 0.5 x 1.5 x 0.5. Measured in a client on the Core,
--- 2026-10-10, 720 ticks, one screenshot of the flywheel a tick: 270 frame
--- changes, 0.375 frames a tick, a 42.7-tick loop. Liam kept that rate.
+-- Crusher's note), so 2/3 x 1.5 x 0.5 = 0.5, a 32-tick loop. At 0.5 it played
+-- 0.375 (measured in a client on the Core, 2026-10-10: 270 frame changes in
+-- 720 ticks), slower than the preview Liam approved, and he asked for it sped
+-- back up. Speed modules still turn it faster, as they do any crafter's.
 local VF_FRAMES = 16
-local VF_SPEED = 0.5                      -- 0.375 in game: x 1.5 x progress 0.5
+local VF_SPEED = 2 / 3                    -- 0.5 in game: x 1.5 x progress 0.5
 local VF_SHIFT = { 0, -0.28125 }          -- the plate's, from meta.json's "base"
 
 -- The viewport glow's `effect`, spec section 6 (A1): "uranium-glow", a slow
