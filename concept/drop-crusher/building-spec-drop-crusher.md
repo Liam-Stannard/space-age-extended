@@ -204,6 +204,16 @@ value range across its chamfers, so the eye reads forged metal. *Unadorned* was
 the wrong word: it should carry no **machinery**, no panel lines, hatches or
 bolts, while carrying all the **forging** it likes.
 
+## 3.4 Sound (Liam, 2026-10-11)
+
+A bed and three accents, cued to the stroke (24 frames, four seconds, one drop
+per craft). The **bed** is a low motor hum. **Pawl clicks** tick on the
+wind-up (frames 0–16, every fourth frame). The **trip** on frame 16 is a sharp
+metallic clack as the pawl kicks clear. The **drop** on frame 0, where the
+weight lands, is a crushing impact with grit and rock breaking: one craft,
+one bang. Built from vanilla's crusher and impact sounds plus scripted layers,
+matched to the vanilla crusher's loudness.
+
 ---
 
 # 4. Factorio Visual Style
