@@ -38,6 +38,14 @@ a pass: everything they act on is declared here.
               motion "flow": contents moving in place -- gas or fluid in a
               sight glass, bubbles drifting through it -- with no part to hold
               to a centroid or a curve: no motion check (the model measures it).
+              motion "cycle": parts running round a closed path -- a drag chain's
+              flights, a belt -- whose layer has no one part to hold to a point or
+              a line. Packed like any animation, with no positional check: the
+              model is responsible for its frames closing the loop.
+              working (optional, off by default): true marks a paint animation
+              the engine draws only while the machine works -- ore particles,
+              dust, with synced_fadeout -- so it is no part of the stopped machine
+              and stays out of the frame-0 check, and a frame of it may be empty.
               kind (optional): "paint" (the default), drawn as ordinary paint
               and part of the stopped machine, so its frame 0 is held to the
               still; or "light", a white-cut layer the engine tints, packed as a
@@ -73,7 +81,7 @@ DIRECTIONS = {
 }
 KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
 WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
-MOTIONS = ("turn", "slide", "flow")
+MOTIONS = ("turn", "slide", "flow", "cycle")
 ANIM_KINDS = ("paint", "light")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
 FILE = "render.json"
@@ -240,6 +248,8 @@ def validate(decl, where):
             bad(f"{field}.motion", f"{a.get('motion')!r} is not one of {', '.join(MOTIONS)}")
         if a.get("kind", "paint") not in ANIM_KINDS:
             bad(f"{field}.kind", f"{a.get('kind')!r} is not one of {', '.join(ANIM_KINDS)}")
+        if "working" in a and not isinstance(a["working"], bool):
+            bad(f"{field}.working", f"{a['working']!r} is not true or false")
         if "turns" in a and not isinstance(a["turns"], bool):
             bad(f"{field}.turns", f"{a['turns']!r} is not true or false")
         if a["motion"] == "slide":

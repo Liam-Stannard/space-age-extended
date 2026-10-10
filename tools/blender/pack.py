@@ -164,10 +164,15 @@ class Packer:
             # the catchers' haze below NOISE
             frames = [light_layer(self.open(contract.frame(name, f, d))) if light
                       else clean(self.open(contract.frame(name, f, d))) for f in range(n)]
+            working = a.get("working", False)
             u = None
             for f, fr in enumerate(frames):
+                if working and fr.getchannel("A").getbbox() is None:
+                    continue                 # a working layer may draw nothing in a frame (dust between landings)
                 b = self.box_of(fr.getchannel("A"), contract.frame(name, f, d) + ".png", 8 if light else 0)
                 u = b if u is None else (min(u[0], b[0]), min(u[1], b[1]), max(u[2], b[2]), max(u[3], b[3]))
+            if u is None:
+                sys.exit(f"pack.py: every frame of {contract.named(name, d)} is empty")
             fw, fh = u[2] - u[0], u[3] - u[1]
             line = max(1, min(n, MAX_SHEET_W // fw))
             sheet = Image.new("RGBA", (fw * line, fh * math.ceil(n / line)))
@@ -178,10 +183,15 @@ class Packer:
             self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
             if light:
                 self.meta[stem]["kind"] = "light"
-            else:
-                frame0.append(frames[0])     # a light layer draws only while working: not the still's
+            elif not working:
+                frame0.append(frames[0])     # light and working layers draw only while working: not the still's
             if a["motion"] == "flow":
                 continue                     # contents moving in place: nothing to hold to a centroid
+            if a["motion"] == "cycle":
+                # a closed loop of parts (a chain's flights): nothing to hold to a
+                # point or a line; packed, and the loop is the model's to close
+                checks[f"{name}_cycle"] = (n, "frames of a closed loop; no positional check")
+                continue
 
             cs = [centroid(fr) for fr in frames]
             if a["motion"] == "turn":
