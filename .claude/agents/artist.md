@@ -18,7 +18,9 @@ The model is a Python script at `concept/<building>/model/<building>.py`
 that builds the building from its spec, with the adopted plate as the
 reference for every part's shape, size and colour: the model reproduces an
 approved design and never redesigns it. Render it with
-`BLENDER=/usr/bin/blender tools/blender/render.sh <model> <scratch>`
+`BLENDER=$HOME/opt/blender-5.0.1-linux-x64/blender tools/blender/render.sh <model> <scratch>`
+(blender.org's build, which renders on the GPU by default; `/usr/bin/blender`, the
+distro package, has no GPU kernels and needs `SAE_BLENDER_DEVICE=CPU`)
 (`--idle` while tuning, `--ports` and `--icon` when they apply). Every pack
 check must pass, and `finish.py` and `tonal.py` must be reported. Finish
 with a review sheet in `concept/<building>/`: the new plate beside the

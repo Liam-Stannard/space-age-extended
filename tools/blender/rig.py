@@ -12,8 +12,18 @@ Calibration, measured off vanilla rather than copied from a forum:
   SUN        from the template's lightning-collector shadow, kx 0.79 / ky 0.25:
              a point h above its foot lands kx*h' right and ky*h' up the screen,
              where h' is its own screen height.
+
+Render device: $SAE_BLENDER_DEVICE, GPU (the default, Liam 2026-10-10) or CPU. GPU is Cycles on
+OptiX, or on CUDA when this Blender finds no OptiX device; with neither, the run
+fails rather than quietly rendering on the CPU. reset() chooses it and prints
+one "render device: ..." line saying which backend and device were used and
+how they were found. `blender -b --python rig.py` only probes and prints that
+line (render.sh does, at the start of a GPU run).
 """
 import math
+import os
+import sys
+
 import bpy
 from mathutils import Vector
 
@@ -22,6 +32,8 @@ PX_PER_TILE = 64                     # scale 0.5 source art
 SS = 4                               # render at SS x, downsample after (downsample.py):
                                      # texture detail survives and no denoiser smears it
 SHADOW_KX, SHADOW_KY = 0.79, 0.25
+DEVICES = ("CPU", "GPU")
+GPU_BACKENDS = ("OPTIX", "CUDA")     # first found wins: OptiX, CUDA as the fallback
 
 
 def srgb(hexstr):
@@ -38,7 +50,7 @@ def reset():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
     sc.render.engine = "CYCLES"
-    sc.cycles.device = "CPU"
+    use_device(sc)
     sc.cycles.samples = 48
     sc.cycles.use_denoising = False
     sc.render.film_transparent = True
@@ -64,6 +76,47 @@ def reset():
     # shadows if re-rendered now.
     bg.inputs["Strength"].default_value = 0.26                # coloured, never black
     return sc
+
+
+def use_device(sc):
+    """Point Cycles at $SAE_BLENDER_DEVICE and print which device it renders on.
+
+    Device choice lives in Blender's preferences, and `-b` (with reset()'s factory
+    settings) has none saved, so the GPU is enabled here every run: Cycles is asked
+    which devices each backend can see, in GPU_BACKENDS order, and the first with
+    one is used, its devices on and the CPU off, so a GPU render is the GPU alone.
+    """
+    want = os.environ.get("SAE_BLENDER_DEVICE", "").strip().upper() or "GPU"
+    if want not in DEVICES:
+        sys.exit(f"render device: SAE_BLENDER_DEVICE={want!r}, not one of {'/'.join(DEVICES)}")
+    if want == "CPU":
+        sc.cycles.device = "CPU"
+        print("render device: CPU", flush=True)
+        return "CPU"
+    import _cycles                                    # Cycles' own module, there once the add-on is loaded
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    built = dict(zip(("CUDA", "OPTIX", "HIP", "METAL", "ONEAPI"), _cycles.get_device_types()))
+    tried = []
+    for backend in GPU_BACKENDS:
+        if not built.get(backend):
+            tried.append(f"{backend}: not in this Blender")
+            continue
+        prefs.compute_device_type = backend
+        found = [d for d in prefs.get_devices_for_type(backend) if d.type == backend]
+        if not found:
+            tried.append(f"{backend}: no usable device")
+            continue
+        for d in prefs.devices:
+            d.use = d.type == backend
+        sc.cycles.device = "GPU"
+        names = ", ".join(d.name for d in found)
+        how = "; ".join(tried + [f"{backend}: {len(found)} device(s)"])
+        print(f"render device: GPU {backend} on {names} (Cycles preferences -- {how})", flush=True)
+        return backend
+    sys.exit(f"render device: GPU asked for, none found ({'; '.join(tried)}). "
+             "`blender -b --debug-cycles` says why; a Blender built without GPU kernels "
+             "(a distro package) has none to offer, where blender.org's builds do; "
+             "SAE_BLENDER_DEVICE=CPU renders on the CPU")
 
 
 def stretch_root():
@@ -163,3 +216,9 @@ def render(path):
     sc = bpy.context.scene
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
+
+
+if __name__ == "__main__":
+    # the probe: `blender -b --python rig.py` reports the device a render would use
+    use_device(bpy.context.scene)
+    sys.exit(0)
