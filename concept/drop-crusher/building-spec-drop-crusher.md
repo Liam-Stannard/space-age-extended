@@ -61,8 +61,8 @@ be smelted, the fines to the carbonyl line."*
 | Surface conditions | `gravity` ≥ 45 — the Core's surface alone |
 | Module slots | 2 |
 
-**The recipe, first pass:** 2 kamacite ore → 3 crushed kamacite + 1 kamacite
-fines, 2 s.
+**The recipe:** 4 kamacite ore → 6 crushed kamacite + 2 kamacite fines, 4 s:
+one drop of the weight, at the rate the engine plays the stroke.
 
 **Plate smelting must be re-sourced onto crushed kamacite** at the same time this
 lands, or T1 remains skippable and this building is decoration.
@@ -381,10 +381,11 @@ survive at that size and should not be attempted.
 neither affects the art.**
 
 - ~~**One recipe or two?**~~ **One**, with two products, as implemented:
-  `sae-crushing` takes 2 kamacite ore to 3 crushed kamacite and 1 fines. The
-  question mattered because it decided "whether the two chutes are simultaneous
-  or alternate" — and there are no chutes (§8), so it no longer touches the
-  plate. A coarse/fine split remains available as a branch if T1 ever wants one.
+  `sae-crushing` takes 4 kamacite ore to 6 crushed kamacite and 2 fines in
+  4 s. The question mattered because it decided "whether the two chutes are
+  simultaneous or alternate" — and there are no chutes (§8), so it no longer
+  touches the plate. A coarse/fine split remains available as a branch if T1
+  ever wants one.
 - ~~**Do the fines have a home yet?**~~ **Yes, two.** `sae-fines-smelting` takes
   4 fines to a kamacite plate, and `sae-metal-carbonyl` takes 4 more into the
   carbonyl line. T3 exists.

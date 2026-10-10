@@ -44,18 +44,24 @@ data:extend({
 data:extend({
   -- N1. Crushing. Two streams from one ore, so beneficiation is a choice rather
   -- than a formality.
+  --
+  -- 4 s and 4 -> 6 + 2 because one craft is one drop of the weight: the
+  -- engine plays the Drop Crusher's 24-frame stroke at 0.1 frames a tick, a
+  -- 240-tick stroke (measured, see DC_SPEED in machines.lua). It was 2 s and
+  -- 2 -> 3 + 1, which was two crafts a drop; doubling time and every amount
+  -- keeps the throughput and the 3:1 split exactly.
   {
     type = "recipe",
     name = "sae-crushing",
     -- Two different results, so the engine cannot infer an icon from them.
     icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
     categories = { "sae-crushing" },
-    energy_required = 2,
-    ingredients = { { type = "item", name = "sae-kamacite-ore", amount = 2 } },
+    energy_required = 4,
+    ingredients = { { type = "item", name = "sae-kamacite-ore", amount = 4 } },
     results =
     {
-      { type = "item", name = "sae-crushed-kamacite", amount = 3 },
-      { type = "item", name = "sae-kamacite-fines", amount = 1 }
+      { type = "item", name = "sae-crushed-kamacite", amount = 6 },
+      { type = "item", name = "sae-kamacite-fines", amount = 2 }
     },
     enabled = false
   },

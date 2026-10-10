@@ -151,11 +151,19 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- and an assembling machine simply stops on a frame instead. That frame 0 is the
 -- seat is why the loop winds up from the bottom and lands back on it.
 --
--- **`animation_speed` is derived, not chosen.** 24 frames at 0.2 is a two-second
--- loop, and `sae-crushing` is `energy_required = 2` at `crafting_speed = 1` -- so
--- one drop is one craft at the base rate. `constant_speed` is left false on
--- purpose, per §9: modules should make the hammer fall faster. That breaks the
--- one-drop-one-craft correspondence, which §9 is explicit nobody notices.
+-- **`animation_speed = 0.2` plays at 0.1 frames a tick, and the recipe is
+-- timed to that.** A crafting machine advances its animation by
+-- `animation_speed x crafting_speed x animation_progress` a tick, and
+-- `CraftingMachineGraphicsSet::animation_progress` defaults to 0.5 (prototype
+-- docs, doc-html/types/CraftingMachineGraphicsSet.html; vanilla's assembler
+-- sets the same 0.5 explicitly, base/prototypes/entity/assembler-pictures.lua).
+-- No graphics set in this file sets it. Measured in a client on the Core,
+-- 2026-10-10, 720 ticks, one screenshot of the stroke a tick: 72 frame changes,
+-- 0.100 frames a tick, a 240-tick stroke -- 3 strokes against 6 crafts of the
+-- old 2 s recipe. Liam kept that rate (a 0.2 in game looked too fast), so
+-- `sae-crushing` became 4 s instead (recipes.lua): one drop is one craft at
+-- crafting speed 1. `constant_speed` is left false on purpose, per §9: modules
+-- should make the hammer fall faster.
 --
 -- **The status lamp is cut white and tinted by the engine**: a caged lamp on a
 -- bracket on the roof's kerb at the south-east, where nothing that moves passes
@@ -165,7 +173,7 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- mining-drill colours (below).
 local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
 local DC_FRAMES = 24
-local DC_SPEED = 0.2
+local DC_SPEED = 0.2        -- 0.1 in game: x crafting speed 1 x progress 0.5
 
 -- The status lamp's colours: the ones vanilla's electric mining drill uses
 -- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
@@ -391,8 +399,16 @@ drill.surface_conditions = HIGH_G
 -- colour -- gives a grey smear, and the two were rendered side by side before
 -- this was chosen.
 --
--- **`animation_speed` is 0.4**: 24 frames over 60 ticks is the "slow, heavy,
--- one-second stroke" §3.2 asks for, at `mining_speed = 3.0`.
+-- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
+-- ticks is the "slow, heavy, one-second stroke" §3.2 asks for, at
+-- `mining_speed = 3.0`. A drill is not a crafting machine:
+-- `MiningDrillGraphicsSet::animation_progress` defaults to 1 (prototype docs,
+-- doc-html/types/MiningDrillGraphicsSet.html; vanilla's electric and big drills
+-- set the same 1, base/prototypes/entity/mining-drill.lua and
+-- space-age/prototypes/entity/big-mining-drill.lua), and the declared rate is
+-- not multiplied by `mining_speed`. Measured in a client on the Core,
+-- 2026-10-10, 720 ticks mining kamacite, one screenshot of the stroke a tick:
+-- 288 frame changes, 0.400 frames a tick, a 60-tick loop.
 --
 -- **One plate for all four directions, and that is a known gap.** A mining drill
 -- rotates, and `vector_to_place_result` rotates with it -- so a player who turns
@@ -435,7 +451,7 @@ derive.own_graphics(drill,
         width = 228, height = 230,
         frame_count = BD_FRAMES,
         line_length = 6,
-        animation_speed = 0.4,
+        animation_speed = 0.4,           -- 0.4 in game: drill progress is 1
         shift = { 0, -0.265625 },
         scale = 0.5
       },
@@ -610,8 +626,15 @@ furnace.fluid_boxes =
 -- dial the model renders bare: base-housing.png is the plate with the dial's
 -- 18 px window punched out, and needle.png is that window, 16 frames, cut by
 -- tools/build-animatorio-layers.py as the Drop Crusher's stroke was.
+--
+-- **`VF_SPEED = 0.5` plays at 0.375 frames a tick in game**, not the preview's
+-- 0.5: a crafting machine advances by `animation_speed x crafting_speed x
+-- animation_progress`, and `animation_progress` defaults to 0.5 (see the Drop
+-- Crusher's note), so 0.5 x 1.5 x 0.5. Measured in a client on the Core,
+-- 2026-10-10, 720 ticks, one screenshot of the flywheel a tick: 270 frame
+-- changes, 0.375 frames a tick, a 42.7-tick loop. Liam kept that rate.
 local VF_FRAMES = 16
-local VF_SPEED = 0.5                      -- as Liam saw it in the preview
+local VF_SPEED = 0.5                      -- 0.375 in game: x 1.5 x progress 0.5
 local VF_SHIFT = { 0, -0.28125 }          -- the plate's, from meta.json's "base"
 
 -- The viewport glow's `effect`, spec section 6 (A1): "uranium-glow", a slow
@@ -840,8 +863,14 @@ data:extend({ furnace })
 -- layer of the main animation, which an assembling machine draws in every state
 -- and only advances while crafting -- shown when idle, turning only while
 -- working. The plate and shadow are one frame each, repeated 12 times so every
--- layer carries the same count. 0.4 is the building spec's speed (section 13):
--- one turn of the loop in half a second, a full revolution every three.
+-- layer carries the same count. 0.4 is the building spec's speed (section 13),
+-- but the engine plays it at 0.2 frames a tick: a crafting machine advances by
+-- `animation_speed x crafting_speed x animation_progress`, and
+-- `animation_progress` defaults to 0.5 (see the Drop Crusher's note), so 0.4 x
+-- 1 x 0.5. One turn of the loop is a second, a full revolution every six.
+-- Measured in a client on the Core, 2026-10-10, 720 ticks, one screenshot of
+-- the coupling a tick: 144 frame changes, 0.200 frames a tick, a 60-tick loop.
+-- Liam kept that rate.
 --
 -- **The slot glow is working minus idle**, differenced by pack.py from a lit and
 -- an unlit render of the same scene, and drawn additively and only while
@@ -856,7 +885,7 @@ data:extend({ furnace })
 -- electric mining drill sets it.
 local RP = "__space-age-extended__/graphics/entity/reaction-plant/"
 local RP_FRAMES = 12
-local RP_SPEED = 0.4
+local RP_SPEED = 0.4                      -- 0.2 in game: x 1 x progress 0.5
 
 local function rp_sprite(file, width, height, shift)
   return
