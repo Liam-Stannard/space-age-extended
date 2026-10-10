@@ -112,7 +112,7 @@
   },
   "frame0_vs_still": [
    64,
-   0.0102,
+   0.0099,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }
