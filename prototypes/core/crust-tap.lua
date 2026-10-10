@@ -321,73 +321,137 @@ pump.output_fluid_box = {
   }
 }
 -- Art: the Gas Pump's Blender model (concept/crust-tap/model/crust_tap.py,
--- signed off by Liam 2026-10-09 after its "bulkier" round): a square pump
--- casing in faded green with its corners cut, on a plinth held by corner
--- anchors; a flat riveted lid carrying the wellhead and a compressor housing;
--- orthogonal pipework, hoses and cables over it; the burst disc; a sight glass
--- inline in the lid's header; and the riser. Ours, so no
--- `derive.placeholder_art`.
+-- signed off by Liam 2026-10-09 after its "bulkier" round, and its pumping
+-- animation 2026-10-10, round a2): a square pump casing in faded green with its
+-- corners cut, on a plinth held by corner anchors; a flat riveted lid carrying
+-- the wellhead and a compressor housing; orthogonal pipework, hoses and cables
+-- over it; the burst disc; a sight glass inline in the lid's header; and the
+-- riser. Ours, so no `derive.placeholder_art`.
 --
--- FOUR PLATES, RENDERED FROM ONE MODEL, because on this building the riser is
--- the fluid box and a riser pointing the wrong way is the fluid box in the wrong
--- place. Only the riser turns; everything else is the same in all four, and the
--- riser's mouth sits on the connection above by construction.
+-- FOUR DIRECTIONS, RENDERED FROM ONE MODEL, because on this building the riser
+-- is the fluid box and a riser pointing the wrong way is the fluid box in the
+-- wrong place. Only the riser turns; everything else is the same in all four,
+-- and the riser's mouth sits on the connection above by construction.
 --
 -- **The riser sits on a TILE CENTRE, half a tile off the middle of its face.**
 -- That is the correction §24 records, and the model agrees with the connection
 -- above in all four rotations.
 --
--- Every size and shift below is copied from the model's
--- sheets/meta.json; none was measured off a sheet or typed from memory. Each
--- file is named whole so tools/collect-graphics-refs.py can see it.
+-- Each direction is three layers and a glass:
+--
+--   - the plate, the casing less its moving parts, one frame repeated to the
+--     stroke's 24 -- vanilla's biochamber arrangement, as the Ballast Drill's;
+--   - the pump layer, the crank wheel, the piston rod it drives and the gauge
+--     needle that swings with each stroke, 24 frames of one stroke;
+--   - the shadow, one frame repeated. The parts that move are small against
+--     the shadow and it is not split to follow them;
+--   - the sight glass's contents, below, 24 frames of gas moving in the glass.
+--
+-- Every size, shift, frame count and line length below is copied from the
+-- model's sheets/meta.json; none was measured off a sheet or typed from
+-- memory. Each file is named whole so tools/collect-graphics-refs.py can see it.
+--
+-- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
+-- ticks, one stroke a second. A drill is not a crafting machine:
+-- `MiningDrillGraphicsSet::animation_progress` defaults to 1 (prototype docs,
+-- doc-html/types/MiningDrillGraphicsSet.html), and the declared rate is not
+-- multiplied by `mining_speed` -- the Ballast Drill's measurement, in
+-- machines.lua. Measured on this pump in a client on the Core, 2026-10-10,
+-- one screenshot a tick matched against the strip: 144 frames over 360 ticks
+-- on a siderane vent and on a helium vent, 0.400 frames a tick, a 60-tick
+-- stroke, with the glass on the pump layer's frame in every one of the 720.
+--
+-- **Idle, the crank stops where it is**, as the pumpjack's horsehead does. The
+-- pumpjack draws its nodding head in `graphics_set.animation` with no
+-- `idle_animation` (base/prototypes/entity/mining-drill.lua,
+-- `pumpjack_animation`), and so does this: the engine draws `animation` every
+-- tick at the frame its own progress counter has reached, and advances that
+-- counter only on ticks the drill works. Stopped, the counter stops, and the
+-- frame holds. The prototype docs do not spell this out; the pumpjack is the
+-- reference, and it was measured here too: a pump whose outlet was shut mid
+-- stroke stopped on frame 20 of 24 and held it, and its glass faded out over
+-- some fifteen ticks. `reset_animation_when_frozen` (default false) sits
+-- beside `frozen_patch`, the frost a drill wears on Aquilo; it is about
+-- freezing, not idling, and is left alone.
 local GP = "__space-age-extended__/graphics/entity/gas-pump/"
-local function gp_sprite(filename, width, height, shift)
+local GP_FRAMES = 24
+local GP_SPEED = 0.4           -- 0.4 in game: drill progress is 1, one stroke a second
+
+-- One frame, repeated to the stroke's length, so every layer of the animation
+-- has the same frame count, as the engine requires.
+local function gp_still(filename, width, height, shift)
   return
   {
     filename = filename,
     priority = "high",
     width = width, height = height,
+    frame_count = 1,
+    repeat_count = GP_FRAMES,
+    animation_speed = GP_SPEED,
     shift = shift,
     scale = 0.5
   }
 end
 
--- The plate and its shadow, one frame each.
-local function gp_plate(base, shadow)
+-- A 24-frame strip, one row.
+local function gp_strip(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    frame_count = GP_FRAMES,
+    line_length = GP_FRAMES,
+    animation_speed = GP_SPEED,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The plate, the moving parts over it, and the plate's shadow.
+local function gp_direction(base, pump_layer, shadow)
   shadow.draw_as_shadow = true
-  return { layers = { base, shadow } }
+  return { layers = { base, pump_layer, shadow } }
 end
 
 -- The sight glass's contents: neutral white, so the engine's tint decides its
--- colour. meta.json gives all four directions the same 21 x 17 and the same
+-- colour. meta.json gives all four directions the same 21 x 18 and the same
 -- shift, since the glass is on the part of the model that does not turn.
 local function gp_glass(filename)
-  return gp_sprite(filename, 21, 17, { -0.13281, -0.74219 })
+  return gp_strip(filename, 21, 18, { -0.13281, -0.75 })
 end
 
 -- The pumpjack's set is replaced whole: its nodding head and its working
 -- visualisations, and the mirrored copy of both, describe a machine this is not.
 derive.own_graphics(pump, {
   animation = {
-    north = gp_plate(gp_sprite(GP .. "base-north.png", 134, 152, { 0.0, -0.15625 }),
-                     gp_sprite(GP .. "base-shadow-north.png", 155, 134, { 0.21094, -0.03125 })),
-    east = gp_plate(gp_sprite(GP .. "base-east.png", 135, 138, { 0.00781, -0.04688 }),
-                    gp_sprite(GP .. "base-shadow-east.png", 155, 131, { 0.21094, -0.00781 })),
-    south = gp_plate(gp_sprite(GP .. "base-south.png", 134, 139, { 0.0, -0.03906 }),
-                     gp_sprite(GP .. "base-shadow-south.png", 155, 137, { 0.21094, 0.03906 })),
-    west = gp_plate(gp_sprite(GP .. "base-west.png", 135, 138, { -0.00781, -0.04688 }),
-                    gp_sprite(GP .. "base-shadow-west.png", 155, 131, { 0.21094, -0.00781 }))
+    north = gp_direction(gp_still(GP .. "base-north.png", 134, 152, { 0.0, -0.15625 }),
+                         gp_strip(GP .. "pump-north.png", 69, 50, { 0.47656, -0.21875 }),
+                         gp_still(GP .. "base-shadow-north.png", 174, 134, { 0.35938, -0.03125 })),
+    east = gp_direction(gp_still(GP .. "base-east.png", 135, 138, { 0.00781, -0.04688 }),
+                        gp_strip(GP .. "pump-east.png", 69, 48, { 0.47656, -0.23438 }),
+                        gp_still(GP .. "base-shadow-east.png", 174, 131, { 0.35938, -0.00781 })),
+    south = gp_direction(gp_still(GP .. "base-south.png", 134, 139, { 0.0, -0.03906 }),
+                         gp_strip(GP .. "pump-south.png", 69, 50, { 0.47656, -0.21875 }),
+                         gp_still(GP .. "base-shadow-south.png", 174, 137, { 0.35938, 0.03906 })),
+    west = gp_direction(gp_still(GP .. "base-west.png", 135, 138, { -0.00781, -0.04688 }),
+                        gp_strip(GP .. "pump-west.png", 69, 50, { 0.47656, -0.21875 }),
+                        gp_still(GP .. "base-shadow-west.png", 174, 131, { 0.35938, -0.00781 }))
   },
   working_visualisations = {
     -- **The sight glass shows the gas.** In the plate it is dark, empty glass;
     -- while the pump is drawing, this fills it with the colour of what is
-    -- drawn. `apply_tint = "resource-color"` takes the colour from the vent
-    -- under the pump -- its `mining_visualisation_tint` -- so one layer shows
-    -- siderane chartreuse on a siderane vent and helium-3 blue on a helium
-    -- vent, and a future gas needs only its vent's tint.
+    -- drawn, moving over the stroke's 24 frames at the stroke's rate, in step
+    -- with the crank. `apply_tint = "resource-color"` takes
+    -- the colour from the vent under the pump -- its `mining_visualisation_tint`
+    -- -- so one layer shows siderane chartreuse on a siderane vent and
+    -- helium-3 blue on a helium vent, and a future gas needs only its vent's
+    -- tint.
     --
     -- Ordinary paint, not glow and no light: it is gas seen through glass, not
     -- a lamp, and it should go dark at night with the rest of the machine.
+    -- (meta.json's `kind = "light"` is the render pipeline's name for a white
+    -- layer the engine tints, not a request for `draw_as_glow`.)
     --
     -- No `always_draw`, so it is drawn only while the pump is working; idle,
     -- blocked, unconnected or with no vent under it, the plate's empty glass
@@ -396,9 +460,9 @@ derive.own_graphics(pump, {
     -- **`synced_fadeout`, not `fadeout`**, because that is what vanilla's big
     -- mining drill sets on both of its `resource-color` layers, its tinted dust
     -- and its output particles (space-age/prototypes/entity/big-mining-drill.lua),
-    -- and the task is to draw this as the big drill draws its tinted layers.
-    -- The prototype docs describe neither flag; the electric drill uses plain
-    -- `fadeout` on its own tinted dust, but the task names the big drill.
+    -- and the glass is drawn as the big drill draws its tinted layers. The
+    -- prototype docs describe neither flag; the electric drill uses plain
+    -- `fadeout` on its own tinted dust.
     {
       synced_fadeout = true,
       apply_tint = "resource-color",
