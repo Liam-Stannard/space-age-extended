@@ -1,0 +1,66 @@
+{
+ "kamacite-ore/teal/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-ore/teal/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-ore/teal/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-ore/teal/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "crushed-kamacite/teal/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "crushed-kamacite/teal/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "crushed-kamacite/teal/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "crushed-kamacite/teal/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-fines/teal/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-fines/teal/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-fines/teal/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-fines/teal/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-plate/teal/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-plate/teal/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-plate/teal/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "kamacite-plate/teal/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ }
+}
