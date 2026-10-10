@@ -73,7 +73,7 @@ def main(out_dir, dest):
     # row 1
     r1 = []
     c = rb.panel()
-    ad = Image.open(os.path.join(REPO, "graphics/entity/ballast-drill/base.png")).convert("RGBA")
+    ad = (lambda im: (lambda c: (c.paste(im, (0, 0)), c)[1])(Image.new("RGBA", (im.width, im.height + 49))))(Image.open(os.path.join(HERE, "sheets", "base-north.png")).convert("RGBA"))  # the model's plate (shift 0, -0.25): padded 49 px so the 0.13281 placement below lands it
     rb.put(c, ad, 0, 0.13281)
     rb.grid(c)
     rb.label(c, "adopted plate (base.png)")

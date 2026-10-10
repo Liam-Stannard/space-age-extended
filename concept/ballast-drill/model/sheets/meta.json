@@ -395,7 +395,7 @@
    ],
    "frame0_vs_still": [
     255,
-    0.0407,
+    0.0409,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]
   },
@@ -482,7 +482,7 @@
    ],
    "frame0_vs_still": [
     255,
-    0.0435,
+    0.0436,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]
   },
@@ -569,7 +569,7 @@
    ],
    "frame0_vs_still": [
     255,
-    0.0446,
+    0.0447,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]
   },
@@ -656,7 +656,7 @@
    ],
    "frame0_vs_still": [
     255,
-    0.046,
+    0.0462,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]
   }
