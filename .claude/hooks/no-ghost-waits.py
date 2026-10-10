@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""PreToolUse hook on Bash: no unbounded or duplicate polling loops.
+"""PreToolUse hook on Bash: no unbounded or duplicate polling loops, and no
+deleting across a shared scratch root.
 
 On 2026-10-10 an artist left 18 background loops of the form
 `until grep -q "^exit" <log>; do sleep 30; done` running: it started a new one
@@ -11,8 +12,19 @@ shapes that produce a ghost:
     `timeout <seconds>` of at most an hour;
   - a polling loop identical to one that is already running.
 
-`while read` loops with no sleep are not polling and pass. Exit 2 blocks the
-command and hands the message on stderr back to the agent.
+`while read` loops with no sleep are not polling and pass.
+
+**The scratch guard.** Later the same day an agent told to clear its own
+superseded scratch ran `find <scratchpad> -mindepth 1 -maxdepth 1 ! -name
+<its folder> -exec rm -rf {} +` and deleted every other agent's scratch,
+including a render that was still running. So a command is refused if it
+deletes (`rm -r`, `find ... -delete` or `-exec rm`) a scratch root itself or
+everything in it: the session scratchpad (/tmp/claude-<uid>/<project>/<session>/scratchpad),
+/tmp/claude-<uid> and /tmp. Naming folders inside the root is allowed.
+Shell variables assigned in the same command are expanded first, so
+`S=<scratchpad>; rm -rf "$S"/*` is caught too.
+
+Exit 2 blocks the command and hands the message on stderr back to the agent.
 """
 import json
 import re
@@ -36,6 +48,34 @@ def block(reason):
     sys.exit(2)
 
 
+ROOT = r"(?:/tmp/claude-\d+/[^/\s'\"]+/[^/\s'\"]+/scratchpad|/tmp/claude-\d+|/tmp)"
+# The root itself, or a glob of everything in it, as a whole word.
+ROOT_TARGET = re.compile(ROOT + r"/?\*?(?=[\s'\";)|&]|$)")
+
+
+def expand_vars(cmd):
+    """Substitute VAR=value assignments made in the command itself."""
+    assigns = dict((m.group(1), m.group(3)) for m in
+                   re.finditer(r"\b([A-Za-z_]\w*)=(['\"]?)([^\s;'\"]+)\2", cmd))
+    for name, value in assigns.items():
+        cmd = re.sub(r'"?\$\{?' + name + r'(?!\w)\}?"?', value, cmd)
+    return cmd
+
+
+def deletes_a_root(cmd):
+    text = expand_vars(cmd)
+    for seg in re.split(r"[;&|]+|\n", text):
+        seg = seg.strip()
+        rm = re.match(r"(?:sudo\s+)?rm\s+(.*)", seg)
+        if rm and re.search(r"(?:^|\s)-\w*[rR]", rm.group(1)) and ROOT_TARGET.search(rm.group(1)):
+            return True
+        fd = re.match(r"find\s+(\S+)(.*)", seg)
+        if fd and re.search(r"-delete\b|-exec\s+rm\b|-execdir\s+rm\b", fd.group(2)) \
+                and re.fullmatch(ROOT + r"/?", fd.group(1).strip("'\"")):
+            return True
+    return False
+
+
 def main():
     try:
         data = json.load(sys.stdin)
@@ -44,6 +84,13 @@ def main():
     if data.get("tool_name") != "Bash":
         return
     cmd = (data.get("tool_input") or {}).get("command") or ""
+
+    if deletes_a_root(cmd):
+        print("Blocked by .claude/hooks/no-ghost-waits.py: this deletes a shared "
+              "scratch root (the session scratchpad, /tmp/claude-<uid> or /tmp) or "
+              "everything in it. Other agents work there. Delete only folders you "
+              "created yourself, each by its exact path.", file=sys.stderr)
+        sys.exit(2)
 
     loop = re.search(r"\b(until|while)\b(?!\s+(IFS=\S*\s+)?read\b)", cmd)
     if not loop or not re.search(r"\bsleep\b", cmd[loop.start():]):

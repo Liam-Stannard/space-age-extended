@@ -86,8 +86,12 @@ decision; say in your report that it is ready and what the measurements are.
   (`.claude/hooks/no-ghost-waits.py`) refuses unbounded or duplicate
   polling loops.
 - **Clean up before you report** (Liam, 2026-10-10): stop every Xvfb,
-  Blender and Factorio process you started, and delete your superseded
-  scratch in /tmp, keeping only what your report points at.
+  Blender and Factorio process you started, by PID. Delete only scratch
+  folders you created yourself in this run, each by its exact path, keeping
+  what your report points at. The session scratchpad is shared with other
+  agents: never delete across it (no `rm -rf <scratchpad>/*`, no
+  `find <scratchpad> ... -exec rm`), and never touch a folder you did not
+  create. When unsure, leave it and say so in your report.
 
 ## Report
 
