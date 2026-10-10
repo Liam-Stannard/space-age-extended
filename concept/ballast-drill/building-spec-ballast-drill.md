@@ -96,16 +96,20 @@ Everything about this machine is low and wide, because its argument is mass.
 
 ### Signature Feature
 
-**The ballast block descends and rises on the working loop** — a slow, heavy,
-one-second stroke rather than a spin. It is the animation that says *this machine
-is using gravity*, and it is the reason the building reads at a glance.
+**The ballast ring rises slowly and drops hard on the working loop** — a
+one-second stroke: a slow lift, a short hang, a fast fall, and a dead stop on the
+landing shoulder that jolts through the frame. At the landing a low ring of ore
+dust breaks out from under the ring and settles before the next lift; the dust is
+a working layer tinted by the ore, never drawn on an idle drill. It is the
+animation that says *this machine is using gravity*, and it is the reason the
+building reads at a glance.
 
 ## 3.3 Colour Palette
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Chassis and legs | `#4A463F` → `#6E685C` | the mass of the building |
-| Ballast block | `#2E2C29` | the slab, deliberately darker than everything |
+| Ballast ring | `#3A3A3C` → `#5A5A5E` | cast iron, the heaviest mass; its top face, wall and well kept apart in value |
 | Guide rails | `#8A8580` | four verticals |
 | Hazard banding | `#C8A23A` | leg feet only, sparingly |
 | Ore dust | `#7A6A55` | ground disturbance under the head |
