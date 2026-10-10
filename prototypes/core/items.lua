@@ -8,6 +8,7 @@ data:extend({
     type = "item",
     name = "sae-kamacite-ore",
     icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
+    icon_size = 64,
     subgroup = "raw-resource",
     order = "z[sae]-a[kamacite-ore]",
     inventory_move_sound = item_sounds.resource_inventory_move,
@@ -20,6 +21,7 @@ data:extend({
     type = "item",
     name = "sae-kamacite-plate",
     icon = "__space-age-extended__/graphics/icons/kamacite-plate.png",
+    icon_size = 64,
     subgroup = "raw-material",
     order = "z[sae]-b[kamacite-plate]",
     inventory_move_sound = item_sounds.metal_small_inventory_move,
@@ -36,7 +38,8 @@ data:extend({
 -- Each of these exists because a machine in machines.lua produces or consumes
 -- it; the tree they belong to is design/06-core-production-tree.md. Icons are
 -- borrowed from the nearest existing Core icon until each has its own, which is
--- the same stand-in arrangement the machines themselves are under.
+-- the same stand-in arrangement the machines themselves are under. The
+-- kamacite family (crushed and fines here, ore and plate above) has its own.
 --------------------------------------------------------------------------------
 
 data:extend({
@@ -46,7 +49,8 @@ data:extend({
     -- is skippable and the crusher is decoration.
     type = "item",
     name = "sae-crushed-kamacite",
-    icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
+    icon = "__space-age-extended__/graphics/icons/crushed-kamacite.png",
+    icon_size = 64,
     subgroup = "raw-material",
     order = "z[sae]-b[crushed-kamacite]",
     inventory_move_sound = item_sounds.resource_inventory_move,
@@ -61,7 +65,8 @@ data:extend({
     -- take it, which is that furnace's reason to exist.
     type = "item",
     name = "sae-kamacite-fines",
-    icon = "__space-age-extended__/graphics/icons/dross.png",
+    icon = "__space-age-extended__/graphics/icons/kamacite-fines.png",
+    icon_size = 64,
     subgroup = "raw-material",
     order = "z[sae]-b[kamacite-fines]",
     inventory_move_sound = item_sounds.resource_inventory_move,

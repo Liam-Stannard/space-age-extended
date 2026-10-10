@@ -54,7 +54,13 @@ data:extend({
     type = "recipe",
     name = "sae-crushing",
     -- Two different results, so the engine cannot infer an icon from them.
-    icon = "__space-age-extended__/graphics/icons/kamacite-ore.png",
+    -- Show what it makes: the main stream whole, the fines small in a corner,
+    -- as sae-radiant-crushing does, so it does not read as the crushed item.
+    icons =
+    {
+      { icon = "__space-age-extended__/graphics/icons/crushed-kamacite.png", icon_size = 64 },
+      { icon = "__space-age-extended__/graphics/icons/kamacite-fines.png", icon_size = 64, scale = 0.25, shift = { 8, 8 } }
+    },
     categories = { "sae-crushing" },
     energy_required = 4,
     ingredients = { { type = "item", name = "sae-kamacite-ore", amount = 4 } },
