@@ -1,0 +1,172 @@
+{
+ "base-north": {
+  "size": [
+   134,
+   152
+  ],
+  "shift": [
+   0.0,
+   -0.15625
+  ]
+ },
+ "base-shadow-north": {
+  "size": [
+   155,
+   134
+  ],
+  "shift": [
+   0.21094,
+   -0.03125
+  ]
+ },
+ "sight-glass-north": {
+  "size": [
+   21,
+   17
+  ],
+  "shift": [
+   -0.13281,
+   -0.74219
+  ]
+ },
+ "base-east": {
+  "size": [
+   135,
+   138
+  ],
+  "shift": [
+   0.00781,
+   -0.04688
+  ]
+ },
+ "base-shadow-east": {
+  "size": [
+   155,
+   131
+  ],
+  "shift": [
+   0.21094,
+   -0.00781
+  ]
+ },
+ "sight-glass-east": {
+  "size": [
+   21,
+   17
+  ],
+  "shift": [
+   -0.13281,
+   -0.74219
+  ]
+ },
+ "base-south": {
+  "size": [
+   134,
+   139
+  ],
+  "shift": [
+   0.0,
+   -0.03906
+  ]
+ },
+ "base-shadow-south": {
+  "size": [
+   155,
+   137
+  ],
+  "shift": [
+   0.21094,
+   0.03906
+  ]
+ },
+ "sight-glass-south": {
+  "size": [
+   21,
+   17
+  ],
+  "shift": [
+   -0.13281,
+   -0.74219
+  ]
+ },
+ "base-west": {
+  "size": [
+   135,
+   138
+  ],
+  "shift": [
+   -0.00781,
+   -0.04688
+  ]
+ },
+ "base-shadow-west": {
+  "size": [
+   155,
+   131
+  ],
+  "shift": [
+   0.21094,
+   -0.00781
+  ]
+ },
+ "sight-glass-west": {
+  "size": [
+   21,
+   17
+  ],
+  "shift": [
+   -0.13281,
+   -0.74219
+  ]
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.0,
+    "1.0 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    0.984375,
+    "bottom edge below origin; 1.0 = on the footprint"
+   ]
+  },
+  "east": {
+   "centre_offset_px": 0.5,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.015625,
+    "1.0 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    0.984375,
+    "bottom edge below origin; 1.0 = on the footprint"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.0,
+    "1.0 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.0,
+    "bottom edge below origin; 1.0 = on the footprint"
+   ]
+  },
+  "west": {
+   "centre_offset_px": -0.5,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.015625,
+    "1.0 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    0.984375,
+    "bottom edge below origin; 1.0 = on the footprint"
+   ]
+  }
+ }
+}
