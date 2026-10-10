@@ -25,6 +25,18 @@
 # Blender is not in the repo: point $BLENDER at a binary (the portable Linux
 # tarball needs no install).
 #
+# **Render device:** $SAE_BLENDER_DEVICE, GPU or CPU; unset means GPU (Liam,
+# 2026-10-10). The GPU needs blender.org's build -- a distro package has no GPU
+# kernels -- so point $BLENDER at it; SAE_BLENDER_DEVICE=CPU renders on the CPU.
+#   SAE_BLENDER_DEVICE=CPU tools/blender/render.sh <model.py> <out-dir>
+# GPU is Cycles on OptiX, CUDA if Blender finds no OptiX device (rig.use_device
+# enables it in Blender's preferences, which a -b run has none of). The run
+# prints the device first: for GPU, a probe Blender reports the backend and the
+# card before anything renders, and the run stops there if there is none --
+# it never falls back to the CPU unasked. Every Blender pass logs the same
+# "render device:" line in its blender*.log. Samples and every other render
+# setting are the same on either device.
+#
 # Usage: tools/blender/render.sh <model.py> <out-dir> [--ports] [--icon]
 #   <out-dir>/renders  per-pass renders at sprite size
 #   <out-dir>/sheets   packed sheets + meta.json (shifts, sizes, checks)
@@ -62,6 +74,18 @@ BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
 mkdir -p "$OUT"
 rm -f "$OUT/render.done"
 trap 'code=$?; echo "exit $code" > "$OUT/render.done"; echo "exit $code"' EXIT
+SAE_BLENDER_DEVICE="$(echo "${SAE_BLENDER_DEVICE:-GPU}" | tr '[:lower:]' '[:upper:]')"
+case "$SAE_BLENDER_DEVICE" in
+  CPU|GPU) export SAE_BLENDER_DEVICE ;;
+  *) echo "SAE_BLENDER_DEVICE must be CPU or GPU, not $SAE_BLENDER_DEVICE" >&2; exit 2 ;;
+esac
+if [ "$SAE_BLENDER_DEVICE" = GPU ]; then
+  probe="$("$BLENDER" -b --factory-startup --python "$HERE/rig.py" 2>&1 | grep '^render device:' || true)"
+  echo "${probe:-render device: GPU asked for, and the Blender probe said nothing}"
+  case "$probe" in "render device: GPU "*" on "*) ;; *) exit 1 ;; esac
+else
+  echo "render device: CPU"
+fi
 rm -rf "${OUT:?}/hi" "${OUT:?}/renders" "${OUT:?}/sheets" \
   "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon"
 "$BLENDER" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \
