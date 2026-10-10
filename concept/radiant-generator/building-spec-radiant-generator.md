@@ -88,7 +88,7 @@ no moving parts the player can see, no reciprocating anything, no exhaust.
 It is a **long armoured trough** lying on its 3×5 footprint: a fuel magazine at
 one end, a shielded reaction throat down the middle, and a heavy conversion
 block at the other end where the cabling leaves. The one thing that moves is
-light: a cool green-white glow that lives *inside* the throat and shows only
+light: a cool blue glow that lives *inside* the throat and shows only
 through narrow shielded slots, because anything that can put out ten megawatts
 in vacuum is something you look at through a slot.
 
@@ -106,7 +106,7 @@ placeholder art has every one of those and each is a lie on a vacuum world.
 * A **fuel magazine** at one end: a squat armoured hopper with a heavy sliding
   lid and two loading ports, matching the two fuel slots.
 * A **shielded reaction throat** down the centre: a thick-walled tube with
-  three or four narrow horizontal viewing slots, cool green-white light showing
+  three or four narrow horizontal viewing slots, cool blue light showing
   through them and nowhere else.
 * A **conversion block** at the far end — a dense finned mass with heavy
   armoured cable trunks leaving from its base.
@@ -125,11 +125,12 @@ to go", which is the vacuum read, and they hold the silhouette at one tile.
 | Armour and trough body | `#4A463F` → `#6E685C` | the mass of the building |
 | Radiator fins | `#8A8580` | flanks, conversion block |
 | Shielding collars | `#3B3B40` | clamps around the throat |
-| Radiant light | `#A8E8C0` → `#E8FFF0` | throat slots only |
+| Radiant light | `#1F63FF` → `#73ADFF` | throat slots only |
 | Cable terminations | `#8A5A32` | conversion block base |
 
-The radiant green-white is the same hue as the radiant chunk and radiant fuel
-icons, and that is deliberate: the fuel, the rock and the machine that burns it
+The radiant blue is the colour of the radiant solution itself -- the pool, the
+pipe, the drop -- and of the radiant chunk and fuel icons, and that is
+deliberate: the solution, the rock, the fuel and the machine that burns it
 should be recognisably one family. **No orange anywhere** — orange is heat, and
 heat is the read this building is avoiding.
 
@@ -217,14 +218,14 @@ than about one tile. Heavy cooling radiator fins run in banks along both long
 flanks and are the most prominent structure on it. At one end sits a squat
 armoured fuel hopper with a heavy sliding lid and two loading ports. Down the
 centre runs a thick-walled shielded tube with three narrow horizontal viewing
-slots in its side, cool green-white light showing through those slots and
+slots in its side, cool blue light showing through those slots and
 nowhere else on the building. Lead-grey shielding collars are bolted around the
 tube at intervals. At the far end is a dense finned conversion block with heavy
 armoured cable trunks leaving from its base.
 
 Dark iron-nickel grey-brown metal, #4A463F to #6E685C, pale grey #8A8580
-radiator fins, near-black #3B3B40 shielding collars, cool radiant green-white
-#A8E8C0 to #E8FFF0 confined entirely to the throat slots, and copper-brown
+radiator fins, near-black #3B3B40 shielding collars, cool radiant blue
+#1F63FF to #73ADFF confined entirely to the throat slots, and copper-brown
 #8A5A32 cable terminations.
 
 It must read as a sealed radiant power source standing in vacuum, never as a
@@ -274,7 +275,7 @@ to catch. The idle plate is the same pixels with layer 3 omitted.
 
 **The slots are cut in layer 2 and lit in layer 3.** Layer 2 carries the slot
 openings, their depth and their shadowed interior; layer 3 carries only the
-green-white light inside them. Derived by differencing, so registration is exact.
+blue light inside them. Derived by differencing, so registration is exact.
 
 **Radiator fins are never emissive.** They shed heat; they do not make it. If
 anything but the throat slots ends up in the glow plate, the difference was taken

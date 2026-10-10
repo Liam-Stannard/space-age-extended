@@ -177,7 +177,7 @@ they cannot tell apart. Four axes, all four in the prompt:
 | --- | --- | --- |
 | Proportion | tall; the drum is two thirds of the height | **squat — the drum is wider than it is tall** |
 | Tier / finish | 3: smooth, sealed, cryogenic jacketing | **0: riveted, bolted, cast, mechanism showing** |
-| Colour | hot orange below, frost above, split at the waist | **radiant green-white in three low sight slots, teal paint on the roof, nothing else** |
+| Colour | hot orange below, frost above, split at the waist | **radiant blue in three low sight slots, teal paint on the roof, nothing else** |
 | Feature | a frost-jacketed gas riser leaving the top | **an exposed agitator drive turning on the crown** |
 | Ports | painted into its own plate, three faces, fixed | **drawn by the engine, and they move when you turn it** |
 
@@ -224,7 +224,7 @@ flush, nothing seamless, no indicator lamps other than the one the engine tints.
 * **Three lead shield bands** strapped round the drum, each bolted through a
   raised lug, plainly a duller and cooler metal than the shell.
 * **Three narrow sight slots** low on the drum's near shoulder, radiant
-  green-white showing through them and nowhere else.
+  blue showing through them and nowhere else.
 * **An exposed spider coupling** turning between a cast motor block and the
   drum's crown bearing, drawn free with a visible gap all round.
 * **A continuous bolted service gutter** at the footprint edge, identical on all
@@ -246,7 +246,7 @@ is hot in the other sense — and it is the one part legible at one tile.
 | Lead shield bands | `#5A5A60` → `#7A7A80`, cooler and duller than the shell | the three bands and their lugs only |
 | Shielding collars, bearing housing | `#3B3B40` | crown bearing, motor block |
 | Copper and brass | `#8A5A32` → `#C88A4A` | **used freely** on the cable trunk, the gutter's joints, fittings and lugs. This is what keeps the building warm; rationing it is how a plate lands under vanilla's saturation floor (template Appendix B, note 3a) |
-| Radiant light | `#A8E8C0` → `#E8FFF0` | **the three sight slots only.** The same green-white as the radiant fuel icon, the radiant chunk and the radiant generator's throat — one family |
+| Radiant light | `#1F63FF` → `#73ADFF` | **the three sight slots only.** The radiant solution's own blue, the same as the pool, the fuel and chunk icons and the radiant generator's throat — one family |
 | **Paint accent** | **works teal `#2A7F7A`** | **the roof only: the drive guard and the inspection-hatch cover.** Nothing at the footprint edge, nothing on the gutter, nothing on the skirt |
 | Status lamp | engine-tinted | one lens on the roof, `apply_tint = "status"` |
 
@@ -264,8 +264,9 @@ gutter carries copper and bare metal only.
 
 **Every accent is confined, and here the gap has to be argued in *value*, not
 only in hue.** Teal `#2A7F7A` is hue 176°, saturation 0.67, **value 0.50**. The
-radiant light `#A8E8C0` is hue 142° at **value 0.91**. Thirty-four degrees of hue
-is not much, so what separates them is that one is a dark matte paint and the
+radiant light `#1F63FF` is hue 222° at **value 1.0**. Forty-six degrees of hue
+is a clearer gap than before, but what still separates them is that one is a
+dark matte paint and the
 other is a bright emissive light, and they are at opposite ends of the machine:
 **paint on the roof, light low on the drum's near shoulder**, with the whole
 height of the drum between. They must never be adjacent, never overlap, and the
@@ -669,7 +670,7 @@ of plate, and it should look it.
 - Three heavy lead shield bands are strapped round the drum and bolted at
   raised lugs. The bands are a duller, cooler metal than the shell.
 - Three narrow horizontal sight slots low on the drum's near shoulder, with
-  cool green-white light showing through them and nowhere else.
+  cool blue light showing through them and nowhere else.
 - On the crown, an exposed agitator drive: a cast motor block, an open gear
   train, and between them a free-turning spider coupling. The coupling is
   drawn FREE, with a clear visible gap all the way round it and nothing
@@ -688,14 +689,14 @@ gutter joints and the lugs. This is what keeps the building warm.
 - Lead shield bands: #5A5A60 to #7A7A80, duller and cooler than the shell
 - Collars and bearing housing: #3B3B40
 - Copper and brass, used freely: #8A5A32 to #C88A4A
-- Radiant light, sight slots ONLY: #A8E8C0 to #E8FFF0
+- Radiant light, sight slots ONLY: #1F63FF to #73ADFF
 - Paint, on the drive guard and the inspection hatch cover and NOWHERE else:
   works teal #2A7F7A, a dark matte reflective paint, chipped and worn. Both
   painted parts are on the ROOF. It NEVER glows and has no bloom or rim light.
 - The gutter, the skirt and every edge of the footprint carry NO paint at all:
   bare metal and copper only.
 Reduce pale grey and rust-orange drift. No orange glow. No pale blue, no
-frost, no ice. The teal paint is high on the machine and the green-white
+frost, no ice. The teal paint is high on the machine and the blue
 light is low on the drum, with the whole height of the drum between them:
 the paint is dark and matte, the light is bright and emissive, and they must
 never touch.
@@ -769,7 +770,7 @@ cover, both on the roof, and on nothing else -- the gutter, the skirt and every
 edge of the footprint carry no paint at all. Reduce pale grey and rust-orange
 drift.
 
-State: running. Cool green-white light #A8E8C0 to #E8FFF0 shows through the
+State: running. Cool blue light #1F63FF to #73ADFF shows through the
 three sight slots and NOWHERE else. Nothing else on the machine glows -- not
 the teal paint, which is matte and has no bloom and no rim light, not the
 copper, not the gutter, not any edge of the footprint. The paint sits high on
@@ -841,8 +842,8 @@ components, same materials, same colours, same camera, same position in frame.
 The attached image is the approved unlit plate of this machine. Return the
 SAME image, pixel for pixel identical in shape, position, scale, camera,
 components and materials, with one change only: the three sight slots low on
-the drum's near shoulder are lit from inside with cool green-white light,
-#A8E8C0 to #E8FFF0, with a short soft bloom on the shell immediately around
+the drum's near shoulder are lit from inside with cool blue light,
+#1F63FF to #73ADFF, with a short soft bloom on the shell immediately around
 each slot. Nothing else lights up: not the teal paint on the roof, which stays
 matte with no bloom and no rim light, not the copper, not the gutter, not the
 drive head, not any edge of the footprint. Do not redraw, redesign, recolour,
@@ -1047,9 +1048,9 @@ ships.
 `tools/key-icons.py`.
 
 **Icon Concept:** the banded drum, head-on, with **one** shield band and its bolted
-lug, **one** green-white sight slot, and the **teal drive guard** as a visible patch
+lug, **one** blue sight slot, and the **teal drive guard** as a visible patch
 on top. Everything else is dropped: the gutter, the gear train, the cable trunk, the
-gauges, the second and third bands. Key it off the **lit** plate so the green-white
+gauges, the second and third bands. Key it off the **lit** plate so the blue
 is in the icon.
 
 **Bring the inspection-hatch cover in if the guard alone is not enough.** It is the
@@ -1073,7 +1074,7 @@ everything already spoken for:
 | --- | ---: | ---: |
 | Service blue `#2E5A8C` (Whisker Comber) — **its nearest neighbour** | 36° | **41.3** |
 | Signal yellow `#C8A23A` (Dross Classifier) | 132° | 174.0 |
-| Radiant green-white `#A8E8C0` (this machine's own light) | 34° | 178.3 |
+| Radiant blue `#1F63FF` (this machine's own light) | 46° | 136.4 |
 | Frost `#B8C4C8` (Concentrator, Crust Tap) | 19° | 176.1 |
 | Violet `#6A5AC8` (field) | 73° | 107.5 |
 | Heat `#D96B29` / copper `#C88A4A` | 154° / 146° | 193.9 / 165.5 |
@@ -1116,11 +1117,11 @@ A game inventory icon, square, on a fully transparent background: a squat
 riveted metal drum seen from slightly above and in front, wider than it is
 tall, with one heavy lead shield band strapped round its middle and bolted at
 a raised lug. One narrow horizontal sight slot low on the drum glows cool
-green-white, #A8E8C0 to #E8FFF0. On top of the drum, a small cast drive head
+blue, #1F63FF to #73ADFF. On top of the drum, a small cast drive head
 whose guard is painted a chipped reflective dark teal, #2A7F7A -- the paint is
 a solid cap covering the whole guard, not a thin line and not an outline, it is
 matte and it does not glow. Beside it on the roof, a small teal inspection
-hatch cover in the same paint. Keep all the teal on top and the green-white
+hatch cover in the same paint. Keep all the teal on top and the blue
 slot low, with plain dark metal between them so they never touch, and no paint
 anywhere at the base of the machine. Drum body #4A463F to #6E685C, band
 #5A5A60 to #7A7A80, a little visible copper #C88A4A at the lug. Bold, simple,
@@ -1146,7 +1147,7 @@ ground texture, no background scenery, no baked drop shadow.
 * [ ] Inputs are visually understandable — by the engine's stubs, not by the plate
 * [ ] Outputs are visually understandable — there is no output port to understand
 * [ ] **Does not read as** the vanilla chemical plant — no chimneys, no exhaust, no red-and-white, no painted flanges
-* [ ] **Does not read as** the Helium Concentrator — squat not tall, riveted not sealed, teal-and-green-white not frost-and-orange
+* [ ] **Does not read as** the Helium Concentrator — squat not tall, riveted not sealed, teal-and-blue not frost-and-orange
 * [ ] **Does not read as** a storage tank
 * [ ] Tier 0 finish: rivets, bolts, cast housings, weld seams, wear. Nothing flush or seamless
 * [ ] **No face is a front** — no porch, loading bay, stepped deck, asymmetric skirt, edge pipework or edge paint
@@ -1168,7 +1169,7 @@ ground texture, no background scenery, no baked drop shadow.
 * [ ] The teal is on the **roof only**: drive guard and inspection-hatch cover, and nothing at the gutter, the skirt or any edge
 * [ ] Each teal surface is an **area** — a solid cap or panel, not a line or an outline
 * [ ] The teal does not glow, has no bloom and no rim light, and is absent from the glow layer entirely
-* [ ] Teal and green-white are not adjacent anywhere, on the plate or in the icon
+* [ ] Teal and blue are not adjacent anywhere, on the plate or in the icon
 * [ ] The icon's teal scores **≥ 7 distinct-hue pixels at 16 px**, counted, and never below 5
 
 ### Directions

@@ -157,7 +157,7 @@ Works teal `#2A7F7A` — a dark, matte, chipped paint. On the ROOF ONLY, on exac
 
 Functional/emissive colour:
 
-Radiant green-white `#A8E8C0` → `#E8FFF0` — in the three sight slots ONLY. Plus one status-lamp lens on the roof, which the engine tints; it is drawn as a neutral lens.
+Radiant blue `#1F63FF` → `#73ADFF` — in the three sight slots ONLY. Plus one status-lamp lens on the roof, which the engine tints; it is drawn as a neutral lens.
 
 Use believable Factorio industrial construction:
 
@@ -224,7 +224,7 @@ On the near face: three narrow horizontal SIGHT SLOTS low on the drum's near sho
 
 Twelve identical FLUID PORT MOUTHS, three to each side of the gutter, one on the centre-line of every edge tile — see §9. They are the only pipe-like shapes on the machine. Nothing else connects: no power connector, no chute, no hatch for items.
 
-One STATUS LAMP lens on the roof in a metal bezel (engine-tinted). The three sight slots (dark when idle, radiant green-white when working). No other lamps, no windows.
+One STATUS LAMP lens on the roof in a metal bezel (engine-tinted). The three sight slots (dark when idle, radiant blue when working). No other lamps, no windows.
 
 Maintain this design exactly between all alternate sprite states.
 
@@ -420,7 +420,7 @@ The three sight slots low on the drum's near shoulder, lit from inside at a cons
 
 Colours:
 
-Radiant green-white `#A8E8C0` → `#E8FFF0`. No orange, no pale blue, no teal light.
+Radiant blue `#1F63FF` → `#73ADFF`, deep and saturated. No orange, no pale or frosty blue (that is helium-3 and frost), no teal light.
 
 Glow should originate from a physical source.
 
@@ -767,7 +767,7 @@ The exposed agitator drive on the crown, with the six-armed spider coupling draw
 
 The uniform base: a bolted gutter and skirt identical on all four sides, twelve identical open port mouths three to a side, and no side that reads as a front
 
-The colour placement: works teal on the roof only (drive guard and inspection-hatch cover), radiant green-white in the three sight slots only, bare metal and copper everywhere at the edge — and the teal and the green-white never adjacent
+The colour placement: works teal on the roof only (drive guard and inspection-hatch cover), radiant blue in the three sight slots only, bare metal and copper everywhere at the edge — and the teal and the blue never adjacent
 
 The following dimensions are HARD measurements:
 
@@ -809,7 +809,7 @@ It must not read as a vanilla chemical plant, a Helium Concentrator or a storage
 
 No side may be a front: no porch, loading bay, stepped deck, asymmetric skirt, hazard marking on some corners and not others, or pipework at any one edge; no pipe runs down the outside of the machine to the gutter; no paint, tint, stain, fluid colour or glow on or within half a tile of any footprint edge; no port mouth drawn differently from the other eleven
 
-No output chute and no product anywhere; and the teal never glows, never takes a bloom or rim light, and never touches or sits beside the green-white light
+No output chute and no product anywhere; and the teal never glows, never takes a bloom or rim light, and never touches or sits beside the blue light
 
 ---
 
@@ -854,7 +854,7 @@ Shielded batch reactor: radiant solution + crust gas in, a solid radiant fuel ce
 A squat riveted precipitation drum, wider than it is tall, strapped in three lead shield bands, standing on a low skirt inside a square bolted service gutter that is identical on all four sides.
 
 **DISTINCTIVE FEATURE:**
-The banded drum with an exposed agitator drive turning on its crown — a free spider coupling between a teal-guarded motor block and the crown bearing — and three green-white sight slots low on the near shoulder.
+The banded drum with an exposed agitator drive turning on its crown — a free spider coupling between a teal-guarded motor block and the crown bearing — and three blue sight slots low on the near shoulder.
 
 **MATERIALS:**
 Riveted warm iron-nickel plate `#4A463F`–`#6E685C`; lead bands `#5A5A60`–`#7A7A80`; dark cast iron `#3B3B40`; copper and brass used freely `#8A5A32`–`#C88A4A`. Tier-0 finish: rivets, bolts, cast housings, weld seams, rust staining, wear. Nothing flush or seamless.
@@ -872,7 +872,7 @@ NONE — no chute, no hatch, no product drawn.
 The three sight slots dark behind their housings; the status-lamp lens dark in its bezel; the coupling stopped at frame 0.
 
 **LIT ELEMENTS:**
-The three sight slots only, radiant green-white `#A8E8C0`–`#E8FFF0`, constant brightness, short soft bloom on the shell around each.
+The three sight slots only, radiant blue `#1F63FF`–`#73ADFF`, constant brightness, short soft bloom on the shell around each.
 
 **ANIMATION:**
 The spider coupling only: 12 frames, 5° per frame, 60° seamless loop. Everything else static.
@@ -884,7 +884,7 @@ The spider coupling only: 12 frames, 5° per frame, 60° seamless loop. Everythi
 Footprint 192 × 192 source px exactly (3.000 tiles), nothing crossing it; port mouths 51 px external diameter, necks ≤ 20 px deep, on the edge-tile centre-lines; drum about 2.2 tiles (≈ 141 px) in diameter and about half as tall as it is wide; whole sprite not wider than it is tall.
 
 **DESIGN LOCKS:**
-Squat banded drum; free spider coupling on the crown; uniform gutter with twelve identical mouths and no front; teal on the roof only, green-white in the slots only, never adjacent.
+Squat banded drum; free spider coupling on the crown; uniform gutter with twelve identical mouths and no front; teal on the roof only, blue in the slots only, never adjacent.
 
 **PROHIBITIONS:**
 No chimneys, exhaust, smoke, flame, steam, frost, orange or red-and-white; no front face; no pipework down the outside or at any one edge; no paint, stain or glow within half a tile of an edge; no output chute or product; no glowing teal.

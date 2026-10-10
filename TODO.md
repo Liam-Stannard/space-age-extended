@@ -111,6 +111,11 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 - **Two power buildings need specs before art**, both for stages the rework
   is re-planning: `concept/isotope-centrifuge/` and `concept/radiant-reactor/`
   do not exist yet; both come from `templates/building-spec-template.md`.
+- **The radiant light is blue now; two sprites still glow green-white.**
+  The Reaction Plant's sight slots and the radiant asteroid (Liam,
+  2026-10-10: the whole radiant family is the solution's blue `#1F63FF` →
+  `#73ADFF`). Re-render the plant's slots with its remodel; the asteroid on
+  its own.
 - **Paint accents still to assign** (template Appendix B): Drop Crusher,
   Ballast Drill, Vacuum Furnace, Crust Tap.
 
