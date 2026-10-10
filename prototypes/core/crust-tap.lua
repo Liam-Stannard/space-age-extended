@@ -233,7 +233,10 @@ local crust_vent =
   autoplace = vent_autoplace,
   stage_counts = { 0 },
   stages = { sheet = vent_sheet },
-  map_color = { r = 0.66, g = 0.85, b = 0.16 }
+  map_color = { r = 0.66, g = 0.85, b = 0.16 },
+  -- The colour the Gas Pump's sight glass shows while it draws from this vent:
+  -- siderane's own chartreuse, its `base_color` above.
+  mining_visualisation_tint = { r = 0.66, g = 0.85, b = 0.16 }
 }
 -- Marked, as the vent tile it replaces was: vanilla's sheet, until the Core's
 -- own vent is drawn.
@@ -255,7 +258,8 @@ data:extend({ crust_vent })
 --------------------------------------------------------------------------------
 
 local pump = derive.from("mining-drill", "pumpjack", "sae-gas-pump")
-pump.icon = "__space-age-extended__/graphics/icons/crust-tap.png"
+pump.icon = "__space-age-extended__/graphics/icons/gas-pump.png"
+pump.icon_size = 64
 pump.minable = { mining_time = 0.3, result = "sae-gas-pump" }
 pump.resource_categories = { "sae-gas" }
 pump.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
@@ -316,59 +320,93 @@ pump.output_fluid_box = {
     { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
   }
 }
--- Art: the Bolted Collar, option A of five (concept/crust-tap/options/), the
--- plates this building wore as the Siderane wellhead. Ours, so no
--- `derive.placeholder_art`; the model in progress will replace them.
+-- Art: the Gas Pump's Blender model (concept/crust-tap/model/crust_tap.py,
+-- signed off by Liam 2026-10-09 after its "bulkier" round): a square pump
+-- casing in faded green with its corners cut, on a plinth held by corner
+-- anchors; a flat riveted lid carrying the wellhead and a compressor housing;
+-- orthogonal pipework, hoses and cables over it; the burst disc; a sight glass
+-- inline in the lid's header; and the riser. Ours, so no
+-- `derive.placeholder_art`.
 --
--- FOUR PLATES, DRAWN RATHER THAN ROTATED, because on this building the riser is
+-- FOUR PLATES, RENDERED FROM ONE MODEL, because on this building the riser is
 -- the fluid box and a riser pointing the wrong way is the fluid box in the wrong
--- place. All four were drawn in one strip so they are unmistakably four
--- rotations of one machine, and `tools/cut-rotation-strip.py` splits them.
---
--- **Two things about the cut are not obvious.** The scale comes from the BASE
--- SQUARE rather than from the content, because the riser leaves a different face
--- in each view and fitting each view to its own content box would draw four
--- machines at four sizes. And each plate is shifted so the base's centre, not
--- the canvas's, lands on the tile: centre an east plate on its content and the
--- whole building slides left to make room for a pipe that is meant to hang over
--- the edge.
+-- place. Only the riser turns; everything else is the same in all four, and the
+-- riser's mouth sits on the connection above by construction.
 --
 -- **The riser sits on a TILE CENTRE, half a tile off the middle of its face.**
--- That is the correction stage 1 found, and the art agrees with the connection
+-- That is the correction §24 records, and the model agrees with the connection
 -- above in all four rotations.
-local CT = "__space-age-extended__/graphics/entity/crust-tap/"
-local function plate(dir, w, h, sx, shadow_w, shadow_h, ssx)
-  return {
-    layers = {
-      {
-        filename = CT .. "base-" .. dir .. ".png",
-        priority = "high",
-        width = w,
-        height = h,
-        shift = { sx, 0 },
-        scale = 0.5
-      },
-      {
-        filename = CT .. "base-" .. dir .. "-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = shadow_w,
-        height = shadow_h,
-        shift = { sx + ssx, 0 },
-        scale = 0.5
-      }
-    }
+--
+-- Every size and shift below is copied from the model's
+-- sheets/meta.json; none was measured off a sheet or typed from memory. Each
+-- file is named whole so tools/collect-graphics-refs.py can see it.
+local GP = "__space-age-extended__/graphics/entity/gas-pump/"
+local function gp_sprite(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    shift = shift,
+    scale = 0.5
   }
+end
+
+-- The plate and its shadow, one frame each.
+local function gp_plate(base, shadow)
+  shadow.draw_as_shadow = true
+  return { layers = { base, shadow } }
+end
+
+-- The sight glass's contents: neutral white, so the engine's tint decides its
+-- colour. meta.json gives all four directions the same 21 x 17 and the same
+-- shift, since the glass is on the part of the model that does not turn.
+local function gp_glass(filename)
+  return gp_sprite(filename, 21, 17, { -0.13281, -0.74219 })
 end
 
 -- The pumpjack's set is replaced whole: its nodding head and its working
 -- visualisations, and the mirrored copy of both, describe a machine this is not.
 derive.own_graphics(pump, {
   animation = {
-    north = plate("north", 148, 178, 0.00781, 305, 198, 1.07031),
-    east = plate("east", 190, 132, -0.32812, 310, 152, 0.78125),
-    south = plate("south", 145, 175, 0.00000, 299, 195, 1.04688),
-    west = plate("west", 180, 132, 0.28125, 300, 152, 0.78125)
+    north = gp_plate(gp_sprite(GP .. "base-north.png", 134, 152, { 0.0, -0.15625 }),
+                     gp_sprite(GP .. "base-shadow-north.png", 155, 134, { 0.21094, -0.03125 })),
+    east = gp_plate(gp_sprite(GP .. "base-east.png", 135, 138, { 0.00781, -0.04688 }),
+                    gp_sprite(GP .. "base-shadow-east.png", 155, 131, { 0.21094, -0.00781 })),
+    south = gp_plate(gp_sprite(GP .. "base-south.png", 134, 139, { 0.0, -0.03906 }),
+                     gp_sprite(GP .. "base-shadow-south.png", 155, 137, { 0.21094, 0.03906 })),
+    west = gp_plate(gp_sprite(GP .. "base-west.png", 135, 138, { -0.00781, -0.04688 }),
+                    gp_sprite(GP .. "base-shadow-west.png", 155, 131, { 0.21094, -0.00781 }))
+  },
+  working_visualisations = {
+    -- **The sight glass shows the gas.** In the plate it is dark, empty glass;
+    -- while the pump is drawing, this fills it with the colour of what is
+    -- drawn. `apply_tint = "resource-color"` takes the colour from the vent
+    -- under the pump -- its `mining_visualisation_tint` -- so one layer shows
+    -- siderane chartreuse on a siderane vent and helium-3 blue on a helium
+    -- vent, and a future gas needs only its vent's tint.
+    --
+    -- Ordinary paint, not glow and no light: it is gas seen through glass, not
+    -- a lamp, and it should go dark at night with the rest of the machine.
+    --
+    -- No `always_draw`, so it is drawn only while the pump is working; idle,
+    -- blocked, unconnected or with no vent under it, the plate's empty glass
+    -- shows.
+    --
+    -- **`synced_fadeout`, not `fadeout`**, because that is what vanilla's big
+    -- mining drill sets on both of its `resource-color` layers, its tinted dust
+    -- and its output particles (space-age/prototypes/entity/big-mining-drill.lua),
+    -- and the task is to draw this as the big drill draws its tinted layers.
+    -- The prototype docs describe neither flag; the electric drill uses plain
+    -- `fadeout` on its own tinted dust, but the task names the big drill.
+    {
+      synced_fadeout = true,
+      apply_tint = "resource-color",
+      north_animation = gp_glass(GP .. "sight-glass-north.png"),
+      east_animation = gp_glass(GP .. "sight-glass-east.png"),
+      south_animation = gp_glass(GP .. "sight-glass-south.png"),
+      west_animation = gp_glass(GP .. "sight-glass-west.png")
+    }
   }
 })
 pump.graphics_set_flipped = nil
@@ -428,7 +466,8 @@ data:extend({
   {
     type = "item",
     name = "sae-gas-pump",
-    icon = "__space-age-extended__/graphics/icons/crust-tap.png",
+    icon = "__space-age-extended__/graphics/icons/gas-pump.png",
+    icon_size = 64,
     subgroup = "energy",
     order = "z[sae]-b[gas-pump]",
     place_result = "sae-gas-pump",

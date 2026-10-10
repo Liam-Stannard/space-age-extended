@@ -196,7 +196,11 @@ data:extend({
     {
       sheet = table.deepcopy(data.raw.resource["crude-oil"].stages.sheet)
     },
-    map_color = { r = 0.55, g = 0.80, b = 0.92 }
+    map_color = { r = 0.55, g = 0.80, b = 0.92 },
+    -- The colour the Gas Pump's sight glass shows while it draws from this
+    -- vent: helium-3's own `base_color` (fluids.lua), so it reads apart from
+    -- siderane's chartreuse.
+    mining_visualisation_tint = { r = 0.55, g = 0.78, b = 0.90 }
   }
 })
 
