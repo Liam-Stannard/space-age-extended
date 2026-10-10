@@ -159,10 +159,14 @@ class Packer:
         frame0 = []
         for a in decl["animations"]:
             name, n = a["name"], int(a["frames"])
-            frames = [clean(self.open(contract.frame(name, f, d))) for f in range(n)]
+            light = a.get("kind", "paint") == "light"
+            # a light animation keeps what a light pass keeps (alpha above 8); paint is cleaned of
+            # the catchers' haze below NOISE
+            frames = [light_layer(self.open(contract.frame(name, f, d))) if light
+                      else clean(self.open(contract.frame(name, f, d))) for f in range(n)]
             u = None
             for f, fr in enumerate(frames):
-                b = self.box_of(fr.getchannel("A"), contract.frame(name, f, d) + ".png")
+                b = self.box_of(fr.getchannel("A"), contract.frame(name, f, d) + ".png", 8 if light else 0)
                 u = b if u is None else (min(u[0], b[0]), min(u[1], b[1]), max(u[2], b[2]), max(u[3], b[3]))
             fw, fh = u[2] - u[0], u[3] - u[1]
             line = max(1, min(n, MAX_SHEET_W // fw))
@@ -172,7 +176,12 @@ class Packer:
             stem = contract.named(name, d)
             sheet.save(os.path.join(self.out, stem + ".png"))
             self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
-            frame0.append(frames[0])
+            if light:
+                self.meta[stem]["kind"] = "light"
+            else:
+                frame0.append(frames[0])     # a light layer draws only while working: not the still's
+            if a["motion"] == "flow":
+                continue                     # contents moving in place: nothing to hold to a centroid
 
             cs = [centroid(fr) for fr in frames]
             if a["motion"] == "turn":
@@ -243,7 +252,9 @@ class Packer:
         fitted (the mean over the frames) and what is left in each frame is the
         miss: along the line, the frame is off the curve; across it, off the line.
         """
-        want = [contract.screen(self.decl, p, d) for p in anim["path"]]
+        # a root that never turns (turns: false) leaves the path as modelled in every direction
+        facing = d if anim.get("turns", True) else contract.DIRECTIONS[self.decl["directions"]][0][0]
+        want = [contract.screen(self.decl, p, facing) for p in anim["path"]]
         ox = sum(c[0] - w[0] for c, w in zip(cs, want)) / len(cs)
         oy = sum(c[1] - w[1] for c, w in zip(cs, want)) / len(cs)
         far = max(((w[0] - want[0][0], w[1] - want[0][1]) for w in want), key=lambda v: math.hypot(*v))

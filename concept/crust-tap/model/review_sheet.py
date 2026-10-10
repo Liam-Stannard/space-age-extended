@@ -10,7 +10,7 @@ Everything is layered as the engine draws it, on one ground at 64 px a tile with
 grid and the 2x2 footprint outlined: the cast shadow at 50 %, then the plate, with a
 vanilla straight pipe (base/graphics/entity/pipe) in the tile spec 24's connection points
 into, drawn under the plate when it lies north of the tap's centre and over it when it lies
-south, as the engine orders them. The adopted plates come from graphics/entity/crust-tap/
+south, as the engine orders them. The adopted plates are the wired round 13, graphics/entity/gas-pump/,
 at the shifts prototypes/core/crust-tap.lua gives them, with their own shadows and the
 same vanilla pipe on the same tile.
 
@@ -20,7 +20,8 @@ heat seam), so each panel is the tap idle and working at once.
 One row per direction: the adopted plate with its pipe; the new plate idle with its pipe;
 the new plate working (its sight glass lit, tinted siderane) with its pipe; the new plate's
 joint at 4x. Then the four new plates at 2x, and the icon strip at 1x and its 64 px icon at
-4x. (The building has no animations, so there is no frame strip.)
+4x. Each plate is drawn with the moving parts' frame 0 over it, the stopped machine; the
+glass's frame 0 where it is working. The animations' frames are animation_review.py's.
 
 The working-tints sheet: each direction's shadow, plate and tinted sight glass composited
 at their meta.json shifts, at 2x, one row tinted siderane and one helium-3.
@@ -33,7 +34,7 @@ from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
-ADOPTED = os.path.join(REPO, "graphics", "entity", "crust-tap")
+ADOPTED = os.path.join(REPO, "graphics", "entity", "gas-pump")      # the signed-off round 13, as wired
 FD = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
     "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/pipe")
 PPT, TILES = 64, 5
@@ -45,9 +46,10 @@ DIRS = ("north", "east", "south", "west")
 # spec 24: the connection tile (tiles, y down) and the face it leaves by
 CONN = {"north": ((0.5, -0.5), (0, -1)), "east": ((0.5, 0.5), (1, 0)), "south": ((-0.5, 0.5), (0, 1)),
         "west": ((-0.5, -0.5), (-1, 0))}
-# prototypes/core/crust-tap.lua: the adopted plates' shifts, and their shadows' offsets from them
-ADOPTED_SHIFT = {"north": (0.00781, 1.07031), "east": (-0.32812, 0.78125), "south": (0.0, 1.04688),
-                 "west": (0.28125, 0.78125)}
+# prototypes/core/crust-tap.lua: the wired round 13 plates' shifts and their shadows' (each copied
+# there from round 13's meta.json)
+ADOPTED_SHIFT = {"north": ((0.0, -0.15625), (0.21094, -0.03125)), "east": ((0.00781, -0.04688), (0.21094, -0.00781)),
+                 "south": ((0.0, -0.03906), (0.21094, 0.03906)), "west": ((-0.00781, -0.04688), (0.21094, -0.00781))}
 
 
 def grid(c):
@@ -88,24 +90,38 @@ def panel(plate, pshift, shadow, sshift, d, with_pipe=True):
 
 def adopted(d):
     base = Image.open(os.path.join(ADOPTED, f"base-{d}.png")).convert("RGBA")
-    sh = Image.open(os.path.join(ADOPTED, f"base-{d}-shadow.png")).convert("RGBA")
-    sx, ssx = ADOPTED_SHIFT[d]
-    return panel(base, (sx, 0), sh, (sx + ssx, 0), d)
+    sh = Image.open(os.path.join(ADOPTED, f"base-shadow-{d}.png")).convert("RGBA")
+    bs, ss = ADOPTED_SHIFT[d]
+    return panel(base, bs, sh, ss, d)
 
 
 def new(meta, sheets, d, with_pipe=True, tint=None):
     """The new plate on the ground with its shadow (and the vanilla pipe); with `tint`, the
     sight glass's light layer over it, tinted, as it draws while the pump works."""
-    base = Image.open(os.path.join(sheets, f"base-{d}.png")).convert("RGBA")
+    base = Image.open(os.path.join(sheets, f"base-{d}.png")).convert("RGBA").copy()
     sh = Image.open(os.path.join(sheets, f"base-shadow-{d}.png")).convert("RGBA")
+    # (the gas-pump-animation task) the stopped machine: the moving parts' frame 0 over the plate
+    pump, bs, ps = frame_of(sheets, meta, f"pump-{d}", 0), meta[f"base-{d}"]["shift"], meta[f"pump-{d}"]["shift"]
+    base.alpha_composite(pump, (round(base.width / 2 + (ps[0] - bs[0]) * PPT - pump.width / 2),
+                                round(base.height / 2 + (ps[1] - bs[1]) * PPT - pump.height / 2)))
     if tint is not None:
-        base = base.copy()
-        light = tinted(Image.open(os.path.join(sheets, f"sight-glass-{d}.png")).convert("RGBA"), tint)
+        light = tinted(frame_of(sheets, meta, f"sight-glass-{d}", 0), tint)
         bs, ls = meta[f"base-{d}"]["shift"], meta[f"sight-glass-{d}"]["shift"]
         at = (round(base.width / 2 + (ls[0] - bs[0]) * PPT - light.width / 2),
               round(base.height / 2 + (ls[1] - bs[1]) * PPT - light.height / 2))
         base.alpha_composite(light, at)
     return panel(base, meta[f"base-{d}"]["shift"], sh, meta[f"base-shadow-{d}"]["shift"], d, with_pipe)
+
+
+def frame_of(sheets, meta, stem, f):
+    """Frame f of a packed sheet (a still sheet is its own frame 0)."""
+    im = Image.open(os.path.join(sheets, stem + ".png")).convert("RGBA")
+    m = meta[stem]
+    if "frames" not in m:
+        return im
+    w, h = m["size"]
+    line = m["line_length"]
+    return im.crop(((f % line) * w, (f // line) * h, (f % line) * w + w, (f // line) * h + h))
 
 
 def zoom(im, at, k):
@@ -143,7 +159,7 @@ def glass_strip(out, path):
         row = []
         for d in DIRS:
             c = new(meta, sheets, d, with_pipe=False)
-            light = Image.open(os.path.join(sheets, f"sight-glass-{d}.png")).convert("RGBA")
+            light = frame_of(sheets, meta, f"sight-glass-{d}", 0)
             put(c, tinted(light, rgb), *meta[f"sight-glass-{d}"]["shift"])
             sx, sy = meta[f"sight-glass-{d}"]["shift"]
             row.append(label(c, f"{d}: {name}"))
