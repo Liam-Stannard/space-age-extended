@@ -26,15 +26,11 @@ the machine sits true; centre an east plate on its content and the whole buildin
 slides left to make room for a pipe that is supposed to hang over the edge. The
 base's own centre is what lands on the tile.
 
-  tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/crust-tap
   tools/cut-rotation-strip.py STRIP.png --out-dir graphics/entity/vent-pump --tiles 3
 
-**One warning if you re-cut the Crust Tap.** `base_span` was rewritten for the
-Vent Pump (see its note below) and the new measurement moves the Crust Tap's
-plates by about a pixel in each dimension. The shipped plates predate it, their
-numbers are declared in `prototypes/core/crust-tap.lua`, and they were verified
-against that building's own §13 -- so they are deliberately NOT re-cut. Re-cut
-only together with those declarations, and re-measure afterwards.
+The Crust Tap's cut plates are retired: the building is now the Gas Pump and
+wears a Blender model's four rendered plates, sized from that model's meta.json
+(`prototypes/core/crust-tap.lua`), so nothing of it is cut here any more.
 """
 
 import argparse

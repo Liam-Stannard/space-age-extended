@@ -44,9 +44,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Gas Pump** (was the Crust Tap) — model (`crust-tap-model`), then wiring:
-  four plates and shadows on the `sae-gas-pump` mining drill, no working
-  layers.
 - **Radiant Generator** — model (`radiant-generator-model`), then wiring with
   an `idle_animation`, so a fuelless generator stops glowing.
 - **Ballast Drill** — model (`ballast-drill-model`), then wiring: one plate,

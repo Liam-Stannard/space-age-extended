@@ -363,15 +363,15 @@ are told apart. Within the building, variation comes from replacement panels in 
 slightly different shade, small stencilled markings, and rust that differs by place:
 dry orange on tops, dark wet streaks below fittings.
 
-**This building's: faded industrial green.** The collar and cap are painted
+**This building's: faded industrial green.** The casing and lid are painted
 `#4A5A44` → `#5E6E56`, sun-faded and worn to steel on edges and bolt heads, with a
-stencilled band round the collar for its gas, as real gas plant is colour-coded.
+stencilled band round the lid for its gas, as real gas plant is colour-coded.
 The riser and fittings stay bare steel and brass.
 
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Collar and anchors | `#3E3B36` → `#5E584E` | the mass of the building |
+| Plinth and anchors | `#3E3B36` → `#5E584E` | the base the green casing stands on |
 | Riser body | `#8A8580` | the single pipe |
 | Frost jacket | `#BFD8E8` → `#EAF4FA` | riser, downstream of the choke only |
 | Seam heat | `#C8541E` → `#E8A24A` | ground joint only, dull |
