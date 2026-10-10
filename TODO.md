@@ -50,13 +50,8 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 - **Radiant Generator** — model (`radiant-generator-model`), then wiring with
   an `idle_animation`, so a fuelless generator stops glowing.
-- **Ballast Drill** — model (`ballast-drill-model`), then wiring: one plate,
-  a vanilla-style chute and ore particles per direction. Replaces the stroke
-  art committed without sign-off (`ballast-drill/stroke*`).
 - **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
   gutter base, rendered pipe pictures, vanilla covers.
-- **The Ballast Drill's lamp has no `status_colors`**, so it likely draws
-  dark, as the reaction plant's did. Its wiring task sets them.
 
 ## Blender pipeline
 

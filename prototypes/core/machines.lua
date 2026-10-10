@@ -6,10 +6,8 @@
 -- rather than invented here; where this file and a spec disagree, the spec is
 -- right and this is a bug. Section 2 of each spec is the source.
 --
--- **Every one wears its own plate**, through `derive.own_graphics`. The Drop
--- Crusher's and the Reaction Plant's are rendered from Blender models
--- (concept/<building>/model/); the Ballast Drill's and the Vacuum Furnace's are
--- still the adopted generated plates until their models are wired. Each is
+-- **Every one wears its own plate**, through `derive.own_graphics`, and every
+-- plate is rendered from a Blender model (concept/<building>/model/). Each is
 -- derived from a vanilla machine of the same footprint and marked by a
 -- `derive.placeholder_art` call until `own_graphics` clears it, so a building
 -- that never gets its plate is still logged at data stage. That is a different
@@ -294,13 +292,13 @@ drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- generous: with nothing to be strictly worse than, its numbers can describe the
 -- machine instead of defending it.
 drill.resource_categories = { "sae-kamacite" }
--- **The four inherited fluid connections stay, and the art draws them.**
+-- **The four inherited fluid connections stay, and the engine draws them.**
 --
 -- Nothing uses them yet: kamacite's `minable` carries no `required_fluid`, so
 -- today they accept nothing. They are kept deliberately, because a mining fluid
--- for this drill is wanted later and the layout has to be settled *before* the
--- plate is cut. A flange added to a finished plate is a repaint of all four
--- directions, and the Vent Pump is the standing proof of how expensive
+-- for this drill is wanted later and the layout had to be settled *before* the
+-- model was rendered. A flange added to a finished plate is a repaint of all
+-- four directions, and the Vent Pump is the standing proof of how expensive
 -- rearranging plumbing after the fact is.
 --
 -- **Inherited verbatim from the big mining drill, and that is the point.** The
@@ -309,20 +307,14 @@ drill.resource_categories = { "sae-kamacite" }
 -- takes two flanking the centre, and north takes none -- because north is where
 -- the ore comes out (`vector_to_place_result` is { 0, -2.85 }).
 --
--- **And the plate draws none of them**, which is the part worth writing down.
--- Vanilla's own drills carry no plumbing in their art at all -- checked, the big
+-- **And the plate draws none of them**, as vanilla's drills draw none -- the big
 -- mining drill's north sprite is a gantry and two ladders and nothing else. The
--- fitting is the fluid box's `pipe_covers`, and the ENGINE stamps it at whichever
--- connections are live: on an ore that needs no fluid it draws nothing.
---
--- That is why keeping the box costs the art nothing. Today the covers never
--- appear, because kamacite asks for no fluid; the day a recipe does ask, the
--- flanges appear by themselves, in the right places, in all four directions, and
--- no plate is repainted. The covers come across with the deepcopy.
---
--- The alternative -- painting flanges into the plate -- would put four visible
--- sockets on a machine that has no use for them, which is the Vent Pump's §19
--- complaint exactly.
+-- fittings belong to the fluid box: a stub per face in `pipe_picture` and a
+-- blind cap in `pipe_covers`, both rendered from the drill's own model (see
+-- "Art" below, where they are set), which the ENGINE stamps at the connections
+-- and turns with the drill. Painting flanges into the plate instead would put
+-- four visible sockets on a machine that has no use for them, which is the Vent
+-- Pump's §19 complaint exactly.
 drill.input_fluid_box = table.deepcopy(
   data.raw["mining-drill"]["big-mining-drill"].input_fluid_box)
 drill.resource_drain_rate_percent = 50
@@ -339,65 +331,84 @@ drill.energy_source = { type = "electric", usage_priority = "secondary-input" }
 drill.module_slots = 4
 drill.surface_conditions = HIGH_G
 
--- Art: the Ring Press, option B of five (concept/ballast-drill/options/).
+-- Art: the Ring Press, option B of five (concept/ballast-drill/options/),
+-- rendered in Blender from concept/ballast-drill/model/ballast_drill.py and
+-- signed off by Liam at round 7, 2026-10-10.
 --
--- Locked 2026-09-10. A heavy cast annulus riding up and down three guide columns
--- around a capped central shaft, on a low riveted deck. Nothing about it rises,
--- because the anti-read for this building is a derrick.
+-- A heavy cast ring riding up and down three guide columns round a capped
+-- central column that does not move, in a press frame with red-oxide
+-- gear-houses, on a raised cast chassis braced by four splayed legs. Nothing
+-- about it rises, because the anti-read for this building is a derrick.
 --
--- **The output was rebuilt from vanilla, not from the sheet.** The adopted sheet
--- drew an upright boom. Vanilla's drills do not, and the reason is geometric:
--- `big-mining-drill` is the same 5x5 footprint, places its ore at
--- `vector_to_place_result = {0, -2.85}` -- 0.35 tiles PAST the north edge -- and
--- draws `big-mining-drill-N-output.png`, a 128x88 six-frame drag-chain shifted
--- `by_pixel(-2, -66.5)`, which puts the chute INSIDE the footprint with its mouth
--- flush to the edge. Ours is the same idea: a short chute mouth built into the
--- back of the deck, drawn empty, with the ore an item entity the engine places in
--- front of it. See the template's convention 1 -- draw the chute, never what
--- comes out of it.
+-- **Rendered, not cut**, as the Drop Crusher and the Reaction Plant are: every
+-- pass comes off one model through one calibrated camera (tools/blender/rig.py)
+-- on one canvas with the entity origin at its centre, so the layers register by
+-- construction. Every size, shift, frame count and line length below is copied
+-- from the two meta.json files the packers write; none was measured off a
+-- sheet. To regenerate, with any Blender 5 binary:
 --
--- **The status lens was painted in.** Three generations of the master render came
--- back with no lamp at all, and this building has no other feedback: the ring
--- does not move in the still, nothing is hot, and the lens is the only thing that
--- can say idle from blocked. It is a bezel and a flat white disc composited into
--- the master at (340, 1015) before cutting, so it antialiases down with the rest
--- of the plate rather than being pasted onto the sprite.
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/ballast-drill/model/ballast_drill.py <scratch> --ports --icon
 --
--- **The plate is stretched 1.05x vertically.** The render came back at aspect
--- 1:0.90 against `big-mining-drill-N-still-front`'s 1:0.94 -- the camera defect
--- the template's Appendix C says to expect on every remaining building. 5% is inside the
--- band the tool's own docstring calls invisible on details. 320 px of drawn
--- machine, 5.000 tiles, checked by tools/check-footprint.py.
+-- then copy <scratch>/sheets/icon.png to graphics/icons/ballast-drill.png, the
+-- other <scratch>/sheets/*.png and <scratch>/sheets/ports/*.png into
+-- graphics/entity/ballast-drill/, and the numbers out of the two meta.json
+-- files into BD_SHEETS and the port sprites below.
 --
--- **The ring is RAISED in this plate**, so this frame is the top of the press
--- stroke and the frames fall from here. (The Drop Crusher's plate is the top of
--- its stroke too, for a different reason: its crown is the topmost thing on its
--- canvas, with two pixels of headroom, so it cannot rise at all. Its §9 assumed
--- the opposite until that was measured.)
+-- **The body is one plate, the same in all four directions; what turns is the
+-- output.** The chute and the ore falling off it are their own layers per
+-- direction, as vanilla's big mining drill draws
+-- `big-mining-drill-{N,E,S,W}-output`, so the art follows
+-- `vector_to_place_result` round when the drill is rotated. The four base and
+-- shadow sheets are the one render, kept one per direction so that every
+-- direction reads off its own meta.json entry.
 --
--- **The stroke is animated, from the same route as the Drop Crusher's** --
--- Animatorio (github.com/Onoulade/Animatorio) driven by
--- tools/build-animatorio-layers.py off graphics/entity/ballast-drill/stroke.json,
--- cut into a static housing and a 228x230 window, checked to reassemble exactly.
+-- **The chute** is a short drag chain at ground level in the bay the ore leaves
+-- by, inside the footprint with its mouth at the face edge, and drawn empty: the
+-- template's convention 1, draw the chute and never what comes out of it. The
+-- plate closes every bay with a flush bolted hatch, and the chute covers the
+-- hatch of the face it uses. It is an always-drawn working visualisation, as
+-- vanilla's output is, so an idle drill still has its chute; its 5-frame loop
+-- runs at vanilla's output speed, 0.5.
 --
--- **What moves is the ring and only the ring.** `concept/ballast-drill/options/B-ring-press.md`
--- is explicit -- "a fixed central column ... around it rides a heavy cast ballast
--- ring" -- so the column has to stay put while the mass drops around it. That is
--- two Animatorio layers, not one: a `piston` carrying the whole disc down, then a
--- `source_occluder` that paints the column back over it from the plate. The
--- column standing still while the ring falls past it is the entire read.
+-- **The stroke is the animation, and the plate does not contain it.** The ring
+-- with its hub, spokes, guide shoes and ropes, the press frame and the
+-- gear-houses on it are rendered alone, 24 frames, with the surfaces under the
+-- ring (its well, step and shoulder) and the shadows they throw on the chassis
+-- and the chute; the base sheets are the machine without them. Frame 0 is the
+-- ring raised. It is winched up slowly, hangs, falls under gravity and lands
+-- dead on the shoulder with a pixel of rebound, and the frame jolts two pixels
+-- at the landing (§3.2; the motion was signed off at round 6). The packer
+-- holds the ring to the declared curve in every frame (meta.json's
+-- `stroke_path_px`).
 --
--- **65.6% of the machine's width moves**, and 30.3% of its drawn pixels change.
--- B-ring-press.md picked this design over four others precisely because it was
--- "the largest moving part of the five and the only one inside vanilla's band",
--- against 72%, 101% and 113% on assembling-machine-3, the centrifuge and the
--- electromagnetic plant. The Drop Crusher, for comparison, manages 17.7%.
+-- **The stroke draws over the chute, so it is a working visualisation and not
+-- a layer of the main animation.** The engine draws a drill's working
+-- visualisations after its `animation`, in order, and the model's layering is
+-- chute first, ring over it: the stroke was rendered with the chute as a
+-- catcher, so where the ring stands in front of the north chute, or throws its
+-- shadow on the east one, the stroke already carries it. As a main-animation
+-- layer it went under the chute, and the north chute's box was drawn across the
+-- ring's rim (seen in a client on the Core, 2026-10-10). So the stroke is an
+-- `always_draw` visualisation listed after the chute. It behaves as the main
+-- animation did, measured in the same client both ways: it draws in every
+-- state, advances 0.4 frames a tick while mining, and holds still, pixel for
+-- pixel, on a drill whose output is blocked.
 --
--- **The deck behind the ring is cloned, not invented.** The plate never drew it,
--- so the band the ring uncovers has to come from somewhere: sampling 18 px up
--- lands real riveted plate there. The alternative -- inpainting from surrounding
--- colour -- gives a grey smear, and the two were rendered side by side before
--- this was chosen.
+-- **The dust and the ore are the ore's colour, not the drill's.** Both are
+-- rendered neutral pale grey and tinted by the engine (`apply_tint =
+-- "resource-color"`, as vanilla's big drill tints its output particles), so a
+-- drill throws the dust of whatever it is mining. Neither is `always_draw`, so
+-- an idle drill draws neither, and `synced_fadeout` fades them with the drill,
+-- as vanilla's. The dust is a low ring breaking out from under the ring at the
+-- landing and settling before the next lift: 24 frames at the stroke's speed,
+-- empty between landings, so it lands with the ring. The ore falls off the
+-- chute's mouth.
+--
+-- **The status lamp is cut white and tinted by the engine**, as the Drop
+-- Crusher's is: `apply_tint = "status"` hands the colour to the engine,
+-- `always_draw` lets an idle drill say so, and it is the one thing on the
+-- machine drawn as glow (§3.3: nothing here is hot).
 --
 -- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
 -- ticks is the "slow, heavy, one-second stroke" §3.2 asks for, at
@@ -409,84 +420,181 @@ drill.surface_conditions = HIGH_G
 -- not multiplied by `mining_speed`. Measured in a client on the Core,
 -- 2026-10-10, 720 ticks mining kamacite, one screenshot of the stroke a tick:
 -- 288 frame changes, 0.400 frames a tick, a 60-tick loop.
---
--- **One plate for all four directions, and that is a known gap.** A mining drill
--- rotates, and `vector_to_place_result` rotates with it -- so a player who turns
--- this drill east gets ore out of its east face while the art still shows the
--- chute at the back. `graphics_set.animation` takes an Animation4Way, so the fix
--- is four plates and no prototype change; it wants the Vent Pump's route, one
--- rotation strip cut by tools/cut-rotation-strip.py. Until then the drill is
--- honest in its default orientation and wrong in the other three, which is
--- better than wearing big-mining-drill's sprites but is not finished.
 local BD = "__space-age-extended__/graphics/entity/ballast-drill/"
 local BD_FRAMES = 24
+local BD_SPEED = 0.4             -- 0.4 in game: a drill's progress is 1
+local BD_CHUTE_SPEED = 0.5       -- vanilla's: big-mining-drill's output chain
+local BD_DIRECTIONS = { "north", "east", "south", "west" }
+
+-- From sheets/meta.json, per direction: width, height, shift, and for an
+-- animation its frame count and line length.
+local BD_SHEETS =
+{
+  north =
+  {
+    base = { 326, 358, { 0, -0.25 } },
+    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
+    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
+    chute = { 56, 37, { 0, -2.32031 }, 5, 5 },
+    ore = { 41, 32, { 0.00781, -2.8125 }, 24, 24 },
+    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+  },
+  east =
+  {
+    base = { 326, 358, { 0, -0.25 } },
+    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
+    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
+    chute = { 58, 58, { 2.0625, -0.09375 }, 5, 5 },
+    ore = { 35, 44, { 2.74219, -0.0625 }, 24, 24 },
+    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+  },
+  south =
+  {
+    base = { 326, 358, { 0, -0.25 } },
+    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
+    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
+    chute = { 56, 63, { 0.01562, 2.00781 }, 5, 5 },
+    ore = { 41, 39, { 0.00781, 2.69531 }, 24, 24 },
+    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+  },
+  west =
+  {
+    base = { 326, 358, { 0, -0.25 } },
+    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
+    stroke = { 313, 317, { 0.07031, -0.55469 }, 24, 24 },
+    chute = { 58, 58, { -2.0625, -0.09375 }, 5, 5 },
+    ore = { 35, 42, { -2.74219, -0.07812 }, 24, 24 },
+    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+  }
+}
+
+--- One direction's sheet, <name>-<direction>.png, from BD_SHEETS.
+local function bd_sheet(name, direction, extra)
+  local m = BD_SHEETS[direction][name]
+  local sheet =
+  {
+    filename = BD .. name .. "-" .. direction .. ".png",
+    priority = "high",
+    width = m[1], height = m[2],
+    frame_count = m[4] or 1,
+    line_length = m[5],
+    shift = { m[3][1], m[3][2] },
+    scale = 0.5
+  }
+  for k, v in pairs(extra or {}) do sheet[k] = v end
+  return sheet
+end
+
+--- A working visualisation drawing <name> per direction.
+local function bd_visualisation(name, extra, visualisation)
+  for _, d in ipairs(BD_DIRECTIONS) do
+    visualisation[d .. "_animation"] = bd_sheet(name, d, extra)
+  end
+  return visualisation
+end
+
+-- The main animation per direction: the plate and its shadow, one frame each
+-- repeated to the stroke's count, so the drill's own clock runs the stroke's
+-- 24 frames at the stroke's rate. The stroke itself is a working
+-- visualisation, below, because it has to draw over the chute.
+local bd_animation = {}
+for _, d in ipairs(BD_DIRECTIONS) do
+  bd_animation[d] =
+  {
+    layers =
+    {
+      bd_sheet("base", d, { repeat_count = BD_FRAMES, animation_speed = BD_SPEED }),
+      -- Still one frame. The ring moves 12 px within a shadow plate 370 wide,
+      -- and its shadow on the chassis is in the stroke layer and travels with
+      -- it; its ground shadow does not. A choice, not an oversight.
+      bd_sheet("base-shadow", d,
+        { draw_as_shadow = true, repeat_count = BD_FRAMES, animation_speed = BD_SPEED })
+    }
+  }
+end
+
+local function bd_port(file, width, height, shift)
+  return
+  {
+    filename = BD .. file .. ".png",
+    priority = "extra-high",
+    width = width, height = height,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The fluid fittings, from sheets/ports/meta.json: rendered from the model in
+-- its own cast iron to assembler 3's outline, one stub per face on the face's
+-- middle tile, each shifted from the tile outside its port -- the one a pipe
+-- picture is drawn relative to -- so the same sheet sits right at either port
+-- on a face. The covers are the model's blind caps, drawn only while nothing
+-- is plumbed to a port; `secondary_draw_orders` puts a north stub behind the
+-- building, as assembler 3's does.
+drill.input_fluid_box.pipe_picture =
+{
+  north = bd_port("port-N", 53, 22, { 0.00781, 0.34375 }),
+  east = bd_port("port-E", 31, 71, { -0.72656, 0.05469 }),
+  south = bd_port("port-S", 63, 69, { -0.00781, -0.77344 }),
+  west = bd_port("port-W", 31, 72, { 0.72656, 0.01562 })
+}
+drill.input_fluid_box.pipe_covers =
+{
+  north = bd_port("cover-N", 53, 22, { 0.00781, 0.34375 }),
+  east = bd_port("cover-E", 31, 71, { -0.72656, 0.05469 }),
+  south = bd_port("cover-S", 63, 69, { -0.00781, -0.77344 }),
+  west = bd_port("cover-W", 31, 72, { 0.72656, 0.01562 })
+}
+drill.input_fluid_box.always_draw_covers = false
+drill.input_fluid_box.secondary_draw_orders = { north = -1 }
+-- The big mining drill draws a second, plumbed copy of itself while it mines
+-- with a fluid, and the copy came across with the deepcopy: on an ore that asks
+-- for one, this drill wore vanilla's whole sprite set (seen in a client,
+-- 2026-10-10, with a probe making kamacite ask for water). Without it the
+-- engine draws `graphics_set` wet or dry, and the fittings above are the
+-- plumbing.
+drill.wet_mining_graphics_set = nil
+
+-- The status lamp's colours: vanilla's electric mining drill's
+-- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
+-- as the Drop Crusher's lamp has them, and with `no_minable_resources`, the
+-- state a drill has and a crafter does not. Red is idle or out of ore, yellow
+-- is blocked, disabled or browned out, green is working.
+local function bd_status_colors()
+  return
+  {
+    no_power = { 0, 0, 0, 0 },          -- dark: nothing to report with
+    idle = { 1, 0, 0, 1 },
+    no_minable_resources = { 1, 0, 0, 1 },
+    insufficient_input = { 1, 0, 0, 1 },
+    full_output = { 1, 1, 0, 1 },
+    disabled = { 1, 1, 0, 1 },
+    working = { 0, 1, 0, 1 },
+    low_power = { 1, 1, 0, 1 }
+  }
+end
+
 drill.icon = "__space-age-extended__/graphics/icons/ballast-drill.png"
 drill.icons = nil
 derive.own_graphics(drill,
 {
-  animation =
-  {
-    layers =
-    {
-      -- The plate, less the window the ring moves in. One frame, repeated to meet
-      -- the animated layer's count -- vanilla's biochamber arrangement.
-      {
-        filename = BD .. "stroke-housing.png",
-        priority = "high",
-        width = 328, height = 313,
-        frame_count = 1,
-        repeat_count = BD_FRAMES,
-        animation_speed = 0.4,
-        shift = { 0, 0.13281 },
-        scale = 0.5
-      },
-      -- The window's contents. Window is 50..278 x 16..246, so its centre sits
-      -- 25.5 source px above the canvas centre -- the half comes from the canvas
-      -- being an odd 313 tall. 64 source px to the tile at scale 0.5, and the
-      -- plate's own 0.13281 is a rounded 8.5/64, so the sum is exactly
-      -- (8.5 - 25.5)/64 = -17/64.
-      {
-        filename = BD .. "stroke.png",
-        priority = "high",
-        width = 228, height = 230,
-        frame_count = BD_FRAMES,
-        line_length = 6,
-        animation_speed = 0.4,           -- 0.4 in game: drill progress is 1
-        shift = { 0, -0.265625 },
-        scale = 0.5
-      },
-      {
-        filename = BD .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        -- Still one frame. The ring moves 12 source px within a shadow plate 571
-        -- wide; splitting the shadow to follow it is a second mask for something
-        -- the camera never looks at. A choice, not an oversight.
-        width = 571, height = 324,
-        frame_count = 1,
-        repeat_count = BD_FRAMES,
-        animation_speed = 0.4,
-        shift = { 1.89844, 0.21875 },
-        scale = 0.5
-      }
-    }
-  },
+  status_colors = bd_status_colors(),
+  animation = bd_animation,
   working_visualisations =
   {
-    {
-      always_draw = true,
-      apply_tint = "status",
-      animation =
-      {
-        filename = BD .. "status-lamp.png",
-        priority = "high",
-        draw_as_glow = true,
-        width = 328, height = 313,
-        frame_count = 1,
-        shift = { 0, 0.13281 },
-        scale = 0.5
-      }
-    }
+    bd_visualisation("chute", { animation_speed = BD_CHUTE_SPEED }, { always_draw = true }),
+    -- After the chute: see "The stroke draws over the chute" above.
+    bd_visualisation("stroke", { animation_speed = BD_SPEED }, { always_draw = true }),
+    bd_visualisation("ore", { animation_speed = BD_SPEED },
+      { apply_tint = "resource-color", synced_fadeout = true }),
+    bd_visualisation("dust", { animation_speed = BD_SPEED },
+      { apply_tint = "resource-color", synced_fadeout = true }),
+    bd_visualisation("status-lamp", { draw_as_glow = true },
+      { always_draw = true, apply_tint = "status" })
   }
 })
 data:extend({ drill })
