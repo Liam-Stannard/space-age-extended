@@ -46,6 +46,18 @@ The artist takes it from there.
   written, say so in your report rather than quietly changing it.
 - Before you finish, run `tools/check-data-stage.sh`. If it fails, fix the
   cause or report exactly what failed.
+- **Long jobs and waiting.** Start the job itself (a render, a game client
+  or server) with the Bash tool's `run_in_background`; the harness tells
+  you when it exits. Never write a separate polling loop for a job you
+  started. If a wait is unavoidable: one at a time, wrapped in
+  `timeout <seconds>` (at most 3600), watching the job's PID rather than a
+  log. `tools/blender/render.sh` writes `<out-dir>/render.done`
+  (`exit <code>`) when it ends. A project hook
+  (`.claude/hooks/no-ghost-waits.py`) refuses unbounded or duplicate
+  polling loops.
+- **Clean up before you report** (Liam, 2026-10-10): stop every Xvfb,
+  Blender and Factorio process you started, and delete your superseded
+  scratch in /tmp, keeping only what your report points at.
 
 ## Report
 
