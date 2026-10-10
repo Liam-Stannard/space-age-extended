@@ -16,6 +16,10 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   and the Vent Pump exists only to trigger Radiant power while the line that
   used it is gone. Gravity settling (`design/04-the-core.md` §8) is the
   candidate on file.
+- **Fines need their advanced use.** Metal carbonyl
+  (`design/06-core-production-tree.md` T3) is the chosen later sink for
+  kamacite fines, beside fines smelting. It lands with the next tier of the
+  Core's tree.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
   nothing replaces it, so a playthrough never ends.
 - **Re-plan stages 2–4 of the radiant cycle against what exists.** They name
