@@ -35,8 +35,8 @@ The task's criteria (.claude/tasks/crust-tap-model.md, with its 2026-10-02 amend
     two ends;
  5  finish.py and tonal.py on every plate and on the adopted north plate (printed by
     render.sh; repeated here for the table);
- 6  the sight glass's light layer (the 2026-10-09 amendment): on the plate's canvas,
-    nothing outside the glass (the glass as the plate shows it, diag-glass-<d>, its edge
+ 6  the sight glass's light layer (the 2026-10-09 amendment; every frame of it since the
+    gas-pump-animation task): on the plate's canvas, nothing outside the glass (the glass as the plate shows it, diag-glass-<d>, its edge
     dilated a pixel), and neutral white (its channel means within 12).
 """
 import itertools
@@ -259,26 +259,37 @@ def criterion_4(r):
     return out
 
 
-def criterion_glass(r):
+def criterion_glass(r, frames=None):
     """The sight glass's light layer (the task's 2026-10-09 amendment): rendered on the
     plate's own canvas (so it registers by construction), nothing of it outside the glass,
     and neutral white -- the means of its channels within 12 of each other -- so the
-    engine's tint alone decides its colour."""
+    engine's tint alone decides its colour. (The gas-pump-animation task: the layer is an
+    animation now, sight-glass-NN-<d>; every frame is held to the same, and the worst frame
+    reported.)"""
+    if frames is None:
+        frames = len([f for f in os.listdir(r) if f.startswith("sight-glass-") and f.endswith("-north.png")])
     out = {}
     for d in DIRS:
-        light = load(os.path.join(r, f"light-{d}.png"))
         idle = load(os.path.join(r, f"idle-{d}.png"))
         glass = load(os.path.join(r, f"diag-glass-{d}.png")).getchannel("A").point(lambda v: 255 if v > 8 else 0)
         glass = glass.filter(ImageFilter.MaxFilter(3))          # its anti-aliased edge
-        lit = light.getchannel("A").point(lambda v: 255 if v > 8 else 0)
-        px = [p for p, a in zip(light.get_flattened_data(), lit.get_flattened_data()) if a]
-        outside = sum(1 for a, g in zip(lit.get_flattened_data(), glass.get_flattened_data()) if a and not g)
-        w = sum(p[3] for p in px) or 1
-        mean = [round(sum(p[c] * p[3] for p in px) / w, 1) for c in range(3)]
-        out[d] = dict(same_canvas=light.size == idle.size, px=len(px), outside_glass_px=outside,
-                      mean_rgb=mean, channel_spread=round(max(mean) - min(mean), 1),
-                      luminance_range=[min(round(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) for p in px),
-                                       max(round(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) for p in px)])
+        rows = []
+        for f in range(frames):
+            light = load(os.path.join(r, f"sight-glass-{f:02d}-{d}.png"))
+            lit = light.getchannel("A").point(lambda v: 255 if v > 8 else 0)
+            px = [p for p, a in zip(light.get_flattened_data(), lit.get_flattened_data()) if a]
+            outside = sum(1 for a, g in zip(lit.get_flattened_data(), glass.get_flattened_data()) if a and not g)
+            w = sum(p[3] for p in px) or 1
+            mean = [round(sum(p[c] * p[3] for p in px) / w, 1) for c in range(3)]
+            rows.append(dict(same_canvas=light.size == idle.size, px=len(px), outside_glass_px=outside,
+                             mean_rgb=mean, channel_spread=round(max(mean) - min(mean), 1),
+                             luminance_range=[min(round(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) for p in px),
+                                              max(round(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) for p in px)]))
+        out[d] = dict(frames=frames, all_same_canvas=all(x["same_canvas"] for x in rows),
+                      outside_glass_px_max=max(x["outside_glass_px"] for x in rows),
+                      channel_spread_max=max(x["channel_spread"] for x in rows),
+                      px_range=[min(x["px"] for x in rows), max(x["px"] for x in rows)],
+                      frame0=rows[0])
     return out
 
 

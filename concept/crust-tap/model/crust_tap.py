@@ -1,15 +1,27 @@
 """Crust tap (sae-crust-tap), built from its spec, rendered in every pass and direction.
 
-  blender -b --python crust_tap.py -- <out-dir> [--idle | --icon | --check]
+  blender -b --python crust_tap.py -- <out-dir> [--idle | --icon | --check | --collide]
   tools/blender/render.sh concept/crust-tap/model/crust_tap.py <out-dir> --icon
 
-  --idle   idle-<direction>.png only, all four: the quick loop (SAMPLES=<n> in the
-           environment renders at fewer samples while iterating; the full run keeps the rig's)
-  passes: idle (the plate), shadow, light (the sight glass's contents, white); not packed:
-          diag-mouth-, diag-riser-, diag-glass-<direction> and diag-bare, for measure.py
+  --idle   idle- and still-<direction>.png only, all four: the quick loop (SAMPLES=<n> in the
+           environment renders at fewer samples while iterating; the full run keeps the rig's;
+           POSES=6,12 renders those frames of the stroke as pose-NN-north.png, north only)
+  passes: idle (the plate), still (the plate with every moving part at frame 0), shadow;
+          animations (10.): pump (the flywheel, rod, piston and gauge needle, FRAMES frames, a
+          slide held to the piston's curve, the piston alone rendered as pump-piston-NN) and
+          sight-glass (the glass's contents, white, the engine tints them: a light layer,
+          moving in place); not packed: diag-mouth-, diag-riser-, diag-glass-<direction> and
+          diag-bare, for measure.py; pump.json, for measure_animation.py
   --icon   icon.png: the tap turned three-quarter, its south riser and mouth toward the viewer
   --check  no render: every direction's riser tested against everything fixed for
            intersections (evaluated meshes, world space); prints "CHECK ..." and each clash
+  --collide no render: every moving part in every frame against everything fixed; prints
+           "COLLIDE ..." and each clash (the hub on its shaft is meant)
+
+The pumping animation (the gas-pump-animation task, Liam 2026-10-10: a crank and flywheel on
+the compressor housing's roof driving a connecting rod, the gauge's needle kicking on each
+stroke, the gas moving in the sight glass): section 10. Round 13 is otherwise unchanged; its
+gauge needle now stands on a pivot so it can kick, at rest where round 13 drew it.
 
 The design began as the adopted Bolted Collar (concept/crust-tap/adopted/A-sheet.png,
 graphics/entity/crust-tap/base-{north,east,south,west}.png); spec 3.2 the parts,
@@ -202,13 +214,14 @@ the drum, the anchors and the straps leave room.
 Units are tiles; north is +Y. A model point (x, y, z) lands on screen at
 (x, y + z/2) tiles from the origin.
 """
+import json
 import math
 import os
 import sys
 
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
@@ -1916,10 +1929,20 @@ place(gb_, gb_ + Vector((0, 0, 0.03)), 0.014, 0.014, "brass_g", "static", verts=
 torus(tuple(gb_ + Vector((0, 0, 0.045))), 0.02, 0.007, "brass_g", rot=(math.pi / 2, 0, 0), seg=16)
 gc = gb_ + Vector((0, 0, 0.09))
 place(gb_ + Vector((0, 0, 0.06)), gc - Vector((0, 0, 0.014)), 0.012, 0.012, "brass_g", "static", verts=12, bevel=0.0)
-cyl(tuple(gc), 0.075, 0.032, "brass_g", verts=40, bevel=0.007)                                           # case
-ring(tuple(gc + Vector((0, 0, 0.019))), 0.076, 0.06, 0.012, "brass_g", verts=40, bevel=0.002)         # bezel
-cyl(tuple(gc + Vector((0, 0, 0.0165))), 0.061, 0.002, "dial", verts=40, bevel=0.0)                     # dial
-box(tuple(gc + Vector((0.014, 0.01, 0.019))), (0.044, 0.008, 0.002), "bore", rot=(0, 0, 0.7), bevel=0.0)  # needle
+# (the gas-pump-animation task, a2: Liam, "the gauge face may grow a little") the case 0.075 -> 0.09,
+# the dial 0.061 -> 0.075, so the needle's kick reads at 1x
+G_R = 0.09
+cyl(tuple(gc), G_R, 0.032, "brass_g", verts=40, bevel=0.007)                                           # case
+ring(tuple(gc + Vector((0, 0, 0.019))), G_R + 0.001, G_R - 0.015, 0.012, "brass_g", verts=40, bevel=0.002)   # bezel
+cyl(tuple(gc + Vector((0, 0, 0.0165))), G_R - 0.014, 0.002, "dial", verts=40, bevel=0.0)                 # dial
+# the needle (the gas-pump-animation task): on a pivot at the dial's centre, so it kicks on each
+# stroke (10.); at rest exactly where round 13 drew it, 0.7 rad, its middle 0.014 east and 0.01
+# north of the centre
+NEEDLE_REST = 0.7
+NEEDLE = empty("needle-pivot", loc=tuple(gc + Vector((0, 0, 0.019))), rot=(0, 0, NEEDLE_REST))
+# (a2) longer and bolder on the grown dial: 0.062 long, its tip 0.053 out, 0.011 wide; a dark hub
+box((0.022, 0, 0), (0.062, 0.011, 0.002), "bore", group="needle", bevel=0.0, parent=NEEDLE)  # needle
+cyl((0, 0, 0.001), 0.009, 0.003, "bore", group="needle", verts=12, bevel=0.0, parent=NEEDLE)  # its hub
 
 # -- the header, west from D1's elbow along the lid's north half: the sight glass inline, then
 #    up at its west end into the vent stack
@@ -1976,9 +1999,9 @@ FILL_R, FILL_H = SG_R - 0.01, -0.6
 assert abs(FILL_R - FILL_R_) < 1e-9 and H_Y == H_Y_FILL and HZ == HZ_FILL, "the fill material's constants are stale"
 
 
-def _fill_mesh(bm):
+def _fill_mesh(bm, level=FILL_H):
     n = 48
-    a0 = math.asin(FILL_H)                                     # where the level meets the wall
+    a0 = math.asin(level)                                      # where the level meets the wall
     angs = [a0 - (math.pi + 2 * a0) * k / n for k in range(n + 1)]   # round under, from front to back
     sec = [(FILL_R * math.cos(a), FILL_R * math.sin(a)) for a in angs]
     rows = [[bm.verts.new((x, H_Y - c, HZ + z)) for c, z in sec] for x in (SG_X0 + 0.008, SG_X1 - 0.008)]
@@ -1990,6 +2013,55 @@ def _fill_mesh(bm):
 
 
 fill = mesh_object("fill", _fill_mesh, "fill", "glass-fill", bevel=0.0)
+
+# (the gas-pump-animation task) the gas moves: the glass layer is FRAMES frames on the crank's
+# loop (10.). Its level lifts with each discharge -- FILL_LIFT of the radius at the needle's
+# peak, back to round 13's level by the loop's end -- and bubbles drift west along its surface
+# (the only face of the contents this camera sees: the body's near side faces away from it),
+# BUB_REPEAT copies of one set along the glass, each moving one copy's length a loop, so the
+# loop closes on itself; each bubble shrinks to nothing within BUB_FADE of the glass's ends,
+# so none pops in or out, and none reaches the flanges. Neutral white, as the contents are.
+FILL_LIFT = 0.16
+FILL_X0, FILL_X1 = SG_X0 + 0.008, SG_X1 - 0.008
+BUB_REPEAT, BUB_FADE = 2, 0.035
+_rb_ = _random.Random(29)
+BUBBLES = [(_rb_.random(), _rb_.uniform(-0.07, 0.07), _rb_.uniform(0.009, 0.016)) for _ in range(7)]
+M["bubble"] = bpy.data.materials.new("bubble")
+M["bubble"].use_nodes = True
+_bb = M["bubble"].node_tree.nodes["Principled BSDF"]
+_bb.inputs["Base Color"].default_value = (0, 0, 0, 1)
+_bb.inputs["Emission Color"].default_value = (1, 1, 1, 1)
+_bb.inputs["Emission Strength"].default_value = float(os.environ.get("BUBBLE_K", "0.95"))
+BUB_OBJS = []
+for _ in range(BUB_REPEAT * len(BUBBLES)):
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=1.0, segments=12, ring_count=6)
+    BUB_OBJS.append(_finish(bpy.context.active_object, "bubble", "glass-fill", bevel=0, smooth=True))
+
+
+def fill_level(f):
+    return FILL_H + FILL_LIFT * kick(f)
+
+
+def pose_glass(f):
+    """The contents in frame f: the level, and every bubble on the surface."""
+    lv = fill_level(f)
+    bm = bmesh.new()
+    _fill_mesh(bm, lv)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(fill.data)
+    bm.free()
+    zs = HZ + lv * FILL_R
+    span = (FILL_X1 - FILL_X0) / BUB_REPEAT
+    half = FILL_R * math.sqrt(1 - lv * lv) - 0.02            # stay on the surface, off the wall
+    for k, o in enumerate(BUB_OBJS):
+        u, dy, r = BUBBLES[k % len(BUBBLES)]
+        x = FILL_X1 - (k // len(BUBBLES) + (u + f / FRAMES) % 1.0) * span
+        edge = min(x - FILL_X0, FILL_X1 - x) / BUB_FADE
+        r *= max(0.0, min(1.0, edge)) ** 0.5 if edge > 0 else 0.0
+        r = r if r >= 0.002 else 0.0                       # gone, not a speck (setup() owns hide_render)
+        o.location = (x, H_Y + max(-half, min(half, dy)), zs)
+        o.scale = (r, r, r * 0.55)
+    bpy.context.view_layer.update()
 
 # -- E1: the east crossing, up the east face from its valve pad, west over the lid's edge into
 #    the compressor housing's east face (round 10)
@@ -2361,11 +2433,214 @@ box(tuple(_on_south(0.47, 0.94, 0.002)), (0.23, 0.004, 0.18), "rail", rot=(lean,
 MP2 = empty("motor-plate", loc=tuple(_on_south(0.36, 0.95, 0.004)), rot=(math.pi / 2 + lean, 0, 0))
 box((0, 0, 0), (0.05, 0.04, 0.006), "brass", bevel=0.002, parent=MP2)
 # its roof: a breather stub with a rain cap, and a lifting eye
-place(Vector((0.54, -0.31, CH_TOP + 0.02)), Vector((0.54, -0.31, CH_TOP + 0.1)), 0.02, 0.02, "line", "static")
-cone((0.54, -0.31, CH_TOP + 0.115), 0.045, 0.01, 0.03, "rail", verts=20)                # (round 12: moved for hose 1)
+# (the gas-pump-animation task, a2: Liam, option 2) the breather moved from the roof's south-east
+# (0.54, -0.31), under the flywheel, to its north-west corner, clear of hose 1's cuff
+BREATHER = (0.40, 0.0)
+place(Vector((*BREATHER, CH_TOP + 0.02)), Vector((*BREATHER, CH_TOP + 0.1)), 0.02, 0.02, "line", "static")
+cone((*BREATHER, CH_TOP + 0.115), 0.045, 0.01, 0.03, "rail", verts=20)
 box((0.40, -0.2, CH_TOP + 0.035), (0.05, 0.03, 0.02), "steel", bevel=0.004)
 torus((0.40, -0.2, CH_TOP + 0.062), 0.02, 0.008, "polish", rot=(math.pi / 2, 0, 0), seg=20)
 tag("housing", n0)
+
+# ---------------------------------------------------------------- 10. the pumping animation
+#
+# The gas-pump-animation task (Liam, 2026-10-10: ideas 1, 2 and 3; then option 2, "make the
+# crank read boldly at 1x"): the compressor is seen to run. A big flywheel (radius 0.28, 36 px
+# across at 1x) stands on the housing's roof, upright and facing the camera (a wheel across the
+# view reads as a full-width ellipse; one along it would be seen edge on), overhung on its shaft
+# from a pedestal behind it, its rim clear over D1's north run to the west and the lid's edge to
+# the east. A crank pin on its face drives a heavy connecting rod east into an open-ended trunk
+# cylinder; rod and cylinder lie in front of the wheel, on an engine bed that stands on a leg on
+# the roof's south edge and a post welded to the lid's east margin. The breather moved to the
+# roof's north-west corner to make room (above); the lifting eye and hose 1 stay (--collide checks
+# every moving part in every frame, --check every new fixed part). a1 (the first round: a 0.14
+# wheel between the breather and hose 1) is crust_tap-a1.py.
+#
+# One revolution a loop, at constant speed, FRAMES frames. Frame 0 is the piston at the crank
+# end of its stroke (the pin due west), so the first half of the loop is the compression
+# stroke (the piston running east to the cylinder's head) and the second the return. The
+# gauge's needle kicks on each stroke: still for the first third of the compression, up fast
+# as the pressure peaks at the stroke's end, easing back to rest by the loop's end. The sight
+# glass's gas (the glass layer) runs on the same loop: its level lifts with the discharge and
+# bubbles drift west along it.
+#
+# Moving parts: the flywheel and its pin ("crank"), the rod ("rod"), the piston ("piston":
+# inside the cylinder, seen only through its open mouth, and rendered alone for the slide
+# check, contract `track`) and the needle ("needle"). Everything else here is fixed, in the
+# plate.
+FRAMES = int(os.environ.get("FRAMES", "24"))
+LOOP_S = 1.0                                     # seconds a stroke (the task: about 1 s)
+CK = Vector((0.415, -0.30, 1.41))                 # the crankshaft's centre: its axis along y
+WR, WT = 0.28, 0.03                              # the flywheel's radius and thickness
+THROW, ROD_L = 0.09, 0.40                        # the crank's throw, the rod's length (centres)
+ROD_Y, ROD_Z = 0.03, 0.04                        # the rod's section: about 3 px on the screen
+LY = -0.405                                      # the rod's, the piston's and the cylinder's line (y)
+CYL_X0, CYL_X1, CYL_R, BORE_R = 0.675, 0.955, 0.07, 0.058   # the cylinder: its open mouth, its head end, radii
+ROOF_Z = LZ0 + 0.302                             # the housing's roof plate's top
+NEEDLE_KICK = 2.0                                # rad, clockwise from above: the needle's kick (a1: 1.1)
+
+
+def crank_angle(f):
+    """The pin's angle from due east, about -y (east -> up): due west in frame 0."""
+    return math.pi + 2 * math.pi * (f % FRAMES) / FRAMES
+
+
+def pin_at(f):
+    a = crank_angle(f)
+    return Vector((CK.x + THROW * math.cos(a), LY, CK.z + THROW * math.sin(a)))
+
+
+def piston_x(f):
+    """The wrist pin's x: the slider-crank, exactly."""
+    a = crank_angle(f)
+    return CK.x + THROW * math.cos(a) + math.sqrt(ROD_L ** 2 - (THROW * math.sin(a)) ** 2)
+
+
+def kick(f):
+    """The needle's lift, 0 at rest to 1 at the peak: still for the first third of the
+    compression stroke, up as t^2 to the stroke's end, back by a half cosine to rest at the
+    loop's end, so the loop closes with no step."""
+    t = (f % FRAMES) / FRAMES
+    if t < 1 / 6:
+        return 0.0
+    if t <= 0.5:
+        return ((t - 1 / 6) / (1 / 3)) ** 2
+    return 0.5 * (1 + math.cos(math.pi * (t - 0.5) / 0.5))
+
+
+# the slide's declared curve (contract): the piston's offset from frame 0, x only
+PATH = [[round(piston_x(f) - piston_x(0), 6), 0.0, 0.0] for f in range(FRAMES)]
+
+n0 = len(PARTS["static"])
+# -- the fixed parts: the pedestal behind the wheel and the shaft out of it
+PED_Y0, PED_Y1 = -0.272, -0.236                  # the pedestal's faces: between the wheel and the lifting eye
+box((CK.x, (PED_Y0 + PED_Y1) / 2, (ROOF_Z + CK.z) / 2), (0.056, PED_Y1 - PED_Y0, CK.z - ROOF_Z), "rail", bevel=0.004)
+box((CK.x, (PED_Y0 + PED_Y1) / 2, ROOF_Z + 0.004), (0.064, 0.05, 0.008), "rail", bevel=0.002)    # its foot,
+for sy in (PED_Y0 - 0.004, PED_Y1 + 0.004):                                     # inside the roof's edge bolts
+    for sx in (-1, 1):
+        bolt((CK.x + sx * 0.02, sy, ROOF_Z + 0.011), 0.006, 0.005, "head")
+place(Vector((CK.x, PED_Y0 - 0.004, CK.z)), Vector((CK.x, PED_Y1 + 0.004, CK.z)), 0.045, 0.045, "steel", "static",
+      verts=24, bevel=0.003)                                                    # its bearing housing
+place(Vector((CK.x, PED_Y1, CK.z)), Vector((CK.x, -0.285 + 0.002, CK.z)), 0.022, 0.022, "polish", "static",
+      verts=16, bevel=0.0)                                                      # the shaft, to the wheel's hub
+# -- the cylinder: a barrel with cooling ribs, a bolted head at its east end, open at its west (a
+#    trunk piston: the rod works straight into it)
+CYL_A, CYL_B = Vector((CYL_X0, LY, CK.z)), Vector((CYL_X1, LY, CK.z))
+ring(tuple((CYL_A + CYL_B) / 2), CYL_R, BORE_R + 0.0012, CYL_X1 - CYL_X0, "line_green", rot=(0, math.pi / 2, 0),
+     verts=40, bevel=0.003)                                                     # the barrel
+ring(tuple((CYL_A + CYL_B) / 2), BORE_R + 0.0011, BORE_R, CYL_X1 - CYL_X0 - 0.002, "bore", rot=(0, math.pi / 2, 0),
+     verts=40, bevel=0.0)                                                       # its bore, dark, seen at the mouth
+for k in range(4):                                                              # cooling ribs
+    x_ = CYL_X0 + 0.09 + 0.045 * k
+    ring((x_, LY, CK.z), CYL_R + 0.012, CYL_R - 0.002, 0.012, "rail", rot=(0, math.pi / 2, 0), verts=40, bevel=0.002)
+ring(tuple(CYL_A + EAST * 0.008), CYL_R + 0.012, BORE_R + 0.001, 0.016, "worn", rot=(0, math.pi / 2, 0), verts=40,
+     bevel=0.003)                                                               # the mouth's lip, worn bright
+place(Vector((CYL_X1 - 0.002, LY, CK.z)), Vector((CYL_X1 + 0.022, LY, CK.z)), CYL_R + 0.018, CYL_R + 0.018, "steel",
+      "static", verts=40, bevel=0.005)                                          # the head
+bolt_ring(Vector((CYL_X1 + 0.022, LY, CK.z)), EAST, CYL_R + 0.008, 8, 0.007, "static", mat="head", h=0.006)
+cyl((CYL_X1 + 0.006, LY, CK.z + CYL_R + 0.03), 0.011, 0.04, "brass_g", verts=12, bevel=0.0)   # a cock on the head
+# -- the engine bed: a channel under the rod and the cylinder, out of the rod's sweep (its west end
+#    clear of the big end), on a leg standing on the roof's south edge and a post welded to the
+#    lid's east margin; two saddles and straps carry the cylinder on it
+BED_X0, BED_X1, BED_Z = 0.515, CYL_X1 - 0.02, 1.29                            # its ends, its top
+BED_Y0, BED_Y1 = LY - 0.045, -0.322
+box(((BED_X0 + BED_X1) / 2, (BED_Y0 + BED_Y1) / 2, BED_Z - 0.01), (BED_X1 - BED_X0, BED_Y1 - BED_Y0, 0.02), "rail",
+    bevel=0.003)
+LEG_X = 0.535
+box((LEG_X, -0.335, (ROOF_Z + BED_Z - 0.02) / 2), (0.04, 0.026, BED_Z - 0.02 - ROOF_Z), "rail", bevel=0.003)
+POST_X = 0.625                                    # between the housing's foot bolts and the lid's edge bolts
+box((POST_X, -0.335, (LZ0 + BED_Z - 0.02) / 2), (0.02, 0.03, BED_Z - 0.02 - LZ0), "rail", bevel=0.003)
+box((POST_X, -0.335, LZ0 + 0.003), (0.022, 0.032, 0.006), "seam", bevel=0.002)          # its weld
+for x_ in (CYL_X0 + 0.06, CYL_X1 - 0.05):                                       # saddles and straps
+    box((x_, LY, (BED_Z + CK.z - CYL_R) / 2 + 0.002), (0.03, 0.07, CK.z - CYL_R - BED_Z + 0.004), "rail",
+        bevel=0.002)
+    ring((x_ + 0.022, LY, CK.z), CYL_R + 0.007, CYL_R - 0.001, 0.014, "steel", rot=(0, math.pi / 2, 0), verts=40,
+         bevel=0.002)
+g0, g1 = Vector((POST_X + 0.01, -0.335, BED_Z - 0.17)), Vector((BED_X1 - 0.03, -0.335, BED_Z - 0.022))
+v_ = g1 - g0
+box(tuple((g0 + g1) / 2), (0.016, 0.01, v_.length), "rail", rot=facing(v_), bevel=0.001)       # the gusset
+tag("crank-fixed", n0)
+
+# -- the moving parts
+CRANK = empty("crank", loc=tuple(CK))                                           # turns about y
+WY_L = -0.30 - CK.y                                                             # the wheel's mid-plane, local
+ring((0, WY_L, 0), WR, WR - 0.045, WT, "steel", group="crank", parent=CRANK, rot=(math.pi / 2, 0, 0), verts=96,
+     bevel=0.005)                                                               # the rim
+ring((0, WY_L - WT / 2 - 0.001, 0), WR - 0.003, WR - 0.02, 0.004, "wheel", group="crank", parent=CRANK,
+     rot=(math.pi / 2, 0, 0), verts=96, bevel=0.0)                              # its front edge, worn bright
+cyl((0, WY_L, 0), 0.05, WT + 0.016, "steel", group="crank", parent=CRANK, rot=(math.pi / 2, 0, 0), verts=32)  # the hub
+for k in range(5):                                                              # five spokes: a frame's step
+    a = 2 * math.pi * (k + 0.5) / 5                                             # (15 degrees) never matches theirs
+    rr = (0.05 + WR - 0.04) / 2
+    box((rr * math.cos(a), WY_L, rr * math.sin(a)), (WR - 0.09, 0.016, 0.026), "rail", group="crank", parent=CRANK,
+        rot=(0, -a, 0), bevel=0.003)
+# the counterweight, opposite the pin: a heavy segment in ochre paint, as moving machinery is
+# painted, so the turn reads at 1x as a light mass and a bright pin swapping round the dark wheel
+M["cweight"] = layered("cweight", "#CCA845", metal="#C4BEB2", paint_metal=0.05, paint_rough=0.6, wear=0.45,
+                       rust=0.25, rust_tint=WET_RUST, dust=0.15, grime=0.35, jitter=0.08)
+CW_A, CW_R0, CW_R1 = 0.85, 0.06, WR - 0.045          # its half-angle, its inner and outer radii
+
+
+def _cweight(bm):
+    n = 24
+    angs = [math.pi - CW_A + 2 * CW_A * i / n for i in range(n + 1)]
+    rows = []
+    for y_ in (WY_L - WT / 2 + 0.001, WY_L + WT / 2 - 0.003):
+        rows.append([bm.verts.new((r * math.cos(t), y_, r * math.sin(t))) for t in angs for r in (CW_R0, CW_R1)])
+    for i in range(n):
+        q = [2 * i, 2 * i + 1, 2 * i + 3, 2 * i + 2]                          # the segment's faces, front and back
+        bm.faces.new([rows[0][k] for k in q])
+        bm.faces.new([rows[1][k] for k in reversed(q)])
+        for k0, k1 in ((2 * i, 2 * i + 2), (2 * i + 1, 2 * i + 3)):           # its inner and outer edges
+            bm.faces.new((rows[0][k0], rows[0][k1], rows[1][k1], rows[1][k0]))
+    for k0, k1 in ((0, 1), (2 * n, 2 * n + 1)):                                # its ends
+        bm.faces.new((rows[0][k0], rows[0][k1], rows[1][k1], rows[1][k0]))
+
+
+mesh_object("counterweight", _cweight, "cweight", "crank", bevel=0.005, parent=CRANK)
+# the crank pin on the wheel's front face, at the throw (local east: the crank turns it), on a boss
+place(Vector((THROW, WY_L - WT / 2 + 0.002, 0)), Vector((THROW, WY_L - WT / 2 - 0.012, 0)), 0.04, 0.04, "steel",
+      "crank", verts=24, bevel=0.003)
+PARTS["crank"][-1].parent = CRANK
+place(Vector((THROW, WY_L - WT / 2 - 0.01, 0)), Vector((THROW, LY - CK.y - ROD_Y / 2 - 0.012, 0)), 0.018, 0.018,
+      "polish", "crank", verts=16, bevel=0.002)
+PARTS["crank"][-1].parent = CRANK
+# the connecting rod: built along local +x, its big end at the origin (on the pin), its small
+# end ROD_L east; turned about y each frame. Heavy: 0.03 deep and 0.04 high, about 3 px on the
+# screen, a polished shank between a bolted big end and a small end
+ROD = empty("rod", loc=(0, 0, 0))
+box((ROD_L / 2, 0, 0), (ROD_L - 0.06, ROD_Y, ROD_Z), "polish", group="rod", parent=ROD, bevel=0.004)
+cyl((0, 0, 0), 0.042, ROD_Y + 0.008, "steel", group="rod", parent=ROD, rot=(math.pi / 2, 0, 0), verts=24,
+    bevel=0.004)                                                                # big end
+box((0.0, 0, 0), (0.1, ROD_Y + 0.004, 0.022), "steel", group="rod", parent=ROD, bevel=0.003)    # its cap
+for sx in (-1, 1):
+    bolt((sx * 0.044, -(ROD_Y + 0.008) / 2 - 0.002, 0), 0.008, 0.006, "head", group="rod", parent=ROD,
+         rot=(math.pi / 2, 0, 0))
+cyl((ROD_L, 0, 0), 0.026, ROD_Y, "steel", group="rod", parent=ROD, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.003)
+# the piston: inside the cylinder, its crown east; the tracked part
+PISTON = empty("piston", loc=(piston_x(0), LY, CK.z))
+place(Vector((-0.035, 0, 0)), Vector((0.045, 0, 0)), BORE_R - 0.002, BORE_R - 0.002, "steel", "piston", verts=32,
+      bevel=0.003)
+PARTS["piston"][-1].parent = PISTON
+for x_ in (0.025, 0.037):
+    place(Vector((x_ - 0.003, 0, 0)), Vector((x_ + 0.003, 0, 0)), BORE_R - 0.0015, BORE_R - 0.0015, "bore", "piston",
+          verts=32, bevel=0.0)
+    PARTS["piston"][-1].parent = PISTON                                         # its rings
+
+
+def pose(f):
+    """Put every moving part where frame f has it."""
+    a = crank_angle(f)
+    CRANK.rotation_euler = (0, -a, 0)                      # the pin, built due east, to angle a
+    p, w = pin_at(f), Vector((piston_x(f), LY, CK.z))
+    ROD.location = p
+    ROD.rotation_euler = (0, -math.atan2(w.z - p.z, w.x - p.x), 0)       # local +x onto the wrist pin
+    PISTON.location = w
+    NEEDLE.rotation_euler = (0, 0, NEEDLE_REST - NEEDLE_KICK * kick(f))
+    bpy.context.view_layer.update()
+
+
+MOVING = ("crank", "rod", "piston", "needle")
 
 # -- a bolted patch on the lid's north-east, older steel than the plate round it
 n0 = len(PARTS["static"])
@@ -2499,13 +2774,14 @@ if "--blend" in argv:                    # debugging: the scene as built, not re
     sys.exit(0)
 
 
-def setup(visible=(), ground=False, only=None, holdouts=()):
+def setup(visible=(), ground=False, only=None, holdouts=(), catchers=()):
     for g, objs in PARTS.items():
         if g.startswith("mouth-"):
             continue                      # a view of the riser groups' collars, not a group of its own
         for o in objs:
-            o.hide_render = g not in visible and g not in holdouts
+            o.hide_render = g not in visible and g not in holdouts and g not in catchers
             o.is_holdout = g in holdouts
+            o.is_shadow_catcher = g in catchers
             o.visible_camera = True
     if only is not None:
         for g, objs in PARTS.items():
@@ -2531,7 +2807,8 @@ if ICON:
     k = 1024 / span
     cx, cy = float(os.environ.get("ICON_CX", "0.0")), float(os.environ.get("ICON_CY", "-0.2"))
     rig.camera(1024, 1024, centre_px=(512 - k * cx, 512 + k * cy), ss=1).data.ortho_scale = span
-    setup(visible=("static", "glass", f"riser-{ICON_DIR}"))
+    pose(0)
+    setup(visible=("static", "glass", f"riser-{ICON_DIR}") + MOVING)
     # the riser's steel a step paler in the icon only, so the pipe separates from the dark
     # collar at 32 px (the sprites keep the mid-value pipe)
     pale = layered("pipe-icon", "#A49C90", metal="#D8D0C2", paint_metal=0.3, paint_rough=0.45, wear=0.45,
@@ -2542,17 +2819,124 @@ if ICON:
     rig.render(f"{OUT_DIR}/icon.png")
     sys.exit(0)
 
+# the animations (10.): the moving parts' layer, a slide held to the piston's curve (the
+# piston alone, rendered as pump-piston-NN, is what pack.py measures: the layer's own centroid
+# is the wheel's and the needle's as well); and the glass's contents, a light layer the
+# engine tints, moving in place
+DECL["passes"] = [p for p in DECL["passes"] if p["kind"] != "light"] + [dict(name="still", kind="still")]
+DECL["animations"] = [dict(name="pump", frames=FRAMES, motion="slide", path=PATH, track="piston",
+                           turns=False),             # the turntable never turns: only the riser changes
+                      dict(name="sight-glass", frames=FRAMES, motion="flow", kind="light")]
+STATIC_G = ("static", "glass")
+
+
+def pin_textures():
+    """materials.layered samples world position, so a turning wheel would slide under its own
+    rust: each moving part gets its own copy of its material, the position taken from the part's
+    own coordinates carried to where it stands in frame 0 -- the same pattern there, riding with
+    it after."""
+    for g in MOVING:
+        for o in PARTS[g]:
+            if not o.data.materials:
+                continue
+            m = o.data.materials[0].copy()
+            t = m.node_tree
+            geos = [nd for nd in t.nodes if nd.bl_idname == "ShaderNodeNewGeometry"]
+            if not geos:
+                continue
+            tc, mp = t.nodes.new("ShaderNodeTexCoord"), t.nodes.new("ShaderNodeMapping")
+            loc, rot, sca = o.matrix_world.decompose()
+            mp.inputs["Location"].default_value = loc
+            mp.inputs["Rotation"].default_value = rot.to_euler()
+            mp.inputs["Scale"].default_value = sca
+            t.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+            for nd in geos:
+                for lk in list(nd.outputs["Position"].links):
+                    t.links.new(mp.outputs["Vector"], lk.to_socket)
+            o.data.materials[0] = m
+
+
+def window(x0, x1, y0, y1):
+    """Render only a window of the canvas: screen tiles from the origin, x right, y down."""
+    cw, ch = CANVAS
+    sc.render.use_border, sc.render.use_crop_to_border = True, False
+    sc.render.border_min_x = (cw / 2 + x0 * rig.PX_PER_TILE) / cw
+    sc.render.border_max_x = (cw / 2 + x1 * rig.PX_PER_TILE) / cw
+    sc.render.border_max_y = 1 - (ch / 2 + y0 * rig.PX_PER_TILE) / ch
+    sc.render.border_min_y = 1 - (ch / 2 + y1 * rig.PX_PER_TILE) / ch
+
+
+PUMP_WIN = (-0.25, 1.2, -0.75, 0.15)      # the gauge to the wheel's shadow east; the wheel's top to the roof's foot
+GLASS_WIN = (-0.4, 0.15, -1.05, -0.5)    # the glass and its flanges
+
+pose(0)
+pose_glass(0)
+pin_textures()
+
+if "--collide" in argv:
+    # Every moving part, in every frame, against everything fixed: a real intersection test on the
+    # evaluated meshes in world space. The rod in the cylinder's bore and on the crank pin, the
+    # pin in the wheel, the hub on its shaft and the needle on its dial are meant.
+    from mathutils.bvhtree import BVHTree
+
+    def tree(objs):
+        dg = bpy.context.evaluated_depsgraph_get()
+        verts, polys, owner = [], [], []
+        for o in objs:
+            if o.type not in ("MESH", "CURVE"):
+                continue
+            ev = o.evaluated_get(dg)
+            me = ev.to_mesh()
+            mw = ev.matrix_world
+            base = len(verts)
+            verts.extend(mw @ v.co for v in me.vertices)
+            for pl in me.polygons:
+                polys.append([base + i for i in pl.vertices])
+                owner.append(o)
+            ev.to_mesh_clear()
+        return BVHTree.FromPolygons(verts, polys), owner
+    fixed, f_own = tree([o for g in ("static", "glass") for o in PARTS[g]])
+    clashes = {}
+    for f in range(FRAMES):
+        pose(f)
+        for g in MOVING:
+            mv, m_own = tree(PARTS[g])
+            for i, j in fixed.overlap(mv):
+                clashes.setdefault((g, f_own[i].get("line"), f_own[i].name), set()).add(f)
+    for (g, line, name), fs in sorted(clashes.items(), key=str):
+        print(f"COLLIDE {g} x fixed line {line} {name}: frames {sorted(fs)}")
+    print(f"COLLIDE clashes {len(clashes)}")
+    sys.exit(0)
+
 contract.declare(OUT_DIR, canvas=CANVAS, **DECL)
 rig.camera(*CANVAS)
+with open(os.path.join(OUT_DIR, "pump.json"), "w") as _f:          # for measure_animation.py
+    json.dump(dict(frames=FRAMES, loop_s=LOOP_S, kick=[kick(f) for f in range(FRAMES)],
+                   level=[fill_level(f) for f in range(FRAMES)], path=PATH, needle_kick=NEEDLE_KICK,
+                   throw=THROW, needle_len=0.053,
+                   pump_window=PUMP_WIN, glass_window=GLASS_WIN), _f, indent=1)
+PUMP, GLASSA = DECL["animations"]
 
 for d in DIRS:
     def path(stem, d=d):
         return f"{OUT_DIR}/{contract.named(stem, d)}.png"
-    setup(visible=("static", "glass", f"riser-{d}"))
+    riser = f"riser-{d}"
+    sc.render.use_border = False
+    pose(0)
+    pose_glass(0)
+    setup(visible=STATIC_G + (riser,))
     rig.render(path("idle"))
+    # the stopped machine in one render, every moving part at frame 0: the frame-0 check's reference
+    setup(visible=STATIC_G + (riser,) + MOVING)
+    rig.render(path("still"))
     if IDLE:
+        for f in [int(v) for v in os.environ.get("POSES", "").split(",") if v]:   # iterating: other frames
+            pose(f)
+            rig.render(f"{OUT_DIR}/pose-{f:02d}-{d}.png")
+        if os.environ.get("POSES"):
+            break                                  # one direction is enough to look at a pose
         continue
-    setup(visible=("static", "glass", f"riser-{d}"), ground=True)
+    setup(visible=STATIC_G + (riser,) + MOVING, ground=True)
     for o in [o for objs in PARTS.values() for o in objs]:
         o.visible_camera = False
     # Round 7: the cast shadow soft, as a sun shadow reads at this size (the rig's 5 degree
@@ -2567,18 +2951,38 @@ for d in DIRS:
     # the riser alone, for the check that the four plates agree where it does not reach
     setup(only=PARTS[f"mouth-{d}"])
     rig.render(f"{OUT_DIR}/diag-mouth-{d}.png")
-    setup(visible=(f"riser-{d}",))
+    setup(visible=(riser,))
     rig.render(f"{OUT_DIR}/diag-riser-{d}.png")
-    # the sight glass's contents alone, everything in front of them cut out (the cage's rods
-    # among it), the glass itself left out -- it is what they are seen through: the light layer
-    setup(visible=("glass-fill",), holdouts=("static", f"riser-{d}"))
-    rig.render(path("light"))
     # not packed: the glass alone as the plate shows it, for the check that the light layer
     # never leaves the glass (measure.py)
-    setup(visible=("glass",), holdouts=("static", f"riser-{d}"))
+    setup(visible=("glass",), holdouts=("static", riser))
     rig.render(f"{OUT_DIR}/diag-glass-{d}.png")
+
+    # the sight glass's contents, a frame at a time, everything in front of them cut out (the
+    # cage's rods among it), the glass itself left out -- it is what they are seen through
+    window(*GLASS_WIN)
+    for f in range(FRAMES):
+        pose_glass(f)
+        setup(visible=("glass-fill",), holdouts=("static", riser) + MOVING)
+        rig.render(path(contract.frame(GLASSA["name"], f)))
+    pose_glass(0)
+    # the moving parts, their shadows caught on the plate under them; only the window round
+    # the roof and the gauge changes, so only it is rendered
+    window(*PUMP_WIN)
+    for f in range(FRAMES):
+        pose(f)
+        setup(visible=MOVING, catchers=STATIC_G + (riser,))
+        rig.render(path(contract.frame(PUMP["name"], f)))
+    # the tracked part (contract: track): the piston alone, whole -- inside its cylinder in the
+    # layer -- measured by pack.py's slide check and never packed
+    for f in range(FRAMES):
+        pose(f)
+        setup(visible=("piston",))
+        rig.render(f"{OUT_DIR}/{contract.track_frame(PUMP['name'], PUMP['track'], f, d)}.png")
+    pose(0)
+    sc.render.use_border = False
 
 if not IDLE:
     # the collar with no riser at all: what each plate is, away from its riser
-    setup(visible=("static", "glass"))
+    setup(visible=STATIC_G)
     rig.render(f"{OUT_DIR}/diag-bare.png")

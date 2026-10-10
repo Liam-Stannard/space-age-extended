@@ -181,6 +181,17 @@ on neither the melt vent nor bare ground; and it runs with no power connected.
 "Gas vent" for helium's vent stops making sense once there are two gas vents, so
 it takes its gas's name, as the siderane vent does.
 
+## A.7 The working animation (Liam, 2026-10-10)
+
+While pumping, a flywheel and crank on the compressor housing's roof turn and
+drive a connecting rod into an open trunk cylinder on a stand beside the
+housing; the pressure gauge's needle kicks on each stroke; and gas moves in the
+sight glass, tinted by the vent. One stroke a loop, the same loop for all three.
+Idle, the crank and needle stop where they are and the glass shows empty, as
+vanilla's pumpjack stops mid-nod. The breather moves to the roof's north-west
+corner to make room for the flywheel. The model is otherwise the signed-off
+round 13.
+
 ---
 
 # 0. Generation Contract
