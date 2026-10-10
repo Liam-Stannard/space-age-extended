@@ -1,0 +1,858 @@
+{
+ "vanilla": {
+  "iron-ore": {
+   "framing": {
+    "share": 0.614,
+    "bbox_w": 64,
+    "bbox_h": 63,
+    "bbox": [
+     0,
+     1,
+     64,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 29,
+    "p50": 80,
+    "p95": 209
+   },
+   "edge_slot": {
+    "mean": 51.7,
+    "share16": 0.59
+   },
+   "edge_ground": {
+    "mean": 48.6,
+    "share16": 0.82
+   }
+  },
+  "iron-plate": {
+   "framing": {
+    "share": 0.402,
+    "bbox_w": 63,
+    "bbox_h": 50,
+    "bbox": [
+     1,
+     5,
+     64,
+     55
+    ]
+   },
+   "tonal": {
+    "p5": 36,
+    "p50": 130,
+    "p95": 216
+   },
+   "edge_slot": {
+    "mean": 70.6,
+    "share16": 0.92
+   },
+   "edge_ground": {
+    "mean": 61.1,
+    "share16": 0.88
+   }
+  },
+  "stone": {
+   "framing": {
+    "share": 0.58,
+    "bbox_w": 62,
+    "bbox_h": 60,
+    "bbox": [
+     1,
+     2,
+     63,
+     62
+    ]
+   },
+   "tonal": {
+    "p5": 20,
+    "p50": 100,
+    "p95": 222
+   },
+   "edge_slot": {
+    "mean": 59.8,
+    "share16": 0.73
+   },
+   "edge_ground": {
+    "mean": 58.7,
+    "share16": 0.94
+   }
+  },
+  "tungsten-ore": {
+   "framing": {
+    "share": 0.549,
+    "bbox_w": 63,
+    "bbox_h": 64,
+    "bbox": [
+     1,
+     0,
+     64,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 26,
+    "p50": 69,
+    "p95": 161
+   },
+   "edge_slot": {
+    "mean": 35.0,
+    "share16": 0.66
+   },
+   "edge_ground": {
+    "mean": 29.8,
+    "share16": 0.73
+   }
+  },
+  "holmium-ore": {
+   "framing": {
+    "share": 0.492,
+    "bbox_w": 63,
+    "bbox_h": 62,
+    "bbox": [
+     1,
+     2,
+     64,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 26,
+    "p50": 101,
+    "p95": 209
+   },
+   "edge_slot": {
+    "mean": 59.8,
+    "share16": 0.76
+   },
+   "edge_ground": {
+    "mean": 50.9,
+    "share16": 0.78
+   }
+  },
+  "carbon": {
+   "framing": {
+    "share": 0.583,
+    "bbox_w": 62,
+    "bbox_h": 58,
+    "bbox": [
+     1,
+     3,
+     63,
+     61
+    ]
+   },
+   "tonal": {
+    "p5": 16,
+    "p50": 53,
+    "p95": 142
+   },
+   "edge_slot": {
+    "mean": 50.3,
+    "share16": 0.64
+   },
+   "edge_ground": {
+    "mean": 41.3,
+    "share16": 0.65
+   }
+  }
+ },
+ "ours": {
+  "teal/kamacite-ore": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.479,
+    "bbox_w": 62,
+    "bbox_h": 53,
+    "bbox": [
+     1,
+     6,
+     63,
+     59
+    ]
+   },
+   "tonal": {
+    "p5": 19,
+    "p50": 52,
+    "p95": 154
+   },
+   "edge_slot": {
+    "mean": 42.2,
+    "share16": 0.93
+   },
+   "edge_ground": {
+    "mean": 35.4,
+    "share16": 0.96
+   },
+   "edge_slot_16": {
+    "mean": 55.3,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 49.3,
+    "share16": 0.97
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/crushed-kamacite": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.393,
+    "bbox_w": 62,
+    "bbox_h": 51,
+    "bbox": [
+     1,
+     7,
+     63,
+     58
+    ]
+   },
+   "tonal": {
+    "p5": 9,
+    "p50": 69,
+    "p95": 152
+   },
+   "edge_slot": {
+    "mean": 47.3,
+    "share16": 0.91
+   },
+   "edge_ground": {
+    "mean": 37.0,
+    "share16": 0.82
+   },
+   "edge_slot_16": {
+    "mean": 51.5,
+    "share16": 0.97
+   },
+   "edge_ground_16": {
+    "mean": 34.7,
+    "share16": 0.93
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/kamacite-fines": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.57,
+    "bbox_w": 62,
+    "bbox_h": 56,
+    "bbox": [
+     1,
+     4,
+     63,
+     60
+    ]
+   },
+   "tonal": {
+    "p5": 67,
+    "p50": 117,
+    "p95": 147
+   },
+   "edge_slot": {
+    "mean": 59.7,
+    "share16": 0.99
+   },
+   "edge_ground": {
+    "mean": 40.0,
+    "share16": 0.95
+   },
+   "edge_slot_16": {
+    "mean": 70.4,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 49.2,
+    "share16": 0.97
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/kamacite-plate": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.384,
+    "bbox_w": 62,
+    "bbox_h": 48,
+    "bbox": [
+     1,
+     8,
+     63,
+     56
+    ]
+   },
+   "tonal": {
+    "p5": 67,
+    "p50": 123,
+    "p95": 165
+   },
+   "edge_slot": {
+    "mean": 52.1,
+    "share16": 0.99
+   },
+   "edge_ground": {
+    "mean": 38.5,
+    "share16": 0.88
+   },
+   "edge_slot_16": {
+    "mean": 78.2,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 56.4,
+    "share16": 0.96
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "downscale": {
+  "teal/kamacite-ore": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.479,
+    "bbox_w": 62,
+    "bbox_h": 53,
+    "bbox": [
+     1,
+     6,
+     63,
+     59
+    ]
+   },
+   "tonal": {
+    "p5": 19,
+    "p50": 52,
+    "p95": 154
+   },
+   "edge_slot": {
+    "mean": 42.2,
+    "share16": 0.93
+   },
+   "edge_ground": {
+    "mean": 35.4,
+    "share16": 0.96
+   },
+   "edge_slot_16": {
+    "mean": 21.6,
+    "share16": 0.47
+   },
+   "edge_ground_16": {
+    "mean": 20.5,
+    "share16": 0.5
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 1,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/crushed-kamacite": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.393,
+    "bbox_w": 62,
+    "bbox_h": 51,
+    "bbox": [
+     1,
+     7,
+     63,
+     58
+    ]
+   },
+   "tonal": {
+    "p5": 9,
+    "p50": 69,
+    "p95": 152
+   },
+   "edge_slot": {
+    "mean": 47.3,
+    "share16": 0.91
+   },
+   "edge_ground": {
+    "mean": 37.0,
+    "share16": 0.82
+   },
+   "edge_slot_16": {
+    "mean": 29.4,
+    "share16": 0.54
+   },
+   "edge_ground_16": {
+    "mean": 25.0,
+    "share16": 0.68
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/kamacite-fines": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.57,
+    "bbox_w": 62,
+    "bbox_h": 56,
+    "bbox": [
+     1,
+     4,
+     63,
+     60
+    ]
+   },
+   "tonal": {
+    "p5": 67,
+    "p50": 117,
+    "p95": 147
+   },
+   "edge_slot": {
+    "mean": 59.7,
+    "share16": 0.99
+   },
+   "edge_ground": {
+    "mean": 40.0,
+    "share16": 0.95
+   },
+   "edge_slot_16": {
+    "mean": 55.6,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 37.2,
+    "share16": 0.75
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "teal/kamacite-plate": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.384,
+    "bbox_w": 62,
+    "bbox_h": 48,
+    "bbox": [
+     1,
+     8,
+     63,
+     56
+    ]
+   },
+   "tonal": {
+    "p5": 67,
+    "p50": 123,
+    "p95": 165
+   },
+   "edge_slot": {
+    "mean": 52.1,
+    "share16": 0.99
+   },
+   "edge_ground": {
+    "mean": 38.5,
+    "share16": 0.88
+   },
+   "edge_slot_16": {
+    "mean": 54.9,
+    "share16": 0.88
+   },
+   "edge_ground_16": {
+    "mean": 39.9,
+    "share16": 0.81
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "pairwise": {
+  "ours/teal/16": {
+   "kamacite-ore~crushed-kamacite": 48.1,
+   "kamacite-ore~kamacite-fines": 57.0,
+   "kamacite-ore~kamacite-plate": 55.4,
+   "crushed-kamacite~kamacite-fines": 45.7,
+   "crushed-kamacite~kamacite-plate": 47.4,
+   "kamacite-fines~kamacite-plate": 40.8
+  },
+  "ours/teal/8": {
+   "kamacite-ore~crushed-kamacite": 63.3,
+   "kamacite-ore~kamacite-fines": 43.9,
+   "kamacite-ore~kamacite-plate": 41.3,
+   "crushed-kamacite~kamacite-fines": 39.2,
+   "crushed-kamacite~kamacite-plate": 48.6,
+   "kamacite-fines~kamacite-plate": 34.6
+  },
+  "downscale/teal/16": {
+   "kamacite-ore~crushed-kamacite": 23.2,
+   "kamacite-ore~kamacite-fines": 37.7,
+   "kamacite-ore~kamacite-plate": 31.5,
+   "crushed-kamacite~kamacite-fines": 35.3,
+   "crushed-kamacite~kamacite-plate": 31.1,
+   "kamacite-fines~kamacite-plate": 27.9
+  },
+  "downscale/teal/8": {
+   "kamacite-ore~crushed-kamacite": 16.7,
+   "kamacite-ore~kamacite-fines": 32.4,
+   "kamacite-ore~kamacite-plate": 25.9,
+   "crushed-kamacite~kamacite-fines": 30.4,
+   "crushed-kamacite~kamacite-plate": 25.3,
+   "kamacite-fines~kamacite-plate": 23.8
+  },
+  "vanilla/16": {
+   "iron-ore~iron-plate": 63.6,
+   "iron-ore~stone": 53.5,
+   "iron-ore~tungsten-ore": 43.1,
+   "iron-ore~holmium-ore": 49.5,
+   "iron-ore~carbon": 40.1,
+   "iron-plate~stone": 70.8,
+   "iron-plate~tungsten-ore": 39.9,
+   "iron-plate~holmium-ore": 50.6,
+   "iron-plate~carbon": 42.7,
+   "stone~tungsten-ore": 47.6,
+   "stone~holmium-ore": 51.2,
+   "stone~carbon": 45.7,
+   "tungsten-ore~holmium-ore": 36.5,
+   "tungsten-ore~carbon": 28.1,
+   "holmium-ore~carbon": 40.2
+  },
+  "vanilla/8": {
+   "iron-ore~iron-plate": 57.9,
+   "iron-ore~stone": 53.8,
+   "iron-ore~tungsten-ore": 45.0,
+   "iron-ore~holmium-ore": 50.8,
+   "iron-ore~carbon": 39.3,
+   "iron-plate~stone": 69.6,
+   "iron-plate~tungsten-ore": 41.6,
+   "iron-plate~holmium-ore": 51.9,
+   "iron-plate~carbon": 38.9,
+   "stone~tungsten-ore": 48.7,
+   "stone~holmium-ore": 51.1,
+   "stone~carbon": 41.2,
+   "tungsten-ore~holmium-ore": 32.5,
+   "tungsten-ore~carbon": 23.4,
+   "holmium-ore~carbon": 36.5
+  }
+ },
+ "vanilla_range": {
+  "share": [
+   0.402,
+   0.614
+  ],
+  "bbox_w": [
+   62,
+   64
+  ],
+  "bbox_h": [
+   50,
+   64
+  ],
+  "p50": [
+   53,
+   130
+  ],
+  "p95": [
+   142,
+   222
+  ],
+  "edge_slot": [
+   35.0,
+   70.6
+  ],
+  "edge_ground": [
+   29.8,
+   61.1
+  ]
+ },
+ "hue_survey": {
+  "iron-ore": {
+   "hue": 200,
+   "sat": 0.31
+  },
+  "iron-plate": {
+   "hue": 51,
+   "sat": 0.0
+  },
+  "copper-ore": {
+   "hue": 22,
+   "sat": 0.61
+  },
+  "copper-plate": {
+   "hue": 16,
+   "sat": 0.48
+  },
+  "uranium-ore": {
+   "hue": 89,
+   "sat": 0.79
+  },
+  "stone": {
+   "hue": 39,
+   "sat": 0.43
+  },
+  "coal": {
+   "hue": 29,
+   "sat": 0.13
+  },
+  "steel-plate": {
+   "hue": 61,
+   "sat": 0.03
+  },
+  "stone-brick": {
+   "hue": 66,
+   "sat": 0.06
+  },
+  "sulfur": {
+   "hue": 57,
+   "sat": 0.76
+  },
+  "wood": {
+   "hue": 32,
+   "sat": 0.7
+  },
+  "solid-fuel": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "plastic-bar": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "uranium-238": {
+   "hue": 119,
+   "sat": 0.45
+  },
+  "uranium-235": {
+   "hue": 100,
+   "sat": 0.62
+  },
+  "tungsten-ore": {
+   "hue": 262,
+   "sat": 0.36
+  },
+  "tungsten-plate": {
+   "hue": 271,
+   "sat": 0.2
+  },
+  "tungsten-carbide": {
+   "hue": 270,
+   "sat": 0.19
+  },
+  "holmium-ore": {
+   "hue": 350,
+   "sat": 0.32
+  },
+  "holmium-plate": {
+   "hue": 357,
+   "sat": 0.21
+  },
+  "calcite": {
+   "hue": 343,
+   "sat": 0.02
+  },
+  "scrap": {
+   "hue": 11,
+   "sat": 0.36
+  },
+  "lithium": {
+   "hue": 61,
+   "sat": 0.15
+  },
+  "lithium-plate": {
+   "hue": 120,
+   "sat": 0.05
+  },
+  "carbon": {
+   "hue": 45,
+   "sat": 0.04
+  },
+  "ice": {
+   "hue": 199,
+   "sat": 0.16
+  },
+  "siderane (fluid)": {
+   "hue": 77,
+   "sat": 0.81
+  },
+  "helium-3 (fluid)": {
+   "hue": 201,
+   "sat": 0.39
+  }
+ },
+ "hues": {
+  "teal/kamacite-ore": {
+   "hue": 162,
+   "sat": 0.27,
+   "nearest": "ice",
+   "distance": 36
+  },
+  "teal/crushed-kamacite": {
+   "hue": 163,
+   "sat": 0.3,
+   "nearest": "ice",
+   "distance": 36
+  },
+  "teal/kamacite-fines": {
+   "hue": 166,
+   "sat": 0.22,
+   "nearest": "ice",
+   "distance": 33
+  },
+  "teal/kamacite-plate": {
+   "hue": 160,
+   "sat": 0.35,
+   "nearest": "ice",
+   "distance": 38
+  }
+ }
+}
