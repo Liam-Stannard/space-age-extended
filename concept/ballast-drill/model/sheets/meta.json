@@ -1,0 +1,664 @@
+{
+ "base-north": {
+  "size": [
+   326,
+   358
+  ],
+  "shift": [
+   0.0,
+   -0.25
+  ]
+ },
+ "base-shadow-north": {
+  "size": [
+   370,
+   329
+  ],
+  "shift": [
+   0.375,
+   -0.05469
+  ]
+ },
+ "status-lamp-north": {
+  "size": [
+   13,
+   13
+  ],
+  "shift": [
+   -1.05469,
+   0.83594
+  ]
+ },
+ "chute-north": {
+  "size": [
+   56,
+   37
+  ],
+  "shift": [
+   0.0,
+   -2.32031
+  ],
+  "frames": 5,
+  "line_length": 5
+ },
+ "stroke-north": {
+  "size": [
+   310,
+   317
+  ],
+  "shift": [
+   0.09375,
+   -0.55469
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "ore-north": {
+  "size": [
+   41,
+   32
+  ],
+  "shift": [
+   0.00781,
+   -2.8125
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "dust-north": {
+  "size": [
+   260,
+   271
+  ],
+  "shift": [
+   0.03125,
+   -0.52344
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "base-east": {
+  "size": [
+   326,
+   358
+  ],
+  "shift": [
+   0.0,
+   -0.25
+  ]
+ },
+ "base-shadow-east": {
+  "size": [
+   370,
+   329
+  ],
+  "shift": [
+   0.375,
+   -0.05469
+  ]
+ },
+ "status-lamp-east": {
+  "size": [
+   13,
+   13
+  ],
+  "shift": [
+   -1.05469,
+   0.83594
+  ]
+ },
+ "chute-east": {
+  "size": [
+   58,
+   58
+  ],
+  "shift": [
+   2.0625,
+   -0.09375
+  ],
+  "frames": 5,
+  "line_length": 5
+ },
+ "stroke-east": {
+  "size": [
+   310,
+   317
+  ],
+  "shift": [
+   0.09375,
+   -0.55469
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "ore-east": {
+  "size": [
+   35,
+   44
+  ],
+  "shift": [
+   2.74219,
+   -0.0625
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "dust-east": {
+  "size": [
+   260,
+   271
+  ],
+  "shift": [
+   0.03125,
+   -0.52344
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "base-south": {
+  "size": [
+   326,
+   358
+  ],
+  "shift": [
+   0.0,
+   -0.25
+  ]
+ },
+ "base-shadow-south": {
+  "size": [
+   370,
+   329
+  ],
+  "shift": [
+   0.375,
+   -0.05469
+  ]
+ },
+ "status-lamp-south": {
+  "size": [
+   13,
+   13
+  ],
+  "shift": [
+   -1.05469,
+   0.83594
+  ]
+ },
+ "chute-south": {
+  "size": [
+   56,
+   63
+  ],
+  "shift": [
+   0.01562,
+   2.00781
+  ],
+  "frames": 5,
+  "line_length": 5
+ },
+ "stroke-south": {
+  "size": [
+   310,
+   317
+  ],
+  "shift": [
+   0.09375,
+   -0.55469
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "ore-south": {
+  "size": [
+   41,
+   39
+  ],
+  "shift": [
+   0.00781,
+   2.69531
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "dust-south": {
+  "size": [
+   260,
+   271
+  ],
+  "shift": [
+   0.03125,
+   -0.52344
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "base-west": {
+  "size": [
+   326,
+   358
+  ],
+  "shift": [
+   0.0,
+   -0.25
+  ]
+ },
+ "base-shadow-west": {
+  "size": [
+   370,
+   329
+  ],
+  "shift": [
+   0.375,
+   -0.05469
+  ]
+ },
+ "status-lamp-west": {
+  "size": [
+   13,
+   13
+  ],
+  "shift": [
+   -1.05469,
+   0.83594
+  ]
+ },
+ "chute-west": {
+  "size": [
+   58,
+   58
+  ],
+  "shift": [
+   -2.0625,
+   -0.09375
+  ],
+  "frames": 5,
+  "line_length": 5
+ },
+ "stroke-west": {
+  "size": [
+   313,
+   317
+  ],
+  "shift": [
+   0.07031,
+   -0.55469
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "ore-west": {
+  "size": [
+   35,
+   42
+  ],
+  "shift": [
+   -2.74219,
+   -0.07812
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "dust-west": {
+  "size": [
+   260,
+   271
+  ],
+  "shift": [
+   0.03125,
+   -0.52344
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "chute_cycle": [
+    5,
+    "frames of a closed loop; no positional check"
+   ],
+   "stroke_path_px": {
+    "declared": [
+     0.0,
+     0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.76,
+     11.11,
+     10.12,
+     8.89,
+     7.49,
+     6.0,
+     4.51,
+     3.11,
+     1.88,
+     0.89,
+     0.24
+    ],
+    "measured": [
+     -0.0,
+     -0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.77,
+     11.12,
+     10.13,
+     8.89,
+     7.49,
+     6.0,
+     4.52,
+     3.12,
+     1.87,
+     0.89,
+     0.24
+    ],
+    "off_curve": 0.01,
+    "off_line": 0.0,
+    "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+    "tracked": "ring"
+   },
+   "ore_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "dust_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0407,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "east": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "chute_cycle": [
+    5,
+    "frames of a closed loop; no positional check"
+   ],
+   "stroke_path_px": {
+    "declared": [
+     0.0,
+     0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.76,
+     11.11,
+     10.12,
+     8.89,
+     7.49,
+     6.0,
+     4.51,
+     3.11,
+     1.88,
+     0.89,
+     0.24
+    ],
+    "measured": [
+     -0.0,
+     -0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.77,
+     11.12,
+     10.13,
+     8.89,
+     7.49,
+     6.0,
+     4.52,
+     3.12,
+     1.87,
+     0.89,
+     0.24
+    ],
+    "off_curve": 0.01,
+    "off_line": 0.0,
+    "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+    "tracked": "ring"
+   },
+   "ore_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "dust_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0435,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "chute_cycle": [
+    5,
+    "frames of a closed loop; no positional check"
+   ],
+   "stroke_path_px": {
+    "declared": [
+     0.0,
+     0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.76,
+     11.11,
+     10.12,
+     8.89,
+     7.49,
+     6.0,
+     4.51,
+     3.11,
+     1.88,
+     0.89,
+     0.24
+    ],
+    "measured": [
+     -0.0,
+     -0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.77,
+     11.12,
+     10.13,
+     8.89,
+     7.49,
+     6.0,
+     4.52,
+     3.12,
+     1.87,
+     0.89,
+     0.24
+    ],
+    "off_curve": 0.01,
+    "off_line": 0.0,
+    "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+    "tracked": "ring"
+   },
+   "ore_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "dust_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0446,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "chute_cycle": [
+    5,
+    "frames of a closed loop; no positional check"
+   ],
+   "stroke_path_px": {
+    "declared": [
+     0.0,
+     0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.76,
+     11.11,
+     10.12,
+     8.89,
+     7.49,
+     6.0,
+     4.51,
+     3.11,
+     1.88,
+     0.89,
+     0.24
+    ],
+    "measured": [
+     -0.0,
+     -0.0,
+     0.75,
+     3.0,
+     6.75,
+     12.0,
+     11.28,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     12.0,
+     11.77,
+     11.12,
+     10.13,
+     8.89,
+     7.49,
+     6.0,
+     4.52,
+     3.12,
+     1.87,
+     0.89,
+     0.24
+    ],
+    "off_curve": 0.01,
+    "off_line": 0.0,
+    "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+    "tracked": "ring"
+   },
+   "ore_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "dust_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.046,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  }
+ }
+}

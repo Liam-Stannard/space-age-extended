@@ -110,6 +110,7 @@ building reads at a glance.
 | ---- | --- | ----- |
 | Chassis and legs | `#4A463F` → `#6E685C` | the mass of the building |
 | Ballast ring | `#3A3A3C` → `#5A5A5E` | cast iron, the heaviest mass; its top face, wall and well kept apart in value |
+| Press frame accent | `#6A2618` → `#842E1E` | red oxide paint on the gear-houses, drive cabinets, tank and bottles, chipped to the iron |
 | Guide rails | `#8A8580` | four verticals |
 | Hazard banding | `#C8A23A` | leg feet only, sparingly |
 | Ore dust | `#7A6A55` | ground disturbance under the head |
