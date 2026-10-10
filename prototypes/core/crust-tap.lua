@@ -457,7 +457,7 @@ data:extend({ turbine })
 -- **Which means neither can be priced in kamacite plate**, and both were. The
 -- technology says as much -- `sae-crust-tapping` hangs off Core Discovery
 -- rather than the Survey, "because it needs nothing the survey teaches" -- but
--- the recipes needed 10 and 20 plate, and plate is the survey's whole output.
+-- the recipes needed 10 and 20 plate, and plate came only after the survey.
 -- A player who took the landing-day technology first got two recipes they could
 -- not craft. Steel, gears and pipe come out of the cargo pod, so now they can.
 --------------------------------------------------------------------------------
