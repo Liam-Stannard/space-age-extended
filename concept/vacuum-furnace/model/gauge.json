@@ -1,0 +1,41 @@
+{
+  "name": "vacuum-furnace-gauge",
+  "_comment": "The vacuum gauge's needle (spec 6), drawn by Animatorio over the dial the model renders bare. Cut by tools/build-animatorio-layers.py --phase linear --frame0 still: the plate's housing with the dial's window punched out, and 16 frames of that window, the same loop as the flywheel's.",
+  "source": "sheets/base.png",
+  "frame_count": 16,
+  "lighting": { "enabled": false },
+  "motions": [
+    {
+      "type": "gauge",
+      "_where": "The dial lies flat on the pump barrel's head, so through this camera it draws as a circle: centre and radius measured off sheets/base.png (the pivot at 178.5, 177.3, re-measured 2026-10-08 after the radiators raised the plate 10 px; the face 5.2 px across the hood).",
+      "center": [178.5, 177.3],
+      "plane_basis": [[5.2, 0.0], [0.0, 5.2]],
+      "_reading": "A pump holding its vacuum: the needle sits at a working reading, up and to the right, and pulses a few degrees with the strokes -- once a loop, never sweeping the dial.",
+      "minimum_angle_degrees": -66,
+      "maximum_angle_degrees": -52,
+      "waveform": "sine",
+      "cycles_per_loop": 1,
+      "needle_length": 0.9,
+      "tail_length": 0.25,
+      "needle_width": 0.38,
+      "tip_width": 0.14,
+      "needle_color": [43, 46, 51],
+      "edge_color": [14, 14, 16],
+      "highlight_color": [120, 118, 112],
+      "highlight_alpha": 0,
+      "highlight_width": 0.5,
+      "pivot_radius": 0.15,
+      "pivot_color": [120, 115, 108],
+      "pivot_edge_color": [40, 38, 36],
+      "shadow_alpha": 90,
+      "shadow_offset": [0.5, 0.5],
+      "shadow_blur": 0.4,
+      "background_enabled": false,
+      "face_fraction": 1.0,
+      "clip_to_face": true,
+      "aperture_feather": 0.5,
+      "supersample": 8,
+      "_size": "Wide for its 5 px: a needle much under 2 px wide is blended into the dial by the downsample and reads as a grey smudge (first cut, 2026-10-08)."
+    }
+  ]
+}

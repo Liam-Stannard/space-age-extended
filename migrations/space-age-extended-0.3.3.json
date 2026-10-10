@@ -1,0 +1,14 @@
+{
+  "item":
+  [
+    ["sae-crust-tap", "sae-gas-pump"]
+  ],
+  "recipe":
+  [
+    ["sae-crust-tap", "sae-gas-pump"]
+  ],
+  "tile":
+  [
+    ["sae-crust-vent", "volcanic-ash-flats"]
+  ]
+}

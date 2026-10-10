@@ -34,11 +34,27 @@ a pass: everything they act on is declared here.
               parts that do not move on the path (gears, a pawl, anything
               driven by it) names one that does in `track`: frames
               <name>-<track>-NN.png render that part alone, and the curve is
-              held to their centroid instead; they are measured, not packed
-  ports       [{tile, face}]: one fitting per face, `tile` the centre of the
+              held to their centroid instead; they are measured, not packed.
+              motion "flow": contents moving in place -- gas or fluid in a
+              sight glass, bubbles drifting through it -- with no part to hold
+              to a centroid or a curve: no motion check (the model measures it).
+              kind (optional): "paint" (the default), drawn as ordinary paint
+              and part of the stopped machine, so its frame 0 is held to the
+              still; or "light", a white-cut layer the engine tints, packed as a
+              light pass is (alpha above 8 kept) and drawn only while working,
+              so it is not part of the still.
+              turns (optional, a slide's): true (the default) when the model turns
+              its root to face each direction, so the path turns with it; false when
+              the root stays put in every direction (only some parts change with
+              it), so the path is read as modelled in all of them
+  ports       [{tile, face, neck}]: one fitting per face, `tile` the centre of the
               footprint tile it sits on (tiles, y down, entity centre 0,0, as a
               pipe connection's position), `face` N, E, S or W. Rendered with
-              the model facing north, as port-<face>.png and cover-<face>.png
+              the model facing north, as port-<face>.png and cover-<face>.png.
+              "neck": true (optional, off by default) keeps a part of the
+              fitting joined to the rest only by a neck too faint for the noise
+              floor -- a thin strip, as on assembler 3's west outline -- which
+              pack_ports.py otherwise drops (its docstring says when to use it)
   rig         {elevation, px_per_tile}: the camera's, copied from rig.py by
               declare(), so the packers can put a tile on the screen
 
@@ -57,7 +73,8 @@ DIRECTIONS = {
 }
 KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
 WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
-MOTIONS = ("turn", "slide")
+MOTIONS = ("turn", "slide", "flow")
+ANIM_KINDS = ("paint", "light")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
 FILE = "render.json"
 
@@ -221,6 +238,10 @@ def validate(decl, where):
                 f"number of frames, at least two")
         if a.get("motion") not in MOTIONS:
             bad(f"{field}.motion", f"{a.get('motion')!r} is not one of {', '.join(MOTIONS)}")
+        if a.get("kind", "paint") not in ANIM_KINDS:
+            bad(f"{field}.kind", f"{a.get('kind')!r} is not one of {', '.join(ANIM_KINDS)}")
+        if "turns" in a and not isinstance(a["turns"], bool):
+            bad(f"{field}.turns", f"{a['turns']!r} is not true or false")
         if a["motion"] == "slide":
             path = a.get("path")
             if not (_seq(path, a["frames"]) and all(_seq(p, 3) and all(_number(c) for c in p) for p in path)):
@@ -238,7 +259,8 @@ def validate(decl, where):
                 cross = (v[1] * far[2] - v[2] * far[1], v[2] * far[0] - v[0] * far[2], v[0] * far[1] - v[1] * far[0])
                 if math.hypot(*cross) > 1e-6 * math.hypot(*far) * max(1.0, math.hypot(*v)):
                     bad(f"{field}.path", f"slide {a['name']!r} has a path that is not a straight line")
-    if decl["animations"] and decl["passes"] and "still" not in kinds:
+    if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
+            and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
 
     w, h = decl["footprint"]
@@ -250,6 +272,8 @@ def validate(decl, where):
         if p["face"] in faces:
             bad(f"{field}.face", f"a second port on face {p['face']}: the engine draws one picture per face")
         faces.add(p["face"])
+        if "neck" in p and not isinstance(p["neck"], bool):
+            bad(f"{field}.neck", f"{p['neck']!r} is not true or false")
         if not (_seq(p.get("tile"), 2) and all(_number(c) for c in p["tile"])):
             bad(f"{field}.tile", f"{p.get('tile')!r} is not [x, y] in tiles")
         x, y = p["tile"]

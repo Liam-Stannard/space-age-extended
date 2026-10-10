@@ -106,6 +106,20 @@ building reads at a glance.
 
 ## 3.3 Colour Palette
 
+**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
+steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
+Each also carries one material of its own on its main surfaces, so a player tells them
+apart by colour before shape, as vanilla's electric furnace, assembler and foundry
+are told apart. Within the building, variation comes from replacement panels in a
+slightly different shade, small stencilled markings, and rust that differs by place:
+dry orange on tops, dark wet streaks below fittings.
+
+**This building's: raw cast iron.** No paint: the chassis, legs and ring are
+graphite grey `#3A3A3C` → `#5A5A5E` with a faint blue-black mill-scale sheen, and the
+ore dust (`#7A6A55`) settles heavy on every ledge. The heaviest machine is all mass
+and no finish; hazard banding stays on the leg feet only.
+
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Chassis and legs | `#4A463F` → `#6E685C` | the mass of the building |

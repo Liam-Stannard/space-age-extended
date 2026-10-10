@@ -16,6 +16,14 @@ not a recoloured nodding donkey.
 
 ---
 
+**Amended 2026-10-09 (Liam): melt only.** Helium-3 is now drawn by the Gas
+Pump (`concept/crust-tap/building-spec-crust-tap.md`, §A), with every other gas.
+The Vent Pump keeps the melt vent and nothing else: its `resource_categories`
+stays `{ "sae-vent" }`, which now holds only `sae-melt-vent`, while the gas vents
+move to `sae-gas`. Its input fluid box, the helium it burns to draw melt, and
+everything else in this spec are unchanged. Where it says the Vent Pump draws
+helium or stands on a gas vent, read the Gas Pump.
+
 ## 1. Building Overview
 
 **Building Name:**

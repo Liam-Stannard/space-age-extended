@@ -35,6 +35,13 @@
 # icon), belong to this script: each run empties them all first, so nothing a
 # model no longer renders, and no sheet packed from it, survives from an earlier
 # run. A run without --ports or --icon leaves none of those behind either.
+#
+# **Waiting for a run:** start this script itself in the background and let
+# the harness say when it exits; do not write a polling loop beside it. Every
+# run ends, pass or fail, by writing <out-dir>/render.done holding one line,
+# "exit <code>", and printing the same line last -- so anything that does have
+# to wait on a file has one that always arrives. render.done is removed when a
+# run starts, so a stale one never answers for a new run.
 set -euo pipefail
 
 USAGE="usage: render.sh <model.py> <out-dir> [--ports] [--icon]"
@@ -53,6 +60,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
 
 mkdir -p "$OUT"
+rm -f "$OUT/render.done"
+trap 'code=$?; echo "exit $code" > "$OUT/render.done"; echo "exit $code"' EXIT
 rm -rf "${OUT:?}/hi" "${OUT:?}/renders" "${OUT:?}/sheets" \
   "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon"
 "$BLENDER" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \

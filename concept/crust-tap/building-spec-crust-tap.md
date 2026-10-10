@@ -12,6 +12,188 @@ sells **pressure, not heat**, and that single choice is what keeps it simple.
 
 ---
 
+**Amended 2026-10-09 (Liam): this building is now the Gas Pump.** One generic
+pump for every gas on the Core, drawing from vent *resources* that deplete as
+crude oil does. The amendment below replaces what it names; where the older
+sections still describe an offshore pump on a vent tile, the amendment wins.
+
+---
+
+# A. Amendment, 2026-10-09 — the Gas Pump
+
+Liam took the defaults below as drafted, and on reviewing the built pump set
+the rate to one turbine's worth and thinned the vents.
+
+## A.1 What changes, and why
+
+The Core has two gases, and until now two machines drew them: siderane came up
+through an `offshore-pump` standing on a vent **tile**, and helium-3 through the
+Vent Pump, a `mining-drill` on a vent **resource**. A tile holds no amount, so
+siderane could never run down; helium did, because depletion belongs to the
+resource and not to the machine, as an oil field's does to the field and not to
+the pumpjack.
+
+Liam's call: **one Gas Pump for every gas, and siderane depletes like oil.** So
+the Gas Pump is a `mining-drill`, as the pumpjack is, and every gas vent is a
+resource carrying its own yield:
+
+| Vent | Resource | Yields | Drawn by |
+| ---- | -------- | ------ | -------- |
+| Siderane vent | `sae-crust-vent`, **now a resource, no longer a tile** | siderane | **Gas Pump** |
+| Helium-3 vent | `sae-gas-vent` | helium-3 | **Gas Pump** (was the Vent Pump) |
+| Melt vent | `sae-melt-vent` | molten kamacite, for 10 helium-3 a cycle | Vent Pump, **melt only** |
+
+The gas vents share a new resource category, `sae-gas`; the melt vent keeps
+`sae-vent`. The Gas Pump takes `sae-gas` only and the Vent Pump `sae-vent` only,
+so neither can stand on the other's vent. A future gas costs a resource and a
+fluid, and no new machine.
+
+## A.2 Section 1 — overview, replaced
+
+**Building Name:** `Gas Pump` (was the Siderane wellhead, and before that the Crust Tap)
+**Internal Prototype Name:** `sae-gas-pump`. The entity changes
+type, from `offshore-pump` to `mining-drill`, and an entity cannot change type
+under its old name in a save: placed taps are removed on load whatever the name.
+So it takes a new name, and a migration carries the `sae-crust-tap` *item* (and
+its recipe) over, so nothing in an inventory is lost.
+
+**Building Type:** `mining-drill`, from `pumpjack`, with an output fluid box and no
+input. The engine's resource machinery is what makes the yield deplete and the
+pump report `no_minable_resources`, with no script.
+
+**Purpose:** unchanged at heart, and still the Core's landing-day power: the Gas
+Pump on a siderane vent feeds the Siderane turbine. It also draws helium-3, the
+gas that throttles the melt line, so it is the first machine of two chains.
+
+**Energy:** **none — a `void` energy source.** **[confirm by test]** The landing
+has no power until this pump runs, so it must not need any; the offshore pump it
+replaces needed none either. A `void` source on a `mining-drill` is expected to
+work but has not been measured on this engine, and it is the first thing the
+prototype task tests.
+
+## A.3 Section 2 — the tap's table, replaced
+
+| | |
+| --- | --- |
+| Tile footprint | 2×2, unchanged; the adopted bolted collar and its riser stay the design |
+| Directions | 4: the outlet moves round the four tile centres, as §24 found |
+| Output | the vent's gas: siderane or helium-3 |
+| Rate | **9/s** on a fresh siderane vent — one turbine's burn, 1.8 MW — falling with depletion |
+| Energy | none (`void`) — see A.2 |
+| Surface conditions | `gravity` ≥ 45, unchanged |
+| Placement | on a gas vent resource; nowhere else |
+
+**Depletion, as crude oil's.** Each gas vent is `infinite = true` with a
+`normal` yield, a `minimum` floor and an `infinite_depletion_amount`, so a vent
+slows as it is drawn and never quite stops. Siderane's numbers:
+
+* `normal` sized so a fresh vent drives about one turbine's worth, ~1.8 MW, as
+  the old tap did;
+* `minimum` at **20%**, crude oil's own ratio, so an old vent still turns a
+  turbine at a fifth of its speed — the landing's power fades into a trickle
+  rather than going dark, and the player has a reason to move on to the melt
+  line;
+* depletion per cycle in line with helium's `infinite_depletion_amount = 10`.
+
+**The vents are thin**, as crude oil's are: a starting area holds a handful of
+siderane vents, not a field of them, so the landing's power stays a foothold.
+The first build, at the other vents' density, put 13 in one starting patch —
+forty-odd turbines' worth.
+
+**The starting field is placed by hand** (Liam, 2026-10-09): four vents in a
+fixed pattern about 48 tiles out, rotated per map toward dry ground, any that
+would land in the radiant pool dropped. A probability draw cannot promise a
+handful: over twelve seeds it gave anywhere from none to twelve, once put the
+patch 85 tiles out and once drowned it. Beyond 150 tiles the vents are thinned
+as crude oil's are. The cost is accepted: the start always holds four, the
+pattern is the same on every map but turned, and the frequency slider does not
+move it. Siderane takes the ground first where vents overlap other resources, and
+a kamacite boulder can occasionally sit on a starting vent — mining it is the
+landing's first act anyway.
+
+**The cap moves from the map to the map *and* the yield.** It was "how many vent
+tiles exist"; it becomes "how many vents, and how rich", which is the treatment
+`resources.lua` already gives every other vent.
+
+**Vent size.** A resource sits under its machine, so the gas vents become 2×2:
+the siderane vent is new as a resource, and helium-3's vent shrinks from 3×3
+to 2×2 (`collision_box` ±0.9). That changes where helium can be
+drawn but not how much.
+
+## A.4 What the older sections lose, and keep
+
+**Lost, and recorded so the lessons are not:**
+
+* "The tap is sited — measured, not assumed" (§2): the vent tile, its
+  collision layer, its `tile_buildability_rules`, and the planet's tile
+  whitelist entry in `map-gen.lua` all go. The siderane vent becomes an ordinary
+  resource with an autoplace control, as the other vents are.
+* The offshore pump's traps in §8 and §24 (`fluid_source_offset` drawing from a
+  tile corner and producing nothing, the pump with no buffer). A mining drill has
+  neither.
+* The vent tile's art (§20) is replaced by a resource sprite, as crude oil's and
+  the other vents' are.
+
+**Kept:** pressure, not heat (§2) and every S10 finding about `burns_fluid` —
+those are the turbine's, and the turbine is unchanged; `auto_barrel = false`;
+the four directions and §24's connection table; the adopted design and the
+model in progress (`crust-tap-model`).
+
+**To prove again on the rig**, since the pump is new: a Gas Pump on a fresh
+siderane vent, piped to a turbine under load, produces the declared 1.8 MW; on
+a vent at its floor, a fifth of it; on a helium vent it yields helium; it builds
+on neither the melt vent nor bare ground; and it runs with no power connected.
+
+## A.5 Section 15 — the prototype sketch, replaced for the pump
+
+```lua
+{
+  type = "mining-drill",
+  name = "sae-gas-pump",
+  -- from pumpjack: an output fluid box, no input, no vector_to_place_result
+  resource_categories = { "sae-gas" },
+  mining_speed = 1,
+  energy_source = { type = "void" },        -- landing day: no grid yet
+  output_fluid_box = { volume = 1000, pipe_connections = {
+    { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
+  } },
+  surface_conditions = { { property = "gravity", min = 45 } }
+}
+-- and each gas vent:
+{
+  type = "resource", name = "sae-crust-vent", category = "sae-gas",
+  infinite = true, minimum = --[[ 20% of normal ]], normal = --[[ ~1 turbine ]],
+  infinite_depletion_amount = 10,
+  minable = { mining_time = 1, results = { { type = "fluid", name = "sae-crust-gas", amount = 10 } } },
+  collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
+}
+```
+
+## A.6 Names
+
+| Player-facing | Internal |
+| ------------- | -------- |
+| Gas Pump | `sae-gas-pump` (new; `sae-crust-tap` migrated) |
+| Siderane vent | `sae-crust-vent` (now a resource) |
+| Helium-3 vent, was "Gas vent" | `sae-gas-vent` |
+| Siderane turbine, siderane, Siderane extraction | unchanged |
+
+"Gas vent" for helium's vent stops making sense once there are two gas vents, so
+it takes its gas's name, as the siderane vent does.
+
+## A.7 The working animation (Liam, 2026-10-10)
+
+While pumping, a flywheel and crank on the compressor housing's roof turn and
+drive a connecting rod into an open trunk cylinder on a stand beside the
+housing; the pressure gauge's needle kicks on each stroke; and gas moves in the
+sight glass, tinted by the vent. One stroke a loop, the same loop for all three.
+Idle, the crank and needle stop where they are and the glass shows empty, as
+vanilla's pumpjack stops mid-nod. The breather moves to the roof's north-west
+corner to make room for the flywheel. The model is otherwise the signed-off
+round 13.
+
+---
+
 # 0. Generation Contract
 
 | # | Asset | Canvas | Gate before moving on | State |
@@ -26,7 +208,7 @@ sells **pressure, not heat**, and that single choice is what keeps it simple.
 
 # 1. Building Overview
 
-**Building Name:** `Crust Tap`
+**Building Name:** `Siderane Wellhead` (was `Crust Tap`)
 **Internal Prototype Name:** `sae-crust-tap`
 
 **Building Type:** `offshore-pump`. Chosen for one reason: an offshore pump is
@@ -184,9 +366,23 @@ rather than *heat* in one glance, which is the whole point of the building.
 
 ## 3.3 Colour Palette
 
+**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
+steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
+Each also carries one material of its own on its main surfaces, so a player tells them
+apart by colour before shape, as vanilla's electric furnace, assembler and foundry
+are told apart. Within the building, variation comes from replacement panels in a
+slightly different shade, small stencilled markings, and rust that differs by place:
+dry orange on tops, dark wet streaks below fittings.
+
+**This building's: faded industrial green.** The casing and lid are painted
+`#4A5A44` → `#5E6E56`, sun-faded and worn to steel on edges and bolt heads, with a
+stencilled band round the lid for its gas, as real gas plant is colour-coded.
+The riser and fittings stay bare steel and brass.
+
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Collar and anchors | `#3E3B36` → `#5E584E` | the mass of the building |
+| Plinth and anchors | `#3E3B36` → `#5E584E` | the base the green casing stands on |
 | Riser body | `#8A8580` | the single pipe |
 | Frost jacket | `#BFD8E8` → `#EAF4FA` | riser, downstream of the choke only |
 | Seam heat | `#C8541E` → `#E8A24A` | ground joint only, dull |
@@ -344,6 +540,14 @@ attempted.
 ---
 
 # 20. Open questions
+
+**Renamed 2026-10-09 (Liam): crust gas is now siderane.** An invented gas of
+the Core's own, named to sound like a real one: Greek *sideros*, iron, as in
+the siderite meteorites, with the *-ane* of a fuel that burns. The player-facing
+set is siderane, the siderane vent, the Siderane wellhead, the Siderane turbine
+and Siderane extraction. Only the locale changed; every internal name
+(`sae-crust-*`) stays, because renaming those costs a migration for nothing.
+Where this spec still says "crust gas", read siderane.
 
 - **`auto_barrel = false` is not optional.** Crust gas must never leave the Core,
   or a player barrels a landing-day power source and ships it to Nauvis. It joins

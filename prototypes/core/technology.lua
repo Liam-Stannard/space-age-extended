@@ -80,11 +80,19 @@ data:extend({
 -- whose field layout is unambiguous, and a trigger that fails to load takes the
 -- whole mod with it.
 --
--- The mod is cut back to the landing and nothing past it, so the chain is short:
+-- The mod is cut back to the landing and nothing past it, so the chain is one
+-- straight line, and each step is fired by the thing the step before it gave:
 --
---   mine a boulder      -> Crust tapping    (power at all)
---   craft a crust tap   -> Core survey      (drill, crusher, smelter)
---   craft a vent pump   -> Radiant power    (the generator, and its fuel)
+--   mine a boulder         -> Crust tapping     (power at all)
+--   craft a gas pump       -> Core survey       (the drill)
+--   craft a ballast drill  -> Gravity crushing  (the crusher, and smelting)
+--   craft 50 fines         -> Vacuum sintering  (the furnace that takes them)
+--   craft a vacuum furnace -> Vent tapping      (the vent pump)
+--   craft a vent pump      -> Radiant power     (the generator, and its fuel)
+--
+-- Every technology lists only the one before it. The chain already carries
+-- everything further back, and a redundant prerequisite draws a second arrow
+-- across the technology screen for a dependency the first one already states.
 --
 -- The melt line, the farm, the lift and everything geodynamic went with the cut.
 --
@@ -105,70 +113,102 @@ data:extend({
   -- The boulder was already "the only ore on the planet obtainable before a
   -- drill is standing" (resources.lua), described there as "a genuine early
   -- move rather than decoration with a yield attached" -- which it was not,
-  -- because nothing consumed hand-mined ore until Core Survey. Triggering off
+  -- because nothing consumed hand-mined ore until the crusher. Triggering off
   -- it makes the claim true: the first swing at a boulder is what opens the
-  -- planet, and the 25 ore it drops is waiting for the smelter two steps later.
+  -- planet, and the 25 ore it drops is waiting for the smelter three steps later.
   landfall("sae-crust-tapping", { "sae-core-discovery" },
     {
-      { type = "unlock-recipe", recipe = "sae-crust-tap" },
+      { type = "unlock-recipe", recipe = "sae-gas-pump" },
       { type = "unlock-recipe", recipe = "sae-crust-turbine" }
     },
     { type = "mine-entity", entities = { "sae-core-boulder" } }),
 
-  -- The landing kit, and the crusher is not optional in it. Plate smelting was
+  -- The survey finds the ore, and the drill is how it comes out. Nothing here
+  -- runs without power, and the only power on this planet starts at a gas pump
+  -- on a siderane vent, so the pump is both the real prerequisite and the
+  -- obvious trigger: build the thing that makes the electricity, and the survey
+  -- that spends it lands.
+  --
+  -- **Off Crust Tapping, not beside it.** The survey used to hang off the
+  -- discovery next to the tapping, on the grounds that tapping "needs nothing
+  -- the survey teaches" -- true, and it left the two as a pair of unordered
+  -- purchases.
+  landfall("sae-core-survey", { "sae-crust-tapping" },
+    {
+      { type = "unlock-recipe", recipe = "sae-ballast-drill" }
+    },
+    { type = "craft-item", item = "sae-gas-pump" }),
+
+  -- The crusher and smelting land together, because plate smelting was
   -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
-  -- recipes.lua), so unlocking smelting without the crusher would unlock a
-  -- recipe whose ingredient the player cannot make.
+  -- recipes.lua): smelting without the crusher is a recipe whose ingredient the
+  -- player cannot make. Triggered by the drill, because the drill is what puts
+  -- ore in front of the crusher.
   --
   -- **That re-sourcing also closed a loop nobody had walked.** Crushing is the
   -- only source of crushed kamacite and fines, those are the only routes to a
   -- kamacite plate, and the crusher was priced at 40 kamacite plate -- so the
   -- first crusher could never be built, and with it nothing else on the planet.
   -- The crusher is costed in freight now; see machines.lua.
-  --
-  -- **Off Crust Tapping now, and triggered by the tap itself.** The survey used
-  -- to hang off the discovery beside the tapping, on the grounds that tapping
-  -- "needs nothing the survey teaches" -- true, and it left the two as a pair
-  -- of unordered purchases. Everything this technology unlocks needs power, and
-  -- the only power on this planet is a crust tap, so the tap is both the real
-  -- prerequisite and the obvious trigger: build the thing that makes the
-  -- electricity, and the survey that spends it lands.
-  --
-  -- Only Crust Tapping is listed: it already carries the discovery, and a
-  -- redundant prerequisite draws a second arrow across the technology screen
-  -- for a dependency the first one already states.
-  landfall("sae-core-survey", { "sae-crust-tapping" },
+  landfall("sae-gravity-crushing", { "sae-core-survey" },
     {
-      { type = "unlock-recipe", recipe = "sae-vent-pump" },
-      { type = "unlock-recipe", recipe = "sae-ballast-drill" },
       { type = "unlock-recipe", recipe = "sae-drop-crusher" },
       { type = "unlock-recipe", recipe = "sae-crushing" },
-      { type = "unlock-recipe", recipe = "sae-kamacite-smelting" },
-      -- The only machine that will take the crusher's second stream. Without it
-      -- fines accumulate from the first craft with nowhere to go.
+      { type = "unlock-recipe", recipe = "sae-kamacite-smelting" }
+    },
+    { type = "craft-item", item = "sae-ballast-drill" }),
+
+  -- The furnace for the crusher's second stream, once there is a pile of it.
+  --
+  -- **Fines are the crusher's second result, and a craft-item trigger counts
+  -- them.** That was measured before this was written, not assumed: on a
+  -- headless server a crusher on the Core fired a 50-fines craft-item trigger
+  -- off its own output, with nothing else making fines. The 50 cannot back the
+  -- crusher up while it waits: its fines slot holds a full stack of 100, so a
+  -- crusher with nothing taking fines out still reaches the trigger.
+  landfall("sae-vacuum-sintering", { "sae-gravity-crushing" },
+    {
       { type = "unlock-recipe", recipe = "sae-vacuum-furnace" },
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
     },
-    { type = "craft-item", item = "sae-crust-tap" }),
+    { type = "craft-item", item = "sae-kamacite-fines", count = 50 }),
+
+  -- The vent pump, once the furnace is built. Triggered by crafting a Vacuum
+  -- furnace, Vacuum sintering's own recipe, so reachable from this
+  -- technology's prerequisites and no further.
+  --
+  -- **Not by a kamacite plate**, as first agreed: craft-item counts everything
+  -- made since the game began, not since the technology became available, and
+  -- plate smelting lands with Gravity crushing. Almost every player smelts a
+  -- plate before the 50th fine, so the plate trigger was already met and Vent
+  -- tapping completed one tick after Vacuum sintering. A furnace can only be
+  -- crafted once sintering is researched, so this one cannot fire early.
+  landfall("sae-vent-tapping", { "sae-vacuum-sintering" },
+    {
+      { type = "unlock-recipe", recipe = "sae-vent-pump" }
+    },
+    { type = "craft-item", item = "sae-vacuum-furnace" }),
+
   -- Power that does not run out, earned by the first machine that outgrows the
   -- turbines.
   --
-  -- A tap and a turbine are landing-day power and Crust Tapping says as much.
+  -- A pump and a turbine are landing-day power and Crust Tapping says as much.
   -- The Vent Pump is the first building on this planet that runs continuously
   -- and the first that everything downstream waits on, so crafting one is the
   -- moment a player finds out what the turbines are worth. That is when the
   -- planet should offer them the fuel it precipitates for itself.
   --
-  -- The trigger obeys the rule this tier is built on: `sae-vent-pump` is Core
-  -- Survey's own recipe and Core Survey is this technology's only prerequisite,
-  -- so what fires it is reachable from its prerequisites and no further.
+  -- The trigger obeys the rule this tier is built on: `sae-vent-pump` is Vent
+  -- Tapping's own recipe and Vent Tapping is this technology's only
+  -- prerequisite, so what fires it is reachable from its prerequisites and no
+  -- further.
   --
   -- The effects land together because none of them is worth anything alone: a
   -- plant with no recipe is a shell, the recipe with no generator makes a cell
   -- nothing will burn, and the generator on its own is a burner whose fuel the
   -- Core cannot yet make. Radiant crushing comes with them because the
   -- technology that used to carry it is not on this tree.
-  landfall("sae-radiant-power", { "sae-core-survey" },
+  landfall("sae-radiant-power", { "sae-vent-tapping" },
     {
       { type = "unlock-recipe", recipe = "sae-reaction-plant" },
       { type = "unlock-recipe", recipe = "sae-radiant-precipitation" },

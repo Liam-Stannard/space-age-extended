@@ -171,15 +171,25 @@ data:extend({
     -- the full lift out to 32 tiles, gone by 96.
     type = "noise-expression",
     name = "sae_core_basin",
-    expression = "140 + 90 * multioctave_noise{x = x,\z
-                                               y = y,\z
+    expression = "sae_core_basin_at{px = x, py = y, reach = distance}"
+  },
+  {
+    -- The basin term at any point, not only the one being generated: the
+    -- siderane vents' starting field (crust-tap.lua) reads it at the places it
+    -- might stand, to keep its wells out of the pool. `reach` is the distance
+    -- from spawn.
+    type = "noise-function",
+    name = "sae_core_basin_at",
+    parameters = { "px", "py", "reach" },
+    expression = "140 + 90 * multioctave_noise{x = px,\z
+                                               y = py,\z
                                                seed0 = map_seed,\z
                                                seed1 = 8419,\z
                                                octaves = 3,\z
                                                persistence = 0.5,\z
                                                input_scale = 1/80,\z
                                                output_scale = 1}\z
-                  + 40 * clamp((96 - distance) / 64, 0, 1)"
+                  + 40 * clamp((96 - reach) / 64, 0, 1)"
   },
   {
     -- The radiant pool fills the basins: below `level` on the basin term it
@@ -289,13 +299,6 @@ local function core_tiles()
   settings["sae-radiant-shore"] = {}
   settings["sae-crust-glow-arc"] = {}
 
-  -- The crust vent is ours and always present, whatever tile pack is installed.
-  -- It has to be listed here or it never places at all: a planet's
-  -- `autoplace_settings["tile"]` is a whitelist, and a tile absent from it is
-  -- excluded no matter what its own autoplace says. Measured: sixteen chunks
-  -- generated exactly zero vents until this line existed.
-  settings["sae-crust-vent"] = {}
-
   return settings
 end
 
@@ -393,6 +396,7 @@ return function()
       ["sae-kamacite-ore"] = {},
       ["sae-melt-vent"] = {},
       ["sae-gas-vent"] = {},
+      ["sae-crust-vent"] = {},
       ["sae-core-rock"] = {}
     },
     autoplace_settings =
@@ -406,6 +410,7 @@ return function()
           ["sae-kamacite-ore"] = {},
           ["sae-melt-vent"] = {},
           ["sae-gas-vent"] = {},
+          ["sae-crust-vent"] = {},
           ["sae-core-boulder"] = {}
         }
       }

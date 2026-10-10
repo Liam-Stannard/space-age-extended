@@ -28,6 +28,24 @@ For each source image (1024x1024 renders from an image generator):
 
 Also writes a keyed 1024px master next to the strip under OUT_DIR/masters/
 so the keying can be judged at full size. Pillow only, no numpy.
+
+--mips mode: icons rendered per size, already transparent (no keying)
+
+    tools/key-icons.py --mips OUT_DIR TARGET BASE.png HALF.png QUARTER.png EIGHTH.png
+                       [--master MASTER.png]
+
+For item icons rendered in Blender (tools/blender/icon_rig.py): each mip level
+is its own render, finished for its size, so nothing is keyed, cropped or
+resized -- the four images are checked and packed into vanilla's strip as they
+are. Each must be square, half the one before (64/32/16/8 for a 64 px icon),
+and carry real alpha. Straight alpha is required and nothing is divided out: a
+level whose faint edge pixels (alpha < 96) are none of them brighter than
+their own alpha looks premultiplied and is warned about (a very dark object
+can trip it; look before trusting it). A level with any non-transparent
+pixel on its outer row or column is reported (nothing may touch the canvas
+edge). MASTER, if given, is copied to OUT_DIR/masters/TARGET.png as the master
+-- the largest render, for judging at full size. The keyed path above is
+untouched by this mode.
 """
 
 import os
@@ -253,7 +271,80 @@ def mip_strip(icon, base):
     return strip
 
 
+def looks_premultiplied(im):
+    """unpremultiply()'s test, without the fix, on the faint edge only (alpha
+    < 96), where a straight-alpha object of any but the darkest colour is
+    brighter than its alpha: none of them brighter, over enough to judge."""
+    px = im.load()
+    checked = violations = 0
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b, a = px[x, y]
+            if 0 < a < 96:
+                checked += 1
+                if max(r, g, b) > a + 2:
+                    violations += 1
+    return checked >= 12 and violations <= checked * 0.01
+
+
+def touches_edge(im):
+    a = im.getchannel("A").load()
+    w, h = im.size
+    return any(a[x, y] for x in range(w) for y in (0, h - 1)) or \
+        any(a[x, y] for y in range(h) for x in (0, w - 1))
+
+
+def pack_mips(argv):
+    """--mips OUT_DIR TARGET L0 L1 L2 L3 [--master M]: pack per-size renders as they are."""
+    argv = list(argv)
+    master = None
+    if "--master" in argv:
+        i = argv.index("--master")
+        master = argv[i + 1]
+        del argv[i:i + 2]
+    if len(argv) != 2 + MIP_LEVELS:
+        print(__doc__)
+        return 2
+    out_dir, name, levels = argv[0], argv[1], argv[2:]
+    ims = [Image.open(p) for p in levels]
+    base = ims[0].width
+    bad = []
+    for p, im, s in zip(levels, ims, mip_sizes(base)):
+        if im.size != (s, s):
+            bad.append("%s is %dx%d, expected %dx%d" % (p, im.width, im.height, s, s))
+        elif im.mode != "RGBA" or im.getchannel("A").getextrema()[0] == 255:
+            bad.append("%s has no transparency: render it with a transparent film" % p)
+        elif looks_premultiplied(im):
+            print("key-icons --mips: warning: %s looks premultiplied; the strip must be "
+                  "straight alpha" % p, file=sys.stderr)
+    if bad:
+        for b in bad:
+            print("key-icons --mips: " + b, file=sys.stderr)
+        return 1
+    strip = Image.new("RGBA", (sum(mip_sizes(base)), base), (0, 0, 0, 0))
+    x = 0
+    edges = []
+    for im in ims:
+        strip.paste(im, (x, 0))
+        if touches_edge(im):
+            edges.append(im.width)
+        x += im.width
+    path = os.path.join(out_dir, name + ".png")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    strip.save(path)
+    if master:
+        mpath = os.path.join(out_dir, "masters", name + ".png")
+        os.makedirs(os.path.dirname(mpath), exist_ok=True)
+        Image.open(master).convert("RGBA").save(mpath)
+    print("%-32s %dx%d per-size, straight alpha, edge %s" % (
+        name, strip.width, strip.height,
+        "clear" if not edges else "TOUCHED at " + "/".join(map(str, edges))))
+    return 0
+
+
 def main(argv):
+    if len(argv) > 1 and argv[1] == "--mips":
+        return pack_mips(argv[2:])
     if len(argv) < 3:
         print(__doc__)
         return 2

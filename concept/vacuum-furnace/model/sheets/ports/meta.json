@@ -1,0 +1,258 @@
+{
+ "pipe-N": {
+  "size": [
+   52,
+   20
+  ],
+  "by_pixel": [
+   0.5,
+   11.0
+  ],
+  "shift": [
+   0.01562,
+   0.34375
+  ],
+  "alpha": "the model's own",
+  "bbox": {
+   "ours_127": [
+    0,
+    0,
+    51,
+    20
+   ],
+   "vanilla_127": [
+    0,
+    0,
+    51,
+    20
+   ],
+   "ours_0": [
+    0,
+    0,
+    52,
+    20
+   ],
+   "vanilla_0": [
+    0,
+    0,
+    51,
+    20
+   ]
+  },
+  "bbox_diff_px": 0,
+  "beyond_alpha_max": 255,
+  "axis": {
+   "flange": {
+    "size_px": 51,
+    "centre_px": 0.5,
+    "at_row_v": 1.602
+   },
+   "pipe": {
+    "axis": 0.5,
+    "size": 51
+   },
+   "axis_offset_px": 0.0,
+   "flange_minus_ring_px": 0,
+   "note": "the stub's end flange (axis-<face>.png) against vanilla's straight pipe as drawn in the tile the input points into: centre offset across the pipe, and size across it"
+  },
+  "silhouette": {
+   "missed": 0,
+   "extra": 247,
+   "far_px": 1.41,
+   "filled": 0,
+   "note": "our silhouette (alpha > 127) against assembler 3's: px vanilla draws that ours misses, px ours draws that vanilla does not (inside the sheet and up to 4 px beyond it), the farthest edge disagreement in px; nothing is filled"
+  }
+ },
+ "pipe-E": {
+  "size": [
+   32,
+   74
+  ],
+  "by_pixel": [
+   -23.0,
+   2.0
+  ],
+  "shift": [
+   -0.71875,
+   0.0625
+  ],
+  "alpha": "the model's own",
+  "bbox": {
+   "ours_127": [
+    1,
+    2,
+    30,
+    71
+   ],
+   "vanilla_127": [
+    1,
+    2,
+    30,
+    71
+   ],
+   "ours_0": [
+    0,
+    0,
+    31,
+    74
+   ],
+   "vanilla_0": [
+    0,
+    0,
+    31,
+    73
+   ]
+  },
+  "bbox_diff_px": 0,
+  "beyond_alpha_max": 1,
+  "axis": {
+   "flange": {
+    "size_px": 52,
+    "centre_px": -1.0,
+    "at_col_u": 1.461
+   },
+   "pipe": {
+    "axis": -1.0,
+    "size": 52
+   },
+   "axis_offset_px": 0.0,
+   "flange_minus_ring_px": 0,
+   "note": "the stub's end flange (axis-<face>.png) against vanilla's straight pipe as drawn in the tile the input points into: centre offset across the pipe, and size across it"
+  },
+  "silhouette": {
+   "missed": 0,
+   "extra": 0,
+   "far_px": 0.0,
+   "filled": 0,
+   "note": "our silhouette (alpha > 127) against assembler 3's: px vanilla draws that ours misses, px ours draws that vanilla does not (inside the sheet and up to 4 px beyond it), the farthest edge disagreement in px; nothing is filled"
+  }
+ },
+ "pipe-S": {
+  "size": [
+   64,
+   70
+  ],
+  "by_pixel": [
+   0.0,
+   -24.5
+  ],
+  "shift": [
+   0.0,
+   -0.76562
+  ],
+  "alpha": "the model's own",
+  "bbox": {
+   "ours_127": [
+    1,
+    2,
+    62,
+    68
+   ],
+   "vanilla_127": [
+    1,
+    2,
+    62,
+    68
+   ],
+   "ours_0": [
+    0,
+    0,
+    64,
+    70
+   ],
+   "vanilla_0": [
+    0,
+    0,
+    63,
+    70
+   ]
+  },
+  "bbox_diff_px": 0,
+  "beyond_alpha_max": 1,
+  "axis": {
+   "flange": {
+    "size_px": 51,
+    "centre_px": 0.5,
+    "at_row_v": -1.445
+   },
+   "pipe": {
+    "axis": 0.5,
+    "size": 51
+   },
+   "axis_offset_px": 0.0,
+   "flange_minus_ring_px": 0,
+   "note": "the stub's end flange (axis-<face>.png) against vanilla's straight pipe as drawn in the tile the input points into: centre offset across the pipe, and size across it"
+  },
+  "silhouette": {
+   "missed": 0,
+   "extra": 6,
+   "far_px": 1.0,
+   "filled": 0,
+   "note": "our silhouette (alpha > 127) against assembler 3's: px vanilla draws that ours misses, px ours draws that vanilla does not (inside the sheet and up to 4 px beyond it), the farthest edge disagreement in px; nothing is filled"
+  }
+ },
+ "pipe-W": {
+  "size": [
+   32,
+   72
+  ],
+  "by_pixel": [
+   23.5,
+   0.5
+  ],
+  "shift": [
+   0.73438,
+   0.01562
+  ],
+  "alpha": "the model's own",
+  "bbox": {
+   "ours_127": [
+    1,
+    1,
+    29,
+    71
+   ],
+   "vanilla_127": [
+    1,
+    1,
+    29,
+    71
+   ],
+   "ours_0": [
+    0,
+    0,
+    32,
+    72
+   ],
+   "vanilla_0": [
+    0,
+    0,
+    31,
+    72
+   ]
+  },
+  "bbox_diff_px": 0,
+  "beyond_alpha_max": 1,
+  "axis": {
+   "flange": {
+    "size_px": 52,
+    "centre_px": -1.0,
+    "at_col_u": -1.461
+   },
+   "pipe": {
+    "axis": -1.0,
+    "size": 52
+   },
+   "axis_offset_px": 0.0,
+   "flange_minus_ring_px": 0,
+   "note": "the stub's end flange (axis-<face>.png) against vanilla's straight pipe as drawn in the tile the input points into: centre offset across the pipe, and size across it"
+  },
+  "silhouette": {
+   "missed": 0,
+   "extra": 16,
+   "far_px": 2.0,
+   "filled": 0,
+   "note": "our silhouette (alpha > 127) against assembler 3's: px vanilla draws that ours misses, px ours draws that vanilla does not (inside the sheet and up to 4 px beyond it), the farthest edge disagreement in px; nothing is filled"
+  }
+ }
+}

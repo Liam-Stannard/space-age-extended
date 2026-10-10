@@ -61,8 +61,8 @@ be smelted, the fines to the carbonyl line."*
 | Surface conditions | `gravity` ≥ 45 — the Core's surface alone |
 | Module slots | 2 |
 
-**The recipe, first pass:** 2 kamacite ore → 3 crushed kamacite + 1 kamacite
-fines, 2 s.
+**The recipe:** 4 kamacite ore → 6 crushed kamacite + 2 kamacite fines, 4 s:
+one drop of the weight, at the rate the engine plays the stroke.
 
 **Plate smelting must be re-sourced onto crushed kamacite** at the same time this
 lands, or T1 remains skippable and this building is decoration.
@@ -138,6 +138,11 @@ the moving crown are what stop it reading as storage.
   reads as a container.
 * An **armoured inspection hatch** with locking dogs on the front face — the only
   way to the anvil bed, which is never seen in normal operation.
+* **The status lamp**: a caged lamp on a bolted bracket on the roof's kerb at the
+  south-east, its lens white and domed under a wire cage, about 0.16 tiles
+  across, in front of the deck so nothing that moves passes before it. The
+  lamp's old boss above the hatch is blanked with a bolted cover (Liam,
+  2026-10-09: the lens there drew 7×4 px on screen and did not register).
 * **No output port of any sort.** This is an `assembling-machine`: inserters take
   from any adjacent tile, so a chute would promise something the entity cannot
   keep — see the template's §8 rule 3.
@@ -156,6 +161,21 @@ read on its own.
 
 ## 3.3 Colour Palette
 
+**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
+steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
+Each also carries one material of its own on its main surfaces, so a player tells them
+apart by colour before shape, as vanilla's electric furnace, assembler and foundry
+are told apart. Within the building, variation comes from replacement panels in a
+slightly different shade, small stencilled markings, and rust that differs by place:
+dry orange on tops, dark wet streaks below fittings.
+
+**This building's: red-oxide primer.** The armour and buttresses are painted
+`#6E2E22` → `#8A3E2C`, chipped through to bare steel wherever the machine is struck
+or worked — the collar, the hatch's dogs, the buttress edges, the deck round the
+gears. Painted once, battered since. The gear deck, gears and weight keep their
+bare-metal colours above.
+
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Frame and posts | `#4A463F` → `#6E685C` | the structure |
@@ -163,7 +183,7 @@ read on its own.
 | Anvil bed | `#9A948A` | struck surface, palest thing on the machine |
 | Hazard banding | `#C8A23A` | the base plate edge only |
 | Lift gear | `#8A857C` | gears, rack, pawl and collar — brighter than the armour, so the mechanism reads as a separate assembly |
-| Lamp lens | `#FFFFFF` | painted white; the engine tints it via `status_colors` |
+| Lamp lens | `#FFFFFF` | the caged lamp on the south-east kerb; painted white, the engine tints it via `status_colors` |
 | Copper and brass | `#8A5A32` → `#C88A4A` | bus runs, gear furniture, bearing caps, bolt lines |
 
 *The "ore and fines" row is gone with the chutes it described.* **The copper row
@@ -361,10 +381,11 @@ survive at that size and should not be attempted.
 neither affects the art.**
 
 - ~~**One recipe or two?**~~ **One**, with two products, as implemented:
-  `sae-crushing` takes 2 kamacite ore to 3 crushed kamacite and 1 fines. The
-  question mattered because it decided "whether the two chutes are simultaneous
-  or alternate" — and there are no chutes (§8), so it no longer touches the
-  plate. A coarse/fine split remains available as a branch if T1 ever wants one.
+  `sae-crushing` takes 4 kamacite ore to 6 crushed kamacite and 2 fines in
+  4 s. The question mattered because it decided "whether the two chutes are
+  simultaneous or alternate" — and there are no chutes (§8), so it no longer
+  touches the plate. A coarse/fine split remains available as a branch if T1
+  ever wants one.
 - ~~**Do the fines have a home yet?**~~ **Yes, two.** `sae-fines-smelting` takes
   4 fines to a kamacite plate, and `sae-metal-carbonyl` takes 4 more into the
   carbonyl line. T3 exists.

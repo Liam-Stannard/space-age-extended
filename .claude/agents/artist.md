@@ -76,6 +76,22 @@ decision; say in your report that it is ready and what the measurements are.
 - Do not commit, merge, push or switch branch.
 - Anything that needs a client to check (a sheet loading, an animation
   playing) is stated as unchecked, not assumed.
+- **Long jobs and waiting.** Start the job itself (a render, a game client
+  or server) with the Bash tool's `run_in_background`; the harness tells
+  you when it exits. Never write a separate polling loop for a job you
+  started. If a wait is unavoidable: one at a time, wrapped in
+  `timeout <seconds>` (at most 3600), watching the job's PID rather than a
+  log. `tools/blender/render.sh` writes `<out-dir>/render.done`
+  (`exit <code>`) when it ends. A project hook
+  (`.claude/hooks/no-ghost-waits.py`) refuses unbounded or duplicate
+  polling loops.
+- **Clean up before you report** (Liam, 2026-10-10): stop every Xvfb,
+  Blender and Factorio process you started, by PID. Delete only scratch
+  folders you created yourself in this run, each by its exact path, keeping
+  what your report points at. The session scratchpad is shared with other
+  agents: never delete across it (no `rm -rf <scratchpad>/*`, no
+  `find <scratchpad> ... -exec rm`), and never touch a folder you did not
+  create. When unsure, leave it and say so in your report.
 
 ## Report
 

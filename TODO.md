@@ -16,6 +16,10 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   and the Vent Pump exists only to trigger Radiant power while the line that
   used it is gone. Gravity settling (`design/04-the-core.md` §8) is the
   candidate on file.
+- **Fines need their advanced use.** Metal carbonyl
+  (`design/06-core-production-tree.md` T3) is the chosen later sink for
+  kamacite fines, beside fines smelting. It lands with the next tier of the
+  Core's tree.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
   nothing replaces it, so a playthrough never ends.
 - **Re-plan stages 2–4 of the radiant cycle against what exists.** They name
@@ -31,18 +35,19 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **Rename the melt vent to the kamacite vent.** The four player-facing
   strings, `sae-melt-vent` → `sae-kamacite-vent` with a migration, and "melt"
   in `design/` once the docs are rewritten for the rework.
+- **Rename crust gas to siderane in the docs.** The player-facing names
+  changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
+  extraction); `design/` and the other specs still say "crust gas", "crust
+  tap" and "crust turbine" about 50 times. Rewrite them with the rework.
+  Internal names (`sae-crust-*`) stay. With it, `design/08-core-power.md`
+  lines 18 and 24–27: radiant solution is drawn by a vanilla offshore pump
+  at the pool, and siderane by the Gas Pump, not one tap drawing both.
 
 ## Building art in Blender
 
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Vacuum Furnace** — redesigned 2026-10-02 to take one rotatable fluid input;
-  finished model in progress (`vacuum-furnace-model`), then wiring: rotatable
-  fluid box, rendered pipe pictures, `status_colors` per §3.1's fault-lamp table.
-- **Drop Crusher** — model (`drop-crusher-model`), then wiring.
-- **Crust Tap** — model (`crust-tap-model`), then wiring once the engine test
-  says whether `fluid_animation` can carry the working-only frost and seam.
 - **Radiant Generator** — model (`radiant-generator-model`), then wiring with
   an `idle_animation`, so a fuelless generator stops glowing.
 - **Ballast Drill** — model (`ballast-drill-model`), then wiring: one plate,
@@ -50,9 +55,8 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   art committed without sign-off (`ballast-drill/stroke*`).
 - **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
   gutter base, rendered pipe pictures, vanilla covers.
-- **The Drop Crusher, Ballast Drill and Vacuum Furnace lamps have no
-  `status_colors`**, so they likely draw dark, as the reaction plant's did.
-  Each wiring task sets them.
+- **The Ballast Drill's lamp has no `status_colors`**, so it likely draws
+  dark, as the reaction plant's did. Its wiring task sets them.
 
 ## Blender pipeline
 

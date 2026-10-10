@@ -971,6 +971,10 @@ graphics_set =
       {
         filename = RP .. "drive.png", width = 200, height = 201,
         frame_count = 12, line_length = 6, animation_speed = 0.4,
+        -- plays at 0.2 frames a tick in game: a crafting machine's animation
+        -- runs at animation_speed x crafting_speed x animation_progress, and
+        -- animation_progress defaults to 0.5. One 12-frame loop a second
+        -- (measured, 2026-10-10).
         shift = { 0, 0 }, scale = 0.5
       }
     },

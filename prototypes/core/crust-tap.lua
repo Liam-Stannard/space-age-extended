@@ -1,80 +1,54 @@
--- N8. The Crust Tap, its vent, and the turbine that burns what it draws.
+-- N8. The Gas Pump, the siderane vent it stands on, and the turbine that burns
+-- what it draws.
 --
--- concept/crust-tap/building-spec-crust-tap.md. The largest of the nine, because it is
--- not one prototype: it is a fluid, a sited tile, a collision layer to identify
--- that tile, the tap itself and a companion generator.
+-- concept/crust-tap/building-spec-crust-tap.md, §A. The largest of the nine,
+-- because it is not one prototype: it is a fluid, a vent resource, the pump and
+-- a companion generator.
 --
--- **This is the Core's landing-day power**, and it should stay small. Roughly one
--- turbine per tap and about 1.8 MW for the pair -- a foothold, not a power
--- strategy. A player who tiles fifty taps should still find the melt-and-steam
--- line the better answer by a wide margin, or the Core's central tension is
--- undercut by its own tutorial.
+-- **This is the Core's landing-day power**, and it should stay small: a foothold,
+-- not a power strategy. A player who builds fifty pumps should still find the
+-- melt-and-steam line the better answer by a wide margin, or the Core's central
+-- tension is undercut by its own tutorial.
 --
--- Two measurements from spike S10 shape everything here, and both are the kind
--- that pass every check in the repo while being wrong:
+-- **One pump for every gas, on vents that run down.** Siderane used to come up
+-- through an offshore pump standing on a vent *tile*, and a tile holds no
+-- amount, so it never ran down; helium-3 came through the Vent Pump. Both now
+-- come through the Gas Pump, a `mining-drill` as the pumpjack is, standing on
+-- vent *resources* in the `sae-gas` category. Depletion belongs to the resource,
+-- as an oil field's does: the engine slows a vent as it is drawn and reports
+-- `no_minable_resources` with no script. A future gas costs a resource and a
+-- fluid, and no new machine. The Vent Pump keeps the melt vent, alone.
 --
---   1. **An offshore pump draws from the tile beneath it, not from its own fluid
---      box filter.** Built on bare ground it reports `status = working` and
---      produces nothing at all; `get_fluid_source_fluid()` returns nil. So the
---      tap is *sited* -- it needs a vent tile carrying the fluid, which makes it
---      a fourth sited resource beside ore, melt vents and gas vents rather than
---      something the player tiles at will. That is the better design as well as
---      the working one: power becomes a place you go, and the cap is enforced by
---      the map instead of by a tuning number.
+-- Two measurements from spike S10 shape the turbine, and both are the kind that
+-- pass every check in the repo while being wrong:
 --
---   2. **`burns_fluid` ignores temperature entirely**, taking its power from the
+--   1. **`burns_fluid` ignores temperature entirely**, taking its power from the
 --      fluid's `fuel_value`. Measured: a turbine burning gas at 25 degrees with
 --      `fuel_value = "200kJ"` produced exactly its declared 1.80 MW under load.
---      That is why the gas needs no temperature and the tap never declares one --
---      which matters, because an offshore pump *has no field* to set an output
---      temperature and would emit vanilla steam at its 15-degree default, where
---      a steam turbine wants 500.
+--      That is why the gas needs no temperature and the pump never declares
+--      one: a steam turbine wants 500 degrees, and nothing here is that hot.
 --
---   3. **`maximum_temperature` is mandatory on a generator even so.** Leaving it
+--   2. **`maximum_temperature` is mandatory on a generator even so.** Leaving it
 --      out fails the data stage outright. It does no work in this mode; it still
 --      has to be declared.
 --
 -- Proven end to end on the rig, because none of it is visible from the data
--- stage: a tap on a vent, piped to a turbine, under load, produced exactly
--- **1,800,000 W** -- the declared figure to the watt. Three things had to be
--- fixed to get there, and each looked fine until it was measured:
+-- stage: a pump on a vent, piped to a turbine, under load, produced the declared
+-- 1.8 MW with no electric network anywhere on the surface.
 --
---   * `fluid_source_offset` at { 0, 0 } lands on the corner where the four
---     footprint tiles meet, and the tap drew nothing at all while reporting
---     `working`. It has to sit squarely inside one tile.
---   * An offshore pump does not buffer. Unconnected it reads 0.0 fluid for ever
---     and looks broken; piped to a tank it filled at 0.5/tick as declared. The
---     zero was the test, not the tap.
---   * The vent tile has to be listed in the planet's `autoplace_settings.tile`
---     whitelist in map-gen.lua. Its own autoplace is not enough -- sixteen
---     chunks generated exactly zero vents until that line existed.
---
--- And one that turned out to be the *test* being wrong rather than the building:
--- `can_place_entity` defaults to a lenient check that ignores tile buildability
--- entirely, so the tap appeared to be buildable on bare ground. Checked the way
--- a player actually builds -- `build_check_type = manual` -- it is refused off a
--- vent and accepted on one. Anything testing a buildability rule has to pass
--- that, or it is not testing the rule.
+-- And one that is about the *test* rather than the building: `can_place_entity`
+-- defaults to a lenient check, which is not how a player builds. Anything testing
+-- where this pump may stand has to pass `build_check_type = manual`, or it is
+-- not testing the rule.
 
 local item_sounds = require("__base__.prototypes.item_sounds")
+local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
+local resource_autoplace = require("resource-autoplace")
 
 local derive = require("prototypes.derive")
 -- Defines the `circuit_connector_definitions` and `universal_connector_template`
--- globals the tap's wire post is built from, as base's own entities file does.
+-- globals the pump's wire post is built from, as base's own entities file does.
 require("circuit-connector-sprites")
-
---------------------------------------------------------------------------------
--- A collision layer, so the tap can require its own ground.
---
--- `tile_buildability_rules` identifies tiles by collision layer, and vanilla's
--- offshore pump uses `water_tile` -- which is no use here, because the vent is
--- dry ground on a planet with no water at all. A private layer is the only way
--- to say "this tile and no other".
---------------------------------------------------------------------------------
-
-data:extend({
-  { type = "collision-layer", name = "sae-crust-vent" }
-})
 
 --------------------------------------------------------------------------------
 -- The gas.
@@ -92,85 +66,231 @@ data:extend({
     subgroup = "fluid",
     order = "z[sae]-e[crust-gas]",
     default_temperature = 25,
-    base_color = { r = 0.55, g = 0.48, b = 0.30 },
-    flow_color = { r = 0.75, g = 0.68, b = 0.45 },
+    -- Chartreuse, #A8D82A (Liam, 2026-10-09): no vanilla fluid and no other in
+    -- this mod is a bright yellow-green, so siderane reads as itself in a pipe
+    -- and in the Gas Pump's sight glass. The ochre it had sank into the brown
+    -- steel round it.
+    base_color = { r = 0.66, g = 0.85, b = 0.16 },
+    flow_color = { r = 0.82, g = 0.95, b = 0.50 },
     fuel_value = "200kJ",
     auto_barrel = false
   }
 })
 
 --------------------------------------------------------------------------------
--- The vent tile.
+-- The siderane vent.
 --
--- `fluid` is the whole point of it: that field, and not the tap's fluid box, is
--- where an offshore pump gets what it pumps.
+-- A resource, as crude oil is, and for crude oil's reason: an amount that falls
+-- as it is drawn. `infinite`, so it never quite stops -- `minimum` is the floor
+-- a drawn-out vent settles at, crude oil's own fifth of `normal`, so an old vent
+-- still turns a turbine at a fifth of its speed. The landing's power fades into
+-- a trickle rather than going dark, and the player has a reason to move on to
+-- the melt line.
 --
--- The art is a stand-in. A Factorio tile is three sheets at 1x/2x/4x with
--- sixteen variants each, plus five transition groups and their masks, all of
--- which must tile seamlessly against every neighbour -- so vanilla's geometry is
--- borrowed whole and only the map colour distinguishes it for now.
--- `tools/build-whisker-bed-tile.py` and the whisker bed are the precedent for
--- doing this properly later.
+-- **The yield is read against `normal`.** A vent holding exactly `normal` gives
+-- 9 siderane a second to a pump of mining speed 1 -- one 9-unit cycle a second,
+-- which is exactly one Siderane turbine's burn, 1.8 MW -- and a vent at
+-- `minimum` gives 1.8. One vent, one turbine: the landing's power is counted in
+-- vents. `normal` and `minimum` are crude oil's, so the fade takes as long as an
+-- oil field's: ten per cycle off the amount, some six and a half hours of one
+-- pump to reach the floor.
+--
+-- **And the vents are thin**, as crude oil's are, so that count stays a
+-- foothold. The landing gets a field of four wells, every one between 40 and 56
+-- tiles from spawn and every one holding exactly `normal`; beyond 150 tiles
+-- there are crude oil's scattered patches, thinned by `random_probability`.
+-- The first build, at the other vents' density, put 13 in one starting patch.
+--
+-- 2x2, under the pump that draws it.
+--
+-- **The sprite is the helium-3 vent's**, crude oil's sheet, tinted toward the
+-- gas's own chartreuse, and the map colour is the helium vent's turned the same way.
+-- Both are the gas vent's stand-ins until a vent of the Core's own is drawn.
 --------------------------------------------------------------------------------
-
--- Terrain, not a floor: natural ground, filed with the Core's tiles, never
--- mined, never blueprinted.
-local vent = derive.tile_from("stone-path", "sae-crust-vent")
-derive.placeholder_art(vent, "wears stone-path's terrain sheets until its own exist")
-vent.subgroup = "sae-core-tiles"
-vent.order = "a[crust-vent]"
-vent.layer_group = "ground-natural"
-vent.fluid = "sae-crust-gas"
-vent.can_be_part_of_blueprint = false
-vent.map_color = { r = 0.50, g = 0.42, b = 0.22 }
-vent.collision_mask = {
-  layers = { ground_tile = true, ["sae-crust-vent"] = true }
-}
-vent.autoplace = {
-  -- Rare and clustered, and decisive where it does fire. Tiles compete on
-  -- probability and the highest wins, so a gentle bump above zero loses to
-  -- whatever ground the temperature/moisture/aux system already wanted. Below
-  -- the threshold this is strongly negative and the vent never appears; above
-  -- it, it wins outright. The result is patches a player travels to rather than
-  -- a texture spread across the crust.
-  probability_expression = "(sae_core_crust_vent - 1.38) * 1000"
-}
-data:extend({ vent })
 
 data:extend({
-  {
-    type = "noise-expression",
-    name = "sae_core_crust_vent",
-    expression = "multioctave_noise{x = x,\z
-                                    y = y,\z
-                                    seed0 = map_seed,\z
-                                    seed1 = 6427,\z
-                                    octaves = 2,\z
-                                    persistence = 0.5,\z
-                                    input_scale = 1/40,\z
-                                    output_scale = 1}"
-  }
+  { type = "autoplace-control", name = "sae-crust-vent", category = "resource", richness = true, order = "z[sae]-bb" }
 })
 
+local vent_sheet = table.deepcopy(data.raw.resource["crude-oil"].stages.sheet)
+vent_sheet.tint = { r = 0.85, g = 1.0, b = 0.45 }
+
+-- STARTING_FIELD: the landing's own wells, by offset from the field's centre in
+-- tiles. Each is one vent: wells are at least five tiles apart, so two never
+-- touch, and a vent is 2x2, so a well never holds two.
+local STARTING_FIELD = { { 0, 0 }, { 5, -3 }, { -2, 5 }, { 6, 4 } }
+-- How far out the field's centre sits. The wells spread up to eight tiles round
+-- it, so every one lands between 40 and 56 tiles from spawn: clear of the
+-- landing spot, as vanilla keeps its starting ore 40 out, and inside 64.
+local STARTING_REACH = 48
+-- How many bearings the field tries round the compass.
+local BEARINGS = 16
+
+do
+  -- **Vanilla's starting patch could not be used.** It lands anywhere from 40
+  -- to 150 tiles out and does not know the radiant pool is there: measured over
+  -- twelve seeds it put none inside 64 tiles on one, six on another, and dropped
+  -- a whole patch into the pool. So the field reads the basin term
+  -- (map-gen.lua) at sixteen bearings and stands at the driest -- the one
+  -- furthest above the pool. On most maps every bearing is dry and the choice
+  -- is the terrain's; on a map whose landing is nearly an island it is the
+  -- only way out of the water. The bearings start from the map seed's, so on a
+  -- flat map the field still moves from map to map.
+  local function bearing(k)
+    return string.format("(2 * pi * (map_seed_normalized + %d / %d))", k, BEARINGS)
+  end
+  local locals = {}
+  for k = 0, BEARINGS - 1 do
+    locals["v" .. k] = string.format("sae_core_basin_at{px = %d * cos(%s), py = %d * sin(%s), reach = %d}",
+      STARTING_REACH, bearing(k), STARTING_REACH, bearing(k), STARTING_REACH)
+    if k == 0 then
+      locals.best0 = "v0"
+      locals.pick0 = bearing(0)
+    else
+      locals["best" .. k] = string.format("max(best%d, v%d)", k - 1, k)
+      locals["pick" .. k] = string.format("if(v%d > best%d, %s, pick%d)", k, k - 1, bearing(k), k - 1)
+    end
+  end
+  locals.b = "pick" .. (BEARINGS - 1)
+  local terms = {}
+  for i, w in ipairs(STARTING_FIELD) do
+    local wx = string.format("((%d) * cos(b) - (%d) * sin(b) + %d * cos(b))", w[1], w[2], STARTING_REACH)
+    local wy = string.format("((%d) * sin(b) + (%d) * cos(b) + %d * sin(b))", w[1], w[2], STARTING_REACH)
+    terms[i] = string.format("(abs(x - %s) < 1) * (abs(y - %s) < 1)", wx, wy)
+  end
+  data:extend({
+    {
+      type = "noise-expression",
+      name = "sae_crust_vent_start",
+      -- And never in the pool or on its shore, well by well: the pool's tiles
+      -- refuse a resource outright, and the shore is where the solution is drawn.
+      expression = "(sae_core_basin > 92) * min(1, " .. table.concat(terms, " + ") .. ")",
+      local_expressions = locals
+    }
+  })
+end
+
+-- Everything else is crude oil's way: patches of scattered wells, thinned by
+-- `random_probability`, and none of them inside the starting area -- with
+-- `has_starting_area_placement = false` they fade in from 150 tiles out.
+local regular = resource_autoplace.resource_autoplace_settings
+{
+  name = "sae-crust-vent",
+  order = "d",
+  base_density = 0.8,
+  random_probability = 1 / 10,
+  random_spot_size_minimum = 1,
+  random_spot_size_maximum = 1,
+  additional_richness = 300000,
+  has_starting_area_placement = false
+}
+local on = "(var('control:sae-crust-vent:size') > 0)"
+local vent_autoplace =
+{
+  -- Placed before every other resource, so the kamacite's starting patch
+  -- cannot take a well's ground: measured, it took two of four on one seed.
+  -- Resources earlier in this order win the ground they share.
+  order = "a",
+  probability_expression = "max(" .. regular.probability_expression .. ", " .. on .. " * sae_crust_vent_start)",
+  -- A starting well holds exactly `normal`, so the landing's pumps each run
+  -- at the full 9 a second; the patches beyond hold what crude oil's do.
+  richness_expression = "if(sae_crust_vent_start > 0, " .. on ..
+    " * var('control:sae-crust-vent:richness') * 300000, " .. regular.richness_expression .. ")"
+}
+
+local crust_vent =
+{
+  type = "resource",
+  name = "sae-crust-vent",
+  icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+  flags = { "placeable-neutral" },
+  category = "sae-gas",
+  subgroup = "mineable-fluids",
+  order = "z[sae]-bb[crust-vent]",
+  infinite = true,
+  -- A vent is one well, not a field of tiles, so it is not snapped to the
+  -- resource grid -- as crude oil is not.
+  map_grid = false,
+  highlight = true,
+  minimum = 60000,
+  normal = 300000,
+  infinite_depletion_amount = 10,
+  resource_patch_search_radius = 12,
+  tree_removal_probability = 1,
+  tree_removal_max_distance = 32 * 32,
+  minable =
+  {
+    mining_time = 1,
+    results =
+    {
+      { type = "fluid", name = "sae-crust-gas", amount = 9 }
+    }
+  },
+  walking_sound = tile_sounds.walking.oil({}),
+  driving_sound = tile_sounds.driving.oil,
+  collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
+  selection_box = { { -1, -1 }, { 1, 1 } },
+  autoplace = vent_autoplace,
+  stage_counts = { 0 },
+  stages = { sheet = vent_sheet },
+  map_color = { r = 0.66, g = 0.85, b = 0.16 },
+  -- The colour the Gas Pump's sight glass shows while it draws from this vent:
+  -- siderane's own chartreuse, its `base_color` above.
+  mining_visualisation_tint = { r = 0.66, g = 0.85, b = 0.16 }
+}
+-- Marked, as the vent tile it replaces was: vanilla's sheet, until the Core's
+-- own vent is drawn.
+derive.placeholder_art(crust_vent, "wears crude oil's resource sheet, tinted, until its own exists")
+data:extend({ crust_vent })
+
 --------------------------------------------------------------------------------
--- The tap.
+-- The pump.
 --
--- 2x2 and sited on the vent. `fluid_source_offset` is {0, 0} rather than
--- vanilla's {0, -1}: vanilla's pump stands on the shore and reaches into the
--- water beside it, while this one stands directly on what it is drawing from.
+-- From the pumpjack, because the pumpjack is the vanilla machine that draws a
+-- fluid out of a resource: an output fluid box and no input, and nothing for
+-- `vector_to_place_result` to place, since nothing it makes is an item. It
+-- takes the `sae-gas` category alone, so it stands on a gas vent and nowhere
+-- else -- not on bare ground, and not on the melt vent, which is the Vent
+-- Pump's.
+--
+-- **No power at all: a `void` energy source.** The landing has no grid until
+-- this pump and its turbine are running, so the pump cannot need one.
 --------------------------------------------------------------------------------
 
-local tap = derive.from("offshore-pump", "offshore-pump", "sae-crust-tap")
-tap.icon = "__space-age-extended__/graphics/icons/crust-tap.png"
-tap.minable = { mining_time = 0.3, result = "sae-crust-tap" }
-tap.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
-tap.selection_box = { { -1, -1 }, { 1, 1 } }
-tap.tile_width = 2
-tap.tile_height = 2
--- The offshore pump is 1x2 and its rubble and wire post are placed for that.
--- A 2x2's rubble, and a connector on the near corner as the accumulator's is.
-tap.corpse = "medium-small-remnants"
-tap.circuit_connector = circuit_connector_definitions.create_vector(
+local pump = derive.from("mining-drill", "pumpjack", "sae-gas-pump")
+pump.icon = "__space-age-extended__/graphics/icons/gas-pump.png"
+pump.icon_size = 64
+pump.minable = { mining_time = 0.3, result = "sae-gas-pump" }
+pump.resource_categories = { "sae-gas" }
+pump.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
+pump.selection_box = { { -1, -1 }, { 1, 1 } }
+pump.mining_speed = 1
+-- The burner drill's reach, the four tiles under the pump, and not the
+-- pumpjack's 0.49. **Measured, not assumed:** the engine places every resource
+-- at a tile centre, a 2x2 vent included, while a 2x2 machine's centre is a tile
+-- corner -- so the pumpjack's half-tile reach from that corner contains no tile
+-- centre at all, and a pump built over a vent found nothing to mine. A drill
+-- finds a resource by its position, so this reach takes the vent under any one
+-- of the pump's four tiles. Vents are 2x2 and never overlap, so it never takes
+-- two.
+pump.resource_searching_radius = 0.99
+-- Nothing it makes is an item, so nothing is placed; but the field is
+-- mandatory on a mining drill (the data stage refuses the pump without it), so
+-- it stays at the pumpjack's own inert { 0, 0 }.
+pump.vector_to_place_result = { 0, 0 }
+pump.module_slots = 0
+-- And no beacons either, so nothing but the vent sets the rate: a fresh vent is
+-- one turbine's burn and no more. Mining productivity research still applies.
+pump.effect_receiver = { uses_module_effects = false, uses_beacon_effects = false }
+pump.energy_source = { type = "void" }
+pump.surface_conditions = { { property = "gravity", min = 45 } }
+pump.max_health = 150
+-- The pumpjack is 3x3 and its rubble, explosion and wire post are placed for
+-- that. A 2x2's rubble, vanilla's 2x2 drill's explosion, and a connector on the
+-- near corner as the accumulator's is.
+pump.corpse = "medium-small-remnants"
+pump.dying_explosion = "burner-mining-drill-explosion"
+pump.circuit_connector = circuit_connector_definitions.create_vector(
   universal_connector_template,
   {
     { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
@@ -179,106 +299,193 @@ tap.circuit_connector = circuit_connector_definitions.create_vector(
     { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true }
   }
 )
-tap.pumping_speed = 0.5 -- ~30/s, per the spec
--- Squarely inside one of the four footprint tiles, not on the corner they meet
--- at. Measured: at { 0, 0 } the offset lands on the point where four tiles meet
--- and the tap drew nothing at all -- `status = working`, fluid 0.0, which is
--- precisely the S10 silent failure this building was redesigned to avoid.
-tap.fluid_source_offset = { 0.5, 0.5 }
-tap.surface_conditions = { { property = "gravity", min = 45 } }
-tap.fluid_box = {
+-- A gas pump hisses rather than nods: the offshore pump's sounds, which this
+-- building wore when it was one, in place of the nodding donkey's.
+do
+  local offshore = data.raw["offshore-pump"]["offshore-pump"]
+  pump.working_sound = table.deepcopy(offshore.working_sound)
+  pump.open_sound = table.deepcopy(offshore.open_sound)
+  pump.close_sound = table.deepcopy(offshore.close_sound)
+end
+-- One connection, on a tile centre. On a 2x2 the middle of a face is the seam
+-- between two tiles and a pipe connects to nothing there, so the outlet sits at
+-- { 0.5, -0.5 } and rotates with the building round the four tile centres, as
+-- §24's table gives: east { 0.5, 0.5 }, south { -0.5, 0.5 }, west
+-- { -0.5, -0.5 }. The pumpjack's corner-walking `positions` list goes.
+pump.input_fluid_box = nil
+pump.output_fluid_box = {
   volume = 1000,
-  pipe_covers = tap.fluid_box.pipe_covers,
+  pipe_covers = pump.output_fluid_box.pipe_covers,
   pipe_connections = {
-    -- On a 2x2 the tile centres are at +/-0.5, and a pipe connection has to sit
-    -- inside the bounding box rather than on its edge.
     { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
   }
 }
--- Buildable only on a vent, and this is the rule that makes the tap sited. The
--- area is the footprint itself, because the tap stands on its source.
+-- Art: the Gas Pump's Blender model (concept/crust-tap/model/crust_tap.py,
+-- signed off by Liam 2026-10-09 after its "bulkier" round, and its pumping
+-- animation 2026-10-10, round a2): a square pump casing in faded green with its
+-- corners cut, on a plinth held by corner anchors; a flat riveted lid carrying
+-- the wellhead and a compressor housing; orthogonal pipework, hoses and cables
+-- over it; the burst disc; a sight glass inline in the lid's header; and the
+-- riser. Ours, so no `derive.placeholder_art`.
 --
--- The rule names a collision layer, and two tiles carry that layer: the
--- `sae-crust-vent` tile above, and `sae-radiant-shore`
--- (prototypes/core/tiles.lua). So this one rule
--- lets the tap be built on either -- on a vent for gas, on the pool's shore for
--- solution -- which is deliberate, and is why a change to the shore's
--- `collision_mask` is a change to where the tap may stand.
-tap.tile_buildability_rules = {
-  {
-    area = { { -0.9, -0.9 }, { 0.9, 0.9 } },
-    required_tiles = { layers = { ["sae-crust-vent"] = true } },
-    colliding_tiles = { layers = {} }
-  }
-}
--- Art: the Bolted Collar, option A of five (concept/crust-tap/options/).
---
--- FOUR PLATES, DRAWN RATHER THAN ROTATED, because on this building the riser is
--- the fluid box and a riser pointing the wrong way is the fluid box in the wrong
--- place. All four were drawn in one strip so they are unmistakably four
--- rotations of one machine, and `tools/cut-rotation-strip.py` splits them.
---
--- **Two things about the cut are not obvious.** The scale comes from the BASE
--- SQUARE rather than from the content, because the riser leaves a different face
--- in each view and fitting each view to its own content box would draw four
--- machines at four sizes. And each plate is shifted so the base's centre, not
--- the canvas's, lands on the tile: centre an east plate on its content and the
--- whole building slides left to make room for a pipe that is meant to hang over
--- the edge.
+-- FOUR DIRECTIONS, RENDERED FROM ONE MODEL, because on this building the riser
+-- is the fluid box and a riser pointing the wrong way is the fluid box in the
+-- wrong place. Only the riser turns; everything else is the same in all four,
+-- and the riser's mouth sits on the connection above by construction.
 --
 -- **The riser sits on a TILE CENTRE, half a tile off the middle of its face.**
--- That is the correction stage 1 found: this is a 2x2, so the middle of a face
--- is the seam between two tiles and a pipe connects to nothing there. The
--- connection below is declared at { 0.5, -0.5 } -- a tile centre -- and the art
--- now agrees with it in all four rotations.
-local CT = "__space-age-extended__/graphics/entity/crust-tap/"
-local function plate(dir, w, h, sx, shadow_w, shadow_h, ssx)
-  return {
-    layers = {
-      {
-        filename = CT .. "base-" .. dir .. ".png",
-        priority = "high",
-        width = w,
-        height = h,
-        shift = { sx, 0 },
-        scale = 0.5
-      },
-      {
-        filename = CT .. "base-" .. dir .. "-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = shadow_w,
-        height = shadow_h,
-        shift = { sx + ssx, 0 },
-        scale = 0.5
-      }
-    }
+-- That is the correction §24 records, and the model agrees with the connection
+-- above in all four rotations.
+--
+-- Each direction is three layers and a glass:
+--
+--   - the plate, the casing less its moving parts, one frame repeated to the
+--     stroke's 24 -- vanilla's biochamber arrangement, as the Ballast Drill's;
+--   - the pump layer, the crank wheel, the piston rod it drives and the gauge
+--     needle that swings with each stroke, 24 frames of one stroke;
+--   - the shadow, one frame repeated. The parts that move are small against
+--     the shadow and it is not split to follow them;
+--   - the sight glass's contents, below, 24 frames of gas moving in the glass.
+--
+-- Every size, shift, frame count and line length below is copied from the
+-- model's sheets/meta.json; none was measured off a sheet or typed from
+-- memory. Each file is named whole so tools/collect-graphics-refs.py can see it.
+--
+-- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
+-- ticks, one stroke a second. A drill is not a crafting machine:
+-- `MiningDrillGraphicsSet::animation_progress` defaults to 1 (prototype docs,
+-- doc-html/types/MiningDrillGraphicsSet.html), and the declared rate is not
+-- multiplied by `mining_speed` -- the Ballast Drill's measurement, in
+-- machines.lua. Measured on this pump in a client on the Core, 2026-10-10,
+-- one screenshot a tick matched against the strip: 144 frames over 360 ticks
+-- on a siderane vent and on a helium vent, 0.400 frames a tick, a 60-tick
+-- stroke, with the glass on the pump layer's frame in every one of the 720.
+--
+-- **Idle, the crank stops where it is**, as the pumpjack's horsehead does. The
+-- pumpjack draws its nodding head in `graphics_set.animation` with no
+-- `idle_animation` (base/prototypes/entity/mining-drill.lua,
+-- `pumpjack_animation`), and so does this: the engine draws `animation` every
+-- tick at the frame its own progress counter has reached, and advances that
+-- counter only on ticks the drill works. Stopped, the counter stops, and the
+-- frame holds. The prototype docs do not spell this out; the pumpjack is the
+-- reference, and it was measured here too: a pump whose outlet was shut mid
+-- stroke stopped on frame 20 of 24 and held it, and its glass faded out over
+-- some fifteen ticks. `reset_animation_when_frozen` (default false) sits
+-- beside `frozen_patch`, the frost a drill wears on Aquilo; it is about
+-- freezing, not idling, and is left alone.
+local GP = "__space-age-extended__/graphics/entity/gas-pump/"
+local GP_FRAMES = 24
+local GP_SPEED = 0.4           -- 0.4 in game: drill progress is 1, one stroke a second
+
+-- One frame, repeated to the stroke's length, so every layer of the animation
+-- has the same frame count, as the engine requires.
+local function gp_still(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    frame_count = 1,
+    repeat_count = GP_FRAMES,
+    animation_speed = GP_SPEED,
+    shift = shift,
+    scale = 0.5
   }
 end
 
-derive.own_graphics(tap, {
-  base_render_layer = "floor-mechanics",
+-- A 24-frame strip, one row.
+local function gp_strip(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    frame_count = GP_FRAMES,
+    line_length = GP_FRAMES,
+    animation_speed = GP_SPEED,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The plate, the moving parts over it, and the plate's shadow.
+local function gp_direction(base, pump_layer, shadow)
+  shadow.draw_as_shadow = true
+  return { layers = { base, pump_layer, shadow } }
+end
+
+-- The sight glass's contents: neutral white, so the engine's tint decides its
+-- colour. meta.json gives all four directions the same 21 x 18 and the same
+-- shift, since the glass is on the part of the model that does not turn.
+local function gp_glass(filename)
+  return gp_strip(filename, 21, 18, { -0.13281, -0.75 })
+end
+
+-- The pumpjack's set is replaced whole: its nodding head and its working
+-- visualisations, and the mirrored copy of both, describe a machine this is not.
+derive.own_graphics(pump, {
   animation = {
-    north = plate("north", 148, 178, 0.00781, 305, 198, 1.07031),
-    east = plate("east", 190, 132, -0.32812, 310, 152, 0.78125),
-    south = plate("south", 145, 175, 0.00000, 299, 195, 1.04688),
-    west = plate("west", 180, 132, 0.28125, 300, 152, 0.78125)
+    north = gp_direction(gp_still(GP .. "base-north.png", 134, 152, { 0.0, -0.15625 }),
+                         gp_strip(GP .. "pump-north.png", 69, 50, { 0.47656, -0.21875 }),
+                         gp_still(GP .. "base-shadow-north.png", 174, 134, { 0.35938, -0.03125 })),
+    east = gp_direction(gp_still(GP .. "base-east.png", 135, 138, { 0.00781, -0.04688 }),
+                        gp_strip(GP .. "pump-east.png", 69, 48, { 0.47656, -0.23438 }),
+                        gp_still(GP .. "base-shadow-east.png", 174, 131, { 0.35938, -0.00781 })),
+    south = gp_direction(gp_still(GP .. "base-south.png", 134, 139, { 0.0, -0.03906 }),
+                         gp_strip(GP .. "pump-south.png", 69, 50, { 0.47656, -0.21875 }),
+                         gp_still(GP .. "base-shadow-south.png", 174, 137, { 0.35938, 0.03906 })),
+    west = gp_direction(gp_still(GP .. "base-west.png", 135, 138, { -0.00781, -0.04688 }),
+                        gp_strip(GP .. "pump-west.png", 69, 50, { 0.47656, -0.21875 }),
+                        gp_still(GP .. "base-shadow-west.png", 174, 131, { 0.35938, -0.00781 }))
+  },
+  working_visualisations = {
+    -- **The sight glass shows the gas.** In the plate it is dark, empty glass;
+    -- while the pump is drawing, this fills it with the colour of what is
+    -- drawn, moving over the stroke's 24 frames at the stroke's rate, in step
+    -- with the crank. `apply_tint = "resource-color"` takes
+    -- the colour from the vent under the pump -- its `mining_visualisation_tint`
+    -- -- so one layer shows siderane chartreuse on a siderane vent and
+    -- helium-3 blue on a helium vent, and a future gas needs only its vent's
+    -- tint.
+    --
+    -- Ordinary paint, not glow and no light: it is gas seen through glass, not
+    -- a lamp, and it should go dark at night with the rest of the machine.
+    -- (meta.json's `kind = "light"` is the render pipeline's name for a white
+    -- layer the engine tints, not a request for `draw_as_glow`.)
+    --
+    -- No `always_draw`, so it is drawn only while the pump is working; idle,
+    -- blocked, unconnected or with no vent under it, the plate's empty glass
+    -- shows.
+    --
+    -- **`synced_fadeout`, not `fadeout`**, because that is what vanilla's big
+    -- mining drill sets on both of its `resource-color` layers, its tinted dust
+    -- and its output particles (space-age/prototypes/entity/big-mining-drill.lua),
+    -- and the glass is drawn as the big drill draws its tinted layers. The
+    -- prototype docs describe neither flag; the electric drill uses plain
+    -- `fadeout` on its own tinted dust.
+    {
+      synced_fadeout = true,
+      apply_tint = "resource-color",
+      north_animation = gp_glass(GP .. "sight-glass-north.png"),
+      east_animation = gp_glass(GP .. "sight-glass-east.png"),
+      south_animation = gp_glass(GP .. "sight-glass-south.png"),
+      west_animation = gp_glass(GP .. "sight-glass-west.png")
+    }
   }
 })
--- Vanilla's pump is a machine standing in water and its graphics set says so:
--- an underwater layer, a glass overlay, a fluid animation and a base picture,
--- all of them describing a shoreline this planet does not have. Replacing the
--- set removes every one of them.
--- **The covers stay.** This line used to clear them -- "the plate draws its own
--- mouth" -- and the plate does, but that is the wrong reason to drop them. The
--- drawn mouth says what the fitting looks like; the cover says what an *unused*
--- one looks like, and `always_draw_covers` being false means it is gone the
--- moment a pipe is actually joined. Every vanilla machine carries both, the
--- foundry included, and a tap standing on a vent with nothing plumbed to it is
--- exactly the case the cover exists for.
-tap.fluid_box.always_draw_covers = false
-tap.fluid_box.pipe_picture = util.empty_sprite()
-data:extend({ tap })
+pump.graphics_set_flipped = nil
+pump.use_mirroring = nil
+pump.migrate_horizontal_mirroring = nil
+-- **The covers stay.** The plate draws its own mouth, which says what the
+-- fitting looks like; the cover says what an *unused* one looks like, and
+-- `always_draw_covers` being false means it is gone the moment a pipe is
+-- actually joined. Every vanilla machine carries both, the foundry included,
+-- and a pump on a vent with nothing plumbed to it is exactly the case the cover
+-- exists for.
+pump.output_fluid_box.always_draw_covers = false
+pump.output_fluid_box.pipe_picture = util.empty_sprite()
+data:extend({ pump })
+
 
 --------------------------------------------------------------------------------
 -- The turbine.
@@ -314,7 +521,7 @@ data:extend({ turbine })
 -- **Which means neither can be priced in kamacite plate**, and both were. The
 -- technology says as much -- `sae-crust-tapping` hangs off Core Discovery
 -- rather than the Survey, "because it needs nothing the survey teaches" -- but
--- the recipes needed 10 and 20 plate, and plate is the survey's whole output.
+-- the recipes needed 10 and 20 plate, and plate came only after the survey.
 -- A player who took the landing-day technology first got two recipes they could
 -- not craft. Steel, gears and pipe come out of the cargo pod, so now they can.
 --------------------------------------------------------------------------------
@@ -322,11 +529,12 @@ data:extend({ turbine })
 data:extend({
   {
     type = "item",
-    name = "sae-crust-tap",
-    icon = "__space-age-extended__/graphics/icons/crust-tap.png",
+    name = "sae-gas-pump",
+    icon = "__space-age-extended__/graphics/icons/gas-pump.png",
+    icon_size = 64,
     subgroup = "energy",
-    order = "z[sae]-b[crust-tap]",
-    place_result = "sae-crust-tap",
+    order = "z[sae]-b[gas-pump]",
+    place_result = "sae-gas-pump",
     inventory_move_sound = item_sounds.mechanical_inventory_move,
     pick_sound = item_sounds.mechanical_inventory_pickup,
     drop_sound = item_sounds.mechanical_inventory_move,
@@ -335,7 +543,7 @@ data:extend({
   },
   {
     type = "recipe",
-    name = "sae-crust-tap",
+    name = "sae-gas-pump",
     categories = { "crafting" },
     energy_required = 4,
     ingredients = {
@@ -343,7 +551,7 @@ data:extend({
       { type = "item", name = "pipe", amount = 10 },
       { type = "item", name = "iron-gear-wheel", amount = 10 }
     },
-    results = { { type = "item", name = "sae-crust-tap", amount = 1 } },
+    results = { { type = "item", name = "sae-gas-pump", amount = 1 } },
     enabled = false
   },
   {
