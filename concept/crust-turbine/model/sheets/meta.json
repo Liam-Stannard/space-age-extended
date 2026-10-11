@@ -2,21 +2,21 @@
  "base-vertical": {
   "size": [
    164,
-   351
+   357
   ],
   "shift": [
    -0.23438,
-   -0.47656
+   -0.22656
   ]
  },
  "base-shadow-vertical": {
   "size": [
    192,
-   331
+   334
   ],
   "shift": [
    0.01562,
-   -0.13281
+   0.125
   ]
  },
  "status-lens-vertical": {
@@ -26,17 +26,17 @@
   ],
   "shift": [
    -0.71875,
-   -0.85938
+   -0.60938
   ]
  },
  "rotor-vertical": {
   "size": [
-   70,
+   71,
    64
   ],
   "shift": [
-   0.07812,
-   -0.71875
+   0.08594,
+   -0.46875
   ],
   "frames": 8,
   "line_length": 8
@@ -53,11 +53,11 @@
  },
  "base-shadow-horizontal": {
   "size": [
-   345,
+   350,
    168
   ],
   "shift": [
-   0.39844,
+   0.39062,
    0.15625
   ]
  },
@@ -92,7 +92,7 @@
     "1.5 = footprint width / 2"
    ],
    "footprint_rows_tiles": [
-    2.21875,
+    2.5,
     "bottom edge below origin; 2.5 = on the footprint"
    ],
    "rotor_drift_px": [
@@ -100,7 +100,7 @@
     "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
    ],
    "frame0_vs_still": [
-    20,
+    18,
     0.0001,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]
@@ -109,7 +109,7 @@
    "centre_offset_px": 0.0,
    "edge_alpha_max": 0,
    "half_width_tiles": [
-    2.5,
+    2.515625,
     "2.5 = footprint width / 2"
    ],
    "footprint_rows_tiles": [
@@ -121,7 +121,7 @@
     "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
    ],
    "frame0_vs_still": [
-    18,
+    17,
     0.0001,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ]

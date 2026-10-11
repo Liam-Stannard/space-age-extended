@@ -83,9 +83,14 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 ## Art
 
-- **The Crust Turbine and the crust vent tile still wear vanilla art**
+- **The crust vent tile still wears vanilla art**
   (`derive.placeholder_art` in `prototypes/core/crust-tap.lua`). The data stage
   lists every survivor at the end of each load.
+- **The Siderane turbine dies as a steam turbine.** `sae-crust-turbine` still
+  inherits `corpse = "steam-turbine-remnants"` and
+  `dying_explosion = "steam-turbine-explosion"`, so its wreck is vanilla's; it
+  needs its own remnants rendered from its model
+  (`prototypes/core/crust-tap.lua`).
 - **The Crust Tap has no scorched-ground layer**, which its spec (§3.3) asks
   for as its own layer, the way vanilla does `mining_drill_scorch_mark`.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,
