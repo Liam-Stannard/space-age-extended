@@ -40,7 +40,7 @@ does not have. That difference is the whole machine."*
 
 | | |
 | --- | --- |
-| Tile footprint | 2 × 5 |
+| Tile footprint | 3 × 5 (the prototype's; the steam turbine's boxes, kept) |
 | Directions | 2 — horizontal and vertical, as a steam turbine |
 | Output | **1.8 MW**, `max_power_output = "1800kW"`, `effectivity = 1` |
 | Fluid | `sae-crust-gas`, filtered, `volume = 200`, `fluid_usage_per_tick = 0.15` (9/s) |
@@ -81,15 +81,18 @@ this planet** — because they build those here too, on the melt-and-steam line
 (`04-the-core.md` §2). Two different turbines on one factory floor, one fed by a
 pipe of crust gas and one by a pipe of 500 °C steam, and reversing them is a
 mistake the player can make. **This machine must not look like a steam turbine at
-all**, and the surest way is that it is visibly *cold*: frost where the other is
-hot, no lagging, no insulation blankets, no heat.
+all**, and the surest way is that it is plainly electrical and dry where the
+other is hot: no firebox, no exhaust, no heat stain, no glow. No lagging except
+one dark, banded balance line low on the far flank. (Frost, the first answer,
+was dropped with the model, Liam 2026-10-11.)
 
 ## 3.2 Key Visual Features
 
-* A **long low body** on the 2 × 5, lying along its axis — this is the flattest
-  building in the set.
+* A **long low body** on the 3 × 5, filling its depth: heavy collars, a deep
+  let-down housing, a generator can as wide as the collars, with lagged runs, a
+  cable tray, a terminal box and braces round them.
 * A **let-down stage** at one end: a cast expansion housing, obviously where the
-  pressure drops, with **frost** blooming on it. Cold is the signature.
+  pressure drops, with a high and a low pressure gauge either side of it.
 * An **inline rotor casing** down the middle, smooth and pressure-rated.
 * **Two flanges, one at each end**, identical, because gas passes straight
   through and turbines chain end to end.
@@ -97,23 +100,26 @@ hot, no lagging, no insulation blankets, no heat.
 
 ### Signature Feature
 
-**Frost, on the machine that makes the power.** Every other warm thing on this
-planet glows; this one goes cold when it works. It is the clearest possible
-statement that no fire is involved, and it pairs it with the tap, whose riser is
-frost-collared for the same reason.
+**Porcelain on the machine that makes the power.** Three glazed bushings on the
+generator can, copper bus down from them to the terminal box, and a gauge pair
+reading the pressure across the let-down: the output is plainly electricity and
+the input plainly pressure, and nothing on it is hot.
 
 ## 3.3 Colour Palette
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
 | Body and casing | `#4A463F` → `#6E685C` | the mass of the building |
-| Let-down frost | `#BFD8E8` → `#E8F2F8` | the expansion housing only |
 | Generator can | `#5A5047` | the electrical end |
 | Flanges and fittings | `#8A857C` | both ends |
 | Copper and brass | `#8A5A32` → `#C88A4A` | bus runs, terminal box, flange faces |
+| Porcelain | `#B4AA94` | the three bushings only |
+| Lagging | `#5E584C` | the balance line |
 
-**No glow of any kind.** Not orange, not white, not blue. The only light on this
-building is the status lens the engine tints.
+**No glow of any kind.** Not orange, not white, not blue. The only light is the
+status lens: unlit glass in the plate, its white cut packed as a light layer for
+the engine to tint (a generator has no working-visualisation slot; wiring
+decides how it is drawn).
 
 ---
 
@@ -162,14 +168,10 @@ a corner is one the player can never join cleanly.
 
 # 9. Working Animation
 
-**A rotor turning behind a grille, and frost that thickens.** The rotor is the
+**A rotor turning behind a grille.** The rotor is the
 honest motion — it is what the machine physically does — and it can be a face
 pointed at the camera, which is the one rotation this project's tooling derives
 cleanly from a flat plate (`build-part-frames.py --mode spin`).
-
-**Do not animate the frost as a cycle.** Frost forming and melting on a loop
-reads as the machine stopping and starting. If frost changes at all it should
-track *state*, not time.
 
 ---
 
@@ -180,6 +182,10 @@ track *state*, not time.
 
 Stage 1. **Attach `concept/crust-turbine/adopted/E-sheet.png` and
 nothing else** — same machine as the sheet's hero view, not a new design.
+
+**Superseded by the Blender model (signed off 2026-10-11).** The model has no
+frost (§3.1–3.3); the frost rules here and in the prompt below are kept as
+history only.
 
 **The frost comes off the collars.** The adopted sheet ran rime onto both end
 flanges, and those flanges *are* the two fluid connections. Template convention 5.
