@@ -242,6 +242,10 @@ else:
         M[f"cable-{_name}"] = layered(f"cable-{_name}", _hex, metal=_edge, paint_metal=0.0, paint_rough=0.5,
                                       wear=0.3, rust=0.0, dust=0.25, grime=0.4, jitter=0.05)
 M["lens"] = lens_material()
+# the vertical south stub (section 9): vanilla's straight pipe's tone, olive-grey, its highlight
+# broad (pipe-straight-vertical's body: mean #837F6A); made last, so every material above is as it was
+M["pipe"] = M["collar"] if FLAT else layered("pipe", "#837E66", metal="#ABA38C", paint_metal=0.6, paint_rough=0.5,
+                                             wear=0.3, rust=0.3, dust=0.15, grime=0.5)
 
 # ---------------------------------------------------------------- geometry
 
@@ -591,19 +595,20 @@ def saddle(sign, name, ys, w):
                 hexbolt((x, ys + s * (w - 0.06), 0.0), (0, 0, 1), 0.02, 0.018, "steel")
 
 
-# the let-down end (south as modelled; west in the horizontal direction); its stub, in the
-# vertical direction, is section 8's
-end(-1, "S", parts=("collar",))
+# the let-down end (south as modelled; west in the horizontal direction); in the vertical
+# direction its collar, saddle and stub are section 9's
 with only("horizontal"):
+    end(-1, "S", parts=("collar",))
     end(-1, "S", parts=("stub",))
-end(-1, "S", parts=("saddle",))
+    end(-1, "S", parts=("saddle",))
 with only("horizontal"):         # the generator end: the vertical direction's is section 8's
     end(+1, "N")
 
 # ---------------------------------------------------------------- 2. the skids and the core
 with assembly("skid"):
-    for x in (-0.6, 0.6):
-        box((x, 0, 0.04), (0.12, 4.0, 0.08), "skid", bevel=0.01)
+    with only("horizontal"):             # the vertical direction's rails: section 9
+        for x in (-0.6, 0.6):
+            box((x, 0, 0.04), (0.12, 4.0, 0.08), "skid", bevel=0.01)
     for y in (-1.0, 0.0, 1.0):
         box((0, y, 0.03), (1.36, 0.08, 0.06), "skid", bevel=0.008)
 
@@ -891,8 +896,8 @@ with assembly("braces", on=("collar-S", "collar-N", "saddle-S", "saddle-N", "ski
             top = (-(R_COLLAR - 0.12) * math.cos(math.radians(30)), ym + dy, ZB + (R_COLLAR - 0.12) * 0.5)
             strut(top, (X_FAR + 0.08, ym + dy * 1.6, 0.02), 0.06, 0.05)
             foot_plate(X_FAR + 0.09, ym + dy * 1.6, 0.11, bolts=dy > 0)
-    collar_braces(-1.79, (-0.12, 0.12))
-    with only("horizontal"):                 # the vertical direction's north pair: section 8
+    with only("horizontal"):                 # the vertical direction's: sections 8 (north) and 9 (south)
+        collar_braces(-1.79, (-0.12, 0.12))
         collar_braces(1.79, (-0.12, 0.12))
     # and short gussets down the near side of the can
     for y in (GC["y0"] + 0.04, GC["y1"] - 0.1):
@@ -941,26 +946,43 @@ with assembly("eyes", on=("housing-S", "gencan")):
 # north collar cut back to its two bolted rings, its saddle and braces under
 # them, and its stub out from there to the tile edge.
 with only("vertical"):
-    end(-1, "S", r_end=R_END_V, parts=("stub",), square=True)
+    with only("never"):          # the south stub is section 9's; built, never drawn, so every
+        end(-1, "S", r_end=R_END_V, parts=("stub",), square=True)      # part after keeps its name
     mid = sum(Y_COLLAR_NV) / 2
     end(+1, "N", y_collar=Y_COLLAR_NV, r_end=R_END_V, ys=mid, w=(Y_COLLAR_NV[1] - Y_COLLAR_NV[0]) / 2 - 0.01)
     with assembly("braces", on=("collar-S", "collar-N", "saddle-S", "saddle-N", "skid", "gencan")):
         collar_braces(mid, (-0.07, 0.07))
 
-# ---------------------------------------------------------------- 9. the vertical south flange
-# (amendment 2, the tester's band check, 2026-10-11): seen face-on from the south, a round
-# flange's lowest rows round off (58 px wide two rows up, 22 px one row above the edge), and the
-# vanilla pipe's ring is narrower still at its top corners, so ground showed either side of the
-# join just inside the edge. The flange there is square: its lower edge is a straight line the
-# full 59 px wide on the footprint edge (160 px), the pipe's ring butting it. Built last, so
-# every other part keeps its name.
+# ---------------------------------------------------------------- 9. the vertical south stub
+# (amendment 3, 2026-10-11, Liam: "the southern pipe point doesn't connect to the pipe
+# correctly, you can see on the edge of both objects"): amendment 2's square flange was wider
+# than the pipe and showed either side of its ring. As vanilla's steam turbine: the pipe runs
+# straight into the machine. The stub is vanilla's straight pipe seen end-on -- its body 41-42 px
+# across, its axis 1.5 px right of the tile's centre (pipe-straight-vertical) -- bare from the
+# collar's face to under the pipe's end ring, no flange, no bolt ring, nothing wider than the
+# pipe. The pipe's ring (51 px, rows 140..165 below the origin) draws over the stub's end, so
+# the stub runs on to Y_STUB_SV, where its end face lies wholly inside that ring and its lowest
+# pixel is under the ring's: the eye sees the pipe's ring and the pipe's body, nothing else.
+# Beside the ring nothing of the machine may show (the column check: in the pipe's ring's rows,
+# no turbine pixel outside its 51 px): the south collar is cut back to Y_COLLAR_SV, so its rim
+# clears the ring's top row (140 px) wherever it is wider than the stub, and the saddle, the
+# skid rails and the brace feet under it stop short of it the same way (a point on the ground
+# at y draws at y + SOUTH tiles).
+Y_COLLAR_SV = (1.50, 1.96)           # the vertical direction's south collar
+Y_SKID_SV = 1.92                     # the rails' south end
+R_STUB_SV = 0.325                    # 41.6 px: vanilla's pipe body, 41-42 px
+X_STUB_SV = 1.5 / 64                 # vanilla's pipe body sits 1.5 px right of its tile's centre
+Y_STUB_SV = 2.62                     # its end face: under the pipe's ring (rows 143..163 on the screen)
+with only("vertical"):
+    end(-1, "S", y_collar=Y_COLLAR_SV, ys=sum(Y_COLLAR_SV) / 2 + 0.02, w=0.17, parts=("collar", "saddle"))
+    with assembly("skid"):
+        for x in (-0.6, 0.6):
+            box((x, (2.0 - Y_SKID_SV) / 2, 0.04), (0.12, 2.0 + Y_SKID_SV, 0.08), "skid", bevel=0.01)
+    with assembly("braces", on=("collar-S", "saddle-S", "skid")):
+        collar_braces(-sum(Y_COLLAR_SV) / 2, (-0.07, 0.07))
 with only("vertical"), assembly("stub-S", on=("collar-S",)):
-    # its lower edge carried a quarter pixel down (FACE_OUT, twice over, a height drawing half
-    # as far), toward the edge row, as east-west's face is carried over its last column
-    box((0, -(Y_END - 0.04), ZB - FACE_OUT), (2 * R_END_V, 0.08, 2 * R_END_V + 2 * FACE_OUT), "collar", bevel=0.01)
-    for sx in (-1, 1):                                    # its corner bolts, on the face the camera sees
-        for sz in (-1, 1):
-            hexbolt((sx * (R_END_V - 0.06), -Y_END, ZB + sz * (R_END_V - 0.06)), (0, -1, 0), 0.018, 0.016)
+    ya = Y_COLLAR_SV[1] - 0.02
+    cyl((X_STUB_SV, -(ya + Y_STUB_SV) / 2, ZB), R_STUB_SV, Y_STUB_SV - ya, "pipe", verts=64, rot=AX_Y, bevel=0.0)
 
 # ---------------------------------------------------------------- passes
 

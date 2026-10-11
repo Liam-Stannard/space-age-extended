@@ -526,9 +526,10 @@ turbine.fluid_box.filter = "sae-crust-gas"
 turbine.fluid_box.volume = 200
 -- Art: the Siderane turbine's Blender model
 -- (concept/crust-turbine/model/crust_turbine.py, round 2, signed off by Liam
--- 2026-10-11): a long low body on the 3x5, three machined collars -- the two
--- end ones identical, each with its flanged stub out to the middle of its end
--- tile's edge -- the rotor window in the middle one, the let-down housing with
+-- 2026-10-11): a long low body on the 3x5, three machined collars -- each end
+-- one with its stub out to the middle of its end tile's edge, flanged except
+-- at the south end lying north-south, where the stub is bare and its collar
+-- cut back -- the rotor window in the middle one, the let-down housing with
 -- its high and low gauge at one end, and the generator can with its three
 -- porcelain bushings at the other. Ours, so no `derive.placeholder_art`.
 --
@@ -559,16 +560,19 @@ turbine.fluid_box.volume = 200
 -- connections are on the long axis, at {0, -2} and {0, 2}, and the model drew
 -- its two stubs to meet a vanilla pipe on those tiles; the covers are
 -- vanilla's, capping an end with nothing joined to it. **Each end is a
--- pipe-width spigot with a flange on it at the footprint's edge**, so a pipe
--- run into either end meets turbine metal across its whole width (Liam,
--- 2026-10-11: a neck thinner than the pipe left ground showing either side of
--- every join, and that was a fail). Measured off the plates, 64 px a tile from
--- the origin: lying east-west, each spigot is 58 px tall and its flange 66, on
--- the pipe's axis 1 px above the centre, against vanilla's 52 px pipe ring;
--- lying north-south, the north spigot is 52 px wide and its flange 58 end-on,
--- and the south end is a square flange 59 px (0.92 tiles) wide that reaches
--- the footprint's edge, y 160: opaque across x -29 to 28 on every row from
--- y 144 to 158, half-covered on the column either side, against the pipe's 51.
+-- pipe-width spigot reaching the footprint's edge**, so a pipe run into either
+-- end meets turbine metal across its whole width (Liam, 2026-10-11: a neck
+-- thinner than the pipe left ground showing either side of every join, and
+-- that was a fail). Measured off the plates, 64 px a tile from the origin:
+-- lying east-west, each spigot is 58 px tall and its flange 66, on the pipe's
+-- axis 1 px above the centre, against vanilla's 52 px pipe ring; lying
+-- north-south, the north spigot is 52 px wide and its flange 58 end-on, and
+-- the south end, as the steam turbine's, has no flange (Liam, 2026-10-11: a
+-- square flange wider than the pipe showed either side of its ring): a bare
+-- stub the vanilla pipe body's width, 41 px, opaque across x -19 to 21 on
+-- every row from y 138 to 153, half-covered on the column either side, then
+-- rounding off to its end face past the footprint's edge (y 160), its last
+-- row y 165, against the pipe's 51 px end ring.
 --
 -- Each direction is three layers, and one more behind TURBINE_LENS_LIT:
 --
@@ -654,9 +658,9 @@ local function ct_direction(base, rotor, shadow, lens)
 end
 
 derive.own_graphics(turbine, {
-  north = ct_direction(ct_still(CT .. "base-vertical.png", 164, 357, { -0.23438, -0.22656 }),
+  north = ct_direction(ct_still(CT .. "base-vertical.png", 164, 360, { -0.23438, -0.20312 }),
                        ct_strip(CT .. "rotor-vertical.png", 71, 64, { 0.08594, -0.46875 }),
-                       ct_still(CT .. "base-shadow-vertical.png", 192, 334, { 0.01562, 0.125 }),
+                       ct_still(CT .. "base-shadow-vertical.png", 192, 340, { 0.01562, 0.17188 }),
                        ct_still(CT .. "status-lens-vertical.png", 10, 10, { -0.71875, -0.60938 })),
   east = ct_direction(ct_still(CT .. "base-horizontal.png", 328, 197, { 0.0, -0.05469 }),
                       ct_strip(CT .. "rotor-horizontal.png", 58, 55, { -0.01562, -0.32031 }),

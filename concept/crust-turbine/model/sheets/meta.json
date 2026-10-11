@@ -2,21 +2,21 @@
  "base-vertical": {
   "size": [
    164,
-   357
+   360
   ],
   "shift": [
    -0.23438,
-   -0.22656
+   -0.20312
   ]
  },
  "base-shadow-vertical": {
   "size": [
    192,
-   334
+   340
   ],
   "shift": [
    0.01562,
-   0.125
+   0.17188
   ]
  },
  "status-lens-vertical": {
@@ -92,7 +92,7 @@
     "1.5 = footprint width / 2"
    ],
    "footprint_rows_tiles": [
-    2.5,
+    2.5625,
     "bottom edge below origin; 2.5 = on the footprint"
    ],
    "rotor_drift_px": [
