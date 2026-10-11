@@ -43,12 +43,19 @@ connections at {0, -2} north and {0, 2} south.
 Directions: "horizontal-vertical" -- vertical as modelled (the long axis north-south, the
 let-down end south), horizontal turned to face east (the let-down end west, as the plates
 draw it). A generator draws one Animation per direction, so both are this one machine
-turned; only BODY's place on the footprint differs (PLACE): the stubs' axis must land on
+turned; BODY's place on the footprint differs (PLACE, SOUTH): the stubs' axis must land on
 the pipe's line on the screen, and a point at height z draws z/2 tiles up the screen, so in
 the horizontal direction the machine sits PLACE tiles toward the near (south) edge, as
 vanilla's steam turbine draws its own. So the machine's ground plan is held to
 x in [-1.5, 1.5 - PLACE]: the far flank (-x) may reach the footprint's edge in both
 directions, the near flank (+x) stops PLACE short of it.
+
+The vertical direction's ends (amendment, 2026-10-11: north-south pipes did not meet the
+turbine): the machine sits SOUTH tiles south, so the south flange's lowest pixel is on the
+footprint edge where vanilla's pipe meets it; the north collar is cut back to its two rings
+and the north stub runs from them to the tile edge, its flange over the north pipe's end;
+both ends are section 1's spigot and flange (amendment 2). These parts are the vertical direction's own
+(section 8, `only`); the horizontal direction and the icon draw exactly what they did.
 
 What moves (spec 9): the rotor, behind the middle collar's window, ROTOR_FRAMES frames
 through one vane pitch. A generator has no working visualisations (GeneratorPictures is
@@ -112,12 +119,32 @@ ROOT = rig.turntable(rig.stretch_root())
 # ---------------------------------------------------------------- dimensions
 ZB = 0.96                            # the long axis' height: the collars, the stubs, the generator can
 R_COLLAR = 0.94                      # the end collars' rings: 1.9 tiles across, the body's girth
-R_STUB = 0.27                        # the stub's pipe
-R_END = 0.38                         # its end flange: vanilla's pipe ring (measure_ports.py)
+# The connections (amendment 2, 2026-10-11, Liam: "There is still a gap between the joints"):
+# a pipe laid at either end must meet turbine metal across its whole width, so the stub is a
+# spigot at least vanilla's pipe wide all the way from the collar to the edge -- vanilla's
+# straight pipe is 51 px across its end ring and 42 px across its body seen end-on (vertical),
+# 55 px over its ring and 49-50 px over its body seen side-on (horizontal; a round section
+# draws 2.24 R tall there) -- and its end flange stands proud of the pipe's ring, as the
+# Vacuum Furnace's ports do. R_STUB 0.41: 52.5 px end-on, 58.7 px side-on.
+R_STUB = 0.41                        # the stub: a spigot the pipe's full width
+R_END = 0.46                         # its end flange: proud of vanilla's ring (59 / 66 px)
+FACE_OUT = 0.004                     # east-west: the end flange's face a quarter pixel past the edge
 Y_END = 2.5                          # the stub's face: the middle of its end tile's edge (spec 8)
 Y_COLLAR = (1.50, 2.08)              # an end collar, inner face to outer
 # the stubs' axis on the pipe's line (vanilla's straight pipe: 1 px above the tile's centre)
 PLACE = {"vertical": 0.0, "horizontal": ZB / 2 - 1.0 / 64}
+# The vertical direction's two ends (amendment 2026-10-11, Liam: "pipes don't connect to the
+# turbine properly when going north to south"). Vanilla's vertical pipe ends on the screen
+# where its tile meets ours: the south pipe's top ring 140..158 px below the origin, the north
+# pipe's bottom ring 160..176 px above it. A stub on the long axis draws ZB/2 tiles up the
+# screen, so, as the horizontal direction moves the machine PLACE toward the camera, the
+# vertical one moves it SOUTH tiles south: the south flange's lowest pixel lands on 2.5 tiles
+# (160 px), the north flange's ring over the north pipe's end. The north collar would still
+# hide that ring (its crown draws 0.95 tiles above its outer face), so in this direction only
+# it is cut back to its two rings (Y_COLLAR_NV) and its stub runs out to the tile edge.
+R_END_V = R_END                      # the vertical direction's end flanges: the same as east-west
+SOUTH = {"vertical": (ZB - R_END_V) / 2, "horizontal": 0.0}
+Y_COLLAR_NV = (1.50, 1.75)           # the vertical direction's north collar, cut back to its rings
 X_NEAR = 1.5 - PLACE["horizontal"] - 0.03     # the near flank's limit on the ground
 X_FAR = -1.46                                 # the far flank's
 RC = (0.0, 0.0)                      # the rotor casing's centre
@@ -222,6 +249,22 @@ PARTS = {}          # group name -> [objects]; the passes toggle whole groups
 ASM = {}            # object name -> its assembly, for --collide
 HOSTS = {}          # assembly -> the assemblies it is fastened to (contact there is meant)
 _asm = ["core"]
+ONLY = {}           # object name -> the one direction it is drawn in (None: both)
+_only = [None]
+CUR = [None]        # the direction being rendered
+
+
+class only:
+    """Everything built inside is drawn in one direction alone: the vertical ends."""
+
+    def __init__(self, direction):
+        self.direction = direction
+
+    def __enter__(self):
+        _only.append(self.direction)
+
+    def __exit__(self, *a):
+        _only.pop()
 
 
 class assembly:
@@ -256,6 +299,7 @@ def _finish(obj, mat, group, bevel=0.012, smooth=False, parent=None):
     obj.parent = parent or BODY
     PARTS.setdefault(group, []).append(obj)
     ASM[obj.name] = _asm[-1]
+    ONLY[obj.name] = _only[-1]
     return obj
 
 
@@ -474,9 +518,21 @@ def foot_plate(x, y, w=0.16, bolts=True):
 # Identical at both ends (spec 8): a bright machined drum between two bolted rings, a short
 # stub out of the outer ring to a flanged end on the middle of the end tile's edge.
 
-def end(sign, name):
+def end(sign, name, y_collar=Y_COLLAR, r_end=R_END, ys=1.79, w=0.17, parts=("collar", "stub", "saddle"),
+        square=False):
+    """One end. The defaults are both ends in the horizontal direction (and the south collar
+    and saddle in the vertical); the vertical direction's own parts pass theirs."""
+    if "collar" in parts:
+        collar(sign, name, y_collar)
+    if "stub" in parts:
+        stub(sign, name, y_collar, r_end, square)
+    if "saddle" in parts:
+        saddle(sign, name, ys, w)
+
+
+def collar(sign, name, y_collar):
     with assembly(f"collar-{name}", on=("core", "skid")):
-        y0, y1 = sign * Y_COLLAR[0], sign * Y_COLLAR[1]
+        y0, y1 = sign * y_collar[0], sign * y_collar[1]
         ym = (y0 + y1) / 2
         cyl((0, ym, ZB), R_COLLAR - 0.06, abs(y1 - y0) - 0.18, "collar", verts=96, rot=AX_Y, bevel=0.015)
         for yr in (y0 + sign * 0.06, y1 - sign * 0.06):                              # the two rings
@@ -488,18 +544,32 @@ def end(sign, name):
             nrm = (math.cos(a), 0, math.sin(a))
             hexbolt((nrm[0] * (R_COLLAR - 0.06), ym, ZB + nrm[2] * (R_COLLAR - 0.06)), nrm, 0.028, 0.024)
         cyl((0, y1 + sign * 0.01, ZB), 0.48, 0.02, "steel", verts=48, rot=AX_Y, bevel=0.004)      # the boss
+
+
+def stub(sign, name, y_collar, r_end, square=False):
     with assembly(f"stub-{name}", on=(f"collar-{name}",)):
-        ya, yb = sign * (Y_COLLAR[1] + 0.02), sign * (Y_END - 0.07)
+        ya, yb = sign * (y_collar[1] + 0.02), sign * (Y_END - 0.07)
         cyl((0, (ya + yb) / 2, ZB), R_STUB, abs(yb - ya), "collar", verts=64, rot=AX_Y, bevel=0.0)
         cyl((0, ya + sign * 0.03, ZB), R_STUB + 0.08, 0.06, "collar", verts=64, rot=AX_Y, bevel=0.01)  # root flange
         bolt_circle(ya + sign * 0.06, R_STUB + 0.04, 8, sign, rb=0.02, h=0.02)
         # the end flange, its face on the tile edge: the fluid connection
-        cyl((0, sign * (Y_END - 0.04), ZB), R_END, 0.08, "collar", verts=64, rot=AX_Y, bevel=0.012)
-        bolt_circle(sign * (Y_END - 0.08), R_END - 0.05, 8, -sign, rb=0.022, h=0.02, phase=0.5)
-        cyl((0, sign * (Y_END - 0.004), ZB), R_END - 0.07, 0.008, "steel", verts=64, rot=AX_Y, bevel=0.0)
+        # side-on (east-west) the face is drawn on the edge column itself: FACE_OUT carries it a
+        # quarter pixel over, so the last column inside is solid metal, not 8% ground (the pipe's
+        # ring draws over the quarter pixel beyond)
+        out = FACE_OUT if _only[-1] == "horizontal" else 0.0
+        # square: the vertical south end's flange is square (section 9); its round one is still
+        # built, never drawn, so every part after it keeps the name it had
+        with only("never" if square else _only[-1]):
+            cyl((0, sign * (Y_END - 0.04 + out / 2), ZB), r_end, 0.08 + out, "collar", verts=64, rot=AX_Y,
+                bevel=0.012)
+        bolt_circle(sign * (Y_END - 0.08), (R_STUB + r_end) / 2, 10, -sign, rb=0.017, h=0.02, phase=0.5)
+        cyl((0, sign * (Y_END - 0.004 + out), ZB), r_end - 0.07, 0.008, "steel", verts=64, rot=AX_Y, bevel=0.0)
+
+
+def saddle(sign, name, ys, w):
     with assembly(f"saddle-{name}", on=(f"collar-{name}", "skid")):
         # a cast saddle under the collar, from the ground up round its underside
-        ys, w, rs, hw = sign * 1.79, 0.17, R_COLLAR - 0.02, 0.96
+        ys, rs, hw = sign * ys, R_COLLAR - 0.02, 0.96
         prof = [(rs * math.cos(math.pi + math.pi * k / 24), ZB + rs * math.sin(math.pi + math.pi * k / 24))
                 for k in range(25)]
 
@@ -521,8 +591,14 @@ def end(sign, name):
                 hexbolt((x, ys + s * (w - 0.06), 0.0), (0, 0, 1), 0.02, 0.018, "steel")
 
 
-end(-1, "S")             # the let-down end (south as modelled; west in the horizontal direction)
-end(+1, "N")             # the generator end
+# the let-down end (south as modelled; west in the horizontal direction); its stub, in the
+# vertical direction, is section 8's
+end(-1, "S", parts=("collar",))
+with only("horizontal"):
+    end(-1, "S", parts=("stub",))
+end(-1, "S", parts=("saddle",))
+with only("horizontal"):         # the generator end: the vertical direction's is section 8's
+    end(+1, "N")
 
 # ---------------------------------------------------------------- 2. the skids and the core
 with assembly("skid"):
@@ -810,11 +886,14 @@ with assembly("tray", on=("housing-S", "case", "terminal-far", "skid")):
 
 with assembly("braces", on=("collar-S", "collar-N", "saddle-S", "saddle-N", "skid", "gencan")):
     # struts from each end collar's far shoulder down to the ground
-    for ym in (-1.79, 1.79):
-        for dy in (-0.12, 0.12):
+    def collar_braces(ym, dys):
+        for dy in dys:
             top = (-(R_COLLAR - 0.12) * math.cos(math.radians(30)), ym + dy, ZB + (R_COLLAR - 0.12) * 0.5)
             strut(top, (X_FAR + 0.08, ym + dy * 1.6, 0.02), 0.06, 0.05)
             foot_plate(X_FAR + 0.09, ym + dy * 1.6, 0.11, bolts=dy > 0)
+    collar_braces(-1.79, (-0.12, 0.12))
+    with only("horizontal"):                 # the vertical direction's north pair: section 8
+        collar_braces(1.79, (-0.12, 0.12))
     # and short gussets down the near side of the can
     for y in (GC["y0"] + 0.04, GC["y1"] - 0.1):
         strut((0.62, y, 0.5), (X_NEAR - 0.06, y, 0.02), 0.05, 0.05)
@@ -855,6 +934,34 @@ with assembly("eyes", on=("housing-S", "gencan")):
         box((x, y, z + 0.08), (0.18, 0.05, 0.16), "body_dark", bevel=0.02)
         torus((x, y, z + 0.17), 0.06, 0.02, "steel", rot=AX_Y, seg=32)
 
+# ---------------------------------------------------------------- 8. the vertical direction's ends
+# Built last, so every part above keeps the name (and so the render noise) it had when the
+# horizontal sheets and the icon were signed off. Section 1's design, at the sizes the
+# vertical joins need (SOUTH, R_END_V, Y_COLLAR_NV): the south stub as section 1's; the
+# north collar cut back to its two bolted rings, its saddle and braces under
+# them, and its stub out from there to the tile edge.
+with only("vertical"):
+    end(-1, "S", r_end=R_END_V, parts=("stub",), square=True)
+    mid = sum(Y_COLLAR_NV) / 2
+    end(+1, "N", y_collar=Y_COLLAR_NV, r_end=R_END_V, ys=mid, w=(Y_COLLAR_NV[1] - Y_COLLAR_NV[0]) / 2 - 0.01)
+    with assembly("braces", on=("collar-S", "collar-N", "saddle-S", "saddle-N", "skid", "gencan")):
+        collar_braces(mid, (-0.07, 0.07))
+
+# ---------------------------------------------------------------- 9. the vertical south flange
+# (amendment 2, the tester's band check, 2026-10-11): seen face-on from the south, a round
+# flange's lowest rows round off (58 px wide two rows up, 22 px one row above the edge), and the
+# vanilla pipe's ring is narrower still at its top corners, so ground showed either side of the
+# join just inside the edge. The flange there is square: its lower edge is a straight line the
+# full 59 px wide on the footprint edge (160 px), the pipe's ring butting it. Built last, so
+# every other part keeps its name.
+with only("vertical"), assembly("stub-S", on=("collar-S",)):
+    # its lower edge carried a quarter pixel down (FACE_OUT, twice over, a height drawing half
+    # as far), toward the edge row, as east-west's face is carried over its last column
+    box((0, -(Y_END - 0.04), ZB - FACE_OUT), (2 * R_END_V, 0.08, 2 * R_END_V + 2 * FACE_OUT), "collar", bevel=0.01)
+    for sx in (-1, 1):                                    # its corner bolts, on the face the camera sees
+        for sz in (-1, 1):
+            hexbolt((sx * (R_END_V - 0.06), -Y_END, ZB + sz * (R_END_V - 0.06)), (0, -1, 0), 0.018, 0.016)
+
 # ---------------------------------------------------------------- passes
 
 SUN = rig.sun()
@@ -867,7 +974,8 @@ def setup(visible=(), catchers=(), holdouts=(), ground=False):
     """Per pass: which groups the camera sees, catch shadow on, or cut out."""
     for g, objs in PARTS.items():
         for o in objs:
-            o.hide_render = g not in visible and g not in catchers and g not in holdouts
+            o.hide_render = (g not in visible and g not in catchers and g not in holdouts) \
+                or ONLY.get(o.name) not in (None, CUR[0])
             o.is_shadow_catcher = g in catchers
             o.is_holdout = g in holdouts
             o.visible_camera = True
@@ -927,37 +1035,40 @@ if COLLIDE:
             ev.to_mesh_clear()
         return BVHTree.FromPolygons(verts, polys) if polys else None
 
-    fixed = [o for g, objs in PARTS.items() if g != "rotor" for o in objs]
-    by_asm = {}
-    for o in fixed:
-        by_asm.setdefault(ASM[o.name], []).append(o)
-    trees = {a: tree(objs) for a, objs in by_asm.items()}
-
     def meant(a, b):
         return a == b or b in HOSTS.get(a, ()) or a in HOSTS.get(b, ())
-    clashes = []
-    names = sorted(trees)
-    for i, a in enumerate(names):
-        for b in names[i + 1:]:
-            if meant(a, b) or trees[a] is None or trees[b] is None:
-                continue
-            hits = trees[a].overlap(trees[b])
-            if hits:
-                clashes.append((a, b, len(hits)))
-    for a, b, n in clashes:
-        print(f"COLLIDE {a} x {b}: {n} face pairs")
-    rotor_hits = {}
-    for f in range(ROTOR_FRAMES):
-        pose(f)
+    for cd in ("horizontal", "vertical"):    # the two directions' ends are their own parts
+        pose(0)
         bpy.context.view_layer.update()
         dg = bpy.context.evaluated_depsgraph_get()
-        rt = tree(PARTS["rotor"])
-        for a in names:
-            if trees[a] is not None and rt.overlap(trees[a]):
-                rotor_hits.setdefault(a, []).append(f)
-    for a, fs in rotor_hits.items():
-        print(f"COLLIDE rotor x {a}: frames {fs}")
-    print(f"COLLIDE assemblies {len(names)}, fixed clashes {len(clashes)}, rotor clashes {len(rotor_hits)}")
+        fixed = [o for g, objs in PARTS.items() if g != "rotor" for o in objs if ONLY.get(o.name) in (None, cd)]
+        by_asm = {}
+        for o in fixed:
+            by_asm.setdefault(ASM[o.name], []).append(o)
+        trees = {a: tree(objs) for a, objs in by_asm.items()}
+        clashes = []
+        names = sorted(trees)
+        for i, a in enumerate(names):
+            for b in names[i + 1:]:
+                if meant(a, b) or trees[a] is None or trees[b] is None:
+                    continue
+                hits = trees[a].overlap(trees[b])
+                if hits:
+                    clashes.append((a, b, len(hits)))
+        for a, b, n in clashes:
+            print(f"COLLIDE {cd} {a} x {b}: {n} face pairs")
+        rotor_hits = {}
+        for f in range(ROTOR_FRAMES):
+            pose(f)
+            bpy.context.view_layer.update()
+            dg = bpy.context.evaluated_depsgraph_get()
+            rt = tree(PARTS["rotor"])
+            for a in names:
+                if trees[a] is not None and rt.overlap(trees[a]):
+                    rotor_hits.setdefault(a, []).append(f)
+        for a, fs in rotor_hits.items():
+            print(f"COLLIDE {cd} rotor x {a}: frames {fs}")
+        print(f"COLLIDE {cd} assemblies {len(names)}, fixed clashes {len(clashes)}, rotor clashes {len(rotor_hits)}")
     sys.exit(0)
 
 if ICON:
@@ -965,9 +1076,11 @@ if ICON:
     sc.cycles.samples = 128
     ROOT.rotation_euler.z = -math.pi / 2                 # horizontal, as the item is held
     BODY.location.x = PLACE["horizontal"]
+    CUR[0] = "horizontal"
     cam = rig.camera(1024, 1024, ss=1)
     setup(visible=("static", "lens", "rotor"))
-    icon_rig.frame(cam, [o for g in ("static", "lens", "rotor") for o in PARTS[g]], 1024, margin=8)
+    icon_rig.frame(cam, [o for g in ("static", "lens", "rotor") for o in PARTS[g]
+                         if ONLY.get(o.name) in (None, "horizontal")], 1024, margin=8)
     rig.render(f"{OUT_DIR}/icon.png")
     sys.exit(0)
 
@@ -999,7 +1112,8 @@ if FLAT or IDLE:
 for d in contract.each_direction(ROOT, DECL["directions"]):
     def path(stem, d=d):
         return f"{OUT_DIR}/{contract.named(stem, d)}.png"
-    BODY.location.x = PLACE[d]
+    BODY.location.x, BODY.location.y = PLACE[d], -SOUTH[d]
+    CUR[0] = d
     sc.render.use_border = False
     pose(0)
     # the plate leaves the rotor out: the engine draws it, frame by frame, in its window
@@ -1021,7 +1135,7 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
     rig.render(path("lens"))
     lens_cut(False)
     # the rotor: its window only, its shadow caught on the bore and the well under it
-    east, north = (0.0, 0.0) if d == "vertical" else (0.0, -PLACE[d])
+    east, north = (0.0, -SOUTH[d]) if d == "vertical" else (0.0, -PLACE[d])
     sy = -(north + Z_ROTOR / 2)
     window(east - 0.62, east + 0.62, sy - 0.5, sy + 0.5)
     for f in range(ROT["frames"]):
@@ -1030,4 +1144,5 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
         rig.render(path(contract.frame(ROT["name"], f)))
     pose(0)
     sc.render.use_border = False
-BODY.location.x = 0.0
+BODY.location.x, BODY.location.y = 0.0, 0.0
+CUR[0] = None

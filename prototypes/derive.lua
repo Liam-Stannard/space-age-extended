@@ -193,10 +193,16 @@ end
 --- cool-down all at once, for ever. If a derived machine should hum, its own
 --- file says so explicitly, which is better than inheriting three loops and
 --- hoping.
+---
+--- **Not every machine keeps its art in `graphics_set`.** A generator's is
+--- `pictures`, a GeneratorPictureSet of one Animation per direction
+--- (GeneratorPrototype, Factorio 2.1.21 prototype docs), so the Siderane
+--- turbine names that field; everything else here applies to it unchanged.
 --- @param p table            the prototype
 --- @param set table          its new graphics_set
-function derive.own_graphics(p, set)
-  p.graphics_set = set
+--- @param field string|nil   the field the set goes in; "graphics_set" if nil
+function derive.own_graphics(p, set, field)
+  p[field or "graphics_set"] = set
   -- This building has its own art now, so it is no longer a placeholder.
   derive.pending[p.name] = nil
   -- The ground decal under the vanilla machine was drawn for the vanilla plate.
