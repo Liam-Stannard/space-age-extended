@@ -151,21 +151,34 @@ do
       locals["pick" .. k] = string.format("if(v%d > best%d, %s, pick%d)", k, k - 1, bearing(k), k - 1)
     end
   end
-  locals.b = "pick" .. (BEARINGS - 1)
-  local terms = {}
+  local terms, extent = {}, 0
   for i, w in ipairs(STARTING_FIELD) do
+    -- The furthest well's centre from the field's, plus the 2x2 vent's half.
+    extent = math.max(extent, math.sqrt(w[1] ^ 2 + w[2] ^ 2) + 1)
     local wx = string.format("((%d) * cos(b) - (%d) * sin(b) + %d * cos(b))", w[1], w[2], STARTING_REACH)
     local wy = string.format("((%d) * sin(b) + (%d) * cos(b) + %d * sin(b))", w[1], w[2], STARTING_REACH)
     terms[i] = string.format("(abs(x - %s) < 1) * (abs(y - %s) < 1)", wx, wy)
   end
   data:extend({
     {
+      -- The field's bearing, in radians, as its own expression, with its
+      -- distance and how far its wells spread round its centre: the other
+      -- starting patches (map-gen.lua) take their bearings from this one and
+      -- keep clear of the field by the other two.
+      type = "noise-expression",
+      name = "sae_crust_vent_bearing",
+      expression = "pick" .. (BEARINGS - 1),
+      local_expressions = locals
+    },
+    { type = "noise-expression", name = "sae_crust_vent_reach", expression = STARTING_REACH },
+    { type = "noise-expression", name = "sae_crust_vent_extent", expression = extent },
+    {
       type = "noise-expression",
       name = "sae_crust_vent_start",
       -- And never in the pool or on its shore, well by well: the pool's tiles
       -- refuse a resource outright, and the shore is where the solution is drawn.
       expression = "(sae_core_basin > 92) * min(1, " .. table.concat(terms, " + ") .. ")",
-      local_expressions = locals
+      local_expressions = { b = "sae_crust_vent_bearing" }
     }
   })
 end

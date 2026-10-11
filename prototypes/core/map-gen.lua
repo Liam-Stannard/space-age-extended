@@ -268,6 +268,208 @@ data:extend({
   }
 })
 
+-- The starting area: how the landing gets its kamacite, helium-3 and melt.
+--
+-- The Core does it the way Space Age's planets do (Vulcanus's tungsten, coal,
+-- calcite and sulfur; Aquilo's crude oil and brine): each starting resource is
+-- one spot at a set distance and a seeded bearing from the landing, laid over
+-- the resource's own patches with max() (resources.lua). Vanilla's starting
+-- placement (`has_starting_area_placement`) cannot be used here, and the
+-- resources no longer ask for it. It ranks its candidate spots with
+-- `starting_resources_lake_mask`, which knows only elevation-water, and the
+-- Core's elevation never comes near water: its liquid is the radiant pool,
+-- from the basin term above. So on some seeds the spot it chose was in the
+-- pool, whose tile refuses a resource outright, and the patch was simply not
+-- there -- on the landing test save, all three of them.
+--
+-- Four things make up the starting area:
+--   * the siderane field (crust-tap.lua): four wells 40 to 56 tiles out, at
+--     the driest of sixteen bearings; that bearing is `sae_crust_vent_bearing`;
+--   * kamacite, helium-3 and melt (below), a quarter, a half and three
+--     quarters of a turn round from the field, as Vulcanus sets its starting
+--     spots at fixed angles from a seeded one;
+--   * the landing lift in the basin term above, which keeps the pool out to
+--     32 tiles and thins it out to 96, where these mostly stand;
+--   * the boulders (resources.lua), scattered everywhere, which ignore all of
+--     this.
+--
+-- A fixed angle alone would put a patch in the pool on some maps, as vanilla
+-- did, so each patch may move. It tries 24 bearings, fifteen degrees apart,
+-- on four rings -- its own distance, twelve tiles in, and sixteen and
+-- thirty-two out -- and takes the best: any try whose centre and rim sit well
+-- above the pool counts as dry, and among the dry ones the nearest its own
+-- bearing and distance wins. On most maps that is the bearing and distance it
+-- was given. Some landings are on a lake's edge, with dry ground in an arc a
+-- third of the way round, so a patch keeps clear of the field and of the
+-- patches chosen before it by distance rather than by angle: it may stand
+-- beyond another on the same bearing, never within twelve tiles of its rim.
+-- Helium-3 chooses first, because nothing on the Core starts without it, then
+-- kamacite, then melt. Whatever still reaches the pool or its shore is cut
+-- tile by tile, as the siderane wells are, so no starting resource ever
+-- stands on either.
+--
+-- Sizes are what vanilla's starting placement gave these resources on the
+-- seeds where it worked, measured over twelve seeds:
+--   * kamacite: 120 000 ore. That is vanilla's starting amount for
+--     resources.lua's base_density 3 (20000 * base_density * (frequency + 1)),
+--     laid as a cone of radius 9 -- vanilla's own starting radius for that
+--     amount, (2 * amount) ^ (1/3) / 7. Measured: 37 000 to 166 000.
+--   * helium-3 and melt: about eleven vents each (measured: 7 to 16), each
+--     holding its `additional_richness` (60 000 and 150 000), as vanilla's
+--     did. A vent's footprint, not the cone, is what limits how many fit, so
+--     the radius is the one that gives that count: 3.5 for the 2x2 gas vent,
+--     5.5 for the 3x3 melt vent.
+-- Their distances, 56 to 72 tiles (44 to 104 if they have to move) plus the
+-- radius, keep them inside 112: well within the engine's 150-tile starting
+-- area, and mostly on lifted ground.
+--
+-- `turn` is the bearing each prefers, in turns round from the field's.
+local STARTING_PATCHES =
+{
+  { key = "gas",      control = "sae-gas-vent",     turn = 2 / 4, reach = 56, radius = 3.5, per_vent = 60000 },
+  { key = "kamacite", control = "sae-kamacite-ore", turn = 1 / 4, reach = 64, radius = 9,   amount = 120000 },
+  { key = "melt",     control = "sae-melt-vent",    turn = 3 / 4, reach = 72, radius = 5.5, per_vent = 150000 }
+}
+-- Bearings tried, all round from the siderane field's; the rings tried, in
+-- tiles from each patch's own distance; and the clear ground, in tiles, a
+-- patch keeps between its rim and the field's or an earlier patch's.
+local STARTING_BEARINGS, STARTING_RINGS, STARTING_CLEAR = 24, { 0, -12, 16, 32 }, 12
+-- The basin term above which a starting resource may stand: the pool and its
+-- shore end at 88, and the siderane wells keep the same 92.
+local STARTING_DRY = palette.pool.level + palette.pool.shore + 4
+-- How a try is scored: its dryness counts up to DRY + 8 and no further, so
+-- every comfortably dry try ties; then each fifteen degrees from its own
+-- bearing costs a third of a point, and another ring costs five and a tenth
+-- of a point a tile -- more than any bearing can, so a patch leaves its ring
+-- only when the ring is wet, and then for the nearest ring that is not.
+local STARTING_CAP, STARTING_TURN_COST, STARTING_RING_COST = STARTING_DRY + 8, 8, 5
+-- How far a patch's rim may reach past its radius: the edge noise below.
+local STARTING_WOBBLE = 1 / 6
+
+data:extend({
+  {
+    -- How dry a starting spot would be: the basin term at its centre and at
+    -- four points on its rim, whichever is lowest.
+    type = "noise-function",
+    name = "sae_core_start_dryness",
+    parameters = { "px", "py", "r" },
+    expression = "min(sae_core_basin_at{px = px,     py = py,     reach = (px * px + py * py) ^ 0.5},\z
+                      sae_core_basin_at{px = px + r, py = py,     reach = ((px + r) ^ 2 + py * py) ^ 0.5},\z
+                      sae_core_basin_at{px = px - r, py = py,     reach = ((px - r) ^ 2 + py * py) ^ 0.5},\z
+                      sae_core_basin_at{px = px,     py = py + r, reach = (px * px + (py + r) ^ 2) ^ 0.5},\z
+                      sae_core_basin_at{px = px,     py = py - r, reach = (px * px + (py - r) ^ 2) ^ 0.5})"
+  }
+})
+
+do
+  -- What a try keeps clear of: the centre of each thing already standing, as
+  -- x and y expressions, and how far its rim reaches from that centre.
+  local taken =
+  {
+    { x = "sae_crust_vent_reach * cos(sae_crust_vent_bearing)",
+      y = "sae_crust_vent_reach * sin(sae_crust_vent_bearing)",
+      extent = "sae_crust_vent_extent" }
+  }
+
+  for _, patch in ipairs(STARTING_PATCHES) do
+    local prefix = "sae_core_start_" .. patch.key
+    local size = string.format("var('control:%s:size')", patch.control)
+
+    -- The bearing, in radians and measured as the siderane field's is, and
+    -- the distance: the best-scoring try. A refused try scores a thousand
+    -- below any real one.
+    local locals, n = {}, 0
+    for ring, offset in ipairs(STARTING_RINGS) do
+      for k = 0, STARTING_BEARINGS - 1 do
+        local a = string.format("(sae_crust_vent_bearing + 2 * pi * %d / %d)", k, STARTING_BEARINGS)
+        local reach = patch.reach + offset
+        local refused = {}
+        for i, other in ipairs(taken) do
+          refused[i] = string.format("((%d * cos(%s) - %s) ^ 2 + (%d * sin(%s) - %s) ^ 2 < (%s + %s) ^ 2)",
+            reach, a, other.x, reach, a, other.y, other.extent, patch.radius * (1 + STARTING_WOBBLE) + STARTING_CLEAR)
+        end
+        -- How far, in turns, this try is from the patch's own bearing.
+        local off = math.abs((k / STARTING_BEARINGS - patch.turn + 0.5) % 1 - 0.5)
+        local cost = off * STARTING_TURN_COST + (ring > 1 and STARTING_RING_COST + math.abs(offset) / 10 or 0)
+        locals["a" .. n] = a
+        locals["r" .. n] = tostring(reach)
+        locals["v" .. n] = string.format("min(%d, sae_core_start_dryness{px = %d * cos(%s), py = %d * sin(%s), r = %s})\z
+                                          - %.4f - 1000 * min(1, %s)",
+          STARTING_CAP, reach, a, reach, a, patch.radius + 2, cost, table.concat(refused, " + "))
+        if n == 0 then
+          locals.best0, locals.pa0, locals.pr0 = "v0", "a0", "r0"
+        else
+          locals["best" .. n] = string.format("max(best%d, v%d)", n - 1, n)
+          locals["pa" .. n] = string.format("if(v%d > best%d, a%d, pa%d)", n, n - 1, n, n - 1)
+          locals["pr" .. n] = string.format("if(v%d > best%d, r%d, pr%d)", n, n - 1, n, n - 1)
+        end
+        n = n + 1
+      end
+    end
+
+    data:extend({
+      {
+        type = "noise-expression",
+        name = prefix .. "_bearing",
+        expression = "pa" .. (n - 1),
+        local_expressions = locals
+      },
+      {
+        type = "noise-expression",
+        name = prefix .. "_reach",
+        expression = "pr" .. (n - 1),
+        local_expressions = locals
+      },
+      {
+        -- The patch's shape: 1 at its centre falling to 0 at its rim, and 0
+        -- everywhere else. A short noise on the distance roughens the edge,
+        -- as vanilla's blob noise does, by up to a sixth of the radius: any
+        -- more and a vent patch, a few tiles across, loses half its vents on
+        -- some seeds. The size slider scales the radius as
+        -- vanilla scales a starting patch (the cube root of its quantity), and
+        -- at zero there is no patch at all.
+        type = "noise-expression",
+        name = prefix,
+        expression = string.format("(%s > 0) * (sae_core_basin > %d)\z
+                                    * clamp(1 - (d + wobble) / (%s * max(0.1, %s) ^ (1/3)), 0, 1)",
+          size, STARTING_DRY, patch.radius, size),
+        local_expressions =
+        {
+          b = prefix .. "_bearing",
+          r = prefix .. "_reach",
+          d = "((x - r * cos(b)) ^ 2 + (y - r * sin(b)) ^ 2) ^ 0.5",
+          wobble = string.format("%s * multioctave_noise{x = x,\z
+                                                         y = y,\z
+                                                         seed0 = map_seed,\z
+                                                         seed1 = 6203,\z
+                                                         octaves = 2,\z
+                                                         persistence = 0.5,\z
+                                                         input_scale = 1/6,\z
+                                                         output_scale = 1}", patch.radius * STARTING_WOBBLE)
+        }
+      },
+      {
+        -- What each tile of it holds. Ore is a cone, as vanilla's patches
+        -- are, whose volume is the patch's amount; a vent holds the same as
+        -- every other starting vent.
+        type = "noise-expression",
+        name = prefix .. "_richness",
+        expression = patch.amount
+          and string.format("var('control:%s:richness') * %.1f * max(0.1, %s) ^ (1/3) * %s",
+                            patch.control, 3 * patch.amount / (math.pi * patch.radius ^ 2), size, prefix)
+          or string.format("var('control:%s:richness') * %d", patch.control, patch.per_vent)
+      }
+    })
+
+    taken[#taken + 1] =
+    {
+      x = string.format("%s_reach * cos(%s_bearing)", prefix, prefix),
+      y = string.format("%s_reach * sin(%s_bearing)", prefix, prefix),
+      extent = tostring(patch.radius * (1 + STARTING_WOBBLE))
+    }
+  end
+end
+
 local function core_tiles()
   local settings, found = {}, 0
 
