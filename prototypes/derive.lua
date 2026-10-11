@@ -318,6 +318,15 @@ end
 --- one), and the frame must be inside that animation's cycle in every
 --- direction it draws, counting from 0 -- sfx.py's `frame` counts the same way.
 ---
+--- **Frame 0 is refused.** Factorio 2.1.21 never fires an accent on frame 0:
+--- `frame` defaults to 0 (SoundAccent, doc-html/types/SoundAccent.html), and
+--- the engine treats 0 as unset. Recorded in a client on the Core, 2026-10-11:
+--- the Drop Crusher's drop on frame 0 of its main animation was silent on
+--- every stroke and at start-up, and the same drop on frame 1 played every
+--- stroke; the Ballast Drill's ratchet moved to frame 0 of a working
+--- visualisation fell silent too. No vanilla accent is on frame 0. A moment that falls there needs
+--- the animation phased so it falls elsewhere, as the Drop Crusher's was.
+---
 --- **Call it after `derive.own_graphics`**, which strips every accent it finds:
 --- they are checked against the graphics they are cued to, and that has to be
 --- the building's own.
@@ -358,6 +367,11 @@ function derive.working_sound(p, spec)
     if not accent.sound then fail("accent " .. i .. " has no sound") end
     if type(frame) ~= "number" or frame ~= math.floor(frame) then
       fail("accent " .. i .. " on " .. what .. " needs a whole `frame`, got " .. tostring(frame))
+    end
+    if frame == 0 then
+      fail("accent " .. i .. " is cued to frame 0 of " .. what .. ", which never plays: "
+           .. "Factorio 2.1.21 never fires an accent on frame 0, which is `frame`'s unset value "
+           .. "(SoundAccent's default); phase the animation so the moment falls on another frame")
     end
     if #sets == 0 then fail("accent " .. i .. ": the prototype has no graphics_set to cue it to") end
     for _, entry in ipairs(sets) do
