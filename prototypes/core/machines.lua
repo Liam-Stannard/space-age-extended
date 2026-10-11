@@ -728,15 +728,22 @@ derive.own_graphics(drill,
 -- `derive.own_graphics` had already removed whole: it walks `main_sounds` as a
 -- list, and the big drill's is a single Sound, so it found nothing to keep and,
 -- with no `sound` either, dropped the working sound (the start accent went with
--- the art it was cued to). Its loop was not cued to any art. The big drill's
--- `drilling_sound` and `moving_sound` are inherited and stay, not decided here.
+-- the art it was cued to). Its loop was not cued to any art.
+--
+-- **The big drill's own two loops go too, so the drill plays only its bed,
+-- landing and ratchet.** `drilling_sound` (its drilling loop, two at most) and
+-- `moving_sound` (its head turning) came across with the deepcopy and played
+-- under ours: a vanilla machine's voice under the one the spec signed off, and
+-- the drilling loop doubling the bed's job. Its open and close sounds stay;
+-- they are the GUI's, not the machine's.
 --
 -- The accents are cued to the "stroke" visualisation, whose 24 frames are one
 -- second at 0.4 frames a tick (see "Art" above). Frame 0 is the ring raised.
 --
 -- **The landing aggregates and the drill is capped, so a row of drills rumbles
 -- rather than stacks**, as vanilla's big mining drill keeps its own drilling
--- loop to two (`drilling_sound`, space-age/prototypes/entity/big-mining-drill.lua).
+-- loop to two (its `drilling_sound`, space-age/prototypes/entity/big-mining-drill.lua,
+-- the loop this drill no longer plays: see above).
 -- `aggregation` is Sound::aggregation, an AggregationSpecification in the
 -- prototype docs (doc-html/types/AggregationSpecification.html): at most 2
 -- landings at once, counting those already playing, and any more are dropped
@@ -774,6 +781,8 @@ derive.working_sound(drill, {
   },
   max_sounds_per_prototype = 2
 })
+drill.drilling_sound = nil
+drill.moving_sound = nil
 data:extend({ drill })
 
 --------------------------------------------------------------------------------

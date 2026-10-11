@@ -61,6 +61,10 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   sheet for every face they turn to** (`tools/blender/contract.py`).
 - **The slide check averages before it measures**, so one frame up to about
   1.33 px off its curve still passes the 1 px limit (`tools/blender/pack.py`).
+- **Glow crops are sized by any lit pixel, however faint.** The speck filter
+  drops small groups, but a faint wide haze still stretches a crop; weight the
+  crop by alpha so the sheet holds the light, not its last flicker
+  (`tools/blender/pack.py`).
 
 ## Power
 
@@ -133,6 +137,11 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   its shore and its solution are in the mod, and 04 §2, 03 §3 and the "no
   coastline" line need wording that says what the pool is and why it is not a
   coastline. Wording to be agreed before `design/` is touched.
+- **The landing's clearances do not scale with the map's size slider.** The
+  starting spots' reaches (56–72 tiles), their search rings and the landing
+  lift that keeps the radiant pool away are fixed in tiles
+  (`prototypes/core/map-gen.lua`), so a larger or smaller starting area moves
+  nothing.
 - **Five building specs describe a building that is not being built.** The
   Radiant Generator's (no burnt-result slot; art "blocked"), the Crust Tap's
   (gas only), the Ballast Drill's (a ballast block, not the Ring Press), the
