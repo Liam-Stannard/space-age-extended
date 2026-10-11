@@ -1,5 +1,5 @@
--- The Core's machinery: what draws the melt vent. The gas vents are the Gas
--- Pump's (crust-tap.lua).
+-- The Core's machinery: what draws the kamacite vent. The gas vents are the
+-- Gas Pump's (crust-tap.lua).
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
@@ -46,10 +46,10 @@ pump.input_fluid_box =
     { flow_direction = "input", direction = defines.direction.south, position = { 0, 1 } }
   }
 }
--- The melt vent, and only this machine on it. `sae-vent` holds nothing else now:
--- the gas vents moved to `sae-gas`, which the Gas Pump works, so the Vent Pump
--- draws melt only. See the note beside the categories in resources.lua for
--- what this closes.
+-- The kamacite vent, and only this machine on it. `sae-vent` holds nothing
+-- else now: the gas vents moved to `sae-gas`, which the Gas Pump works, so the
+-- Vent Pump draws melt only. See the note beside the categories in
+-- resources.lua for what this closes.
 pump.resource_categories = { "sae-vent" }
 
 -- Art: four plates, drawn together and split by tools/cut-rotation-strip.py.

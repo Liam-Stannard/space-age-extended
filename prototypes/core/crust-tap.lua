@@ -17,7 +17,7 @@
 -- vent *resources* in the `sae-gas` category. Depletion belongs to the resource,
 -- as an oil field's does: the engine slows a vent as it is drawn and reports
 -- `no_minable_resources` with no script. A future gas costs a resource and a
--- fluid, and no new machine. The Vent Pump keeps the melt vent, alone.
+-- fluid, and no new machine. The Vent Pump keeps the kamacite vent, alone.
 --
 -- Two measurements from spike S10 shape the turbine, and both are the kind that
 -- pass every check in the repo while being wrong:
@@ -263,7 +263,7 @@ data:extend({ crust_vent })
 -- fluid out of a resource: an output fluid box and no input, and nothing for
 -- `vector_to_place_result` to place, since nothing it makes is an item. It
 -- takes the `sae-gas` category alone, so it stands on a gas vent and nowhere
--- else -- not on bare ground, and not on the melt vent, which is the Vent
+-- else -- not on bare ground, and not on the kamacite vent, which is the Vent
 -- Pump's.
 --
 -- **No power at all: a `void` energy source.** The landing has no grid until

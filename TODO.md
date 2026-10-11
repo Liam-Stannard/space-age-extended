@@ -32,9 +32,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Whisker Comber, Helium Concentrator, Ring Mast — plus their item icons and the
   whisker-bed terrain. Keep them for buildings that may return, or move them to
   `concept/<building>/`; git keeps them either way.
-- **Rename the melt vent to the kamacite vent.** The four player-facing
-  strings, `sae-melt-vent` → `sae-kamacite-vent` with a migration, and "melt"
-  in `design/` once the docs are rewritten for the rework.
+- **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
+  once the docs are rewritten for the rework.
 - **Rename crust gas to siderane in the docs.** The player-facing names
   changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
   extraction); `design/` and the other specs still say "crust gas", "crust

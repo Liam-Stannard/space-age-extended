@@ -285,9 +285,9 @@ data:extend({
 -- Four things make up the starting area:
 --   * the siderane field (crust-tap.lua): four wells 40 to 56 tiles out, at
 --     the driest of sixteen bearings; that bearing is `sae_crust_vent_bearing`;
---   * kamacite, helium-3 and melt (below), a quarter, a half and three
---     quarters of a turn round from the field, as Vulcanus sets its starting
---     spots at fixed angles from a seeded one;
+--   * kamacite ore and the helium-3 and kamacite vents (below), a quarter, a
+--     half and three quarters of a turn round from the field, as Vulcanus
+--     sets its starting spots at fixed angles from a seeded one;
 --   * the landing lift in the basin term above, which keeps the pool out to
 --     32 tiles and thins it out to 96, where these mostly stand;
 --   * the boulders (resources.lua), scattered everywhere, which ignore all of
@@ -304,9 +304,9 @@ data:extend({
 -- patches chosen before it by distance rather than by angle: it may stand
 -- beyond another on the same bearing, never within twelve tiles of its rim.
 -- Helium-3 chooses first, because nothing on the Core starts without it, then
--- kamacite, then melt. Whatever still reaches the pool or its shore is cut
--- tile by tile, as the siderane wells are, so no starting resource ever
--- stands on either.
+-- kamacite, then the kamacite vent. Whatever still reaches the pool or its
+-- shore is cut tile by tile, as the siderane wells are, so no starting
+-- resource ever stands on either.
 --
 -- Sizes are what vanilla's starting placement gave these resources on the
 -- seeds where it worked, measured over twelve seeds:
@@ -314,11 +314,11 @@ data:extend({
 --     resources.lua's base_density 3 (20000 * base_density * (frequency + 1)),
 --     laid as a cone of radius 9 -- vanilla's own starting radius for that
 --     amount, (2 * amount) ^ (1/3) / 7. Measured: 37 000 to 166 000.
---   * helium-3 and melt: about eleven vents each (measured: 7 to 16), each
+--   * helium-3 and kamacite vents: about eleven each (measured: 7 to 16), each
 --     holding its `additional_richness` (60 000 and 150 000), as vanilla's
 --     did. A vent's footprint, not the cone, is what limits how many fit, so
 --     the radius is the one that gives that count: 3.5 for the 2x2 gas vent,
---     5.5 for the 3x3 melt vent.
+--     5.5 for the 3x3 kamacite vent.
 -- Their distances, 56 to 72 tiles (44 to 104 if they have to move) plus the
 -- radius, keep them inside 112: well within the engine's 150-tile starting
 -- area, and mostly on lifted ground.
@@ -326,9 +326,9 @@ data:extend({
 -- `turn` is the bearing each prefers, in turns round from the field's.
 local STARTING_PATCHES =
 {
-  { key = "gas",      control = "sae-gas-vent",     turn = 2 / 4, reach = 56, radius = 3.5, per_vent = 60000 },
-  { key = "kamacite", control = "sae-kamacite-ore", turn = 1 / 4, reach = 64, radius = 9,   amount = 120000 },
-  { key = "melt",     control = "sae-melt-vent",    turn = 3 / 4, reach = 72, radius = 5.5, per_vent = 150000 }
+  { key = "gas",           control = "sae-gas-vent",      turn = 2 / 4, reach = 56, radius = 3.5, per_vent = 60000 },
+  { key = "kamacite",      control = "sae-kamacite-ore",  turn = 1 / 4, reach = 64, radius = 9,   amount = 120000 },
+  { key = "kamacite_vent", control = "sae-kamacite-vent", turn = 3 / 4, reach = 72, radius = 5.5, per_vent = 150000 }
 }
 -- Bearings tried, all round from the siderane field's; the rings tried, in
 -- tiles from each patch's own distance; and the clear ground, in tiles, a
@@ -596,7 +596,7 @@ return function()
     autoplace_controls =
     {
       ["sae-kamacite-ore"] = {},
-      ["sae-melt-vent"] = {},
+      ["sae-kamacite-vent"] = {},
       ["sae-gas-vent"] = {},
       ["sae-crust-vent"] = {},
       ["sae-core-rock"] = {}
@@ -610,7 +610,7 @@ return function()
         settings =
         {
           ["sae-kamacite-ore"] = {},
-          ["sae-melt-vent"] = {},
+          ["sae-kamacite-vent"] = {},
           ["sae-gas-vent"] = {},
           ["sae-crust-vent"] = {},
           ["sae-core-boulder"] = {}

@@ -42,16 +42,16 @@ end
 --
 -- The vents were `basic-fluid`, the category vanilla's pumpjack works, and a
 -- pumpjack has no surface conditions -- so a player could land on the Core,
--- build an ordinary pumpjack on a melt vent and draw melt for nothing. The Vent
--- Pump's entire reason to exist is that melt costs helium-3 (see the note at the
--- top of entities.lua), and the vanilla machine walked straight past it.
+-- build an ordinary pumpjack on a kamacite vent and draw melt for nothing. The
+-- Vent Pump's entire reason to exist is that melt costs helium-3 (see the note
+-- at the top of entities.lua), and the vanilla machine walked straight past it.
 --
 -- A private category closes it from both ends: nothing vanilla can work a vent,
 -- and the Vent Pump can no longer be built on Nauvis crude oil as a pumpjack
 -- that happens to need helium.
 --
--- **Two of them, one per machine.** `sae-vent` is the melt vent's alone, and
--- only the Vent Pump works it. `sae-gas` is every gas vent's -- helium-3 here,
+-- **Two of them, one per machine.** `sae-vent` is the kamacite vent's alone,
+-- and only the Vent Pump works it. `sae-gas` is every gas vent's -- helium-3 here,
 -- siderane in crust-tap.lua -- and only the Gas Pump works it. Neither machine
 -- can stand on the other's vent, and a new gas is a new resource in `sae-gas`
 -- rather than a new machine.
@@ -75,9 +75,9 @@ data:extend({
 
 -- Each resource needs an autoplace control before a planet may name it.
 data:extend({
-  { type = "autoplace-control", name = "sae-kamacite-ore", category = "resource", richness = true, order = "z[sae]-a" },
-  { type = "autoplace-control", name = "sae-melt-vent",    category = "resource", richness = true, order = "z[sae]-b" },
-  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" },
+  { type = "autoplace-control", name = "sae-kamacite-ore",  category = "resource", richness = true, order = "z[sae]-a" },
+  { type = "autoplace-control", name = "sae-kamacite-vent", category = "resource", richness = true, order = "z[sae]-b" },
+  { type = "autoplace-control", name = "sae-gas-vent",      category = "resource", richness = true, order = "z[sae]-c" },
   -- Not a resource: boulders are terrain the way trees are, so they belong on
   -- the terrain slider rather than among the ore controls.
   { type = "autoplace-control", name = "sae-core-rock",   category = "terrain",  order = "z[sae]-d" }
@@ -121,12 +121,12 @@ data:extend({
   },
   {
     type = "resource",
-    name = "sae-melt-vent",
+    name = "sae-kamacite-vent",
     icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     flags = { "placeable-neutral" },
     category = "sae-vent",
     subgroup = "mineable-fluids",
-    order = "z[sae]-b[melt-vent]",
+    order = "z[sae]-b[kamacite-vent]",
     infinite = true,
     -- A vent is one pool, not a field of tiles, so it is not snapped to the
     -- resource grid -- as crude oil is not.
@@ -153,9 +153,9 @@ data:extend({
     driving_sound = tile_sounds.driving.oil,
     collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
     selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
-    autoplace = with_starting_spot("melt",
+    autoplace = with_starting_spot("kamacite_vent",
     {
-      name = "sae-melt-vent",
+      name = "sae-kamacite-vent",
       order = "c",
       base_density = 1.4,
       random_spot_size_minimum = 1,
@@ -206,7 +206,7 @@ data:extend({
     {
       name = "sae-gas-vent",
       order = "d",
-      base_density = 0.5,            -- scarcer than melt
+      base_density = 0.5,            -- scarcer than the kamacite vent
       random_spot_size_minimum = 1,
       random_spot_size_maximum = 1,
       additional_richness = 60000
