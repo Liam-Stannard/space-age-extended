@@ -1,0 +1,187 @@
+{
+ "vanilla": {
+  "nuclear reactor 5x5": {
+   "rise_tiles": 0.16,
+   "coverage_pct": 69.3
+  },
+  "fusion reactor 6x6": {
+   "rise_tiles": 0.66,
+   "coverage_pct": 92.3
+  },
+  "oil refinery 5x5 (north)": {
+   "rise_tiles": 0.95,
+   "coverage_pct": 87.3
+  },
+  "fusion generator 3x5": {
+   "rise_tiles": 0.23,
+   "coverage_pct": 90.7
+  }
+ },
+ "vanilla_cooling": {
+  "nuclear reactor 5x5": {
+   "shares_pct": {
+    "shield": 31.2,
+    "cool": 42.0,
+    "vessel": 10.6,
+    "pump": 8.4,
+    "radiator": 0.0,
+    "mast": 0.0,
+    "light": 0.0,
+    "other": 7.8
+   },
+   "cooling_mass_pct": 61.0,
+   "rise_tiles": 0.16,
+   "coverage_pct": 69.3,
+   "thickness": "corrugated main hoses 0.34 t across, red hoses 0.1 t, riser pipes 0.15 t; the front-right pump drum 1.1 t; the vessel 3.4 t",
+   "where": "draped over and down the vessel: the two big hoses arch over the top from the back, red hoses wrap the front, risers stack up both flanks; vessels and the pump drum hold the two front corners"
+  },
+  "heat exchanger 3x2": {
+   "shares_pct": {
+    "shield": 0.0,
+    "cool": 49.4,
+    "vessel": 41.1,
+    "pump": 7.1,
+    "radiator": 0.0,
+    "mast": 0.0,
+    "light": 0.0,
+    "other": 2.4
+   },
+   "cooling_mass_pct": 97.6,
+   "rise_tiles": 0.3,
+   "coverage_pct": 84.4,
+   "thickness": "the shell 1.8 x 1.6 t; flanged ends 0.35-0.7 t; pipes 0.15 t; the copper heat pipe 0.35 t",
+   "where": "a shell with plumbing on all four sides and a pump-like dome on top; the heat pipe runs down its face"
+  },
+  "fusion reactor 6x6": {
+   "shares_pct": {
+    "shield": 47.5,
+    "cool": 32.4,
+    "vessel": 13.7,
+    "pump": 4.3,
+    "radiator": 0.0,
+    "mast": 0.0,
+    "light": 0.0,
+    "other": 2.1
+   },
+   "cooling_mass_pct": 50.4,
+   "rise_tiles": 0.66,
+   "coverage_pct": 92.3,
+   "thickness": "the torus about 1.2 t through; the corner tanks 0.75-0.8 t across and up to 2 t tall; pipes in the well 0.15-0.25 t; the edge ducts 0.6-0.9 t",
+   "where": "the torus is the mass; tanks stand at the corners outside it, taller than the ring; pumps and pipework fill the well between ring and column; the ducts cover every edge"
+  },
+  "fusion generator 3x5": {
+   "shares_pct": {
+    "shield": 0.0,
+    "cool": 19.0,
+    "vessel": 7.6,
+    "pump": 5.4,
+    "radiator": 0.0,
+    "mast": 0.0,
+    "light": 0.0,
+    "other": 68.0
+   },
+   "cooling_mass_pct": 32.0,
+   "rise_tiles": 0.23,
+   "coverage_pct": 90.7,
+   "thickness": "the tanks 0.9 t across; the pumps 0.6 t; pipes 0.1-0.15 t",
+   "where": "tanks at the two back corners, pumps on the flanks, pipes down both long sides of the generator body"
+  }
+ },
+ "categories": {
+  "shield": "shielding / core housing",
+  "cool": "coolant plumbing (pipes, hoses, headers, heat pipes)",
+  "vessel": "tanks and exchanger shells",
+  "pump": "pumps and motors",
+  "radiator": "radiator panels",
+  "mast": "masts and piers",
+  "light": "glow",
+  "other": "everything else (body, generator, fuel, converter, skids)"
+ },
+ "1": {
+  "name": "THE GYRE SPIRE",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.29,
+  "rise_tiles_idle": 0.29,
+  "coverage_pct": 94.1,
+  "blue_lit_mean_pct": 7.7,
+  "blue_lit_min_pct": 7.1,
+  "blue_lit_max_pct": 8.6,
+  "blue_emissive_mean_pct": 2.2,
+  "reactor": "7x7",
+  "shares_pct": {
+   "shield": 18.1,
+   "cool": 18.2,
+   "vessel": 16.9,
+   "pump": 3.8,
+   "radiator": 13.2,
+   "mast": 9.1,
+   "light": 5.2,
+   "other": 15.5
+  },
+  "cooling_mass_pct": 52.1,
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4679741,
+  "gif_2x_bytes": 21061678
+ },
+ "2": {
+  "name": "THE BANDED SPIRE",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.28,
+  "rise_tiles_idle": 0.28,
+  "coverage_pct": 94.6,
+  "blue_lit_mean_pct": 5.7,
+  "blue_lit_min_pct": 4.4,
+  "blue_lit_max_pct": 6.8,
+  "blue_emissive_mean_pct": 2.1,
+  "reactor": "7x7",
+  "shares_pct": {
+   "shield": 25.8,
+   "cool": 19.6,
+   "vessel": 16.1,
+   "pump": 3.0,
+   "radiator": 10.9,
+   "mast": 7.4,
+   "light": 3.2,
+   "other": 14.0
+  },
+  "cooling_mass_pct": 49.6,
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4892261,
+  "gif_2x_bytes": 20186794
+ },
+ "3": {
+  "name": "THE CROWN",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.35,
+  "rise_tiles_idle": 0.35,
+  "coverage_pct": 92.9,
+  "blue_lit_mean_pct": 8.4,
+  "blue_lit_min_pct": 7.3,
+  "blue_lit_max_pct": 9.4,
+  "blue_emissive_mean_pct": 2.0,
+  "reactor": "7x7",
+  "shares_pct": {
+   "shield": 22.9,
+   "cool": 17.9,
+   "vessel": 11.2,
+   "pump": 3.2,
+   "radiator": 13.4,
+   "mast": 12.4,
+   "light": 2.3,
+   "other": 16.8
+  },
+  "cooling_mass_pct": 45.7,
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4731245,
+  "gif_2x_bytes": 20115592
+ }
+}

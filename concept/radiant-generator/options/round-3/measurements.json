@@ -1,0 +1,74 @@
+{
+ "vanilla": {
+  "nuclear reactor 5x5": {
+   "rise_tiles": 0.16,
+   "coverage_pct": 69.3
+  },
+  "fusion reactor 6x6": {
+   "rise_tiles": 0.66,
+   "coverage_pct": 92.3
+  },
+  "oil refinery 5x5 (north)": {
+   "rise_tiles": 0.95,
+   "coverage_pct": 87.3
+  },
+  "fusion generator 3x5": {
+   "rise_tiles": 0.23,
+   "coverage_pct": 90.7
+  }
+ },
+ "1": {
+  "name": "THE GYRE SPIRE",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.17,
+  "rise_tiles_idle": 0.17,
+  "coverage_pct": 79.3,
+  "blue_lit_mean_pct": 9.0,
+  "blue_lit_min_pct": 8.3,
+  "blue_lit_max_pct": 10.1,
+  "blue_emissive_mean_pct": 3.4,
+  "reactor": "7x7",
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4612218,
+  "gif_2x_bytes": 18100550
+ },
+ "2": {
+  "name": "THE BANDED SPIRE",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.15,
+  "rise_tiles_idle": 0.15,
+  "coverage_pct": 81.4,
+  "blue_lit_mean_pct": 7.4,
+  "blue_lit_min_pct": 6.0,
+  "blue_lit_max_pct": 8.5,
+  "blue_emissive_mean_pct": 3.2,
+  "reactor": "7x7",
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4803746,
+  "gif_2x_bytes": 19265260
+ },
+ "3": {
+  "name": "THE CROWN",
+  "footprint": "5x5",
+  "frames": 48,
+  "animation_speed": 0.4,
+  "loop_seconds": 2.0,
+  "rise_tiles_max": 0.23,
+  "rise_tiles_idle": 0.23,
+  "coverage_pct": 77.2,
+  "blue_lit_mean_pct": 13.1,
+  "blue_lit_min_pct": 11.5,
+  "blue_lit_max_pct": 14.9,
+  "blue_emissive_mean_pct": 2.8,
+  "reactor": "7x7",
+  "gif_frame_ms": 42,
+  "gif_1x_bytes": 4505407,
+  "gif_2x_bytes": 18211221
+ }
+}
