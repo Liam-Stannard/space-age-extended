@@ -1,0 +1,67 @@
+Reaction Plant, animation previews on round 5's Circulator (anim_previews.py, anim_sheets.py)
+moving pixels: any frame differs from frame 0 by > 10, at 1x; share = on the opaque mask / opaque (vanilla: chemical plant 5.2 %, oil refinery 15.9 %; round 5 3.8 %)
+crops: 1x px, clusters 8 px apart, ground included (falling drops, shadows); 4x renders are 4x these
+
+1. Current plan: the legs (24 f) and the four couplings
+  frames 24; moving 3811 px of 96093 opaque = 4.0 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 213 x 246 px = 52398 px^2 at (143, 145)
+    cluster 34 x 71 px at (170, 166), 1779 moving px
+    cluster 35 x 71 px at (197, 251), 1492 moving px
+    cluster 23 x 23 px at (274, 145), 402 moving px
+    cluster 23 x 37 px at (274, 331), 123 moving px
+    cluster 4 x 10 px at (143, 248), 31 moving px
+    cluster 19 x 20 px at (337, 371), 15 moving px
+    cluster 15 x 18 px at (306, 340), 13 moving px
+    (11 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/1-current.gif  1.43 MB
+
+2. Filter press cycle: follower backs off, the cake drops (16 unique f; accent on f10)
+  frames 16; moving 3675 px of 96093 opaque = 3.8 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 79 x 84 px = 6636 px^2 at (144, 325)
+    cluster 79 x 84 px at (144, 325), 3693 moving px
+    (9 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/2-press.gif  1.45 MB
+
+3. Gauge needles: the reactor's two and the scrubber's, twitching (24 f)
+  frames 24; moving 7 px of 96093 opaque = 0.0 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 0 x 0 px = 0 px^2 at (0, 0)
+    (4 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/3-gauges.gif  0.70 MB
+
+3b. Gauge needles on dials twice round 5's size (a model change; 24 f)
+  frames 24; moving 31 px of 96093 opaque = 0.0 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 24 x 29 px = 696 px^2 at (282, 269)
+    cluster 5 x 6 px at (282, 292), 17 moving px
+    cluster 3 x 5 px at (303, 269), 10 moving px
+    (3 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/3b-gauges_big.gif  0.72 MB
+
+4. Agitator drive: shaft, 5-spoke pulley, belt, motor pulley (24 f)
+  frames 24; moving 2198 px of 96093 opaque = 2.3 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 77 x 69 px = 5313 px^2 at (262, 113)
+    cluster 77 x 69 px at (262, 113), 2198 moving px
+    (0 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/4-drive.gif  0.77 MB
+
+5. Vent condenser: condensate beads and a drain-cock drip (24 f); no steam
+  frames 24; moving 108 px of 96139 opaque = 0.1 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 15 x 62 px = 930 px^2 at (359, 95)
+    cluster 15 x 62 px at (359, 95), 174 moving px
+    (0 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/5-drip.gif  0.74 MB
+
+6. All together (48 f: the loops twice, the press once; its in-game hold is ~17 s)
+  frames 48; moving 9389 px of 96139 opaque = 9.8 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 231 x 314 px = 72534 px^2 at (143, 95)
+    cluster 79 x 84 px at (144, 325), 3695 moving px
+    cluster 77 x 69 px at (262, 113), 2193 moving px
+    cluster 34 x 71 px at (170, 166), 1779 moving px
+    cluster 35 x 71 px at (197, 251), 1496 moving px
+    cluster 15 x 62 px at (359, 95), 174 moving px
+    cluster 23 x 37 px at (274, 331), 125 moving px
+    cluster 4 x 10 px at (143, 248), 31 moving px
+    cluster 19 x 20 px at (337, 371), 15 moving px
+    ... 1 more clusters
+    (17 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/6-all.gif  3.09 MB
+

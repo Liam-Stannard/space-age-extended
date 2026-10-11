@@ -1,0 +1,21 @@
+Vanilla, seen and measured. Every machine is two to four large paint zones over a brown-grey and dark-steel base:
+  oil refinery     rust-brown towers, but each unit its own tone: the cream lagged column, an olive-mottled tank, a weathered green
+                   tank (bottom right), dark motors, bright bare-steel gears and linkage, brass rings on the pipes. Red 7 %: oxide.
+  chemical plant   the ochre-yellow vessel (yellow 5 %, with the ochre in tan and rust), pale bare-steel pipes with bolted flanges,
+                   red handwheels, a grey-steel lower base (grey steel 11 %).
+  pumpjack         bare and grey steel pipework, a red motor box (red 4 %).
+  assembler 3      green and olive-yellow paint (green 17 %, yellow 16 %): one machine, one paint.
+  foundry (SA)     an oxide-red riveted vessel (rust 32 %), a cream steel frame, yellow fittings, blue cables.
+  EM plant (SA)    dark steel and copper-brown, little else (variety 6.5).
+  storage tank     one cream-tan paint (tan 57 %, variety 5.3): a single vessel, a single paint.
+  Rust in all of them sits at seams, flanges, bolt heads and the feet; paint between stays its colour. Bare and grey steel
+  together take 6-14 % of every plate; round 4 had 1.6 %.
+
+Round 4 measured inside vanilla's whole-plate ranges by making every part the same brown: tan 42 %, rust 31 %, bare and grey
+steel 1.6 %, three families, variety 6.9 -- the lowest of any multi-unit machine here.
+
+Round 5 paints the units as vanilla does: lead for the vessels the solution lives in (the signature), oxide red for the scrubber,
+ochre for the feed drum, weathered green for the receiver and the motors, cream for the pump house, the make-up pot and the
+filter leaves, grey for the exchanger and the instrument house, copper for the vent condenser, dark steel for frames and skids,
+bare steel for the pipes, red and yellow for handwheels and marking rings. Rust moves from an all-over mottle to the seams,
+bolt heads, feet, chips and runs. Target: variety inside vanilla's range near the chemical plant's (12.6), four or more families.

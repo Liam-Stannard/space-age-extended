@@ -1,0 +1,44 @@
+F  THE CIRCULATOR, round 5 (colour and detail; the model is round 4's)
+  footprint covered by mass: 86.8 %  (vanilla refinery 92-94 %; round 4 86.7 %; the model is round 4's, approved)
+  corner tiles covered (NW, NE, SW, SE): 100 %, 97 %, 1 %, 4 %
+  outer quarter-tile band covered: 69 %  (a square outline is 100 %)
+  rises above footprint north edge: 0.78 tiles  (vanilla refinery 0.97; round 4 0.78)
+  rise over the north port tiles -1, 0, +1: 0.19, 0.17, 0.17 tiles  (assembler 3's north picture stands 0.0-0.31 above the edge; round 4 0.19, 0.17, 0.17)
+  sprite bbox (mass): 5.08 wide x 5.73 tall tiles
+  blue (lit) pixels / opaque: 3.2 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %; round 4 3.2 %)
+  blue area bbox: 1.69 x 2.45 tiles
+  moving pixels / opaque: 3.8 %  (vanilla: chem 5.2 %, refinery 15.9 %; round 4 3.8 %)
+  round 4, same measures: cover 86.7 %; corners (NW, NE, SW, SE) 100 %, 97 %, 1 %, 4 %; outer band 69 %
+
+pipe pictures against assembler 3's outline (concept/ballast-drill/model/measure_ports.py; criterion: far_px 1 or less)
+  N {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [52, 20, 0.01562, 0.34375], 'ours': [53, 22, 0.00781, 0.34375]}
+  E {'missed': 0, 'extra': 6, 'far_px': 1.0, 'vanilla': [32, 74, -0.71875, 0.0625], 'ours': [31, 71, -0.72656, 0.05469]}
+  S {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [64, 70, 0.0, -0.76562], 'ours': [63, 69, -0.00781, -0.77344]}
+  W {'missed': 0, 'extra': 7, 'far_px': 1.0, 'vanilla': [32, 72, 0.73438, 0.01562], 'ours': [31, 72, 0.72656, 0.01562]}
+
+colour (r5_colour_study.py; variety: vanilla 5.3-12.6; families >= 4 %: vanilla 3-6)
+                            variety  fam>=4%     dark  bare m  grey s     tan    rust  copper  yellow     red   green    blue
+  oil refinery                  8.1        6    33.1%    5.4%    7.0%   23.8%   20.3%    1.8%    0.5%    6.9%    0.9%    0.2%
+  chemical plant               12.6        5    32.8%    3.1%   10.8%   20.2%   22.4%    2.9%    5.4%    0.4%    1.9%    0.0%
+  pumpjack (base)              11.5        4    43.1%    3.3%    9.0%   25.1%   12.6%    0.9%    0.8%    3.7%    1.5%    0.0%
+  assembler 3                  11.6        6    24.2%    4.7%    3.3%   20.8%   11.5%    3.0%   15.6%    0.0%   16.8%    0.0%
+  foundry (SA)                 10.0        4    36.7%    2.3%    4.7%   19.3%   31.5%    2.1%    1.9%    0.2%    0.8%    0.6%
+  EM plant (SA)                 6.5        3    58.3%    0.3%    2.9%   20.5%   16.1%    0.1%    0.1%    1.6%    0.0%    0.1%
+  storage tank                  5.3        4    15.7%    5.1%    2.2%   57.0%   17.1%    0.6%    2.3%    0.0%    0.0%    0.0%
+  round 4 F                     6.9        3    20.6%    0.7%    0.9%   42.3%   30.7%    0.3%    2.2%    0.0%    1.7%    0.7%
+  round 5 F                    13.0        4    20.9%    2.9%    1.3%   39.3%   22.5%    7.2%    1.5%    0.2%    3.5%    0.7%
+  
+  round 5's palette, share of the plate by the colour map: dark steel 19.2 %, lead (signature) 18.4 %, ochre paint 11.6 %, bare steel 10.2 %, rubber hose, tan 7.0 %, weathered green paint 6.6 %, grey paint 6.3 %, oxide red paint 5.1 %, cream paint 3.8 %, glass and the solution 2.9 %, brass 2.1 %, rubber hose, black 1.9 %, lagging canvas 1.7 %, hazard and ID panels 1.1 %, copper 1.1 %, rusty bolts and rivets 0.5 %
+
+finish.py (black, fine, mid, ratio, darkchr) -- vanilla: black 5-12 %, ratio ~0.5, darkchr 7-15
+  vanilla oil refinery (north)         black 12.0% fine 6.53 mid 12.62 ratio 0.52 darkchr 7.0
+  vanilla chemical plant (north base)  black 4.7% fine 5.69 mid 11.59 ratio 0.49 darkchr 15.3
+  round 4 F (plate, idle)              black 9.1% fine 5.74 mid 8.91 ratio 0.64 darkchr 14.6
+  round 5 F (plate, idle)              black 9.1% fine 6.57 mid 10.09 ratio 0.65 darkchr 14.0
+  round 5 F (plate, working f0)        black 7.1% fine 7.28 mid 10.42 ratio 0.70 darkchr 15.9
+tonal.py (p5, p50, p95, spread) -- vanilla: p50 41-63 (mod ~75-81), p95 143-189, spread 140-177
+  vanilla oil refinery (north)         p5 5 p50 51 p95 165 spread 160
+  vanilla chemical plant (north base)  p5 12 p50 47 p95 176 spread 164
+  round 4 F (plate, idle)              p5 5 p50 74 p95 142 spread 137
+  round 5 F (plate, idle)              p5 5 p50 75 p95 161 spread 156
+  round 5 F (plate, working f0)        p5 7 p50 78 p95 164 spread 157

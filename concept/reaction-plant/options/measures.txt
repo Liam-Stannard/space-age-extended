@@ -1,0 +1,28 @@
+A  THE SIGHT COLUMN
+  footprint covered by mass: 82 %  (vanilla 92-94 %)
+  rises above footprint top edge: 1.05 tiles  (vanilla 0.97-1.05)
+  sprite bbox: 3.05 wide x 4.05 tall tiles
+  blue (lit) pixels / opaque: 6.2 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %)
+  blue area bbox: 2.36 x 2.30 tiles
+  moving pixels / opaque: 6.1 %  (vanilla: chem 5.2 %, refinery 15.9 %)
+B  THE KETTLE AND SCRUBBER
+  footprint covered by mass: 85 %  (vanilla 92-94 %)
+  rises above footprint top edge: 1.11 tiles  (vanilla 0.97-1.05)
+  sprite bbox: 3.84 wide x 4.11 tall tiles
+  blue (lit) pixels / opaque: 3.0 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %)
+  blue area bbox: 0.91 x 0.92 tiles
+  moving pixels / opaque: 4.2 %  (vanilla: chem 5.2 %, refinery 15.9 %)
+C  THE SETTLING TUBE
+  footprint covered by mass: 81 %  (vanilla 92-94 %)
+  rises above footprint top edge: 1.03 tiles  (vanilla 0.97-1.05)
+  sprite bbox: 3.25 wide x 4.03 tall tiles
+  blue (lit) pixels / opaque: 14.1 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %)
+  blue area bbox: 2.25 x 2.05 tiles
+  moving pixels / opaque: 14.9 %  (vanilla: chem 5.2 %, refinery 15.9 %)
+D  THE CASCADE
+  footprint covered by mass: 84 %  (vanilla 92-94 %)
+  rises above footprint top edge: 1.09 tiles  (vanilla 0.97-1.05)
+  sprite bbox: 3.27 wide x 4.09 tall tiles
+  blue (lit) pixels / opaque: 4.4 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %)
+  blue area bbox: 1.92 x 2.80 tiles
+  moving pixels / opaque: 4.3 %  (vanilla: chem 5.2 %, refinery 15.9 %)
