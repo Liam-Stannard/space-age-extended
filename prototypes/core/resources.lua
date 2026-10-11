@@ -9,26 +9,49 @@
 -- cannot be barrelled, so it cannot be shipped in, and melt cannot be drawn
 -- without it. A landing site without a gas vent is a landing site where nothing
 -- can be started.
+--
+-- The starting patches are not vanilla's (`has_starting_area_placement`), which
+-- dropped them into the radiant pool on some seeds: each is a spot of the
+-- Core's own, made in map-gen.lua, laid over the patches below with max(). See
+-- "The starting area" there. Everything outside it is vanilla's placement, as
+-- before.
 
 local resource_autoplace = require("resource-autoplace")
 local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
 local derive = require("prototypes.derive")
+
+-- A resource's autoplace: vanilla's patches everywhere, and inside the starting
+-- area the Core's own starting spot `sae_core_start_<key>` (map-gen.lua), with
+-- its own amount. `has_starting_area_placement = false` keeps vanilla's
+-- patches out of the starting area -- they fade in from 150 tiles, exactly as
+-- they did with `true` -- and no longer asks vanilla for a starting patch.
+local function with_starting_spot(key, settings)
+  settings.has_starting_area_placement = false
+  local regular = resource_autoplace.resource_autoplace_settings(settings)
+  local start = "sae_core_start_" .. key
+  return
+  {
+    order = regular.order,
+    probability_expression = "max(" .. regular.probability_expression .. ", " .. start .. " > 0)",
+    richness_expression = "if(" .. start .. " > 0, " .. start .. "_richness, " .. regular.richness_expression .. ")"
+  }
+end
 
 -- The vents get their own mining categories, and that is a gameplay fix rather
 -- than tidiness.
 --
 -- The vents were `basic-fluid`, the category vanilla's pumpjack works, and a
 -- pumpjack has no surface conditions -- so a player could land on the Core,
--- build an ordinary pumpjack on a melt vent and draw melt for nothing. The Vent
--- Pump's entire reason to exist is that melt costs helium-3 (see the note at the
--- top of entities.lua), and the vanilla machine walked straight past it.
+-- build an ordinary pumpjack on a kamacite vent and draw melt for nothing. The
+-- Vent Pump's entire reason to exist is that melt costs helium-3 (see the note
+-- at the top of entities.lua), and the vanilla machine walked straight past it.
 --
 -- A private category closes it from both ends: nothing vanilla can work a vent,
 -- and the Vent Pump can no longer be built on Nauvis crude oil as a pumpjack
 -- that happens to need helium.
 --
--- **Two of them, one per machine.** `sae-vent` is the melt vent's alone, and
--- only the Vent Pump works it. `sae-gas` is every gas vent's -- helium-3 here,
+-- **Two of them, one per machine.** `sae-vent` is the kamacite vent's alone,
+-- and only the Vent Pump works it. `sae-gas` is every gas vent's -- helium-3 here,
 -- siderane in crust-tap.lua -- and only the Gas Pump works it. Neither machine
 -- can stand on the other's vent, and a new gas is a new resource in `sae-gas`
 -- rather than a new machine.
@@ -52,9 +75,9 @@ data:extend({
 
 -- Each resource needs an autoplace control before a planet may name it.
 data:extend({
-  { type = "autoplace-control", name = "sae-kamacite-ore", category = "resource", richness = true, order = "z[sae]-a" },
-  { type = "autoplace-control", name = "sae-melt-vent",    category = "resource", richness = true, order = "z[sae]-b" },
-  { type = "autoplace-control", name = "sae-gas-vent",     category = "resource", richness = true, order = "z[sae]-c" },
+  { type = "autoplace-control", name = "sae-kamacite-ore",  category = "resource", richness = true, order = "z[sae]-a" },
+  { type = "autoplace-control", name = "sae-kamacite-vent", category = "resource", richness = true, order = "z[sae]-b" },
+  { type = "autoplace-control", name = "sae-gas-vent",      category = "resource", richness = true, order = "z[sae]-c" },
   -- Not a resource: boulders are terrain the way trees are, so they belong on
   -- the terrain slider rather than among the ore controls.
   { type = "autoplace-control", name = "sae-core-rock",   category = "terrain",  order = "z[sae]-d" }
@@ -82,14 +105,13 @@ data:extend({
     mining_visualisation_tint = { r = 0.62, g = 0.60, b = 0.66, a = 1 },
     collision_box = { { -0.1, -0.1 }, { 0.1, 0.1 } },
     selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
-    autoplace = resource_autoplace.resource_autoplace_settings
+    autoplace = with_starting_spot("kamacite",
     {
       name = "sae-kamacite-ore",
       order = "b",
       base_density = 3,               -- few patches
-      regular_rq_factor_multiplier = 3, -- but very rich ones
-      has_starting_area_placement = true
-    },
+      regular_rq_factor_multiplier = 3 -- but very rich ones
+    }),
     stage_counts = { 15000, 9500, 5500, 2900, 1300, 400, 150, 80 },
     stages =
     {
@@ -99,12 +121,12 @@ data:extend({
   },
   {
     type = "resource",
-    name = "sae-melt-vent",
+    name = "sae-kamacite-vent",
     icon = "__space-age-extended__/graphics/icons/fluid/molten-kamacite.png",
     flags = { "placeable-neutral" },
     category = "sae-vent",
     subgroup = "mineable-fluids",
-    order = "z[sae]-b[melt-vent]",
+    order = "z[sae]-b[kamacite-vent]",
     infinite = true,
     -- A vent is one pool, not a field of tiles, so it is not snapped to the
     -- resource grid -- as crude oil is not.
@@ -131,16 +153,15 @@ data:extend({
     driving_sound = tile_sounds.driving.oil,
     collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
     selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
-    autoplace = resource_autoplace.resource_autoplace_settings
+    autoplace = with_starting_spot("kamacite_vent",
     {
-      name = "sae-melt-vent",
+      name = "sae-kamacite-vent",
       order = "c",
       base_density = 1.4,
       random_spot_size_minimum = 1,
       random_spot_size_maximum = 1,
-      additional_richness = 150000,
-      has_starting_area_placement = true
-    },
+      additional_richness = 150000
+    }),
     stage_counts = { 0 },
     stages =
     {
@@ -181,16 +202,15 @@ data:extend({
     -- 2x2, the Gas Pump's own footprint, since a vent sits under its machine.
     collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
     selection_box = { { -1, -1 }, { 1, 1 } },
-    autoplace = resource_autoplace.resource_autoplace_settings
+    autoplace = with_starting_spot("gas",
     {
       name = "sae-gas-vent",
       order = "d",
-      base_density = 0.5,            -- scarcer than melt
+      base_density = 0.5,            -- scarcer than the kamacite vent
       random_spot_size_minimum = 1,
       random_spot_size_maximum = 1,
-      additional_richness = 60000,
-      has_starting_area_placement = true
-    },
+      additional_richness = 60000
+    }),
     stage_counts = { 0 },
     stages =
     {

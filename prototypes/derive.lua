@@ -193,10 +193,16 @@ end
 --- cool-down all at once, for ever. If a derived machine should hum, its own
 --- file says so explicitly, which is better than inheriting three loops and
 --- hoping.
+---
+--- **Not every machine keeps its art in `graphics_set`.** A generator's is
+--- `pictures`, a GeneratorPictureSet of one Animation per direction
+--- (GeneratorPrototype, Factorio 2.1.21 prototype docs), so the Siderane
+--- turbine names that field; everything else here applies to it unchanged.
 --- @param p table            the prototype
 --- @param set table          its new graphics_set
-function derive.own_graphics(p, set)
-  p.graphics_set = set
+--- @param field string|nil   the field the set goes in; "graphics_set" if nil
+function derive.own_graphics(p, set, field)
+  p[field or "graphics_set"] = set
   -- This building has its own art now, so it is no longer a placeholder.
   derive.pending[p.name] = nil
   -- The ground decal under the vanilla machine was drawn for the vanilla plate.
@@ -222,6 +228,196 @@ function derive.own_graphics(p, set)
     end
     if ws.main_sounds == nil and ws.sound == nil then p.working_sound = nil end
   end
+  return p
+end
+
+-- The length of one animation cycle, in frames: what an accent's `frame` counts
+-- in. `frame_sequence` replaces the sheet's order and so its length, and
+-- `repeat_count` stretches a layer to a longer cycle (AnimationParameters, in
+-- the prototype docs); the layers of one animation share one clock, so the
+-- cycle is the longest layer's. That an accent's frame counts in that cycle,
+-- a sequence's frames rather than the sheet's, is an assumption no client has
+-- measured; every vanilla accent, 67 on 12 machines, passes the check below
+-- counted this way (2026-10-11).
+local function cycle_frames(anim)
+  if anim.layers then
+    local most = 0
+    for _, layer in ipairs(anim.layers) do
+      most = math.max(most, cycle_frames(layer))
+    end
+    return most
+  end
+  local frames = anim.frame_sequence and #anim.frame_sequence or anim.frame_count or 1
+  return frames * (anim.repeat_count or 1)
+end
+
+local DIRECTIONS = { "north", "east", "south", "west" }
+
+-- What an accent can be cued to on one graphics set, by the name it is cued
+-- with, each as a list of { direction, frames }. The main animation is filed
+-- under `false`, since an accent cued to it names no visualisation. Also how
+-- many working visualisations have no `name`, which nothing can be cued to.
+--
+-- The main animation is an Animation4Way: a plain Animation for every
+-- direction, or one per direction, a missing one falling back to north. A
+-- working visualisation carries `animation` for every direction or
+-- `<direction>_animation` for each.
+local function cue_targets(set)
+  local targets, unnamed = {}, 0
+  local main = set.animation
+  if main then
+    local frames = {}
+    if main.north then
+      for _, d in ipairs(DIRECTIONS) do
+        frames[#frames + 1] = { d, cycle_frames(main[d] or main.north) }
+      end
+    else
+      frames[1] = { "every direction", cycle_frames(main) }
+    end
+    targets[false] = frames
+  end
+  for _, vis in ipairs(set.working_visualisations or {}) do
+    if vis.name then
+      local frames = {}
+      if vis.animation then
+        frames[#frames + 1] = { "every direction", cycle_frames(vis.animation) }
+      end
+      for _, d in ipairs(DIRECTIONS) do
+        local anim = vis[d .. "_animation"]
+        if anim then frames[#frames + 1] = { d, cycle_frames(anim) } end
+      end
+      targets[vis.name] = frames
+    else
+      unnamed = unnamed + 1
+    end
+  end
+  return targets, unnamed
+end
+
+--- Give a machine a working sound: a bed, and accents cued to animation frames.
+---
+--- **The bed** is the loop that plays while the machine works -- `sound` on the
+--- WorkingSound, which inherits MainSound's fields. **An accent** is a one-shot
+--- the engine fires each time an animation reaches a frame: `SoundAccent` in
+--- the prototype docs, `frame` plus `play_for_working_visualisation`, which is
+--- how vanilla's big mining drill lands its start sound on frame 8 of
+--- "drill-animation" (space-age/prototypes/entity/big-mining-drill.lua).
+---
+--- **An accent on the main `animation`, rather than a working visualisation,**
+--- is one with no `play_for_working_visualisation` at all. The docs do not say
+--- what such an accent counts; vanilla implies it. Assembling machine 1 cues
+--- four with no visualisation, on frames 4, 13, 38 and 43
+--- (base/prototypes/entity/entities.lua). Its main animation is 64 frames -- a
+--- 64-frame `-anim` layer over a base and shadow repeated 64 times
+--- (base/prototypes/entity/assembler-pictures.lua) -- and its one working
+--- visualisation, the status light, also runs to 64 by `repeat_count` but has
+--- no `name`, so no accent can be cued to it: the frames are the main
+--- animation's. The recycler's six (recycler/data.lua) are cued the same way.
+--- Here that is an accent with `visualisation` left out.
+---
+--- **The cue is checked here, at the data stage, and a wrong one is an error.**
+--- The engine refuses an accent naming a visualisation the machine does not
+--- have, with a message about the visualisation and none about the sound; and
+--- an accent whose frame the animation never reaches would simply never play,
+--- which no load would ever say. So: the name must be a working visualisation
+--- of the machine's `graphics_set` (and of `wet_mining_graphics_set`, if it has
+--- one), and the frame must be inside that animation's cycle in every
+--- direction it draws, counting from 0 -- sfx.py's `frame` counts the same way.
+---
+--- **Frame 0 is refused.** Factorio 2.1.21 never fires an accent on frame 0:
+--- `frame` defaults to 0 (SoundAccent, doc-html/types/SoundAccent.html), and
+--- the engine treats 0 as unset. Recorded in a client on the Core, 2026-10-11:
+--- the Drop Crusher's drop on frame 0 of its main animation was silent on
+--- every stroke and at start-up, and the same drop on frame 1 played every
+--- stroke; the Ballast Drill's ratchet moved to frame 0 of a working
+--- visualisation fell silent too. No vanilla accent is on frame 0. A moment that falls there needs
+--- the animation phased so it falls elsewhere, as the Drop Crusher's was.
+---
+--- **Call it after `derive.own_graphics`**, which strips every accent it finds:
+--- they are checked against the graphics they are cued to, and that has to be
+--- the building's own.
+---
+---     derive.working_sound(drill, {
+---       bed = { filename = SND .. "winch-loop.ogg", volume = 0.5 },
+---       accents = {
+---         { sound = { filename = SND .. "landing.ogg" }, visualisation = "stroke", frame = 5 },
+---         { sound = { filename = SND .. "tick.ogg" }, frame = 23 },  -- main animation
+---       },
+---       fade_in_ticks = 4, fade_out_ticks = 20,
+---     })
+---
+--- Any other key is copied onto the WorkingSound as it is.
+--- @param p    table  the prototype, its graphics_set already its own
+--- @param spec table  `bed` (a Sound), `accents` (each: `sound`, `frame`,
+---                    optional `visualisation` and `directions`), and any other
+---                    WorkingSound field
+function derive.working_sound(p, spec)
+  local function fail(msg)
+    error("[sae] " .. p.name .. " working sound: " .. msg, 3)
+  end
+  if not spec.bed then fail("no bed; `bed` is the loop it plays while working") end
+
+  local sets = {}
+  for _, key in ipairs({ "graphics_set", "wet_mining_graphics_set" }) do
+    if p[key] then
+      local targets, unnamed = cue_targets(p[key])
+      sets[#sets + 1] = { key, targets, unnamed }
+    end
+  end
+
+  local accents = {}
+  for i, accent in ipairs(spec.accents or {}) do
+    local name = accent.visualisation
+    local what = name and ("working visualisation \"" .. name .. "\"") or "the main animation"
+    local frame = accent.frame
+    if not accent.sound then fail("accent " .. i .. " has no sound") end
+    if type(frame) ~= "number" or frame ~= math.floor(frame) then
+      fail("accent " .. i .. " on " .. what .. " needs a whole `frame`, got " .. tostring(frame))
+    end
+    if frame == 0 then
+      fail("accent " .. i .. " is cued to frame 0 of " .. what .. ", which never plays: "
+           .. "Factorio 2.1.21 never fires an accent on frame 0, which is `frame`'s unset value "
+           .. "(SoundAccent's default); phase the animation so the moment falls on another frame")
+    end
+    if #sets == 0 then fail("accent " .. i .. ": the prototype has no graphics_set to cue it to") end
+    for _, entry in ipairs(sets) do
+      local key, targets, unnamed = entry[1], entry[2], entry[3]
+      local frames = targets[name or false]
+      if not frames then
+        local names = {}
+        for n in pairs(targets) do
+          if n then names[#names + 1] = "\"" .. n .. "\"" end
+        end
+        table.sort(names)
+        fail("accent " .. i .. " is cued to " .. what .. ", which " .. key .. " does not have"
+             .. " (its named working visualisations: " .. (#names > 0 and table.concat(names, ", ") or "none")
+             .. (unnamed > 0 and ("; " .. unnamed .. " more have no `name`, and only a named one can be cued to")
+                 or "") .. ")")
+      end
+      if #frames == 0 then
+        fail("accent " .. i .. ": " .. what .. " in " .. key .. " draws no animation to count frames in")
+      end
+      for _, df in ipairs(frames) do
+        if frame < 0 or frame >= df[2] then
+          fail("accent " .. i .. " is cued to frame " .. frame .. " of " .. what .. ", which has "
+               .. df[2] .. " frames (0 to " .. (df[2] - 1) .. ") in " .. key .. ", " .. df[1])
+        end
+      end
+    end
+    accents[#accents + 1] =
+    {
+      sound = accent.sound,
+      frame = frame,
+      play_for_working_visualisation = name,
+      play_for_directions = accent.directions
+    }
+  end
+
+  local ws = { sound = spec.bed, sound_accents = #accents > 0 and accents or nil }
+  for k, v in pairs(spec) do
+    if k ~= "bed" and k ~= "accents" then ws[k] = v end
+  end
+  p.working_sound = ws
   return p
 end
 

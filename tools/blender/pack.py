@@ -7,7 +7,9 @@ What to pack comes from the model's render.json (contract.py): its passes, its
 animations, its directions, its footprint and its canvas. Every pass was
 rendered on that one canvas with the entity origin exactly at its centre, so
 every layer's shift is its crop's centre minus that point, computed rather than
-measured and adjusted. Crops keep a 1 px transparent rim.
+measured and adjusted. Crops keep a 1 px transparent rim. A glow pass drops its
+isolated specks of render noise (SPECK_PX) from both its crop and its sheet, so its
+size and shift do not change from one render of the same model to the next.
 
 Sheets are named for the pass's declared sheet (and the animation's name), with
 -<direction> after it when the model has more than one direction; meta.json
@@ -31,6 +33,21 @@ import contract
 NOISE = 24
 LIMIT_PX = 1.0      # a turning part's drift, a sliding part's miss off its curve or its line
 LAYER_FLOOR = 8     # a working layer's difference from its plate at or under this is sampling noise
+# A glow's opaque pixels in a group of fewer than this (8-connected) are noise, not light:
+# dropped from its crop and its sheet (glow_layer). Measured 2026-10-10 on box.py's four
+# directions from three builds (blender.org's on the GPU and on the CPU, Ubuntu's on the
+# CPU): every speck was one pixel, alone, in a row of alpha-3 pixels just under the
+# footprint whose green flips between 0 and 85 from render to render (and between the
+# lit and unlit passes), so clearing LAYER_FLOOR; two to four a direction, 41 to 118
+# rows below the light, taking glow-east from 61x14 to 97x132 or 109x132 by which
+# pixels flipped. The reaction plant (GPU and CPU) had a pair and a single of faint
+# spill just over the floor (lit adds ~(8, 15, 11)) two and three rows over its windows,
+# and on the CPU a lone (63, 0, 0) 39 rows under them, taking its glow from 58x10 to
+# 58x13 or 58x52. The smallest real light measured was 46 px (a reaction-plant window;
+# the furnace's sight port is 227, box.py's glow 649-708). So: specks of one and two
+# pixels seen; 4 drops those with a pixel to spare, and is an order of magnitude under
+# any light.
+SPECK_PX = 4
 MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
 
 
@@ -43,11 +60,46 @@ def clean(im):
 def glow_layer(lit, under):
     """A glow pass's sheet: lit minus the plate under it, opaque wherever that is above noise.
 
-    Drawn additively, so its colour is what the light adds.
+    Drawn additively, so its colour is what the light adds. Isolated specks -- any
+    8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
+    all, so the crop (and so the sheet's size and shift) is the light's own and does
+    not move with render noise; nothing dropped is drawn either.
     """
     diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
     alpha = diff.convert("L").point(lambda v: 255 if v > LAYER_FLOOR else 0)
-    return Image.merge("RGBA", (*diff.split(), alpha))
+    kept = drop_specks(alpha)
+    # clear the dropped pixels' colour too (a preview adds the colour and ignores alpha);
+    # every other pixel, faint or not, is left exactly as it was
+    keep = ImageChops.invert(ImageChops.subtract(alpha, kept)).convert("RGB")
+    return Image.merge("RGBA", (*ImageChops.multiply(diff, keep).split(), kept))
+
+
+def drop_specks(alpha):
+    """alpha (0 or 255) with every 8-connected group of fewer than SPECK_PX opaque pixels cleared."""
+    w, h = alpha.size
+    px = list(alpha.get_flattened_data())
+    seen = bytearray(w * h)
+    for start, v in enumerate(px):
+        if not v or seen[start]:
+            continue
+        seen[start] = 1
+        group, todo = [start], [start]
+        while todo:
+            i = todo.pop()
+            x, y = i % w, i // w
+            for ny in range(max(y - 1, 0), min(y + 2, h)):
+                for nx in range(max(x - 1, 0), min(x + 2, w)):
+                    j = ny * w + nx
+                    if px[j] and not seen[j]:
+                        seen[j] = 1
+                        group.append(j)
+                        todo.append(j)
+        if len(group) < SPECK_PX:
+            for i in group:
+                px[i] = 0
+    out = Image.new("L", alpha.size)
+    out.putdata(px)
+    return out
 
 
 def paint_layer(painted, under):

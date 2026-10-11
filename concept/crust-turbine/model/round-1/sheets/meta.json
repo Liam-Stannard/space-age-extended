@@ -1,0 +1,110 @@
+{
+ "base-vertical": {
+  "size": [
+   121,
+   351
+  ],
+  "shift": [
+   0.08594,
+   -0.44531
+  ]
+ },
+ "base-shadow-vertical": {
+  "size": [
+   129,
+   332
+  ],
+  "shift": [
+   0.38281,
+   -0.125
+  ]
+ },
+ "rotor-vertical": {
+  "size": [
+   71,
+   66
+  ],
+  "shift": [
+   0.08594,
+   -0.70312
+  ],
+  "frames": 8,
+  "line_length": 8
+ },
+ "base-horizontal": {
+  "size": [
+   328,
+   172
+  ],
+  "shift": [
+   0.0,
+   0.125
+  ]
+ },
+ "base-shadow-horizontal": {
+  "size": [
+   345,
+   132
+  ],
+  "shift": [
+   0.36719,
+   0.40625
+  ]
+ },
+ "rotor-horizontal": {
+  "size": [
+   57,
+   56
+  ],
+  "shift": [
+   -0.00781,
+   -0.34375
+  ],
+  "frames": 8,
+  "line_length": 8
+ },
+ "checks": {
+  "vertical": {
+   "centre_offset_px": 5.5,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    0.984375,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.25,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rotor_drift_px": [
+    0.01,
+    "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    47,
+    0.0002,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "horizontal": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.421875,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "rotor_drift_px": [
+    0.01,
+    "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    17,
+    0.0001,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  }
+ }
+}

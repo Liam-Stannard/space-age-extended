@@ -5,6 +5,8 @@
 
   --idle   idle.png and still.png only: the quick loop
   --icon   icon.png: the whole machine, its crown standing proud of its collar (spec 16)
+           at the top of the stroke (frame 6, the shipped icon's pose); --icon-pose
+           top|cocked|seated picks the pose (Liam to choose; top until he does)
 
 The design is the adopted Sealed Hammer (concept/drop-crusher/adopted/A-sheet.png,
 graphics/entity/drop-crusher/base.png); spec 3.2 the parts, 3.3 the palette, 9 the
@@ -12,7 +14,7 @@ stroke. The task: .claude/tasks/drop-crusher-model.md.
 
   - an armoured cylinder filling most of the footprint, nearly straight-sided (R 1.28
     at the base plate to 1.22 at the roof), 1.74 tall, 0.12 south of centre: the
-    machine draws 3.56 tiles tall with the crown seated (round 3: round 2's 2.96-tall
+    machine draws 3.56 tiles tall with the crown seated, frame 14 (round 3: round 2's 2.96-tall
     tower drew 4.1 and towered over its neighbours), in 16 staves and three courses,
     each plate its own object and so its own tone, the courses banded and
     double-riveted, the joints the camera sees strapped steel and copper by turns,
@@ -65,12 +67,20 @@ No output chute, no glow, no pipe (spec 8).
 
 The stroke (spec 9, the task): one animation layer, `stroke`, 24 frames -- the
 weight, the gears, the pinions, the pawl and its spring, their shadows caught on
-the plate. Frame 0 is the crown seated on the collar, pawl engaged. Frames 0-16
-wind it up at constant speed, the gears turning; at 16 the pawl kicks clear; 17-23
-fall with the distance going as t^2, so each frame's travel is larger than the
-last, and the loop lands back on frame 0, seated, hard. The gears stay meshed:
-their angle is the rack's travel over their pitch radius in every frame, so they
-spin back fast as it falls.
+the plate. The stroke itself: wound up at constant speed over 16 frames, the gears
+turning; at the top the pawl kicks clear; it falls over 8 with the distance going
+as t^2, so each frame's travel is larger than the last, and lands seated, hard.
+The gears stay meshed: their angle is the rack's travel over their pitch radius in
+every frame, so they spin back fast as it falls.
+
+The loop starts cocked (the sound-wiring task's amendment, 2026-10-11): 2.1.21
+never fires a working-sound accent on frame 0, so the landing cannot be there.
+Frame n is the stroke's step (n + PHASE) mod 24, PHASE = 10: frame 0 is the weight
+just past halfway up, between two pawl clicks, held by the pawl; 0-6 wind up, 6
+(TOP) is the top where the pawl trips, 7-13 fall, 14 (SEAT) lands seated, 14-23
+and 0 wind up again. Frame 0 is the rest pose: the still and the shadow show the
+crown cocked. The icon stays at the top of the stroke (the shipped pose) until Liam
+chooses between top, cocked and seated (--icon-pose).
 
 Units are tiles; north is +Y. A model point (x, y, z) lands on screen at
 (x, y + z/2) tiles from the origin.
@@ -108,23 +118,31 @@ def swatch(name):
 # ---------------------------------------------------------------- the stroke
 
 FRAMES = 24
-RISE = 16                          # frames 0..16 wind it up; 16 is the top, where the pawl trips
+RISE = 16                          # steps 0..16 wind it up; 16 is the top, where the pawl trips
 TRAVEL = 0.70                      # tiles of lift: 22.4 px on the screen
-FALL = FRAMES - RISE               # 8 frames from the top back to the seat
+FALL = FRAMES - RISE               # 8 steps from the top back to the seat
+PHASE = 10                         # frame n is step (n + PHASE) mod FRAMES: frame 0 is cocked
+TOP = (RISE - PHASE) % FRAMES      # frame 6: the top, where the pawl trips
+SEAT = (FRAMES - PHASE) % FRAMES   # frame 14: the crown lands seated
+
+
+def step(f):
+    """The stroke's step in frame f: 0 seated, RISE the top."""
+    return (f + PHASE) % FRAMES
 
 
 def lift(f):
     """The weight's height above its seat in frame f (tiles)."""
-    f %= FRAMES
-    if f <= RISE:
-        return TRAVEL * f / RISE
-    k = (f - RISE) / FALL                 # 0 at the top .. 1 at the seat (frame 24 = 0)
+    s = step(f)
+    if s <= RISE:
+        return TRAVEL * s / RISE
+    k = (s - RISE) / FALL                 # 0 at the top .. 1 at the seat (step 24 = 0)
     return TRAVEL * (1 - k * k)
 
 
 def tripped(f):
     """The pawl is clear of the ratchet from the top of the stroke until the seat."""
-    return RISE <= f % FRAMES < FRAMES
+    return RISE <= step(f) < FRAMES
 
 
 PATH = [[0.0, 0.0, round(lift(f), 6)] for f in range(FRAMES)]
@@ -2167,7 +2185,14 @@ if "--collide" in argv:
 
 if ICON:
     sc.cycles.samples = 128
-    pose(RISE)
+    # the pose: top (TOP, frame 6: the shipped icon's pose) unless --icon-pose names
+    # another -- cocked (frame 0, the rest pose) or seated (SEAT) -- for Liam to choose
+    # between; the default stays the shipped pose until he does
+    ICON_POSES = {"top": TOP, "cocked": 0, "seated": SEAT}
+    ICON_POSE = argv[argv.index("--icon-pose") + 1] if "--icon-pose" in argv else "top"
+    if ICON_POSE not in ICON_POSES:
+        sys.exit(f"drop_crusher.py: --icon-pose {ICON_POSE!r}: one of {', '.join(ICON_POSES)}")
+    pose(ICON_POSES[ICON_POSE])
     # the whole machine, the crown standing proud of its collar (spec 16), with margin:
     # 3.9 tiles across, centred on the drawn machine (base edge 1.5 below the origin to
     # the roof's back 2.1 above), so its silhouette reads at 32 px
@@ -2181,7 +2206,8 @@ contract.declare(OUT_DIR, canvas=CANVAS, **DECL)
 rig.camera(*CANVAS)
 # what measure_stroke.py needs to hold the frames to the mechanism, without Blender
 with open(os.path.join(OUT_DIR, "stroke.json"), "w") as _f:
-    json.dump(dict(frames=FRAMES, rise=RISE, travel=TRAVEL, lift=[lift(f) for f in range(FRAMES)],
+    json.dump(dict(frames=FRAMES, rise=RISE, phase=PHASE, top=TOP, seat=SEAT, travel=TRAVEL,
+                   lift=[lift(f) for f in range(FRAMES)],
                    rg=RG, teeth=NG, spokes=5, crown_height=CH,
                    gear_centre_px=[CANVAS[0] / 2 + XG * rig.PX_PER_TILE,
                                    CANVAS[1] / 2 - (YC + ZA * math.cos(rig.ELEVATION)) * rig.PX_PER_TILE],
@@ -2210,7 +2236,7 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
     setup(visible=STATIC + MOVING)
     rig.render(path("still"))
     if IDLE:
-        pose(RISE)
+        pose(TOP)
         rig.render(f"{OUT_DIR}/top.png")
         break
 

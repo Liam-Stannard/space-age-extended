@@ -32,9 +32,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Whisker Comber, Helium Concentrator, Ring Mast — plus their item icons and the
   whisker-bed terrain. Keep them for buildings that may return, or move them to
   `concept/<building>/`; git keeps them either way.
-- **Rename the melt vent to the kamacite vent.** The four player-facing
-  strings, `sae-melt-vent` → `sae-kamacite-vent` with a migration, and "melt"
-  in `design/` once the docs are rewritten for the rework.
+- **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
+  once the docs are rewritten for the rework.
 - **Rename crust gas to siderane in the docs.** The player-facing names
   changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
   extraction); `design/` and the other specs still say "crust gas", "crust
@@ -50,13 +49,8 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 - **Radiant Generator** — model (`radiant-generator-model`), then wiring with
   an `idle_animation`, so a fuelless generator stops glowing.
-- **Ballast Drill** — model (`ballast-drill-model`), then wiring: one plate,
-  a vanilla-style chute and ore particles per direction. Replaces the stroke
-  art committed without sign-off (`ballast-drill/stroke*`).
 - **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
   gutter base, rendered pipe pictures, vanilla covers.
-- **The Ballast Drill's lamp has no `status_colors`**, so it likely draws
-  dark, as the reaction plant's did. Its wiring task sets them.
 
 ## Blender pipeline
 
@@ -89,9 +83,14 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 ## Art
 
-- **The Crust Turbine and the crust vent tile still wear vanilla art**
+- **The crust vent tile still wears vanilla art**
   (`derive.placeholder_art` in `prototypes/core/crust-tap.lua`). The data stage
   lists every survivor at the end of each load.
+- **The Siderane turbine dies as a steam turbine.** `sae-crust-turbine` still
+  inherits `corpse = "steam-turbine-remnants"` and
+  `dying_explosion = "steam-turbine-explosion"`, so its wreck is vanilla's; it
+  needs its own remnants rendered from its model
+  (`prototypes/core/crust-tap.lua`).
 - **The Crust Tap has no scorched-ground layer**, which its spec (§3.3) asks
   for as its own layer, the way vanilla does `mining_drill_scorch_mark`.
 - **The space connection** `sae-shattered-planet-core` has no icon of its own,

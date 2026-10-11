@@ -132,6 +132,18 @@ and no finish; hazard banding stays on the leg feet only.
 **No glow at all.** Nothing on this machine is hot or energised; it is a weight
 on a rail. A drill that glows would read as a smelter.
 
+## 3.4 Sound (Liam, 2026-10-11)
+
+A bed and two accents, all cued to the stroke (24 frames, one second). The
+**bed** is a low, slow winch drone, the big mining drill's working loop
+pitched down and quieter, heard while the drill works. The **landing** on
+frame 5 is the building's voice: a deep, dead thud with a short ground rumble
+under it, landing with the dust; the heaviest single sound on the Core. A
+small **ratchet tick** on frame 23, at the top of the lift. Built from
+vanilla's big-drill and impact sounds plus scripted layers, matched to the
+big mining drill's loudness, and capped so a row of drills rumbles rather
+than stacks.
+
 ---
 
 # 4. Factorio Visual Style

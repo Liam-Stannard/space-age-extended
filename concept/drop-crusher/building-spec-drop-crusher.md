@@ -204,6 +204,22 @@ value range across its chamfers, so the eye reads forged metal. *Unadorned* was
 the wrong word: it should carry no **machinery**, no panel lines, hatches or
 bolts, while carrying all the **forging** it likes.
 
+## 3.4 Sound (Liam, 2026-10-11)
+
+A bed and three accents, cued to the stroke (24 frames, four seconds, one drop
+per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
+(2026-10-11):** frame 0 is the weight just past halfway up, held by the pawl.
+Frames 0–6 wind up, 6 is the top, 7–13 fall, 14 lands seated, and 14–23 and 0
+wind up again. **Pawl clicks** tick on the wind-up on frames 18, 22 and 2. The
+**trip** on frame 6 is a sharp metallic clack as the pawl kicks clear. The
+**drop** on frame 14, where the weight lands, is a crushing impact with grit
+and rock breaking: one craft, one bang. No sound is cued on frame 0: Factorio
+2.1.21 never plays one there (it is the unset value), which is why the loop
+does not start at the seat. When the crusher stops working it rests cocked,
+through its idle animation; with no power and work still loaded, it freezes on
+the frame where it stopped. Built from vanilla's crusher and impact sounds plus
+scripted layers, matched to the vanilla crusher's loudness.
+
 ---
 
 # 4. Factorio Visual Style
@@ -276,9 +292,13 @@ Stage 1. **Attach `concept/adopted/A-sheet.png` and nothing else** — this is t
 same machine as the sheet's hero view, not a new design, and any second reference
 invites a second building (see the art backlog (now `TODO.md`)'s warning).
 
-**The crown is SEATED.** This plate is frame 0 of the stroke and the thing the
-animation is cut from; a crown drawn half-raised would bake a mid-stroke position
-into the still machine.
+**The crown is COCKED at rest** (2026-10-11). The rest pose, which is frame 0
+of the stroke and the still, has the weight just past halfway up, held by the
+pawl: the loop starts cocked so that the landing, on frame 14, can carry a
+sound (§3.4). The 2026-09 master plate drew it seated flush; that plate is the
+design reference for every part's shape and colour, not for the weight's
+height, which the model takes from the stroke. The prompt below stays as
+history.
 
 ```text
 FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
@@ -667,8 +687,9 @@ trip, and the last third to the fall and impact.
 **One authoring gotcha, from the prototype docs:** `idle_animation` **must have
 the same frame count as `animation`**. So a 24-frame working animation cannot
 pair with a 1-frame idle — the idle would have to be 24 frames of the machine
-sitting still, weight seated and pawl engaged. Budget for it, or omit
-`idle_animation` entirely and let the machine simply stop on a frame.
+sitting still, weight cocked and pawl engaged. **Done 2026-10-11:** the idle
+holds the stroke sheet's frame 0 for 24 frames (`frame_sequence`), so no new
+sheet; see §3.4 for when it draws.
 
 ### Where this stands — the stroke, and what measuring it overturned
 
@@ -721,6 +742,13 @@ The handler returns without touching the frame at zero displacement, and the loo
 is ordered to start at the top of the stroke so that it does. This is what
 answers §9's `idle_animation` gotcha above: there is no idle animation, the
 machine stops on a frame, and the frame it stops on is the approved still.
+
+**Since the Blender model (2026-10-09), and re-phased 2026-10-11:** `base.png`
+is the plate without the moving parts, and frame 0 is the rest pose, the weight
+cocked just past halfway up, held by the pawl. The packer holds the plate plus
+frame 0 to a single render of the stopped machine (`frame0_vs_still`). A placed
+crusher starts on a random frame, so the idle animation (above) is what makes
+it rest cocked. The crown lands seated on frame 14.
 
 **Drawn the way the biochamber is.** Not 24 copies of a 200 × 206 plate: a static
 housing with a 48 × 54 window punched out and 24 frames of that window over the

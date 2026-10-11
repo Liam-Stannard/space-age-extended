@@ -17,7 +17,7 @@
 -- vent *resources* in the `sae-gas` category. Depletion belongs to the resource,
 -- as an oil field's does: the engine slows a vent as it is drawn and reports
 -- `no_minable_resources` with no script. A future gas costs a resource and a
--- fluid, and no new machine. The Vent Pump keeps the melt vent, alone.
+-- fluid, and no new machine. The Vent Pump keeps the kamacite vent, alone.
 --
 -- Two measurements from spike S10 shape the turbine, and both are the kind that
 -- pass every check in the repo while being wrong:
@@ -151,21 +151,34 @@ do
       locals["pick" .. k] = string.format("if(v%d > best%d, %s, pick%d)", k, k - 1, bearing(k), k - 1)
     end
   end
-  locals.b = "pick" .. (BEARINGS - 1)
-  local terms = {}
+  local terms, extent = {}, 0
   for i, w in ipairs(STARTING_FIELD) do
+    -- The furthest well's centre from the field's, plus the 2x2 vent's half.
+    extent = math.max(extent, math.sqrt(w[1] ^ 2 + w[2] ^ 2) + 1)
     local wx = string.format("((%d) * cos(b) - (%d) * sin(b) + %d * cos(b))", w[1], w[2], STARTING_REACH)
     local wy = string.format("((%d) * sin(b) + (%d) * cos(b) + %d * sin(b))", w[1], w[2], STARTING_REACH)
     terms[i] = string.format("(abs(x - %s) < 1) * (abs(y - %s) < 1)", wx, wy)
   end
   data:extend({
     {
+      -- The field's bearing, in radians, as its own expression, with its
+      -- distance and how far its wells spread round its centre: the other
+      -- starting patches (map-gen.lua) take their bearings from this one and
+      -- keep clear of the field by the other two.
+      type = "noise-expression",
+      name = "sae_crust_vent_bearing",
+      expression = "pick" .. (BEARINGS - 1),
+      local_expressions = locals
+    },
+    { type = "noise-expression", name = "sae_crust_vent_reach", expression = STARTING_REACH },
+    { type = "noise-expression", name = "sae_crust_vent_extent", expression = extent },
+    {
       type = "noise-expression",
       name = "sae_crust_vent_start",
       -- And never in the pool or on its shore, well by well: the pool's tiles
       -- refuse a resource outright, and the shore is where the solution is drawn.
       expression = "(sae_core_basin > 92) * min(1, " .. table.concat(terms, " + ") .. ")",
-      local_expressions = locals
+      local_expressions = { b = "sae_crust_vent_bearing" }
     }
   })
 end
@@ -250,7 +263,7 @@ data:extend({ crust_vent })
 -- fluid out of a resource: an output fluid box and no input, and nothing for
 -- `vector_to_place_result` to place, since nothing it makes is an item. It
 -- takes the `sae-gas` category alone, so it stands on a gas vent and nowhere
--- else -- not on bare ground, and not on the melt vent, which is the Vent
+-- else -- not on bare ground, and not on the kamacite vent, which is the Vent
 -- Pump's.
 --
 -- **No power at all: a `void` energy source.** The landing has no grid until
@@ -497,7 +510,8 @@ data:extend({ pump })
 --------------------------------------------------------------------------------
 
 local turbine = derive.from("generator", "steam-turbine", "sae-crust-turbine")
-derive.placeholder_art(turbine, "wears steam-turbine's sprites until its plate exists")
+turbine.icon = "__space-age-extended__/graphics/icons/crust-turbine.png"
+turbine.icon_size = 64
 turbine.minable = { mining_time = 0.3, result = "sae-crust-turbine" }
 turbine.burns_fluid = true
 turbine.max_power_output = "1800kW"
@@ -510,6 +524,145 @@ turbine.surface_conditions = { { property = "pressure", max = 9 } }
 turbine.fluid_box = table.deepcopy(turbine.fluid_box)
 turbine.fluid_box.filter = "sae-crust-gas"
 turbine.fluid_box.volume = 200
+-- Art: the Siderane turbine's Blender model
+-- (concept/crust-turbine/model/crust_turbine.py, round 2, signed off by Liam
+-- 2026-10-11): a long low body on the 3x5, three machined collars -- the two
+-- end ones identical, each with its flanged stub out to the middle of its end
+-- tile's edge -- the rotor window in the middle one, the let-down housing with
+-- its high and low gauge at one end, and the generator can with its three
+-- porcelain bushings at the other. Ours, so no `derive.placeholder_art`.
+--
+-- **Rendered, not cut**, as the Gas Pump is: every pass comes off one model
+-- through one calibrated camera on one canvas with the entity origin at its
+-- centre, so the layers register by construction. Every size, shift, frame
+-- count and line length below is copied from the model's sheets/meta.json;
+-- none was measured off a sheet or typed from memory. To regenerate, with any
+-- Blender 5 binary:
+--
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/crust-turbine/model/crust_turbine.py <scratch> --icon
+--
+-- then copy <scratch>/sheets/icon.png to graphics/icons/crust-turbine.png, the
+-- other <scratch>/sheets/*.png into graphics/entity/crust-turbine/, and the
+-- numbers out of meta.json into this block.
+--
+-- **Two directions, as the steam turbine's.** A generator's art is
+-- `pictures`, one Animation per direction (GeneratorPictureSet, Factorio
+-- 2.1.21 -- it has no `horizontal_animation`, `vertical_animation` or
+-- `graphics_set`), and the steam turbine's `two_direction_only` is kept, so
+-- `north` is the machine lying north-south (the let-down end south) and `east`
+-- lying east-west (the let-down end west). A turbine built facing south or
+-- west is built facing north or east: in a client, all four came back as
+-- north, east, north, east, and each generated.
+--
+-- **The fluid boxes are the steam turbine's, and so are the covers.** Both
+-- connections are on the long axis, at {0, -2} and {0, 2}, and the model drew
+-- its two stubs to meet a vanilla pipe on those tiles; the covers are
+-- vanilla's, capping an end with nothing joined to it. **Each end is a
+-- pipe-width spigot with a flange on it at the footprint's edge**, so a pipe
+-- run into either end meets turbine metal across its whole width (Liam,
+-- 2026-10-11: a neck thinner than the pipe left ground showing either side of
+-- every join, and that was a fail). Measured off the plates, 64 px a tile from
+-- the origin: lying east-west, each spigot is 58 px tall and its flange 66, on
+-- the pipe's axis 1 px above the centre, against vanilla's 52 px pipe ring;
+-- lying north-south, the north spigot is 52 px wide and its flange 58 end-on,
+-- and the south end is a square flange 59 px (0.92 tiles) wide that reaches
+-- the footprint's edge, y 160: opaque across x -29 to 28 on every row from
+-- y 144 to 158, half-covered on the column either side, against the pipe's 51.
+--
+-- Each direction is three layers, and one more behind TURBINE_LENS_LIT:
+--
+--   - the plate, the machine less its rotor, one frame repeated to the rotor's
+--     8, so every layer has the same frame count, as the engine requires;
+--   - the rotor, behind the middle collar's window: 8 frames through one vane
+--     pitch, so the loop closes on itself;
+--   - the shadow, one frame repeated. The rotor turns in place under a collar
+--     and casts nothing that moves;
+--   - the status lens's white cut, below.
+--
+-- **What moves: the rotor, and only while it generates.** A generator's
+-- animation is drawn in every state and advanced only on ticks it makes power,
+-- so stopped it holds whichever frame it reached -- with no load as well as
+-- with no gas: a turbine full of gas on a grid that draws nothing reports
+-- `working` and does not turn.
+--
+-- **`animation_speed` is 1/3, the review GIF's rate** (rotor.gif, 50 ms a
+-- frame: 20 frames a second, a third of a frame a tick). **In game that is the
+-- rate at full output and no more:** a generator's animation speed "can often
+-- vary depending on the usage (output of steam engine for example)"
+-- (AnimationParameters::animation_speed, doc-html/types/
+-- AnimationParameters.html), scaled by `perceived_performance` ("affects
+-- animation speed and working sound", GeneratorPrototype), which keeps the
+-- steam turbine's { minimum = 0.25, performance_to_activity_rate = 2 }: the
+-- rate follows output, but never drops below a quarter of full while it makes
+-- any power at all. Measured in a client on the Core, 2026-10-11, one
+-- screenshot a tick matched against the strip, 120 ticks each: 1.8 MW, 0.336
+-- frames a tick in both directions (a vane pitch in 24 ticks); 0.9 MW, 0.160;
+-- 90 kW (a twentieth), 0.084, the quarter floor; fed and on a grid drawing
+-- nothing, 0; no gas, 0.
+local CT = "__space-age-extended__/graphics/entity/crust-turbine/"
+local CT_FRAMES = 8
+local CT_SPEED = 1 / 3         -- the review GIF's rate, reached at full output
+-- **The status lens: unlit, for now; Liam decides.** §3.3 asks for a lens the
+-- engine tints, and a generator has nothing to tint it with: no working
+-- visualisations, no status colours, nothing drawn by state (GeneratorPictures
+-- is `animation` and `frozen_patch` alone). The plate already carries the lens
+-- as unlit glass, so false draws nothing more. True adds the model's white cut
+-- as a `draw_as_glow` layer in the animation -- untinted, and lit in every
+-- state, idle included, because the animation it sits in is always drawn.
+local TURBINE_LENS_LIT = false
+
+-- One frame, repeated to the rotor's length.
+local function ct_still(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    frame_count = 1,
+    repeat_count = CT_FRAMES,
+    animation_speed = CT_SPEED,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The rotor: an 8-frame strip, one row.
+local function ct_strip(filename, width, height, shift)
+  return
+  {
+    filename = filename,
+    priority = "high",
+    width = width, height = height,
+    frame_count = CT_FRAMES,
+    line_length = CT_FRAMES,
+    animation_speed = CT_SPEED,
+    shift = shift,
+    scale = 0.5
+  }
+end
+
+-- The plate, the rotor over it, the plate's shadow, and the lens if lit.
+local function ct_direction(base, rotor, shadow, lens)
+  shadow.draw_as_shadow = true
+  local layers = { base, rotor, shadow }
+  if TURBINE_LENS_LIT then
+    lens.draw_as_glow = true
+    layers[#layers + 1] = lens
+  end
+  return { animation = { layers = layers } }
+end
+
+derive.own_graphics(turbine, {
+  north = ct_direction(ct_still(CT .. "base-vertical.png", 164, 357, { -0.23438, -0.22656 }),
+                       ct_strip(CT .. "rotor-vertical.png", 71, 64, { 0.08594, -0.46875 }),
+                       ct_still(CT .. "base-shadow-vertical.png", 192, 334, { 0.01562, 0.125 }),
+                       ct_still(CT .. "status-lens-vertical.png", 10, 10, { -0.71875, -0.60938 })),
+  east = ct_direction(ct_still(CT .. "base-horizontal.png", 328, 197, { 0.0, -0.05469 }),
+                      ct_strip(CT .. "rotor-horizontal.png", 58, 55, { -0.01562, -0.32031 }),
+                      ct_still(CT .. "base-shadow-horizontal.png", 350, 168, { 0.39062, 0.15625 }),
+                      ct_still(CT .. "status-lens-horizontal.png", 10, 10, { 0.0, -1.10938 }))
+}, "pictures")
 data:extend({ turbine })
 
 --------------------------------------------------------------------------------
@@ -557,7 +710,8 @@ data:extend({
   {
     type = "item",
     name = "sae-crust-turbine",
-    icon = data.raw["item"]["steam-turbine"].icon,
+    icon = "__space-age-extended__/graphics/icons/crust-turbine.png",
+    icon_size = 64,
     subgroup = "energy",
     order = "z[sae]-c[crust-turbine]",
     place_result = "sae-crust-turbine",

@@ -1281,7 +1281,11 @@ for sx in (-1, 1):
         for x_ in (cx - 0.35, cx + 0.35):
             bolt((x_, cy - d_ / 2 + d_ * f, HOUSE_TOP + 0.044), 0.016, 0.012)
     # the wing's cap and its bolts
-    box((sx * 1.765, HOUSE_N - 0.26, WING_TOP + 0.015), (0.44, 0.36, 0.03), "house", bevel=0.01)
+    # (fix after round 7: the cap a rectangle once, its corner standing out past the wing's
+    # diagonal edge over the notch; now the wing's own outline, a hair proud of it)
+    capo = [(1.51, HOUSE_N - 0.03), (1.51, -2.06), (2.02, -1.55), (2.02, HOUSE_N - 0.03)]
+    capo = flip(capo, sx) if sx > 0 else list(reversed(flip(capo, sx)))
+    stack([(capo, WING_TOP), (capo, WING_TOP + 0.03)], "house", bevel=0.008, name="wingcap")
     for i in range(3):
         bolt((sx * (1.6 + 0.16 * i), HOUSE_N - 0.12, WING_TOP + 0.034), 0.015, 0.012)
     # cast ribs down the south face, and a foot flange where it meets the chassis
@@ -2266,34 +2270,122 @@ for sx in (-1, 1):
         rod(pad + (top - pad).normalized() * 0.08, top, 0.05, 0.045, "leg")
         box(tuple(top + Vector((0, 0, 0.0))), (0.12, 0.12, 0.04), "steel", bevel=0.005)          # its cleat
     rod(pad + Vector((0, 0, 0.0)), Vector((sx * 1.78, -1.81, 0.62)), 0.07, 0.06, "leg")            # the main prop
-# the south-west reservoir
-TK = Vector((-1.76, -1.76, WING_TOP + 0.24))
-TK_U = Vector((-1, 1, 0)).normalized()                     # along the wing's diagonal edge
-rod(TK - TK_U * 0.4, TK + TK_U * 0.4, 0.21, 0.21, "oxide", seg=36)
-for sgn in (-1, 1):                                        # its dished ends
-    sphere(tuple(TK + TK_U * (0.33 * sgn)), 0.21, "oxide", seg=24)
-    rod(TK + TK_U * (0.33 * sgn) - TK_U * 0.02, TK + TK_U * (0.33 * sgn) + TK_U * 0.02, 0.222, 0.222, "steel")  # its band
-    sad = TK + TK_U * (0.25 * sgn)
-    box((sad.x, sad.y, WING_TOP + 0.06), (0.1, 0.1, 0.1), "steel", rot=(0, 0, math.radians(45)), bevel=0.006)  # saddle
-cyl((TK.x + 0.05, TK.y + 0.05, TK.z + 0.22), 0.035, 0.05, "brass", verts=16, bevel=0.004)     # filler
-cyl((TK.x - 0.12, TK.y + 0.12, TK.z + 0.2), 0.03, 0.06, "steel", verts=12, bevel=0.003)        # level switch
-TK_OUT = (TK.x + 0.14, TK.y - 0.14, TK.z - 0.1)                                               # its outlet
-cyl(TK_OUT, 0.02, 0.05, "brass", verts=12, rot=(0, math.pi / 2, math.radians(-45)), bevel=0.0)
-# the south-east bottles, on a bracket out over the corner, along the wing's diagonal edge
-BT = []
-BT_U = Vector((1, 1, 0)).normalized()                     # along the edge
-BT_P = Vector((1, -1, 0)).normalized()                    # across it, outward
-for off in (-0.13, 0.13):
-    c = Vector((1.9, -1.9, WING_TOP + 0.16)) + BT_P * off
-    rod(c - BT_U * 0.28, c + BT_U * 0.28, 0.1, 0.1, "oxide", seg=28)
+# (fix after round 7, Liam in game: the tank and the bottles clipped into the housings.)
+# Both now lie north-south on the wing's outer half, clear of the housing's core (which
+# stands at |x| <= 1.55) by a visible gap, each on a steel cantilever: two rails on the
+# wing's cap running out past its diagonal edge, a knee strut under each rail's free end
+# down to the wing's diagonal face, saddles on the rails and straps over the shells. The
+# shells clear the cap by the saddles' height, so a contact shadow lies under them.
+CAP = WING_TOP + 0.03                                       # the wing cap's top
+
+
+def cantilever(xs_, y0, y1, ty):
+    """A rail on the cap from y0 out to y1 (past the diagonal edge), at x xs_, its knee strut
+    from under its free end to the wing's diagonal face, bolted where it sits on the cap."""
+    box((xs_, (y0 + y1) / 2, CAP + 0.025), (0.05, abs(y1 - y0), 0.05), "steel", bevel=0.006)
+    sgn = 1 if xs_ > 0 else -1
+    yf = -(3.56 - abs(xs_))                                   # the diagonal face at this x (|x| - y = 3.56)
+    rod(Vector((xs_, y1 + 0.03, CAP)), Vector((xs_, yf - 0.01, CAP - 0.45)), 0.022, 0.022, "steel", seg=12)
+    box((xs_, yf - 0.012, CAP - 0.45), (0.07, 0.024, 0.07), "steel", bevel=0.004)     # its foot plate on the face
+    for yy_ in (y0 + 0.04, ty):
+        bolt((xs_, yy_, CAP + 0.052), 0.012, 0.01)
+
+
+def dome(c, sgn, r, depth, mat, seg=36, rings=8):
+    """A dished end on a north-south shell: a half-ellipsoid r across and depth deep, its
+    rim on the shell's end at c, bulging toward sgn (+1 north, -1 south); built in place."""
+    def build(bm):
+        rows = []
+        for i in range(rings):
+            th = (math.pi / 2) * i / rings
+            rows.append([bm.verts.new((c.x + r * math.cos(th) * math.cos(2 * math.pi * j / seg),
+                                       c.y + sgn * depth * math.sin(th),
+                                       c.z + r * math.cos(th) * math.sin(2 * math.pi * j / seg))) for j in range(seg)])
+        pole = bm.verts.new((c.x, c.y + sgn * depth, c.z))
+        for a_, b_ in zip(rows, rows[1:]):
+            for j in range(seg):
+                k = (j + 1) % seg
+                f = (a_[j], a_[k], b_[k], b_[j])
+                bm.faces.new(f if sgn > 0 else tuple(reversed(f)))
+        for j in range(seg):
+            k = (j + 1) % seg
+            f = (rows[-1][j], rows[-1][k], pole)
+            bm.faces.new(f if sgn > 0 else tuple(reversed(f)))
+        bm.faces.new(rows[0] if sgn < 0 else list(reversed(rows[0])))          # closed at the rim
+    return mesh_object("dome", build, mat, "body", 0.0, smooth=True)
+
+
+def shell(c, half, r, mat, cap_seg=24):
+    """A tank lying north-south: a cylinder with dished ends."""
+    SHELLS.append(rod(c + Vector((0, half, 0)), c - Vector((0, half, 0)), r, r, mat, seg=36))
     for sgn in (-1, 1):
-        sphere(tuple(c + BT_U * (0.28 * sgn)), 0.1, "oxide", seg=20)
-    cyl(tuple(c - BT_U * 0.38), 0.025, 0.06, "brass", verts=12,
-        rot=tuple(Vector((0, 0, 1)).rotation_difference(BT_U).to_euler()), bevel=0.0)          # its valve
-    BT.append(tuple(c - BT_U * 0.41))
-for sgn in (-1, 1):                                                                             # the bracket's straps
-    c = Vector((1.9, -1.9, WING_TOP + 0.04)) + BT_U * (0.18 * sgn)
-    box(tuple(c), (0.5, 0.05, 0.08), "steel", rot=(0, 0, math.radians(-45)), bevel=0.004)
+        SHELLS.append(dome(c + Vector((0, sgn * half, 0)), sgn, r, r * 0.55, mat, seg=cap_seg))
+
+
+_before_tanks = set(bpy.data.objects)
+SHELLS = []                                                  # the shells and their ends, for --collide
+# the south-west reservoir: over the wing's outer half, out past its diagonal edge
+TK_R, TK_H = 0.17, 0.26                                     # radius; half the straight length
+TK = Vector((-1.8, -1.86, CAP + 0.05 + 0.04 + TK_R))        # rails 0.05, saddles 0.04, then the shell
+for xr in (TK.x - 0.09, TK.x + 0.09):
+    cantilever(xr, -1.5, -2.2, -1.6)
+shell(TK, TK_H, TK_R, "oxide")
+for yy_ in (TK.y + 0.17, TK.y - 0.17):
+    box((TK.x, yy_, CAP + 0.05 + 0.02), (0.26, 0.06, 0.04), "steel", bevel=0.005)                 # saddle
+    rod(Vector((TK.x - TK_R - 0.012, yy_, CAP + 0.07)), Vector((TK.x - TK_R - 0.012, yy_, TK.z)), 0.008, 0.008,
+        "steel", seg=8)
+    ring((TK.x, yy_, TK.z), TK_R + 0.012, TK_R - 0.002, 0.035, "steel", verts=48, rot=(math.pi / 2, 0, 0),
+         bevel=0.0)                                                                                # its strap
+cyl((TK.x + 0.04, TK.y + 0.05, TK.z + TK_R + 0.02), 0.035, 0.05, "brass", verts=16, bevel=0.004)    # filler
+cyl((TK.x - 0.06, TK.y - 0.12, TK.z + TK_R + 0.02), 0.03, 0.06, "steel", verts=12, bevel=0.003)      # level switch
+TK_OUT = (TK.x + TK_R + 0.02, TK.y + 0.1, TK.z - 0.06)                                              # its outlet
+cyl(TK_OUT, 0.02, 0.05, "brass", verts=12, rot=(0, math.pi / 2, 0), bevel=0.0)
+# the south-east bottles: the same, two small shells side by side, south of the valve block
+BT = []
+BT_R, BT_H = 0.085, 0.2
+for xb in (1.73, 1.93):
+    c = Vector((xb, -1.98, CAP + 0.05 + 0.03 + BT_R))
+    shell(c, BT_H, BT_R, "oxide", cap_seg=20)
+    cyl(tuple(c - Vector((0, BT_H + 0.07, 0))), 0.022, 0.06, "brass", verts=12, rot=(math.pi / 2, 0, 0), bevel=0.0)
+    BT.append(tuple(c - Vector((0, BT_H + 0.1, 0))))                                                # its valve
+for xr in (1.73, 1.93):
+    cantilever(xr, -1.72, -2.24, -1.76)
+for yy_ in (-1.86, -2.1):
+    box((1.83, yy_, CAP + 0.05 + 0.015), (0.42, 0.05, 0.03), "steel", bevel=0.004)                  # saddle
+    for xb in (1.73, 1.93):
+        ring((xb, yy_, CAP + 0.08 + BT_R), BT_R + 0.01, BT_R - 0.002, 0.03, "steel", verts=32,
+             rot=(math.pi / 2, 0, 0), bevel=0.0)                                                    # its strap
+
+TANK_PARTS = set(bpy.data.objects) - _before_tanks            # the shells and their own mounts
+
+if "--collide" in argv:
+    # debugging (fix after round 7): every shell against every other mesh of the body that is
+    # not one of the tanks' own mounts (rails, saddles, straps, struts, valves), by BVH
+    # overlap of the evaluated meshes; and its clearance to the housings' cores and wings.
+    from mathutils.bvhtree import BVHTree
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+
+    def bvh(o):
+        e = o.evaluated_get(dg)
+        me = e.to_mesh()
+        mw = o.matrix_world
+        t = BVHTree.FromPolygons([mw @ v.co for v in me.vertices], [tuple(p.vertices) for p in me.polygons])
+        e.to_mesh_clear()
+        return t
+    others = [o for g in ("body", "under") for o in PARTS.get(g, []) if o.type in ("MESH", "CURVE")
+              and o not in TANK_PARTS]
+    trees = {o.name: bvh(o) for o in others}
+    hits = []
+    for sh in SHELLS:
+        t = bvh(sh)
+        for o in others:
+            if t.overlap(trees[o.name]):
+                hits.append((sh.name, o.name, o.active_material.name if o.active_material else ""))
+    print("COLLIDE shells", len(SHELLS), "checked against", len(others), "body meshes; overlaps:", len(hits))
+    for h in hits:
+        print("COLLIDE", *h)
+    sys.exit(0)
 
 _DG.append(_surface_cache())
 
@@ -2435,7 +2527,7 @@ bundle([(-1.02 + 0.06, 1.62 - 0.06, ZT + 0.885), (-0.95, 1.47, ZT + 0.88), (-0.9
 # drive cabinets to the walls; a bundle clipped along every leg to its pad.
 xs_, ys_ = at(225, SNUB_R)
 cyl((xs_, ys_ - 0.09, ZT + 0.2), 0.018, 0.04, "brass", verts=10, rot=(math.pi / 2, 0, 0), bevel=0.0)
-hose([TK_OUT, (-1.6, -1.95, WING_TOP + 0.05), (-1.72, -1.5, WING_TOP + 0.12), (-1.7, -1.38, 1.3),
+hose([TK_OUT, (-1.6, -1.76, CAP + 0.06), (-1.62, -1.5, CAP + 0.06), (-1.7, -1.38, 1.3),
       (-1.5, -1.3, ZT + 0.06), (xs_ - 0.05, ys_ - 0.2, ZT + 0.05), (xs_, ys_ - 0.11, ZT + 0.2)], 0.03, "hose",
      sag=[0.0, 0.02, 0.0, 0.04, 0.03, 0.0], rib=0.22)
 for k, v in enumerate(BT):
