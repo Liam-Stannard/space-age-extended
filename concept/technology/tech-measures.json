@@ -1,0 +1,343 @@
+{
+ "ours": {
+  "sae-crust-tapping": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 247,
+    "opaque_bbox_h": 184,
+    "share": 0.412
+   },
+   "tonal": {
+    "p5": 16,
+    "p50": 99,
+    "p95": 188
+   },
+   "shadow_px": 996
+  },
+  "sae-core-survey": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 241,
+    "opaque_bbox_h": 208,
+    "share": 0.429
+   },
+   "tonal": {
+    "p5": 6,
+    "p50": 89,
+    "p95": 169
+   },
+   "shadow_px": 801
+  },
+  "sae-gravity-crushing": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 222,
+    "opaque_bbox_h": 228,
+    "share": 0.454
+   },
+   "tonal": {
+    "p5": 10,
+    "p50": 88,
+    "p95": 176
+   },
+   "shadow_px": 804
+  },
+  "sae-vacuum-sintering": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 243,
+    "opaque_bbox_h": 212,
+    "share": 0.519
+   },
+   "tonal": {
+    "p5": 13,
+    "p50": 97,
+    "p95": 181
+   },
+   "shadow_px": 343
+  },
+  "sae-fa-cryogen": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 225,
+    "opaque_bbox_h": 124,
+    "share": 0.296
+   },
+   "tonal": {
+    "p5": 57,
+    "p50": 67,
+    "p95": 254
+   },
+   "shadow_px": 348
+  },
+  "sae-fa-fluorinated-holmium": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 228,
+    "opaque_bbox_h": 159,
+    "share": 0.304
+   },
+   "tonal": {
+    "p5": 97,
+    "p50": 145,
+    "p95": 184
+   },
+   "shadow_px": 190
+  },
+  "sae-fa-superconducting-winding": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 224,
+    "opaque_bbox_h": 161,
+    "share": 0.384
+   },
+   "tonal": {
+    "p5": 1,
+    "p50": 106,
+    "p95": 184
+   },
+   "shadow_px": 520
+  }
+ },
+ "vanilla": {
+  "foundry": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 207,
+    "opaque_bbox_h": 242,
+    "share": 0.553
+   },
+   "tonal": {
+    "p5": 14,
+    "p50": 90,
+    "p95": 196
+   },
+   "shadow_px": 1732
+  },
+  "cryogenic-plant": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 245,
+    "opaque_bbox_h": 246,
+    "share": 0.706
+   },
+   "tonal": {
+    "p5": 13,
+    "p50": 103,
+    "p95": 221
+   },
+   "shadow_px": 970
+  },
+  "big-mining-drill": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 243,
+    "opaque_bbox_h": 207,
+    "share": 0.441
+   },
+   "tonal": {
+    "p5": 8,
+    "p50": 90,
+    "p95": 184
+   },
+   "shadow_px": 3819
+  },
+  "electromagnetic-plant": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 248,
+    "opaque_bbox_h": 246,
+    "share": 0.595
+   },
+   "tonal": {
+    "p5": 6,
+    "p50": 95,
+    "p95": 221
+   },
+   "shadow_px": 2041
+  },
+  "holmium-processing": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 213,
+    "opaque_bbox_h": 212,
+    "share": 0.423
+   },
+   "tonal": {
+    "p5": 41,
+    "p50": 152,
+    "p95": 236
+   },
+   "shadow_px": 872
+  },
+  "lithium-processing": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 233,
+    "opaque_bbox_h": 221,
+    "share": 0.521
+   },
+   "tonal": {
+    "p5": 32,
+    "p50": 127,
+    "p95": 232
+   },
+   "shadow_px": 3187
+  },
+  "tungsten-carbide": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 210,
+    "opaque_bbox_h": 193,
+    "share": 0.398
+   },
+   "tonal": {
+    "p5": 19,
+    "p50": 90,
+    "p95": 212
+   },
+   "shadow_px": 1044
+  },
+  "carbon-fiber": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 212,
+    "opaque_bbox_h": 208,
+    "share": 0.373
+   },
+   "tonal": {
+    "p5": 21,
+    "p50": 68,
+    "p95": 175
+   },
+   "shadow_px": 1764
+  }
+ },
+ "vanilla_range": {
+  "opaque_long_side": [
+   210,
+   248
+  ],
+  "share": [
+   0.373,
+   0.706
+  ],
+  "p50": [
+   68,
+   152
+  ],
+  "p95": [
+   175,
+   236
+  ],
+  "shadow_px": [
+   872,
+   3819
+  ]
+ }
+}

@@ -1,0 +1,835 @@
+{
+ "vanilla": {
+  "fluid/crude-oil": {
+   "framing": {
+    "share": 0.363,
+    "bbox_w": 42,
+    "bbox_h": 64,
+    "bbox": [
+     11,
+     0,
+     53,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 7,
+    "p50": 46,
+    "p95": 183
+   },
+   "edge_slot": {
+    "mean": 34.2,
+    "share16": 0.74
+   },
+   "edge_ground": {
+    "mean": 21.8,
+    "share16": 0.56
+   }
+  },
+  "fluid/petroleum-gas": {
+   "framing": {
+    "share": 0.446,
+    "bbox_w": 62,
+    "bbox_h": 49,
+    "bbox": [
+     2,
+     6,
+     64,
+     55
+    ]
+   },
+   "tonal": {
+    "p5": 24,
+    "p50": 76,
+    "p95": 215
+   },
+   "edge_slot": {
+    "mean": 51.0,
+    "share16": 0.64
+   },
+   "edge_ground": {
+    "mean": 43.1,
+    "share16": 0.62
+   }
+  },
+  "fluid/steam": {
+   "framing": {
+    "share": 0.403,
+    "bbox_w": 56,
+    "bbox_h": 54,
+    "bbox": [
+     5,
+     2,
+     61,
+     56
+    ]
+   },
+   "tonal": {
+    "p5": 77,
+    "p50": 121,
+    "p95": 191
+   },
+   "edge_slot": {
+    "mean": 63.5,
+    "share16": 1.0
+   },
+   "edge_ground": {
+    "mean": 49.0,
+    "share16": 0.83
+   }
+  },
+  "fluid/fluoroketone-hot": {
+   "framing": {
+    "share": 0.363,
+    "bbox_w": 42,
+    "bbox_h": 64,
+    "bbox": [
+     11,
+     0,
+     53,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 59,
+    "p50": 100,
+    "p95": 197
+   },
+   "edge_slot": {
+    "mean": 66.2,
+    "share16": 0.99
+   },
+   "edge_ground": {
+    "mean": 46.9,
+    "share16": 0.84
+   }
+  },
+  "fluid/molten-iron": {
+   "framing": {
+    "share": 0.576,
+    "bbox_w": 61,
+    "bbox_h": 64,
+    "bbox": [
+     3,
+     0,
+     64,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 29,
+    "p50": 111,
+    "p95": 226
+   },
+   "edge_slot": {
+    "mean": 42.5,
+    "share16": 0.72
+   },
+   "edge_ground": {
+    "mean": 36.5,
+    "share16": 0.76
+   }
+  },
+  "fluid/fluorine": {
+   "framing": {
+    "share": 0.403,
+    "bbox_w": 56,
+    "bbox_h": 54,
+    "bbox": [
+     5,
+     2,
+     61,
+     56
+    ]
+   },
+   "tonal": {
+    "p5": 119,
+    "p50": 165,
+    "p95": 214
+   },
+   "edge_slot": {
+    "mean": 85.2,
+    "share16": 1.0
+   },
+   "edge_ground": {
+    "mean": 70.7,
+    "share16": 1.0
+   }
+  }
+ },
+ "ours": {
+  "core/siderane": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.543,
+    "bbox_w": 62,
+    "bbox_h": 62,
+    "bbox": [
+     1,
+     1,
+     63,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 60,
+    "p50": 146,
+    "p95": 203
+   },
+   "edge_slot": {
+    "mean": 48.2,
+    "share16": 0.95
+   },
+   "edge_ground": {
+    "mean": 33.1,
+    "share16": 0.82
+   },
+   "edge_slot_16": {
+    "mean": 71.5,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 57.2,
+    "share16": 0.86
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "core/helium-3": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.571,
+    "bbox_w": 62,
+    "bbox_h": 58,
+    "bbox": [
+     1,
+     3,
+     63,
+     61
+    ]
+   },
+   "tonal": {
+    "p5": 60,
+    "p50": 161,
+    "p95": 195
+   },
+   "edge_slot": {
+    "mean": 67.0,
+    "share16": 0.97
+   },
+   "edge_ground": {
+    "mean": 48.0,
+    "share16": 0.75
+   },
+   "edge_slot_16": {
+    "mean": 87.7,
+    "share16": 0.97
+   },
+   "edge_ground_16": {
+    "mean": 68.4,
+    "share16": 0.81
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "core/molten-kamacite": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.453,
+    "bbox_w": 62,
+    "bbox_h": 62,
+    "bbox": [
+     1,
+     1,
+     63,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 44,
+    "p50": 115,
+    "p95": 196
+   },
+   "edge_slot": {
+    "mean": 42.7,
+    "share16": 0.84
+   },
+   "edge_ground": {
+    "mean": 30.6,
+    "share16": 0.7
+   },
+   "edge_slot_16": {
+    "mean": 68.8,
+    "share16": 0.95
+   },
+   "edge_ground_16": {
+    "mean": 52.9,
+    "share16": 0.82
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "downscale": {
+  "core/siderane": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.543,
+    "bbox_w": 62,
+    "bbox_h": 62,
+    "bbox": [
+     1,
+     1,
+     63,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 60,
+    "p50": 146,
+    "p95": 203
+   },
+   "edge_slot": {
+    "mean": 48.2,
+    "share16": 0.95
+   },
+   "edge_ground": {
+    "mean": 33.1,
+    "share16": 0.82
+   },
+   "edge_slot_16": {
+    "mean": 54.6,
+    "share16": 0.78
+   },
+   "edge_ground_16": {
+    "mean": 40.2,
+    "share16": 0.68
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "core/helium-3": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.571,
+    "bbox_w": 62,
+    "bbox_h": 58,
+    "bbox": [
+     1,
+     3,
+     63,
+     61
+    ]
+   },
+   "tonal": {
+    "p5": 60,
+    "p50": 161,
+    "p95": 195
+   },
+   "edge_slot": {
+    "mean": 67.0,
+    "share16": 0.97
+   },
+   "edge_ground": {
+    "mean": 48.0,
+    "share16": 0.75
+   },
+   "edge_slot_16": {
+    "mean": 69.2,
+    "share16": 0.85
+   },
+   "edge_ground_16": {
+    "mean": 51.3,
+    "share16": 0.65
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "core/molten-kamacite": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.453,
+    "bbox_w": 62,
+    "bbox_h": 62,
+    "bbox": [
+     1,
+     1,
+     63,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 44,
+    "p50": 115,
+    "p95": 196
+   },
+   "edge_slot": {
+    "mean": 42.7,
+    "share16": 0.84
+   },
+   "edge_ground": {
+    "mean": 30.6,
+    "share16": 0.7
+   },
+   "edge_slot_16": {
+    "mean": 57.8,
+    "share16": 0.78
+   },
+   "edge_ground_16": {
+    "mean": 43.4,
+    "share16": 0.67
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "pairwise": {
+  "ours/core/16": {
+   "siderane~helium-3": 84.8,
+   "siderane~molten-kamacite": 71.8,
+   "helium-3~molten-kamacite": 83.5
+  },
+  "ours/core/8": {
+   "siderane~helium-3": 77.7,
+   "siderane~molten-kamacite": 70.0,
+   "helium-3~molten-kamacite": 80.5
+  },
+  "downscale/core/16": {
+   "siderane~helium-3": 60.4,
+   "siderane~molten-kamacite": 49.6,
+   "helium-3~molten-kamacite": 63.7
+  },
+  "downscale/core/8": {
+   "siderane~helium-3": 52.6,
+   "siderane~molten-kamacite": 42.4,
+   "helium-3~molten-kamacite": 55.1
+  },
+  "vanilla/16": {
+   "fluid/crude-oil~fluid/petroleum-gas": 38.6,
+   "fluid/crude-oil~fluid/steam": 41.5,
+   "fluid/crude-oil~fluid/fluoroketone-hot": 29.4,
+   "fluid/crude-oil~fluid/molten-iron": 52.7,
+   "fluid/crude-oil~fluid/fluorine": 53.6,
+   "fluid/petroleum-gas~fluid/steam": 37.1,
+   "fluid/petroleum-gas~fluid/fluoroketone-hot": 42.4,
+   "fluid/petroleum-gas~fluid/molten-iron": 61.0,
+   "fluid/petroleum-gas~fluid/fluorine": 45.2,
+   "fluid/steam~fluid/fluoroketone-hot": 38.6,
+   "fluid/steam~fluid/molten-iron": 50.7,
+   "fluid/steam~fluid/fluorine": 28.5,
+   "fluid/fluoroketone-hot~fluid/molten-iron": 46.3,
+   "fluid/fluoroketone-hot~fluid/fluorine": 52.7,
+   "fluid/molten-iron~fluid/fluorine": 58.2
+  },
+  "vanilla/8": {
+   "fluid/crude-oil~fluid/petroleum-gas": 37.3,
+   "fluid/crude-oil~fluid/steam": 33.9,
+   "fluid/crude-oil~fluid/fluoroketone-hot": 25.1,
+   "fluid/crude-oil~fluid/molten-iron": 44.4,
+   "fluid/crude-oil~fluid/fluorine": 45.4,
+   "fluid/petroleum-gas~fluid/steam": 35.6,
+   "fluid/petroleum-gas~fluid/fluoroketone-hot": 41.7,
+   "fluid/petroleum-gas~fluid/molten-iron": 55.9,
+   "fluid/petroleum-gas~fluid/fluorine": 45.2,
+   "fluid/steam~fluid/fluoroketone-hot": 31.2,
+   "fluid/steam~fluid/molten-iron": 42.5,
+   "fluid/steam~fluid/fluorine": 27.3,
+   "fluid/fluoroketone-hot~fluid/molten-iron": 38.6,
+   "fluid/fluoroketone-hot~fluid/fluorine": 44.7,
+   "fluid/molten-iron~fluid/fluorine": 50.8
+  }
+ },
+ "vanilla_range": {
+  "share": [
+   0.363,
+   0.576
+  ],
+  "bbox_w": [
+   42,
+   62
+  ],
+  "bbox_h": [
+   49,
+   64
+  ],
+  "p50": [
+   46,
+   165
+  ],
+  "p95": [
+   183,
+   226
+  ],
+  "edge_slot": [
+   34.2,
+   85.2
+  ],
+  "edge_ground": [
+   21.8,
+   70.7
+  ]
+ },
+ "hue_survey": {
+  "iron-ore": {
+   "hue": 200,
+   "sat": 0.31
+  },
+  "iron-plate": {
+   "hue": 51,
+   "sat": 0.0
+  },
+  "copper-ore": {
+   "hue": 22,
+   "sat": 0.61
+  },
+  "copper-plate": {
+   "hue": 16,
+   "sat": 0.48
+  },
+  "uranium-ore": {
+   "hue": 89,
+   "sat": 0.79
+  },
+  "stone": {
+   "hue": 39,
+   "sat": 0.43
+  },
+  "coal": {
+   "hue": 29,
+   "sat": 0.13
+  },
+  "steel-plate": {
+   "hue": 61,
+   "sat": 0.03
+  },
+  "stone-brick": {
+   "hue": 66,
+   "sat": 0.06
+  },
+  "sulfur": {
+   "hue": 57,
+   "sat": 0.76
+  },
+  "wood": {
+   "hue": 32,
+   "sat": 0.7
+  },
+  "solid-fuel": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "plastic-bar": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "uranium-238": {
+   "hue": 119,
+   "sat": 0.45
+  },
+  "uranium-235": {
+   "hue": 100,
+   "sat": 0.62
+  },
+  "tungsten-ore": {
+   "hue": 262,
+   "sat": 0.36
+  },
+  "tungsten-plate": {
+   "hue": 271,
+   "sat": 0.2
+  },
+  "tungsten-carbide": {
+   "hue": 270,
+   "sat": 0.19
+  },
+  "holmium-ore": {
+   "hue": 350,
+   "sat": 0.32
+  },
+  "holmium-plate": {
+   "hue": 357,
+   "sat": 0.21
+  },
+  "calcite": {
+   "hue": 343,
+   "sat": 0.02
+  },
+  "scrap": {
+   "hue": 11,
+   "sat": 0.36
+  },
+  "lithium": {
+   "hue": 61,
+   "sat": 0.15
+  },
+  "lithium-plate": {
+   "hue": 120,
+   "sat": 0.05
+  },
+  "carbon": {
+   "hue": 45,
+   "sat": 0.04
+  },
+  "ice": {
+   "hue": 199,
+   "sat": 0.16
+  },
+  "siderane (fluid)": {
+   "hue": 77,
+   "sat": 0.81
+  },
+  "helium-3 (fluid)": {
+   "hue": 201,
+   "sat": 0.39
+  },
+  "crude-oil (fluid icon)": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "heavy-oil (fluid icon)": {
+   "hue": 21,
+   "sat": 0.74
+  },
+  "light-oil (fluid icon)": {
+   "hue": 44,
+   "sat": 0.68
+  },
+  "petroleum-gas (fluid icon)": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "lubricant (fluid icon)": {
+   "hue": 106,
+   "sat": 0.68
+  },
+  "sulfuric-acid (fluid icon)": {
+   "hue": 30,
+   "sat": 0.56
+  },
+  "water (fluid icon)": {
+   "hue": 193,
+   "sat": 0.63
+  },
+  "steam (fluid icon)": {
+   "hue": 0,
+   "sat": 0.0
+  },
+  "ammonia (fluid icon)": {
+   "hue": 258,
+   "sat": 0.05
+  },
+  "ammoniacal-solution (fluid icon)": {
+   "hue": 228,
+   "sat": 0.72
+  },
+  "electrolyte (fluid icon)": {
+   "hue": 336,
+   "sat": 0.73
+  },
+  "fluorine (fluid icon)": {
+   "hue": 153,
+   "sat": 0.45
+  },
+  "fluoroketone-cold (fluid icon)": {
+   "hue": 165,
+   "sat": 0.48
+  },
+  "fluoroketone-hot (fluid icon)": {
+   "hue": 25,
+   "sat": 0.48
+  },
+  "holmium-solution (fluid icon)": {
+   "hue": 352,
+   "sat": 0.25
+  },
+  "lava (fluid icon)": {
+   "hue": 35,
+   "sat": 0.82
+  },
+  "lithium-brine (fluid icon)": {
+   "hue": 85,
+   "sat": 0.06
+  },
+  "molten-copper (fluid icon)": {
+   "hue": 39,
+   "sat": 0.77
+  },
+  "molten-iron (fluid icon)": {
+   "hue": 40,
+   "sat": 0.59
+  },
+  "thruster-fuel (fluid icon)": {
+   "hue": 43,
+   "sat": 0.47
+  },
+  "thruster-oxidizer (fluid icon)": {
+   "hue": 184,
+   "sat": 0.47
+  },
+  "kamacite teal (rendered, 160-166)": {
+   "hue": 163,
+   "sat": 0.29
+  },
+  "radiant green-white #A8E8C0": {
+   "hue": 142,
+   "sat": 0.28
+  },
+  "radiant solution (fluid)": {
+   "hue": 222,
+   "sat": 0.88
+  },
+  "molten kamacite (fluid)": {
+   "hue": 23,
+   "sat": 0.81
+  }
+ },
+ "hues": {
+  "siderane": {
+   "hue": 76,
+   "sat": 0.37,
+   "nearest": "uranium-ore",
+   "distance": 12,
+   "base_colour": "#A8D82A",
+   "base_hue": 77,
+   "off_base": 0
+  },
+  "helium-3": {
+   "hue": 203,
+   "sat": 0.35,
+   "nearest": "iron-ore",
+   "distance": 3,
+   "base_colour": "#8CC7E6",
+   "base_hue": 201,
+   "off_base": 2
+  },
+  "molten-kamacite": {
+   "hue": 25,
+   "sat": 0.56,
+   "nearest": "fluoroketone-hot (fluid icon)",
+   "distance": 0,
+   "base_colour": "#D96B29",
+   "base_hue": 22,
+   "off_base": 3
+  }
+ }
+}
