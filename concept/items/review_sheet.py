@@ -12,6 +12,17 @@ Writes into <sheet-dir>:
                         32/16/8 at 4x and 1x, on the slot
   measures.json         the pass criteria, measured (printed too)
 
+Options, for a family other than kamacite (defaults: kamacite's sheet, unchanged):
+  --title TEXT                 the sheet's heading, before the layout note
+  --analogues m/name,...       the vanilla columns, e.g. base/iron-ore,space-age/fluid/lava
+  --chain TEXT --seps a,b,...  the tooltip row's label and the marks between its icons
+  --current label=strip ...    the icons being replaced, shown between ours and vanilla
+                               (drawn only; never measured as ours)
+  --inventory label=strip ...  an inventory row under the tooltip: ours first, then
+                               these, each at 32 px in a 40 px slot, at 1x and 2x
+  --pairs label=strip ...      an inventory row of each of ours beside its vanilla
+                               equivalent (one per item, in item order)
+
 Backgrounds: the slot is core/graphics/gui-new.png's inventory slot face (style
 "slot", {0, 424}: #2D2C2D); the ground is the buildings' review ground (#4A423A).
 """
@@ -198,19 +209,27 @@ def column(icons, bg, scales=(4, 1)):
     return col
 
 
+TITLE = "Kamacite item icons"
+CHAIN = ("ore -> crushed + fines -> plate", ["->", "+", "->"])
+CURRENT = []          # [(label, strip path)]: the icons being replaced
+INVENTORY = []        # [(label, strip path)]: neighbours for the inventory row
+PAIRS = []            # [(label, strip path)]: each of ours' vanilla equivalent, in item order
+
+
 def review(out, items, finishes, path):
     van = [(n, levels(f"{VANILLA}/{m}/graphics/icons/{n}.png")) for n, m in ANALOGUES]
     ours = [(f"{it}\n{fin}", levels(os.path.join(out, "strips", fin, it + ".png")))
             for fin in finishes for it in items]
-    cols = ours + van
+    cur = [(f"{lab}\n(current)", levels(p)) for lab, p in CURRENT]
+    cols = ours + cur + van
     gap, head = 14, 62
     sample = column(cols[0][1], SLOT)
     W = len(cols) * (256 + gap) + gap + 30
-    H = 40 + 2 * (head + sample.height + gap) + 330
+    H = 40 + 2 * (head + sample.height + gap) + 330 + 150 * (bool(INVENTORY) + bool(PAIRS))
     sheet = Image.new("RGBA", (W, H), (28, 27, 26, 255))
     d = ImageDraw.Draw(sheet)
-    label(d, (gap, 10), "Kamacite item icons -- each column: 64, 32, 16, 8 px at 4x, then all four at 1x. "
-          "Left: signature finish, then neutral, then vanilla analogues. Top: inventory slot #2D2C2D; "
+    label(d, (gap, 10), TITLE + " -- each column: 64, 32, 16, 8 px at 4x, then all four at 1x. "
+          "Left: ours" + (", then the current icons" if CURRENT else "") + ", then vanilla analogues. Top: inventory slot #2D2C2D; "
           "below: ground #4A423A", 18)
     y = 40
     for bgname, bg in (("on the inventory slot", SLOT), ("on the ground", GROUND)):
@@ -221,7 +240,7 @@ def review(out, items, finishes, path):
             sheet.alpha_composite(column(lv, bg), (x, y + head))
         y += head + sample.height + gap
     # the tooltip row: the four as a recipe chain, at 32 px (a tooltip's icon size) 1x and 4x
-    label(d, (gap, y + 4), "as a recipe tooltip: ore -> crushed + fines -> plate (32 px; 1x, then 4x)", 16, DIM)
+    label(d, (gap, y + 4), "as a recipe tooltip: " + CHAIN[0] + " (32 px; 1x, then 4x)", 16, DIM)
     y += 28
     for fi, fin in enumerate(finishes):
         x0 = gap + fi * (W // 2)
@@ -236,9 +255,35 @@ def review(out, items, finishes, path):
                 tip.alpha_composite(icon.resize((32 * scale, 32 * scale), Image.NEAREST), (xx, 6))
                 xx += 32 * scale
                 if j < len(lv) - 1:
-                    td.text((xx + 2 * scale, 6 + 10 * scale), "->" if j != 1 else "+", font=font(8 * scale + 4), fill=INK)
+                    td.text((xx + 2 * scale, 6 + 10 * scale), CHAIN[1][j % len(CHAIN[1])], font=font(8 * scale + 4), fill=INK)
                     xx += 30 * scale // 2
             sheet.alpha_composite(tip, (x0, yy))
+    y += 20 + 50 + 32 * 4 + 30
+    ours32 = [(it, levels(os.path.join(out, "strips", finishes[0], it + ".png"))[32]) for it in items]
+    rows = []
+    if PAIRS:
+        # each of ours beside its vanilla equivalent, in order
+        row = []
+        for (it, ic), (lab, p) in zip(ours32, PAIRS):
+            row += [(it, ic), (lab, levels(p)[32]), None]
+        rows.append(("each beside its vanilla equivalent: " + ", ".join(
+            f"{it} | {lab}" for (it, _), (lab, _) in zip(ours32, PAIRS)), row[:-1]))
+    if INVENTORY:
+        rows.append(("ours, then " + ", ".join(l for l, _ in INVENTORY),
+                     ours32 + [None] + [(lab, levels(p)[32]) for lab, p in INVENTORY]))
+    for title, row in rows:
+        label(d, (gap, y), "in an inventory, " + title + " (32 px in 40 px slots; 1x, then 2x)", 16, DIM)
+        strip = Image.new("RGBA", (len(row) * 42, 42), (36, 35, 36, 255))
+        for i, cell in enumerate(row):
+            if cell is None:
+                continue
+            slot = Image.new("RGBA", (40, 40), SLOT)
+            slot.alpha_composite(cell[1], (4, 4))
+            strip.alpha_composite(slot, (i * 42 + 1, 1))
+        sheet.alpha_composite(strip, (gap, y + 24))
+        sheet.alpha_composite(strip.resize((strip.width * 2, strip.height * 2), Image.NEAREST),
+                              (gap + strip.width + 30, y + 24))
+        y += 24 + 84 + 40
     sheet.save(path)
 
 
@@ -297,5 +342,37 @@ def main(out, dest, items):
               "  ".join(f"{short(p.split('~')[0])}~{short(p.split('~')[1])} {d}" for p, d in v.items()))
 
 
+def _options(argv):
+    """Strip --title/--analogues/--chain/--seps/--current from argv into the globals."""
+    global TITLE, ANALOGUES, CHAIN, CURRENT, INVENTORY, PAIRS
+    rest, i = [], 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--title":
+            TITLE = argv[i + 1]
+            i += 2
+        elif a == "--analogues":
+            ANALOGUES = [(mn.split("/", 1)[1], mn.split("/", 1)[0]) for mn in argv[i + 1].split(",")]
+            i += 2
+        elif a == "--chain":
+            CHAIN = (argv[i + 1], CHAIN[1])
+            i += 2
+        elif a == "--seps":
+            CHAIN = (CHAIN[0], argv[i + 1].split(","))
+            i += 2
+        elif a in ("--current", "--inventory", "--pairs"):
+            dest = {"--current": CURRENT, "--inventory": INVENTORY, "--pairs": PAIRS}[a]
+            i += 1
+            while i < len(argv) and not argv[i].startswith("--"):
+                lab, _, p = argv[i].partition("=")
+                dest.append((lab, p))
+                i += 1
+        else:
+            rest.append(a)
+            i += 1
+    return rest
+
+
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3:])
+    args = _options(sys.argv[1:])
+    main(args[0], args[1], args[2:])

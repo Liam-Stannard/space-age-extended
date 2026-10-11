@@ -1,0 +1,50 @@
+{
+ "siderane/core/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "siderane/core/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "siderane/core/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "siderane/core/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "helium-3/core/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "helium-3/core/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "helium-3/core/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "helium-3/core/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "molten-kamacite/core/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "molten-kamacite/core/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "molten-kamacite/core/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "molten-kamacite/core/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ }
+}

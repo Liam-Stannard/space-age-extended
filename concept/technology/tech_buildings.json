@@ -1,0 +1,62 @@
+{
+ "sae-crust-tapping": {
+  "_note": "the Gas Pump (concept/crust-tap) for Siderane extraction -- the tech is sae-crust-tapping in prototypes; glass in siderane chartreuse, crank mid-stroke (frame 6 of 24, a quarter turn). Its icon mode already turns it 25 deg; no further yaw. Only the sight glass's fill is shown: its group also holds the bubbles, scaled up out of sight between frames (round 1 showed them as a white sheet)",
+  "model": "concept/crust-tap/model/crust_tap.py",
+  "yaw": 0,
+  "pose": 6,
+  "emit": {
+   "fill": "#A8D82A"
+  },
+  "show_objects": [
+   "fill"
+  ],
+  "calls": [
+   [
+    "pose_glass",
+    6
+   ]
+  ],
+  "mat_inputs": {
+   "glass": {
+    "Transmission Weight": 1.0,
+    "Base Color": "#E8F0F0",
+    "Roughness": 0.05
+   }
+  },
+  "sun": 1.25
+ },
+ "sae-core-survey": {
+  "_note": "the Ballast Drill: its icon mode's whole machine, ring raised, bays shut",
+  "model": "concept/ballast-drill/model/ballast_drill.py",
+  "yaw": 28,
+  "pose": null,
+  "world": 0.5,
+  "sun": 1.5
+ },
+ "sae-gravity-crushing": {
+  "_note": "the Drop Crusher, its crown raised (the icon mode's pose)",
+  "model": "concept/drop-crusher/model/drop_crusher.py",
+  "yaw": 28,
+  "pose": null,
+  "world": 0.5,
+  "sun": 1.5
+ },
+ "sae-vacuum-sintering": {
+  "_note": "the Vacuum Furnace, glowing (its icon mode), with a heap of teal fines on the ground off its south-east face",
+  "model": "concept/vacuum-furnace/model/vacuum_furnace.py",
+  "yaw": 28,
+  "pose": null,
+  "heap": {
+   "loc": [
+    1.25,
+    -1.45
+   ],
+   "r": 0.55,
+   "h": 0.7
+  },
+  "world": 0.5,
+  "sun": 1.5
+ },
+ "_world_note": "world 0.5: the rig's 0.26 left the buildings' p95 at 137-148, under Space Age's technology icons' 175-236 (round 3); the Gas Pump's icon mode already lifts its own to 0.6",
+ "_sun_note": "sun x1.5 (x1.25 the Gas Pump): world 0.5 alone left p95 at 140-152 (round 4), under Space Age's 175-236"
+}
