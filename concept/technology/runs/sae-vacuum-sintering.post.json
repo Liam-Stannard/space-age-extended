@@ -1,0 +1,18 @@
+{
+ "sae-vacuum-sintering/tech/256": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-vacuum-sintering/tech/128": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-vacuum-sintering/tech/64": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-vacuum-sintering/tech/32": {
+  "strays_removed": 0,
+  "edge_clear": false
+ }
+}

@@ -1,24 +1,33 @@
 """The item technologies' icons: Cryogen, Fluorinated holmium, Superconducting winding.
 
-Each is its product, modelled for the new pipeline in the form its current 64 px
-icon has (graphics/icons/fluid/cold-cryogen.png, fluorinated-holmium.png,
-superconducting-winding.png) -- the form kept, the art redone:
+Each is its product, modelled for the new pipeline, and arranged as Space Age
+arranges its product technologies (holmium processing's fanned plates, lithium's
+disc with its rocks, tungsten carbide's heap of shards): a group or an angled
+object that fills the square, never a flat sliver.
 
-  sae-fa-cryogen                  cold cryogen: a pool of deep, icy blue liquid,
-                                  glossy, its rim frosted white
-  sae-fa-fluorinated-holmium      a square plate on its diagonal, holmium's pink
-                                  under a violet crystalline fluoride crust
-  sae-fa-superconducting-winding  a toroidal coil, close-wound pale blue
-                                  conductor, its lead trailing off
+  sae-fa-cryogen                  cold cryogen in a dewar: a squat steel vessel
+                                  brimming with pale icy blue, frost crusting its
+                                  rim and creeping down its wall
+  sae-fa-fluorinated-holmium      three plates fanned on one another, holmium's
+                                  pink in their edges under a violet crystalline
+                                  fluoride crust
+  sae-fa-superconducting-winding  a toroidal coil of close-wound pale blue
+                                  conductor, stood up toward the eye, its lead
+                                  trailing off
 
 Rendered at 256/128/64/32 by tools/blender/tech_rig.py (40 deg camera, the
-buildings' sun and fill, a shadow catcher, framed to 226 of 256 px):
+buildings' sun and fill, a shadow catcher):
 
-    BLENDER=/usr/bin/blender tools/blender/render-icons.sh \\
-        concept/technology/tech_items.py <out-dir>
+    BLENDER=... tools/blender/render-icons.sh concept/technology/tech_items.py <out-dir>
 
-Round 2 (first GPU renders): the pool domed higher and its frost finer and denser,
-the plate thicker.
+With ITEM_ICONS=1 in the environment the same builds go through icon_rig.py
+instead, as 64 px item icons (cold-cryogen, fluorinated-holmium,
+superconducting-winding), for comparison with the current ones.
+
+Round 2 (first GPU renders): the pool domed higher, its frost finer, the plate
+thicker. Round 3 (Liam): share 0.30-0.38 against Space Age's 0.37-0.71 -- the
+pool became a dewar, the plate three plates, the coil stood up; the cryogen less
+saturated, its frost under p95 236.
 """
 import math
 import os
@@ -27,7 +36,7 @@ import sys
 
 import bmesh
 import bpy
-from mathutils import Vector, noise
+from mathutils import Euler, Vector, noise
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -35,55 +44,56 @@ sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
 sys.path.insert(0, os.path.join(REPO, "concept", "items"))
 
 import rig  # noqa: E402
-import tech_rig  # noqa: E402
-from icon_kit import add_glow, glossy, link, obj_coords  # noqa: E402
+from icon_kit import add_glow, glossy, lathe, lift, link, obj_coords  # noqa: E402
 from materials import _G, layered  # noqa: E402
 
-CRYO = ("#0A2E8C", "#3C8CFF")          # the liquid deep to its lit surface (the current icon's blues)
-FROST = "#DCEBFF"
+CRYO = ("#2E5C98", "#9CC4E8")          # the liquid deep to its lit surface: icy, not saturated
+FROST = "#A4B8CA"                      # frost a pale blue-grey: white frost clipped (round 2: p95 254)
+STEEL = ("#6E747C", "#A8AEB6")
 HOLMIUM = ("#B07890", "#D8A8C0")       # holmium plate's pink (Space Age's holmium-plate)
 FLUORIDE = ("#6A4CA8", "#A890D8")      # the violet crust
 WIRE = ("#5C86C8", "#A8C8F0")          # the conductor, pale blue
 
 
 def cryogen():
-    """A low pool: a flattened lens of liquid in a ring of frost crystals."""
-    liquid = glossy("cryo", CRYO[0], rough=0.05, coat=1.0, coat_rough=0.03, rim=("#04103A", 0.8))
-    add_glow(liquid, lambda g: g.remap(g.node("ShaderNodeLayerWeight", Blend=0.4).outputs["Facing"], 0.5, 0.0, 0.0, 0.6),
-             CRYO, 0.6)
-    bm = bmesh.new()
-    seg, R = 96, 1.0
-    rings = []
-    for k, (rr, z) in enumerate(((1.0, 0.0), (1.0, 0.06), (0.9, 0.16), (0.55, 0.24), (0.0, 0.26))):
-        ring = []
-        for i in range(seg if rr else 1):
-            a = 2 * math.pi * i / seg
-            j = 1 + 0.05 * noise.noise(Vector((math.cos(a), math.sin(a), 0)) * 2.2)
-            ring.append(bm.verts.new((rr * j * math.cos(a), rr * j * math.sin(a) * 0.8, z)))
-        rings.append(ring)
-    for lo, hi in zip(rings, rings[1:]):
-        for i in range(seg):
-            n = (i + 1) % seg
-            if len(hi) == 1:
-                bm.faces.new((lo[i], lo[n], hi[0]))
-            else:
-                bm.faces.new((lo[i], lo[n], hi[n], hi[i]))
-    bm.faces.new(list(reversed(rings[0])))
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    pool = link(bm, "cryogen", (liquid,), smooth=True)
-    # the frost: small sharp crystals around the rim
-    frost = glossy("frost", FROST, rough=0.35, coat=0.3)
+    """A dewar: a squat, double-walled steel vessel brimming with cryogen, frost on its
+    lip and down its wall."""
+    steel = layered("dewar", STEEL[0], metal=STEEL[1], paint_metal=0.6, paint_rough=0.35, wear=0.4,
+                    rust=0.02, dust=0.0, grime=0.4, jitter=0.04)
+
+    def frosted(g):
+        # frost creeping down from the lip, ragged at its lower edge
+        p = obj_coords(g)
+        z = g.node("ShaderNodeSeparateXYZ", Vector=p).outputs["Z"]
+        n = g.noise(p, 7.0, detail=4)
+        return g.math("MULTIPLY", g.remap(g.math("ADD", z, g.math("MULTIPLY", n, 0.25)), 0.55, 0.75), 1.0, clamp=True)
+    g = _G(steel)
+    bsdf = g.n["Principled BSDF"]
+    base = bsdf.inputs["Base Color"].links[0].from_socket
+    m = frosted(g)
+    g.l.new(g.mixc(m, base, rig.srgb(FROST)), bsdf.inputs["Base Color"])
+    rough = bsdf.inputs["Roughness"].links[0].from_socket
+    g.l.new(g.mixf(m, rough, 0.75), bsdf.inputs["Roughness"])
+    prof = [(0.0, 0.0), (0.46, 0.0), (0.52, 0.03), (0.55, 0.08), (0.58, 0.62), (0.63, 0.66), (0.64, 0.71),
+            (0.6, 0.74), (0.54, 0.73), (0.51, 0.68), (0.49, 0.12), (0.0, 0.12)]
+    vessel = lathe("dewar", prof, (steel,), segments=96)
+    liquid = glossy("cryo", CRYO[0], rough=0.08, coat=1.0, coat_rough=0.05, rim=("#0E2448", 0.7))
+    add_glow(liquid, lambda g: g.remap(g.node("ShaderNodeLayerWeight", Blend=0.4).outputs["Facing"], 0.6, 0.0, 0.0, 0.5),
+             CRYO, 0.35)
+    surf = lathe("cryogen", [(0.0, 0.0), (0.5, 0.0), (0.505, -0.01)], (liquid,), segments=96)
+    surf.location.z = 0.69
+    frost = glossy("frost", FROST, rough=0.5, coat=0.2)
     rng = random.Random(4)
     bm = bmesh.new()
-    for i in range(130):
-        a = 2 * math.pi * i / 130 + rng.uniform(-0.02, 0.02)
-        r = 1.0 + rng.uniform(-0.05, 0.06)
-        c = Vector((r * math.cos(a), r * math.sin(a) * 0.8, 0.06))
-        pts = [c + Vector((rng.gauss(0, 1), rng.gauss(0, 1), abs(rng.gauss(0, 1.6)))) * 0.045 * 0.75 for _ in range(6)]
+    for i in range(110):
+        a = 2 * math.pi * i / 110 + rng.uniform(-0.02, 0.02)
+        r = 0.6 + rng.uniform(-0.05, 0.05)
+        c = Vector((r * math.cos(a), r * math.sin(a), 0.73))
+        pts = [c + Vector((rng.gauss(0, 1), rng.gauss(0, 1), abs(rng.gauss(0, 1.4)))) * 0.026 for _ in range(6)]
         vs = [bm.verts.new(p) for p in pts + [c]]
         bmesh.ops.convex_hull(bm, input=vs)
     ice = link(bm, "frost", (frost,), smooth=False)
-    return [pool, ice]
+    return lift([vessel, surf, ice])
 
 
 def fluorinated_holmium():
@@ -106,17 +116,24 @@ def fluorinated_holmium():
                   rust=0.0, dust=0.0, grime=0.3, jitter=0.05, pattern=crust)
     base = layered("holmium", HOLMIUM[0], metal=HOLMIUM[1], paint_metal=0.7, paint_rough=0.3, wear=0.5,
                    rust=0.0, dust=0.0, grime=0.4, jitter=0.05)
-    bm = bmesh.new()
-    bmesh.ops.create_cube(bm, size=1.0)
-    for v in bm.verts:
-        v.co.z = (v.co.z + 0.5) * 0.16
-    for f in bm.faces:
-        f.material_index = 0 if f.normal.z > 0.9 else 1
-    ob = link(bm, "plate", (top, base), smooth=False)
-    bev = ob.modifiers.new("bevel", "BEVEL")
-    bev.width, bev.segments, bev.limit_method = 0.02, 2, "ANGLE"
-    ob.rotation_euler = (0, 0, math.radians(45))
-    return [ob]
+    def plate(name, loc, rz, tilt=(0.0, 0.0)):
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=1.0)
+        for v in bm.verts:
+            v.co.z = (v.co.z + 0.5) * 0.14
+        for f in bm.faces:
+            f.material_index = 0 if f.normal.z > 0.9 else 1
+        ob = link(bm, name, (top, base), smooth=False)
+        bev = ob.modifiers.new("bevel", "BEVEL")
+        bev.width, bev.segments, bev.limit_method = 0.02, 2, "ANGLE"
+        ob.location = loc
+        ob.rotation_euler = (tilt[0], tilt[1], math.radians(rz))
+        return ob
+    # three, fanned as holmium processing's are: each laid on the one below, turned
+    obs = [plate("plate_a", (0.0, 0.0, 0.0), 40),
+           plate("plate_b", (0.26, 0.30, 0.15), 58, (math.radians(-6), math.radians(4))),
+           plate("plate_c", (-0.22, 0.36, 0.29), 22, (math.radians(5), math.radians(-5)))]
+    return lift(obs)
 
 
 def superconducting_winding():
@@ -155,10 +172,33 @@ def superconducting_winding():
     lead = bpy.data.objects.new("lead", cu)
     lead.data.materials.append(wire)
     bpy.context.scene.collection.objects.link(lead)
+    # stood up toward the eye on a small rest of its own lead: the ring reads round,
+    # not as a flat band (round 2's share 0.38)
+    root = bpy.data.objects.new("winding", None)
+    bpy.context.scene.collection.objects.link(root)
+    for o in (coil, lead):
+        o.parent = root
+    root.rotation_euler = (math.radians(42), 0, math.radians(-12))   # its face tipped up to the camera
+    bpy.context.view_layer.update()
+    zmin = min((o.matrix_world @ Vector(c)).z for o in (coil,) for c in o.bound_box)
+    root.location.z -= zmin
     return [coil, lead]
 
 
 ITEMS = {"sae-fa-cryogen": cryogen, "sae-fa-fluorinated-holmium": fluorinated_holmium,
          "sae-fa-superconducting-winding": superconducting_winding}
 
-tech_rig.main(ITEMS)
+if os.environ.get("ITEM_ICONS"):
+    import icon_rig
+    names = {"sae-fa-cryogen": "cold-cryogen", "sae-fa-fluorinated-holmium": "fluorinated-holmium",
+             "sae-fa-superconducting-winding": "superconducting-winding"}
+    # kamacite's per-size rules (concept/items/kamacite/kamacite_icons.py)
+    rules = {64: {"alpha": [16, 245], "rim": [0.7, 36]},
+             32: {"sharpen": [0.6, 50], "alpha": [20, 235], "rim": [0.7, 38]},
+             16: {"contrast": 1.25, "sharpen": [0.5, 90], "alpha": [48, 208], "rim": [0.8, 40]},
+             8: {"contrast": 1.35, "sharpen": [0.5, 80], "alpha": [72, 184], "rim": [0.9, 44]}}
+    icon_rig.main({names[k]: (lambda f, size, b=b: b()) for k, b in ITEMS.items()}, ("tech-model",),
+                  {n: rules for n in names.values()})
+else:
+    import tech_rig
+    tech_rig.main(ITEMS)

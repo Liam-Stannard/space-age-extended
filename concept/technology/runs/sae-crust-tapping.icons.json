@@ -1,0 +1,109 @@
+{
+ "sizes": [
+  256,
+  128,
+  64,
+  32
+ ],
+ "ss": 4,
+ "margin": 1,
+ "finishes": [
+  "tech"
+ ],
+ "items": [
+  "sae-crust-tapping"
+ ],
+ "post": {
+  "sae-crust-tapping": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  }
+ },
+ "framing": {
+  "sae-crust-tapping/tech/256": {
+   "ortho_scale": 2.8434819003991914,
+   "w": 228.0,
+   "h": 185.16764910328112
+  },
+  "sae-crust-tapping/tech/128": {
+   "ortho_scale": 2.8434819003991914,
+   "w": 114.0,
+   "h": 92.58382455164056
+  },
+  "sae-crust-tapping/tech/64": {
+   "ortho_scale": 2.8434819003991914,
+   "w": 57.0,
+   "h": 46.29191227582028
+  },
+  "sae-crust-tapping/tech/32": {
+   "ortho_scale": 2.7013078053792317,
+   "w": 30.0,
+   "h": 24.364164355694886
+  }
+ },
+ "elevation_deg": 40.0
+}
