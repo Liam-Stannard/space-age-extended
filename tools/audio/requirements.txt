@@ -1,0 +1,12 @@
+# The audio tools' Python packages, pinned to versions that install as wheels
+# on this machine's Python (3.14, 2026-10-11). No sudo and no system packages:
+# the venv is tools/audio/.venv, git-ignored. Set it up, from the repo root, with
+#
+#   python3 -m venv tools/audio/.venv && tools/audio/.venv/bin/pip install -r tools/audio/requirements.txt
+#
+# and run every tool with tools/audio/.venv/bin/python. imageio-ffmpeg brings
+# its own static ffmpeg, so nothing else needs installing.
+numpy==2.5.4
+scipy==1.18.1
+soundfile==0.14.0
+imageio-ffmpeg==0.6.0
