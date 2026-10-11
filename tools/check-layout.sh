@@ -19,8 +19,11 @@ if found="$(find graphics prototypes -type d -name concept 2>/dev/null)" && [ -n
   echo "concept directories outside concept/:" >&2; echo "$found" >&2; fail=1
 fi
 
-# 2. Markdown lives in design/, templates/, concept/ or the repo root.
-if found="$(find graphics prototypes tools locale migrations -name '*.md' 2>/dev/null)" && [ -n "$found" ]; then
+# 2. Markdown lives in design/, templates/, concept/ or the repo root. A
+#    Python venv (tools/audio/.venv) is git-ignored third-party code whose
+#    packages carry their own LICENSE.md and README.md files; it is not looked in.
+if found="$(find graphics prototypes tools locale migrations -name .venv -prune -o -name '*.md' -print 2>/dev/null)" \
+    && [ -n "$found" ]; then
   echo "markdown outside design/, templates/, concept/ or the root:" >&2; echo "$found" >&2; fail=1
 fi
 
