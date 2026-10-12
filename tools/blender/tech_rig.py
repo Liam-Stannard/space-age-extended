@@ -117,11 +117,15 @@ def render_sizes(name, objs, out, kind, finish="tech"):
 # Every size cuts alpha under 30: the shadow catcher also records the sky the object
 # hides from the floor around it, a faint veil (alpha 2-26) over the whole canvas
 # (round 1); the sun's shadow itself is far denser and stays.
+# And the shadow made denser (round 6, Liam): our shadows were lighter than Space
+# Age's (343-996 dark part-transparent pixels against its 872-3819). Raising alpha
+# alone made them solid and fewer (round 7: 237-576); the shadow is spread as well.
+SHADOW = {256: [1.6, 40, 5.0, 190], 128: [1.6, 40, 2.5, 190], 64: [1.5, 40, 1.2, 190], 32: [1.4, 40, 0.6, 190]}
 RULES = {
-    256: {"alpha": [30, 255]},
-    128: {"sharpen": [0.6, 40], "alpha": [30, 255]},
-    64: {"sharpen": [0.6, 60], "contrast": 1.1, "alpha": [30, 255]},
-    32: {"sharpen": [0.5, 80], "contrast": 1.2, "rim": [0.7, 36], "alpha": [36, 255]},
+    256: {"alpha": [30, 255], "shadow": SHADOW[256]},
+    128: {"sharpen": [0.6, 40], "alpha": [30, 255], "shadow": SHADOW[128]},
+    64: {"sharpen": [0.6, 60], "contrast": 1.1, "alpha": [30, 255], "shadow": SHADOW[64]},
+    32: {"sharpen": [0.5, 80], "contrast": 1.2, "rim": [0.7, 36], "alpha": [36, 255], "shadow": SHADOW[32]},
 }
 
 

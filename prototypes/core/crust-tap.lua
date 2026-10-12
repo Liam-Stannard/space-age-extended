@@ -62,7 +62,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-crust-gas",
-    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/siderane.png",
     subgroup = "fluid",
     order = "z[sae]-e[crust-gas]",
     default_temperature = 25,
@@ -215,7 +215,7 @@ local crust_vent =
 {
   type = "resource",
   name = "sae-crust-vent",
-  icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+  icon = "__space-age-extended__/graphics/icons/fluid/siderane.png",
   flags = { "placeable-neutral" },
   category = "sae-gas",
   subgroup = "mineable-fluids",

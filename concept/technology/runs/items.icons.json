@@ -1,0 +1,287 @@
+{
+ "sizes": [
+  256,
+  128,
+  64,
+  32
+ ],
+ "ss": 4,
+ "margin": 1,
+ "finishes": [
+  "tech"
+ ],
+ "items": [
+  "sae-fa-cryogen",
+  "sae-fa-fluorinated-holmium",
+  "sae-fa-superconducting-winding"
+ ],
+ "post": {
+  "sae-fa-cryogen": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  },
+  "sae-fa-fluorinated-holmium": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  },
+  "sae-fa-superconducting-winding": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  }
+ },
+ "framing": {
+  "sae-fa-cryogen/tech/256": {
+   "ortho_scale": 1.5891616821289063,
+   "w": 214.81264516698943,
+   "h": 220.0
+  },
+  "sae-fa-cryogen/tech/128": {
+   "ortho_scale": 1.5891616821289063,
+   "w": 107.40632258349471,
+   "h": 110.0
+  },
+  "sae-fa-cryogen/tech/64": {
+   "ortho_scale": 1.5891616821289063,
+   "w": 53.70316129174736,
+   "h": 55.0
+  },
+  "sae-fa-cryogen/tech/32": {
+   "ortho_scale": 1.4567315419514975,
+   "w": 29.292633431862196,
+   "h": 30.0
+  },
+  "sae-fa-fluorinated-holmium/tech/256": {
+   "ortho_scale": 2.1049340681596234,
+   "w": 220.00000000000003,
+   "h": 177.19887240244427
+  },
+  "sae-fa-fluorinated-holmium/tech/128": {
+   "ortho_scale": 2.1049340681596234,
+   "w": 110.00000000000001,
+   "h": 88.59943620122213
+  },
+  "sae-fa-fluorinated-holmium/tech/64": {
+   "ortho_scale": 2.1049340681596234,
+   "w": 55.00000000000001,
+   "h": 44.29971810061107
+  },
+  "sae-fa-fluorinated-holmium/tech/32": {
+   "ortho_scale": 1.9295228958129882,
+   "w": 30.0,
+   "h": 24.163482600333307
+  },
+  "sae-fa-superconducting-winding/tech/256": {
+   "ortho_scale": 2.391313934326172,
+   "w": 220.0,
+   "h": 217.03227757778905
+  },
+  "sae-fa-superconducting-winding/tech/128": {
+   "ortho_scale": 2.391313934326172,
+   "w": 110.0,
+   "h": 108.51613878889452
+  },
+  "sae-fa-superconducting-winding/tech/64": {
+   "ortho_scale": 2.391313934326172,
+   "w": 55.0,
+   "h": 54.25806939444726
+  },
+  "sae-fa-superconducting-winding/tech/32": {
+   "ortho_scale": 2.1920377731323244,
+   "w": 29.999999999999996,
+   "h": 29.595310578789412
+  }
+ },
+ "elevation_deg": 40.0
+}

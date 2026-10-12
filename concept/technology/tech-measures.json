@@ -19,7 +19,7 @@
     "p50": 99,
     "p95": 188
    },
-   "shadow_px": 996
+   "shadow_px": 3082
   },
   "sae-core-survey": {
    "strip": {
@@ -40,7 +40,7 @@
     "p50": 89,
     "p95": 169
    },
-   "shadow_px": 801
+   "shadow_px": 3243
   },
   "sae-gravity-crushing": {
    "strip": {
@@ -61,7 +61,7 @@
     "p50": 88,
     "p95": 176
    },
-   "shadow_px": 804
+   "shadow_px": 2501
   },
   "sae-vacuum-sintering": {
    "strip": {
@@ -82,7 +82,7 @@
     "p50": 97,
     "p95": 181
    },
-   "shadow_px": 343
+   "shadow_px": 1317
   },
   "sae-fa-cryogen": {
    "strip": {
@@ -94,16 +94,16 @@
     "alpha_outside_levels": 0
    },
    "framing": {
-    "opaque_bbox_w": 225,
-    "opaque_bbox_h": 124,
-    "share": 0.296
+    "opaque_bbox_w": 240,
+    "opaque_bbox_h": 224,
+    "share": 0.62
    },
    "tonal": {
-    "p5": 57,
-    "p50": 67,
-    "p95": 254
+    "p5": 1,
+    "p50": 114,
+    "p95": 220
    },
-   "shadow_px": 348
+   "shadow_px": 3068
   },
   "sae-fa-fluorinated-holmium": {
    "strip": {
@@ -115,16 +115,16 @@
     "alpha_outside_levels": 0
    },
    "framing": {
-    "opaque_bbox_w": 228,
-    "opaque_bbox_h": 159,
-    "share": 0.304
+    "opaque_bbox_w": 232,
+    "opaque_bbox_h": 177,
+    "share": 0.367
    },
    "tonal": {
-    "p5": 97,
-    "p50": 145,
-    "p95": 184
+    "p5": 1,
+    "p50": 135,
+    "p95": 179
    },
-   "shadow_px": 190
+   "shadow_px": 1991
   },
   "sae-fa-superconducting-winding": {
    "strip": {
@@ -136,16 +136,16 @@
     "alpha_outside_levels": 0
    },
    "framing": {
-    "opaque_bbox_w": 224,
-    "opaque_bbox_h": 161,
-    "share": 0.384
+    "opaque_bbox_w": 238,
+    "opaque_bbox_h": 218,
+    "share": 0.539
    },
    "tonal": {
-    "p5": 1,
-    "p50": 106,
-    "p95": 184
+    "p5": 0,
+    "p50": 102,
+    "p95": 189
    },
-   "shadow_px": 520
+   "shadow_px": 4906
   }
  },
  "vanilla": {
