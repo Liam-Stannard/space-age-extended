@@ -4,8 +4,6 @@
 -- the Core exports has to be embodied in a solid. Helium-3 additionally cannot
 -- be *imported*, which is why the landing site has to include a gas vent --
 -- without one, no melt can be drawn at all.
---
--- Icons are vanilla placeholders until the art pass.
 
 data:extend({
   {
@@ -42,7 +40,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-radiant-solution",
-    icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/radiant-solution.png",
     subgroup = "fluid",
     order = "z[sae]-ae[radiant-solution]",
     default_temperature = 15,

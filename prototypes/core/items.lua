@@ -1,6 +1,5 @@
 -- Items the Core makes from what it has.
 
-local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
 
 data:extend({
@@ -92,7 +91,7 @@ local spent_cell =
 {
   type = "item",
   name = "sae-spent-cell",
-  icon = "__base__/graphics/icons/depleted-uranium-fuel-cell.png",
+  icon = "__space-age-extended__/graphics/icons/spent-cell.png",
   subgroup = "intermediate-product",
   order = "z[sae]-d[spent-cell]",
   inventory_move_sound = item_sounds.fuel_cell_inventory_move,
@@ -119,5 +118,3 @@ local spent_cell =
 }
 
 data:extend({ spent_cell })
-derive.placeholder_art(spent_cell,
-  "wears depleted-uranium-fuel-cell's icon until its own exists")
