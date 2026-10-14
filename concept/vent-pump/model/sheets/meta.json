@@ -1,0 +1,360 @@
+{
+ "base-north": {
+  "size": [
+   196,
+   227
+  ],
+  "shift": [
+   0.0,
+   -0.24219
+  ]
+ },
+ "shadow-north": {
+  "size": [
+   206,
+   201
+  ],
+  "shift": [
+   0.10938,
+   -0.07031
+  ]
+ },
+ "glow-north": {
+  "size": [
+   21,
+   32
+  ],
+  "shift": [
+   0.05469,
+   -1.34375
+  ]
+ },
+ "status-lamp-north": {
+  "size": [
+   6,
+   7
+  ],
+  "shift": [
+   0.0,
+   -0.83594
+  ]
+ },
+ "melt-north": {
+  "size": [
+   14,
+   28
+  ],
+  "shift": [
+   0.0,
+   -1.3125
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "meter-north": {
+  "size": [
+   12,
+   11
+  ],
+  "shift": [
+   0.0,
+   0.55469
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "base-east": {
+  "size": [
+   198,
+   213
+  ],
+  "shift": [
+   0.0,
+   -0.13281
+  ]
+ },
+ "shadow-east": {
+  "size": [
+   217,
+   197
+  ],
+  "shift": [
+   0.19531,
+   -0.03906
+  ]
+ },
+ "glow-east": {
+  "size": [
+   37,
+   37
+  ],
+  "shift": [
+   0.69531,
+   -0.49219
+  ]
+ },
+ "status-lamp-east": {
+  "size": [
+   6,
+   7
+  ],
+  "shift": [
+   0.0,
+   -0.83594
+  ]
+ },
+ "melt-east": {
+  "size": [
+   28,
+   13
+  ],
+  "shift": [
+   0.70312,
+   -0.60156
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "meter-east": {
+  "size": [
+   12,
+   12
+  ],
+  "shift": [
+   -0.92188,
+   -0.35938
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "base-south": {
+  "size": [
+   196,
+   221
+  ],
+  "shift": [
+   0.0,
+   -0.19531
+  ]
+ },
+ "shadow-south": {
+  "size": [
+   206,
+   201
+  ],
+  "shift": [
+   0.10938,
+   -0.05469
+  ]
+ },
+ "glow-south": {
+  "size": [
+   27,
+   35
+  ],
+  "shift": [
+   0.00781,
+   0.14844
+  ]
+ },
+ "status-lamp-south": {
+  "size": [
+   6,
+   7
+  ],
+  "shift": [
+   0.0,
+   -0.83594
+  ]
+ },
+ "melt-south": {
+  "size": [
+   14,
+   28
+  ],
+  "shift": [
+   0.0,
+   0.09375
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "meter-south": {
+  "size": [
+   12,
+   12
+  ],
+  "shift": [
+   0.0,
+   -1.28125
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "base-west": {
+  "size": [
+   198,
+   213
+  ],
+  "shift": [
+   0.0,
+   -0.13281
+  ]
+ },
+ "shadow-west": {
+  "size": [
+   213,
+   197
+  ],
+  "shift": [
+   0.16406,
+   -0.03906
+  ]
+ },
+ "glow-west": {
+  "size": [
+   37,
+   37
+  ],
+  "shift": [
+   -0.69531,
+   -0.49219
+  ]
+ },
+ "status-lamp-west": {
+  "size": [
+   6,
+   7
+  ],
+  "shift": [
+   0.0,
+   -0.83594
+  ]
+ },
+ "melt-west": {
+  "size": [
+   28,
+   13
+  ],
+  "shift": [
+   -0.70312,
+   -0.60156
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "meter-west": {
+  "size": [
+   12,
+   12
+  ],
+  "shift": [
+   0.92188,
+   -0.35938
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.484375,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.484375,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "meter_drift_px": [
+    0.1,
+    "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    26,
+    0.0004,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "east": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.484375,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "meter_drift_px": [
+    0.15,
+    "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    28,
+    0.0003,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.484375,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.484375,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "meter_drift_px": [
+    0.07,
+    "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    29,
+    0.0003,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.484375,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "meter_drift_px": [
+    0.17,
+    "centroid travel across the 16 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    24,
+    0.0003,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  }
+ }
+}
