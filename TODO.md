@@ -137,6 +137,12 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   its shore and its solution are in the mod, and 04 §2, 03 §3 and the "no
   coastline" line need wording that says what the pool is and why it is not a
   coastline. Wording to be agreed before `design/` is touched.
+- **The Core's fallback ground tiles step in straight lines without Alien
+  Biomes.** `volcanic-ash-dark`, `volcanic-ash-flats` and `volcanic-cracks`
+  keep their vanilla expressions, which read Vulcanus's elevation and biome;
+  on the Core those jump sharply, so ground variants come out in straight
+  columns and rows. Fix by overriding those names on the Core, or by giving
+  the fallback tiles the Core's own expressions. `prototypes/core/map-gen.lua`.
 - **The landing's clearances do not scale with the map's size slider.** The
   starting spots' reaches (56–72 tiles), their search rings and the landing
   lift that keeps the radiant pool away are fixed in tiles
