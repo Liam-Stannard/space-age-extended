@@ -97,12 +97,18 @@ data:extend({
       animation_speed = 1.2,
       animation_scale = { 0.7, 0.7 },
       tick_scale = 1,
-      specular_lightness = { 17, 30, 55 },
-      foam_color = { 10, 30, 70 },
+      -- TEST (radiant-look-pool-icons, look B): highlights and foam on the ramp's dark end
+      specular_lightness = { 6, 20, 70 },
+      foam_color = { 4, 16, 58 },
       foam_color_multiplier = 1.3,
-      dark_threshold = { 0.755, 0.755 },
+      -- TEST (look B): in the lava shader (core/graphics/shaders/tiles-lava-effect.frag)
+      -- these two only add lava's hot rim at the shore, into red and half green -- an
+      -- orange band round a blue pool. Both off; were 0.755 and 0.889, 0.291. (Tried and
+      -- dropped, each measuring the same in a client with and without: lightmap_alpha = 0,
+      -- and a light layer on the pool's variants -- the shader draws the pool at night.)
+      dark_threshold = { 0, 0 },
       reflection_threshold = { 1, 1 },
-      specular_threshold = { 0.889, 0.291 },
+      specular_threshold = { 0, 0 },
       near_zoom = 0.0625,
       far_zoom = 0.0625
     }
@@ -117,8 +123,8 @@ pool.sprite_usage_surface = "any"
 pool.allowed_neighbors = nil
 pool.fluid = "sae-radiant-solution"
 pool.effect_color = { r = 30, g = 100, b = 255 }
-pool.effect_color_secondary = { r = 8, g = 24, b = 60 }
-pool.particle_tints = { primary = { r = 120, g = 170, b = 255 }, secondary = { r = 30, g = 100, b = 255 } }
+pool.effect_color_secondary = { r = 4, g = 16, b = 58 }   -- TEST (look B): was 8, 24, 60
+pool.particle_tints = { primary = { r = 90, g = 156, b = 255 }, secondary = { r = 31, g = 99, b = 255 } }   -- TEST (look B): was 120, 170, 255 / 30, 100, 255
 pool.map_color = { r = 0.12, g = 0.39, b = 1.0 }
 pool.autoplace = { probability_expression = "sae_core_pool" }
 pool.ambient_sounds = nil
