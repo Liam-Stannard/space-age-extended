@@ -19,7 +19,7 @@ import bpy
 from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
+REPO = os.path.normpath(os.path.join(HERE, "..", "..", "..", ".."))   # moved to model/old-3x3/ (2026-10-11)
 sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
 
 

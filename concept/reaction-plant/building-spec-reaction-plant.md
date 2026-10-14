@@ -20,7 +20,7 @@ still the 3×3 and the 5×5 numbers below are what the wiring task writes into i
 | # | Asset | Gate before moving on | State |
 | - | ----- | --------------------- | ----- |
 | 0 | Options and concept | Liam picks | **done: F, round 5** |
-| 1 | Model | `--collide` clean; pack checks; cover, corners and rise as round 5 (86.8 %; NW 100 %, NE 97 %, SW 1 %, SE 4 %; 0.78 tile) | open |
+| 1 | Model | `--collide` clean; pack checks; cover, corners and rise as the model (85.8 %; NW 96 %, NE 94 %, SW 2 %, SE 4 %; 0.78 tile) | open |
 | 2 | Pipe pictures | each face within 1 px of assembler 3's outline | round 5 passes |
 | 3 | Plate, shadow, idle | p50 ~75–81, p95 into vanilla's | round 5: p50 75, p95 161 |
 | 4 | Legs glow | differenced; blue only in the legs | open |
@@ -197,7 +197,7 @@ unevenly (FFF #350): round vessels with ground round them in the north-west and
 north-east, bare ground in the south-west and south-east. **Every edge's middle
 three tiles meet a wall.**
 
-**Silhouette:** broken and asymmetric, height in the back corners. Cover 86.8 %
+**Silhouette:** broken and asymmetric, height in the back corners. Cover 85.8 %
 of the footprint.
 
 **Visual Age:** **Primitive/Industrial — tier 0.** Hoses, cables and clutter, a
@@ -488,7 +488,7 @@ north = -1 }`. The entity sets `fluid_boxes_off_when_no_fluid_recipe = false`
    not a fluid. Hazard tape on the drop box's south face names no port and is
    allowed (§5).
 5. **The blue sits more than a tile from every edge.**
-6. **Nothing crosses ±2.4**, and the art is cut to **exactly 5.000 tiles** wide.
+6. **Nothing crosses ±2.5** (the selection box), and the art is cut to **exactly 5.000 tiles** wide.
    This is a machine players build in rows.
 7. **The press's cake is only ever drawn in motion, into a closed box.**
 
@@ -724,7 +724,7 @@ Not required — rendered from the model with --icon. See §14.
 * [ ] A north picture, drawn *behind*, still reads
 * [ ] Nothing names which port takes which fluid
 * [ ] No output chute; the cake is only drawn in motion, into a closed box
-* [ ] Nothing crosses ±2.4
+* [ ] Nothing crosses ±2.5
 
 ### Blue and glow
 
