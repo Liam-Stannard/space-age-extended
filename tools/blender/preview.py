@@ -12,11 +12,13 @@ construction and nothing is placed by hand.
 The sheet has one row per direction, every panel on one ground with the
 footprint's tile grid drawn over it (the footprint itself brighter):
 
-  idle      each shadow pass at 50 %, the plate, each animation at frame 0, and
-            each light pass tinted as the engine tints the status lamp when idle
+  idle      each shadow pass at 50 %, the plate, each animation at frame 0 (but
+            those marked working), and each light pass tinted as the engine tints
+            the status lamp when idle
   working   the same, with the working layers in the order render.json declares
             them, each as pack.py packs it: a paint pass drawn as paint, a glow
-            pass added; the lamp tinted as when working
+            pass added, a glow animation's frame added over the animations; the
+            lamp tinted as when working
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -29,7 +31,9 @@ util.by_pixel(0, -9) in the prototype plus by_pixel(1, 0) in its .lua:
   --adopted chemical-plant-north-base.png@0.03125,-0.28125
 
 --gif writes a looping GIF of one animation playing in the working panel, every
-direction side by side, at game speed: 60 x animation_speed frames a second.
+direction side by side, at game speed: 60 x animation_speed frames a second. A
+glow animation, the plate layer it is over and every other glow over that layer
+play together, whichever is named.
 A GIF counts time in hundredths of a second, so each frame is held to the
 nearest hundredth of when the engine would show it and the loop as a whole
 runs at the game's rate.
@@ -89,8 +93,17 @@ class Model:
             alpha = pack.clean(self.open(contract.named(p["name"], d))).getchannel("A")
             im.paste(black, (0, 0), alpha.point(lambda v: v // 2))
         im.alpha_composite(plate)
+        glows = []
         for a in self.decl["animations"]:
-            im.alpha_composite(pack.clean(self.open(contract.frame(a["name"], frames.get(a["name"], 0), d))))
+            if a.get("working") and not working:
+                continue                    # drawn only while the machine works (contract.py)
+            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0), d))
+            if a.get("kind") == "glow":
+                glows.append(pack.glow_frame(fr, a.get("bloom")))     # light: added below, while working
+            else:
+                im.alpha_composite(pack.clean(fr))
+        for g in glows if working else ():
+            im = pack.add_light(im, g)
         for p in self.decl["passes"] if working else ():
             if p["kind"] not in contract.WORKING:
                 continue
@@ -205,10 +218,14 @@ def gif(model, out, name, speed):
     if not speed > 0:
         sys.exit(f"preview.py: --speed {speed} is not an animation_speed above 0")
     n = anims[name]["frames"]
+    # a glow animation and its plate layer are one animation in the engine, frame for frame:
+    # whichever is asked for, the plate layer and every glow over it play
+    plate = anims[name]["over"] if anims[name].get("kind") == "glow" else name
+    together = {name, plate} | {a["name"] for a in anims.values() if a.get("kind") == "glow" and a["over"] == plate}
     fps = 60 * speed
     frames = []
     for f in range(n):
-        row = [model.panel(d, True, {name: f}) for d in model.directions]
+        row = [model.panel(d, True, {a: f for a in together}) for d in model.directions]
         im = Image.new("RGBA", (sum(p.width for p in row), row[0].height), GROUND)
         for i, p in enumerate(row):
             im.alpha_composite(p, (i * p.width, 0))

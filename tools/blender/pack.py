@@ -15,15 +15,29 @@ Sheets are named for the pass's declared sheet (and the animation's name), with
 -<direction> after it when the model has more than one direction; meta.json
 keys are the sheet names. Its "checks" are per direction when there are several.
 
+An animated glow layer (an animation of kind "glow", contract.py) is packed like
+any animation, each frame turned to light first (glow_frame): its checks are
+<name>_white_px (pixels of the light itself clipped to white), <name>_clipped_px
+(pixels it drives to white added over its plate layer's frame on the plate, that
+were not white without it -- with every other glow over the same plate layer added
+too, as the engine draws them), both the most in any frame and both 0 to pass,
+<name>_frames (its frames and its plate layer's, equal), <name>_edge_px (pixels of
+the light, bloom and all, on the canvas's edge, the most in any frame: 0 to pass,
+or the edge cuts the tail) and <name>_light (frame 0's peak luminance and its core
+and halo shares, as the radiant-look study measured vanilla's glows:
+concept/radiant-look/model/look_common.py).
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
-LIMIT_PX off its declared curve or off its line. meta.json is written first.
+LIMIT_PX off its declared curve or off its line, or a glow animation clips or
+reaches the canvas's edge.
+meta.json is written first.
 """
 import json
 import math
 import os
 import sys
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageFilter
 
 import contract
 
@@ -48,6 +62,11 @@ LAYER_FLOOR = 8     # a working layer's difference from its plate at or under th
 # pixels seen; 4 drops those with a pixel to spare, and is an order of magnitude under
 # any light.
 SPECK_PX = 4
+# An animated glow's frame (glow_frame) is cut where its light falls to this, not to
+# LAYER_FLOOR: a bloom's faint tail fading out over the housing, cut at 8, left a visible
+# edge round it (a step of 8 in blue, on test/radiant_box.py with radiant.py's 16 px tail,
+# 2026-10-15); at 2 the step is under what the eye takes. Noise is still dropped as specks.
+GLOW_FLOOR = 2
 MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
 
 
@@ -102,6 +121,59 @@ def drop_specks(alpha):
     return out
 
 
+def glow_frame(render, bloom=None):
+    """An animated glow's frame as the sheet carries it: the light, drawn additively.
+
+    The render is the light alone on transparent film (the sun and sky off; the parts it
+    does not light render black), so the light is its colour times its alpha. bloom
+    [[radius, gain], ...] adds, for each stage, the light blurred by a Gaussian of that
+    radius (its standard deviation, px), times gain -- every stage blurred from the light
+    itself, not from the stage before: the soft halo vanilla's glows carry. Opaque wherever
+    any channel is above GLOW_FLOOR (the channel, as a blue light's luminance is a third of
+    its blue), with specks of render noise dropped as glow_layer drops them.
+    """
+    r, g, b, a = render.convert("RGBA").split()
+    light = Image.merge("RGB", [ImageChops.multiply(c, a) for c in (r, g, b)])
+    halos = [light.filter(ImageFilter.GaussianBlur(radius)).point(lambda v, k=gain: min(255, round(v * k)))
+             for radius, gain in bloom or ()]
+    for halo in halos:
+        light = ImageChops.add(light, halo)
+    most = ImageChops.lighter(ImageChops.lighter(*light.split()[:2]), light.getchannel("B"))
+    alpha = drop_specks(most.point(lambda v: 255 if v > GLOW_FLOOR else 0))
+    return Image.merge("RGBA", (*ImageChops.multiply(light, Image.merge("RGB", (alpha,) * 3)).split(), alpha))
+
+
+def add_light(under, glow):
+    """under (RGBA) with a glow sheet's frame added, as the engine adds it: RGB only."""
+    lit = ImageChops.add(under.convert("RGB"), glow.convert("RGB"))
+    return Image.merge("RGBA", (*lit.split(), under.getchannel("A")))
+
+
+def light_stats(glow, thresh=12):
+    """Peak luminance, and the core (>= 60 % of the peak) and halo (<= 25 %) shares of the
+    lit pixels (any channel over thresh): look_common.light_measures' numbers."""
+    L = [0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]
+         for p in glow.convert("RGB").get_flattened_data() if max(p) > thresh]
+    if not L:
+        return dict(peak=0, core=0.0, halo=0.0)
+    pk = max(L)
+    return dict(peak=round(pk), core=round(100 * sum(1 for v in L if v >= 0.6 * pk) / len(L), 1),
+                halo=round(100 * sum(1 for v in L if v <= 0.25 * pk) / len(L), 1))
+
+
+def edge_px(alpha):
+    """Opaque pixels on the image's outermost row or column: where a layer meets the canvas's edge."""
+    w, h = alpha.size
+    return sum(alpha.crop(b).histogram()[255] for b in ((0, 0, w, 1), (0, h - 1, w, h), (0, 1, 1, h - 1),
+                                                         (w - 1, 1, w, h - 1)))
+
+
+def white(im):
+    """Where every channel is 245 or over: 255, else 0."""
+    r, g, b = im.convert("RGB").split()
+    return ImageChops.darker(ImageChops.darker(r, g), b).point(lambda v: 255 if v >= 245 else 0)
+
+
 def paint_layer(painted, under):
     """A paint pass's sheet: the pass itself, wherever it differs from the plate under it.
 
@@ -143,6 +215,7 @@ class Packer:
         self.ppt = float(decl["rig"]["px_per_tile"])
         self.meta = {}
         self.over = []      # every animation past LIMIT_PX, as a line to exit with
+        self.clipped = []   # every glow animation that clips, as a line to exit with
 
     def open(self, stem):
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
@@ -209,13 +282,17 @@ class Packer:
                 self.save(im, self.box_of(im.getchannel("A"), what, 8), sheet)
 
         frame0 = []
+        packed = {}                         # every animation's frames, as packed: a glow's checks read its plate layer's
         for a in decl["animations"]:
             name, n = a["name"], int(a["frames"])
             light = a.get("kind", "paint") == "light"
-            # a light animation keeps what a light pass keeps (alpha above 8); paint is cleaned of
-            # the catchers' haze below NOISE
+            glow = a.get("kind") == "glow"
+            # a light animation keeps what a light pass keeps (alpha above 8); a glow is turned to
+            # light; paint is cleaned of the catchers' haze below NOISE
             frames = [light_layer(self.open(contract.frame(name, f, d))) if light
+                      else glow_frame(self.open(contract.frame(name, f, d)), a.get("bloom")) if glow
                       else clean(self.open(contract.frame(name, f, d))) for f in range(n)]
+            packed[name] = frames
             working = a.get("working", False)
             u = None
             for f, fr in enumerate(frames):
@@ -233,8 +310,8 @@ class Packer:
             stem = contract.named(name, d)
             sheet.save(os.path.join(self.out, stem + ".png"))
             self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
-            if light:
-                self.meta[stem]["kind"] = "light"
+            if light or glow:
+                self.meta[stem]["kind"] = a["kind"]
             elif not working:
                 frame0.append(frames[0])     # light and working layers draw only while working: not the still's
             if a["motion"] == "flow":
@@ -272,6 +349,12 @@ class Packer:
                                      f"within {LIMIT_PX:g} (declared {path['declared']}, measured "
                                      f"{path['measured']})")
 
+        for a in decl["animations"]:
+            if a.get("kind") == "glow":
+                siblings = [b["name"] for b in decl["animations"]
+                            if b.get("kind") == "glow" and b["over"] == a["over"] and b["name"] != a["name"]]
+                checks.update(self.glow_checks(a, packed, idle, d, siblings))
+
         if frame0:
             # The spec's frame-0 rule: the plate with every animation's frame 0 over
             # it is the stopped machine. Held to a single render of it (the still),
@@ -304,6 +387,47 @@ class Packer:
         }
         appendix.update(checks)
         return appendix
+
+    def glow_checks(self, anim, packed, plate, d, siblings=()):
+        """An animated glow held to its light: never white, never driving its plate to white,
+        one frame for each of its plate layer's. siblings: the other glow animations over the
+        same plate layer (a model's windows of different blooms, radiant.py): the engine draws
+        them all, so the clipping is counted with all of them added."""
+        name, over = anim["name"], anim["over"]
+        glows, unders = packed[name], packed[over]
+        bare = clipped = edge = 0
+        for f, (g, u) in enumerate(zip(glows, unders)):
+            # the light, bloom and all, must fade out inside the canvas: at its edge the tail is cut
+            edge = max(edge, edge_px(g.getchannel("A")))
+            under = plate.copy()
+            under.alpha_composite(u)
+            bare = max(bare, white(g).histogram()[255])
+            lit = add_light(under, g)
+            for sib in siblings:
+                lit = add_light(lit, packed[sib][f % len(packed[sib])])
+            # white once the light is added, and not white without it (a glint already is)
+            clipped = max(clipped, ImageChops.subtract(white(lit), white(under)).histogram()[255])
+        out = {
+            f"{name}_white_px": (bare, "the most pixels of the light, in any frame, clipped to white; 0 = it "
+                                 "keeps its colour"),
+            f"{name}_clipped_px": (clipped, f"the most pixels, in any frame, the light drives to white added over "
+                                   f"{over!r} on the plate" + (f", with {', '.join(siblings)} added too" if siblings
+                                                               else "") + "; 0 = nothing clips"),
+            f"{name}_frames": ([len(glows), len(unders)], f"its frames and its plate layer {over!r}'s: equal"),
+            f"{name}_edge_px": (edge, f"the most pixels, in any frame, of the light (bloom and all, above "
+                                f"GLOW_FLOOR {GLOW_FLOOR}) on the canvas's edge; 0 = the tail fades out inside it"),
+            f"{name}_light": (light_stats(glows[0]), "frame 0: peak luminance, core % (>= 60 % of the peak), "
+                              "halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"),
+        }
+        if bare or clipped or len(glows) != len(unders):
+            self.clipped.append(f"glow animation {name!r}, {where(d)}: {bare} px of the light white, {clipped} px "
+                                f"driven to white over {over!r}, {len(glows)} frames to its {len(unders)}; "
+                                f"all must be 0, and the frames equal")
+        if edge:
+            self.clipped.append(f"glow animation {name!r}, {where(d)}: its light reaches the canvas's edge ({edge} px "
+                                f"on it in one frame), so the edge cuts its bloom's tail: widen the canvas "
+                                f"(radiant.py: about a tile round every window)")
+        return out
 
     def slide(self, anim, cs, d):
         """A part moving in a straight line, held to the curve the model declared.
@@ -376,9 +500,15 @@ def main(src, out):
     with open(os.path.join(out, "meta.json"), "w") as f:
         json.dump(meta, f, indent=1)
     print(json.dumps(meta, indent=1))
-    if packer.over:             # meta.json is written first, so the numbers can be read
-        sys.exit(f"pack.py: {len(packer.over)} animation check(s) over {LIMIT_PX:g} px "
-                 f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.over))
+    failed = []                 # meta.json is written first, so the numbers can be read
+    if packer.over:
+        failed.append(f"pack.py: {len(packer.over)} animation check(s) over {LIMIT_PX:g} px "
+                      f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.over))
+    if packer.clipped:
+        failed.append(f"pack.py: {len(packer.clipped)} glow animation check(s) failed "
+                      f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.clipped))
+    if failed:
+        sys.exit("\n".join(failed))
 
 
 if __name__ == "__main__":
