@@ -1,0 +1,756 @@
+{
+ "vanilla": {
+  "promethium-asteroid-chunk": {
+   "framing": {
+    "share": 0.646,
+    "bbox_w": 62,
+    "bbox_h": 62,
+    "bbox": [
+     0,
+     2,
+     62,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 46,
+    "p50": 94,
+    "p95": 185
+   },
+   "edge_slot": {
+    "mean": 81.4,
+    "share16": 0.92
+   },
+   "edge_ground": {
+    "mean": 63.2,
+    "share16": 0.74
+   }
+  },
+  "metallic-asteroid-chunk": {
+   "framing": {
+    "share": 0.604,
+    "bbox_w": 63,
+    "bbox_h": 64,
+    "bbox": [
+     1,
+     0,
+     64,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 37,
+    "p50": 87,
+    "p95": 195
+   },
+   "edge_slot": {
+    "mean": 38.1,
+    "share16": 0.58
+   },
+   "edge_ground": {
+    "mean": 30.5,
+    "share16": 0.6
+   }
+  },
+  "uranium-fuel-cell": {
+   "framing": {
+    "share": 0.575,
+    "bbox_w": 52,
+    "bbox_h": 64,
+    "bbox": [
+     6,
+     0,
+     58,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 29,
+    "p50": 99,
+    "p95": 200
+   },
+   "edge_slot": {
+    "mean": 48.4,
+    "share16": 0.69
+   },
+   "edge_ground": {
+    "mean": 39.2,
+    "share16": 0.67
+   }
+  },
+  "depleted-uranium-fuel-cell": {
+   "framing": {
+    "share": 0.575,
+    "bbox_w": 52,
+    "bbox_h": 64,
+    "bbox": [
+     6,
+     0,
+     58,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 2,
+    "p50": 40,
+    "p95": 200
+   },
+   "edge_slot": {
+    "mean": 47.1,
+    "share16": 0.67
+   },
+   "edge_ground": {
+    "mean": 40.1,
+    "share16": 0.67
+   }
+  },
+  "fusion-power-cell": {
+   "framing": {
+    "share": 0.575,
+    "bbox_w": 52,
+    "bbox_h": 64,
+    "bbox": [
+     6,
+     0,
+     58,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 28,
+    "p50": 97,
+    "p95": 200
+   },
+   "edge_slot": {
+    "mean": 48.1,
+    "share16": 0.69
+   },
+   "edge_ground": {
+    "mean": 39.0,
+    "share16": 0.66
+   }
+  },
+  "fluid/ammoniacal-solution": {
+   "framing": {
+    "share": 0.363,
+    "bbox_w": 42,
+    "bbox_h": 64,
+    "bbox": [
+     11,
+     0,
+     53,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 4,
+    "p50": 13,
+    "p95": 140
+   },
+   "edge_slot": {
+    "mean": 15.2,
+    "share16": 0.41
+   },
+   "edge_ground": {
+    "mean": 29.0,
+    "share16": 0.72
+   }
+  },
+  "fluid/water": {
+   "framing": {
+    "share": 0.363,
+    "bbox_w": 42,
+    "bbox_h": 64,
+    "bbox": [
+     11,
+     0,
+     53,
+     64
+    ]
+   },
+   "tonal": {
+    "p5": 35,
+    "p50": 68,
+    "p95": 215
+   },
+   "edge_slot": {
+    "mean": 54.7,
+    "share16": 0.86
+   },
+   "edge_ground": {
+    "mean": 38.1,
+    "share16": 0.7
+   }
+  }
+ },
+ "ours": {
+  "radiant/radiant-chunk": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.578,
+    "bbox_w": 62,
+    "bbox_h": 58,
+    "bbox": [
+     1,
+     3,
+     63,
+     61
+    ]
+   },
+   "tonal": {
+    "p5": 45,
+    "p50": 94,
+    "p95": 133
+   },
+   "edge_slot": {
+    "mean": 43.9,
+    "share16": 0.96
+   },
+   "edge_ground": {
+    "mean": 30.7,
+    "share16": 0.79
+   },
+   "edge_slot_16": {
+    "mean": 57.8,
+    "share16": 0.97
+   },
+   "edge_ground_16": {
+    "mean": 46.3,
+    "share16": 0.88
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/radiant-fuel": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.394,
+    "bbox_w": 62,
+    "bbox_h": 50,
+    "bbox": [
+     1,
+     7,
+     63,
+     57
+    ]
+   },
+   "tonal": {
+    "p5": 22,
+    "p50": 53,
+    "p95": 126
+   },
+   "edge_slot": {
+    "mean": 44.4,
+    "share16": 0.95
+   },
+   "edge_ground": {
+    "mean": 34.4,
+    "share16": 0.94
+   },
+   "edge_slot_16": {
+    "mean": 52.8,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 38.2,
+    "share16": 0.97
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/sae-spent-cell": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.394,
+    "bbox_w": 62,
+    "bbox_h": 50,
+    "bbox": [
+     1,
+     7,
+     63,
+     57
+    ]
+   },
+   "tonal": {
+    "p5": 0,
+    "p50": 37,
+    "p95": 146
+   },
+   "edge_slot": {
+    "mean": 50.8,
+    "share16": 0.96
+   },
+   "edge_ground": {
+    "mean": 44.5,
+    "share16": 0.96
+   },
+   "edge_slot_16": {
+    "mean": 54.0,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 38.0,
+    "share16": 0.97
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/radiant-solution": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": true,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.403,
+    "bbox_w": 40,
+    "bbox_h": 62,
+    "bbox": [
+     12,
+     1,
+     52,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 8,
+    "p50": 62,
+    "p95": 144
+   },
+   "edge_slot": {
+    "mean": 35.5,
+    "share16": 1.0
+   },
+   "edge_ground": {
+    "mean": 53.2,
+    "share16": 1.0
+   },
+   "edge_slot_16": {
+    "mean": 39.6,
+    "share16": 1.0
+   },
+   "edge_ground_16": {
+    "mean": 57.8,
+    "share16": 0.96
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "downscale": {
+  "radiant/radiant-chunk": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.578,
+    "bbox_w": 62,
+    "bbox_h": 58,
+    "bbox": [
+     1,
+     3,
+     63,
+     61
+    ]
+   },
+   "tonal": {
+    "p5": 45,
+    "p50": 94,
+    "p95": 133
+   },
+   "edge_slot": {
+    "mean": 43.9,
+    "share16": 0.96
+   },
+   "edge_ground": {
+    "mean": 30.7,
+    "share16": 0.79
+   },
+   "edge_slot_16": {
+    "mean": 35.5,
+    "share16": 0.81
+   },
+   "edge_ground_16": {
+    "mean": 23.7,
+    "share16": 0.68
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/radiant-fuel": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.394,
+    "bbox_w": 62,
+    "bbox_h": 50,
+    "bbox": [
+     1,
+     7,
+     63,
+     57
+    ]
+   },
+   "tonal": {
+    "p5": 22,
+    "p50": 53,
+    "p95": 126
+   },
+   "edge_slot": {
+    "mean": 44.4,
+    "share16": 0.95
+   },
+   "edge_ground": {
+    "mean": 34.4,
+    "share16": 0.94
+   },
+   "edge_slot_16": {
+    "mean": 20.0,
+    "share16": 0.61
+   },
+   "edge_ground_16": {
+    "mean": 15.0,
+    "share16": 0.37
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 2,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/sae-spent-cell": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.394,
+    "bbox_w": 62,
+    "bbox_h": 50,
+    "bbox": [
+     1,
+     7,
+     63,
+     57
+    ]
+   },
+   "tonal": {
+    "p5": 0,
+    "p50": 37,
+    "p95": 146
+   },
+   "edge_slot": {
+    "mean": 50.8,
+    "share16": 0.96
+   },
+   "edge_ground": {
+    "mean": 44.5,
+    "share16": 0.96
+   },
+   "edge_slot_16": {
+    "mean": 22.5,
+    "share16": 0.61
+   },
+   "edge_ground_16": {
+    "mean": 17.9,
+    "share16": 0.45
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 2,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  },
+  "radiant/radiant-solution": {
+   "strip": {
+    "size": [
+     120,
+     64
+    ],
+    "mode": "RGBA",
+    "edge_clear": false,
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "share": 0.403,
+    "bbox_w": 40,
+    "bbox_h": 62,
+    "bbox": [
+     12,
+     1,
+     52,
+     63
+    ]
+   },
+   "tonal": {
+    "p5": 8,
+    "p50": 62,
+    "p95": 144
+   },
+   "edge_slot": {
+    "mean": 35.5,
+    "share16": 1.0
+   },
+   "edge_ground": {
+    "mean": 53.2,
+    "share16": 1.0
+   },
+   "edge_slot_16": {
+    "mean": 21.0,
+    "share16": 0.78
+   },
+   "edge_ground_16": {
+    "mean": 40.2,
+    "share16": 0.94
+   },
+   "strays": {
+    "32": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "16": {
+     "any_alpha": 0,
+     "opaque": 0
+    },
+    "8": {
+     "any_alpha": 0,
+     "opaque": 0
+    }
+   }
+  }
+ },
+ "pairwise": {
+  "ours/radiant/16": {
+   "radiant-chunk~radiant-fuel": 64.4,
+   "radiant-chunk~sae-spent-cell": 64.3,
+   "radiant-chunk~radiant-solution": 73.8,
+   "radiant-fuel~sae-spent-cell": 25.0,
+   "radiant-fuel~radiant-solution": 56.7,
+   "sae-spent-cell~radiant-solution": 62.9
+  },
+  "ours/radiant/8": {
+   "radiant-chunk~radiant-fuel": 62.9,
+   "radiant-chunk~sae-spent-cell": 64.8,
+   "radiant-chunk~radiant-solution": 58.4,
+   "radiant-fuel~sae-spent-cell": 35.6,
+   "radiant-fuel~radiant-solution": 64.5,
+   "sae-spent-cell~radiant-solution": 71.5
+  },
+  "downscale/radiant/16": {
+   "radiant-chunk~radiant-fuel": 34.7,
+   "radiant-chunk~sae-spent-cell": 35.2,
+   "radiant-chunk~radiant-solution": 47.2,
+   "radiant-fuel~sae-spent-cell": 18.3,
+   "radiant-fuel~radiant-solution": 31.8,
+   "sae-spent-cell~radiant-solution": 37.7
+  },
+  "downscale/radiant/8": {
+   "radiant-chunk~radiant-fuel": 29.8,
+   "radiant-chunk~sae-spent-cell": 30.4,
+   "radiant-chunk~radiant-solution": 41.8,
+   "radiant-fuel~sae-spent-cell": 13.7,
+   "radiant-fuel~radiant-solution": 25.5,
+   "sae-spent-cell~radiant-solution": 30.0
+  },
+  "vanilla/16": {
+   "promethium-asteroid-chunk~metallic-asteroid-chunk": 45.2,
+   "promethium-asteroid-chunk~uranium-fuel-cell": 54.8,
+   "promethium-asteroid-chunk~depleted-uranium-fuel-cell": 53.4,
+   "promethium-asteroid-chunk~fusion-power-cell": 57.3,
+   "promethium-asteroid-chunk~fluid/ammoniacal-solution": 58.2,
+   "promethium-asteroid-chunk~fluid/water": 57.8,
+   "metallic-asteroid-chunk~uranium-fuel-cell": 39.1,
+   "metallic-asteroid-chunk~depleted-uranium-fuel-cell": 40.7,
+   "metallic-asteroid-chunk~fusion-power-cell": 40.9,
+   "metallic-asteroid-chunk~fluid/ammoniacal-solution": 50.7,
+   "metallic-asteroid-chunk~fluid/water": 45.4,
+   "uranium-fuel-cell~depleted-uranium-fuel-cell": 20.0,
+   "uranium-fuel-cell~fusion-power-cell": 19.0,
+   "uranium-fuel-cell~fluid/ammoniacal-solution": 44.1,
+   "uranium-fuel-cell~fluid/water": 40.9,
+   "depleted-uranium-fuel-cell~fusion-power-cell": 30.3,
+   "depleted-uranium-fuel-cell~fluid/ammoniacal-solution": 32.8,
+   "depleted-uranium-fuel-cell~fluid/water": 42.1,
+   "fusion-power-cell~fluid/ammoniacal-solution": 47.0,
+   "fusion-power-cell~fluid/water": 37.6,
+   "fluid/ammoniacal-solution~fluid/water": 34.2
+  },
+  "vanilla/8": {
+   "promethium-asteroid-chunk~metallic-asteroid-chunk": 40.5,
+   "promethium-asteroid-chunk~uranium-fuel-cell": 50.5,
+   "promethium-asteroid-chunk~depleted-uranium-fuel-cell": 48.7,
+   "promethium-asteroid-chunk~fusion-power-cell": 51.7,
+   "promethium-asteroid-chunk~fluid/ammoniacal-solution": 54.5,
+   "promethium-asteroid-chunk~fluid/water": 51.7,
+   "metallic-asteroid-chunk~uranium-fuel-cell": 35.1,
+   "metallic-asteroid-chunk~depleted-uranium-fuel-cell": 36.2,
+   "metallic-asteroid-chunk~fusion-power-cell": 37.1,
+   "metallic-asteroid-chunk~fluid/ammoniacal-solution": 46.3,
+   "metallic-asteroid-chunk~fluid/water": 39.0,
+   "uranium-fuel-cell~depleted-uranium-fuel-cell": 19.8,
+   "uranium-fuel-cell~fusion-power-cell": 19.0,
+   "uranium-fuel-cell~fluid/ammoniacal-solution": 38.9,
+   "uranium-fuel-cell~fluid/water": 35.4,
+   "depleted-uranium-fuel-cell~fusion-power-cell": 30.2,
+   "depleted-uranium-fuel-cell~fluid/ammoniacal-solution": 26.6,
+   "depleted-uranium-fuel-cell~fluid/water": 35.9,
+   "fusion-power-cell~fluid/ammoniacal-solution": 42.6,
+   "fusion-power-cell~fluid/water": 32.1,
+   "fluid/ammoniacal-solution~fluid/water": 29.9
+  }
+ },
+ "vanilla_range": {
+  "share": [
+   0.363,
+   0.646
+  ],
+  "bbox_w": [
+   42,
+   63
+  ],
+  "bbox_h": [
+   62,
+   64
+  ],
+  "p50": [
+   13,
+   99
+  ],
+  "p95": [
+   140,
+   215
+  ],
+  "edge_slot": [
+   15.2,
+   81.4
+  ],
+  "edge_ground": [
+   29.0,
+   63.2
+  ]
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "radiant-chunk/radiant/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-chunk/radiant/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-chunk/radiant/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-chunk/radiant/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-fuel/radiant/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-fuel/radiant/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-fuel/radiant/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-fuel/radiant/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "sae-spent-cell/radiant/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "sae-spent-cell/radiant/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "sae-spent-cell/radiant/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "sae-spent-cell/radiant/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-solution/radiant/64": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-solution/radiant/32": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-solution/radiant/16": {
+  "strays_removed": 0,
+  "edge_clear": true
+ },
+ "radiant-solution/radiant/8": {
+  "strays_removed": 0,
+  "edge_clear": true
+ }
+}
