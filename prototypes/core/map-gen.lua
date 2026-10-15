@@ -82,6 +82,60 @@ local palette =
 -- tall amplitude buys rare extremes rather than ground no tile answers for.
 local TEMPERATURE_RANGE = { -15, 125 }
 
+-- The landing's own pool, and the clearing round the landing.
+--
+-- Left to the basin noise, the nearest solution was anywhere from inside the
+-- landing to none within 90 tiles (30 seeds: median 75, four under 24 tiles,
+-- twelve with none inside 90), and easing the landing lift moved the median
+-- but not the spread. So, as the starting resources are, the first pool is
+-- placed: one basin, its near shore `near` tiles out and its edge `radius`
+-- tiles from its centre -- about 450 tiles of solution, a small pool beside
+-- the lakes the noise makes -- roughened by up to `wobble` tiles either way.
+-- The basin term falls `slope` units a tile into it, about as steeply as the
+-- noise's own basins fall at their shores (measured on five seeds: a median
+-- of 0.8 to 1.5 a tile), so its shore is as wide as theirs, eight tiles or so.
+--
+-- And the clearing: inside it the noise's basins cannot reach the pool level
+-- whatever the noise, so the nearest solution on every map is 42 to 48 tiles
+-- out, give or take the tile it lands on (120 seeds: 41.5 to 48.9) -- the
+-- placed pool, or now and then a lake the clearing has cut back -- and nothing
+-- is ever within 24. It is a floor under the basin term, falling at the same
+-- slope, so a lake it cuts back keeps a shore of the same width; the placed
+-- pool is laid on after it and is not cut. Its least reach is `clearing`
+-- tiles, a tile short of the pool's near shore, and no less: the tiles the
+-- engine lays can stand a tile or two off the noise at a ragged edge (10 of
+-- 14 400 tiles round one landing), and a least of 42 brought a lake to 40.2
+-- tiles on one seed in 120.
+--
+-- A clearing of one radius cut its lakes along a circle: on about one map in
+-- ten the nearest lake ended in a round headland about the landing, which
+-- read as a stencil. So its edge wanders, as a shore does. It reaches up to
+-- `sweep` tiles further on a noise of the bearing alone -- a few long swells
+-- round the landing -- and up to `drift` further on a noise of the ground,
+-- a swell every `drift_scale` tiles or so; both are clamped, so the least
+-- holds on every seed. Measured over 120 seeds as the widest stretch of the
+-- nearest lake's edge, 60 degrees round, that stays within 3 tiles of one
+-- distance from the landing: 12 landings in 34 had one with a single radius,
+-- none do now, and 1 in 34 points far out, where the noise is untouched, has one.
+--
+-- Nor is the floor where most lakes stop. A gentler lift, rising to `soft`
+-- units a tile, starts `soft_reach` tiles beyond the clearing's edge and
+-- steepens over `soft_onset` tiles, so a lake that comes near is mostly bent
+-- back along its own contours and only the deepest reach the floor. Where one
+-- does, noise and floor are blended over `blend` units of the basin term
+-- rather than meeting in a crease, and so are the placed pool and the ground
+-- it is laid into (`join`), where a crease drew a sharp tooth of crust into
+-- the lake. That blend lowers the basin by at most a quarter of `join`, which
+-- keeps the pool's near shore within half a tile of where it was.
+local LANDING =
+{
+  near = 45, radius = 12, wobble = 3, slope = 1.5,
+  clearing = 44, sweep = 10, drift = 10, drift_scale = 24,
+  circle = 3, soft = 1, soft_reach = 24, soft_onset = 16, blend = 18, join = 8
+}
+-- Where the placed pool's centre stands.
+LANDING.reach = LANDING.near + LANDING.radius
+
 local function noise(field, seed)
   return string.format(
     "multioctave_noise{x = x,\z
@@ -166,30 +220,155 @@ data:extend({
     -- wider than the whole region the rig looks at, and the landing site came
     -- out under 0%, 45%, 72% or 98% solution by seed. At 160 tiles the pool is
     -- bodies -- lakes a hundred tiles across, several in any region -- and
-    -- the share barely moves between seeds. The last term lifts the crust
-    -- around the landing site, as Nauvis does, so nobody lands in the pool:
-    -- the full lift out to 32 tiles, gone by 96.
+    -- the share barely moves between seeds. Round the landing the clearing
+    -- holds the noise's basins off, and the landing's own pool is laid in
+    -- beyond it (LANDING, above).
     type = "noise-expression",
     name = "sae_core_basin",
-    expression = "sae_core_basin_at{px = x, py = y, reach = distance}"
+    expression = "sae_core_basin_full_at{px = x, py = y, reach = distance}"
   },
   {
-    -- The basin term at any point, not only the one being generated: the
-    -- siderane vents' starting field (crust-tap.lua) reads it at the places it
-    -- might stand, to keep its wells out of the pool. `reach` is the distance
-    -- from spawn.
+    -- The noise's basins at any point, not only the one being generated, with
+    -- the clearing round the landing but without the placed pool: the siderane
+    -- vents' starting field (crust-tap.lua) reads it at the places it might
+    -- stand, to keep its wells out of the pool, and the placed pool takes its
+    -- bearing from the field's, so the field cannot read the pool itself. It
+    -- stands an eighth of a turn from the field and is no risk to it.
+    -- `reach` is the distance from spawn.
+    --
+    -- The noise's own term carries two lifts. The first lifts the crust round
+    -- the landing, as Nauvis does: the full lift out to 32 tiles, gone by 96.
+    -- It is what keeps the starting patches, 44 to 104 tiles out, mostly on
+    -- dry ground. The second is the clearing's gentler lift (LANDING, above).
+    -- The floor is the clearing itself, and the two meet in a smooth maximum,
+    -- never below either, which only rounds the crease where they cross.
     type = "noise-function",
     name = "sae_core_basin_at",
     parameters = { "px", "py", "reach" },
-    expression = "140 + 90 * multioctave_noise{x = px,\z
-                                               y = py,\z
-                                               seed0 = map_seed,\z
-                                               seed1 = 8419,\z
-                                               octaves = 3,\z
-                                               persistence = 0.5,\z
-                                               input_scale = 1/80,\z
-                                               output_scale = 1}\z
-                  + 40 * clamp((96 - reach) / 64, 0, 1)"
+    expression = string.format("max(noise, floor) + max(0, %g - abs(noise - floor)) ^ 2 / %g",
+                               LANDING.blend, 4 * LANDING.blend),
+    local_expressions =
+    {
+      noise = "140 + 90 * multioctave_noise{x = px,\z
+                                            y = py,\z
+                                            seed0 = map_seed,\z
+                                            seed1 = 8419,\z
+                                            octaves = 3,\z
+                                            persistence = 0.5,\z
+                                            input_scale = 1/80,\z
+                                            output_scale = 1}\z
+               + 40 * clamp((96 - reach) / 64, 0, 1)\z
+               + soft",
+      soft = string.format("%g * (clamp(u, 0, 1) ^ 2 / 2 + max(0, u - 1))", LANDING.soft * LANDING.soft_onset),
+      u = string.format("(clear + %g - reach) / %g", LANDING.soft_reach, LANDING.soft_onset),
+      clear = "sae_core_clearing_at{px = px, py = py, reach = reach}",
+      floor = string.format("%d + %g * (clear - reach)",
+                            palette.pool.level, LANDING.slope)
+    }
+  },
+  {
+    -- How far the clearing reaches at a point: `clearing` tiles at the least,
+    -- up to `sweep` further by the bearing and up to `drift` further by the
+    -- ground (LANDING, above). The bearing's noise is read on a circle
+    -- `circle` units across in the noise's own space, off the lattice's
+    -- origin, so it varies only with the bearing, swells a few times round,
+    -- and joins up all the way round.
+    type = "noise-function",
+    name = "sae_core_clearing_at",
+    parameters = { "px", "py", "reach" },
+    expression = string.format("%d\z
+                                + %g * (1 + clamp(multioctave_noise{x = %g * px / max(1, reach) + 0.37,\z
+                                                                    y = %g * py / max(1, reach) + 0.61,\z
+                                                                    seed0 = map_seed,\z
+                                                                    seed1 = 8425,\z
+                                                                    octaves = 2,\z
+                                                                    persistence = 0.5,\z
+                                                                    input_scale = 1,\z
+                                                                    output_scale = 1}, -1, 1))\z
+                                + %g * (1 + clamp(multioctave_noise{x = px,\z
+                                                                    y = py,\z
+                                                                    seed0 = map_seed,\z
+                                                                    seed1 = 8427,\z
+                                                                    octaves = 2,\z
+                                                                    persistence = 0.5,\z
+                                                                    input_scale = 1/%d,\z
+                                                                    output_scale = 1}, -1, 1))",
+      LANDING.clearing, LANDING.sweep / 2, LANDING.circle / 2, LANDING.circle / 2, LANDING.drift / 2, LANDING.drift_scale)
+  },
+  {
+    -- A roughening for the placed pool's edge, -1 to 1: a short noise,
+    -- clamped so the edge moves no more than `wobble` tiles.
+    -- Short enough to vary several times round a pool this size: at 16 tiles
+    -- it barely moved round it, and the pool came out an octagon.
+    type = "noise-function",
+    name = "sae_core_edge_at",
+    parameters = { "px", "py" },
+    expression = "clamp(multioctave_noise{x = px,\z
+                                          y = py,\z
+                                          seed0 = map_seed,\z
+                                          seed1 = 8421,\z
+                                          octaves = 3,\z
+                                          persistence = 0.6,\z
+                                          input_scale = 1/8,\z
+                                          output_scale = 1}, -1, 1)"
+  },
+  {
+    -- The placed pool's bearing, in radians and measured as the siderane
+    -- field's is. The field and the three starting patches prefer the four
+    -- quarter-turns from the field's bearing (STARTING_PATCHES, below), so the
+    -- pool takes one of the four eighths between them: never nearer than an
+    -- eighth of a turn to any of them, which at their distances leaves at
+    -- least six tiles between the field's wells and the ground they would
+    -- refuse round the pool, and ten for a patch's rim. Of the four it takes the lowest
+    -- ground, where the noise's own basins already run: there it reads as
+    -- part of the terrain, and the higher ground is left for a patch that has
+    -- to move.
+    type = "noise-expression",
+    name = "sae_core_landing_pool_bearing",
+    expression = "pick3",
+    local_expressions = (function()
+      local locals = {}
+      for k = 0, 3 do
+        local a = string.format("(sae_crust_vent_bearing + 2 * pi * %d / 8)", 2 * k + 1)
+        locals["v" .. k] = string.format("sae_core_basin_at{px = %d * cos(%s), py = %d * sin(%s), reach = %d}",
+          LANDING.reach, a, LANDING.reach, a, LANDING.reach)
+        if k == 0 then
+          locals.low0, locals.pick0 = "v0", a
+        else
+          locals["low" .. k] = string.format("min(low%d, v%d)", k - 1, k)
+          locals["pick" .. k] = string.format("if(v%d < low%d, %s, pick%d)", k, k - 1, a, k - 1)
+        end
+      end
+      return locals
+    end)()
+  },
+  {
+    -- The placed pool's basin: the pool level at `radius` tiles from its
+    -- centre, give or take the wobble, falling `slope` a tile inward.
+    type = "noise-function",
+    name = "sae_core_landing_pool_at",
+    parameters = { "px", "py" },
+    expression = string.format("%d + %g * (((px - %d * cos(b)) ^ 2 + (py - %d * sin(b)) ^ 2) ^ 0.5 - %d)\z
+                                - %g * sae_core_edge_at{px = px, py = py}",
+      palette.pool.level, LANDING.slope, LANDING.reach, LANDING.reach, LANDING.radius,
+      LANDING.slope * LANDING.wobble),
+    local_expressions = { b = "sae_core_landing_pool_bearing" }
+  },
+  {
+    -- The whole basin term at any point: the noise's basins and the placed
+    -- pool, whichever is lower, in a smooth minimum (`join`, LANDING above).
+    -- The pool, its shore, the glow, the starting patches and the siderane
+    -- wells all read this.
+    type = "noise-function",
+    name = "sae_core_basin_full_at",
+    parameters = { "px", "py", "reach" },
+    expression = string.format("min(ground, pool) - max(0, %g - abs(ground - pool)) ^ 2 / %g",
+                               LANDING.join, 4 * LANDING.join),
+    local_expressions =
+    {
+      ground = "sae_core_basin_at{px = px, py = py, reach = reach}",
+      pool = "sae_core_landing_pool_at{px = px, py = py}"
+    }
   },
   {
     -- The radiant pool fills the basins: below `level` on the basin term it
@@ -282,14 +461,17 @@ data:extend({
 -- pool, whose tile refuses a resource outright, and the patch was simply not
 -- there -- on the landing test save, all three of them.
 --
--- Four things make up the starting area:
+-- Five things make up the starting area:
 --   * the siderane field (crust-tap.lua): four wells 40 to 56 tiles out, at
 --     the driest of sixteen bearings; that bearing is `sae_crust_vent_bearing`;
 --   * kamacite ore and the helium-3 and kamacite vents (below), a quarter, a
 --     half and three quarters of a turn round from the field, as Vulcanus
 --     sets its starting spots at fixed angles from a seeded one;
---   * the landing lift in the basin term above, which keeps the pool out to
---     32 tiles and thins it out to 96, where these mostly stand;
+--   * the landing's own pool (LANDING, above), an eighth of a turn from the
+--     field and from two of the patches, 42 to 48 tiles out;
+--   * the clearing and the landing lift in the basin term above: the one
+--     keeps the noise's pools out to 44 tiles at least, the other thins them
+--     out to 96, where these mostly stand;
 --   * the boulders (resources.lua), scattered everywhere, which ignore all of
 --     this.
 --
@@ -353,11 +535,11 @@ data:extend({
     type = "noise-function",
     name = "sae_core_start_dryness",
     parameters = { "px", "py", "r" },
-    expression = "min(sae_core_basin_at{px = px,     py = py,     reach = (px * px + py * py) ^ 0.5},\z
-                      sae_core_basin_at{px = px + r, py = py,     reach = ((px + r) ^ 2 + py * py) ^ 0.5},\z
-                      sae_core_basin_at{px = px - r, py = py,     reach = ((px - r) ^ 2 + py * py) ^ 0.5},\z
-                      sae_core_basin_at{px = px,     py = py + r, reach = (px * px + (py + r) ^ 2) ^ 0.5},\z
-                      sae_core_basin_at{px = px,     py = py - r, reach = (px * px + (py - r) ^ 2) ^ 0.5})"
+    expression = "min(sae_core_basin_full_at{px = px,     py = py,     reach = (px * px + py * py) ^ 0.5},\z
+                      sae_core_basin_full_at{px = px + r, py = py,     reach = ((px + r) ^ 2 + py * py) ^ 0.5},\z
+                      sae_core_basin_full_at{px = px - r, py = py,     reach = ((px - r) ^ 2 + py * py) ^ 0.5},\z
+                      sae_core_basin_full_at{px = px,     py = py + r, reach = (px * px + (py + r) ^ 2) ^ 0.5},\z
+                      sae_core_basin_full_at{px = px,     py = py - r, reach = (px * px + (py - r) ^ 2) ^ 0.5})"
   }
 })
 
