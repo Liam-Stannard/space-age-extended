@@ -50,7 +50,21 @@ a pass: everything they act on is declared here.
               and part of the stopped machine, so its frame 0 is held to the
               still; or "light", a white-cut layer the engine tints, packed as a
               light pass is (alpha above 8 kept) and drawn only while working,
-              so it is not part of the still.
+              so it is not part of the still; or "glow", an animated glow layer
+              (the radiant solution's light, tools/blender/radiant.py): each frame
+              rendered as its own pass, the sun and sky off so it is the light
+              alone and what it lights, drawn additively while working. It names
+              in `over` the paint animation it is the light of -- its plate layer,
+              with the same number of frames, frame for frame -- and its motion is
+              "flow". Several glows may be over one plate layer (windows whose light
+              is bloomed differently: radiant.py's per-shape bloom); the pack adds
+              them all when it checks for clipping. Packed like any animation, as
+              light (each frame's colour times its alpha), with an optional
+              `bloom` [[radius px, gain], ...] added: for each stage the frame
+              blurred by a Gaussian of that radius, times gain, all added back to
+              it (vanilla's soft halo; the helper's is a tight halo and a wide
+              tail). It fails the pack if any frame clips to white, alone or added
+              to its plate layer's frame over the plate.
               turns (optional, a slide's): true (the default) when the model turns
               its root to face each direction, so the path turns with it; false when
               the root stays put in every direction (only some parts change with
@@ -82,7 +96,7 @@ DIRECTIONS = {
 KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
 WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
 MOTIONS = ("turn", "slide", "flow", "cycle")
-ANIM_KINDS = ("paint", "light")
+ANIM_KINDS = ("paint", "light", "glow")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
 FILE = "render.json"
 
@@ -252,6 +266,15 @@ def validate(decl, where):
             bad(f"{field}.working", f"{a['working']!r} is not true or false")
         if "turns" in a and not isinstance(a["turns"], bool):
             bad(f"{field}.turns", f"{a['turns']!r} is not true or false")
+        if a.get("kind") == "glow":
+            if a["motion"] != "flow":
+                bad(f"{field}.motion", f"glow animation {a['name']!r} is {a['motion']!r}: a glow is light "
+                    f"moving in place, motion \"flow\"")
+            bloom = a.get("bloom")
+            if bloom is not None and not (_seq(bloom) and bloom and all(
+                    _seq(st, 2) and all(_number(c) for c in st) and st[0] > 0 and st[1] >= 0 for st in bloom)):
+                bad(f"{field}.bloom", f"{bloom!r} is not [[radius, gain], ...]: one stage or more, each a "
+                    f"radius in px above 0 and a gain of 0 or more")
         if a["motion"] == "slide":
             path = a.get("path")
             if not (_seq(path, a["frames"]) and all(_seq(p, 3) and all(_number(c) for c in p) for p in path)):
@@ -269,6 +292,16 @@ def validate(decl, where):
                 cross = (v[1] * far[2] - v[2] * far[1], v[2] * far[0] - v[0] * far[2], v[0] * far[1] - v[1] * far[0])
                 if math.hypot(*cross) > 1e-6 * math.hypot(*far) * max(1.0, math.hypot(*v)):
                     bad(f"{field}.path", f"slide {a['name']!r} has a path that is not a straight line")
+    for i, a in enumerate(decl["animations"]):
+        if a.get("kind") != "glow":
+            continue
+        under = next((b for b in decl["animations"] if b["name"] == a.get("over")), None)
+        if under is None or under.get("kind", "paint") != "paint":
+            bad(f"animations[{i}].over", f"glow animation {a['name']!r} is over {a.get('over')!r}, which "
+                f"is not a paint animation: a glow names the plate layer it is the light of")
+        if under["frames"] != a["frames"]:
+            bad(f"animations[{i}].frames", f"glow animation {a['name']!r} has {a['frames']} frames and "
+                f"its plate layer {under['name']!r} {under['frames']}: one glow frame per plate frame")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
