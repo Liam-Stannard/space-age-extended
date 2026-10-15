@@ -1,0 +1,165 @@
+{
+ "mixes": {
+  "A": {
+   "name": "A. violet body, peach-pink pulse",
+   "white": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "clipped": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "glow_peak_1x": 117,
+   "glow_peak_2x": 117,
+   "glow_in_87_171": true,
+   "glow_hue_deg": 335.0,
+   "glow_hue_p5_p95": [
+    266.7,
+    10.0
+   ],
+   "frames_checked": {
+    "lit": 33,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "lit_window_peak_1x": 220,
+   "window_px_1x": 578,
+   "window_mean_idle": "#68595F",
+   "window_mean_working_f0": "#A3797C",
+   "window_hue_idle": 336.0,
+   "window_hue_working_f0": 355.7,
+   "motion_mean_dL_1x": 5.3,
+   "gif_1x_mb": 0.062,
+   "gif_2x_mb": 0.165
+  },
+  "B": {
+   "name": "B. violet-to-peach gradient",
+   "white": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "clipped": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "glow_peak_1x": 113,
+   "glow_peak_2x": 112,
+   "glow_in_87_171": true,
+   "glow_hue_deg": 333.7,
+   "glow_hue_p5_p95": [
+    266.8,
+    10.8
+   ],
+   "frames_checked": {
+    "lit": 33,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "lit_window_peak_1x": 221,
+   "window_px_1x": 578,
+   "window_mean_idle": "#68595F",
+   "window_mean_working_f0": "#987580",
+   "window_hue_idle": 336.0,
+   "window_hue_working_f0": 341.1,
+   "motion_mean_dL_1x": 3.56,
+   "gif_1x_mb": 0.059,
+   "gif_2x_mb": 0.158
+  },
+  "C": {
+   "name": "C. violet liquid lit faintly violet",
+   "white": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "clipped": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "glow_peak_1x": 101,
+   "glow_peak_2x": 101,
+   "glow_in_87_171": true,
+   "glow_hue_deg": 267.3,
+   "glow_hue_p5_p95": [
+    266.2,
+    268.5
+   ],
+   "frames_checked": {
+    "lit": 33,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "lit_window_peak_1x": 217,
+   "window_px_1x": 578,
+   "window_mean_idle": "#68595F",
+   "window_mean_working_f0": "#8D7693",
+   "window_hue_idle": 336.0,
+   "window_hue_working_f0": 287.6,
+   "motion_mean_dL_1x": 3.1,
+   "gif_1x_mb": 0.057,
+   "gif_2x_mb": 0.144
+  },
+  "D": {
+   "name": "D. no glow (the control)",
+   "white": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "clipped": {
+    "lit_1x": 0,
+    "lit_2x": 0,
+    "glow_frames": 0
+   },
+   "glow_peak_1x": null,
+   "glow_in_87_171": "no glow",
+   "frames_checked": {
+    "lit": 33,
+    "glow": 0,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "lit_window_peak_1x": 210,
+   "window_px_1x": 578,
+   "window_mean_idle": "#68595F",
+   "window_mean_working_f0": "#6C5C64",
+   "window_hue_idle": 336.0,
+   "window_hue_working_f0": 330.0,
+   "motion_mean_dL_1x": 3.77,
+   "gif_1x_mb": 0.053,
+   "gif_2x_mb": 0.121
+  }
+ },
+ "sheet_px": [
+  1856,
+  3509
+ ],
+ "frames": 32,
+ "gif_ms": 66,
+ "definitions": "(every frame: idle, the 32 working frames, the 32 glow-only frames; at 1x and 2x):\n  white      px with alpha >= 8 and R, G, B all >= 250\n  clipped    px with alpha >= 8 and any channel at 255\n  glow_peak  the brightest pixel's luminance (0.299 R + 0.587 G + 0.114 B, straight colour\n             times alpha, i.e. on black) of the glow-only frames at 1x: the glow's own peak,\n             vanilla's 87-171 (radiant-look study: fusion 87/97, centrifuge 156, nuclear 171)\n  lit_window_peak  the same luminance in the lit working frames, inside the glass window\n  glow_hue   the luminance-weighted mean hue of the glow (glow-only px with L >= 24), degrees,\n             and the 5th-95th percentile hue range\n  pale_cyan  window px in lit frames with hue 165-215 deg, HSV sat >= 0.10 and L >= 110\n  frost      window px in lit frames with L >= 200 and HSV sat <= 0.12 (white-grey rime)\n  window     the window's mean colour, idle and working (frame 0), and its mean hue\n  motion     mean |dL| inside the window between consecutive working frames (1x); idle is\n             one frame, so still by construction"
+}
