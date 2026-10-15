@@ -1,0 +1,11 @@
+Vent Pump round 3: the pipe pictures at the two faces, the same for all eight
+(written by artist A, 2026-10-14; first to write decides, as helium-colour.txt)
+
+Artist A adopts artist B's round-2 way, so the eight match without B changing anything:
+  - every view joins vanilla's pipe-straight-vertical (N/S faces) or -horizontal (E/W) on the
+    tile outside each port (tile centre at (0, +-2) or (+-2, 0) from the entity's centre),
+    composited under the render;
+  - the model's own flange stands at the face's edge on assembler 3's pipe axis (z 0.42),
+    from round 2's face_nozzle();
+  - round 1's pipe pictures (concept/vent-pump/model/sheets/ports) are not used: they carry
+    round 1's deck slab (S) and housing wall (E, W).
