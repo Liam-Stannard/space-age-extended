@@ -69,6 +69,25 @@ a pass: everything they act on is declared here.
               its root to face each direction, so the path turns with it; false when
               the root stays put in every direction (only some parts change with
               it), so the path is read as modelled in all of them
+              frame_sequence (optional): the order the engine plays the frames in, for
+              a motion that is not a plain loop -- one played once a craft with a rest
+              between, as the reaction plant's press. Exactly the prototype's
+              frame_sequence: frame numbers 1-based (k is the render <name>-<k-1>), in
+              any order, repeated or not used at all, at most SEQUENCE_MAX (255)
+              entries, the engine's limit on an animation's actual length
+              (AnimationFrameSequence, 2.1). The frames are rendered and packed once
+              each; the sequence only says how they play.
+              hold (optional, instead of frame_sequence): {frame, entries, each}, the
+              sequence a motion with a rest takes, written short: every frame in order,
+              each `each` times (a whole number, default 1), then frame `frame` (1-based,
+              as frame_sequence) `entries` times more. The press, 16 frames at 14 fps
+              then shut for the rest of a 20 s craft at animation_speed 7/60:
+              {"frame": 1, "entries": 108, "each": 2}, 2 x 16 + 108 = 140 entries.
+              pack.py writes the sequence either one gives into meta.json, as
+              frame_sequence beside the sheet's frames, and its length among the
+              checks; preview.py --gif plays it. A glow animation declares neither: it
+              is drawn frame for frame with its plate layer, so it plays that layer's
+              sequence (sequence(), below)
   ports       [{tile, face, neck}]: one fitting per face, `tile` the centre of the
               footprint tile it sits on (tiles, y down, entity centre 0,0, as a
               pipe connection's position), `face` N, E, S or W. Rendered with
@@ -79,6 +98,24 @@ a pass: everything they act on is declared here.
               pack_ports.py otherwise drops (its docstring says when to use it)
   rig         {elevation, px_per_tile}: the camera's, copied from rig.py by
               declare(), so the packers can put a tile on the screen
+  cut         (optional; none when left out) the footprint's edges past which
+              pack.py clears every render but the shadow's before it packs: the
+              plate's pixels and a glow's own pixels go, so no part of the machine
+              is drawn past them. Any of "E" and "W" (the plate no wider than the
+              footprint) and "S" (nothing below its south edge). A glow animation's
+              bloom is added after the cut, from what is left, so its halo may
+              spill past a cut edge, as light does (Liam, 2026-10-19: "Halo may
+              cross"). The edges
+              are the footprint's as it stands in each direction, on the screen:
+              east is the right in every direction, as in the world, not the
+              model's own east face turned. Not "N": a building rises over its
+              north edge, and a cut there would take its top off. Cut on the
+              sprite-size renders, every pass and frame alike (the still too, so
+              frame 0 still matches it; not a slide's tracked part, which is only
+              measured, never drawn); a pixel the edge crosses keeps the share
+              of its alpha inside. pack.py counts what it cleared (meta.json's
+              cut_px, counted on the renders before any bloom is added) and
+              preview.py draws the renders cut the same way.
 
 Run as a script, it lists a render directory's plate renders, one per direction:
   python3 contract.py plates <render-dir>
@@ -98,6 +135,9 @@ WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate w
 MOTIONS = ("turn", "slide", "flow", "cycle")
 ANIM_KINDS = ("paint", "light", "glow")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
+CUT_FACES = ("E", "W", "S")             # the footprint edges `cut` may name: not N
+HOLD_KEYS = ("frame", "entries", "each")
+SEQUENCE_MAX = 255                      # the engine's limit on an animation's actual length
 FILE = "render.json"
 
 
@@ -117,6 +157,23 @@ def frame(anim, f, direction=""):
 def track_frame(anim, track, f, direction):
     """A slide's tracked part, alone, in frame f: measured, never packed."""
     return frame(f"{anim}-{track}", f, direction)
+
+
+def _played(anim):
+    """The entries an animation that declares frame_sequence or hold plays, 1-based."""
+    if "frame_sequence" in anim:
+        return list(anim["frame_sequence"])
+    h = anim["hold"]
+    return [k for k in range(1, anim["frames"] + 1) for _ in range(h.get("each", 1))] + [h["frame"]] * h["entries"]
+
+
+def sequence(decl, anim):
+    """The frame_sequence the engine plays an animation in, 1-based as the prototype takes it:
+    its own frame_sequence, its hold written out, or -- a glow -- its plate layer's. None when
+    it plays its frames once each, in order."""
+    if anim.get("kind") == "glow":
+        anim = next(a for a in decl["animations"] if a["name"] == anim["over"])
+    return _played(anim) if "frame_sequence" in anim or "hold" in anim else None
 
 
 def footprint_in(decl, direction):
@@ -139,12 +196,14 @@ def each_direction(root, directions):
     root.rotation_euler.z = 0.0
 
 
-def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=()):
+def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
                 passes=passes, animations=animations, ports=ports,
                 rig=dict(elevation=math.degrees(rig.ELEVATION), px_per_tile=rig.PX_PER_TILE))
+    if cut is not None:
+        decl["cut"] = cut   # left out when not given, so a model without one declares what it always did
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -292,6 +351,35 @@ def validate(decl, where):
                 cross = (v[1] * far[2] - v[2] * far[1], v[2] * far[0] - v[0] * far[2], v[0] * far[1] - v[1] * far[0])
                 if math.hypot(*cross) > 1e-6 * math.hypot(*far) * max(1.0, math.hypot(*v)):
                     bad(f"{field}.path", f"slide {a['name']!r} has a path that is not a straight line")
+        given = [k for k in ("frame_sequence", "hold") if k in a]
+        if len(given) == 2:
+            bad(f"{field}.hold", f"animation {a['name']!r} declares both frame_sequence and hold: a hold is "
+                f"a frame_sequence written short, so one or the other")
+        if given and a.get("kind") == "glow":
+            bad(f"{field}.{given[0]}", f"glow animation {a['name']!r} is drawn frame for frame with its plate "
+                f"layer {a.get('over')!r} and plays its sequence: declare the sequence there")
+        n = a["frames"]
+        if "frame_sequence" in a:
+            s = a["frame_sequence"]
+            if not (_seq(s) and s and all(_whole(k) and 1 <= k <= n for k in s)):
+                bad(f"{field}.frame_sequence", f"{s!r} is not a list of frame numbers, 1-based as the "
+                    f"engine's: each a whole number from 1 to {n}, and at least one")
+        if "hold" in a:
+            h = a["hold"]
+            if not (isinstance(h, dict) and {"frame", "entries"} <= set(h) and set(h) <= set(HOLD_KEYS)):
+                bad(f"{field}.hold", f"{h!r} is not {{frame, entries}} with an optional each, and nothing else")
+            if not (_whole(h["frame"]) and 1 <= h["frame"] <= n):
+                bad(f"{field}.hold.frame", f"{h['frame']!r} is not a frame number from 1 to {n} (1-based, "
+                    f"as frame_sequence): the frame held")
+            if not (_whole(h["entries"]) and h["entries"] >= 1):
+                bad(f"{field}.hold.entries", f"{h['entries']!r} is not a whole number above 0: the entries "
+                    f"the frame is held for, after the frames have played")
+            if not (_whole(h.get("each", 1)) and h.get("each", 1) >= 1):
+                bad(f"{field}.hold.each", f"{h['each']!r} is not a whole number above 0: the entries each "
+                    f"frame plays for")
+        if given and len(_played(a)) > SEQUENCE_MAX:
+            bad(f"{field}.{given[0]}", f"animation {a['name']!r} plays {len(_played(a))} entries; the engine "
+                f"allows an animation {SEQUENCE_MAX} at most (AnimationFrameSequence)")
     for i, a in enumerate(decl["animations"]):
         if a.get("kind") != "glow":
             continue
@@ -305,6 +393,12 @@ def validate(decl, where):
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
+
+    if "cut" in decl:
+        cut = decl["cut"]
+        if not (_seq(cut) and all(isinstance(f, str) and f in CUT_FACES for f in cut) and len(set(cut)) == len(cut)):
+            bad("cut", f"{cut!r} is not a list of footprint edges to cut at, each once, of "
+                f"{', '.join(CUT_FACES)} (not N: a building rises over its north edge)")
 
     w, h = decl["footprint"]
     faces = set()

@@ -38,15 +38,34 @@
 # setting are the same on either device.
 #
 # Usage: tools/blender/render.sh <model.py> <out-dir> [--ports] [--icon]
+#                                [--collide [--collide-allow <pattern> ...]]
 #   <out-dir>/renders  per-pass renders at sprite size
 #   <out-dir>/sheets   packed sheets + meta.json (shifts, sizes, checks)
 #   <out-dir>/sheets/ports     with --ports
 #   <out-dir>/sheets/icon.png  with --icon: the 64 px mipmap strip
 #                              (tools/key-icons.py; its keyed master in sheets/masters/)
+#   <out-dir>/collide.log      with --collide: all the model's --collide run printed
+#   <out-dir>/collide/         with --collide: what that run wrote (a collide.txt, say)
 # These directories, and the 4x renders behind them (<out-dir>/hi, ports-hi and
 # icon), belong to this script: each run empties them all first, so nothing a
 # model no longer renders, and no sheet packed from it, survives from an earlier
-# run. A run without --ports or --icon leaves none of those behind either.
+# run. A run without --ports, --icon or --collide leaves none of those behind either.
+#
+# **--collide** runs the model's own clash check first, before anything renders:
+#   $BLENDER -b --python-exit-code 1 --python <model.py> -- <out-dir>/collide --collide
+# A model with a --collide moves every part through every frame and tests it against
+# the rest, printing lines that start "COLLIDE". They are read by measure.py's collide
+# step -- one rule for both tools, given in its docstring: a line naming a pair ("<a> x
+# <b>"), or a clash count above 0, is a clash; so is Blender failing, a Traceback, or
+# no count at all (a model with no --collide prints none).
+# --collide-allow <pattern> (repeatable, with --collide) is measure.py's: a contact the
+# model means, as a regular expression that names the whole pair line -- it must match
+# all of the line's text after "COLLIDE ", not just part of it -- and a line it matches
+# is allowed. A pattern that matched no line is listed as unused. A clash ends the run
+# there, exit 1 (exit 2 for a pattern that is not a regular expression), with nothing
+# rendered. Either way it prints the pair lines no pattern allows (the first 40), the
+# lines naming a count, how many lines were allowed, any unused pattern, and the
+# verdict. test/collide_box.py is the test box with a --collide.
 #
 # **Waiting for a run:** start this script itself in the background and let
 # the harness say when it exits; do not write a polling loop beside it. Every
@@ -56,18 +75,24 @@
 # run starts, so a stale one never answers for a new run.
 set -euo pipefail
 
-USAGE="usage: render.sh <model.py> <out-dir> [--ports] [--icon]"
+USAGE="usage: render.sh <model.py> <out-dir> [--ports] [--icon] [--collide [--collide-allow <pattern> ...]]"
 MODEL="${1:?$USAGE}"
 OUT="${2:?$USAGE}"
 shift 2
-PORTS="" ICON=""
-for flag in "$@"; do
-  case "$flag" in
+PORTS="" ICON="" COLLIDE="" ALLOW=()
+while [ $# -gt 0 ]; do
+  case "$1" in
     --ports) PORTS=1 ;;
     --icon) ICON=1 ;;
+    --collide) COLLIDE=1 ;;
+    --collide-allow) [ $# -ge 2 ] || { echo "$USAGE" >&2; exit 2; }; ALLOW+=("$2"); shift ;;
     *) echo "$USAGE" >&2; exit 2 ;;
   esac
+  shift
 done
+if [ ${#ALLOW[@]} -gt 0 ] && [ -z "$COLLIDE" ]; then
+  echo "render.sh: --collide-allow goes with --collide" >&2; exit 2
+fi
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
 
@@ -87,7 +112,30 @@ else
   echo "render device: CPU"
 fi
 rm -rf "${OUT:?}/hi" "${OUT:?}/renders" "${OUT:?}/sheets" \
-  "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon"
+  "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon" "${OUT:?}/collide" "${OUT:?}/collide.log"
+if [ -n "$COLLIDE" ]; then
+  python3 - "$HERE" "$MODEL" "$OUT" "$BLENDER" "${ALLOW[@]}" <<'EOF' || exit $?
+import sys
+sys.path.insert(0, sys.argv[1])
+import measure                                  # its collide step: one rule for both tools
+try:
+    res = measure.collide(*sys.argv[2:5], allow=sys.argv[5:])
+except measure.Usage as e:
+    print(f"render.sh: {e}", file=sys.stderr)
+    sys.exit(2)
+if res["allowed"]:
+    print(f"collide: {len(res['allowed'])} pair line(s) allowed by --collide-allow (in {res['log']})")
+for pattern in res.get("allow_unused", []):
+    print(f"collide: --collide-allow {pattern!r} matched no pair line")
+shown = [ln for ln in res["lines"] if ln in res["not_allowed"] or "clash" in ln.lower() or "overlap" in ln]
+for line in shown[:40]:
+    print(line)
+if len(shown) > 40:
+    print(f"... and {len(shown) - 40} more in {res['log']}")
+print("collide: " + ("PASS" if res["pass"] else f"FAIL: {res['why']}") + f" ({res['log']})")
+sys.exit(0 if res["pass"] else 1)
+EOF
+fi
 "$BLENDER" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \
   || { tail -20 "$OUT/blender.log"; exit 1; }
 python3 "$HERE/downsample.py" "$OUT/hi" "$OUT/renders"

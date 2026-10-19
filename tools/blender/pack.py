@@ -27,6 +27,24 @@ or the edge cuts the tail) and <name>_light (frame 0's peak luminance and its co
 and halo shares, as the radiant-look study measured vanilla's glows:
 concept/radiant-look/model/look_common.py).
 
+An animation that declares a frame_sequence or a hold (contract.py) is packed like any
+other, its frames once each in order; its meta.json entry gains frame_sequence, the
+order the engine plays them in (1-based, a hold written out: the prototype's
+frame_sequence as it stands), and its checks <name>_sequence: the entries it plays
+(the actual length every other layer drawn with it must have) and the frames it never
+shows. A glow animation carries its plate layer's.
+
+The footprint cut (render.json's `cut`, contract.py): before anything is packed or
+checked, every render but a shadow's -- plate, still, glow, paint and light passes,
+and every animation frame -- is cleared past the footprint's edges it names (not a
+slide's tracked part either: it is only measured, for its centroid, and never drawn),
+as the footprint stands in that direction (cut_mask), so the plate and a glow's own
+pixels are no wider (E, W) or lower (S) than the footprint. A glow animation's bloom
+(glow_frame) is added after the cut, from the light the cut left, so its halo may spill
+past a cut edge, as light does (Liam, 2026-10-19: "Halo may cross"). checks cut_px
+gives, per render, the pixels with any alpha the cut cleared or thinned, counted on the
+render before any bloom; {} = nothing reached past the edge.
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line, or a glow animation clips or
@@ -199,6 +217,46 @@ def light_layer(lamp):
     return out
 
 
+def cut_mask(decl, direction):
+    """The footprint cut (render.json's `cut`) on the canvas in a direction: an L image, 255
+    inside the edges cut at, 0 past them, and on a pixel an edge crosses the share of it
+    inside. None when the model declares no cut.
+
+    The edges are the footprint's as it stands in that direction, its centre the entity
+    origin (the canvas's centre), px_per_tile to a tile: east and west its screen right and
+    left, south its bottom edge on the ground.
+    """
+    faces = decl.get("cut") or ()
+    if not faces:
+        return None
+    cw, ch = decl["canvas"]
+    ppt = float(decl["rig"]["px_per_tile"])
+    fw, fh = contract.footprint_in(decl, direction)
+    left = cw / 2 - fw / 2 * ppt if "W" in faces else -math.inf
+    right = cw / 2 + fw / 2 * ppt if "E" in faces else math.inf
+    bottom = ch / 2 + fh / 2 * ppt if "S" in faces else math.inf
+
+    def band(lo, hi, n):
+        # each pixel's share of [i, i + 1) inside [lo, hi), as 0-255, laid out one row long
+        im = Image.new("L", (n, 1))
+        im.putdata([round(255 * max(0.0, min(i + 1, hi) - max(i, lo))) for i in range(n)])
+        return im
+    cols = band(left, right, cw).resize((cw, ch), Image.NEAREST)
+    rows = band(-math.inf, bottom, ch).transpose(Image.Transpose.TRANSPOSE).resize((cw, ch), Image.NEAREST)
+    return ImageChops.multiply(cols, rows)
+
+
+def cut(im, mask):
+    """im (RGBA) cut to mask (cut_mask): alpha times the share inside, and the pixels wholly
+    outside cleared to (0, 0, 0, 0), colour and all, as a glow's colour is read without its
+    alpha. Returns it and the pixels with any alpha the cut cleared or thinned."""
+    a = im.getchannel("A")
+    touched = ImageChops.multiply(a.point(lambda v: 255 if v else 0), mask.point(lambda v: 255 if v < 255 else 0))
+    keep = mask.point(lambda v: 255 if v else 0)
+    rgb = ImageChops.multiply(im.convert("RGB"), Image.merge("RGB", (keep,) * 3))
+    return Image.merge("RGBA", (*rgb.split(), ImageChops.multiply(a, mask))), touched.histogram()[255]
+
+
 def centroid(im):
     a = im.getchannel("A")
     px = list(a.get_flattened_data())
@@ -216,12 +274,19 @@ class Packer:
         self.meta = {}
         self.over = []      # every animation past LIMIT_PX, as a line to exit with
         self.clipped = []   # every glow animation that clips, as a line to exit with
+        self.masks = {d: cut_mask(decl, d) for d, _ in contract.DIRECTIONS[decl["directions"]]}
+        self.cut_px = {}    # per direction, {render stem: px the footprint cut cleared or thinned}
 
-    def open(self, stem):
+    def open(self, stem, d, cut_it=True):
+        """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false."""
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
         if list(im.size) != list(self.decl["canvas"]):
             sys.exit(f"pack.py: {stem}.png is {im.size[0]}x{im.size[1]}, but render.json "
                      f"declares a {self.decl['canvas'][0]}x{self.decl['canvas'][1]} canvas")
+        if cut_it and self.masks[d] is not None:
+            im, n = cut(im, self.masks[d])
+            if n:
+                self.cut_px.setdefault(d, {})[stem] = n
         return im
 
     def box_of(self, alpha, what, thr=0):
@@ -246,7 +311,7 @@ class Packer:
         renders = {}
         for p in decl["passes"]:
             stem = contract.named(p["name"], d)
-            renders[p["name"]] = self.open(stem)
+            renders[p["name"]] = self.open(stem, d, cut_it=p["kind"] != "shadow")   # a shadow falls past the footprint
         checks = {}
         plate = next(p for p in decl["passes"] if p["kind"] == "plate")
         idle = renders[plate["name"]]
@@ -289,9 +354,9 @@ class Packer:
             glow = a.get("kind") == "glow"
             # a light animation keeps what a light pass keeps (alpha above 8); a glow is turned to
             # light; paint is cleaned of the catchers' haze below NOISE
-            frames = [light_layer(self.open(contract.frame(name, f, d))) if light
-                      else glow_frame(self.open(contract.frame(name, f, d)), a.get("bloom")) if glow
-                      else clean(self.open(contract.frame(name, f, d))) for f in range(n)]
+            frames = [light_layer(self.open(contract.frame(name, f, d), d)) if light
+                      else glow_frame(self.open(contract.frame(name, f, d), d), a.get("bloom")) if glow
+                      else clean(self.open(contract.frame(name, f, d), d)) for f in range(n)]
             packed[name] = frames
             working = a.get("working", False)
             u = None
@@ -314,6 +379,13 @@ class Packer:
                 self.meta[stem]["kind"] = a["kind"]
             elif not working:
                 frame0.append(frames[0])     # light and working layers draw only while working: not the still's
+            seq = contract.sequence(decl, a)
+            if seq is not None:
+                self.meta[stem]["frame_sequence"] = seq
+                checks[f"{name}_sequence"] = (
+                    dict(entries=len(seq), unused=[k for k in range(1, n + 1) if k not in seq]),
+                    f"the frame_sequence it plays in (meta.json, 1-based): its entries, the actual length every "
+                    f"layer drawn with it must have ({contract.SEQUENCE_MAX} at most), and the frames it never shows")
             if a["motion"] == "flow":
                 continue                     # contents moving in place: nothing to hold to a centroid
             if a["motion"] == "cycle":
@@ -338,7 +410,8 @@ class Packer:
                 if a.get("track"):
                     # the layer carries parts that do not ride the path; the
                     # part that does was rendered alone for this
-                    cs = [centroid(clean(self.open(contract.track_frame(name, a["track"], f, d))))
+                    # never cut: measured for its centroid, never drawn, and a cut part's centroid moves
+                    cs = [centroid(clean(self.open(contract.track_frame(name, a["track"], f, d), d, cut_it=False)))
                           for f in range(n)]
                 path = checks[f"{name}_path_px"] = self.slide(a, cs, d)
                 if a.get("track"):
@@ -386,6 +459,9 @@ class Packer:
                                      f"bottom edge below origin; {fh_tiles / 2} = on the footprint"),
         }
         appendix.update(checks)
+        if decl.get("cut"):
+            appendix["cut_px"] = (self.cut_px.get(d, {}), f"per render, the px with alpha the footprint cut "
+                                  f"({', '.join(decl['cut'])}) cleared or thinned; the shadow is never cut")
         return appendix
 
     def glow_checks(self, anim, packed, plate, d, siblings=()):
