@@ -19,8 +19,8 @@
 -- `no_minable_resources` with no script. A future gas costs a resource and a
 -- fluid, and no new machine. The Vent Pump keeps the kamacite vent, alone.
 --
--- Two measurements from spike S10 shape the turbine, and both are the kind that
--- pass every check in the repo while being wrong:
+-- Two measurements from spike S10 and one engine change shape the turbine, and
+-- all three are the kind that pass every check in the repo while being wrong:
 --
 --   1. **`burns_fluid` ignores temperature entirely**, taking its power from the
 --      fluid's `fuel_value`. Measured: a turbine burning gas at 25 degrees with
@@ -31,6 +31,11 @@
 --   2. **`maximum_temperature` is mandatory on a generator even so.** Leaving it
 --      out fails the data stage outright. It does no work in this mode; it still
 --      has to be declared.
+--
+--   3. **`minimum_input_temperature` has to be cleared.** Factorio 2.1.22 gave
+--      the vanilla steam turbine a 100-degree minimum, and the turbine derives
+--      from it: inherited, a minimum stops a generator taking any fluid below
+--      it, so 25-degree gas would never burn. Unset, there is no minimum.
 --
 -- Proven end to end on the rig, because none of it is visible from the data
 -- stage: a pump on a vent, piped to a turbine, under load, produced the declared
@@ -520,6 +525,8 @@ turbine.fluid_usage_per_tick = 0.15 -- 9/s at 200 kJ = 1.8 MW
 -- Mandatory even with burns_fluid, where it does nothing at all. Omitting it
 -- fails the data stage with `Key "maximum_temperature" not found`.
 turbine.maximum_temperature = 1000
+-- Inherited from the 2.1.22 steam turbine, it would refuse the gas -- note 3.
+turbine.minimum_input_temperature = nil
 turbine.surface_conditions = { { property = "pressure", max = 9 } }
 turbine.fluid_box = table.deepcopy(turbine.fluid_box)
 turbine.fluid_box.filter = "sae-crust-gas"

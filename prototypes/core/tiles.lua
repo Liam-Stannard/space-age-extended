@@ -79,8 +79,11 @@ data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("
 -- how hot the lava was: its melt onto a blue ramp (#02081A > #04103A > #0B2A8C >
 -- #1F63FF > #5A9CFF), its crust to a cool near-black, so the pool is a dark
 -- liquid lit from below. The shader draws its own colour texture, so the pool
--- gets lava's shader with that texture (effect.png, from lava-textures/lava.png)
--- re-graded the same way and the noise texture copied unchanged.
+-- gets lava's shader with that image texture (effect.png, from
+-- lava-textures/lava.png) re-graded the same way. Its two noise textures carry
+-- no colour, so it reads space-age's own, as vanilla lava declares them; the
+-- shader wants exactly two since 2.1.22, and the variation counts it once took
+-- are now derived from the image texture's size.
 data:extend({
   {
     type = "tile-effect",
@@ -89,15 +92,23 @@ data:extend({
     water =
     {
       shader_variation = "lava",
-      textures =
+      noise_textures =
       {
-        { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect-noise.png" },
+        {
+          filename = "__space-age__/graphics/terrain/vulcanus/lava-textures/lava-noise-1.png",
+          size = 512,
+          color_channels = 2
+        },
+        {
+          filename = "__space-age__/graphics/terrain/vulcanus/lava-textures/lava-noise-2.png",
+          size = 512,
+          color_channels = 1
+        }
+      },
+      image_textures =
+      {
         { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect.png" }
       },
-      texture_variations_columns = 1,
-      texture_variations_rows = 1,
-      secondary_texture_variations_columns = 4,
-      secondary_texture_variations_rows = 2,
       animation_speed = 1.2,
       animation_scale = { 0.7, 0.7 },
       tick_scale = 1,
