@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Criterion 4: each pipe-picture sheet against assembler 3's outline, aligned on its shift.
+"""Each pipe-picture sheet against assembler 3's outline, aligned on its shift.
 
-  python3 measure_ports.py <ports-sheets-dir> [<out.png>]
+  python3 tools/blender/measure_ports.py <ports-sheets-dir> [<out.png>]
+
+(Moved from concept/ballast-drill/model/, where it was the drill's criterion 4;
+measure.py runs it on <out-dir>/sheets/ports when a model has port pictures.)
 
 <ports-sheets-dir> is pack_ports.py's output (port-<face>.png and meta.json). For each
 face, both pictures are placed on one canvas by their shifts (ours from meta.json, which
@@ -43,7 +46,7 @@ def far(points, other):
     return max(min(math.hypot(px - qx, py - qy) for qx, qy in other) for px, py in points)
 
 
-def main(src, out=None):
+def main(src, out=None, quiet=False):
     meta = json.load(open(os.path.join(src, "meta.json")))
     panels, result = [], {}
     for face in "NESW":
@@ -60,7 +63,8 @@ def main(src, out=None):
         result[face] = dict(missed=len(missed), extra=len(extra), far_px=round(f, 2),
                             vanilla=[w, h, round(bx / 64, 5), round(by / 64, 5)],
                             ours=[*meta[f"port-{face}"]["size"], *meta[f"port-{face}"]["shift"]])
-        print(face, result[face])
+        if not quiet:
+            print(face, result[face])
         if out:
             im = Image.new("RGB", (160, 160), (30, 30, 30))
             px = im.load()
