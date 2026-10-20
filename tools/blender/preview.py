@@ -36,7 +36,13 @@ glow animation, the plate layer it is over and every other glow over that layer
 play together, whichever is named.
 A GIF counts time in hundredths of a second, so each frame is held to the
 nearest hundredth of when the engine would show it and the loop as a whole
-runs at the game's rate.
+runs at the game's rate. An animation that declares a frame_sequence or a hold
+(contract.py) plays in that order, a held frame shown for as long as its run of
+entries lasts; a glow plays its plate layer's.
+
+Every render but a shadow is drawn cut to the footprint as pack.py cuts it, when
+render.json declares a `cut`: cut first, then a glow animation's bloom added, so the
+halo may spill past a cut edge as it does in the sheets.
 """
 import argparse
 import os
@@ -72,12 +78,17 @@ class Model:
                      "\n".join(f"  {stem}.png  ({what})" for what, stem in gone))
         self.directions = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         self.ppt = float(self.decl["rig"]["px_per_tile"])
+        self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
 
-    def open(self, stem):
+    def open(self, stem, d, cut_it=True):
+        """A render of direction d, cut to the footprint as pack.py cuts it (render.json's `cut`)
+        unless cut_it is false: a shadow is never cut."""
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
         if list(im.size) != list(self.decl["canvas"]):
             sys.exit(f"preview.py: {stem}.png is {im.size[0]}x{im.size[1]}, but render.json "
                      f"declares a {self.decl['canvas'][0]}x{self.decl['canvas'][1]} canvas")
+        if cut_it and self.masks[d] is not None:
+            im = pack.cut(im, self.masks[d])[0]
         return im
 
     def kind(self, kind):
@@ -86,18 +97,18 @@ class Model:
     def panel(self, d, working, frames=None):
         """The building in direction d on the ground, at canvas size. frames: {animation: frame}, else 0."""
         frames = frames or {}
-        plate = self.open(contract.named(self.kind("plate")[0]["name"], d))
+        plate = self.open(contract.named(self.kind("plate")[0]["name"], d), d)
         im = Image.new("RGBA", plate.size, GROUND)
         black = Image.new("RGBA", plate.size, (0, 0, 0, 255))
         for p in self.kind("shadow"):
-            alpha = pack.clean(self.open(contract.named(p["name"], d))).getchannel("A")
+            alpha = pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False)).getchannel("A")
             im.paste(black, (0, 0), alpha.point(lambda v: v // 2))
         im.alpha_composite(plate)
         glows = []
         for a in self.decl["animations"]:
             if a.get("working") and not working:
                 continue                    # drawn only while the machine works (contract.py)
-            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0), d))
+            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0), d), d)
             if a.get("kind") == "glow":
                 glows.append(pack.glow_frame(fr, a.get("bloom")))     # light: added below, while working
             else:
@@ -107,15 +118,15 @@ class Model:
         for p in self.decl["passes"] if working else ():
             if p["kind"] not in contract.WORKING:
                 continue
-            layer = self.open(contract.named(p["name"], d))
-            under = self.open(contract.named(p["over"], d))
+            layer = self.open(contract.named(p["name"], d), d)
+            under = self.open(contract.named(p["over"], d), d)
             if p["kind"] == "paint":
                 im.alpha_composite(pack.paint_layer(layer, under))
             else:
                 glow = pack.glow_layer(layer, under).convert("RGB")
                 im = Image.merge("RGBA", (*ImageChops.add(im.convert("RGB"), glow).split(), im.getchannel("A")))
         for p in self.kind("light"):
-            lamp = pack.light_layer(self.open(contract.named(p["name"], d)))
+            lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
         return im
 
@@ -222,28 +233,37 @@ def gif(model, out, name, speed):
     # whichever is asked for, the plate layer and every glow over it play
     plate = anims[name]["over"] if anims[name].get("kind") == "glow" else name
     together = {name, plate} | {a["name"] for a in anims.values() if a.get("kind") == "glow" and a["over"] == plate}
+    # the order the engine plays them in: render.json's frame_sequence or hold (1-based), else each once
+    seq = contract.sequence(model.decl, anims[plate])
+    order = [k - 1 for k in seq] if seq else list(range(n))
     fps = 60 * speed
-    frames = []
-    for f in range(n):
+    shown = sorted(set(order))
+    frames = {}
+    for f in shown:
         row = [model.panel(d, True, {a: f for a in together}) for d in model.directions]
         im = Image.new("RGBA", (sum(p.width for p in row), row[0].height), GROUND)
         for i, p in enumerate(row):
             im.alpha_composite(p, (i * p.width, 0))
-        frames.append(im.convert("RGB"))
+        frames[f] = im.convert("RGB")
     # one palette for the loop, so nothing flickers between frames
-    strip = Image.new("RGB", (frames[0].width, frames[0].height * n))
-    for f, im in enumerate(frames):
-        strip.paste(im, (0, f * im.height))
+    w, h = frames[shown[0]].size
+    strip = Image.new("RGB", (w, h * len(shown)))
+    for i, f in enumerate(shown):
+        strip.paste(frames[f], (0, i * h))
     palette = strip.quantize(colors=256)
-    frames = [im.quantize(palette=palette, dither=Image.Dither.NONE) for im in frames]
-    # frame f is up from f / fps seconds: held to the hundredth, as a GIF counts
-    ticks = [round(100 * f / fps) for f in range(n + 1)]
+    frames = {f: im.quantize(palette=palette, dither=Image.Dither.NONE) for f, im in frames.items()}
+    # entry e is up from e / fps seconds; a run of entries on one frame (a hold) is one GIF
+    # frame, up from its first entry to the next run's: each held to the hundredth, as a GIF counts
+    runs = [e for e in range(len(order)) if e == 0 or order[e] != order[e - 1]] + [len(order)]
+    ticks = [round(100 * e / fps) for e in runs]
     durations = [10 * (b - a) for a, b in zip(ticks, ticks[1:])]
     if min(durations) < 20:
         print(f"preview.py: at {fps:g} frames a second some frames are held under 2/100 s, "
               f"which most viewers slow to 1/10 s", file=sys.stderr)
-    frames[0].save(out, save_all=True, append_images=frames[1:], duration=durations, loop=0)
-    print(f"{out}: {name}, {n} frames at {fps:g} a second (held {durations} ms), looping")
+    seen = [frames[order[e]] for e in runs[:-1]]
+    seen[0].save(out, save_all=True, append_images=seen[1:], duration=durations, loop=0)
+    played = f"its frame_sequence, {len(order)} entries of its {n} frames" if seq else f"{n} frames"
+    print(f"{out}: {name}, {played} at {fps:g} a second (held {durations} ms), looping")
 
 
 def main():

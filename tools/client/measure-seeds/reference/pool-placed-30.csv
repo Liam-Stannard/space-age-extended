@@ -1,0 +1,43 @@
+# The pool-placed table's 30 seeds (the housekeeping round's: k * 2654435761 mod 2^32 for k = 1..29, then 123456789),
+# with the per-seed values recorded for the committed pool-placed code (ef63ab2). The table file the task cites
+# (pool-table-before-after.txt, and the later pool-table-placed-vs-arcfix.txt / pool-table-recheck.txt) was
+# scratch and is gone; these rows were recovered on 2026-10-19 from the tester's and coder's printed output in the
+# pool-placed session transcripts. Factorio 2.0 at the time. A blank cell was not printed there.
+# 295853050, 2950288811, 1309757276: no per-seed value after the arc fix survives (only the pre-arc 43.0, 45.4, 47.7,
+# which the arc fix may have moved), so they are left blank. The 30-seed summary that does survive, for the same code:
+# nearest pool min 41.7, median 44.8, max 48.3; 30 of 30 in 40-50; none under 24; pool tiles inside 24: 0;
+# patches failed 0/90; entities on pool/shore 0; strays 0.
+# pool / shore: nearest sae-radiant-pool / -shore tile centre from (0, 0), tiles. <patch>_reach: the patch centre's
+# distance (its _reach expression); _off_deg: its bearing off the preferred one; _n: entities of the patch within
+# radius * 1.4 + 2 of that centre; _wet: those touching pool or shore tiles.
+seed,pool,shore,pool_tiles_within_24,gas_reach,gas_off_deg,gas_n,gas_wet,kamacite_reach,kamacite_off_deg,kamacite_n,kamacite_wet,kamacite_vent_reach,kamacite_vent_off_deg,kamacite_vent_n,kamacite_vent_wet,source
+2654435761,46.2,37.0,0,56,+0,9,0,64,-15,230,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1013904226,41.7,36.5,0,56,+30,12,0,64,+0,245,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3668339987,46.0,35.5,0,56,+0,12,0,64,+0,281,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2027808452,44.7,35.7,0,56,+0,12,0,64,+0,279,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+387276917,45.5,37.6,0,56,-90,11,0,64,-30,269,0,72,+15,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3041712678,42.3,33.5,0,56,+0,13,0,64,+0,263,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1401181143,44.6,37.5,0,56,+60,10,0,64,-15,265,0,72,+105,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+4055616904,46.0,34.9,0,56,+0,13,0,64,-60,261,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2415085369,44.0,37.3,0,56,+0,12,0,64,+0,281,0,72,+45,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+774553834,43.4,36.4,0,56,+0,9,0,64,+0,239,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3428989595,45.4,37.8,0,56,+0,13,0,64,+0,257,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1788458060,47.9,38.3,0,56,+0,13,0,64,+0,248,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+147926525,44.8,36.9,0,56,+0,13,0,64,+0,293,0,72,+0,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2802362286,48.3,37.3,0,56,+0,12,0,64,+0,279,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1161830751,43.1,35.2,0,56,+30,11,0,64,-45,278,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3816266512,44.6,33.7,0,56,+0,11,0,64,-45,221,0,72,+0,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2175734977,42.1,35.8,0,56,+0,11,0,64,+0,245,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+535203442,41.7,33.9,0,56,+0,13,0,64,+0,261,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3189639203,46.5,37.5,0,56,-90,13,0,64,-30,267,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1549107668,42.3,35.6,0,56,+0,14,0,64,+0,250,0,72,+0,12,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+4203543429,43.2,35.8,0,56,+0,12,0,64,+0,267,0,72,+30,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2563011894,45.4,39.1,0,56,-75,13,0,64,-15,283,0,72,+15,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+922480359,41.9,36.7,0,56,+0,14,0,64,+0,258,0,72,-15,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+3576916120,47.1,33.9,0,56,+0,12,0,64,+0,264,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1936384585,43.7,34.6,0,56,+60,11,0,64,-120,288,0,72,+0,8,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+295853050,,,,,,,,,,,,,,,,not recorded after the arc fix
+2950288811,,,,,,,,,,,,,,,,not recorded after the arc fix
+1309757276,,,,,,,,,,,,,,,,not recorded after the arc fix
+3964193037,45.9,38.3,0,56,,11,0,64,,296,0,72,,14,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt)
+123456789,45.6,35.7,0,56,,13,0,64,,250,0,72,,14,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt)
