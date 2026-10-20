@@ -23,6 +23,21 @@ a pass: everything they act on is declared here.
                 light   a white-cut lens the engine tints (alpha above 8 kept)
                 still   every animation at frame 0 with the machine: the
                         reference for the frame-0 check; not packed
+                remnants  the machine's wreck, what its corpse prototype draws once
+                        it is destroyed: the wreck alone, lying on the ground
+                        catcher, rendered so its shadow is caught in the same
+                        picture -- vanilla's remnants have no shadow layer, the
+                        shadow is baked into the one sprite -- with debris free to
+                        lie past the footprint. Never cut (`cut`), like a shadow.
+                        At most one. pack.py packs every direction's render into
+                        one sheet in vanilla's layout (remnant_rows, below; its
+                        docstring has the sheet and its checks), named for its
+                        sheet alone, so the sheet may not be a name another sheet
+                        or animation takes in any direction ("base-north") nor
+                        "checks". Its own `canvas`
+                        (optional, this kind only): [w, h] in sprite px, when the
+                        wreck spreads past the model's canvas; the entity origin is
+                        its centre too
   animations  [{name, frames, motion, path}], frames <name>-NN.png (and
               <name>-NN-<direction>.png). motion "turn": a part turning about
               its own axis, held to its centroid. motion "slide": a part moving
@@ -141,7 +156,20 @@ DIRECTIONS = {
     "four": [("north", 0), ("east", 90), ("south", 180), ("west", 270)],
     "horizontal-vertical": [("vertical", 0), ("horizontal", 90)],
 }
-KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
+KINDS = ("plate", "shadow", "glow", "paint", "light", "still", "remnants")
+# The engine direction each row of a remnants sheet is drawn for, top to bottom, and the render
+# drawn in it: vanilla's building remnants are one column (line_length 1) of direction_count
+# rows, north, east, south, west -- steam-turbine-remnants a 460x1632 sheet of four 460x408
+# rows at scale 0.5 (base/prototypes/entity/remnants.lua:2739-2765) -- or one row for a
+# building that does not turn (chemical-plant-remnants, remnants.lua:2907-2933). The steam
+# turbine builds only north and east and its sheet still has four rows, the vertical wreck in
+# 1 and 3, the horizontal in 2 and 4 (they differ in 50 and 118 px by 15 at most), so a
+# horizontal-vertical model's two renders fill four rows the same way.
+REMNANT_ROWS = {
+    "one": [""],
+    "four": ["north", "east", "south", "west"],
+    "horizontal-vertical": ["vertical", "horizontal", "vertical", "horizontal"],
+}
 WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
 MOTIONS = ("turn", "slide", "flow", "cycle")
 ANIM_KINDS = ("paint", "light", "glow")
@@ -193,6 +221,17 @@ def speed(decl, anim):
     if anim.get("kind") == "glow":
         anim = next(a for a in decl["animations"] if a["name"] == anim["over"])
     return anim.get("animation_speed")
+
+
+def canvas_of(decl, p):
+    """The canvas a pass's renders are on, [w, h] sprite px: its own (a remnants pass's) or the model's."""
+    return p.get("canvas", decl["canvas"])
+
+
+def remnant_rows(decl):
+    """The render (its direction's name) drawn in each row of a remnants sheet, top to bottom:
+    REMNANT_ROWS for the model's directions."""
+    return REMNANT_ROWS[decl["directions"]]
 
 
 def footprint_in(decl, direction):
@@ -314,9 +353,18 @@ def validate(decl, where):
             if p["sheet"] in sheets:
                 bad(f"{field}.sheet", f"{p['sheet']!r} is already another pass's sheet")
             sheets.add(p["sheet"])
+        if "canvas" in p:
+            if p["kind"] != "remnants":
+                bad(f"{field}.canvas", f"{p['kind']} pass {p['name']!r} has a canvas of its own: only a remnants "
+                    f"pass may (every other pass is on the model's canvas, which the packers register them on)")
+            v = p["canvas"]
+            if not (_seq(v, 2) and all(_whole(c) and c > 0 for c in v)):
+                bad(f"{field}.canvas", f"{v!r} is not [w, h], two whole numbers of px above 0")
     kinds = [p["kind"] for p in decl["passes"]]
     if decl["passes"] and kinds.count("plate") != 1:
         bad("passes", f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
+    if kinds.count("remnants") > 1:
+        bad("passes", f"declares {kinds.count('remnants')} remnants passes; a corpse draws one wreck")
     for i, p in enumerate(decl["passes"]):
         if p["kind"] in WORKING and not any(q["name"] == p.get("over") and q["kind"] == "plate"
                                             for q in decl["passes"]):
@@ -417,6 +465,20 @@ def validate(decl, where):
         if under["frames"] != a["frames"]:
             bad(f"animations[{i}].frames", f"glow animation {a['name']!r} has {a['frames']} frames and "
                 f"its plate layer {under['name']!r} {under['frames']}: one glow frame per plate frame")
+    # A remnants sheet is one file for every direction, named for its sheet alone, where every
+    # other sheet is named per direction: it must not be the name another sheet takes in some
+    # direction (pack.py would write one over the other), nor meta.json's "checks".
+    for i, p in enumerate(decl["passes"]):
+        if p["kind"] != "remnants":
+            continue
+        others = [q["sheet"] for q in decl["passes"] if q["kind"] not in ("still", "remnants")] \
+            + [a["name"] for a in decl["animations"]]
+        taken = {named(s, d): s for s in others for d, _ in DIRECTIONS[decl["directions"]]}
+        if p["sheet"] in taken:
+            bad(f"passes[{i}].sheet", f"{p['sheet']!r} is the name sheet {taken[p['sheet']]!r} takes in one of the "
+                f"model's directions: a remnants sheet is one file for every direction, and would be written over it")
+        if p["sheet"] == "checks":
+            bad(f"passes[{i}].sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
