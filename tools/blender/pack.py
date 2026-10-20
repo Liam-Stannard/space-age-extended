@@ -85,6 +85,35 @@ the corpse's default is "corpse", CorpsePrototype). It goes after every other sh
                 0.64; the chemical plant's debris goes 0.61 past its north edge, its shadow 2.23
                 past its east.
 
+A resource model (contract.py: one resource pass, at most one effect pass, nothing else) packs
+into its prototype's `stages` sheet and, with an effect, its `stages_effect` sheet, and nothing
+per direction: a resource has one. Each sheet is one cell a render, <name>-SS-VV.png, laid out as
+the engine reads a resource's AnimationSheet (ResourceEntityPrototype.stages): a row a stage,
+stage 0 (the richest, the first entry of stage_counts) at the top, a column a variation, so
+frame_count = line_length = variations and variation_count = stages. Every cell is cropped to the
+one box that holds every cell of its sheet (with the 1 px rim), as the sheet has one size and one
+shift; the shift is from the canvas's centre, the entity origin. The resource's cells are cleaned
+of the catcher's haze below NOISE, as a wreck is, and otherwise packed as rendered, what they cast
+and all; every cell must hold something. The effect's cells are each turned to light as an
+animated glow's frame is (glow_frame, with the pass's bloom): the light alone, drawn additively
+(vanilla's uranium-ore-glow.png is the same, light on black), and any cell may be dark but not
+all of them. A sheet wider or taller than MAX_SHEET_W is refused: a resource sheet does not wrap.
+Each sheet's meta.json entry, keyed by its sheet: size (one cell), shift, frame_count,
+variation_count, line_length, kind ("resource" or "effect"); then "checks", flat:
+  <sheet>_edge_px      the most pixels, in any cell, on the canvas's outermost row or column
+                       (alpha above 0; for the effect, the light, bloom and all): above 0 fails,
+                       the canvas cuts the cell off
+  <sheet>_reach_tiles  the resource's: how far its cells' union reaches past each edge of the
+                       footprint (N, E, S, W), tiles, below 0 short of it -- what can show round
+                       a building of the footprint's size on it. Information
+  <effect>_white_px    the most pixels, in any cell, of the light clipped to white: above 0 fails
+  <effect>_clipped_px  the most pixels, in any cell, the light at full strength drives to white over
+                       its resource cell. Information: the engine draws it at min_effect_alpha to
+                       max_effect_alpha, raised by darkness (effect_darkness_multiplier)
+  <effect>_light       cell (0, 0)'s peak luminance and core and halo shares, as a glow animation's
+  rolloff_px           both sheets' roll-off, as for any model (below)
+Exits 1 naming the sheet and the cell when a check fails, meta.json written first.
+
 The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
 "On by default, new renders only"; then "Yes, animations and wrecks too"): every sheet the engine
 draws as it is -- plate, glow and paint passes, every animation but a light one, and the remnants
@@ -108,8 +137,8 @@ Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
 (Packer.slide; naming those frames), or a glow animation clips or
-reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge.
-meta.json is written first.
+reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge, or a
+resource model's sheet fails its checks (above). meta.json is written first.
 """
 import functools
 import itertools
@@ -540,6 +569,7 @@ class Packer:
         self.roll_on = decl.get("rolloff", True)    # render.json's opt-out (contract.py)
         self.rolls = {}     # per direction, {sheet: its pixels the roll-off changed, the most a channel moved}
         self.wrecks = {}    # per direction, the remnants pass's render, cleaned and rolled off: packed into one sheet
+        self.bad_cells = []  # every resource model's check that fails, as a line to exit with
 
     def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false.
@@ -890,7 +920,93 @@ class Packer:
         self.meta[p["sheet"]] = dict(size=(w, h), shift=self.shift(u, (cw / 2, ch / 2)), direction_count=len(rows),
                                      line_length=1, rows=rows, kind="remnants", final_render_layer="remnants")
 
+    # ---------------------------------------------------------------- a resource model
+
+    def grid_sheet(self, p, cells, kind):
+        """One resource model's sheet: cells {(stage, variation): image} laid a row a stage and
+        a column a variation, every cell cropped to the box that holds them all. Its meta.json
+        entry, and the union of its cells' pixels (alpha above 0) for the reach."""
+        res = contract.resource_pass(self.decl)
+        rows, cols = res["stages"], res["variations"]
+        boxes = [self.box_of(im.getchannel("A"), contract.cell(p["name"], *sv) + ".png")
+                 for sv, im in cells.items() if im.getchannel("A").getbbox() is not None]
+        if not boxes:
+            sys.exit(f"pack.py: every cell of {p['kind']} pass {p['name']!r} is empty")
+        u = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
+        w, h = u[2] - u[0], u[3] - u[1]
+        if w * cols > MAX_SHEET_W or h * rows > MAX_SHEET_W:
+            sys.exit(f"pack.py: {p['kind']} pass {p['name']!r} packs into a {w * cols}x{h * rows} sheet ({cols} "
+                     f"variations of {w} px by {rows} stages of {h} px), past {MAX_SHEET_W} px: a resource sheet "
+                     f"does not wrap; fewer variations or stages, or a smaller cell")
+        sheet = Image.new("RGBA", (w * cols, h * rows))
+        for (s, v), im in cells.items():
+            sheet.paste(im.crop(u), (v * w, s * h))
+        sheet = self.rolloff(sheet, p["sheet"], "")         # its cells, unrolled, are what the checks read
+        sheet.save(os.path.join(self.out, p["sheet"] + ".png"))
+        self.meta[p["sheet"]] = dict(size=(w, h), shift=self.shift(u), frame_count=cols, variation_count=rows,
+                                     line_length=cols, kind=kind)
+        return (u[0] + 1, u[1] + 1, u[2] - 1, u[3] - 1)     # less the rim
+
+    def resource(self):
+        """A resource model's sheets and checks (the docstring's): its stages sheet, then its
+        effect's, and meta.json's flat "checks"."""
+        decl = self.decl
+        res = contract.resource_pass(decl)
+        grid = contract.cells(decl)
+        checks = {}
+        cells = {sv: clean(self.open(contract.cell(res["name"], *sv), "")) for sv in grid}
+        for sv, im in cells.items():         # every cell of a resource holds something
+            self.box_of(im.getchannel("A"), contract.cell(res["name"], *sv) + ".png")
+        reach_box = self.grid_sheet(res, cells, "resource")
+        self.cell_edges(res, {sv: im.getchannel("A").point(lambda v: 255 if v else 0) for sv, im in cells.items()},
+                        checks)
+        checks[f"{res['sheet']}_reach_tiles"] = (
+            reach(reach_box, decl, "", decl["canvas"]),
+            "how far the cells reach past each footprint edge (N, E, S, W), tiles; below 0 short of it: what "
+            "can show round a building of the footprint's size on it")
+        for p in decl["passes"]:
+            if p["kind"] != "effect":
+                continue
+            lights = {sv: glow_frame(self.open(contract.cell(p["name"], *sv), ""), p.get("bloom")) for sv in grid}
+            self.grid_sheet(p, lights, "effect")
+            self.cell_edges(p, {sv: g.getchannel("A") for sv, g in lights.items()}, checks)
+            name = p["sheet"]
+            bare = {sv: white(g).histogram()[255] for sv, g in lights.items()}
+            clipped = max(ImageChops.subtract(white(add_light(cells[sv], g)), white(cells[sv])).histogram()[255]
+                          for sv, g in lights.items())
+            checks[f"{name}_white_px"] = (max(bare.values()), "the most pixels of the light, in any cell, clipped "
+                                          "to white; 0 = it keeps its colour")
+            checks[f"{name}_clipped_px"] = (clipped, f"the most pixels, in any cell, the light at full strength "
+                                            f"drives to white over {res['name']!r}; information: the engine draws it "
+                                            f"at min_effect_alpha to max_effect_alpha, raised by darkness")
+            checks[f"{name}_light"] = (light_stats(lights[(0, 0)]), "cell (0, 0): peak luminance, core % (>= 60 % "
+                                       "of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, "
+                                       "halo 77-88")
+            whitened = [contract.cell(p["name"], *sv) for sv, n in bare.items() if n]
+            if whitened:
+                self.bad_cells.append(f"effect pass {p['name']!r}: light clipped to white in {', '.join(whitened)} "
+                                      f"(at most {max(bare.values())} px); 0 in every cell, or it loses its colour")
+        if self.roll_on:
+            checks["rolloff_px"] = (self.rolls.get("", {}), f"per sheet, the px the highlight roll-off changed "
+                                    f"(brightest channel over {KNEE}, eased under {TOP}, hue kept) and the most a "
+                                    f"channel moved; render.json's rolloff false opts out")
+        self.meta["checks"] = checks
+        return self.meta
+
+    def cell_edges(self, p, alphas, checks):
+        """<sheet>_edge_px: the most pixels of any cell (alphas, 0 or 255) on the canvas's edge, the
+        cells on it named to fail the pack."""
+        edges = {sv: edge_px(a) for sv, a in alphas.items()}
+        checks[f"{p['sheet']}_edge_px"] = (max(edges.values()), "the most pixels, in any cell, on the canvas's "
+                                           "outermost row or column; 0 = the canvas holds every cell")
+        cut_off = [contract.cell(p["name"], *sv) for sv, n in edges.items() if n]
+        if cut_off:
+            self.bad_cells.append(f"{p['kind']} pass {p['name']!r}: on the canvas's edge in {', '.join(cut_off)} (at "
+                                  f"most {max(edges.values())} px), so the canvas cuts it off: widen the canvas")
+
     def run(self):
+        if contract.is_resource(self.decl):
+            return self.resource()
         dirs = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         per = {d: self.direction(d) for d in dirs}
         for p in self.decl["passes"]:
@@ -906,6 +1022,10 @@ def where(d):
 
 def missing(src, decl):
     """Every render the declaration promises that is not in src."""
+    if contract.is_resource(decl):      # one render a cell, for each of its passes
+        want = [(f"{p['kind']} pass {p['name']!r}, stage {s}, variation {v}", contract.cell(p["name"], s, v))
+                for p in decl["passes"] for s, v in contract.cells(decl)]
+        return [(what, stem) for what, stem in want if not os.path.isfile(os.path.join(src, stem + ".png"))]
     want = []
     for d, _ in contract.DIRECTIONS[decl["directions"]]:
         want += [(f"pass {p['name']!r}", contract.named(p["name"], d)) for p in decl["passes"]]
@@ -944,6 +1064,9 @@ def main(src, out):
     if packer.wrecked:
         failed.append(f"pack.py: {len(packer.wrecked)} remnants check(s) failed "
                       f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.wrecked))
+    if packer.bad_cells:
+        failed.append(f"pack.py: {len(packer.bad_cells)} resource check(s) failed "
+                      f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.bad_cells))
     if failed:
         sys.exit("\n".join(failed))
 
