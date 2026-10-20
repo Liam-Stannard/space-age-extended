@@ -1,0 +1,241 @@
+{
+ "base": {
+  "size": [
+   327,
+   391
+  ],
+  "shift": [
+   -0.00781,
+   -0.28906
+  ]
+ },
+ "shadow": {
+  "size": [
+   370,
+   347
+  ],
+  "shift": [
+   0.375,
+   0.05469
+  ]
+ },
+ "legs-glow": {
+  "size": [
+   63,
+   157
+  ],
+  "shift": [
+   -0.11719,
+   -0.44531
+  ]
+ },
+ "status-lamp": {
+  "size": [
+   57,
+   106
+  ],
+  "shift": [
+   1.80469,
+   0.98438
+  ]
+ },
+ "legs": {
+  "size": [
+   63,
+   159
+  ],
+  "shift": [
+   -0.11719,
+   -0.44531
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "drive": {
+  "size": [
+   64,
+   61
+  ],
+  "shift": [
+   1.34375,
+   -2.00781
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "coupling-dosing": {
+  "size": [
+   7,
+   13
+  ],
+  "shift": [
+   -0.99219,
+   -0.28906
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "coupling-pump": {
+  "size": [
+   10,
+   19
+  ],
+  "shift": [
+   1.09375,
+   1.33594
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "press": {
+  "size": [
+   54,
+   66
+  ],
+  "shift": [
+   -1.20312,
+   1.51562
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "gauge-reactor-upper": {
+  "size": [
+   10,
+   6
+  ],
+  "shift": [
+   1.42188,
+   0.0
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "gauge-reactor-lower": {
+  "size": [
+   12,
+   8
+  ],
+  "shift": [
+   1.21875,
+   0.34375
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "gauge-scrubber": {
+  "size": [
+   9,
+   6
+  ],
+  "shift": [
+   -1.55469,
+   -2.17188
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "drip": {
+  "size": [
+   24,
+   63
+  ],
+  "shift": [
+   2.26562,
+   -2.03906
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "checks": {
+  "centre_offset_px": 0.0,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   2.5,
+   "2.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   2.71875,
+   "bottom edge below origin; 2.5 = on the footprint"
+  ],
+  "legs-glow_white_px": [
+   0,
+   "pixels the working light clipped to white; 0 = the light keeps its colour"
+  ],
+  "drive_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "coupling-dosing_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "coupling-pump_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "press_path_px": {
+   "declared": [
+    0.0,
+    1.8,
+    5.76,
+    9.72,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    10.67,
+    8.53,
+    5.76,
+    2.99,
+    0.85
+   ],
+   "measured": [
+    -0.06,
+    1.75,
+    5.75,
+    9.71,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    10.68,
+    8.56,
+    5.75,
+    2.93,
+    0.8
+   ],
+   "off_curve": 0.06,
+   "off_line": 0.0,
+   "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+   "tracked": "pack"
+  },
+  "gauge-reactor-upper_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-reactor-lower_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-scrubber_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "drip_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "frame0_vs_still": [
+   85,
+   0.002,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ]
+ }
+}

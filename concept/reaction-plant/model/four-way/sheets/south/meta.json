@@ -1,0 +1,193 @@
+{
+ "base": {
+  "size": [
+   327,
+   371
+  ],
+  "shift": [
+   0.00781,
+   -0.13281
+  ]
+ },
+ "shadow": {
+  "size": [
+   368,
+   346
+  ],
+  "shift": [
+   0.35938,
+   0.0625
+  ]
+ },
+ "legs-glow": {
+  "size": [
+   62,
+   158
+  ],
+  "shift": [
+   0.07812,
+   -0.54688
+  ]
+ },
+ "status-lamp": {
+  "size": [
+   55,
+   75
+  ],
+  "shift": [
+   -1.82031,
+   -2.11719
+  ]
+ },
+ "legs": {
+  "size": [
+   63,
+   160
+  ],
+  "shift": [
+   0.08594,
+   -0.54688
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "drive": {
+  "size": [
+   64,
+   60
+  ],
+  "shift": [
+   -1.34375,
+   -1.70312
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "coupling-compressor": {
+  "size": [
+   7,
+   9
+  ],
+  "shift": [
+   -0.42969,
+   1.25781
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "coupling-pump": {
+  "size": [
+   9,
+   18
+  ],
+  "shift": [
+   -1.10156,
+   -2.46875
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "press": {
+  "size": [
+   54,
+   66
+  ],
+  "shift": [
+   1.20312,
+   -2.4375
+  ],
+  "frames": 16,
+  "line_length": 16
+ },
+ "drip": {
+  "size": [
+   5,
+   20
+  ],
+  "shift": [
+   -2.41406,
+   1.46875
+  ],
+  "frames": 24,
+  "line_length": 24
+ },
+ "checks": {
+  "centre_offset_px": 0.0,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   2.5,
+   "2.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   2.71875,
+   "bottom edge below origin; 2.5 = on the footprint"
+  ],
+  "legs-glow_white_px": [
+   0,
+   "pixels the working light clipped to white; 0 = the light keeps its colour"
+  ],
+  "drive_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "coupling-compressor_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "coupling-pump_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "press_path_px": {
+   "declared": [
+    0.0,
+    1.8,
+    5.76,
+    9.72,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    11.52,
+    10.67,
+    8.53,
+    5.76,
+    2.99,
+    0.85
+   ],
+   "measured": [
+    -0.06,
+    1.75,
+    5.75,
+    9.71,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    11.55,
+    10.68,
+    8.57,
+    5.75,
+    2.93,
+    0.8
+   ],
+   "off_curve": 0.06,
+   "off_line": 0.0,
+   "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+   "tracked": "pack"
+  },
+  "drip_cycle": [
+   24,
+   "frames of a closed loop; no positional check"
+  ],
+  "frame0_vs_still": [
+   255,
+   0.0019,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ]
+ }
+}
