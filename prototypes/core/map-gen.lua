@@ -66,13 +66,53 @@ local palette =
   -- of the basin term is a ring about three tiles wide (four gave one).
   -- Level 76 is 6-30% solution over the rig's region by seed, 15% in the middle.
   pool        = { level = 76, shore = 12 },
-  without_pack = { "volcanic-ash-dark", "volcanic-ash-flats", "volcanic-cracks" },
+  -- Without the pack: Aquilo's snow and ice, placed by the Core's own
+  -- expressions (FALLBACK_GROUND, below).
+  without_pack = { "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy", "ice-rough", "ice-smooth" },
   alien_tiles =
   {
     "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
     "mineral-white-sand-1", "mineral-white-sand-3",
     "mineral-black-dirt-1", "mineral-black-dirt-2",
     "volcanic-blue-heat-1", "volcanic-blue-heat-2", "volcanic-blue-heat-3", "volcanic-blue-heat-4"
+  }
+}
+
+-- The ground without Alien Biomes: Aquilo's snow and ice tiles, chosen per
+-- tile by expressions of the Core's own rather than the ones they ship with.
+--
+-- Aquilo's own expressions do not carry over. Each adds the surface elevation
+-- (snow + elevation / 25, ice - elevation / 10) and 100 for any elevation
+-- above 1.5, and the Core's elevation runs 20 to 270: every snow tile came out
+-- near +105, far above the pool's 6, the shore's 5 and the glow's 1.8, so all
+-- three vanished, and ice never won. So each tile keeps Aquilo's selector --
+-- its place on Aquilo's two short noises, `aquilo_snow_ice` (12 tiles, snow
+-- low, ice high) and `aquilo_tile_variant` (6 tiles), as in
+-- planet-aquilo-map-gen.lua -- and drops the elevation.
+--
+-- Two of the Core's own terms go in. The dark rims (`dark`, above) push the
+-- snow-ice axis up by `rim`, so a joint is ice at its edges and lit down its
+-- middle, as it is black dirt with the pack. And whichever tile wins answers at
+-- exactly `level`: each is its selector less the best selector at that point.
+-- The level is what the volcanic tiles this replaces answered at, the highest
+-- of their three expressions, so the pool and the shore, which are drawn
+-- against the ground, stand where they stood on the volcanic ground (30 seeds,
+-- 2026-10-20: the pool tile for tile; the shore so too, but for the few outer
+-- tiles Vulcanus's noise used to give the lit cracks, tiles.lua). It reads
+-- Vulcanus's noise for that level alone; which tile wins is the selectors'.
+local FALLBACK_GROUND =
+{
+  level = "max(volcanic_ash_dark_range, volcanic_ash_flats_range, volcanic_cracks_cold_range)",
+  rim = 2,
+  selectors =
+  {
+    ["snow-flat"]   = "1 - (s + 0.5) - abs(v - 0.5)",
+    ["snow-crests"] = "1.2 - abs(s - 0.2) - abs(v - 0.2)",
+    ["snow-lumpy"]  = "1.2 - abs(s + 0.1) - abs(v + 0.3)",
+    -- Aquilo's is 1 - ...; at 1 it held 4.0 % of the ground on one seed in 30.
+    ["snow-patchy"] = "1.1 - abs(s + 0.4) - abs(v + 0.6)",
+    ["ice-rough"]   = "0.5 + s - abs(v)",
+    ["ice-smooth"]  = "1 + s - abs(v + 1)"
   }
 }
 
@@ -447,6 +487,53 @@ data:extend({
   }
 })
 
+-- The ground without the pack (FALLBACK_GROUND, above): one expression per
+-- tile, read through `tile:<name>:probability` on the Core alone, so Aquilo
+-- keeps its own.
+local function fallback_name(tile)
+  return "sae_core_ground_" .. (tile:gsub("-", "_"))
+end
+
+if not mods["alien-biomes"] then
+  local names, selectors = {}, {}
+  for tile in pairs(FALLBACK_GROUND.selectors) do names[#names + 1] = tile end
+  table.sort(names)
+  -- The two axes every selector reads: snow to ice, pushed up in the rims
+  -- (stopped at the waterline, as the rims are), and the variant.
+  local function axes()
+    return
+    {
+      s = string.format("aquilo_snow_ice + %g * %s * (1 - %s)",
+                        FALLBACK_GROUND.rim, dark_mask(palette.dark), pool_mask(palette)),
+      v = "aquilo_tile_variant"
+    }
+  end
+  for i, tile in ipairs(names) do
+    selectors[i] = string.format("(%s)", FALLBACK_GROUND.selectors[tile])
+  end
+  data:extend({
+    {
+      type = "noise-expression",
+      name = "sae_core_ground_best",
+      expression = string.format("max(%s)", table.concat(selectors, ", ")),
+      local_expressions = axes()
+    }
+  })
+  for _, tile in ipairs(names) do
+    data:extend({
+      {
+        type = "noise-expression",
+        name = fallback_name(tile),
+        -- Written so the winner's term is exactly zero, and it answers at
+        -- exactly `level`.
+        expression = string.format("%s - (sae_core_ground_best - (%s))",
+                                   tostring(FALLBACK_GROUND.level), FALLBACK_GROUND.selectors[tile]),
+        local_expressions = axes()
+      }
+    })
+  end
+end
+
 -- The starting area: how the landing gets its kamacite, helium-3 and melt.
 --
 -- The Core does it the way Space Age's planets do (Vulcanus's tungsten, coal,
@@ -754,18 +841,28 @@ local function core_decoratives()
   return settings
 end
 
+local function property_expression_names()
+  local names =
+  {
+    elevation = "sae_core_elevation",
+    temperature = "sae_core_temperature",
+    moisture = "sae_core_moisture",
+    aux = "sae_core_aux",
+    cliffiness = "cliffiness_basic",
+    cliff_elevation = "cliff_elevation_from_elevation"
+  }
+  if not mods["alien-biomes"] then
+    for tile in pairs(FALLBACK_GROUND.selectors) do
+      names["tile:" .. tile .. ":probability"] = fallback_name(tile)
+    end
+  end
+  return names
+end
+
 return function()
   return
   {
-    property_expression_names =
-    {
-      elevation = "sae_core_elevation",
-      temperature = "sae_core_temperature",
-      moisture = "sae_core_moisture",
-      aux = "sae_core_aux",
-      cliffiness = "cliffiness_basic",
-      cliff_elevation = "cliff_elevation_from_elevation"
-    },
+    property_expression_names = property_expression_names(),
     -- Which cliff the cliffiness above places: the Core's own (tiles.lua),
     -- at an interval tightened from Nauvis's 40 so the crust terraces.
     cliff_settings =

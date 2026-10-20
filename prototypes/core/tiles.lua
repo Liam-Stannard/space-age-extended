@@ -18,8 +18,8 @@ end
 -- Tiles that glow. Vulcanus's hot crack tile carries a real light layer --
 -- the one thing no Alien Biomes tile has -- so the Core's lit tiles take
 -- their structure from it through derive and wear their own sheets, main and
--- light alike, so the night glow matches the day paint. Vulcanus's own
--- autoplace is gone with the copy; each tile is placed by a rule of its own.
+-- light alike, so the night glow matches the day paint. Each is placed by a
+-- rule of its own, set by its caller.
 local function glow_tile(name, order, map_color, sheets)
   -- Checked here rather than left to the repoint below, which leaves a string
   -- alone when it is handed nothing to put there: a missing sheet would then
@@ -27,6 +27,13 @@ local function glow_tile(name, order, map_color, sheets)
   assert(sheets.main, name .. ": no main sheet")
   assert(sheets.light, name .. ": no light sheet")
   local glow = derive.tile_from("volcanic-cracks-hot", name)
+  -- The copy keeps Vulcanus's autoplace, `volcanic_cracks_hot_range`, and a
+  -- tile left with it is placed by Vulcanus's noise: from 7836d29 until
+  -- 2026-10-20 the lit cracks were placed so, a third of the Core without
+  -- Alien Biomes and an eighth with it (30 seeds), and took the shore's outer
+  -- tiles here and there. Gone here, so a tile given no rule of its own is
+  -- never placed at all.
+  glow.autoplace = nil
   glow.subgroup = "sae-core-tiles"
   glow.order = order
   glow.layer_group = "ground-natural"
@@ -211,8 +218,8 @@ data:extend({ cliff })
 -- The crust's lit cracks: Vulcanus's hot-crack sheets with the embers' hue
 -- rotated to arc blue by tools/build-crust-glow-tile.py, placed by
 -- `sae_core_glow` down the middle of the dark rims and nowhere else.
-data:extend({
-  border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
-    { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
-      light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
-})
+local arc = border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
+  { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
+    light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
+arc.autoplace = { probability_expression = "sae_core_glow" }
+data:extend({ arc })
