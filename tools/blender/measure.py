@@ -99,6 +99,22 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
              frames, measure_animation.py's) with the wrap from the last frame to the
              first against them, and per layer the same moving_pct with that layer alone
              over the plate
+  layers_alone  per animation layer with more than one frame (paint, glow or light), its own
+             frames as packed, RGBA, not over the plate (concept/crust-tap's
+             measure_animation.py's c2 and c4): frame_px, step_px (pixels with a channel or
+             alpha more than STEP_CHANGE (8) apart between consecutive frames), wrap_px (the
+             last frame to the first) and wrap_within_steps, and most_changed_px with
+             between_frames (the two most different frames, more than MOST_CHANGE (24) apart;
+             over every pair up to PAIRS_CAP (120) frames, else null)
+  light      per light layer (a white cut the engine tints, not drawn in the figures above),
+             every frame alone, its pixels at alpha over LIGHT_LIT (8): px_range over the
+             frames, channel_spread_max (the most, in any frame, between its alpha-weighted
+             channel means: neutral white is a small spread), and frame 0's px, mean_rgb,
+             channel_spread and luminance_range (concept/crust-tap's measure.py
+             criterion_glass, less its outside-the-glass count, which needs the glass's own
+             render)
+  pack_checks  pack.py's own checks for the direction, copied from meta.json (frame0_vs_still,
+             a slide's or turn's path, half_width_tiles ...)
   joins      below
   ports      when the model has port pictures (<sheets>/ports), measure_ports.py's
              comparison of each against assembler 3's outline (missed, extra, far_px)
@@ -187,6 +203,8 @@ measures.json:
    "directions": {"<direction>": {"layers": {...kinds...}, "ignored": [...],
                   "coverage": {...}, "tonal": {"plate", "still"}, "finish": {"plate", "still"},
                   "colour": {...}, "glow": {"<layer>": {...}}, "motion": {...} | null,
+                  "layers_alone": {"<layer>": {...}}, "light": {"<layer>": {...}},
+                  "pack_checks": {...} | null,
                   "joins": [{"connection", "pipe_tile", "pipe_drawn", "ring", "pipe_body",
                              "gap", "pass", "why", and for information "body", "band",
                              "ring_band", "beside", "beside_strict"}]}},
@@ -243,6 +261,10 @@ SOLID = 224
 BLACK = 20                          # beside (information): no channel this bright, whatever its alpha: shadow
 MAX_SIDE = 8000
 LOOP_CAP = 240
+STEP_CHANGE = 8                     # layers_alone: a step counts a pixel with a channel or alpha over this apart
+MOST_CHANGE = 24                    # layers_alone: the two most different frames, a pixel more than this apart
+PAIRS_CAP = 120                     # layers_alone: most_changed_px over every pair only up to this many frames
+LIGHT_LIT = 8                       # light: a light layer's pixel counts at alpha above this
 BG, TXT, HEAD, GOOD, BAD = (30, 30, 30), (230, 222, 205), (240, 200, 120), (140, 220, 140), (255, 110, 90)
 FACE = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}
 # turning a face's pipe to lie south of the building, and back
@@ -480,6 +502,63 @@ def steps(frames_rgb, thr=8):
     return out
 
 
+def changed(a, b, thr):
+    """Pixels of two RGBA frames with any channel, alpha included, more than thr apart
+    (concept/crust-tap's measure_animation.py's changed())."""
+    d = ImageChops.difference(a, b).split()
+    most = d[0]
+    for c in d[1:]:
+        most = ImageChops.lighter(most, c)
+    return count(most.point(lambda v: 255 if v > thr else 0))
+
+
+def layer_alone(frames, cap=PAIRS_CAP):
+    """One animation layer's own frames (RGBA, as packed, not over the plate): its frame steps
+    with the wrap against them, and its two most different frames (measure_animation.py's c2
+    and c4)."""
+    n = len(frames)
+    s = [changed(frames[f], frames[(f + 1) % n], STEP_CHANGE) for f in range(n)]
+    out = dict(frames=n, frame_px=list(frames[0].size), step_px=s[:-1], wrap_px=s[-1],
+               step_range=[min(s[:-1]), max(s[:-1])], wrap_within_steps=min(s[:-1]) <= s[-1] <= max(s[:-1]))
+    if n > cap:
+        out.update(most_changed_px=None, between_frames=None,
+                   note=f"{n} frames: most_changed_px is measured over every pair only up to {cap}")
+        return out
+    best = max((changed(frames[i], frames[j], MOST_CHANGE), i, j) for i in range(n) for j in range(i + 1, n))
+    out.update(most_changed_px=best[0], between_frames=[best[1], best[2]])
+    return out
+
+
+def light_figures(frames):
+    """A light layer (a white cut the engine tints), every frame alone: its pixels at alpha over
+    LIGHT_LIT, their alpha-weighted mean colour and its channel spread (neutral white is a small
+    spread), and their luminance range (concept/crust-tap's measure.py criterion_glass, less its
+    outside-the-glass count, which needs the glass's own render)."""
+    rows = []
+    for fr in frames:
+        px = [p for p in fr.get_flattened_data() if p[3] > LIGHT_LIT]
+        if not px:
+            rows.append(dict(px=0, mean_rgb=None, channel_spread=None, luminance_range=None))
+            continue
+        w = sum(p[3] for p in px)
+        mean = [round(sum(p[c] * p[3] for p in px) / w, 1) for c in range(3)]
+        L = [round(lum(p)) for p in px]
+        rows.append(dict(px=len(px), mean_rgb=mean, channel_spread=round(max(mean) - min(mean), 1),
+                         luminance_range=[min(L), max(L)]))
+    spreads = [r["channel_spread"] for r in rows if r["channel_spread"] is not None]
+    return dict(frames=len(frames), px_range=[min(r["px"] for r in rows), max(r["px"] for r in rows)],
+                channel_spread_max=max(spreads) if spreads else None, frame0=rows[0])
+
+
+def pack_checks(meta, dn):
+    """pack.py's own checks for one direction, as meta.json holds them (a one-direction model's
+    are not keyed by direction)."""
+    c = meta.get("checks")
+    if not isinstance(c, dict):
+        return None
+    return c.get(dn) if dn else c
+
+
 # ---------------------------------------------------------------- what is being measured
 
 class Layer:
@@ -528,7 +607,7 @@ class Source:
             with open(os.path.join(self.ports, "meta.json")) as f:
                 self.port_meta = json.load(f)
         self.dirs = [n for n, _ in contract.DIRECTIONS[self.directions]]
-        self.layers, self.ignored = {}, {}
+        self.layers, self.ignored, self.lights = {}, {}, {}
         for dn in self.dirs:
             self.layers[dn], self.ignored[dn] = self.classify(dn)
             if not any(lay.kind == "plate" for lay in self.layers[dn]):
@@ -591,6 +670,7 @@ class Source:
         layers.sort(key=lambda lay: lay.kind != "plate")
         ignored += [lay.stem + " (a white cut the engine tints: not drawn here)" for lay in layers
                     if lay.kind == "light"]
+        self.lights[dn] = [lay for lay in layers if lay.kind == "light"]       # not drawn; measured alone
         return [lay for lay in layers if lay.kind != "light"], ignored
 
     def canvas_size(self):
@@ -715,6 +795,11 @@ def measure_direction(src, dn, conns):
                              wrap_within_steps=(min(s[:-1]) <= s[-1] <= max(s[:-1])) if len(s) > 1 else True,
                              per_layer_moving_pct=per)
         maps = dict(moving=mv, strobe=st)
+    alone = [lay for lay in sc.anims + sc.glows + src.lights[dn] if lay.frames > 1]
+    out["layers_alone"] = {lay.stem: layer_alone([src.frame(lay, f) for f in range(lay.frames)]) for lay in alone}
+    out["light"] = {lay.stem: light_figures([src.frame(lay, f) for f in range(lay.frames)])
+                    for lay in src.lights[dn]}
+    out["pack_checks"] = pack_checks(src.meta, dn)
     out["joins"] = []
     pictures = []
     deg = dict(contract.DIRECTIONS[src.directions])[dn]
