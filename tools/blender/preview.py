@@ -20,6 +20,12 @@ footprint's tile grid drawn over it (the footprint itself brighter):
             pass added, a glow animation's frame added over the animations; the
             lamp tinted as when working
 
+A model that declares a remnants pass (contract.py) gets a third panel in each row, its
+wreck: the render as pack.py packs it (cleaned of the catcher's haze, never cut), shadow and
+all, on the same ground and grid, so the debris past the footprint shows against it. The
+panels grow to the wreck's own canvas when it is larger. A model without one draws as it
+always did.
+
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
 px_per_tile px to a tile, as the engine draws a high-resolution sprite) with the
@@ -80,13 +86,15 @@ class Model:
         self.ppt = float(self.decl["rig"]["px_per_tile"])
         self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
 
-    def open(self, stem, d, cut_it=True):
+    def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint as pack.py cuts it (render.json's `cut`)
-        unless cut_it is false: a shadow is never cut."""
+        unless cut_it is false: a shadow is never cut. canvas: the size it must be, when not the
+        model's (a remnants pass's own)."""
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
-        if list(im.size) != list(self.decl["canvas"]):
+        want = list(canvas or self.decl["canvas"])
+        if list(im.size) != want:
             sys.exit(f"preview.py: {stem}.png is {im.size[0]}x{im.size[1]}, but render.json "
-                     f"declares a {self.decl['canvas'][0]}x{self.decl['canvas'][1]} canvas")
+                     f"declares a {want[0]}x{want[1]} canvas")
         if cut_it and self.masks[d] is not None:
             im = pack.cut(im, self.masks[d])[0]
         return im
@@ -128,6 +136,17 @@ class Model:
         for p in self.kind("light"):
             lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
+        return im
+
+    def wreck(self, d):
+        """The remnants pass in direction d on the ground, at its canvas's size, as pack.py packs it;
+        None when the model declares none."""
+        p = next(iter(self.kind("remnants")), None)
+        if p is None:
+            return None
+        canvas = contract.canvas_of(self.decl, p)
+        im = Image.new("RGBA", tuple(canvas), GROUND)
+        im.alpha_composite(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False, canvas=canvas)))
         return im
 
 
@@ -196,7 +215,9 @@ def review(model, out, adopted):
                  f"{len(model.directions)} ({decl['directions']}), and {len(adopted)} given")
     adopted = [adopted_arg(a) for a in adopted]
     plates = [(Image.open(path).convert("RGBA"), (x * model.ppt, y * model.ppt)) for path, (x, y) in adopted]
-    cw, ch = decl["canvas"]
+    # the model's canvas, and a remnants pass's own when it has one
+    canvases = [decl["canvas"]] + [contract.canvas_of(decl, p) for p in model.kind("remnants")]
+    cw, ch = max(c[0] for c in canvases), max(c[1] for c in canvases)
     pw = max([cw] + [p.width + 2 * abs(s[0]) for p, s in plates]) + 2 * PAD
     ph = max([ch] + [p.height + 2 * abs(s[1]) for p, s in plates]) + 2 * PAD
     pw, ph = int(-(-pw // 1)), int(-(-ph // 1))
@@ -213,6 +234,9 @@ def review(model, out, adopted):
                            f"{name}: adopted" + (f" @{adopted[i][1][0]:g},{adopted[i][1][1]:g}" if any(shift) else "")))
         panels.append((place(model.panel(d, False), (pw, ph), origin), f"{name}: idle"))
         panels.append((place(model.panel(d, True), (pw, ph), origin), f"{name}: working"))
+        wreck = model.wreck(d)
+        if wreck is not None:
+            panels.append((place(wreck, (pw, ph), origin), f"{name}: wreck"))
         for im, _ in panels:
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])

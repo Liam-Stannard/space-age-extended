@@ -19,6 +19,9 @@
     paint unless meta.json gives its kind, and as part of the stopped machine: meta.json does
     not say which layers draw only while working, so ore or dust falling counts in the still
     there). Anything else is listed in measures.json as ignored, not guessed at.
+  A remnants sheet (the wreck, pack.py: render.json's remnants pass, or meta.json's kind
+  "remnants") is the corpse's, not the building's: never drawn or measured here, and listed
+  as ignored in every direction.
 
 Everything is measured as the engine draws it: each sheet placed at its shift on one canvas,
 the entity origin at the canvas's centre, 64 px a tile (the vanilla pipe and the references
@@ -955,6 +958,12 @@ class Source:
             for p in self.decl["passes"]:
                 if p["kind"] == "still":
                     continue
+                if p["kind"] == "remnants":
+                    # one sheet for every direction (pack.py), and the corpse's, not the building's: a
+                    # one-direction model's would otherwise be taken for a layer of it
+                    if p["sheet"] in self.meta:
+                        ignored.append(p["sheet"] + " (remnants: the corpse's wreck, not drawn with the building)")
+                    continue
                 stem = contract.named(p["sheet"], dn)
                 if stem in self.meta:
                     layers.append(Layer(stem, p["kind"], self.meta[stem], working=p["kind"] in ("glow", "paint")))
@@ -968,6 +977,10 @@ class Source:
             suffix = f"-{dn}" if dn else ""
             for k, m in self.meta.items():
                 if k == "checks" or not isinstance(m, dict):
+                    continue
+                if m.get("kind") == "remnants":
+                    # before the direction filters: one sheet for every direction, its name has none
+                    ignored.append(k + " (remnants: the corpse's wreck, not drawn with the building)")
                     continue
                 if dn and not k.endswith(suffix):
                     continue

@@ -6,8 +6,18 @@ Not a building. Four directions, so every pass is rendered per direction by
 turning the root (<pass>-<direction>.png); a 4-frame part sliding in a straight
 line on a curve that accelerates, so the declared-path check runs instead of
 the turning drift; every
-pass kind (plate, still, glow, shadow, light); two ports, off the middle of
+pass kind (plate, still, glow, shadow, light, remnants); two ports, off the middle of
 their faces, on a canvas of their own size; and an icon.
+
+The wreck (the remnants pass, on a 256x256 canvas of its own, four tiles): the box
+collapsed on its plinth -- the block fallen into two tilted slabs, the roof with its north
+stripe slumped across them -- and six pieces thrown past the footprint, one off each edge
+and two off its corners: a chunk east, a cap west, a steel lump south, a chunk north, the
+slider off the south-east corner and the lamp post lying across the north-east one. Rendered
+over the ground catcher, so its shadow is in the same picture. The intact box's renders
+never show it, nor does it show in theirs. The same wreck is rendered again with no catcher,
+wreck-bare-<direction>.png: a fixture, not declared and never packed, the wreck a model that
+forgot its catcher would render, which pack.py must refuse (test/test_remnants.py).
 
 What should come out, in sheets/meta.json and sheets/ports/meta.json:
   * half_width_tiles 1.0 and footprint_rows_tiles 1.0 in every direction, with
@@ -18,7 +28,11 @@ What should come out, in sheets/meta.json and sheets/ports/meta.json:
     along its line as declared (steps of 4, 8 and 16), measured off the curve
     and off the line by under 1 px;
   * port-N and cover-N shifted from tile (-0.5, -1.5), port-E and cover-E from
-    (1.5, 0.5): the tiles those ports point into.
+    (1.5, 0.5): the tiles those ports point into;
+  * remnants: one sheet of four rows, north, east, south, west (direction_count 4,
+    line_length 1); in every direction remnants_shadow_px at least pack.py's floor (about
+    430-500 px, 2.4-2.7 % of the wreck), remnants_edge_px 0, and remnants_reach_tiles' debris
+    past the footprint on every edge.
 """
 import math
 import os
@@ -41,6 +55,7 @@ ICON = "--icon" in argv
 
 CANVAS = (192, 192)
 PORT_CANVAS = (256, 256)
+WRECK_CANVAS = (256, 256)           # the wreck's own: its debris lies past the 192 px canvas's room
 # the slider's stroke, tiles east of where it starts: it accelerates (4, 8, then 16 px a
 # frame), so a constant-speed check would fail it and only the declared curve passes it
 STROKE = (0.0, 0.0625, 0.1875, 0.4375)
@@ -53,6 +68,7 @@ DECL = dict(
         dict(name="working", kind="glow", over="idle", sheet="glow"),
         dict(name="shadow", kind="shadow", sheet="shadow"),
         dict(name="lamp", kind="light", sheet="lamp"),
+        dict(name="wreck", kind="remnants", sheet="remnants", canvas=WRECK_CANVAS),
     ],
     animations=[dict(name="slider", frames=len(STROKE), motion="slide", path=[(x, 0, 0) for x in STROKE])],
     ports=[dict(tile=(-0.5, -0.5), face="N"), dict(tile=(0.5, 0.5), face="E")],
@@ -122,19 +138,42 @@ SLIDER0 = (-0.35, -0.35, TOP + 0.075)
 box(SLIDER0, (0.2, 0.2, 0.15), "slider", "slider")
 
 STATIC = ("static", "window", "lamp")
+
+
+def wreck(loc, size, mat, rot):
+    o = box(loc, size, mat, "wreck")
+    o.rotation_euler = rot
+    return o
+
+
+# the wreck: the box collapsed on its plinth, and pieces thrown past the footprint (0.995 to
+# its edges), one off each edge and two off its corners
+wreck((0, 0, PLINTH / 2), (2 * E, 2 * E, PLINTH), "body", (0, 0, 0))
+wreck((-0.25, 0.15, 0.2), (1.2, 1.0, 0.2), "body", (0.12, -0.18, 0.3))
+wreck((0.45, -0.4, 0.2), (0.7, 0.6, 0.24), "body", (0.4, 0.2, -0.5))
+wreck((0.05, 0.5, 0.34), (1.2, 0.5, 0.04), "marker", (-0.35, 0.05, 0.1))
+wreck((1.3, 0.25, 0.09), (0.18, 0.18, 0.18), "body", (0.3, 0.5, 0.8))         # east
+wreck((-1.22, 0.6, 0.06), (0.14, 0.14, 0.1), "cap", (0.2, -0.4, 0.5))         # west
+wreck((0.35, -1.28, 0.08), (0.16, 0.14, 0.14), "steel", (0.6, 0.1, 0.3))      # south
+wreck((-0.6, 1.24, 0.06), (0.12, 0.12, 0.12), "body", (0.5, 0.7, 0.2))        # north
+wreck((1.12, -1.08, 0.09), (0.2, 0.2, 0.15), "slider", (0.25, 0.0, 0.6))      # off the south-east corner
+cyl((0.95, 0.95, 0.025), 0.02, 0.5, "steel", "wreck", (math.pi / 2, 0, -0.8))  # the post, across the north-east
+WRECK = PARTS.pop("wreck")          # not a part of the box: hidden in its every render (setup)
 rig.sun()
 GROUND = rig.ground_catcher()
 GROUND.parent = ROOT
 BOUNCE = rig.bounce_ground()
 
 
-def setup(visible=(), catchers=(), holdouts=(), ground=False):
+def setup(visible=(), catchers=(), holdouts=(), ground=False, wrecked=False):
     for g, objs in PARTS.items():
         for o in objs:
             o.hide_render = g not in visible and g not in catchers and g not in holdouts
             o.is_shadow_catcher = g in catchers
             o.is_holdout = g in holdouts
             o.visible_camera = True
+    for o in WRECK:
+        o.hide_render = not wrecked
     GROUND.hide_render = not ground
     BOUNCE.hide_render = ground
 
@@ -215,3 +254,13 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
     for f, (dx, dy, dz) in enumerate(DECL["animations"][0]["path"]):
         SLIDER.location = (SLIDER0[0] + dx, SLIDER0[1] + dy, SLIDER0[2] + dz)
         rig.render(path(contract.frame("slider", f)))
+
+# the wreck alone on the ground catcher: its shadow caught in the same render
+rig.camera(*WRECK_CANVAS)
+setup(ground=True, wrecked=True)
+for d in contract.each_direction(ROOT, DECL["directions"]):
+    rig.render(f"{OUT_DIR}/{contract.named('wreck', d)}.png")
+# and with no catcher (the fixture above): nothing to catch its shadow
+setup(wrecked=True)
+for d in contract.each_direction(ROOT, DECL["directions"]):
+    rig.render(f"{OUT_DIR}/{contract.named('wreck-bare', d)}.png")
