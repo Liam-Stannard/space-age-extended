@@ -1,0 +1,39 @@
+{
+  "name": "drop-crusher",
+  "entity": "sae-drop-crusher",
+  "planet": "sae-core",
+  "tile": "volcanic-ash-flats",
+  "recipe": "sae-crushing",
+  "items": [ { "name": "sae-kamacite-ore", "count": 40 } ],
+  "supply_kw": 10000,
+  "daytime": 0,
+  "zoom": 1,
+  "ready_after": 120,
+  "markers": { "after_ready": [ 90, 150 ], "offset": [ -8, -6 ], "size": 2, "ticks_shown": 6,
+               "sound": "utility/gui_click" },
+  "start_after": 210,
+  "work_ticks": 780,
+  "capture": { "width": 640, "height": 480, "fps": 30, "rate": 48000 },
+  "mp4": { "lead_seconds": 0.6, "video_bitrate": 800000, "audio_bitrate": 128000 },
+  "stroke": {
+    "filename": "graphics/entity/drop-crusher/stroke.png",
+    "width": 191, "height": 136, "frame_count": 24, "line_length": 24,
+    "shift": [ 0.02344, -0.9375 ], "scale": 0.5
+  },
+  "sounds": {
+    "drop": "sound/drop-crusher/drop.ogg",
+    "pawl": "sound/drop-crusher/pawl.ogg",
+    "trip": "sound/drop-crusher/trip.ogg"
+  },
+  "expect": {
+    "source": "the crusher's accents as agreed (sound-wiring amendment, 2026-10-11; factorio-tools-skills T04): used only to judge the measured frames, never to find them",
+    "accents": [
+      { "sound": "drop", "frame": 14 },
+      { "sound": "pawl", "frame": 18 },
+      { "sound": "pawl", "frame": 22 },
+      { "sound": "pawl", "frame": 2 },
+      { "sound": "trip", "frame": 6 }
+    ],
+    "tolerance_frames": 1
+  }
+}

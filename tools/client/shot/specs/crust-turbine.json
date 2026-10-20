@@ -1,0 +1,20 @@
+{
+  "entity": "sae-crust-turbine",
+  "planet": "sae-core",
+  "tile": "volcanic-ash-flats",
+  "directions": ["north", "east", "south", "west"],
+  "daytimes": [ { "name": "day", "daytime": 0 }, { "name": "night", "daytime": 0.5 } ],
+  "zooms": [ { "name": "1x", "zoom": 1 }, { "name": "zoomed", "zoom": 2 } ],
+  "margin": 3,
+  "settle_ticks": 120,
+  "motion": { "frames": 4, "every": 6, "daytime": "day", "zoom": "zoomed" },
+  "states": [
+    { "name": "working", "fluids": [ { "name": "sae-crust-gas", "amount": 200 } ], "refill": true,
+      "power": "load", "load_kw": 1800 },
+    { "name": "idle", "fluids": [ { "name": "sae-crust-gas", "amount": 200 } ], "refill": true,
+      "power": "load", "load_kw": 0 },
+    { "name": "no-power", "fluids": [ { "name": "sae-crust-gas", "amount": 200 } ], "refill": true,
+      "power": "none" },
+    { "name": "no-input", "fluids": [], "power": "load", "load_kw": 1800 }
+  ]
+}
