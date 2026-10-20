@@ -223,6 +223,11 @@ data:extend({
     mining_visualisation_tint = { r = 0.55, g = 0.78, b = 0.90 }
   }
 })
+-- Marked, as the siderane vent is: vanilla's sheets, until the Core's own ore
+-- and vents are drawn.
+derive.placeholder_art(data.raw.resource["sae-kamacite-ore"], "wears iron ore's resource sheet and mining particle until its own exist")
+derive.placeholder_art(data.raw.resource["sae-kamacite-vent"], "wears crude oil's resource sheet until its own exists")
+derive.placeholder_art(data.raw.resource["sae-gas-vent"], "wears crude oil's resource sheet until its own exists")
 
 -- Kamacite boulders: the scatter worth stopping for.
 --
