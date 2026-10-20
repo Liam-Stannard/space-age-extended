@@ -7,7 +7,8 @@ Run drop_crusher_sound.py first. Writes, beside this file:
 
   review.mp4        the stroke at the game's 0.1 frames a tick (four seconds a
                     drop), three strokes, the bed under it at its proposed volume,
-                    the pawl on frames 4, 8 and 12, the trip on 16 and the drop on 0
+                    the pawl on frames 18, 22 and 2, the trip on 6 and the drop on 14
+                    (the loop starts cocked: drop_crusher_sound.py)
   side-by-side.mp4  the same three strokes, then vanilla's crusher for the whole
                     number of its 192-tick cycles nearest that (four), each heard in turn
 

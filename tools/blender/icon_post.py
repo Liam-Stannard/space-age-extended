@@ -23,6 +23,10 @@ them per size in POST (icons.json "post"), any of:
             mid-tones that separated the faces, so push them apart again
   alpha     [lo, hi]: alpha below lo is cut, above hi made solid, between
             stretched -- a crisp silhouette, no grey haze round the object
+  shadow    [gain, lum_max, radius, cap]: a technology icon's cast shadow, denser
+            and softer -- the part-transparent pixels darker than lum_max, blurred
+            by radius px, raised by gain, held at cap (applied after "alpha";
+            opaque pixels are untouched)
   rim       [strength, threshold]: an outline, lightened or darkened away from
             whichever of the slot and the ground it is nearest, on the outer ring
             of pixels whose luminance sits within threshold of either -- so the
@@ -148,6 +152,40 @@ def edge_clear(im, margin):
     return bb[0] >= margin and bb[1] >= margin and bb[2] <= im.width - margin and bb[3] <= im.height - margin
 
 
+def shadow_gain(im, gain, lum_max, radius=0.0, cap=200):
+    """The cast shadow, denser and softer: the part-transparent pixels darker than
+    lum_max are the shadow; their alpha is blurred by radius (so the shadow spreads
+    past its hard edge, as Space Age's soft shadows do), raised by gain and held at
+    cap or under, so it stays a shadow and never reads as solid. Opaque pixels and
+    everything brighter than lum_max are left as they are."""
+    px = im.load()
+    w, h = im.size
+    mask = Image.new("L", im.size, 0)
+    mp = mask.load()
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if 0 < a < 250 and lum((r, g, b)) < lum_max:
+                mp[x, y] = a
+    if radius:
+        mask = mask.filter(ImageFilter.GaussianBlur(radius))
+    mp = mask.load()
+    out = im.copy()
+    opx = out.load()
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            m = mp[x, y]
+            if not m:
+                continue
+            shadowish = a == 0 or (a < 250 and lum((r, g, b)) < lum_max)
+            if shadowish:
+                na = min(cap, round(m * gain))
+                if na > a:
+                    opx[x, y] = (0, 0, 0, na) if a == 0 else (r, g, b, na)
+    return out
+
+
 def finish(im, rules):
     if "contrast" in rules:
         im = contrast(im, rules["contrast"])
@@ -155,6 +193,8 @@ def finish(im, rules):
         im = sharpen(im, *rules["sharpen"])
     if "alpha" in rules:
         im = alpha_snap(im, *rules["alpha"])
+    if "shadow" in rules:
+        im = shadow_gain(im, *rules["shadow"])
     # colour under alpha 0 is meaningless; zero it so the strip is clean
     im = Image.composite(im, Image.new("RGBA", im.size, (0, 0, 0, 0)), im.getchannel("A").point(lambda v: 255 if v else 0))
     if "rim" in rules:

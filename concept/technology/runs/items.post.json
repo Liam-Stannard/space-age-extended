@@ -1,0 +1,50 @@
+{
+ "sae-fa-cryogen/tech/256": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-cryogen/tech/128": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-cryogen/tech/64": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-cryogen/tech/32": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-fluorinated-holmium/tech/256": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-fluorinated-holmium/tech/128": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-fluorinated-holmium/tech/64": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-fluorinated-holmium/tech/32": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-superconducting-winding/tech/256": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-superconducting-winding/tech/128": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-superconducting-winding/tech/64": {
+  "strays_removed": 0,
+  "edge_clear": false
+ },
+ "sae-fa-superconducting-winding/tech/32": {
+  "strays_removed": 0,
+  "edge_clear": false
+ }
+}

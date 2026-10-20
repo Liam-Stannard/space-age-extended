@@ -19,7 +19,9 @@ and the model did not render: it is outlined red on its tile and named.
 
 Layers as the engine draws them: the shadows, the north-facing fittings
 (secondary_draw_orders north = -1, behind the building), the plate with every
-animation at frame 0, then the other fittings. The tile grid is drawn over it.
+animation at frame 0, then the other fittings. The tile grid is drawn over it. The
+machine is stopped: an animation drawn only while working (marked "working", or of
+kind "light" or "glow", contract.py) is left out, as preview.py's idle panel leaves it.
 """
 import json
 import os
@@ -159,6 +161,8 @@ class Scene:
         plate = next(p for p in decl["passes"] if p["kind"] == "plate")
         self.sheet(canvas, contract.named(plate["sheet"], d))
         for a in decl["animations"]:
+            if a.get("working") or a.get("kind", "paint") != "paint":
+                continue        # drawn only while working (a glow or light layer too): not the stopped machine
             stem = contract.named(a["name"], d)
             self.sheet(canvas, stem, self.meta.get(stem, {}).get("size"))
         for i, p in enumerate(ports):

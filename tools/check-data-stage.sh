@@ -7,6 +7,10 @@ set -euo pipefail
 # locally before pushing.
 #
 # Usage: tools/check-data-stage.sh [path-to-factorio-binary]
+#
+# Waits (at most SAE_DATA_STAGE_LOCK_WAIT seconds, default 600) while a test
+# client's launcher holds its lock, and exits 3 if it is still held then; see
+# the lock below.
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOD_NAME="$(grep -o '"name" *: *"[^"]*"' "$REPO_ROOT/info.json" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')"
@@ -58,11 +62,41 @@ cat > "$SCRATCH_MODS/mod-list.json" <<EOF
 }
 EOF
 
+# One Factorio at a time, with the test clients: this run takes the lock
+# tools/client/launch.sh takes, for as long as Factorio runs. A launcher that
+# finds any factorio running when its client ends leaves its null sink as the
+# default, so nothing it plays reaches the speakers; a --dump-data run beside
+# a sound capture once left Liam's sound on a null sink for six minutes
+# (2026-10-20). So this waits for a running launcher, at most
+# SAE_DATA_STAGE_LOCK_WAIT seconds (default 600, a launcher's own default
+# limit; 0 refuses at once), and refuses (exit 3) if it is still held then.
+# Factorio inherits the lock's descriptor, so a dump left running alone still
+# holds it.
+LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/sae-factorio-client.lock"   # launch.sh's LOCK_FILE
+LOCK_WAIT="${SAE_DATA_STAGE_LOCK_WAIT:-600}"
+if ! [[ "$LOCK_WAIT" =~ ^[0-9]+$ ]] || [ "$LOCK_WAIT" -gt 3600 ]; then
+  echo "SAE_DATA_STAGE_LOCK_WAIT must be 0-3600 seconds (got '$LOCK_WAIT')." >&2
+  exit 2
+fi
+exec 9>>"$LOCK_FILE"
+if ! flock -n 9; then
+  echo "A test client's launcher holds $LOCK_FILE; waiting for it (at most ${LOCK_WAIT} s)." >&2
+  if ! flock -w "$LOCK_WAIT" 9; then
+    echo "REFUSED -- $LOCK_FILE is still held after ${LOCK_WAIT} s: a test client is running" \
+         "(tools/client/launch.sh; one Factorio at a time). Data stage NOT checked." >&2
+    pgrep -a -x factorio >&2 || true
+    exit 3
+  fi
+  echo "The lock is free; checking the data stage." >&2
+fi
+
 set +e
 "$FACTORIO_BIN" --dump-data --config "$SCRATCH_DATA/config.ini" \
     --mod-directory "$SCRATCH_MODS" > "$LOG_FILE" 2>&1
 STATUS=$?
 set -e
+flock -u 9
+exec 9>&-
 
 if [ $STATUS -ne 0 ] || grep -qE '^ *[0-9.]+ Error' "$LOG_FILE"; then
   echo "Data stage FAILED (exit $STATUS):" >&2

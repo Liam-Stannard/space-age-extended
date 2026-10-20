@@ -47,20 +47,21 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Radiant Generator** — model (`radiant-generator-model`), then wiring with
-  an `idle_animation`, so a fuelless generator stops glowing.
-- **Reaction Plant, again** — re-modelled to template rules 6 and 7: no
-  gutter base, rendered pipe pictures, vanilla covers.
+- **Radiant Generator** — concept signed off (the Carousel Foundry,
+  round 7); spec wording, then the model, then wiring with an
+  `idle_animation`, so a fuelless generator stops glowing.
+- **Reaction Plant** — re-modelled in four directions so its pipes
+  follow the flow and every connection has a fitting (Liam,
+  2026-10-20), then re-wired (`reaction-plant-wiring`).
 
 ## Blender pipeline
 
-- **Renders are not repeatable to the byte.** A fresh reaction plant render
-  in `blender-pipeline-review` differed from `graphics/` and was not looked
-  into; until it is, every "matches what shipped" check needs a tolerance.
-- **The contract does not check that a model turning its ports has a fitting
-  sheet for every face they turn to** (`tools/blender/contract.py`).
-- **The slide check averages before it measures**, so one frame up to about
-  1.33 px off its curve still passes the 1 px limit (`tools/blender/pack.py`).
+- **The contract does not compare a model's declared ports with the
+  prototype's pipe connections**, so a picture drawn at a connection it
+  was not rendered for goes unseen (the Reaction Plant, 2026-10-20).
+- **The sound labeller can invent a label when two sounds start on the
+  same onset** (`tools/client/audio/analyse.py`). It fails the run
+  rather than passing it; no building cues two sounds on one frame yet.
 
 ## Power
 
@@ -83,35 +84,40 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 ## Art
 
-- **The Crust Turbine and the crust vent tile still wear vanilla art**
-  (`derive.placeholder_art` in `prototypes/core/crust-tap.lua`). The data stage
-  lists every survivor at the end of each load.
-- **The Crust Tap has no scorched-ground layer**, which its spec (§3.3) asks
-  for as its own layer, the way vanilla does `mining_drill_scorch_mark`.
-- **The space connection** `sae-shattered-planet-core` has no icon of its own,
-  and the radiant asteroid wears its chunk's icon.
 - **The planet has no procession sets or ambient sounds** (`planet.lua`):
   vanilla planets carry `planet_procession_set`, `platform_procession_set`,
   `procession_graphic_catalogue` and `persistent_ambient_sounds`. Needs art
   and audio before it can be filled.
-- **The vents wear crude oil's sheet and sounds**, and the ore iron ore's
-  sheet. A vent art plan was proposed in session (2026-09-11) and awaits
-  agreement; once agreed, the specs go in `concept/kamacite-vent/` and
-  `concept/gas-vent/`.
-- **Six technologies wear vanilla icons:** Crust tapping, Core survey and
-  Radiant power wear Aquilo's, and the three Fulgora ↔ Aquilo technologies
-  wear the cryogenic science pack's. The data-stage placeholder report lists
-  them.
+- **The vents and the kamacite ore wear vanilla art**: the vents crude
+  oil's sheet, with no motion or working sound; the ore iron ore's sheet.
+  One shared vent form with a feature of its own per vent, coloured to
+  show each resource, drawn in Blender; a spec per resource
+  (`concept/kamacite-vent/`, `gas-vent/`, `siderane-vent/`,
+  `kamacite-ore/`) and one shared note; then an options round (Liam,
+  2026-10-20).
+- **Two technologies wear vanilla icons:** Vent tapping and Radiant
+  power still wear Aquilo's; each waits for its building's model (the
+  Vent Pump, the Radiant Generator). The data-stage placeholder report
+  lists them.
 - **Two power buildings need specs before art**, both for stages the rework
   is re-planning: `concept/isotope-centrifuge/` and `concept/radiant-reactor/`
   do not exist yet; both come from `templates/building-spec-template.md`.
-- **The radiant light is blue now; two sprites still glow green-white.**
-  The Reaction Plant's sight slots and the radiant asteroid (Liam,
-  2026-10-10: the whole radiant family is the solution's blue `#1F63FF` →
-  `#73ADFF`). Re-render the plant's slots with its remodel; the asteroid on
-  its own.
+- **The Reaction Plant's sight slots still glow green-white**; the
+  whole radiant family is the solution's blue (`#1F63FF` → `#73ADFF`,
+  Liam 2026-10-10). They go blue with its four-way model
+  (`reaction-plant-wiring`).
 - **Paint accents still to assign** (template Appendix B): Drop Crusher,
   Ballast Drill, Vacuum Furnace, Crust Tap.
+- **The radiant pool's shore steps on the tile grid.** The edge between
+  the open surface and the glowing shore follows tile-aligned steps
+  (seen on 2.1.22; Liam signed the pool off and asked for this to be
+  logged).
+- **The Reaction Plant has no sound of its own.** Its press accent is
+  a vanilla stand-in (`landfill-inventory-move`) and its bed is the
+  chemical plant's; it needs a design and rounds, as the crusher had.
+- **The Ballast Drill's sounds want the crusher's treatment**: softer
+  attacks, less high end, heavier, grouped like vanilla's (Liam,
+  2026-10-20: "Crusher first").
 
 ## Design
 
@@ -128,6 +134,9 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   its shore and its solution are in the mod, and 04 §2, 03 §3 and the "no
   coastline" line need wording that says what the pool is and why it is not a
   coastline. Wording to be agreed before `design/` is touched.
+- **The Core needs its own fallback ground tiles.** Without Alien
+  Biomes it borrows Aquilo's snow and ice (map-gen-fallback); our own
+  tiles are for later (Liam, 2026-10-19).
 - **Five building specs describe a building that is not being built.** The
   Radiant Generator's (no burnt-result slot; art "blocked"), the Crust Tap's
   (gas only), the Ballast Drill's (a ballast block, not the Ring Press), the

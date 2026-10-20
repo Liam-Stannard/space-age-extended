@@ -1,0 +1,95 @@
+{
+ "A": {
+  "blue_row": 9.17,
+  "blue_row_night": 11.53,
+  "blue_row_mean": 9.32,
+  "blue_pieces": {
+   "column": 16.77,
+   "port": 2.08,
+   "slot": 9.16,
+   "tubes": 12.44,
+   "well": 19.61
+  },
+  "glow": {
+   "area": 5634,
+   "peak": 192,
+   "core": 13.2,
+   "halo": 57.7,
+   "sat_core": 0.7,
+   "sat_halo": 0.95,
+   "white": 0,
+   "under_L": 161,
+   "under_sat": 0.6
+  },
+  "white_day": 59,
+  "blue_plate": 10.99,
+  "tonal_idle": {
+   "p5": 1,
+   "p50": 78,
+   "p95": 137
+  },
+  "motion_mean_dL": 8.9
+ },
+ "B": {
+  "blue_row": 9.64,
+  "blue_row_night": 9.02,
+  "blue_row_mean": 9.74,
+  "blue_pieces": {
+   "column": 21.64,
+   "port": 0.46,
+   "slot": 6.21,
+   "tubes": 13.63,
+   "well": 21.84
+  },
+  "glow": {
+   "area": 6513,
+   "peak": 216,
+   "core": 4.2,
+   "halo": 74.6,
+   "sat_core": 0.75,
+   "sat_halo": 0.96,
+   "white": 0,
+   "under_L": 76,
+   "under_sat": 0.56
+  },
+  "white_day": 10,
+  "blue_plate": 1.33,
+  "tonal_idle": {
+   "p5": 1,
+   "p50": 77,
+   "p95": 138
+  },
+  "motion_mean_dL": 6.1
+ },
+ "C": {
+  "blue_row": 11.68,
+  "blue_row_night": 12.36,
+  "blue_row_mean": 11.72,
+  "blue_pieces": {
+   "column": 26.38,
+   "port": 2.1,
+   "slot": 9.88,
+   "tubes": 16.8,
+   "well": 21.54
+  },
+  "glow": {
+   "area": 5786,
+   "peak": 248,
+   "core": 4.1,
+   "halo": 67.6,
+   "sat_core": 0.54,
+   "sat_halo": 0.93,
+   "white": 0,
+   "under_L": 161,
+   "under_sat": 0.58
+  },
+  "white_day": 102,
+  "blue_plate": 11.63,
+  "tonal_idle": {
+   "p5": 1,
+   "p50": 78,
+   "p95": 137
+  },
+  "motion_mean_dL": 27.5
+ }
+}

@@ -9,15 +9,21 @@ the bed the wrap measured.
 
 **The stroke** is 24 frames at 0.1 frames a tick in game (animation_speed 0.2 x
 crafting speed 1 x animation_progress 0.5, measured in a client: machines.lua),
-so four seconds, one drop a craft. Frames 0 to 16 are the geared wind-up, 16 the
-top, where the pawl trips; 17 to 23 the fall; frame 0 the landing. A frame is
-1/6 s: the pawl clicks at 0.667, 1.333 and 2.000 s, the trip at 2.667 s.
+so four seconds, one drop a craft. **The loop starts cocked** (the sound-wiring
+task's amendment, 2026-10-11): 2.1.21 never fires a working-sound accent on frame
+0 -- it is the accent's unset value -- so the landing cannot be there, and the
+animation was re-phased instead (model/drop_crusher.py, PHASE = 10). Frame 0 is
+the weight just past halfway up, held by the pawl between two clicks; 0 to 6
+wind up, 6 is the top, where the pawl trips; 7 to 13 the fall; 14 the landing,
+seated; 14 to 23 and 0 wind up again. A frame is 1/6 s: the trip at 1.000 s, the
+drop at 2.333 s, the pawl clicks at 0.333 (frame 2), 3.000 and 3.667 s.
 
-**Which frames click.** §3.4 says the pawl clicks "on the wind-up (frames 0-16,
-every fourth frame)": 0, 4, 8, 12 and 16. Frame 0 already carries the drop and
-frame 16 the trip -- the trip *is* the pawl's last tooth, kicking clear -- so the
-clicks are wired on 4, 8 and 12 and the other two are left to the bigger sounds
-(a click under the drop would never be heard, and costs a sound).
+**Which frames click.** §3.4 says the pawl clicks every fourth frame of the
+wind-up: from the seat, 14, 18, 22, 2 and 6. Frame 14 already carries the drop
+and frame 6 the trip -- the trip *is* the pawl's last tooth, kicking clear -- so
+the clicks are wired on 18, 22 and 2 and the other two are left to the bigger
+sounds (a click under the drop would never be heard, and costs a sound). None
+is on frame 0.
 
 **bed.ogg** -- a low motor hum. A 47 Hz rotor and its harmonics; a faint 611 Hz
 whine from a 13-tooth pinion on it; vanilla's crusher loop
@@ -34,11 +40,11 @@ from 0.0052 to under 0.001.
 **pawl.ogg** -- a small, dry click: one tooth of the cryogenic plant's gears
 (`cp-anim5-gears.ogg`), a 3 ms click and a short ping.
 
-**trip.ogg** -- frame 16. A sharp metallic clack as the pawl kicks clear: the
+**trip.ogg** -- frame 6. A sharp metallic clack as the pawl kicks clear: the
 foundry's clamp (`foundry-clamp.ogg`), with a struck-steel click whose partials
 (1180, 2770, 4430 Hz, inharmonic, as a bar's are) ring for under 0.1 s.
 
-**drop.ogg** -- frame 0. A crushing impact with grit and rock breaking: an oxide
+**drop.ogg** -- frame 14. A crushing impact with grit and rock breaking: an oxide
 asteroid breaking (`asteroid-damage-oxide-big-1.ogg`) for the break, the mech
 armour landing on rock (`mech-armor-land-rock-2.ogg`) for the weight's hit, two
 handfuls of pebbles (`walking/pebble/stones-1`, `-2`) scattering after it, a
@@ -60,8 +66,8 @@ import loudness  # noqa: E402
 
 OUT = REPO / "sound" / "drop-crusher"
 FRAMES, SPEED = 24, 0.1            # as played in game
-DROP_FRAME, TRIP_FRAME = 0, 16
-PAWL_FRAMES = (4, 8, 12)
+DROP_FRAME, TRIP_FRAME = 14, 6
+PAWL_FRAMES = (18, 22, 2)
 
 # What each Sound's `volume` should be when it is wired (proposed, not wired).
 VOLUME = {"bed": 0.8, "pawl": 0.6, "trip": 0.5, "drop": 0.35}

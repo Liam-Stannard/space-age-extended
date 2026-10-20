@@ -1,0 +1,130 @@
+{
+ "base-vertical": {
+  "size": [
+   164,
+   360
+  ],
+  "shift": [
+   -0.23438,
+   -0.20312
+  ]
+ },
+ "base-shadow-vertical": {
+  "size": [
+   192,
+   340
+  ],
+  "shift": [
+   0.01562,
+   0.17188
+  ]
+ },
+ "status-lens-vertical": {
+  "size": [
+   10,
+   10
+  ],
+  "shift": [
+   -0.71875,
+   -0.60938
+  ]
+ },
+ "rotor-vertical": {
+  "size": [
+   71,
+   64
+  ],
+  "shift": [
+   0.08594,
+   -0.46875
+  ],
+  "frames": 8,
+  "line_length": 8
+ },
+ "base-horizontal": {
+  "size": [
+   328,
+   197
+  ],
+  "shift": [
+   0.0,
+   -0.05469
+  ]
+ },
+ "base-shadow-horizontal": {
+  "size": [
+   350,
+   168
+  ],
+  "shift": [
+   0.39062,
+   0.15625
+  ]
+ },
+ "status-lens-horizontal": {
+  "size": [
+   10,
+   10
+  ],
+  "shift": [
+   0.0,
+   -1.10938
+  ]
+ },
+ "rotor-horizontal": {
+  "size": [
+   58,
+   55
+  ],
+  "shift": [
+   -0.01562,
+   -0.32031
+  ],
+  "frames": 8,
+  "line_length": 8
+ },
+ "checks": {
+  "vertical": {
+   "centre_offset_px": -15.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.46875,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5625,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rotor_drift_px": [
+    0.01,
+    "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    18,
+    0.0001,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  },
+  "horizontal": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.515625,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.421875,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "rotor_drift_px": [
+    0.01,
+    "centroid travel across the 8 frames; ~0 = turning in place, must stay within 1"
+   ],
+   "frame0_vs_still": [
+    17,
+    0.0001,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ]
+  }
+ }
+}

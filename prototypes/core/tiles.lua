@@ -18,8 +18,8 @@ end
 -- Tiles that glow. Vulcanus's hot crack tile carries a real light layer --
 -- the one thing no Alien Biomes tile has -- so the Core's lit tiles take
 -- their structure from it through derive and wear their own sheets, main and
--- light alike, so the night glow matches the day paint. Vulcanus's own
--- autoplace is gone with the copy; each tile is placed by a rule of its own.
+-- light alike, so the night glow matches the day paint. Each is placed by a
+-- rule of its own, set by its caller.
 local function glow_tile(name, order, map_color, sheets)
   -- Checked here rather than left to the repoint below, which leaves a string
   -- alone when it is handed nothing to put there: a missing sheet would then
@@ -27,6 +27,13 @@ local function glow_tile(name, order, map_color, sheets)
   assert(sheets.main, name .. ": no main sheet")
   assert(sheets.light, name .. ": no light sheet")
   local glow = derive.tile_from("volcanic-cracks-hot", name)
+  -- The copy keeps Vulcanus's autoplace, `volcanic_cracks_hot_range`, and a
+  -- tile left with it is placed by Vulcanus's noise: from 7836d29 until
+  -- 2026-10-20 the lit cracks were placed so, a third of the Core without
+  -- Alien Biomes and an eighth with it (30 seeds), and took the shore's outer
+  -- tiles here and there. Gone here, so a tile given no rule of its own is
+  -- never placed at all.
+  glow.autoplace = nil
   glow.subgroup = "sae-core-tiles"
   glow.order = order
   glow.layer_group = "ground-natural"
@@ -73,10 +80,17 @@ data:extend({ shards("medium-rock", 0.012), shards("small-rock", 0.05), shards("
 -- crust. The solution is drawn as lava is on Vulcanus: an offshore pump on the
 -- shore, reaching into the pool, which keeps lava's `water_tile` layer for
 -- exactly that. map-gen.lua places both from its basin term.
--- The shader draws its own colour texture, so the pool gets lava's shader
--- with that texture turned to blue (tools/build-crust-glow-tile.py --sheet),
--- the noise texture copied unchanged, and lava's own specular and foam
--- figures shifted cool.
+-- Its art is Vulcanus's lava re-graded by
+-- concept/radiant-look-pool-icons/pool_look_b.py rather than hue-turned: a
+-- turn kept lava's values and read as flat blue paint. Each pixel is graded by
+-- how hot the lava was: its melt onto a blue ramp (#02081A > #04103A > #0B2A8C >
+-- #1F63FF > #5A9CFF), its crust to a cool near-black, so the pool is a dark
+-- liquid lit from below. The shader draws its own colour texture, so the pool
+-- gets lava's shader with that image texture (effect.png, from
+-- lava-textures/lava.png) re-graded the same way. Its two noise textures carry
+-- no colour, so it reads space-age's own, as vanilla lava declares them; the
+-- shader wants exactly two since 2.1.22, and the variation counts it once took
+-- are now derived from the image texture's size.
 data:extend({
   {
     type = "tile-effect",
@@ -85,24 +99,39 @@ data:extend({
     water =
     {
       shader_variation = "lava",
-      textures =
+      noise_textures =
       {
-        { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect-noise.png" },
+        {
+          filename = "__space-age__/graphics/terrain/vulcanus/lava-textures/lava-noise-1.png",
+          size = 512,
+          color_channels = 2
+        },
+        {
+          filename = "__space-age__/graphics/terrain/vulcanus/lava-textures/lava-noise-2.png",
+          size = 512,
+          color_channels = 1
+        }
+      },
+      image_textures =
+      {
         { filename = "__space-age-extended__/graphics/terrain/radiant-pool/effect.png" }
       },
-      texture_variations_columns = 1,
-      texture_variations_rows = 1,
-      secondary_texture_variations_columns = 4,
-      secondary_texture_variations_rows = 2,
       animation_speed = 1.2,
       animation_scale = { 0.7, 0.7 },
       tick_scale = 1,
-      specular_lightness = { 17, 30, 55 },
-      foam_color = { 10, 30, 70 },
+      -- Highlights and foam sit at the dark end of the ramp the pool's sheets are
+      -- graded on, so the liquid reads dark and lit from below.
+      specular_lightness = { 6, 20, 70 },
+      foam_color = { 4, 16, 58 },
       foam_color_multiplier = 1.3,
-      dark_threshold = { 0.755, 0.755 },
+      -- In the lava shader (core/graphics/shaders/tiles-lava-effect.frag) these two
+      -- only add lava's hot rim at the shore, into red and half green -- an orange
+      -- band round a blue pool -- so both are 0 here. lightmap_alpha = 0 and a light
+      -- layer on the pool's variants were tried and measured the same in a client
+      -- with and without: the shader draws the pool at night.
+      dark_threshold = { 0, 0 },
       reflection_threshold = { 1, 1 },
-      specular_threshold = { 0.889, 0.291 },
+      specular_threshold = { 0, 0 },
       near_zoom = 0.0625,
       far_zoom = 0.0625
     }
@@ -117,13 +146,15 @@ pool.sprite_usage_surface = "any"
 pool.allowed_neighbors = nil
 pool.fluid = "sae-radiant-solution"
 pool.effect_color = { r = 30, g = 100, b = 255 }
-pool.effect_color_secondary = { r = 8, g = 24, b = 60 }
-pool.particle_tints = { primary = { r = 120, g = 170, b = 255 }, secondary = { r = 30, g = 100, b = 255 } }
+-- The secondary effect colour and the particle tints are stops of the same ramp
+-- as the sheets: its dark blue, and its two brightest.
+pool.effect_color_secondary = { r = 4, g = 16, b = 58 }
+pool.particle_tints = { primary = { r = 90, g = 156, b = 255 }, secondary = { r = 31, g = 99, b = 255 } }
 pool.map_color = { r = 0.12, g = 0.39, b = 1.0 }
 pool.autoplace = { probability_expression = "sae_core_pool" }
 pool.ambient_sounds = nil
 -- Most of what the player sees is the tile's own sheet under the shader:
--- lava-hot's, turned to blue with the same rotation the arc glow tile had.
+-- lava-hot's, re-graded as above.
 for _, v in pairs(pool.variants.main) do
   if v.picture == "__space-age__/graphics/terrain/vulcanus/lava-hot.png" then
     v.picture = "__space-age-extended__/graphics/terrain/radiant-pool/pool.png"
@@ -132,9 +163,9 @@ end
 
 -- The shore is the lit border of the body: Vulcanus's cooler lava crust --
 -- dark plates with the melt showing between them, half the sheet alight --
--- turned to blue, with a light sheet cut from it by the glow tool's --light
--- mode, since that sheet ships without one. The crack art was tried here
--- first and read as a black road with sparks in it.
+-- re-graded as above with the plates a cool dark rock, and a light sheet made
+-- in the same pass from the melt alone, since that sheet ships without one.
+-- The crack art was tried here first and read as a black road with sparks in it.
 local shore = glow_tile("sae-radiant-shore", "e[radiant-shore]", { r = 0.30, g = 0.45, b = 0.80 },
   { main = "__space-age-extended__/graphics/terrain/radiant-pool/shore.png",
     light = "__space-age-extended__/graphics/terrain/radiant-pool/shore-light.png" })
@@ -146,9 +177,10 @@ shore.collision_mask = { layers = { ground_tile = true } }
 shore.autoplace = { probability_expression = "sae_core_shore" }
 
 -- Where the lit crust meets the pool it draws Vulcanus's ground-to-lava
--- lip -- a dark crust edge with lit seams and its own lightmap -- turned to
--- blue the way the rest of the art was. The copy's transition names lava-hot
--- and lava; the pool is a third name, so it is added, and the sheets repointed.
+-- lip -- a dark crust edge with lit seams and its own lightmap -- re-graded as
+-- above, its crust the shore's rock and its lightmap mapped by brightness onto
+-- the same blues rising from black. The copy's transition names lava-hot and
+-- lava; the pool is a third name, so it is added, and the sheets repointed.
 local function border_pool(tile)
   for _, t in ipairs(tile.transitions or {}) do
     local to_lava = false
@@ -186,8 +218,8 @@ data:extend({ cliff })
 -- The crust's lit cracks: Vulcanus's hot-crack sheets with the embers' hue
 -- rotated to arc blue by tools/build-crust-glow-tile.py, placed by
 -- `sae_core_glow` down the middle of the dark rims and nowhere else.
-data:extend({
-  border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
-    { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
-      light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
-})
+local arc = border_pool(glow_tile("sae-crust-glow-arc", "c[crust-glow-arc]", { r = 0.35, g = 0.55, b = 0.95 },
+  { main = "__space-age-extended__/graphics/terrain/crust-glow/arc.png",
+    light = "__space-age-extended__/graphics/terrain/crust-glow/arc-light.png" }))
+arc.autoplace = { probability_expression = "sae_core_glow" }
+data:extend({ arc })

@@ -136,18 +136,76 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- collar complete beneath where the crown sits. So the stroke cannot be a
 -- working visualisation, which the engine stops drawing when the machine stops:
 -- the crusher would stand idle with no weight in it. It is a layer of the main
--- animation, which an assembling machine draws in every state and advances only
--- while crafting. The weight is wound up the rack over frames 0 to 16 with the
--- gears turning, the pawl trips, and it falls through 17 to 23 with each frame's
--- travel longer than the last. The gears stay meshed with the rack throughout,
--- so they spin back fast as it drops. The packer tracks the crown in every frame
--- against the declared curve (meta.json's `stroke_path_px`).
+-- animation, which advances only while crafting, and of the idle animation,
+-- held cocked (below). The weight is wound up the rack over 16 frames with the gears
+-- turning, the pawl trips, and it falls over 8 with each frame's travel longer
+-- than the last. The gears stay meshed with the rack throughout, so they spin
+-- back fast as it drops. The packer tracks the crown in every frame against the
+-- declared curve (meta.json's `stroke_path_px`).
 --
--- **Frame 0 is the still**: the weight seated in the collar, pawl engaged,
--- checked against a single render of the whole stopped machine. There is no
--- `idle_animation`: §9 records that one would have to carry the same 24 frames,
--- and an assembling machine simply stops on a frame instead. That frame 0 is the
--- seat is why the loop winds up from the bottom and lands back on it.
+-- **The loop starts cocked** (Liam, 2026-10-11): frames 0 to 6 wind up, 6 is
+-- the top, where the pawl trips, 7 to 13 fall, 14 lands seated, and 14 to 23
+-- and 0 wind up again. Frame 0 is the weight just past halfway up the rack,
+-- held by the pawl between two clicks (the model's PHASE: frame n is the old
+-- seated-first loop's frame n + 10). It was the seat until the landing had to
+-- carry a sound and the engine turned out never to fire one on frame 0 (see
+-- "Sound" below); the phase moved rather than the sound.
+--
+-- **Frame 0 is the still**: the weight cocked, checked against a single render
+-- of the whole stopped machine: the rest pose is cocked, ready to drop.
+--
+-- **The crusher rests cocked, through an `idle_animation`** (Liam, 2026-10-11).
+-- Without one an assembling machine draws `animation` in every state and only
+-- stops advancing it. A placed crusher starts its stroke on a random frame
+-- (fresh ones in a client showed 2, 4, 23 and 6), and since one craft is one
+-- 240-tick stroke it stops on whatever frame that leaves it on, so the cocked
+-- rest pose was only ever seen in the still and the ghost. The idle animation
+-- is the same three layers with the stroke held on frame 0: no new sheet,
+-- the stroke sheet's first frame by `frame_sequence`. It has to run to the
+-- same 24 frames as `animation` -- "Idle animation must have the same frame
+-- count as animation" (WorkingVisualisations::idle_animation, which
+-- CraftingMachineGraphicsSet inherits: doc-html/types/WorkingVisualisations.html)
+-- -- the engine draws whichever of the two is showing at the machine's one
+-- frame clock. Every one of the idle's 24 frames is the cocked pose, so
+-- whatever frame the clock stopped on, it is cocked.
+--
+-- **The idle animation does not cover every stopped state.** The docs do not
+-- say when the engine draws it; a client on the Core, 2026-10-11, showed
+-- (`always_draw_idle_animation` left false):
+--
+--   working, browned out included     `animation`: the stroke plays (browned
+--                                      out, slowed: 0.25x on 36 kW of 200 kW)
+--   ran out of ore, output full,       `idle_animation`: cocked
+--     recipe but no ore, no recipe
+--     (powered or not), circuit-disabled
+--   no power, with a recipe and ore    `animation`, frozen on whatever frame
+--     (placed so, or cut mid-craft)      the clock is on: not cocked
+--   ghost                              not judged (tinted)
+--
+-- So the idle draws in every stopped state seen except one: no power with a
+-- recipe and ore, which shows the main animation frozen. Output full and
+-- circuit-disabled crushers had a recipe and ore too, and drew cocked. The
+-- only other idle setting the docs list, `always_draw_idle_animation`, was not
+-- tried in a client: the docs give it no description, and vanilla sets it true
+-- only where the idle is drawn under or instead of the working animation:
+-- the electromagnetic plant's base
+-- (space-age/prototypes/entity/electromagnetic-plant-pictures.lua) and the
+-- centrifuge, which has no `animation` (base/prototypes/entity/entities.lua).
+-- Here it would be expected to draw a second, cocked crown over the stroke
+-- while it works.
+--
+-- The switch is a snap, not a fade: when the machine stops, the crown jumps
+-- from wherever the stroke stopped to cocked, and when it starts again it
+-- jumps back to that frame and carries on from there (the clock is not reset;
+-- in the client, one stopped on 5 drew 0 and resumed on 5), so a restart can
+-- begin mid-fall. Power restored after a cut resumes the frozen frame (one
+-- cut on 14 held 14, and stepped to 15 after the power came back).
+--
+-- The accents count `animation`'s frames, and its clock advances only while
+-- the machine crafts, so they fire only while it works (see "Sound" below).
+-- Recorded in the same client: one crown at a time (none drawn twice while
+-- working); the first drop after start-up on frame 14, on time; nothing fired
+-- at the snap to cocked or back; 15 of 15 accents heard.
 --
 -- **`animation_speed = 0.2` plays at 0.1 frames a tick, and the recipe is
 -- timed to that.** A crafting machine advances its animation by
@@ -193,60 +251,74 @@ end
 
 crusher.icon = "__space-age-extended__/graphics/icons/drop-crusher.png"
 
--- From sheets/meta.json.
+-- The crusher's three layers, from sheets/meta.json: the plate, the stroke and
+-- the shadow. `held` holds the stroke on its frame 0, cocked, for the idle
+-- animation; otherwise it plays.
+local function dc_layers(held)
+  local cocked
+  if held then
+    cocked = {}
+    for i = 1, DC_FRAMES do cocked[i] = 1 end   -- 1-based: the sheet's frame 0
+  end
+  return
+  {
+    -- The plate, less the moving parts. One frame, repeated to meet the
+    -- stroke's count.
+    {
+      filename = DC .. "base.png",
+      priority = "high",
+      width = 198, height = 234,
+      frame_count = 1,
+      repeat_count = DC_FRAMES,
+      animation_speed = DC_SPEED,
+      shift = { 0, -0.28125 },
+      scale = 0.5
+    },
+    -- The weight, the gears, the pinions and the pawl, in the window round the
+    -- collar: one row of 24. Held, `frame_sequence` plays the first of them
+    -- 24 times (AnimationFrameSequence: 1-based indices into the sheet, and
+    -- the animation's length is the sequence's), and the sheet is still
+    -- described as the 24 frames it is.
+    {
+      filename = DC .. "stroke.png",
+      priority = "high",
+      width = 191, height = 136,
+      frame_count = DC_FRAMES,
+      line_length = 24,
+      frame_sequence = cocked,
+      animation_speed = DC_SPEED,
+      shift = { 0.02344, -0.9375 },
+      scale = 0.5
+    },
+    {
+      filename = DC .. "base-shadow.png",
+      priority = "high",
+      draw_as_shadow = true,
+      -- Leans to the right, so it is wider than the colour plate and carries
+      -- its own shift.
+      --
+      -- Still one frame, rendered with the weight cocked. The shadows the
+      -- moving parts throw on the roof are in the stroke layer and travel with
+      -- it; the crown's shadow on the ground does not. Cutting the ground
+      -- shadow into 24 frames to move a sliver of it is a second sheet for
+      -- something no player looks at. Recorded as a choice rather than an
+      -- oversight.
+      width = 254, height = 195,
+      frame_count = 1,
+      repeat_count = DC_FRAMES,
+      animation_speed = DC_SPEED,
+      shift = { 0.46875, -0.00781 },
+      scale = 0.5
+    }
+  }
+end
+
 derive.own_graphics(crusher,
 {
   status_colors = dc_status_colors(),
-  animation =
-  {
-    layers =
-    {
-      -- The plate, less the moving parts. One frame, repeated to meet the
-      -- stroke's count.
-      {
-        filename = DC .. "base.png",
-        priority = "high",
-        width = 198, height = 234,
-        frame_count = 1,
-        repeat_count = DC_FRAMES,
-        animation_speed = DC_SPEED,
-        shift = { 0, -0.28125 },
-        scale = 0.5
-      },
-      -- The weight, the gears, the pinions and the pawl, in the window round the
-      -- collar: one row of 24.
-      {
-        filename = DC .. "stroke.png",
-        priority = "high",
-        width = 191, height = 136,
-        frame_count = DC_FRAMES,
-        line_length = 24,
-        animation_speed = DC_SPEED,
-        shift = { 0.02344, -0.9375 },
-        scale = 0.5
-      },
-      {
-        filename = DC .. "base-shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        -- Leans to the right, so it is wider than the colour plate and carries
-        -- its own shift.
-        --
-        -- Still one frame, rendered with the weight seated. The shadows the
-        -- moving parts throw on the roof are in the stroke layer and travel with
-        -- it; the crown's shadow on the ground does not. Cutting the ground
-        -- shadow into 24 frames to move a sliver of it is a second sheet for
-        -- something no player looks at. Recorded as a choice rather than an
-        -- oversight.
-        width = 254, height = 195,
-        frame_count = 1,
-        repeat_count = DC_FRAMES,
-        animation_speed = DC_SPEED,
-        shift = { 0.46875, -0.00781 },
-        scale = 0.5
-      }
-    }
-  },
+  animation = { layers = dc_layers(false) },
+  -- At rest, cocked: see "The crusher rests cocked" above.
+  idle_animation = { layers = dc_layers(true) },
   working_visualisations =
   {
     -- The status lamp. Rendered WHITE and cut white, because
@@ -268,6 +340,80 @@ derive.own_graphics(crusher,
         scale = 0.5
       }
     }
+  }
+})
+
+-- Sound: §3.4 of the building spec, signed off by Liam 2026-10-11, its accents
+-- softened in the crusher-sound task (round 3, take A, picked by Liam
+-- 2026-10-20: "A: no grit"). The files are that take's, written by
+-- concept/drop-crusher/sound/round-3/A/option_a.py: drop.ogg is the generator's
+-- drop (concept/drop-crusher/sound/drop_crusher_sound.py) rebuilt without its
+-- grit layer and then made heavier as round 2's C (round-3/clean_tail.py,
+-- round-2/heavier.py); pawl.ogg and trip.ogg are round 2 C's
+-- (round-2/C/option_c.py); bed.ogg is the generator's, unchanged. Each take is
+-- levelled to the file it replaces, so the volumes are still the generator's
+-- VOLUME, levelled as a whole against vanilla's crusher (its loop at 0.8). It
+-- replaces assembler 3's working sound, which `derive.own_graphics` left behind
+-- as an ungated loop.
+--
+-- **The working sound is grouped like vanilla's crusher's**, at Liam's word in
+-- round 3 ("Yes, like vanilla"). The accents were hardest on the ears "when
+-- there is multiple", each machine's stacking on the rest. Vanilla's crusher
+-- plays at most three working sounds at once (`max_sounds_per_prototype = 3`,
+-- space-age entities.lua), and each accent here carries the aggregation vanilla
+-- gives one-shots that can pile up (the biters' and the mech armour's): no more
+-- than two of the same sound at once, counting those already playing, the rest
+-- dropped rather than turned down. Captured with six crushers working, the
+-- bank measured within 1 LU of the bank before the change (T01c).
+--
+-- **The accents name no visualisation, because the stroke is a layer of the
+-- main animation** (see "The stroke is the animation" above), and an accent
+-- with no `play_for_working_visualisation` counts the main animation's frames,
+-- as assembler 1's do. Its cycle is 24 frames: the stroke's 24, with the plate
+-- and shadow repeated to match. At 0.1 frames a tick a frame is 1/6 s and the
+-- stroke four seconds, one drop a craft.
+derive.working_sound(crusher, {
+  -- bed.ogg: a low motor hum -- a 47 Hz rotor, a faint pinion whine and
+  -- vanilla's crusher loop an octave down. 8 s, two strokes.
+  bed = { filename = "__space-age-extended__/sound/drop-crusher/bed.ogg", volume = 0.8 },
+  -- **No accent is on frame 0, because 2.1.21 never fires one there.** Recorded
+  -- from a client on the Core, 2026-10-11: with the drop on frame 0 (the seat,
+  -- as the loop then started) the pawls and the trip fired on their frames every
+  -- stroke and the drop never did -- not when the loop came round, not when the
+  -- machine started; the same drop on frame 1 played every stroke, and the
+  -- drill's ratchet moved to its stroke's frame 0 fell silent too. `frame`
+  -- defaults to 0 (doc-html/types/SoundAccent.html), so 0 reads as unset, and
+  -- no vanilla accent is cued to it. derive.working_sound now refuses frame 0.
+  -- So the loop starts cocked (above) and the landing falls on frame 14.
+  max_sounds_per_prototype = 3,
+  accents =
+  {
+    -- drop.ogg on frame 14: the weight lands seated in the collar there, the end
+    -- of the fall from the top at 6. One craft, one bang: an oxide asteroid
+    -- breaking, the mech armour landing on rock, and pebbles, pitched down 7
+    -- semitones over a 40 Hz iron body; the grit that crackled in its tail is
+    -- gone (round 3 A). Off frame 0 it should play on the first stroke after
+    -- start-up as well as on every wrap; the recording found frame 0 silent in
+    -- both.
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/drop.ogg", volume = 0.35,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 14 },
+    -- pawl.ogg on frames 18, 22 and 2: the pawl clicks every fourth frame of
+    -- the wind-up from the seat, 14, 18, 22, 2 and 6. Not on 14 or 6, which
+    -- carry the drop and the trip; a click under either would not be heard.
+    -- Frame 0 falls between 22 and 2, so nothing is lost to it. A cryogenic
+    -- plant gear's tooth, pitched down 8 semitones over a 115 Hz iron body
+    -- (round 2 C).
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 18 },
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 22 },
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 2 },
+    -- trip.ogg on frame 6: the top of the wind-up, where the pawl kicks clear
+    -- and the weight is let go. The foundry's clamp and a struck-steel click,
+    -- low-passed at 3.5 kHz with its attack rounded (round 1 C, kept in 2 and 3).
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/trip.ogg", volume = 0.5,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 6 }
   }
 })
 data:extend({ crusher })
@@ -489,8 +635,12 @@ local function bd_sheet(name, direction, extra)
   return sheet
 end
 
---- A working visualisation drawing <name> per direction.
+--- A working visualisation drawing <name> per direction, and called <name>:
+--- a sound accent can only be cued to a visualisation that has a `name`
+--- (SoundAccent::play_for_working_visualisation), and the drill's are cued to
+--- "stroke" (below).
 local function bd_visualisation(name, extra, visualisation)
+  visualisation.name = name
   for _, d in ipairs(BD_DIRECTIONS) do
     visualisation[d .. "_animation"] = bd_sheet(name, d, extra)
   end
@@ -597,6 +747,69 @@ derive.own_graphics(drill,
       { always_draw = true, apply_tint = "status" })
   }
 })
+
+-- Sound: §3.4 of the building spec, signed off by Liam 2026-10-11. The files
+-- are built by concept/ballast-drill/sound/ballast_drill_sound.py, and each
+-- volume here is that script's VOLUME, levelled against the big mining drill's
+-- own mix. It replaces the big mining drill's working sound, which
+-- `derive.own_graphics` had already removed whole: it walks `main_sounds` as a
+-- list, and the big drill's is a single Sound, so it found nothing to keep and,
+-- with no `sound` either, dropped the working sound (the start accent went with
+-- the art it was cued to). Its loop was not cued to any art.
+--
+-- **The big drill's own two loops go too, so the drill plays only its bed,
+-- landing and ratchet.** `drilling_sound` (its drilling loop, two at most) and
+-- `moving_sound` (its head turning) came across with the deepcopy and played
+-- under ours: a vanilla machine's voice under the one the spec signed off, and
+-- the drilling loop doubling the bed's job. Its open and close sounds stay;
+-- they are the GUI's, not the machine's.
+--
+-- The accents are cued to the "stroke" visualisation, whose 24 frames are one
+-- second at 0.4 frames a tick (see "Art" above). Frame 0 is the ring raised.
+--
+-- **The landing aggregates and the drill is capped, so a row of drills rumbles
+-- rather than stacks**, as vanilla's big mining drill keeps its own drilling
+-- loop to two (its `drilling_sound`, space-age/prototypes/entity/big-mining-drill.lua,
+-- the loop this drill no longer plays: see above).
+-- `aggregation` is Sound::aggregation, an AggregationSpecification in the
+-- prototype docs (doc-html/types/AggregationSpecification.html): at most 2
+-- landings at once, counting those already playing, and any more are dropped
+-- rather than turned down. `max_sounds_per_prototype` is WorkingSound's
+-- (doc-html/types/WorkingSound.html): at most 2 drills play their working
+-- sound at all.
+derive.working_sound(drill, {
+  -- bed.ogg: a low, slow winch drone -- the big mining drill's working loop
+  -- pitched down 7 semitones, over a 41 Hz drone and a rumble. 6 s, so it
+  -- never pulses against the one-second stroke.
+  bed = { filename = "__space-age-extended__/sound/ballast-drill/bed.ogg", volume = 0.3 },
+  accents =
+  {
+    -- landing.ogg on frame 5: the ring lands on the shoulder there (0.208 s
+    -- into the stroke), with the dust breaking out under it. The building's
+    -- voice, built on the stomper's stomp.
+    {
+      sound =
+      {
+        filename = "__space-age-extended__/sound/ballast-drill/landing.ogg",
+        volume = 0.55,
+        aggregation = { max_count = 2, remove = true, count_already_playing = true }
+      },
+      visualisation = "stroke",
+      frame = 5
+    },
+    -- ratchet.ogg on frame 23: the top of the lift (0.958 s), the last frame
+    -- before the loop comes round to the ring raised. A small tick, from the
+    -- first tooth of the oil refinery's gear sound.
+    {
+      sound = { filename = "__space-age-extended__/sound/ballast-drill/ratchet.ogg", volume = 0.6 },
+      visualisation = "stroke",
+      frame = 23
+    }
+  },
+  max_sounds_per_prototype = 2
+})
+drill.drilling_sound = nil
+drill.moving_sound = nil
 data:extend({ drill })
 
 --------------------------------------------------------------------------------

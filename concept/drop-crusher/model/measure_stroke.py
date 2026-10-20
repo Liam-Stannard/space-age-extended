@@ -15,11 +15,19 @@ model also renders the east gear alone (diag-gear-NN), unpacked, in every frame.
    path, put on the screen: a tile of height is cos(elevation) tiles up the screen),
    the constant offset between the crown's centroid and the seat fitted out, as
    pack.py's slide check does; across the line, its drift from the vertical. And the
-   fall: each frame's travel from 16 to 24 (= 0) larger than the last.
+   fall: each frame's travel from the top to the seat larger than the last.
 3. The gears: the east gear's turn in every frame, measured by matching the frame
    against frame 0 turned, the gear's plane stretched back to a circle (it lies
    upright in the east-west plane, so it draws half as tall as wide). Unwrapped
-   frame to frame; held to the rack's travel over the pitch radius, in teeth.
+   frame to frame; held to the rack's travel since frame 0 over the pitch radius, in
+   teeth.
+
+The loop starts cocked (drop_crusher.py's PHASE, 2026-10-11): frame 0 is the weight
+part-way up, held by the pawl; the top, where the pawl trips, is frame 6 (stroke.json's
+`top`), frames 7-13 fall and 14 (`seat`) lands seated. Every measure is taken against
+frame 0 as drawn, wherever in the stroke that is, and the fall is read from `top` to
+`seat`. Renders from before the re-phase carry no `top` or `seat`; for them the top is
+`rise` and the seat frame 0, as they were drawn.
 """
 import json
 import math
@@ -56,14 +64,19 @@ def crown(out, info):
     mx = sum(cx for cx, _ in cs) / n
     line = [cx - mx for cx, _ in cs]
     measured = [round(-(cy - cs[0][1]), 2) for _, cy in cs]
-    # the fall: frames RISE..n-1 and back to 0
-    rise = info["rise"]
-    ys = [cs[f % n][1] for f in range(rise, n + 1)]
+    # the fall: from the top, where the pawl trips, round the loop to the seat
+    top, seat = info.get("top", info["rise"]), info.get("seat", 0)
+    fall = (seat - top) % n
+    frames = [(top + k) % n for k in range(fall + 1)]
+    ys = [cs[f][1] for f in frames]
     steps = [round(b - a, 2) for a, b in zip(ys, ys[1:])]
     grows = all(b > a for a, b in zip(steps, steps[1:]))
-    proud_px = max(measured)
+    # and it lands: the seat is the lowest the crown is drawn, and where the curve
+    # says it is seated
+    seated = (measured[seat] == min(measured) and info["lift"][seat] == 0)
     return dict(declared_up_px=[round(-d, 2) for d in declared], measured_up_px=measured,
                 off_curve_px=round(max(abs(v) for v in curve), 2), off_line_px=round(max(abs(v) for v in line), 2),
+                top_frame=top, fall_frames=frames[1:-1], landing_frame=seat, lowest_at_landing=seated,
                 fall_steps_px=steps, fall_grows_strictly=grows,
                 top_lift_tiles=round(max(info["lift"]), 3),
                 crown_proud_at_top=f"{max(info['lift']):.2f} tiles of a {info['crown_height']:.2f}-tile crown "
@@ -123,8 +136,9 @@ def gears(out, info):
         d = (phase(frames[f]) - p0 - got[-1] + 36) % 72 - 36
         got.append(round(got[-1] + d, 1))
     # the model turns the east gear by -lift / rg (radians): clockwise on the screen as the
-    # rack rises past its west side; on the screen, PIL's positive angle is anticlockwise
-    want = [round(-math.degrees(s / info["rg"]), 1) for s in info["lift"]]
+    # rack rises past its west side; on the screen, PIL's positive angle is anticlockwise.
+    # Measured against frame 0, so the travel is since frame 0's lift (cocked, not seated)
+    want = [round(-math.degrees((s - info["lift"][0]) / info["rg"]), 1) for s in info["lift"]]
     tooth = 360 / info["teeth"]
     err = [round(abs(g - w), 1) for g, w in zip(got, want)]
     return dict(declared_deg=want, measured_deg=got, max_error_deg=max(err),
@@ -137,7 +151,8 @@ def main(out):
     c = crown(out, info)
     g = gears(out, info)
     res = dict(crown=c, gear=g,
-               pass_2=c["off_curve_px"] <= LIMIT_PX and c["off_line_px"] <= LIMIT_PX and c["fall_grows_strictly"],
+               pass_2=(c["off_curve_px"] <= LIMIT_PX and c["off_line_px"] <= LIMIT_PX and c["fall_grows_strictly"]
+                       and c["lowest_at_landing"]),
                pass_3=g["max_error_teeth"] <= 1.0)
     print(json.dumps(res, indent=1))
     with open(os.path.join(out, "stroke-measures.json"), "w") as f:
