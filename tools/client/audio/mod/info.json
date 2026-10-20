@@ -1,0 +1,9 @@
+{
+  "name": "sae-audio",
+  "version": "0.1.0",
+  "title": "SAE sound-capture probe (test tool, never shipped)",
+  "author": "Liam Stannard",
+  "factorio_version": "2.1",
+  "dependencies": ["base"],
+  "description": "Loaded only by tools/client/audio/capture.py through tools/client/launch.sh. Builds one working machine on a planet's own surface, holds the camera on it at a fixed zoom with the GUI hidden, and fires sync markers (a flash and a click on one tick) before it starts, so its sound can be recorded against its picture."
+}

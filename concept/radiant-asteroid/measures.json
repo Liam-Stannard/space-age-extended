@@ -1,0 +1,3589 @@
+{
+ "vanilla": {
+  "small": {
+   "asteroid-promethium-small-colour-01.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     92,
+     102
+    ],
+    "fill": 0.323,
+    "normal": {
+     "R_left": -0.177,
+     "R_right": 0.527,
+     "G_top": -0.529,
+     "G_bottom": 0.335,
+     "outline_outward_share": 0.943,
+     "outline_mean_cos": 0.811,
+     "corr_R_column": 0.664,
+     "corr_G_row": 0.712,
+     "len_xy_max": 0.998,
+     "B_minus_sqrt": 0.119,
+     "p5_50_95": {
+      "R": [
+       71,
+       124,
+       212
+      ],
+      "G": [
+       21,
+       135,
+       206
+      ],
+      "B": [
+       93,
+       177,
+       234
+      ]
+     },
+     "alpha_px": 6714,
+     "colour_alpha_px": 5856
+    },
+    "colour_lum_p5_50_95": [
+     54,
+     72,
+     114
+    ],
+    "rough_alpha_p5_50_95": [
+     1,
+     15,
+     93
+    ],
+    "sss_share_lit": 0.684,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3251,
+     "blue_hue_range": null,
+     "max_rgb": [
+      165,
+      158,
+      157
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 1,
+     "blue_off_ramp_hue": 1,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 1,
+     "other_hue_px": 4014,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      221,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 1,
+     "other_channel255_px": 360
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3331,
+     "blue_hue_range": null,
+     "max_rgb": [
+      209,
+      213,
+      206
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 37,
+     "blue_off_ramp_hue": 37,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 37,
+     "other_hue_px": 4467,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 5,
+     "blue255_px": 43,
+     "other_channel255_px": 598
+    }
+   },
+   "asteroid-promethium-small-colour-02.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     105,
+     97
+    ],
+    "fill": 0.424,
+    "normal": {
+     "R_left": -0.404,
+     "R_right": 0.253,
+     "G_top": -0.321,
+     "G_bottom": 0.257,
+     "outline_outward_share": 0.937,
+     "outline_mean_cos": 0.767,
+     "corr_R_column": 0.558,
+     "corr_G_row": 0.549,
+     "len_xy_max": 0.997,
+     "B_minus_sqrt": 0.134,
+     "p5_50_95": {
+      "R": [
+       18,
+       129,
+       213
+      ],
+      "G": [
+       64,
+       117,
+       194
+      ],
+      "B": [
+       75,
+       191,
+       230
+      ]
+     },
+     "alpha_px": 8665,
+     "colour_alpha_px": 7611
+    },
+    "colour_lum_p5_50_95": [
+     52,
+     67,
+     114
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     9,
+     73
+    ],
+    "sss_share_lit": 0.581,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 4266,
+     "blue_hue_range": null,
+     "max_rgb": [
+      172,
+      172,
+      170
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2,
+     "blue_off_ramp_hue": 2,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 2,
+     "other_hue_px": 4489,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      181,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 2,
+     "other_channel255_px": 380
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 4329,
+     "blue_hue_range": null,
+     "max_rgb": [
+      198,
+      196,
+      194
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 46,
+     "blue_off_ramp_hue": 46,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 45,
+     "other_hue_px": 5003,
+     "blue_hue_range": [
+      240.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 1,
+     "blue255_px": 46,
+     "other_channel255_px": 638
+    }
+   },
+   "asteroid-promethium-small-colour-03.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     104,
+     102
+    ],
+    "fill": 0.4,
+    "normal": {
+     "R_left": -0.478,
+     "R_right": 0.287,
+     "G_top": -0.413,
+     "G_bottom": 0.258,
+     "outline_outward_share": 0.902,
+     "outline_mean_cos": 0.733,
+     "corr_R_column": 0.656,
+     "corr_G_row": 0.639,
+     "len_xy_max": 0.969,
+     "B_minus_sqrt": 0.115,
+     "p5_50_95": {
+      "R": [
+       46,
+       120,
+       208
+      ],
+      "G": [
+       49,
+       112,
+       210
+      ],
+      "B": [
+       89,
+       173,
+       242
+      ]
+     },
+     "alpha_px": 8234,
+     "colour_alpha_px": 7210
+    },
+    "colour_lum_p5_50_95": [
+     55,
+     67,
+     122
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     14,
+     93
+    ],
+    "sss_share_lit": 0.644,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 4173,
+     "blue_hue_range": null,
+     "max_rgb": [
+      182,
+      180,
+      179
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2,
+     "blue_off_ramp_hue": 2,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 2,
+     "other_hue_px": 4616,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      214,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 2,
+     "other_channel255_px": 390
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 4258,
+     "blue_hue_range": null,
+     "max_rgb": [
+      223,
+      218,
+      218
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 39,
+     "blue_off_ramp_hue": 39,
+     "blue_cyan_lean": 1,
+     "blue_paler_than_73ADFF": 37,
+     "other_hue_px": 5095,
+     "blue_hue_range": [
+      183.1,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 37,
+     "other_channel255_px": 643
+    }
+   },
+   "asteroid-promethium-small-colour-04.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     92,
+     103
+    ],
+    "fill": 0.352,
+    "normal": {
+     "R_left": -0.42,
+     "R_right": 0.201,
+     "G_top": -0.368,
+     "G_bottom": 0.681,
+     "outline_outward_share": 0.97,
+     "outline_mean_cos": 0.831,
+     "corr_R_column": 0.526,
+     "corr_G_row": 0.698,
+     "len_xy_max": 0.988,
+     "B_minus_sqrt": 0.149,
+     "p5_50_95": {
+      "R": [
+       32,
+       122,
+       192
+      ],
+      "G": [
+       55,
+       127,
+       242
+      ],
+      "B": [
+       78,
+       174,
+       228
+      ]
+     },
+     "alpha_px": 7218,
+     "colour_alpha_px": 6334
+    },
+    "colour_lum_p5_50_95": [
+     52,
+     70,
+     116
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     16,
+     94
+    ],
+    "sss_share_lit": 0.66,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3020,
+     "blue_hue_range": null,
+     "max_rgb": [
+      167,
+      166,
+      166
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 1,
+     "blue_off_ramp_hue": 1,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 1,
+     "other_hue_px": 4261,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      187,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 1,
+     "other_channel255_px": 305
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3060,
+     "blue_hue_range": null,
+     "max_rgb": [
+      199,
+      197,
+      197
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 31,
+     "blue_off_ramp_hue": 31,
+     "blue_cyan_lean": 1,
+     "blue_paler_than_73ADFF": 28,
+     "other_hue_px": 4688,
+     "blue_hue_range": [
+      196.1,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 1,
+     "blue255_px": 29,
+     "other_channel255_px": 465
+    }
+   },
+   "asteroid-promethium-small-colour-05.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     85,
+     87
+    ],
+    "fill": 0.324,
+    "normal": {
+     "R_left": -0.732,
+     "R_right": 0.516,
+     "G_top": -0.367,
+     "G_bottom": 0.352,
+     "outline_outward_share": 0.911,
+     "outline_mean_cos": 0.719,
+     "corr_R_column": 0.71,
+     "corr_G_row": 0.579,
+     "len_xy_max": 0.969,
+     "B_minus_sqrt": 0.134,
+     "p5_50_95": {
+      "R": [
+       8,
+       133,
+       223
+      ],
+      "G": [
+       25,
+       124,
+       226
+      ],
+      "B": [
+       65,
+       159,
+       253
+      ]
+     },
+     "alpha_px": 6674,
+     "colour_alpha_px": 5822
+    },
+    "colour_lum_p5_50_95": [
+     53,
+     74,
+     127
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     10,
+     81
+    ],
+    "sss_share_lit": 0.611,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 2856,
+     "blue_hue_range": null,
+     "max_rgb": [
+      179,
+      179,
+      177
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3620,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      213,
+      232
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 401
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 2886,
+     "blue_hue_range": null,
+     "max_rgb": [
+      212,
+      211,
+      213
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 31,
+     "blue_off_ramp_hue": 31,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 31,
+     "other_hue_px": 4006,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      248,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 31,
+     "other_channel255_px": 574
+    }
+   },
+   "asteroid-promethium-small-colour-06.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     83,
+     81
+    ],
+    "fill": 0.292,
+    "normal": {
+     "R_left": -0.342,
+     "R_right": 0.338,
+     "G_top": -0.356,
+     "G_bottom": 0.263,
+     "outline_outward_share": 0.964,
+     "outline_mean_cos": 0.816,
+     "corr_R_column": 0.586,
+     "corr_G_row": 0.587,
+     "len_xy_max": 0.994,
+     "B_minus_sqrt": 0.103,
+     "p5_50_95": {
+      "R": [
+       59,
+       152,
+       205
+      ],
+      "G": [
+       38,
+       109,
+       193
+      ],
+      "B": [
+       53,
+       191,
+       235
+      ]
+     },
+     "alpha_px": 6093,
+     "colour_alpha_px": 5283
+    },
+    "colour_lum_p5_50_95": [
+     55,
+     67,
+     122
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     7,
+     90
+    ],
+    "sss_share_lit": 0.575,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3412,
+     "blue_hue_range": null,
+     "max_rgb": [
+      165,
+      163,
+      163
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3193,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      220,
+      209
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 425
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3478,
+     "blue_hue_range": null,
+     "max_rgb": [
+      196,
+      187,
+      191
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 36,
+     "blue_off_ramp_hue": 35,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 35,
+     "other_hue_px": 3608,
+     "blue_hue_range": [
+      218.1,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 1,
+     "blue255_px": 37,
+     "other_channel255_px": 655
+    }
+   },
+   "asteroid-promethium-small-colour-07.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     89,
+     99
+    ],
+    "fill": 0.325,
+    "normal": {
+     "R_left": -0.522,
+     "R_right": 0.442,
+     "G_top": -0.575,
+     "G_bottom": 0.329,
+     "outline_outward_share": 0.896,
+     "outline_mean_cos": 0.728,
+     "corr_R_column": 0.699,
+     "corr_G_row": 0.716,
+     "len_xy_max": 0.896,
+     "B_minus_sqrt": 0.122,
+     "p5_50_95": {
+      "R": [
+       28,
+       142,
+       224
+      ],
+      "G": [
+       25,
+       135,
+       217
+      ],
+      "B": [
+       103,
+       150,
+       209
+      ]
+     },
+     "alpha_px": 6717,
+     "colour_alpha_px": 5851
+    },
+    "colour_lum_p5_50_95": [
+     58,
+     76,
+     98
+    ],
+    "rough_alpha_p5_50_95": [
+     0,
+     11,
+     80
+    ],
+    "sss_share_lit": 0.586,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3515,
+     "blue_hue_range": null,
+     "max_rgb": [
+      169,
+      168,
+      167
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3463,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      180,
+      178
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 273
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 3630,
+     "blue_hue_range": null,
+     "max_rgb": [
+      225,
+      219,
+      220
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 14,
+     "blue_off_ramp_hue": 14,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 12,
+     "other_hue_px": 3888,
+     "blue_hue_range": [
+      240.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      234,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 12,
+     "other_channel255_px": 462
+    }
+   }
+  },
+  "chunk": {
+   "asteroid-promethium-chunk-colour-01.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     36,
+     41
+    ],
+    "fill": 0.348,
+    "normal": {
+     "R_left": -0.272,
+     "R_right": 0.482,
+     "G_top": -0.621,
+     "G_bottom": 0.493,
+     "outline_outward_share": 0.972,
+     "outline_mean_cos": 0.882,
+     "corr_R_column": 0.732,
+     "corr_G_row": 0.787,
+     "len_xy_max": 0.988,
+     "B_minus_sqrt": 0.088,
+     "p5_50_95": {
+      "R": [
+       71,
+       142,
+       196
+      ],
+      "G": [
+       24,
+       134,
+       221
+      ],
+      "B": [
+       116,
+       195,
+       232
+      ]
+     },
+     "alpha_px": 1453,
+     "colour_alpha_px": 1079
+    },
+    "colour_lum_p5_50_95": [
+     62,
+     78,
+     117
+    ],
+    "rough_alpha_p5_50_95": [
+     6,
+     34,
+     113
+    ],
+    "sss_share_lit": 0.861,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 757,
+     "blue_hue_range": null,
+     "max_rgb": [
+      211,
+      183,
+      184
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 866,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      183,
+      174
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 18
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 823,
+     "blue_hue_range": null,
+     "max_rgb": [
+      211,
+      183,
+      184
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 10,
+     "blue_off_ramp_hue": 10,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 10,
+     "other_hue_px": 1053,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 3,
+     "blue255_px": 11,
+     "other_channel255_px": 104
+    }
+   },
+   "asteroid-promethium-chunk-colour-02.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     40,
+     43
+    ],
+    "fill": 0.382,
+    "normal": {
+     "R_left": -0.559,
+     "R_right": 0.477,
+     "G_top": -0.538,
+     "G_bottom": 0.282,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.898,
+     "corr_R_column": 0.741,
+     "corr_G_row": 0.674,
+     "len_xy_max": 0.976,
+     "B_minus_sqrt": 0.066,
+     "p5_50_95": {
+      "R": [
+       17,
+       135,
+       213
+      ],
+      "G": [
+       52,
+       130,
+       185
+      ],
+      "B": [
+       111,
+       180,
+       231
+      ]
+     },
+     "alpha_px": 1565,
+     "colour_alpha_px": 1177
+    },
+    "colour_lum_p5_50_95": [
+     63,
+     85,
+     124
+    ],
+    "rough_alpha_p5_50_95": [
+     3,
+     25,
+     85
+    ],
+    "sss_share_lit": 0.839,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 886,
+     "blue_hue_range": null,
+     "max_rgb": [
+      212,
+      188,
+      190
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 903,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      101,
+      94
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 16
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 970,
+     "blue_hue_range": null,
+     "max_rgb": [
+      212,
+      196,
+      196
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 19,
+     "blue_off_ramp_hue": 19,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 19,
+     "other_hue_px": 1096,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      204,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 19,
+     "other_channel255_px": 106
+    }
+   },
+   "asteroid-promethium-chunk-colour-03.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     37,
+     44
+    ],
+    "fill": 0.343,
+    "normal": {
+     "R_left": -0.434,
+     "R_right": 0.556,
+     "G_top": -0.471,
+     "G_bottom": 0.604,
+     "outline_outward_share": 0.962,
+     "outline_mean_cos": 0.878,
+     "corr_R_column": 0.781,
+     "corr_G_row": 0.808,
+     "len_xy_max": 0.958,
+     "B_minus_sqrt": 0.099,
+     "p5_50_95": {
+      "R": [
+       56,
+       122,
+       225
+      ],
+      "G": [
+       37,
+       120,
+       224
+      ],
+      "B": [
+       93,
+       179,
+       239
+      ]
+     },
+     "alpha_px": 1432,
+     "colour_alpha_px": 1065
+    },
+    "colour_lum_p5_50_95": [
+     63,
+     80,
+     125
+    ],
+    "rough_alpha_p5_50_95": [
+     9,
+     41,
+     113
+    ],
+    "sss_share_lit": 0.977,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 747,
+     "blue_hue_range": null,
+     "max_rgb": [
+      179,
+      142,
+      143
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 857,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      146,
+      129
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 12
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 822,
+     "blue_hue_range": null,
+     "max_rgb": [
+      179,
+      155,
+      153
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 10,
+     "blue_off_ramp_hue": 10,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 10,
+     "other_hue_px": 1043,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 10,
+     "other_channel255_px": 113
+    }
+   },
+   "asteroid-promethium-chunk-colour-04.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     40,
+     39
+    ],
+    "fill": 0.332,
+    "normal": {
+     "R_left": -0.567,
+     "R_right": 0.269,
+     "G_top": -0.457,
+     "G_bottom": 0.737,
+     "outline_outward_share": 0.971,
+     "outline_mean_cos": 0.845,
+     "corr_R_column": 0.782,
+     "corr_G_row": 0.842,
+     "len_xy_max": 0.94,
+     "B_minus_sqrt": 0.106,
+     "p5_50_95": {
+      "R": [
+       43,
+       129,
+       183
+      ],
+      "G": [
+       43,
+       118,
+       240
+      ],
+      "B": [
+       107,
+       178,
+       249
+      ]
+     },
+     "alpha_px": 1395,
+     "colour_alpha_px": 1033
+    },
+    "colour_lum_p5_50_95": [
+     63,
+     81,
+     120
+    ],
+    "rough_alpha_p5_50_95": [
+     6,
+     34,
+     101
+    ],
+    "sss_share_lit": 0.908,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 722,
+     "blue_hue_range": null,
+     "max_rgb": [
+      196,
+      169,
+      169
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 826,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      150,
+      122
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 18
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 765,
+     "blue_hue_range": null,
+     "max_rgb": [
+      196,
+      169,
+      169
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 13,
+     "blue_off_ramp_hue": 13,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 13,
+     "other_hue_px": 1002,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      200,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 13,
+     "other_channel255_px": 81
+    }
+   },
+   "asteroid-promethium-chunk-colour-05.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     38,
+     38
+    ],
+    "fill": 0.374,
+    "normal": {
+     "R_left": -0.716,
+     "R_right": 0.551,
+     "G_top": -0.368,
+     "G_bottom": 0.379,
+     "outline_outward_share": 0.933,
+     "outline_mean_cos": 0.79,
+     "corr_R_column": 0.777,
+     "corr_G_row": 0.641,
+     "len_xy_max": 0.969,
+     "B_minus_sqrt": 0.125,
+     "p5_50_95": {
+      "R": [
+       8,
+       130,
+       221
+      ],
+      "G": [
+       28,
+       123,
+       224
+      ],
+      "B": [
+       67,
+       166,
+       254
+      ]
+     },
+     "alpha_px": 1497,
+     "colour_alpha_px": 1133
+    },
+    "colour_lum_p5_50_95": [
+     62,
+     82,
+     152
+    ],
+    "rough_alpha_p5_50_95": [
+     5,
+     25,
+     90
+    ],
+    "sss_share_lit": 0.876,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 773,
+     "blue_hue_range": null,
+     "max_rgb": [
+      210,
+      175,
+      178
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 931,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      157,
+      157
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 18
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 808,
+     "blue_hue_range": null,
+     "max_rgb": [
+      210,
+      204,
+      205
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 8,
+     "blue_off_ramp_hue": 8,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 8,
+     "other_hue_px": 1104,
+     "blue_hue_range": [
+      300.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      239,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 9,
+     "other_channel255_px": 85
+    }
+   },
+   "asteroid-promethium-chunk-colour-06.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     37,
+     34
+    ],
+    "fill": 0.336,
+    "normal": {
+     "R_left": -0.343,
+     "R_right": 0.367,
+     "G_top": -0.344,
+     "G_bottom": 0.276,
+     "outline_outward_share": 0.98,
+     "outline_mean_cos": 0.844,
+     "corr_R_column": 0.622,
+     "corr_G_row": 0.64,
+     "len_xy_max": 0.963,
+     "B_minus_sqrt": 0.103,
+     "p5_50_95": {
+      "R": [
+       61,
+       154,
+       195
+      ],
+      "G": [
+       49,
+       107,
+       189
+      ],
+      "B": [
+       70,
+       200,
+       232
+      ]
+     },
+     "alpha_px": 1391,
+     "colour_alpha_px": 1029
+    },
+    "colour_lum_p5_50_95": [
+     61,
+     74,
+     137
+    ],
+    "rough_alpha_p5_50_95": [
+     3,
+     22,
+     98
+    ],
+    "sss_share_lit": 0.836,
+    "colour": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 732,
+     "blue_hue_range": null,
+     "max_rgb": [
+      207,
+      184,
+      185
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 810,
+     "blue_hue_range": null,
+     "max_rgb": [
+      255,
+      178,
+      180
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 22
+    },
+    "colour_all": {
+     "blue_px": 0,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 767,
+     "blue_hue_range": null,
+     "max_rgb": [
+      207,
+      185,
+      186
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 9,
+     "blue_off_ramp_hue": 9,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 8,
+     "other_hue_px": 982,
+     "blue_hue_range": [
+      240.0,
+      300.0
+     ],
+     "max_rgb": [
+      255,
+      255,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 8,
+     "other_channel255_px": 105
+    }
+   }
+  }
+ },
+ "radiant": {
+  "small": {
+   "asteroid-radiant-small-colour-01.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     96,
+     104
+    ],
+    "fill": 0.451,
+    "normal": {
+     "R_left": -0.436,
+     "R_right": 0.599,
+     "G_top": -0.282,
+     "G_bottom": 0.759,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.945,
+     "corr_R_column": 0.867,
+     "corr_G_row": 0.861,
+     "len_xy_max": 0.996,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       43,
+       119,
+       213
+      ],
+      "G": [
+       79,
+       132,
+       246
+      ],
+      "B": [
+       71,
+       216,
+       250
+      ]
+     },
+     "alpha_px": 8112,
+     "colour_alpha_px": 7708
+    },
+    "colour_lum_p5_50_95": [
+     35,
+     73,
+     132
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     42,
+     92
+    ],
+    "sss_share_lit": 0.289,
+    "colour": {
+     "blue_px": 1989,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.8
+     ],
+     "max_rgb": [
+      103,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2343,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 352,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 2104,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      232.8
+     ],
+     "max_rgb": [
+      103,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 2484,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 362,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-02.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     94,
+     106
+    ],
+    "fill": 0.474,
+    "normal": {
+     "R_left": -0.579,
+     "R_right": 0.49,
+     "G_top": -0.642,
+     "G_bottom": 0.546,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.975,
+     "corr_R_column": 0.901,
+     "corr_G_row": 0.889,
+     "len_xy_max": 0.997,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       30,
+       107,
+       203
+      ],
+      "G": [
+       19,
+       98,
+       230
+      ],
+      "B": [
+       103,
+       209,
+       239
+      ]
+     },
+     "alpha_px": 8508,
+     "colour_alpha_px": 8102
+    },
+    "colour_lum_p5_50_95": [
+     35,
+     75,
+     136
+    ],
+    "rough_alpha_p5_50_95": [
+     20,
+     39,
+     92
+    ],
+    "sss_share_lit": 0.312,
+    "colour": {
+     "blue_px": 2236,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.4
+     ],
+     "max_rgb": [
+      104,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2653,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 471,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 2334,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      235.0
+     ],
+     "max_rgb": [
+      104,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 2774,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.3
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 478,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-03.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     105,
+     96
+    ],
+    "fill": 0.394,
+    "normal": {
+     "R_left": -0.6,
+     "R_right": 0.654,
+     "G_top": -0.531,
+     "G_bottom": 0.358,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.979,
+     "corr_R_column": 0.901,
+     "corr_G_row": 0.841,
+     "len_xy_max": 0.994,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       43,
+       135,
+       221
+      ],
+      "G": [
+       47,
+       83,
+       194
+      ],
+      "B": [
+       122,
+       198,
+       249
+      ]
+     },
+     "alpha_px": 7181,
+     "colour_alpha_px": 6775
+    },
+    "colour_lum_p5_50_95": [
+     37,
+     76,
+     134
+    ],
+    "rough_alpha_p5_50_95": [
+     20,
+     42,
+     94
+    ],
+    "sss_share_lit": 0.325,
+    "colour": {
+     "blue_px": 1973,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      232.8
+     ],
+     "max_rgb": [
+      102,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2303,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      232.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 343,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 2046,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      233.3
+     ],
+     "max_rgb": [
+      102,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 2395,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      232.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 345,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-04.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     96,
+     104
+    ],
+    "fill": 0.416,
+    "normal": {
+     "R_left": -0.499,
+     "R_right": 0.705,
+     "G_top": -0.491,
+     "G_bottom": 0.709,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.955,
+     "corr_R_column": 0.869,
+     "corr_G_row": 0.888,
+     "len_xy_max": 0.997,
+     "B_minus_sqrt": 0.003,
+     "p5_50_95": {
+      "R": [
+       31,
+       155,
+       232
+      ],
+      "G": [
+       47,
+       140,
+       230
+      ],
+      "B": [
+       92,
+       181,
+       238
+      ]
+     },
+     "alpha_px": 7563,
+     "colour_alpha_px": 7151
+    },
+    "colour_lum_p5_50_95": [
+     35,
+     75,
+     136
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     45,
+     94
+    ],
+    "sss_share_lit": 0.356,
+    "colour": {
+     "blue_px": 2278,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      231.4
+     ],
+     "max_rgb": [
+      106,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 2665,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      232.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 443,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 2414,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      231.4
+     ],
+     "max_rgb": [
+      106,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 2833,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.6
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 465,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-05.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     84,
+     88
+    ],
+    "fill": 0.258,
+    "normal": {
+     "R_left": -0.536,
+     "R_right": 0.688,
+     "G_top": -0.634,
+     "G_bottom": 0.648,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.961,
+     "corr_R_column": 0.835,
+     "corr_G_row": 0.836,
+     "len_xy_max": 0.99,
+     "B_minus_sqrt": 0.003,
+     "p5_50_95": {
+      "R": [
+       46,
+       184,
+       224
+      ],
+      "G": [
+       37,
+       93,
+       229
+      ],
+      "B": [
+       78,
+       184,
+       239
+      ]
+     },
+     "alpha_px": 4852,
+     "colour_alpha_px": 4504
+    },
+    "colour_lum_p5_50_95": [
+     41,
+     77,
+     123
+    ],
+    "rough_alpha_p5_50_95": [
+     22,
+     39,
+     91
+    ],
+    "sss_share_lit": 0.274,
+    "colour": {
+     "blue_px": 1088,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.8
+     ],
+     "max_rgb": [
+      104,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 1264,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.7
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 123,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 1148,
+     "blue_off_ramp_hue": 1,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      235.2
+     ],
+     "max_rgb": [
+      104,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 1343,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.7
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 125,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-06.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     80,
+     84
+    ],
+    "fill": 0.213,
+    "normal": {
+     "R_left": -0.771,
+     "R_right": 0.538,
+     "G_top": -0.428,
+     "G_bottom": 0.391,
+     "outline_outward_share": 0.985,
+     "outline_mean_cos": 0.938,
+     "corr_R_column": 0.761,
+     "corr_G_row": 0.735,
+     "len_xy_max": 0.994,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       16,
+       143,
+       222
+      ],
+      "G": [
+       54,
+       161,
+       193
+      ],
+      "B": [
+       79,
+       223,
+       251
+      ]
+     },
+     "alpha_px": 4084,
+     "colour_alpha_px": 3752
+    },
+    "colour_lum_p5_50_95": [
+     36,
+     72,
+     127
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     43,
+     92
+    ],
+    "sss_share_lit": 0.374,
+    "colour": {
+     "blue_px": 1198,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.8
+     ],
+     "max_rgb": [
+      102,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 1444,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      232.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 99,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 1327,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      232.0
+     ],
+     "max_rgb": [
+      102,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 1598,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.9,
+      232.8
+     ],
+     "max_rgb": [
+      91,
+      157,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 123,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-small-colour-07.png": {
+    "canvas": [
+     128,
+     128
+    ],
+    "mode": "RGBA",
+    "extent": [
+     96,
+     100
+    ],
+    "fill": 0.369,
+    "normal": {
+     "R_left": -0.605,
+     "R_right": 0.657,
+     "G_top": -0.595,
+     "G_bottom": 0.613,
+     "outline_outward_share": 0.974,
+     "outline_mean_cos": 0.929,
+     "corr_R_column": 0.849,
+     "corr_G_row": 0.826,
+     "len_xy_max": 0.991,
+     "B_minus_sqrt": 0.003,
+     "p5_50_95": {
+      "R": [
+       32,
+       134,
+       222
+      ],
+      "G": [
+       12,
+       100,
+       222
+      ],
+      "B": [
+       70,
+       175,
+       229
+      ]
+     },
+     "alpha_px": 6771,
+     "colour_alpha_px": 6363
+    },
+    "colour_lum_p5_50_95": [
+     37,
+     74,
+     123
+    ],
+    "rough_alpha_p5_50_95": [
+     21,
+     40,
+     88
+    ],
+    "sss_share_lit": 0.295,
+    "colour": {
+     "blue_px": 1673,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      231.4
+     ],
+     "max_rgb": [
+      105,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 1978,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 171,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 1788,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      231.4
+     ],
+     "max_rgb": [
+      105,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 2112,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      233.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 181,
+     "other_channel255_px": 0
+    }
+   }
+  },
+  "chunk": {
+   "asteroid-radiant-chunk-colour-01.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     42,
+     40
+    ],
+    "fill": 0.412,
+    "normal": {
+     "R_left": -0.669,
+     "R_right": 0.521,
+     "G_top": -0.679,
+     "G_bottom": 0.345,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.942,
+     "corr_R_column": 0.893,
+     "corr_G_row": 0.877,
+     "len_xy_max": 0.995,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       25,
+       158,
+       200
+      ],
+      "G": [
+       34,
+       144,
+       185
+      ],
+      "B": [
+       95,
+       198,
+       235
+      ]
+     },
+     "alpha_px": 1326,
+     "colour_alpha_px": 1158
+    },
+    "colour_lum_p5_50_95": [
+     52,
+     75,
+     121
+    ],
+    "rough_alpha_p5_50_95": [
+     24,
+     45,
+     89
+    ],
+    "sss_share_lit": 0.371,
+    "colour": {
+     "blue_px": 363,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.8
+     ],
+     "max_rgb": [
+      100,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 418,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.4
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 23,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 393,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.8
+     ],
+     "max_rgb": [
+      100,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 459,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.4
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 23,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-chunk-colour-02.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     44,
+     42
+    ],
+    "fill": 0.525,
+    "normal": {
+     "R_left": -0.586,
+     "R_right": 0.38,
+     "G_top": -0.559,
+     "G_bottom": 0.506,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.974,
+     "corr_R_column": 0.889,
+     "corr_G_row": 0.876,
+     "len_xy_max": 0.996,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       40,
+       131,
+       181
+      ],
+      "G": [
+       54,
+       112,
+       197
+      ],
+      "B": [
+       102,
+       215,
+       230
+      ]
+     },
+     "alpha_px": 1624,
+     "colour_alpha_px": 1448
+    },
+    "colour_lum_p5_50_95": [
+     45,
+     76,
+     123
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     43,
+     89
+    ],
+    "sss_share_lit": 0.354,
+    "colour": {
+     "blue_px": 443,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.4
+     ],
+     "max_rgb": [
+      100,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 515,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.2
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 38,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 508,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      232.8
+     ],
+     "max_rgb": [
+      100,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 587,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.9,
+      231.2
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 44,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-chunk-colour-03.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     38,
+     46
+    ],
+    "fill": 0.389,
+    "normal": {
+     "R_left": -0.349,
+     "R_right": 0.105,
+     "G_top": -0.602,
+     "G_bottom": 0.425,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.842,
+     "corr_R_column": 0.548,
+     "corr_G_row": 0.796,
+     "len_xy_max": 0.993,
+     "B_minus_sqrt": 0.002,
+     "p5_50_95": {
+      "R": [
+       61,
+       103,
+       195
+      ],
+      "G": [
+       46,
+       63,
+       200
+      ],
+      "B": [
+       143,
+       201,
+       246
+      ]
+     },
+     "alpha_px": 1271,
+     "colour_alpha_px": 1099
+    },
+    "colour_lum_p5_50_95": [
+     48,
+     75,
+     125
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     44,
+     91
+    ],
+    "sss_share_lit": 0.373,
+    "colour": {
+     "blue_px": 344,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.4
+     ],
+     "max_rgb": [
+      99,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 393,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.3
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 20,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 394,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.4
+     ],
+     "max_rgb": [
+      99,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 448,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.3
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 26,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-chunk-colour-04.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     42,
+     28
+    ],
+    "fill": 0.3,
+    "normal": {
+     "R_left": -0.48,
+     "R_right": 0.352,
+     "G_top": -0.524,
+     "G_bottom": 0.882,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.968,
+     "corr_R_column": 0.717,
+     "corr_G_row": 0.875,
+     "len_xy_max": 0.996,
+     "B_minus_sqrt": 0.004,
+     "p5_50_95": {
+      "R": [
+       39,
+       128,
+       206
+      ],
+      "G": [
+       40,
+       188,
+       244
+      ],
+      "B": [
+       66,
+       122,
+       251
+      ]
+     },
+     "alpha_px": 1002,
+     "colour_alpha_px": 858
+    },
+    "colour_lum_p5_50_95": [
+     52,
+     78,
+     121
+    ],
+    "rough_alpha_p5_50_95": [
+     21,
+     46,
+     88
+    ],
+    "sss_share_lit": 0.471,
+    "colour": {
+     "blue_px": 343,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      228.9
+     ],
+     "max_rgb": [
+      98,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 384,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.4
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 11,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 388,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.0
+     ],
+     "max_rgb": [
+      98,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 433,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.9,
+      230.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 12,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-chunk-colour-05.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     40,
+     36
+    ],
+    "fill": 0.363,
+    "normal": {
+     "R_left": -0.543,
+     "R_right": 0.671,
+     "G_top": -0.657,
+     "G_bottom": 0.69,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.963,
+     "corr_R_column": 0.911,
+     "corr_G_row": 0.867,
+     "len_xy_max": 0.975,
+     "B_minus_sqrt": 0.003,
+     "p5_50_95": {
+      "R": [
+       40,
+       112,
+       229
+      ],
+      "G": [
+       32,
+       168,
+       233
+      ],
+      "B": [
+       69,
+       164,
+       240
+      ]
+     },
+     "alpha_px": 1188,
+     "colour_alpha_px": 1032
+    },
+    "colour_lum_p5_50_95": [
+     48,
+     76,
+     129
+    ],
+    "rough_alpha_p5_50_95": [
+     26,
+     52,
+     95
+    ],
+    "sss_share_lit": 0.534,
+    "colour": {
+     "blue_px": 475,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.4
+     ],
+     "max_rgb": [
+      96,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 526,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 24,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 510,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      231.4
+     ],
+     "max_rgb": [
+      96,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 572,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      231.1
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 25,
+     "other_channel255_px": 0
+    }
+   },
+   "asteroid-radiant-chunk-colour-06.png": {
+    "canvas": [
+     50,
+     50
+    ],
+    "mode": "RGBA",
+    "extent": [
+     38,
+     36
+    ],
+    "fill": 0.355,
+    "normal": {
+     "R_left": -0.427,
+     "R_right": 0.618,
+     "G_top": -0.796,
+     "G_bottom": 0.45,
+     "outline_outward_share": 1.0,
+     "outline_mean_cos": 0.955,
+     "corr_R_column": 0.885,
+     "corr_G_row": 0.922,
+     "len_xy_max": 0.994,
+     "B_minus_sqrt": 0.003,
+     "p5_50_95": {
+      "R": [
+       55,
+       99,
+       226
+      ],
+      "G": [
+       24,
+       122,
+       219
+      ],
+      "B": [
+       75,
+       189,
+       247
+      ]
+     },
+     "alpha_px": 1161,
+     "colour_alpha_px": 1009
+    },
+    "colour_lum_p5_50_95": [
+     51,
+     74,
+     128
+    ],
+    "rough_alpha_p5_50_95": [
+     23,
+     47,
+     92
+    ],
+    "sss_share_lit": 0.437,
+    "colour": {
+     "blue_px": 374,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      230.0
+     ],
+     "max_rgb": [
+      95,
+      145,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss": {
+     "blue_px": 419,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.6
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 15,
+     "other_channel255_px": 0
+    },
+    "colour_all": {
+     "blue_px": 432,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      215.8,
+      235.0
+     ],
+     "max_rgb": [
+      99,
+      146,
+      238
+     ],
+     "white_px": 0,
+     "blue255_px": 0,
+     "other_channel255_px": 0
+    },
+    "sss_all": {
+     "blue_px": 488,
+     "blue_off_ramp_hue": 0,
+     "blue_cyan_lean": 0,
+     "blue_paler_than_73ADFF": 0,
+     "other_hue_px": 0,
+     "blue_hue_range": [
+      216.0,
+      230.8
+     ],
+     "max_rgb": [
+      90,
+      156,
+      255
+     ],
+     "white_px": 0,
+     "blue255_px": 21,
+     "other_channel255_px": 0
+    }
+   }
+  }
+ },
+ "verdict": {
+  "1 sizes small": {
+   "counts": [
+    21,
+    21
+   ],
+   "canvases": true,
+   "extents_v": [
+    [
+     92,
+     102
+    ],
+    [
+     105,
+     97
+    ],
+    [
+     104,
+     102
+    ],
+    [
+     92,
+     103
+    ],
+    [
+     85,
+     87
+    ],
+    [
+     83,
+     81
+    ],
+    [
+     89,
+     99
+    ]
+   ],
+   "extents_r": [
+    [
+     96,
+     104
+    ],
+    [
+     94,
+     106
+    ],
+    [
+     105,
+     96
+    ],
+    [
+     96,
+     104
+    ],
+    [
+     84,
+     88
+    ],
+    [
+     80,
+     84
+    ],
+    [
+     96,
+     100
+    ]
+   ],
+   "pass_": true
+  },
+  "2 normals small": {
+   "vanilla_outward_share": [
+    0.943,
+    0.937,
+    0.902,
+    0.97,
+    0.911,
+    0.964,
+    0.896
+   ],
+   "radiant_outward_share": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.985,
+    0.974
+   ],
+   "vanilla_corr_R_col_G_row": [
+    [
+     0.664,
+     0.712
+    ],
+    [
+     0.558,
+     0.549
+    ],
+    [
+     0.656,
+     0.639
+    ],
+    [
+     0.526,
+     0.698
+    ],
+    [
+     0.71,
+     0.579
+    ],
+    [
+     0.586,
+     0.587
+    ],
+    [
+     0.699,
+     0.716
+    ]
+   ],
+   "radiant_corr_R_col_G_row": [
+    [
+     0.867,
+     0.861
+    ],
+    [
+     0.901,
+     0.889
+    ],
+    [
+     0.901,
+     0.841
+    ],
+    [
+     0.869,
+     0.888
+    ],
+    [
+     0.835,
+     0.836
+    ],
+    [
+     0.761,
+     0.735
+    ],
+    [
+     0.849,
+     0.826
+    ]
+   ],
+   "pass_": true
+  },
+  "3 blue small": {
+   "off_ramp_px": 0,
+   "pass_": true
+  },
+  "4 white small": {
+   "white_or_RG255_px": 0,
+   "blue255_px": 2002,
+   "pass_": true
+  },
+  "1 sizes chunk": {
+   "counts": [
+    18,
+    18
+   ],
+   "canvases": true,
+   "extents_v": [
+    [
+     36,
+     41
+    ],
+    [
+     40,
+     43
+    ],
+    [
+     37,
+     44
+    ],
+    [
+     40,
+     39
+    ],
+    [
+     38,
+     38
+    ],
+    [
+     37,
+     34
+    ]
+   ],
+   "extents_r": [
+    [
+     42,
+     40
+    ],
+    [
+     44,
+     42
+    ],
+    [
+     38,
+     46
+    ],
+    [
+     42,
+     28
+    ],
+    [
+     40,
+     36
+    ],
+    [
+     38,
+     36
+    ]
+   ],
+   "pass_": true
+  },
+  "2 normals chunk": {
+   "vanilla_outward_share": [
+    0.972,
+    1.0,
+    0.962,
+    0.971,
+    0.933,
+    0.98
+   ],
+   "radiant_outward_share": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vanilla_corr_R_col_G_row": [
+    [
+     0.732,
+     0.787
+    ],
+    [
+     0.741,
+     0.674
+    ],
+    [
+     0.781,
+     0.808
+    ],
+    [
+     0.782,
+     0.842
+    ],
+    [
+     0.777,
+     0.641
+    ],
+    [
+     0.622,
+     0.64
+    ]
+   ],
+   "radiant_corr_R_col_G_row": [
+    [
+     0.893,
+     0.877
+    ],
+    [
+     0.889,
+     0.876
+    ],
+    [
+     0.548,
+     0.796
+    ],
+    [
+     0.717,
+     0.875
+    ],
+    [
+     0.911,
+     0.867
+    ],
+    [
+     0.885,
+     0.922
+    ]
+   ],
+   "pass_": true
+  },
+  "3 blue chunk": {
+   "off_ramp_px": 0,
+   "pass_": true
+  },
+  "4 white chunk": {
+   "white_or_RG255_px": 0,
+   "blue255_px": 131,
+   "pass_": true
+  }
+ }
+}
