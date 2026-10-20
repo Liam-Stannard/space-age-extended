@@ -84,7 +84,8 @@ the corpse's default is "corpse", CorpsePrototype). It goes after every other sh
 
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
-LIMIT_PX off its declared curve or off its line, or a glow animation clips or
+LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
+(Packer.slide; naming those frames), or a glow animation clips or
 reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge.
 meta.json is written first.
 """
@@ -506,11 +507,15 @@ class Packer:
                 path = checks[f"{name}_path_px"] = self.slide(a, cs, d)
                 if a.get("track"):
                     path["tracked"] = a["track"]
-                if max(path["off_curve"], path["off_line"]) > LIMIT_PX:
-                    self.over.append(f"animation {name!r}, {where(d)}: a frame is {path['off_curve']} px off "
-                                     f"its declared curve and {path['off_line']} px off its line; both stay "
-                                     f"within {LIMIT_PX:g} (declared {path['declared']}, measured "
-                                     f"{path['measured']})")
+                if path["frames_over"]:
+                    # named as the render measured: the tracked part's own, for a tracked slide
+                    stems = [contract.track_frame(name, a["track"], f, d) if a.get("track")
+                             else contract.frame(name, f, d) for f in path["frames_over"]]
+                    shown = ", ".join(f"{f} ({s}.png)" for f, s in zip(path["frames_over"], stems))
+                    self.over.append(f"animation {name!r}, {where(d)}: frame(s) {shown} more than "
+                                     f"{LIMIT_PX:g} px off, measured from frame 0 (the still): at most "
+                                     f"{path['off_curve']} px off its declared curve and {path['off_line']} px "
+                                     f"off its line (declared {path['declared']}, measured {path['measured']})")
 
         for a in decl["animations"]:
             if a.get("kind") == "glow":
@@ -600,30 +605,36 @@ class Packer:
 
         The declared path, put on the screen for this direction, is where the part
         should be in each frame; its centroid is where it is. The centroid sits a
-        fixed distance from whatever point the path follows, so that offset is
-        fitted (the mean over the frames) and what is left in each frame is the
-        miss: along the line, the frame is off the curve; across it, off the line.
+        fixed distance from whatever point the path follows, and that offset is
+        taken from frame 0 -- the still, the part as the stopped machine shows it
+        (the frame-0 rule) -- so frame 0 misses by nothing and every other frame's
+        miss is measured from it: along the line, the frame is off the curve; across
+        it, off the line. Either past LIMIT_PX fails, and the frames that are
+        (frames_over, numbered as their renders are) are named. Until 2026-10-20 the
+        offset was the mean over the frames, which shared one frame's miss among the
+        rest: on a 4-frame slide one frame up to ~1.33 px off passed (Liam: "From
+        frame 0").
         """
         # a root that never turns (turns: false) leaves the path as modelled in every direction
         facing = d if anim.get("turns", True) else contract.DIRECTIONS[self.decl["directions"]][0][0]
         want = [contract.screen(self.decl, p, facing) for p in anim["path"]]
-        ox = sum(c[0] - w[0] for c, w in zip(cs, want)) / len(cs)
-        oy = sum(c[1] - w[1] for c, w in zip(cs, want)) / len(cs)
+        ox, oy = cs[0][0] - want[0][0], cs[0][1] - want[0][1]
         far = max(((w[0] - want[0][0], w[1] - want[0][1]) for w in want), key=lambda v: math.hypot(*v))
         ux, uy = far[0] / math.hypot(*far), far[1] / math.hypot(*far)
         got, along, across = [], [], []
         for c, w in zip(cs, want):
             rx, ry = c[0] - ox - w[0], c[1] - oy - w[1]
             got.append(round((c[0] - ox - want[0][0]) * ux + (c[1] - oy - want[0][1]) * uy, 2))
-            along.append(rx * ux + ry * uy)
-            across.append(-rx * uy + ry * ux)
+            along.append(round(rx * ux + ry * uy, 2))
+            across.append(round(-rx * uy + ry * ux, 2))
         return dict(declared=[round((w[0] - want[0][0]) * ux + (w[1] - want[0][1]) * uy, 2) for w in want],
                     measured=got,
-                    off_curve=round(max(abs(v) for v in along), 2),
-                    off_line=round(max(abs(v) for v in across), 2),
+                    off_curve=max(abs(v) for v in along),
+                    off_line=max(abs(v) for v in across),
+                    frames_over=[f for f, (a, b) in enumerate(zip(along, across)) if max(abs(a), abs(b)) > LIMIT_PX],
                     note="each frame's position along the line, declared and measured (px from frame 0's "
-                         "declared point); the most any frame is off the curve and off the line: both must "
-                         "stay within 1")
+                         "point: the still's); the most any frame is off the curve and off the line, measured "
+                         "from frame 0: both must stay within 1; frames_over, the frames that do not")
 
     def wreck(self, p, im, d, what):
         """A remnants pass's render in direction d, cleaned: kept for its sheet (wreck_sheet), and

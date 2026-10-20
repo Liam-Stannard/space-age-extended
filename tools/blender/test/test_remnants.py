@@ -11,7 +11,8 @@ drawn by preview.py. --baseline names a commit from before the remnants pass (ma
 8740c38): its contract.py, pack.py and preview.py, taken out with `git show`, are run beside
 this tree's on renders that declare no remnants -- the box's with its remnants pass taken out,
 and each --also <render-out> (any render.sh output, test/radiant_box.py's say) -- and every file
-they write must be byte for byte the same. --no-catcher names other directories holding a
+they write must be byte for byte the same, but for each slide animation's <name>_path_px check
+in meta.json (same_meta). --no-catcher names other directories holding a
 wreck-<direction>.png for each of the box's directions rendered with no catcher (a reviewer's,
 say): each must be refused as the box's own wreck-bare renders are. Everything is written
 under --out (default <box-out>/remnants-test) and kept.
@@ -56,10 +57,12 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              and meta.json as the box's own packed with it, less remnants.png, its meta.json
              entry and its remnants_* checks. preview.py with remnants: three panels a row
              (idle, working, wreck), 256 + 2 x 8 px square; without: two, of the 192 canvas;
-             Model.wreck None without it. With --baseline: pack.py's output (sheets and
-             meta.json), preview.py's sheet and its --gif of each paint animation (every run
-             exiting 0), byte for byte as the baseline's, on the box without remnants and on
-             every --also.
+             Model.wreck None without it. With --baseline: pack.py's sheets, preview.py's
+             sheet and its --gif of each paint animation (every run exiting 0), byte for byte
+             as the baseline's, on the box without remnants and on every --also; and meta.json
+             byte for byte, or else equal (every value, every key in order) once each slide
+             animation's <name>_path_px is set aside -- in both, or it fails: the slide check
+             is pack.py's to change (T05 measures it from frame 0), not the packing's.
 """
 import argparse
 import copy
@@ -427,9 +430,32 @@ def baseline_tools(rev, out):
     return d
 
 
+def same_meta(a, b, decl):
+    """Whether two meta.json files are the same, byte for byte, or the same once every slide
+    animation's <name>_path_px check is set aside: (ok, why). That check's own numbers and wording
+    are the slide check's (pack.py's Packer.slide, measured from frame 0 since T05), not the
+    packing's; everything else -- every value and the order of every key -- must still match, and
+    each set-aside entry must be in both."""
+    if same_bytes(a, b):
+        return True, ""
+    slides = [f"{x['name']}_path_px" for x in decl["animations"] if x["motion"] == "slide"]
+    ma, mb = (json.load(open(p)) for p in (a, b))
+    for d in dirs_of(decl):
+        ca, cb = checks_of(ma, d), checks_of(mb, d)
+        for k in slides:
+            if k not in ca or k not in cb:
+                who = "this tree" if k not in ca else "the baseline"
+                return False, f"{k} missing from {who}'s, {d or 'its one direction'}"
+            ca.pop(k)
+            cb.pop(k)
+    if json.dumps(ma) != json.dumps(mb):
+        return False, f"differ beyond {', '.join(slides) or 'any _path_px (none declared)'}"
+    return True, ""
+
+
 def against_baseline(label, rdir, out, base):
     """pack.py and preview.py (its sheet and a GIF of each paint animation) of this tree and of the
-    baseline on one render directory: byte for byte."""
+    baseline on one render directory: byte for byte, but meta.json's slide checks (same_meta)."""
     mine, theirs = os.path.join(out, f"{label}-mine"), os.path.join(out, f"{label}-base")
     for tools, o in ((TOOLS, mine), (base, theirs)):
         code, text, _ = packed(rdir, os.path.join(o, "sheets"), tools)
@@ -445,9 +471,12 @@ def against_baseline(label, rdir, out, base):
                 code, text = run([sys.executable, os.path.join(tools, "preview.py"), rdir,
                                   os.path.join(o, f"{a['name']}.gif"), "--gif", a["name"], "--speed", "0.25"])
                 check(f"{label}: preview.py --gif {a['name']} ({who}) exits 0", code == 0, text[-300:])
-    ok, why = same_dirs(os.path.join(mine, "sheets"), os.path.join(theirs, "sheets"))
-    n = len(files(os.path.join(mine, "sheets")))
-    check(f"{label}: pack.py's sheets and meta.json byte for byte as the baseline's ({n} files)", ok, why)
+    ok, why = same_dirs(os.path.join(mine, "sheets"), os.path.join(theirs, "sheets"), skip=("meta.json",))
+    n = len(files(os.path.join(mine, "sheets"))) - 1
+    check(f"{label}: pack.py's sheets byte for byte as the baseline's ({n} files)", ok, why)
+    ok, why = same_meta(os.path.join(mine, "sheets", "meta.json"), os.path.join(theirs, "sheets", "meta.json"),
+                        load_decl(rdir))
+    check(f"{label}: pack.py's meta.json as the baseline's, its slides' <name>_path_px set aside", ok, why)
     ok, why = same_dirs(mine, theirs)
     check(f"{label}: preview.py's sheet and GIFs byte for byte as the baseline's ({', '.join(files(mine))})", ok, why)
 
