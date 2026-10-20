@@ -1,0 +1,398 @@
+{
+ "fittings-north": {
+  "size": [
+   328,
+   71
+  ],
+  "shift": [
+   0.0,
+   -0.89844
+  ]
+ },
+ "fittings-shadow-north": {
+  "size": [
+   340,
+   258
+  ],
+  "shift": [
+   0.17188,
+   0.75
+  ]
+ },
+ "fittings-front-north": {
+  "size": [
+   191,
+   69
+  ],
+  "shift": [
+   -0.00781,
+   2.22656
+  ]
+ },
+ "fittings-east": {
+  "size": [
+   212,
+   150
+  ],
+  "shift": [
+   -0.90625,
+   -1.54688
+  ]
+ },
+ "fittings-shadow-east": {
+  "size": [
+   272,
+   346
+  ],
+  "shift": [
+   -0.35938,
+   0.0625
+  ]
+ },
+ "fittings-front-east": {
+  "size": [
+   257,
+   148
+  ],
+  "shift": [
+   -0.52344,
+   1.60938
+  ]
+ },
+ "fittings-south": {
+  "size": [
+   96,
+   12
+  ],
+  "shift": [
+   0.0,
+   -2.64062
+  ]
+ },
+ "fittings-shadow-south": {
+  "size": [
+   340,
+   291
+  ],
+  "shift": [
+   0.17188,
+   -0.36719
+  ]
+ },
+ "fittings-front-south": {
+  "size": [
+   324,
+   74
+  ],
+  "shift": [
+   0.0,
+   1.03125
+  ]
+ },
+ "fittings-west": {
+  "size": [
+   212,
+   153
+  ],
+  "shift": [
+   0.90625,
+   -1.53906
+  ]
+ },
+ "fittings-shadow-west": {
+  "size": [
+   271,
+   346
+  ],
+  "shift": [
+   0.71094,
+   0.0625
+  ]
+ },
+ "fittings-front-west": {
+  "size": [
+   258,
+   145
+  ],
+  "shift": [
+   0.51562,
+   1.63281
+  ]
+ },
+ "connections": {
+  "north": [
+   {
+    "position": [
+     -2,
+     -1
+    ],
+    "face": "W",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     2,
+     -1
+    ],
+    "face": "E",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     1,
+     2
+    ],
+    "face": "S",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -1,
+     2
+    ],
+    "face": "S",
+    "layer": "front"
+   }
+  ],
+  "east": [
+   {
+    "position": [
+     1,
+     -2
+    ],
+    "face": "N",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     1,
+     2
+    ],
+    "face": "S",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -2,
+     1
+    ],
+    "face": "W",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -2,
+     -1
+    ],
+    "face": "W",
+    "layer": "behind"
+   }
+  ],
+  "south": [
+   {
+    "position": [
+     2,
+     1
+    ],
+    "face": "E",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -2,
+     1
+    ],
+    "face": "W",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -1,
+     -2
+    ],
+    "face": "N",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     1,
+     -2
+    ],
+    "face": "N",
+    "layer": "behind"
+   }
+  ],
+  "west": [
+   {
+    "position": [
+     -1,
+     2
+    ],
+    "face": "S",
+    "layer": "front"
+   },
+   {
+    "position": [
+     -1,
+     -2
+    ],
+    "face": "N",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     2,
+     -1
+    ],
+    "face": "E",
+    "layer": "behind"
+   },
+   {
+    "position": [
+     2,
+     1
+    ],
+    "face": "E",
+    "layer": "front"
+   }
+  ]
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.515625,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.40625,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "fittings-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0018,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "fittings-north": {
+      "px": 36,
+      "most": 12
+     },
+     "fittings-front-north": {
+      "px": 84,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "east": {
+   "centre_offset_px": -58.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.515625,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.4375,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "fittings-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0025,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "fittings-east": {
+      "px": 33,
+      "most": 12
+     },
+     "fittings-front-east": {
+      "px": 110,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    0.703125,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -2.59375,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "fittings-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0022,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "fittings-south": {
+      "px": 0,
+      "most": 0
+     },
+     "fittings-front-south": {
+      "px": 48,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 58.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.515625,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.40625,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "fittings-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0015,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "fittings-west": {
+      "px": 3,
+      "most": 12
+     },
+     "fittings-front-west": {
+      "px": 20,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  }
+ }
+}
