@@ -62,7 +62,13 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              as the baseline's, on the box without remnants and on every --also; and meta.json
              byte for byte, or else equal (every value, every key in order) once each slide
              animation's <name>_path_px is set aside -- in both, or it fails: the slide check
-             is pack.py's to change (T05 measures it from frame 0), not the packing's.
+             is pack.py's to change (T05 measures it from frame 0), not the packing's. A glow
+             pass's sheets, and their size and shift in meta.json, are set aside the same way
+             (each in both, or it fails): T06 crops a still glow to the box holding
+             pack.LIGHT_SHARE of its light, which the baseline does not. So are preview.py's
+             sheet and GIFs, but only on a model with a glow pass -- they draw it through
+             pack.glow_layer -- and then both must still write the same files; on a model with
+             none they stay byte for byte. A glow animation's sheets are never set aside.
 """
 import argparse
 import copy
@@ -430,16 +436,27 @@ def baseline_tools(rev, out):
     return d
 
 
+def glow_sheets(decl):
+    """The sheet of every glow pass (a still glow), in every direction: what T06's crop changes."""
+    return [contract.named(p["sheet"], d) for p in decl["passes"] if p["kind"] == "glow" for d in dirs_of(decl)]
+
+
 def same_meta(a, b, decl):
     """Whether two meta.json files are the same, byte for byte, or the same once every slide
-    animation's <name>_path_px check is set aside: (ok, why). That check's own numbers and wording
-    are the slide check's (pack.py's Packer.slide, measured from frame 0 since T05), not the
-    packing's; everything else -- every value and the order of every key -- must still match, and
-    each set-aside entry must be in both."""
+    animation's <name>_path_px check and every glow pass's sheet's size and shift are set aside:
+    (ok, why). That check's own numbers and wording are the slide check's (pack.py's Packer.slide,
+    measured from frame 0 since T05), and a still glow's crop is the light box's (pack.light_box,
+    since T06), not the packing's; everything else -- every value and the order of every key --
+    must still match, and each set-aside entry must be in both."""
     if same_bytes(a, b):
         return True, ""
     slides = [f"{x['name']}_path_px" for x in decl["animations"] if x["motion"] == "slide"]
     ma, mb = (json.load(open(p)) for p in (a, b))
+    for g in glow_sheets(decl):
+        if g not in ma or g not in mb:
+            return False, f"glow sheet {g} missing from {'this tree' if g not in ma else 'the baseline'}'s"
+        for m in (ma, mb):
+            m[g] = {k: v for k, v in m[g].items() if k not in ("size", "shift")}
     for d in dirs_of(decl):
         ca, cb = checks_of(ma, d), checks_of(mb, d)
         for k in slides:
@@ -449,13 +466,16 @@ def same_meta(a, b, decl):
             ca.pop(k)
             cb.pop(k)
     if json.dumps(ma) != json.dumps(mb):
-        return False, f"differ beyond {', '.join(slides) or 'any _path_px (none declared)'}"
+        aside = slides + [f"{g} size and shift" for g in glow_sheets(decl)]
+        return False, f"differ beyond {', '.join(aside) or 'any _path_px or glow crop (none declared)'}"
     return True, ""
 
 
 def against_baseline(label, rdir, out, base):
     """pack.py and preview.py (its sheet and a GIF of each paint animation) of this tree and of the
-    baseline on one render directory: byte for byte, but meta.json's slide checks (same_meta)."""
+    baseline on one render directory: byte for byte, but meta.json's slide checks and glow passes'
+    crops (same_meta), the glow passes' sheets, and, on a model with a glow pass, preview.py's
+    files' bytes (it draws the glow through pack.glow_layer; the files themselves must match)."""
     mine, theirs = os.path.join(out, f"{label}-mine"), os.path.join(out, f"{label}-base")
     for tools, o in ((TOOLS, mine), (base, theirs)):
         code, text, _ = packed(rdir, os.path.join(o, "sheets"), tools)
@@ -471,14 +491,27 @@ def against_baseline(label, rdir, out, base):
                 code, text = run([sys.executable, os.path.join(tools, "preview.py"), rdir,
                                   os.path.join(o, f"{a['name']}.gif"), "--gif", a["name"], "--speed", "0.25"])
                 check(f"{label}: preview.py --gif {a['name']} ({who}) exits 0", code == 0, text[-300:])
-    ok, why = same_dirs(os.path.join(mine, "sheets"), os.path.join(theirs, "sheets"), skip=("meta.json",))
-    n = len(files(os.path.join(mine, "sheets"))) - 1
-    check(f"{label}: pack.py's sheets byte for byte as the baseline's ({n} files)", ok, why)
-    ok, why = same_meta(os.path.join(mine, "sheets", "meta.json"), os.path.join(theirs, "sheets", "meta.json"),
-                        load_decl(rdir))
-    check(f"{label}: pack.py's meta.json as the baseline's, its slides' <name>_path_px set aside", ok, why)
-    ok, why = same_dirs(mine, theirs)
-    check(f"{label}: preview.py's sheet and GIFs byte for byte as the baseline's ({', '.join(files(mine))})", ok, why)
+    decl = load_decl(rdir)
+    glows = [g + ".png" for g in glow_sheets(decl)]
+    for g in glows:
+        check(f"{label}: glow sheet {g} written by both (set aside: T06's crop)",
+              all(os.path.isfile(os.path.join(o, "sheets", g)) for o in (mine, theirs)))
+    ok, why = same_dirs(os.path.join(mine, "sheets"), os.path.join(theirs, "sheets"), skip=("meta.json", *glows))
+    n = len([f for f in files(os.path.join(mine, "sheets")) if f not in glows]) - 1
+    aside = f", glow passes' {', '.join(glows)} set aside" if glows else ""
+    check(f"{label}: pack.py's sheets byte for byte as the baseline's ({n} files{aside})", ok, why)
+    ok, why = same_meta(os.path.join(mine, "sheets", "meta.json"), os.path.join(theirs, "sheets", "meta.json"), decl)
+    also = " and its glow passes' size and shift" if glows else ""
+    check(f"{label}: pack.py's meta.json as the baseline's, its slides' <name>_path_px{also} set aside", ok, why)
+    if glows:
+        same = files(mine) == files(theirs)
+        check(f"{label}: preview.py's sheet and GIFs written by both ({', '.join(files(mine))}); their bytes set "
+              f"aside, as it draws the glow pass through pack.glow_layer", same,
+              f"files differ: {sorted(set(files(mine)) ^ set(files(theirs)))}")
+    else:
+        ok, why = same_dirs(mine, theirs)
+        check(f"{label}: preview.py's sheet and GIFs byte for byte as the baseline's ({', '.join(files(mine))})",
+              ok, why)
 
 
 def test_identity(box, out, meta_with, rev, also):

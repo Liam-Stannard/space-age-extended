@@ -9,7 +9,10 @@ rendered on that one canvas with the entity origin exactly at its centre, so
 every layer's shift is its crop's centre minus that point, computed rather than
 measured and adjusted. Crops keep a 1 px transparent rim. A glow pass drops its
 isolated specks of render noise (SPECK_PX) from both its crop and its sheet, so its
-size and shift do not change from one render of the same model to the next.
+size and shift do not change from one render of the same model to the next, and then
+keeps only the smallest box that holds LIGHT_SHARE (99.9 %) of its light -- alpha times
+luminance -- so a faint haze too wide to be a speck does not stretch it either (glow_layer).
+An animated glow keeps every pixel of its light, its faint tail too (GLOW_FLOOR).
 
 Sheets are named for the pass's declared sheet (and the animation's name), with
 -<direction> after it when the model has more than one direction; meta.json
@@ -93,6 +96,7 @@ import json
 import math
 import os
 import sys
+from fractions import Fraction
 from PIL import Image, ImageChops, ImageFilter
 
 import contract
@@ -118,10 +122,20 @@ LAYER_FLOOR = 8     # a working layer's difference from its plate at or under th
 # pixels seen; 4 drops those with a pixel to spare, and is an order of magnitude under
 # any light.
 SPECK_PX = 4
+# A glow pass (a still glow: one frame, glow_layer) keeps the smallest box that holds this
+# share of its light, its light being each pixel's alpha times its luminance (PIL's "L", the
+# luma the LAYER_FLOOR cut is made on), and nothing outside it: a faint wide haze over the
+# floor, in groups too big to drop as specks, no longer stretches its crop (Liam, 2026-10-20:
+# "99.5% of light, stills"; then, shown that 99.5 % also trimmed lit edges -- up to 55 % of the
+# peak on the Reaction Plant's legs, 28 % on test/box.py's window -- "Accept, raise to 99.9%").
+# Light passes keep their own crop (Liam: "No, glows only"). Glow animations keep every lit
+# pixel (GLOW_FLOOR, below).
+LIGHT_SHARE = 0.999
 # An animated glow's frame (glow_frame) is cut where its light falls to this, not to
 # LAYER_FLOOR: a bloom's faint tail fading out over the housing, cut at 8, left a visible
 # edge round it (a step of 8 in blue, on test/radiant_box.py with radiant.py's 16 px tail,
 # 2026-10-15); at 2 the step is under what the eye takes. Noise is still dropped as specks.
+# For that tail it is not cropped to LIGHT_SHARE either: a box cut through a bloom is an edge.
 GLOW_FLOOR = 2
 MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
 # A remnants render's shadow: a shadow catcher's pixels are black, part transparent; a lit
@@ -148,20 +162,95 @@ def clean(im):
 
 
 def glow_layer(lit, under):
-    """A glow pass's sheet: lit minus the plate under it, opaque wherever that is above noise.
+    """A glow pass's sheet, on the full canvas: lit minus the plate under it, opaque wherever
+    that is above noise inside the box that holds LIGHT_SHARE of its light.
 
     Drawn additively, so its colour is what the light adds. Isolated specks -- any
     8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
     all, so the crop (and so the sheet's size and shift) is the light's own and does
-    not move with render noise; nothing dropped is drawn either.
+    not move with render noise; nothing dropped is drawn either. So is every opaque pixel
+    outside light_box -- the smallest box holding LIGHT_SHARE of the light the specks left,
+    a pixel's light its alpha times its luminance -- so the crop (Packer.box_of, any alpha,
+    with its 1 px rim) is that box, and a faint haze too wide to be a speck drops out of the
+    sheet instead of stretching it. At a LIGHT_SHARE of 1 the box is every opaque pixel's
+    and the sheet is as it was before the box.
     """
     diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
-    alpha = diff.convert("L").point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    luma = diff.convert("L")
+    alpha = luma.point(lambda v: 255 if v > LAYER_FLOOR else 0)
     kept = drop_specks(alpha)
+    # alpha is 0 or 255, so a pixel's light is its luminance where it is opaque
+    bb = light_box(ImageChops.multiply(luma, kept), LIGHT_SHARE)
+    if bb is not None:                  # None, no light: Packer.box_of refuses the empty layer
+        inside = Image.new("L", kept.size)
+        inside.paste(255, bb)
+        kept = ImageChops.multiply(kept, inside)
     # clear the dropped pixels' colour too (a preview adds the colour and ignores alpha);
     # every other pixel, faint or not, is left exactly as it was
     keep = ImageChops.invert(ImageChops.subtract(alpha, kept)).convert("RGB")
     return Image.merge("RGBA", (*ImageChops.multiply(diff, keep).split(), kept))
+
+
+def light_box(light, share=LIGHT_SHARE):
+    """The smallest box (x0, y0, x1, y1, ends exclusive) holding at least `share` of an L
+    image's light, the sum of its values; None when it has none.
+
+    Smallest by area, exactly: every pair of rows that could bound it is tried, from the
+    rows nearest the light outward, with the narrowest run of columns between them that holds
+    the share (two pointers over the columns' sums). Of boxes of one area, the one with the
+    most light wins, then the topmost, then the leftmost. A box this small has light on every
+    edge, so its bounding box of lit pixels is itself.
+    """
+    lit = light.getbbox()
+    if lit is None:
+        return None
+    lx, ly, rx, ry = lit
+    w, h = rx - lx, ry - ly
+    px = list(light.crop(lit).get_flattened_data())
+    # cum[y][x]: column x's light in rows above y
+    cum = [[0] * w]
+    for y in range(h):
+        prev, row = cum[-1], px[y * w:(y + 1) * w]
+        cum.append([a + b for a, b in zip(prev, row)])
+    total = sum(cum[h])
+    need = math.ceil(total * Fraction(str(share)))
+    spare = total - need                # light that may be left out above and below together
+    rows = [sum(r) for r in cum]        # light in the rows above y
+    tops = [y for y in range(h) if rows[y] <= spare]
+    bottoms = [y for y in range(1, h + 1) if total - rows[y] <= spare]
+
+    def narrowest(sums):
+        """The narrowest run of columns holding `need`, the most light for that width:
+        (width, -light, x0), or None."""
+        found, s, x0 = None, 0, 0
+        for x1, v in enumerate(sums):
+            s += v
+            while s - sums[x0] >= need:
+                s -= sums[x0]
+                x0 += 1
+            if s >= need:
+                key = (x1 + 1 - x0, -s, x0)
+                found = key if found is None or key < found else found
+        return found
+
+    floor_w = narrowest(cum[h])[0]      # no box is narrower than the narrowest over every row
+    best = None                         # (area, -light, y0, x0, width, height)
+    for y0 in reversed(tops):
+        for y1 in bottoms:
+            if y1 <= y0:
+                continue
+            if best is not None and (y1 - y0) * floor_w > best[0]:
+                break                   # taller from here, never narrower than floor_w
+            if rows[y1] - rows[y0] < need:
+                continue
+            got = narrowest([a - b for a, b in zip(cum[y1], cum[y0])])
+            if got is None:
+                continue
+            key = ((y1 - y0) * got[0], got[1], y0, got[2], got[0], y1 - y0)
+            if best is None or key < best:
+                best = key
+    _, _, y0, x0, bw, bh = best
+    return (lx + x0, ly + y0, lx + x0 + bw, ly + y0 + bh)
 
 
 def drop_specks(alpha):
