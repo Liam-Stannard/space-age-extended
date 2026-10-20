@@ -57,15 +57,15 @@
      5,
      5
     ],
-    "footprint_pct": 84.3,
-    "mass_pct": 91.1,
+    "footprint_pct": 83.4,
+    "mass_pct": 90.2,
     "corners_pct": {
      "NW": 54.1,
-     "NE": 90.1,
+     "NE": 88.5,
      "SW": 3.0,
      "SE": 79.7
     },
-    "outer_band_pct": 63.5,
+    "outer_band_pct": 61.4,
     "rise_tiles": 0.86,
     "rise_by_column_tiles": [
      0.33,
@@ -88,122 +88,122 @@
    "tonal": {
     "plate": {
      "p5": 4,
-     "p50": 74,
-     "p95": 157,
-     "spread": 153
+     "p50": 73,
+     "p95": 159,
+     "spread": 155
     },
     "still": {
      "p5": 4,
      "p50": 75,
-     "p95": 161,
-     "spread": 157
+     "p95": 162,
+     "spread": 158
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 9.5,
-     "fine": 6.12,
-     "mid": 9.64,
-     "ratio": 0.63,
-     "darkchr": 14.4
+     "black_pct": 9.7,
+     "fine": 6.22,
+     "mid": 9.76,
+     "ratio": 0.64,
+     "darkchr": 14.7
     },
     "still": {
-     "black_pct": 8.4,
-     "fine": 6.5,
-     "mid": 10.01,
+     "black_pct": 8.6,
+     "fine": 6.6,
+     "mid": 10.13,
      "ratio": 0.65,
-     "darkchr": 15.7
+     "darkchr": 16.0
     }
    },
    "colour": {
-    "opaque_px": 93306,
+    "opaque_px": 92368,
     "blue_px": 575,
     "blue_pct": 0.62,
     "pale_px": 190,
     "pale_pct_of_blue": 33.0,
-    "orange_px": 4852,
-    "orange_pct": 5.2,
-    "white_px": 79,
+    "orange_px": 4857,
+    "orange_pct": 5.26,
+    "white_px": 98,
     "clipped_px": 1,
     "idle_blue_pct": 0.02,
-    "idle_orange_pct": 5.2
+    "idle_orange_pct": 5.26
    },
    "glow": {
     "legs-glow": {
-     "area": 588,
+     "area": 587,
      "peak": 84,
-     "core": 30.8,
+     "core": 30.7,
      "halo": 10.4,
      "sat_core": 0.94,
      "sat_halo": 0.99,
      "white": 0,
-     "blue_pct": 86.7,
+     "blue_pct": 86.9,
      "frames": 1
     }
    },
    "motion": {
     "loop_frames": 48,
-    "moving_pct": 3.43,
-    "strobe_pct": 1.66,
-    "strobe_px": 1545,
+    "moving_pct": 3.46,
+    "strobe_pct": 1.67,
+    "strobe_px": 1546,
     "step_px": [
-     1993,
+     1995,
      2422,
-     2540,
-     2198,
-     991,
-     1042,
-     1033,
-     938,
-     909,
+     2538,
+     2203,
+     988,
+     1043,
+     1032,
+     940,
+     910,
      894,
      1850,
-     2263,
+     2259,
      2279,
-     2231,
+     2229,
      2083,
-     1707,
-     2000,
-     2404,
-     2547,
-     2188,
-     895,
-     996,
-     1000,
-     933,
-     939,
+     1708,
+     2004,
+     2403,
+     2545,
+     2195,
+     894,
+     994,
+     998,
+     936,
+     940,
      954,
-     1862,
-     2290,
-     2362,
+     1858,
+     2291,
+     2359,
      2281,
-     2155,
-     1739,
-     1963,
+     2156,
+     1741,
+     1965,
      2362,
-     2528,
+     2530,
      2171,
      908,
-     992,
-     961,
-     906,
-     946,
-     936,
-     1869,
-     2280,
-     2266,
-     2235,
+     991,
+     959,
+     907,
+     949,
+     935,
+     1865,
+     2283,
+     2265,
+     2232,
      2122
     ],
-    "wrap_px": 1734,
+    "wrap_px": 1737,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
-     "legs": 0.57,
-     "drive": 1.2,
+     "legs": 0.58,
+     "drive": 1.21,
      "coupling-compressor": 0.0,
      "coupling-dosing": 0.0,
      "coupling-pump": 0.06,
-     "press": 1.46,
+     "press": 1.47,
      "gauge-reactor-upper": 0.0,
      "gauge-reactor-lower": 0.0,
      "gauge-scrubber": 0.0,
@@ -218,33 +218,33 @@
       101
      ],
      "step_px": [
-      681,
-      693,
+      680,
+      692,
       667,
-      672,
-      691,
-      693,
-      677,
+      673,
+      692,
+      692,
+      676,
       698,
-      663,
-      642,
+      661,
+      644,
+      655,
+      644,
       658,
-      643,
-      662,
-      658,
-      637,
-      654,
-      666,
-      677,
       660,
+      636,
+      656,
+      669,
+      677,
+      661,
       701,
       665,
-      684,
-      691
+      680,
+      688
      ],
-     "wrap_px": 677,
+     "wrap_px": 678,
      "step_range": [
-      637,
+      636,
       701
      ],
      "wrap_within_steps": true,
@@ -262,33 +262,33 @@
      ],
      "step_px": [
       691,
-      707,
-      675,
-      660,
-      694,
+      708,
+      678,
+      663,
+      692,
+      673,
+      692,
+      692,
       674,
-      694,
+      689,
+      681,
       690,
-      674,
-      691,
-      679,
-      694,
-      705,
-      701,
-      677,
-      670,
-      687,
+      706,
       700,
-      696,
+      676,
+      670,
+      689,
+      702,
+      697,
       685,
-      685,
-      669,
-      673
+      686,
+      671,
+      674
      ],
-     "wrap_px": 696,
+     "wrap_px": 700,
      "step_range": [
-      660,
-      707
+      663,
+      708
      ],
      "wrap_within_steps": true,
      "most_changed_px": 930,
@@ -351,7 +351,7 @@
       20,
       19,
       21,
-      18,
+      19,
       24,
       20,
       19,
@@ -390,39 +390,39 @@
       9
      ],
      "step_px": [
-      53,
+      51,
       57,
-      53,
-      52,
-      57,
-      48,
-      57,
-      53,
-      48,
-      46,
-      59,
-      57,
-      48,
-      54,
-      48,
       51,
       52,
+      55,
+      48,
+      56,
+      53,
+      48,
+      48,
+      58,
+      59,
+      52,
+      54,
+      47,
+      52,
+      52,
       53,
       56,
-      58,
-      52,
-      56,
+      60,
+      53,
+      55,
       51
      ],
-     "wrap_px": 60,
+     "wrap_px": 61,
      "step_range": [
-      46,
-      59
+      47,
+      60
      ],
      "wrap_within_steps": false,
-     "most_changed_px": 95,
+     "most_changed_px": 96,
      "between_frames": [
-      10,
+      7,
       18
      ]
     },
@@ -436,18 +436,18 @@
       1228,
       1651,
       1809,
-      1398,
+      1401,
       0,
       130,
       110,
-      24,
-      12,
-      5,
-      1090,
-      1553,
+      25,
+      10,
+      7,
+      1089,
+      1552,
       1549,
       1510,
-      1352
+      1354
      ],
      "wrap_px": 987,
      "step_range": [
@@ -470,7 +470,7 @@
      "step_px": [
       17,
       4,
-      0,
+      1,
       12,
       13,
       15,
@@ -494,7 +494,7 @@
      ],
      "wrap_px": 18,
      "step_range": [
-      0,
+      1,
       24
      ],
      "wrap_within_steps": true,
@@ -554,37 +554,37 @@
       10
      ],
      "step_px": [
-      25,
-      5,
+      24,
+      3,
       6,
-      18,
+      19,
       22,
       19,
       19,
-      24,
+      23,
       20,
-      2,
-      12,
-      27,
-      21,
-      1,
-      1,
-      1,
-      16,
+      3,
       10,
+      26,
+      22,
+      1,
+      1,
+      1,
+      15,
+      11,
       9,
-      14,
+      15,
       4,
       0,
-      5
+      3
      ],
      "wrap_px": 20,
      "step_range": [
       0,
-      27
+      26
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 27,
+     "most_changed_px": 25,
      "between_frames": [
       8,
       22
@@ -797,28 +797,37 @@
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -2,
-      "last_row_px": -2
+      "found_row_px": -27,
+      "last_row_px": -5
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 41,
-      "ground_px": 0,
-      "where": null
+      "px": 164,
+      "ground_px": 1,
+      "where": {
+       "across_px": [
+        18.5,
+        18.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 51,
-      "ground_px": 1,
+      "px": 204,
+      "ground_px": 10,
       "where": {
        "across_px": [
-        -23.5,
-        -23.5
+        18.5,
+        26.5
        ],
        "along_px": [
-        -1,
+        -4,
         -1
        ]
       }
@@ -836,14 +845,14 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 3,
+      "px": 29,
       "where": {
        "across_px": [
-        27.5,
-        29.5
+        -32.5,
+        -24.5
        ],
        "along_px": [
-        -1,
+        -4,
         -1
        ]
       }
@@ -893,28 +902,37 @@
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -7,
-      "last_row_px": -5
+      "found_row_px": -28,
+      "last_row_px": -12
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 164,
-      "ground_px": 0,
-      "where": null
+      "px": 451,
+      "ground_px": 39,
+      "where": {
+       "across_px": [
+        -19.5,
+        20.5
+       ],
+       "along_px": [
+        -11,
+        -4
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 204,
-      "ground_px": 11,
+      "px": 561,
+      "ground_px": 103,
       "where": {
        "across_px": [
         -23.5,
         26.5
        ],
        "along_px": [
-        -4,
+        -11,
         -1
        ]
       }
@@ -932,8 +950,17 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 0,
-      "where": null
+      "px": 350,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        -11,
+        -1
+       ]
+      }
      }
     },
     {

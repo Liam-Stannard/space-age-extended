@@ -66,11 +66,11 @@
  "coupling-compressor": {
   "size": [
    7,
-   9
+   12
   ],
   "shift": [
    -0.42969,
-   1.25781
+   1.23438
   ],
   "frames": 24,
   "line_length": 24

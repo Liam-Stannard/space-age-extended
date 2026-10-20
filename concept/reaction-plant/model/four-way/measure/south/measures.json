@@ -53,15 +53,15 @@
      5,
      5
     ],
-    "footprint_pct": 87.7,
-    "mass_pct": 93.1,
+    "footprint_pct": 86.2,
+    "mass_pct": 91.6,
     "corners_pct": {
      "NW": 62.1,
      "NE": 52.8,
-     "SW": 75.3,
+     "SW": 73.7,
      "SE": 82.2
     },
-    "outer_band_pct": 62.7,
+    "outer_band_pct": 63.3,
     "rise_tiles": 0.47,
     "rise_by_column_tiles": [
      0.36,
@@ -83,122 +83,122 @@
    },
    "tonal": {
     "plate": {
-     "p5": 3,
-     "p50": 72,
-     "p95": 156,
-     "spread": 153
+     "p5": 4,
+     "p50": 70,
+     "p95": 154,
+     "spread": 150
     },
     "still": {
-     "p5": 4,
-     "p50": 74,
-     "p95": 158,
-     "spread": 154
+     "p5": 5,
+     "p50": 72,
+     "p95": 157,
+     "spread": 152
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 11.8,
-     "fine": 6.18,
-     "mid": 10.01,
-     "ratio": 0.62,
-     "darkchr": 11.2
+     "black_pct": 11.7,
+     "fine": 6.17,
+     "mid": 10.08,
+     "ratio": 0.61,
+     "darkchr": 11.5
     },
     "still": {
-     "black_pct": 10.1,
-     "fine": 6.53,
-     "mid": 10.38,
-     "ratio": 0.63,
-     "darkchr": 12.8
+     "black_pct": 9.9,
+     "fine": 6.54,
+     "mid": 10.46,
+     "ratio": 0.62,
+     "darkchr": 13.0
     }
    },
    "colour": {
-    "opaque_px": 95285,
-    "blue_px": 1984,
-    "blue_pct": 2.08,
-    "pale_px": 597,
-    "pale_pct_of_blue": 30.1,
-    "orange_px": 3729,
-    "orange_pct": 3.91,
-    "white_px": 40,
+    "opaque_px": 93776,
+    "blue_px": 1983,
+    "blue_pct": 2.11,
+    "pale_px": 594,
+    "pale_pct_of_blue": 30.0,
+    "orange_px": 3778,
+    "orange_pct": 4.03,
+    "white_px": 31,
     "clipped_px": 0,
     "idle_blue_pct": 0.04,
-    "idle_orange_pct": 3.91
+    "idle_orange_pct": 4.03
    },
    "glow": {
     "legs-glow": {
-     "area": 2274,
+     "area": 2276,
      "peak": 93,
-     "core": 69.8,
+     "core": 69.9,
      "halo": 6.3,
      "sat_core": 0.94,
      "sat_halo": 0.98,
      "white": 0,
-     "blue_pct": 90.9,
+     "blue_pct": 90.8,
      "frames": 1
     }
    },
    "motion": {
     "loop_frames": 48,
-    "moving_pct": 5.1,
-    "strobe_pct": 1.7,
+    "moving_pct": 5.18,
+    "strobe_pct": 1.72,
     "strobe_px": 1617,
     "step_px": [
-     3445,
-     4083,
-     4165,
-     3812,
-     2153,
-     2336,
-     2304,
-     2218,
-     2233,
-     2254,
-     3268,
-     3792,
-     3886,
-     3821,
-     3634,
+     3449,
+     4085,
+     4159,
+     3807,
+     2148,
+     2337,
+     2307,
+     2222,
+     2235,
+     2252,
+     3271,
+     3788,
+     3899,
+     3822,
+     3636,
      3119,
-     3439,
+     3441,
      4124,
      4104,
-     3819,
-     2169,
-     2288,
-     2286,
-     2258,
-     2164,
-     2254,
-     3338,
-     3751,
-     3916,
-     3870,
-     3588,
-     3140,
-     3514,
-     4083,
-     4095,
-     3853,
-     2123,
-     2287,
-     2350,
-     2197,
-     2158,
-     2295,
-     3277,
-     3758,
-     3932,
      3822,
-     3570
+     2162,
+     2289,
+     2290,
+     2243,
+     2171,
+     2256,
+     3334,
+     3749,
+     3913,
+     3873,
+     3592,
+     3146,
+     3513,
+     4081,
+     4096,
+     3846,
+     2134,
+     2286,
+     2351,
+     2195,
+     2163,
+     2295,
+     3279,
+     3764,
+     3927,
+     3825,
+     3575
     ],
-    "wrap_px": 3180,
+    "wrap_px": 3167,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
-     "legs": 2.17,
-     "drive": 1.14,
+     "legs": 2.2,
+     "drive": 1.16,
      "coupling-compressor": 0.0,
      "coupling-pump": 0.08,
-     "press": 1.69,
+     "press": 1.72,
      "drip": 0.03
     }
    },
@@ -210,40 +210,40 @@
       160
      ],
      "step_px": [
-      2098,
-      2099,
-      2148,
-      2102,
+      2104,
+      2096,
+      2149,
+      2096,
       2091,
-      2153,
+      2154,
       2110,
-      2125,
-      2148,
-      2110,
-      2084,
-      2152,
-      2099,
-      2100,
-      2148,
-      2100,
-      2090,
-      2146,
+      2124,
+      2150,
       2113,
-      2122,
-      2152,
-      2116,
-      2079
+      2083,
+      2147,
+      2109,
+      2097,
+      2153,
+      2096,
+      2093,
+      2149,
+      2115,
+      2124,
+      2143,
+      2123,
+      2081
      ],
-     "wrap_px": 2153,
+     "wrap_px": 2136,
      "step_range": [
-      2079,
-      2153
+      2081,
+      2154
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 2325,
+     "most_changed_px": 2326,
      "between_frames": [
-      5,
-      23
+      12,
+      17
      ]
     },
     "drive": {
@@ -253,34 +253,34 @@
       60
      ],
      "step_px": [
-      687,
-      690,
-      686,
-      685,
-      671,
+      683,
       688,
-      686,
+      680,
+      681,
+      668,
+      688,
       684,
+      682,
       691,
       689,
-      680,
-      687,
-      678,
-      688,
-      679,
-      690,
-      668,
-      679,
       682,
-      695,
-      672,
-      694,
+      688,
+      680,
+      686,
+      677,
+      685,
+      667,
+      677,
+      681,
+      691,
+      669,
+      693,
       679
      ],
      "wrap_px": 716,
      "step_range": [
-      668,
-      695
+      667,
+      693
      ],
      "wrap_within_steps": false,
      "most_changed_px": 923,
@@ -293,32 +293,32 @@
      "frames": 24,
      "frame_px": [
       7,
-      9
+      12
      ],
      "step_px": [
-      6,
-      3,
-      7,
-      6,
-      5,
-      5,
       7,
       4,
+      5,
       4,
-      3,
-      1,
+      4,
+      5,
+      5,
       2,
       3,
       1,
-      4,
-      2,
+      1,
+      1,
+      3,
       3,
       1,
-      5,
       1,
-      6,
-      6,
-      5
+      1,
+      1,
+      3,
+      1,
+      4,
+      5,
+      4
      ],
      "wrap_px": 8,
      "step_range": [
@@ -326,10 +326,10 @@
       7
      ],
      "wrap_within_steps": false,
-     "most_changed_px": 14,
+     "most_changed_px": 13,
      "between_frames": [
       1,
-      16
+      18
      ]
     },
     "coupling-pump": {
@@ -343,30 +343,30 @@
       49,
       51,
       57,
-      61,
-      48,
-      55,
+      60,
+      49,
+      56,
       54,
       56,
       47,
       52,
       53,
-      61,
+      60,
       57,
+      51,
+      55,
       50,
       54,
-      50,
-      52,
       60,
-      66,
+      67,
       56,
       63,
       46
      ],
-     "wrap_px": 57,
+     "wrap_px": 58,
      "step_range": [
       46,
-      66
+      67
      ],
      "wrap_within_steps": true,
      "most_changed_px": 99,
@@ -382,29 +382,29 @@
       66
      ],
      "step_px": [
-      1552,
+      1551,
       2290,
-      2356,
-      1903,
+      2351,
+      1901,
       0,
-      246,
-      295,
+      245,
+      296,
       172,
-      128,
-      187,
-      1402,
-      1835,
-      2055,
+      129,
+      188,
+      1401,
+      1837,
+      2052,
       1985,
-      1655
+      1656
      ],
      "wrap_px": 1167,
      "step_range": [
       0,
-      2356
+      2351
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 2503,
+     "most_changed_px": 2505,
      "between_frames": [
       1,
       11
@@ -601,29 +601,47 @@
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -22,
-      "last_row_px": -15
+      "found_row_px": -49,
+      "last_row_px": -48
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 2,
-      "ground_px": 0,
-      "where": null
+      "px": 1151,
+      "ground_px": 141,
+      "where": {
+       "across_px": [
+        -18.5,
+        19.5
+       ],
+       "along_px": [
+        -47,
+        -21
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 64,
-      "ground_px": 0,
-      "where": null
+      "px": 1609,
+      "ground_px": 401,
+      "where": {
+       "across_px": [
+        -24.5,
+        25.5
+       ],
+       "along_px": [
+        -47,
+        -17
+       ]
+      }
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
-      "px": 67,
+      "px": 73,
       "where": {
        "across_px": [
-        43.5,
+        -50.5,
         63.5
        ],
        "along_px": [
@@ -640,14 +658,14 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 217,
+      "px": 2772,
       "where": {
        "across_px": [
-        -25.5,
+        -63.5,
         63.5
        ],
        "along_px": [
-        -14,
+        -47,
         -6
        ]
       }
@@ -697,22 +715,40 @@
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -20,
-      "last_row_px": -15
+      "found_row_px": -95,
+      "last_row_px": -92
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 2,
-      "ground_px": 0,
-      "where": null
+      "px": 2867,
+      "ground_px": 938,
+      "where": {
+       "across_px": [
+        -18.5,
+        19.5
+       ],
+       "along_px": [
+        -91,
+        -21
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 64,
-      "ground_px": 0,
-      "where": null
+      "px": 3853,
+      "ground_px": 1551,
+      "where": {
+       "across_px": [
+        -24.5,
+        25.5
+       ],
+       "along_px": [
+        -91,
+        -17
+       ]
+      }
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
@@ -736,14 +772,14 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 112,
+      "px": 5209,
       "where": {
        "across_px": [
         -63.5,
-        26.5
+        63.5
        ],
        "along_px": [
-        -14,
+        -91,
         -6
        ]
       }

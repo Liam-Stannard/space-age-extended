@@ -314,8 +314,9 @@ def four_way():
            para(["Liam, 2026-10-20: \"The model should be adjusted so the pipe connections make sense and follow the flow of the "
                  "fluid/gas through the model. We could draw a model for each rotation rotate like factorio does for some of the vanilla models.\"",
                  "One model, turned on its turntable under the fixed camera and sun; a real fitting at each of the three connections in every "
-                 "direction, its shadow cast and caught; the inputs enter the north header and leave its crown, the west line to the feed drum, "
-                 "the east to the compressor; a circuit connector socket in each direction. Every panel: 64 px a tile, one ground, the footprint outlined."],
+                 "direction, its shadow cast and caught; T06b: each input runs unbroken from its fitting through a reducer, the west line "
+                 "into the feed drum's crown, the east line into the compressor's suction stack (the header now the middle tile only); a "
+                 "circuit connector socket in each direction. Every panel: 64 px a tile, one ground, the footprint outlined."],
                 WIDE)]
     sec.append(heading("1. The signed-off plate, as wired now: one plate, the engine's pipe picture for each face drawn at every connection on it (no recipe)", WIDE, 16))
     sec.append(row([label(mk(SIGNED_SH, pictures=signed_pictures(d)), f"signed off, facing {d}",
@@ -365,6 +366,75 @@ def joins():
         rows_.append(row(cells))
     out = stack(rows_)
     out.convert("RGB").save(os.path.join(HERE, "joins.png"))
+    return out.size
+
+
+# ===================================================================== flow-<d>.png
+RUN_COL = {"solution": (255, 214, 90), "gas": (120, 230, 255), "output": (255, 120, 200)}
+RUN_TEXT = {"solution": "input 1 (west of the faced side) -> feed drum: the solution under precipitation",
+            "gas": "input 2 (east of the faced side) -> crust-gas compressor: the gas",
+            "output": "filtrate receiver -> output (stage 3's fluid; no box under precipitation)"}
+
+
+def screen(p_, deg, origin, k):
+    """A model-space point (tiles; x east, y north, z up) on the screen, the building turned deg."""
+    import math
+    x, y, z = p_
+    a = -math.radians(deg)
+    e, n = x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a)
+    return origin[0] + e * PPT * k, origin[1] - (n + z * 0.5) * PPT * k
+
+
+def catmull(pts, n=12):
+    """The model's own curve through the points (circulator.py's catmull), so the trace is the pipe's axis."""
+    P = [tuple(map(float, p_)) for p_ in pts]
+    ext = [tuple(2 * a - b for a, b in zip(P[0], P[1]))] + P + [tuple(2 * a - b for a, b in zip(P[-1], P[-2]))]
+    out = []
+    for i in range(1, len(ext) - 2):
+        p0, p1, p2, p3 = ext[i - 1:i + 3]
+        for j in range(n):
+            t = j / n
+            out.append(tuple(0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d_) * t * t
+                                    + (3 * b - a - 3 * c + d_) * t * t * t) for a, b, c, d_ in zip(p0, p1, p2, p3)))
+    out.append(P[-1])
+    return out
+
+
+def flow(d, deg):
+    """The 2x plate, idle, and beside it the same with each run traced over it, fitting to user."""
+    k = 2
+    size = (7.6, 8.4, 4.4)
+    plain = mk(SH[d], k, size, lamps=False)
+    traced = mk(SH[d], k, size, lamps=False)
+    g, origin = panel(k, *size)
+    model = json.load(open(os.path.join(args.runs, f"run-{d}", "hi", "model.json")))
+    ov = Image.new("RGBA", traced.size, (0, 0, 0, 0))
+    dr = ImageDraw.Draw(ov)
+    for name, pts in model["runs"][d].items():
+        P = [screen(p_, deg, origin, k) for p_ in catmull(pts)]
+        col = RUN_COL[name]
+        dr.line(P, fill=col + (235,), width=5, joint="curve")
+        x0, y0 = P[0]
+        dr.ellipse([x0 - 8, y0 - 8, x0 + 8, y0 + 8], outline=col + (255,), width=3)
+        # an arrowhead at the far end, the way the fluid goes
+        import math
+        (xa, ya), (xb, yb) = P[-2], P[-1]
+        ang = math.atan2(yb - ya, xb - xa)
+        tip = [(xb, yb), (xb - 18 * math.cos(ang - 0.45), yb - 18 * math.sin(ang - 0.45)),
+               (xb - 18 * math.cos(ang + 0.45), yb - 18 * math.sin(ang + 0.45))]
+        dr.polygon(tip, fill=col + (255,))
+    traced.alpha_composite(ov)
+    key = Image.new("RGBA", (plain.width * 2 + 16, 3 * 20 + 8), BG)
+    kd = ImageDraw.Draw(key)
+    for i, (name, txt) in enumerate(RUN_TEXT.items()):
+        kd.rectangle([4, 6 + i * 20, 30, 16 + i * 20], fill=RUN_COL[name])
+        kd.text((38, 3 + i * 20), txt, font=font(13), fill=TEXT)
+    out = stack([heading(f"Facing {d}: each run traced from its fitting (circle) to where its fluid goes (arrow), "
+                         f"over the 2x plate", plain.width * 2 + 16, 16),
+                 row([label(plain, f"facing {d}, 2x, idle", "as the player sees it, no pipes joined"),
+                      label(traced, f"facing {d}, 2x, the runs traced", "the line follows the pipe's axis; "
+                            "where it crosses something drawn in front, the pipe runs behind it")]), key])
+    out.convert("RGB").save(os.path.join(HERE, f"flow-{d}.png"))
     return out.size
 
 
@@ -455,6 +525,8 @@ if __name__ == "__main__":
         if os.path.isdir(dst):
             shutil.rmtree(dst)
         shutil.copytree(SH[d].path, dst)
+    for d_, deg_ in zip(DIRS, (0, 90, 180, 270)):
+        print(f"flow-{d_}.png", flow(d_, deg_))
     print("four-way.png", four_way())
     print("joins.png", joins())
     print("strips.png", strips())
