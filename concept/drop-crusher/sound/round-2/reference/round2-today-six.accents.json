@@ -1,0 +1,982 @@
+{
+ "pass": false,
+ "summary": "drop 14: at [14.062, 13.964, 13.96], 2 missing FAIL; pawl 18: at [], 4 missing FAIL; pawl 22: at [], 4 missing FAIL; pawl 2: at [], 4 missing FAIL; trip 6: at [6.059, 5.949, 5.897], 2 missing FAIL; 13 labelled onset(s) on no expected frame",
+ "how_frames_map_to_time": "Every video frame and every audio buffer carries its timestamp\nfrom the one GStreamer pipeline that recorded both (its running time, in\nnanoseconds). A video frame's time is its own timestamp; an audio sample's is\nits buffer's timestamp plus its place in the buffer over the sample rate.\nEvery time below is on that clock, in seconds.\n\n**Which animation frame is on screen** is read from the picture, never from\nthe prototype's accent frames. The stroke sheet (spec.stroke) is cut into its\nframes and scaled as the engine draws them (scale x zoom), and each recorded\nframe is compared with every one of them where that sheet frame is opaque\n(mean absolute luminance difference, the sprite placed by its shift from the\ncamera, which sits on the machine, then registered by a small search). The\nbest is the frame shown. Over the working part of the recording the shown\nframe is unwrapped (it only ever steps forward, 0 to 23 and round) and a line\nfitted to it: phase(t) = rate x t + c, phase + 0.5 being the middle of a frame\nshown from phase's whole number to the next. So any time t maps to a\nfractional animation frame, phase(t) mod frame_count; the frame shown at t is\nits whole part. The fit's residuals and the frames that disagree with it are\nreported. Each onset also carries frame_in_last_grab, the frame matched in the\nlast video grab at or before it: the picture itself, not the fit, so it can\ntrail the phase by up to one grab (1/fps).\n\n**Where the sounds start** is read from the audio alone. The mono mix is split\ninto three bands (below 250 Hz, 250-2500 Hz, above 2500 Hz); each band's RMS\nis taken every 2 ms; the rise at each step is how far each band's level\nstands above its own median 6-50 ms before, summed over the bands, in dB. An\nonset is a rise that is the highest within +-30 ms and at least\nspec.onset_rise_db (35 dB by default: in the runs so far the crusher's\naccents rose 37.6-81.7, the bed's own beat 10-31, the drop's grit tail up to\n35.6 and the bed starting up 46.7 -- so some that are not accents clear it;\nthey match no file, are reported as \"unknown\", and are never judged), its\ntime the first 2 ms step of that rise to reach half of it. Each onset is then labelled by the\nsound file it matches best\n(spec.sounds): the same bands and steps worked out on each file, correlated\n(normalised, per band, weighted by the file's own band energy) against the\nrecording over 400 ms from the onset, allowing the file's own onset to sit\nwithin +-16 ms of it. An onset that matches no file at 0.5 or better is\n\"unknown\". The labels say only which sound it is; the times are the\nrecording's.\n\n**Accents.** Each labelled onset's phase gives the frame it sounded on. The\nmarkers (a flash and a click the probe starts on one tick, before the machine\nstarts) measure the recording chain: the strongest onset within -0.25..+0.35 s\nof each flash is its click, and the click's onset minus the flash's first\nrecorded frame is the delay of the sound behind the picture through the\nengine, the sinks and the capture (to the video's 1/fps). It is reported, and\nthe frame each accent lands on is given both as recorded and with that delay\ntaken off; only the recorded one is judged. The two markers' tick gap over\ntheir time gap also gives the game's seconds a tick, which places the start\n(the ingredients going in, a tick the probe logs) on the clock.",
+ "clock": {
+  "video_frames": 646,
+  "video_first_s": 0.0,
+  "video_last_s": 21.5,
+  "audio_first_s": 0.0,
+  "audio_seconds": 21.5,
+  "audio_buffers": 2150,
+  "audio_worst_drift_s": 0.0,
+  "audio_discontinuities_s": []
+ },
+ "markers": {
+  "found": [
+   {
+    "marker": 1,
+    "flash_first_frame_s": 1.4667,
+    "click_onset_s": 1.468,
+    "click_rise_db": 91.8,
+    "sound_after_picture_s": 0.0013
+   },
+   {
+    "marker": 2,
+    "flash_first_frame_s": 2.4667,
+    "click_onset_s": 2.466,
+    "click_rise_db": 87.1,
+    "sound_after_picture_s": -0.0007
+   }
+  ],
+  "sound_after_picture_s": 0.0003,
+  "seconds_per_tick": 0.016667,
+  "square_px": [
+   80,
+   64,
+   112,
+   96
+  ]
+ },
+ "start_s": 3.4667,
+ "registration": {
+  "dx": 0,
+  "dy": 0,
+  "mean_best_score": 15.06,
+  "sprite_box_in_capture": [
+   273,
+   176,
+   96,
+   68
+  ]
+ },
+ "fit": {
+  "rate_frames_per_s": 5.99951,
+  "c": -15.49156,
+  "residual_sd_frames": 0.28309,
+  "frames_used": 532,
+  "frames_left_out": 0,
+  "outlier_times": [],
+  "from_s": 3.7667,
+  "to_s": 21.5
+ },
+ "accents": [
+  {
+   "sound": "drop",
+   "frame": 14,
+   "passes": [
+    {
+     "frame_reached_s": 4.9157,
+     "found": true,
+     "onset_s": 4.926,
+     "phase": 14.062,
+     "frames_from_cue": 0.062,
+     "frames_from_cue_less_chain_delay": 0.06,
+     "frame_in_last_grab": 13,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 8.916,
+     "found": true,
+     "onset_s": 8.91,
+     "phase": 13.964,
+     "frames_from_cue": -0.036,
+     "frames_from_cue_less_chain_delay": -0.038,
+     "frame_in_last_grab": 13,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 12.9163,
+     "found": false
+    },
+    {
+     "frame_reached_s": 16.9166,
+     "found": true,
+     "onset_s": 16.91,
+     "phase": 13.96,
+     "frames_from_cue": -0.04,
+     "frames_from_cue_less_chain_delay": -0.042,
+     "frame_in_last_grab": 13,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 20.917,
+     "found": false
+    }
+   ],
+   "measured_phases": [
+    14.062,
+    13.964,
+    13.96
+   ],
+   "missing": 2,
+   "pass": false
+  },
+  {
+   "sound": "pawl",
+   "frame": 18,
+   "passes": [
+    {
+     "frame_reached_s": 5.5824,
+     "found": false
+    },
+    {
+     "frame_reached_s": 9.5827,
+     "found": false
+    },
+    {
+     "frame_reached_s": 13.583,
+     "found": false
+    },
+    {
+     "frame_reached_s": 17.5834,
+     "found": false
+    }
+   ],
+   "measured_phases": [],
+   "missing": 4,
+   "pass": false
+  },
+  {
+   "sound": "pawl",
+   "frame": 22,
+   "passes": [
+    {
+     "frame_reached_s": 6.2491,
+     "found": false
+    },
+    {
+     "frame_reached_s": 10.2494,
+     "found": false
+    },
+    {
+     "frame_reached_s": 14.2498,
+     "found": false
+    },
+    {
+     "frame_reached_s": 18.2501,
+     "found": false
+    }
+   ],
+   "measured_phases": [],
+   "missing": 4,
+   "pass": false
+  },
+  {
+   "sound": "pawl",
+   "frame": 2,
+   "passes": [
+    {
+     "frame_reached_s": 6.9158,
+     "found": false
+    },
+    {
+     "frame_reached_s": 10.9161,
+     "found": false
+    },
+    {
+     "frame_reached_s": 14.9165,
+     "found": false
+    },
+    {
+     "frame_reached_s": 18.9168,
+     "found": false
+    }
+   ],
+   "measured_phases": [],
+   "missing": 4,
+   "pass": false
+  },
+  {
+   "sound": "trip",
+   "frame": 6,
+   "passes": [
+    {
+     "frame_reached_s": 3.5822,
+     "found": true,
+     "onset_s": 3.592,
+     "phase": 6.059,
+     "frames_from_cue": 0.059,
+     "frames_from_cue_less_chain_delay": 0.057,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 7.5825,
+     "found": true,
+     "onset_s": 7.574,
+     "phase": 5.949,
+     "frames_from_cue": -0.051,
+     "frames_from_cue_less_chain_delay": -0.053,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 11.5829,
+     "found": false
+    },
+    {
+     "frame_reached_s": 15.5832,
+     "found": true,
+     "onset_s": 15.566,
+     "phase": 5.897,
+     "frames_from_cue": -0.103,
+     "frames_from_cue_less_chain_delay": -0.105,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 19.5835,
+     "found": false
+    }
+   ],
+   "measured_phases": [
+    6.059,
+    5.949,
+    5.897
+   ],
+   "missing": 2,
+   "pass": false
+  }
+ ],
+ "onsets": [
+  {
+   "t_s": 3.498,
+   "since_start_s": 0.0313,
+   "sound": "unknown",
+   "match": -0.067,
+   "match_lag_ms": 8.0,
+   "best_file": "drop",
+   "rise_db": 37.8,
+   "level_db": -45.6,
+   "phase": 5.495,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.493
+  },
+  {
+   "t_s": 3.592,
+   "since_start_s": 0.1253,
+   "sound": "trip",
+   "match": 0.984,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 71.5,
+   "level_db": -30.9,
+   "phase": 6.059,
+   "frame_by_phase": 6,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 6.057,
+   "cued_frame": 6,
+   "frames_from_cue": 0.059
+  },
+  {
+   "t_s": 4.708,
+   "since_start_s": 1.2413,
+   "sound": "unknown",
+   "match": 0.183,
+   "match_lag_ms": -2.0,
+   "best_file": "pawl",
+   "rise_db": 55.0,
+   "level_db": -32.9,
+   "phase": 12.754,
+   "frame_by_phase": 12,
+   "frame_in_last_grab": 12,
+   "phase_less_chain_delay": 12.752
+  },
+  {
+   "t_s": 4.926,
+   "since_start_s": 1.4593,
+   "sound": "drop",
+   "match": 0.725,
+   "match_lag_ms": 2.0,
+   "best_file": "drop",
+   "rise_db": 66.8,
+   "level_db": -26.1,
+   "phase": 14.062,
+   "frame_by_phase": 14,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 14.06,
+   "cued_frame": 14,
+   "frames_from_cue": 0.062
+  },
+  {
+   "t_s": 5.508,
+   "since_start_s": 2.0413,
+   "sound": "drop",
+   "match": 0.639,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 39.5,
+   "level_db": -25.6,
+   "phase": 17.554,
+   "frame_by_phase": 17,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 17.552
+  },
+  {
+   "t_s": 6.174,
+   "since_start_s": 2.7073,
+   "sound": "unknown",
+   "match": 0.2,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 43.7,
+   "level_db": -30.9,
+   "phase": 21.549,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.548
+  },
+  {
+   "t_s": 6.23,
+   "since_start_s": 2.7633,
+   "sound": "trip",
+   "match": 0.712,
+   "match_lag_ms": 10.0,
+   "best_file": "trip",
+   "rise_db": 43.2,
+   "level_db": -29.0,
+   "phase": 21.885,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.884
+  },
+  {
+   "t_s": 6.704,
+   "since_start_s": 3.2373,
+   "sound": "drop",
+   "match": 0.57,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 40.1,
+   "level_db": -25.7,
+   "phase": 0.729,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.727
+  },
+  {
+   "t_s": 7.38,
+   "since_start_s": 3.9133,
+   "sound": "unknown",
+   "match": 0.202,
+   "match_lag_ms": -4.0,
+   "best_file": "pawl",
+   "rise_db": 36.0,
+   "level_db": -31.6,
+   "phase": 4.785,
+   "frame_by_phase": 4,
+   "frame_in_last_grab": 4,
+   "phase_less_chain_delay": 4.783
+  },
+  {
+   "t_s": 7.504,
+   "since_start_s": 4.0373,
+   "sound": "unknown",
+   "match": 0.283,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 45.2,
+   "level_db": -32.4,
+   "phase": 5.529,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.527
+  },
+  {
+   "t_s": 7.574,
+   "since_start_s": 4.1073,
+   "sound": "trip",
+   "match": 0.945,
+   "match_lag_ms": 12.0,
+   "best_file": "trip",
+   "rise_db": 45.1,
+   "level_db": -29.9,
+   "phase": 5.949,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.947,
+   "cued_frame": 6,
+   "frames_from_cue": -0.051
+  },
+  {
+   "t_s": 8.038,
+   "since_start_s": 4.5713,
+   "sound": "unknown",
+   "match": 0.201,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 42.4,
+   "level_db": -33.0,
+   "phase": 8.733,
+   "frame_by_phase": 8,
+   "frame_in_last_grab": 8,
+   "phase_less_chain_delay": 8.731
+  },
+  {
+   "t_s": 8.166,
+   "since_start_s": 4.6993,
+   "sound": "trip",
+   "match": 0.732,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 46.5,
+   "level_db": -33.2,
+   "phase": 9.5,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.499
+  },
+  {
+   "t_s": 8.7,
+   "since_start_s": 5.2333,
+   "sound": "unknown",
+   "match": 0.12,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 44.7,
+   "level_db": -32.9,
+   "phase": 12.704,
+   "frame_by_phase": 12,
+   "frame_in_last_grab": 12,
+   "phase_less_chain_delay": 12.702
+  },
+  {
+   "t_s": 8.91,
+   "since_start_s": 5.4433,
+   "sound": "drop",
+   "match": 0.712,
+   "match_lag_ms": 12.0,
+   "best_file": "drop",
+   "rise_db": 58.8,
+   "level_db": -22.9,
+   "phase": 13.964,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.962,
+   "cued_frame": 14,
+   "frames_from_cue": -0.036
+  },
+  {
+   "t_s": 10.71,
+   "since_start_s": 7.2433,
+   "sound": "trip",
+   "match": 0.55,
+   "match_lag_ms": 8.0,
+   "best_file": "trip",
+   "rise_db": 40.5,
+   "level_db": -23.1,
+   "phase": 0.763,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.761
+  },
+  {
+   "t_s": 11.514,
+   "since_start_s": 8.0473,
+   "sound": "unknown",
+   "match": 0.305,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 38.1,
+   "level_db": -31.3,
+   "phase": 5.587,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.585
+  },
+  {
+   "t_s": 12.046,
+   "since_start_s": 8.5793,
+   "sound": "unknown",
+   "match": 0.234,
+   "match_lag_ms": -2.0,
+   "best_file": "pawl",
+   "rise_db": 47.3,
+   "level_db": -32.6,
+   "phase": 8.779,
+   "frame_by_phase": 8,
+   "frame_in_last_grab": 8,
+   "phase_less_chain_delay": 8.777
+  },
+  {
+   "t_s": 12.172,
+   "since_start_s": 8.7053,
+   "sound": "trip",
+   "match": 0.725,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 46.7,
+   "level_db": -32.6,
+   "phase": 9.534,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.533
+  },
+  {
+   "t_s": 12.71,
+   "since_start_s": 9.2433,
+   "sound": "unknown",
+   "match": 0.127,
+   "match_lag_ms": -4.0,
+   "best_file": "pawl",
+   "rise_db": 53.0,
+   "level_db": -32.3,
+   "phase": 12.762,
+   "frame_by_phase": 12,
+   "frame_in_last_grab": 12,
+   "phase_less_chain_delay": 12.76
+  },
+  {
+   "t_s": 12.902,
+   "since_start_s": 9.4353,
+   "sound": "trip",
+   "match": 0.642,
+   "match_lag_ms": 16.0,
+   "best_file": "trip",
+   "rise_db": 52.8,
+   "level_db": -29.6,
+   "phase": 13.914,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.912
+  },
+  {
+   "t_s": 13.508,
+   "since_start_s": 10.0413,
+   "sound": "drop",
+   "match": 0.576,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 39.4,
+   "level_db": -25.6,
+   "phase": 17.55,
+   "frame_by_phase": 17,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 17.548
+  },
+  {
+   "t_s": 14.23,
+   "since_start_s": 10.7633,
+   "sound": "drop",
+   "match": 0.721,
+   "match_lag_ms": 8.0,
+   "best_file": "drop",
+   "rise_db": 39.4,
+   "level_db": -24.8,
+   "phase": 21.881,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.88
+  },
+  {
+   "t_s": 14.702,
+   "since_start_s": 11.2353,
+   "sound": "unknown",
+   "match": 0.491,
+   "match_lag_ms": 10.0,
+   "best_file": "trip",
+   "rise_db": 40.8,
+   "level_db": -25.1,
+   "phase": 0.713,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.711
+  },
+  {
+   "t_s": 15.508,
+   "since_start_s": 12.0413,
+   "sound": "unknown",
+   "match": 0.282,
+   "match_lag_ms": -4.0,
+   "best_file": "pawl",
+   "rise_db": 43.8,
+   "level_db": -31.5,
+   "phase": 5.549,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.547
+  },
+  {
+   "t_s": 15.566,
+   "since_start_s": 12.0993,
+   "sound": "trip",
+   "match": 0.903,
+   "match_lag_ms": 16.0,
+   "best_file": "trip",
+   "rise_db": 40.4,
+   "level_db": -28.7,
+   "phase": 5.897,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.895,
+   "cued_frame": 6,
+   "frames_from_cue": -0.103
+  },
+  {
+   "t_s": 16.038,
+   "since_start_s": 12.5713,
+   "sound": "unknown",
+   "match": 0.186,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 46.3,
+   "level_db": -32.4,
+   "phase": 8.729,
+   "frame_by_phase": 8,
+   "frame_in_last_grab": 8,
+   "phase_less_chain_delay": 8.727
+  },
+  {
+   "t_s": 16.176,
+   "since_start_s": 12.7093,
+   "sound": "trip",
+   "match": 0.706,
+   "match_lag_ms": 2.0,
+   "best_file": "trip",
+   "rise_db": 52.9,
+   "level_db": -31.5,
+   "phase": 9.557,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.555
+  },
+  {
+   "t_s": 16.7,
+   "since_start_s": 13.2333,
+   "sound": "unknown",
+   "match": 0.116,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 48.1,
+   "level_db": -31.3,
+   "phase": 12.7,
+   "frame_by_phase": 12,
+   "frame_in_last_grab": 12,
+   "phase_less_chain_delay": 12.698
+  },
+  {
+   "t_s": 16.91,
+   "since_start_s": 13.4433,
+   "sound": "drop",
+   "match": 0.784,
+   "match_lag_ms": 10.0,
+   "best_file": "drop",
+   "rise_db": 56.2,
+   "level_db": -23.3,
+   "phase": 13.96,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.958,
+   "cued_frame": 14,
+   "frames_from_cue": -0.04
+  },
+  {
+   "t_s": 18.178,
+   "since_start_s": 14.7113,
+   "sound": "unknown",
+   "match": 0.201,
+   "match_lag_ms": -8.0,
+   "best_file": "drop",
+   "rise_db": 35.5,
+   "level_db": -32.6,
+   "phase": 21.568,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.566
+  },
+  {
+   "t_s": 18.708,
+   "since_start_s": 15.2413,
+   "sound": "trip",
+   "match": 0.532,
+   "match_lag_ms": 8.0,
+   "best_file": "trip",
+   "rise_db": 37.1,
+   "level_db": -23.7,
+   "phase": 0.747,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.745
+  },
+  {
+   "t_s": 19.374,
+   "since_start_s": 15.9073,
+   "sound": "unknown",
+   "match": 0.242,
+   "match_lag_ms": -4.0,
+   "best_file": "pawl",
+   "rise_db": 35.2,
+   "level_db": -30.2,
+   "phase": 4.743,
+   "frame_by_phase": 4,
+   "frame_in_last_grab": 4,
+   "phase_less_chain_delay": 4.741
+  },
+  {
+   "t_s": 19.514,
+   "since_start_s": 16.0473,
+   "sound": "unknown",
+   "match": 0.302,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 40.0,
+   "level_db": -30.3,
+   "phase": 5.583,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.581
+  },
+  {
+   "t_s": 20.044,
+   "since_start_s": 16.5773,
+   "sound": "unknown",
+   "match": 0.206,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 48.8,
+   "level_db": -32.0,
+   "phase": 8.763,
+   "frame_by_phase": 8,
+   "frame_in_last_grab": 8,
+   "phase_less_chain_delay": 8.761
+  },
+  {
+   "t_s": 20.17,
+   "since_start_s": 16.7033,
+   "sound": "trip",
+   "match": 0.715,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 45.6,
+   "level_db": -32.8,
+   "phase": 9.519,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.517
+  },
+  {
+   "t_s": 20.708,
+   "since_start_s": 17.2413,
+   "sound": "unknown",
+   "match": 0.105,
+   "match_lag_ms": -2.0,
+   "best_file": "pawl",
+   "rise_db": 53.0,
+   "level_db": -31.3,
+   "phase": 12.746,
+   "frame_by_phase": 12,
+   "frame_in_last_grab": 12,
+   "phase_less_chain_delay": 12.745
+  },
+  {
+   "t_s": 20.902,
+   "since_start_s": 17.4353,
+   "sound": "trip",
+   "match": 0.639,
+   "match_lag_ms": 16.0,
+   "best_file": "trip",
+   "rise_db": 51.7,
+   "level_db": -29.5,
+   "phase": 13.91,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.908
+  }
+ ],
+ "stray_labelled_onsets": [
+  {
+   "t_s": 5.508,
+   "since_start_s": 2.0413,
+   "sound": "drop",
+   "match": 0.639,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 39.5,
+   "level_db": -25.6,
+   "phase": 17.554,
+   "frame_by_phase": 17,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 17.552
+  },
+  {
+   "t_s": 6.23,
+   "since_start_s": 2.7633,
+   "sound": "trip",
+   "match": 0.712,
+   "match_lag_ms": 10.0,
+   "best_file": "trip",
+   "rise_db": 43.2,
+   "level_db": -29.0,
+   "phase": 21.885,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.884
+  },
+  {
+   "t_s": 6.704,
+   "since_start_s": 3.2373,
+   "sound": "drop",
+   "match": 0.57,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 40.1,
+   "level_db": -25.7,
+   "phase": 0.729,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.727
+  },
+  {
+   "t_s": 8.166,
+   "since_start_s": 4.6993,
+   "sound": "trip",
+   "match": 0.732,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 46.5,
+   "level_db": -33.2,
+   "phase": 9.5,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.499
+  },
+  {
+   "t_s": 10.71,
+   "since_start_s": 7.2433,
+   "sound": "trip",
+   "match": 0.55,
+   "match_lag_ms": 8.0,
+   "best_file": "trip",
+   "rise_db": 40.5,
+   "level_db": -23.1,
+   "phase": 0.763,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.761
+  },
+  {
+   "t_s": 12.172,
+   "since_start_s": 8.7053,
+   "sound": "trip",
+   "match": 0.725,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 46.7,
+   "level_db": -32.6,
+   "phase": 9.534,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.533
+  },
+  {
+   "t_s": 12.902,
+   "since_start_s": 9.4353,
+   "sound": "trip",
+   "match": 0.642,
+   "match_lag_ms": 16.0,
+   "best_file": "trip",
+   "rise_db": 52.8,
+   "level_db": -29.6,
+   "phase": 13.914,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.912
+  },
+  {
+   "t_s": 13.508,
+   "since_start_s": 10.0413,
+   "sound": "drop",
+   "match": 0.576,
+   "match_lag_ms": 0.0,
+   "best_file": "drop",
+   "rise_db": 39.4,
+   "level_db": -25.6,
+   "phase": 17.55,
+   "frame_by_phase": 17,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 17.548
+  },
+  {
+   "t_s": 14.23,
+   "since_start_s": 10.7633,
+   "sound": "drop",
+   "match": 0.721,
+   "match_lag_ms": 8.0,
+   "best_file": "drop",
+   "rise_db": 39.4,
+   "level_db": -24.8,
+   "phase": 21.881,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 21.88
+  },
+  {
+   "t_s": 16.176,
+   "since_start_s": 12.7093,
+   "sound": "trip",
+   "match": 0.706,
+   "match_lag_ms": 2.0,
+   "best_file": "trip",
+   "rise_db": 52.9,
+   "level_db": -31.5,
+   "phase": 9.557,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.555
+  },
+  {
+   "t_s": 18.708,
+   "since_start_s": 15.2413,
+   "sound": "trip",
+   "match": 0.532,
+   "match_lag_ms": 8.0,
+   "best_file": "trip",
+   "rise_db": 37.1,
+   "level_db": -23.7,
+   "phase": 0.747,
+   "frame_by_phase": 0,
+   "frame_in_last_grab": 0,
+   "phase_less_chain_delay": 0.745
+  },
+  {
+   "t_s": 20.17,
+   "since_start_s": 16.7033,
+   "sound": "trip",
+   "match": 0.715,
+   "match_lag_ms": 0.0,
+   "best_file": "trip",
+   "rise_db": 45.6,
+   "level_db": -32.8,
+   "phase": 9.519,
+   "frame_by_phase": 9,
+   "frame_in_last_grab": 9,
+   "phase_less_chain_delay": 9.517
+  },
+  {
+   "t_s": 20.902,
+   "since_start_s": 17.4353,
+   "sound": "trip",
+   "match": 0.639,
+   "match_lag_ms": 16.0,
+   "best_file": "trip",
+   "rise_db": 51.7,
+   "level_db": -29.5,
+   "phase": 13.91,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 13.908
+  }
+ ],
+ "tolerance_frames": 1,
+ "mp4": {
+  "path": "/home/liam-stannard/git/space-age-extended/.claude/worktrees/crusher-sound/evidence/crusher-sound-t01b/audio-20261020-124626-970844/round2-today-six.mp4",
+  "seconds": 18.633,
+  "frames": 559,
+  "bytes": 3927379,
+  "video": "VP9",
+  "audio": "Opus 48000 Hz stereo",
+  "starts_at_s": 2.867
+ }
+}
