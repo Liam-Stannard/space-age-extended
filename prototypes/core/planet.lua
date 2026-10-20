@@ -40,8 +40,10 @@ data:extend({
       -- gets dark at all.
       -- What makes the cycle mostly dark is when dusk, evening, morning and
       -- dawn fall. Those belong to the surface, not the prototype, and
-      -- control.lua sets them: full dark from evening to morning, 80 % of the
-      -- cycle, and full light only in the 4 % from dawn to dusk around noon.
+      -- control.lua sets them: darkness ramps from dusk and reaches its
+      -- floor just before evening, leaving it just after morning, so it is
+      -- fully dark for about 82 % of the cycle, and full light only in the
+      -- 4 % from dawn to dusk around noon.
       -- At night the darkness is 0.85, from the engine's default
       -- min_brightness of 0.15. The colour grading is the engine default.
       ["day-night-cycle"] = 3 * minute,
