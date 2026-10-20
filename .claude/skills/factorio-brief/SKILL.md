@@ -54,6 +54,10 @@ wording for a `.md` file, spec or TODO entry as a proposal only. Anything
 left for Liam.
 
 ## 4. Resuming
+Resume an agent only to fix its own ticket after a review; brief every new
+ticket to a fresh agent, since the task file and the brief carry what it
+needs.
+
 To continue an agent, `SendMessage` it with: what changed since it
 stopped (commits made, files moved, scratch emptied), what to do now, and
 the same standing rules.
