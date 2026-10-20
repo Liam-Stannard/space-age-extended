@@ -176,17 +176,46 @@ local LANDING =
 -- Where the placed pool's centre stands.
 LANDING.reach = LANDING.near + LANDING.radius
 
-local function noise(field, seed)
+-- The climate's ground, warped. The axes above are broad on purpose -- a
+-- palette is chosen over hundreds of tiles -- but the pack's tiles split along
+-- their contours, so where one runs straight the ground does too. A heat seam
+-- worst of all: across it the temperature climbs some 14 degrees a tile, far
+-- more than the pack's own tile noise moves, so its two heat tiles part down
+-- its length, and one lying along a row parted in a straight line 82 tiles
+-- long (30 seeds, 2026-10-20; the old lit cracks had hidden it). So, with the
+-- pack, the climate is read at a point moved up to `amplitude` tiles by a
+-- short noise of `scale` tiles: every edge it draws wanders, and none moves
+-- further than that. The dark rims are not warped: the glow reads them too.
+-- Without the pack the climate decides no tile, and is left as it is.
+local CLIMATE_WARP = mods["alien-biomes"] and { amplitude = 3, scale = 10, octaves = 2, persistence = 0.5 }
+
+local function noise(field, seed, warped)
+  local x, y = "x", "y"
+  if warped and CLIMATE_WARP then
+    x, y = "x + sae_core_climate_warp_x", "y + sae_core_climate_warp_y"
+  end
   return string.format(
-    "multioctave_noise{x = x,\z
-                       y = y,\z
+    "multioctave_noise{x = %s,\z
+                       y = %s,\z
                        seed0 = map_seed,\z
                        seed1 = %d,\z
                        octaves = %d,\z
                        persistence = %s,\z
                        input_scale = 1/%d,\z
                        output_scale = 1}",
-    seed, field.octaves, field.persistence, field.scale)
+    x, y, seed, field.octaves, field.persistence, field.scale)
+end
+
+if CLIMATE_WARP then
+  for axis, seed in pairs({ x = 4483, y = 4489 }) do
+    data:extend({
+      {
+        type = "noise-expression",
+        name = "sae_core_climate_warp_" .. axis,
+        expression = string.format("%g * clamp(%s, -1, 1)", CLIMATE_WARP.amplitude, noise(CLIMATE_WARP, seed))
+      }
+    })
+  end
 end
 
 -- The palette's `dark` term: a 0..1 mask laid onto the colour axis by
@@ -215,7 +244,7 @@ end
 
 local function clamped(field, seed, low, high)
   return string.format("clamp(%s + %s * %s, %s, %s)",
-    field.centre, field.amplitude, noise(field, seed), low, high)
+    field.centre, field.amplitude, noise(field, seed, true), low, high)
 end
 
 -- The colour axis: the body's noise, the dark rims laid on it (and stopped at
@@ -223,10 +252,10 @@ end
 -- the same contours the temperature spike follows, so a seam lands on a heat
 -- colour the body's aux would never reach -- blue seams through white.
 local function aux_expression(pal, seed)
-  local base = string.format("%s + %s * %s", pal.aux.centre, pal.aux.amplitude, noise(pal.aux, seed))
+  local base = string.format("%s + %s * %s", pal.aux.centre, pal.aux.amplitude, noise(pal.aux, seed, true))
   base = string.format("%s + %s * %s * (1 - %s)", base, pal.dark.amount, dark_mask(pal.dark), pool_mask(pal))
   local v = pal.veins
-  base = string.format("%s + max(0, %s - abs(%s)) / %s * %s", base, v.width, noise(v, v.seed), v.width, v.aux)
+  base = string.format("%s + max(0, %s - abs(%s)) / %s * %s", base, v.width, noise(v, v.seed, true), v.width, v.aux)
   return string.format("clamp(%s, 0, 1)", base)
 end
 
@@ -236,9 +265,9 @@ end
 -- few thin seams.
 local function temperature_expression(pal, seed, low, high)
   local base = string.format("%s + %s * %s", pal.temperature.centre,
-    pal.temperature.amplitude, noise(pal.temperature, seed))
+    pal.temperature.amplitude, noise(pal.temperature, seed, true))
   local v = pal.veins
-  base = string.format("%s + max(0, %s - abs(%s)) * %s", base, v.width, noise(v, v.seed), v.gain)
+  base = string.format("%s + max(0, %s - abs(%s)) * %s", base, v.width, noise(v, v.seed, true), v.gain)
   return string.format("clamp(%s, %s, %s)", base, low, high)
 end
 
