@@ -1449,6 +1449,21 @@ SOOT = "#0D0B09"
 SOOT_MIX = (0.78, 0.98)               # the soot's share, where the noise is thinnest and thickest
 SOOT_ROUGH = 0.82
 SOOT_METAL = 0.45                     # metallic kept
+# T02c (Liam, "Keep some rim shine"): bare metal glinting through the soot on the edges -- the
+# collars' rims, the torn edges -- found as Cycles' Bevel node finds them: within GLINT_R of an
+# edge its rounded normal turns from the true one, and where their dot product falls from
+# GLINT_EDGE[0] to [1] the soot is shed (Pointiness was tried: on these low-poly shells it took
+# whole faces, and the middle collar read clean again). The share of the soot the edge sheds, per material: the
+# bright metals most of it; the painted casings, the ground, glass and dark wells none (their
+# edges lifted the mid tone, not the highlights).
+GLINT_EDGE = (0.995, 0.95)
+GLINT_R = 0.05                        # tiles: wider than the parts' own bevels (0.006-0.022)
+GLINT_METAL = "#ECE6DA"               # the bare steel the edge is scraped to (near the collar's own worn metal)
+GLINT_ROUGH = 0.2                     # the glint polished: a sharp highlight, not a grey band
+# the collars, the rotor and its vanes most; the small hardware (bolts, pipes: curved all over,
+# so edge everywhere to the Bevel node) little, or the whole of it goes bare and lifts the mid tone
+GLINT = dict(collar=1.0, pipe=1.0, rotor=0.8, vane=0.9, seam=0.2, steel=0.2, brass=0.2, bronze=0.1,
+             copper=0.1)
 
 
 def sooted(m):
@@ -1470,6 +1485,25 @@ def sooted(m):
     mask.inputs["To Max"].default_value = SOOT_MIX[1]
     mask.clamp = True
     t.links.new(nz.outputs["Fac"], mask.inputs["Value"])
+    # the glint: the soot thinned on convex edges, by the material's GLINT share
+    edge = t.nodes.new("ShaderNodeMapRange")
+    edge.inputs["From Min"].default_value = GLINT_EDGE[0]
+    edge.inputs["From Max"].default_value = GLINT_EDGE[1]
+    edge.inputs["To Min"].default_value = 1.0
+    edge.inputs["To Max"].default_value = 1.0 - GLINT.get(m.name.split(".")[0], 0.0)
+    edge.clamp = True
+    bev = t.nodes.new("ShaderNodeBevel")
+    bev.samples = 8
+    bev.inputs["Radius"].default_value = GLINT_R
+    dot = t.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    t.links.new(bev.outputs["Normal"], dot.inputs[0])
+    t.links.new(geo.outputs["Normal"], dot.inputs[1])
+    t.links.new(dot.outputs["Value"], edge.inputs["Value"])
+    fac = t.nodes.new("ShaderNodeMath")
+    fac.operation = "MULTIPLY"
+    t.links.new(mask.outputs["Result"], fac.inputs[0])
+    t.links.new(edge.outputs["Result"], fac.inputs[1])
 
     def toward(sock, value, rgba):
         """sock's input, whatever drives it, mixed toward value by the soot's mask."""
@@ -1477,7 +1511,7 @@ def sooted(m):
         mix.data_type = "RGBA" if rgba else "FLOAT"
         ins = {i.identifier: i for i in mix.inputs}
         a, bb = (ins["A_Color"], ins["B_Color"]) if rgba else (ins["A_Float"], ins["B_Float"])
-        t.links.new(mask.outputs["Result"], ins["Factor_Float"])
+        t.links.new(fac.outputs["Value"], ins["Factor_Float"])
         if sock.links:
             t.links.new(sock.links[0].from_socket, a)
         else:
@@ -1487,10 +1521,33 @@ def sooted(m):
         t.links.new(out, sock)
     toward(b.inputs["Base Color"], rig.srgb(SOOT), True)
     toward(b.inputs["Roughness"], SOOT_ROUGH, False)
+    g = t.nodes.new("ShaderNodeMath")                 # the glint's strength, 0 off the edges
+    g.operation = "SUBTRACT"
+    g.inputs[0].default_value = 1.0
+    t.links.new(edge.outputs["Result"], g.inputs[1])
+    pol = t.nodes.new("ShaderNodeMix")
+    pol.data_type = "FLOAT"
+    pins = {i.identifier: i for i in pol.inputs}
+    t.links.new(g.outputs["Value"], pins["Factor_Float"])
+    t.links.new(b.inputs["Roughness"].links[0].from_socket, pins["A_Float"])
+    pins["B_Float"].default_value = GLINT_ROUGH
+    t.links.new({o.identifier: o for o in pol.outputs}["Result_Float"], b.inputs["Roughness"])
+    bare = t.nodes.new("ShaderNodeMix")               # and scraped to bare steel
+    bare.data_type = "RGBA"
+    bins = {i.identifier: i for i in bare.inputs}
+    t.links.new(g.outputs["Value"], bins["Factor_Float"])
+    t.links.new(b.inputs["Base Color"].links[0].from_socket, bins["A_Color"])
+    bins["B_Color"].default_value = rig.srgb(GLINT_METAL)
+    t.links.new({o.identifier: o for o in bare.outputs}["Result_Color"], b.inputs["Base Color"])
     met = b.inputs["Metallic"]
+    keep = t.nodes.new("ShaderNodeMath")              # 1 bare, SOOT_METAL under full soot
+    keep.operation = "MULTIPLY_ADD"
+    t.links.new(fac.outputs["Value"], keep.inputs[0])
+    keep.inputs[1].default_value = -(1.0 - SOOT_METAL)
+    keep.inputs[2].default_value = 1.0
     k = t.nodes.new("ShaderNodeMath")
     k.operation = "MULTIPLY"
-    k.inputs[1].default_value = SOOT_METAL
+    t.links.new(keep.outputs["Value"], k.inputs[1])
     if met.links:
         t.links.new(met.links[0].from_socket, k.inputs[0])
     else:

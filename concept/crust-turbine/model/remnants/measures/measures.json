@@ -1,8 +1,8 @@
 {
  "source": {
-  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4",
-  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4/sheets",
-  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4/renders/render.json",
+  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full5",
+  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full5/sheets",
+  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full5/renders/render.json",
   "directions": "horizontal-vertical",
   "footprint": [
    3,
@@ -218,8 +218,8 @@
     ],
     "remnants_shadow_px": [
      {
-      "px": 22202,
-      "share": 0.4174
+      "px": 22065,
+      "share": 0.4148
      },
      "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
     ],
@@ -612,8 +612,8 @@
     ],
     "remnants_shadow_px": [
      {
-      "px": 21720,
-      "share": 0.4085
+      "px": 21616,
+      "share": 0.4065
      },
      "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
     ],
