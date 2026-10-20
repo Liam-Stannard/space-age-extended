@@ -15,7 +15,20 @@ is run on them. Exits 0 when every case below comes out as listed, 1 naming thos
              never changes. A hold across the loop's end: the first drawn frame begins before tick
              0 (a negative tick).
   cap        two layers whose true loop has more drawn frames than the cap: the first cap of them
-             from tick 0, complete false, no durations.
+             from tick 0, complete false, the last frame held up to the next change.
+  static     (review fix 1) a layer whose shown frame never changes is static and adds nothing to
+             the loop: entries [0, 1] at speed 2 (frame 0 every tick) beside 3 frames at speed 1:
+             a 3-tick loop. It beside a layer at 1e-7 (a loop of 10^22 ticks, which hung):
+             cut at TICK_CAP ticks with a note, in under 5 s; at 0.1234567891234 (no simple
+             fraction) likewise, cut at the frame cap. Entries [0, 1, 2] at speed 2 is not static.
+  cut glow   (review fix 2) a glow of 200 frames at 7/20, alone over the plate: 1400 changes in
+             its own 4000-tick loop, over the cap. Its glow figures, its layer alone and the
+             motion all say loop_complete false with a note; 1200 frames played over 3429 ticks
+             (the 1201st change is at tick ceil(1200 x 20 / 7)); no wrap (null) in the layer
+             alone or the motion, whose 1199 steps are all between frames measured.
+  streaming  Motion, fed the untimed fixture's frames with every step counting everywhere, gives
+             the same moving map, strobe map and steps as moving(), strobe() and steps() on the
+             whole list (the reference it streams).
   fixture    (the ticket's criterion 1) one direction, footprint 1x1, every sheet 64 x 64 at shift
              0, the plate grey 60 over all of it (4096 covered px):
                press       paint, 4 frames, a 6 x 6 block grey 40, 200, 40, 200; hold {frame 1,
@@ -50,6 +63,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from fractions import Fraction
 
 from PIL import Image
@@ -100,17 +114,37 @@ def test_play():
 def test_cap():
     tl = measure.Timeline([measure.Play(range(7), Fraction(1)), measure.Play(range(11), Fraction(1))], cap=20)
     check("cap: 77 frames over a cap of 20: the first 20 from tick 0, incomplete",
-          (tl.ticks, tl.frames, tl.complete, tl.durations) == (77, list(range(20)), False, None),
-          f"got {tl.ticks}, {tl.frames}, {tl.complete}")
+          (tl.ticks, tl.frames, tl.complete, tl.durations, tl.measured_ticks) == (77, list(range(20)), False,
+                                                                                  [1] * 20, 20),
+          f"got {tl.ticks}, {tl.frames}, {tl.complete}, {tl.durations}")
 
 
-def frames_sheet(path, values, at, size, light=False):
-    """A sheet of 64 x 64 frames, each a size x size block at `at` of grey values[f]."""
-    sheet = Image.new("RGBA", (64 * len(values), 64))
+def test_static():
+    still = measure.Play([0, 1], Fraction(2))
+    check("static: entries [0, 1] at speed 2 never change", still.static and still.loop == 1)
+    check("static: entries [0, 1, 2] at speed 2 do", not measure.Play([0, 1, 2], Fraction(2)).static)
+    tl = measure.Timeline([still, measure.Play(range(3), Fraction(1))])
+    check("static: beside 3 frames at speed 1, a 3-tick loop", (tl.ticks, tl.complete, tl.frames) == (3, True, [0, 1, 2]),
+          f"got {tl.ticks}, {tl.complete}, {tl.frames}")
+    for label, v, why in (("1e-7", 1e-7, "ticks"), ("0.1234567891234", 0.1234567891234, "drawn frames")):
+        t0 = time.time()
+        tl = measure.Timeline([measure.Play([0, 1], Fraction(2)), measure.Play([0, 1], measure.exact_speed(v))])
+        took = time.time() - t0
+        check(f"static: beside a layer at {label}: cut ({why}), noted, in under 5 s",
+              not tl.complete and why in tl.why and "true loop" in (tl.note() or "") and took < 5,
+              f"{took:.1f} s, complete {tl.complete}, why {tl.why}")
+
+
+def frames_sheet(path, values, at, size, light=False, line=None):
+    """A sheet of 64 x 64 frames, each a size x size block at `at` of grey values[f], line frames
+    a row (default all)."""
+    line = line or len(values)
+    sheet = Image.new("RGBA", (64 * line, 64 * -(-len(values) // line)))
     for f, v in enumerate(values):
-        sheet.paste((v, v, v, 255), (64 * f + at[0], at[1], 64 * f + at[0] + size, at[1] + size))
+        x, y = 64 * (f % line), 64 * (f // line)
+        sheet.paste((v, v, v, 255), (x + at[0], y + at[1], x + at[0] + size, y + at[1] + size))
     sheet.save(path)
-    return dict(size=[64, 64], shift=[0.0, 0.0], frames=len(values), line_length=len(values),
+    return dict(size=[64, 64], shift=[0.0, 0.0], frames=len(values), line_length=line,
                 **({"kind": "glow"} if light else {}))
 
 
@@ -197,6 +231,48 @@ def test_untimed(out):
           and all("played" not in a for a in r["layers_alone"].values()))
 
 
+def test_cut_glow(out):
+    d = os.path.join(out, "cut-glow", "sheets")
+    os.makedirs(d, exist_ok=True)
+    Image.new("RGBA", (64, 64), (60, 60, 60, 255)).save(os.path.join(d, "base.png"))
+    meta = {"base": dict(size=[64, 64], shift=[0.0, 0.0]), "checks": {}}
+    meta["lamp-glow"] = frames_sheet(os.path.join(d, "lamp-glow.png"), [20 + min(f, 200 - f) for f in range(200)],
+                                     (8, 8), 4, True, line=100)
+    meta["lamp-glow"]["animation_speed"] = 7 / 20
+    with open(os.path.join(d, "meta.json"), "w") as f:
+        json.dump(meta, f)
+    code = measure.run([d, "--out", os.path.join(out, "cut-glow", "measures"), "--footprint", "1x1"])
+    check("cut glow: exit 0", code == 0, f"exit {code}")
+    with open(os.path.join(out, "cut-glow", "measures", "measures.json")) as f:
+        r = json.load(f)["directions"][""]
+    g, a, mo = r["glow"]["lamp-glow"], r["layers_alone"]["lamp-glow"], r["motion"]
+    check("cut glow: glow figures say so", (g.get("loop_complete"), g.get("played_frames"), g.get("measured_ticks"),
+                                            g.get("loop_ticks"), "note" in g) == (False, 1200, 3429, 4000, True),
+          f"got {g}")
+    check("cut glow: layer alone says so, no wrap",
+          (a.get("loop_complete"), a.get("played_frames"), a["wrap_px"], a["wrap_within_steps"], len(a["step_px"]),
+           "note" in a) == (False, 1200, None, None, 1199, True), f"got {dict(a, step_px=len(a['step_px']))}")
+    check("cut glow: motion says so, no wrap",
+          (mo.get("loop_complete"), mo["loop_frames"], mo["wrap_px"], mo["wrap_within_steps"], len(mo["step_px"]),
+           mo["timing"]["complete"], mo["timing"]["measured_ticks"], "note" in mo)
+          == (False, 1200, None, None, 1199, False, 3429, True), f"got {dict(mo, step_px=len(mo['step_px']))}")
+
+
+def test_streaming(out):
+    src = measure.Source(os.path.join(out, "untimed", "sheets"), footprint=[1, 1])
+    sc = measure.Scene(src, "")
+    rgb = [sc.drawn(j)[0] for j in range(sc.loop)]
+    mo = measure.Motion(rgb[0])
+    for f in rgb[1:]:
+        mo.add(f)
+    st = mo.close()
+    same = (not measure.ImageChops.difference(st, measure.strobe(rgb)).getbbox()
+            and not measure.ImageChops.difference(mo.moving, measure.moving(rgb)).getbbox()
+            and mo.steps == measure.steps(rgb))
+    check("streaming: Motion equals moving(), strobe() and steps() on the whole list", same,
+          f"steps {mo.steps} vs {measure.steps(rgb)}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", required=True)
@@ -205,8 +281,11 @@ def main():
     test_speed()
     test_play()
     test_cap()
+    test_static()
     test_fixture(a.out)
     test_untimed(a.out)
+    test_streaming(a.out)
+    test_cut_glow(a.out)
     print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))
     sys.exit(1 if FAILED else 0)
 
