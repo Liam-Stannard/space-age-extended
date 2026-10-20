@@ -1,0 +1,103 @@
+Reaction plant, the Circulator (5x5): the full model -- concept/reaction-plant/model/circulator.py
+rendered by tools/blender/render.sh --ports --icon on the GPU; packed by pack.py; sun 9.1
+
+PACK CHECKS (pack.py, meta.json 'checks')
+  centre_offset_px: 0.0
+  edge_alpha_max: 0
+  half_width_tiles: [2.5, '2.5 = footprint width / 2']
+  footprint_rows_tiles: [2.5, 'bottom edge below origin; 2.5 = on the footprint']
+  legs-glow_white_px: [0, 'pixels the working light clipped to white; 0 = the light keeps its colour']
+  drive_cycle: [24, 'frames of a closed loop; no positional check']
+  coupling-dosing_cycle: [24, 'frames of a closed loop; no positional check']
+  coupling-pump_cycle: [24, 'frames of a closed loop; no positional check']
+  press_path_px: {'declared': [0.0, 1.8, 5.76, 9.72, 11.52, 11.52, 11.52, 11.52, 11.52, 11.52, 11.52, 10.67, 8.53, 5.76, 2.99, 0.85], 'measured': [-0.06, 1.75, 5.75, 9.71, 11.55, 11.55, 11.55, 11.55, 11.55, 11.55, 11.55, 10.68, 8.56, 5.75, 2.93, 0.8], 'off_curve': 0.06, 'off_line': 0.0, 'note': "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1", 'tracked': 'pack'}
+  gauge-reactor-upper_cycle: [24, 'frames of a closed loop; no positional check']
+  gauge-reactor-lower_cycle: [24, 'frames of a closed loop; no positional check']
+  gauge-scrubber_cycle: [24, 'frames of a closed loop; no positional check']
+  drip_cycle: [24, 'frames of a closed loop; no positional check']
+  frame0_vs_still: [85, 0.002, 'max channel difference, and share of pixels over 8 (sampling noise)']
+  cut past +-2.5 tiles (cut_to_footprint): idle.png 37 px, still.png 37 px
+
+FINISH AND TONE (finish.py; tonal.py) -- vanilla: black 5-12 %, ratio ~0.5, darkchr 7-15; p50 41-63 (the mod ~75-81), p95 143-189
+  vanilla oil refinery (north)                 black 12.0% fine 6.53 mid 12.62 ratio 0.52 darkchr 7.0
+                                               p5 5 p50 51 p95 165 spread 160
+  vanilla chemical plant (north base)          black 4.7% fine 5.69 mid 11.59 ratio 0.49 darkchr 15.3
+                                               p5 12 p50 47 p95 176 spread 164
+  the model: base.png (the moving parts cut out) black 10.6% fine 6.77 mid 10.44 ratio 0.65 darkchr 12.5
+                                               p5 4 p50 73 p95 164 spread 160
+  the model as seen: the still (frame 0, idle) black 8.6% fine 7.14 mid 10.77 ratio 0.66 darkchr 14.6
+                                               p5 5 p50 75 p95 166 spread 161
+
+OUTLINE (the plate, alpha over 128) -- spec gate 1: as round 5 (86.8 %; NW 100, NE 97, SW 1, SE 4 %; 0.78 tile)
+  footprint covered 85.8 %; corners NW 96 %, NE 94 %, SW 2 %, SE 4 %
+  rises 0.78 tile above the north edge (refinery 0.97); over the north port tiles -1, 0, +1: 0.25, 0.17, 0.23 (assembler 3's north picture 0.0-0.31)
+  mass 4.98 wide x 5.73 tall tiles
+
+BLUE (spec 3.3: the legs only)
+  lit blue / opaque, working frame 0: 2.8 % (round 5 3.2 %; chemical plant 3.2 %)
+  lit blue's box, tiles from the centre (x0, y0, x1, y1 down the screen): -0.59, -1.67, +0.36, +0.77  -- more than a tile from every edge (spec 8.5)
+  blue-hued px outside the legs' own footprint, in the plate and every frame of every other layer: 0
+  glow: 2753 px, mean colour (7, 47, 171)
+
+MOTION
+  moving / opaque, every frame of every motion against frame 0: 7.3 % (chemical plant 5.2 %, refinery 15.9 %; the previews 8.5 %)
+  per layer: legs 3.3 %, drive 1.6 %, coupling-dosing 0.0 %, coupling-pump 0.1 %, gauge-reactor-upper 0.0 %, gauge-reactor-lower 0.0 %, gauge-scrubber 0.0 %, drip 0.1 %, press 2.9 %
+
+PORTS against assembler 3's outline (concept/ballast-drill/model/measure_ports.py; far_px 1 or less)
+  N {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [52, 20, 0.01562, 0.34375], 'ours': [53, 22, 0.00781, 0.34375]}
+  E {'missed': 0, 'extra': 6, 'far_px': 1.0, 'vanilla': [32, 74, -0.71875, 0.0625], 'ours': [31, 71, -0.72656, 0.05469]}
+  S {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [64, 70, 0.0, -0.76562], 'ours': [63, 69, -0.00781, -0.77344]}
+  W {'missed': 0, 'extra': 7, 'far_px': 1.0, 'vanilla': [32, 72, 0.73438, 0.01562], 'ours': [31, 72, 0.72656, 0.01562]}
+
+LAYERS (sheets/; crops in px on the 416 x 480 render canvas, the origin at (208, 240))
+  sheet                frames line  frame w x h  sheet w x h      shift (tiles)  crop                   moving
+  base                      1    1    327 x 377    327 x 377 -0.00781, -0.39844  (44, 26, 371, 403)     
+                       the plate: the machine without the animation's moving parts, the legs unlit
+  shadow                    1    1    370 x 329    370 x 329 +0.37500, -0.08594  (47, 70, 417, 399)     
+                       draw_as_shadow; the whole machine at frame 0
+  legs-glow                 1    1     63 x 157     63 x 157 -0.11719, -0.44531  (169, 133, 232, 290)   
+                       working_visualisation, draw_as_light (or draw_as_glow): lit minus the plate
+  status-lamp               1    1     57 x 106     57 x 106 +1.80469, +0.98438  (295, 250, 352, 356)   
+                       working_visualisation, apply_tint status, always_draw: the two lenses, white
+  legs                     24   24     63 x 159   1512 x 159 -0.11719, -0.44531  (169, 132, 232, 291)   3.3 %
+                       working_visualisation (only while crafting), over the plate's dark legs: 24 f
+  drive                    24   24      64 x 61    1536 x 61 +1.34375, -2.00781  (262, 81, 326, 142)    1.6 %
+                       animation layer: the agitator drive, 24 f
+  coupling-dosing          24   24       7 x 13     168 x 13 -0.99219, -0.28906  (141, 215, 148, 228)   0.0 %
+                       animation layer: the dosing pump's coupling (west), 24 f
+  coupling-pump            24   24      10 x 19     240 x 19 +1.09375, +1.33594  (273, 316, 283, 335)   0.1 %
+                       animation layer: the pump house's pump coupling (south-east), 24 f
+  press                    16   16      54 x 66     864 x 66 -1.20312, +1.51562  (104, 304, 158, 370)   2.9 %
+                       animation layer: the filter press, 16 f, once a craft (frame_sequence)
+  gauge-reactor-upper      24   24       10 x 6      240 x 6 +1.42188, +0.00000  (294, 237, 304, 243)   0.0 %
+                       animation layer: the reactor's upper double dial's needle, 24 f
+  gauge-reactor-lower      24   24       12 x 8      288 x 8 +1.21875, +0.34375  (280, 258, 292, 266)   0.0 %
+                       animation layer: the reactor's lower double dial's needle (by the ladder), 24 f
+  gauge-scrubber           24   24        9 x 6      216 x 6 -1.55469, -2.17188  (104, 98, 113, 104)    0.0 %
+                       animation layer: the scrubber's double dial's needle, 24 f
+  drip                     24   24      24 x 63     576 x 63 +2.26562, -2.03906  (341, 78, 365, 141)    0.1 %
+                       animation layer: the condenser's beads and drops, 24 f
+  ports/port-N              1    1      53 x 22      53 x 22 +0.00781, +0.34375                         
+  ports/cover-N             1    1      53 x 22      53 x 22 +0.00781, +0.34375                         
+  ports/port-E              1    1      31 x 71      31 x 71 -0.72656, +0.05469                         
+  ports/cover-E             1    1      31 x 71      31 x 71 -0.72656, +0.05469                         
+  ports/port-S              1    1      63 x 69      63 x 69 -0.00781, -0.77344                         
+  ports/cover-S             1    1      63 x 69      63 x 69 -0.00781, -0.77344                         
+  ports/port-W              1    1      31 x 72      31 x 72 +0.72656, +0.01562                         
+  ports/cover-W             1    1      31 x 72      31 x 72 +0.72656, +0.01562                         
+
+THE TIGHT CROPS (2026-10-12): the couplings and gauges sheets split, one layer per part
+  before: couplings 3408 x 120 = 408,960 px, gauges 4800 x 168 = 806,400 px; 1,215,360 px
+  after:  coupling-dosing 168 x 13 = 2,184 px, coupling-pump 240 x 19 = 4,560 px, gauge-reactor-upper 240 x 6 = 1,440 px, gauge-reactor-lower 288 x 8 = 2,304 px, gauge-scrubber 216 x 6 = 1,296 px
+          11,784 px: 1.0 % of before (1,203,576 px fewer)
+
+THE PRESS, PROPOSED PLAYBACK (to verify when wired: spec 6.2's two engine details)
+  press layer: animation_speed 0.11667 (7/60), frame_count 16, frame_sequence of 140 entries:
+    each of frames 1-16 twice (the motion at 14 fps), then frame 1 x 108 (shut, holding);
+    140 / 0.11667 = 1200 ticks = one 20 s craft at crafting speed 1; rate-locked to crafting, not phase-locked
+  the cake lands on sprite frame 11 (1-based; press frame 10, 0-based) = sequence entries [21, 22] (1-based): sound_accents.frame
+    is 11 if it counts sprite frames, 21 if it counts the sequence -- never 1 (frame 0 fires no accent on 2.1.21)
+  the 24-frame layers: animation_speed 0.23333 (14/60, 14 fps), ~1.7 s a loop
+  idle_animation: the same layers at their frame 1 (the press shut, the legs dark: the plate's)
+  the alternative: the press as its own working_visualisation with the same frame_sequence
+  verify 2.1's frame_sequence length limit against these 140 entries; if it is lower, a lower    animation_speed shortens the sequence at the cost of a slower stroke (3.5/60, each frame once: 70 entries, the stroke at 3.5 fps)

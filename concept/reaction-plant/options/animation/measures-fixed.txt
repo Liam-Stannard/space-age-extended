@@ -1,0 +1,20 @@
+Reaction Plant, animation previews after the clash fixes (anim_previews.py, anim_fixed.py)
+measured as measures.txt measures the first previews (anim_sheets.py)
+
+6. All together, fixed (48 f): no clashes; double dials; the cake toned down; the press opens west
+  frames 48; moving 8197 px of 96124 opaque = 8.5 %; plate rises 0.78 tiles above the north edge (round 5 0.78)
+  union crop 320 x 307 px = 98240 px^2 at (65, 110)
+    cluster 92 x 81 px at (65, 336), 3253 moving px
+    cluster 34 x 72 px at (170, 165), 1776 moving px
+    cluster 71 x 67 px at (261, 114), 1721 moving px
+    cluster 35 x 71 px at (197, 251), 1495 moving px
+    cluster 47 x 38 px at (274, 330), 139 moving px
+    cluster 41 x 38 px at (344, 133), 136 moving px
+    cluster 5 x 22 px at (361, 110), 63 moving px
+    cluster 4 x 10 px at (143, 248), 31 moving px
+    (11 specks under 10 px left out: render flicker, not motion)
+  GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/6-all-fixed.gif  3.11 MB
+
+fixes sheet /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/fixes-4x-fixed.png
+condenser GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/condenser-4x-fixed.gif  0.81 MB
+press GIF /home/liam-stannard/git/space-age-extended/.claude/worktrees/reaction-plant-redesign/concept/reaction-plant/options/animation/press-4x-fixed.gif  1.76 MB

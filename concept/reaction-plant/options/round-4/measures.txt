@@ -1,0 +1,30 @@
+F  THE CIRCULATOR, round 4 (own pipe pictures, vanilla texturing)
+  footprint covered by mass: 86.7 %  (vanilla refinery 92-94 %; round 3 92.1 %; the amendment allows ~85 % for the silhouette)
+  corner tiles covered (NW, NE, SW, SE): 100 %, 97 %, 1 %, 4 %
+  outer quarter-tile band covered: 69 %  (a square outline is 100 %)
+  rises above footprint north edge: 0.78 tiles  (vanilla refinery 0.97; round 3 0.73)
+  rise over the north port tiles -1, 0, +1: 0.19, 0.17, 0.17 tiles  (assembler 3's north picture stands 0.0-0.31 above the edge; round 3 0.17, 0.09, 0.17)
+  sprite bbox (mass): 5.08 wide x 5.73 tall tiles
+  blue (lit) pixels / opaque: 3.2 %  (vanilla fluid: chem 3.2 %, refinery 2.0 %; round 3 3.7 %)
+  blue area bbox: 1.62 x 2.45 tiles
+  moving pixels / opaque: 3.8 %  (vanilla: chem 5.2 %, refinery 15.9 %; round 3 4.0 %)
+  round 3, same measures: cover 92.1 %; corners (NW, NE, SW, SE) 95 %, 95 %, 95 %, 87 %; outer band 87 %
+
+pipe pictures against assembler 3's outline (concept/ballast-drill/model/measure_ports.py; criterion: far_px 1 or less)
+  N {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [52, 20, 0.01562, 0.34375], 'ours': [53, 22, 0.00781, 0.34375]}
+  E {'missed': 0, 'extra': 6, 'far_px': 1.0, 'vanilla': [32, 74, -0.71875, 0.0625], 'ours': [31, 71, -0.72656, 0.05469]}
+  S {'missed': 0, 'extra': 0, 'far_px': 0.0, 'vanilla': [64, 70, 0.0, -0.76562], 'ours': [63, 69, -0.00781, -0.77344]}
+  W {'missed': 0, 'extra': 7, 'far_px': 1.0, 'vanilla': [32, 72, 0.73438, 0.01562], 'ours': [31, 72, 0.72656, 0.01562]}
+
+finish.py (black, fine, mid, ratio, darkchr) -- vanilla: black 5-12 %, ratio ~0.5, darkchr 7-15
+  vanilla oil refinery (north)         black 12.0% fine 6.53 mid 12.62 ratio 0.52 darkchr 7.0
+  vanilla chemical plant (north base)  black 4.7% fine 5.69 mid 11.59 ratio 0.49 darkchr 15.3
+  round 3 F (plate, idle)              black 8.3% fine 6.83 mid 10.19 ratio 0.67 darkchr 8.2
+  round 4 F (plate, idle)              black 9.1% fine 5.74 mid 8.91 ratio 0.64 darkchr 14.6
+  round 4 F (plate, working f0)        black 7.0% fine 6.49 mid 9.35 ratio 0.69 darkchr 16.4
+tonal.py (p5, p50, p95, spread) -- vanilla: p50 41-63 (mod ~75-81), p95 143-189, spread 140-177
+  vanilla oil refinery (north)         p5 5 p50 51 p95 165 spread 160
+  vanilla chemical plant (north base)  p5 12 p50 47 p95 176 spread 164
+  round 3 F (plate, idle)              p5 5 p50 73 p95 146 spread 141
+  round 4 F (plate, idle)              p5 5 p50 74 p95 142 spread 137
+  round 4 F (plate, working f0)        p5 6 p50 77 p95 146 spread 140
