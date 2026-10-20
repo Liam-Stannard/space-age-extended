@@ -3,11 +3,14 @@
 
   python3 tools/blender/same_render.py <out-a> <out-b> [--renders] [--json <file>]
 
-<out-a> and <out-b> are render.sh <out-dir>s of one model on one device. A GPU render is not
-the same twice to the bit (the determinism study, blender-pipeline-fixes T01: the order the
-GPU sums a pixel's samples in moves a value at a rounding edge one level; an emissive mesh
-lit as a light moves the glows up to 3 levels, on either device), so "the same" is a bar,
-Liam's (T02, 2026-10-20, "GPU tolerance"), and this applies exactly it:
+<out-a> and <out-b> are render.sh <out-dir>s of one model on one device, packed with the same
+rolloff setting (render.json's "rolloff", contract.py): pack.py rolls highlights off by default
+since T07, so a fresh render held against sheets packed before T07 needs "rolloff": false on
+the fresh side. A GPU render is not the same twice to the bit (the determinism study,
+blender-pipeline-fixes T01: the order the GPU sums a pixel's samples in moves a value at a
+rounding edge one level; an emissive mesh lit as a light moves the glows up to 3 levels, on
+either device), so "the same" is a bar, Liam's (T02, 2026-10-20, "GPU tolerance"), and this
+applies exactly it:
 
   sheets   every PNG under sheets/ (ports/, masters/ and icon.png too), compared by its
            pixels, never its bytes, in premultiplied colour (each of R, G, B times alpha / 255,

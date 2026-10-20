@@ -127,7 +127,7 @@ def lit(haze=True, window=True):
     if haze:
         adds.update({(x0 + i, y): HAZE_ADDS for x0, y, n in HAZE for i in range(n)})
     for (x, y), add in adds.items():
-        r, g, b, a = px[x, y]
+        r, g, b, _ = px[x, y]
         px[x, y] = (r + add[0], g + add[1], b + add[2], 255)
     return im
 

@@ -85,8 +85,11 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
              heat ramps #C8541E -> #E8A24A -> #FFD9A0: R >= 180, R - B >= 90, G - B >= 30,
              R - G >= 30) px and pct; white_px (every channel >= 245, pack.py's white());
              clipped_px (the most pixels, in any frame of the loop, that the light drives
-             to white and that are not white without it: pack.py's glow_checks, over every
-             glow at once); and idle_blue_pct / idle_orange_pct, the same shares on the still
+             to white and that are not white without it: pack.py's glow_checks' count, over
+             every glow at once). Both are of what ships: the packed sheets, rolled off
+             under white by pack.py since T07 -- not glow_checks' own figures, which read
+             the renders unrolled -- so a rolled glint a glow lifts back to white counts
+             as clipped; and idle_blue_pct / idle_orange_pct, the same shares on the still
   glow       per glow layer (a glow pass, or a glow animation's frame 0), its light (RGB
              times alpha, as the engine adds it): look_common.light_measures -- area, peak,
              core %, halo %, sat_core, sat_halo, white -- and blue_pct of its lit pixels;
