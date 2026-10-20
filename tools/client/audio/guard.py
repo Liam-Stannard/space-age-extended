@@ -14,6 +14,12 @@ independently of the launcher:
                        guard ran, each with the nodes at its two ends, from
                        pw-dump --monitor (its raw log kept as pw-dump.json.gz).
   sound-guard.json     the verdict (judge()).
+
+Every helper it starts (pactl, pw-metadata, pw-dump) runs in a session of its
+own, so a Ctrl-C at the terminal reaches only capture.py, which then stops
+them itself; none is left behind and none dies half-way through a reading.
+start() and stop() may each be called at any point, any number of times, and
+judge() reports a record cut short as incomplete rather than raising.
 """
 
 import gzip
@@ -21,6 +27,7 @@ import json
 import re
 import signal
 import subprocess
+import sys
 import threading
 import time
 from pathlib import Path
@@ -28,11 +35,27 @@ from pathlib import Path
 CLIENT = re.compile(r"factorio", re.I)
 
 
-def _run(cmd):
-    try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=5).stdout
-    except (OSError, subprocess.TimeoutExpired):
-        return ""
+def _run(cmd, tries=3):
+    """A helper's output, or None if it failed every try. Its own session, so a
+    terminal Ctrl-C cannot kill it mid-reading; stopped here, by PID, if it
+    hangs or this process is interrupted while it runs."""
+    for _ in range(tries):
+        try:
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+                                    start_new_session=True)
+        except OSError:
+            return None
+        try:
+            out, _ = proc.communicate(timeout=5)
+        except BaseException:
+            proc.kill()
+            proc.wait()
+            if not isinstance(sys.exc_info()[1], subprocess.TimeoutExpired):
+                raise
+            continue
+        if proc.returncode == 0:
+            return out
+    return None
 
 
 def factorio_pids():
@@ -63,8 +86,11 @@ def snapshot():
                            "pid": p.get("application.process.id"), "media": p.get("media.name")})
     except ValueError:
         pass
-    conf = re.search(r"value:'([^']*)'", _run(["pw-metadata", "0", "default.configured.audio.sink"]))
-    return {"t": time.time(), "default": _run(["pactl", "get-default-sink"]).strip(),
+    conf = re.search(r"value:'([^']*)'", _run(["pw-metadata", "0", "default.configured.audio.sink"]) or "")
+    default = _run(["pactl", "get-default-sink"])
+    # None, not "", when it could not be read: an unread default is no evidence
+    # either way, and is counted as such.
+    return {"t": time.time(), "default": default.strip() if default else None,
             "configured": conf.group(1) if conf else None,
             "factorio": factorio_pids(), "inputs": inputs}
 
@@ -81,34 +107,52 @@ class SoundGuard:
         self.fpid = None
         self.before = self.after = None
         self._stop = threading.Event()
+        self._lock = threading.Lock()
         self._thread = None
         self._dump = None
         self._dump_file = None
+        self._samples = None
+        self._started = self._stopped = False
+
+    def _write(self, row):
+        with self._lock:
+            if self._samples is not None:
+                self._samples.write(json.dumps(row) + "\n")
+                self._samples.flush()
 
     def start(self):
-        self.before = snapshot()
+        """Each part is recorded as soon as it exists, so stop() finds whatever
+        an interrupt left half-started."""
+        if self._started:
+            return
+        self._started = True
         self._samples = open(self.out / "sound-samples.jsonl", "w")
-        self._samples.write(json.dumps({"phase": "before", **self.before}) + "\n")
+        self.before = snapshot()
+        self._write({"phase": "before", **self.before})
         self._dump_file = open(self.out / "pw-dump.json", "w")
         self._dump = subprocess.Popen(["pw-dump", "--monitor", "--no-colors"], stdout=self._dump_file,
-                                      stderr=subprocess.DEVNULL)
-        self._thread = threading.Thread(target=self._loop, daemon=True)
-        self._thread.start()
+                                      stderr=subprocess.DEVNULL, start_new_session=True)
+        thread = threading.Thread(target=self._loop, daemon=True)
+        thread.start()
+        self._thread = thread     # only once it runs: stop() joins only a started thread
 
     def _loop(self):
         while not self._stop.wait(0.5):
-            self._samples.write(json.dumps({"phase": "during", **snapshot()}) + "\n")
-            self._samples.flush()
+            self._write({"phase": "during", **snapshot()})
 
     def stop(self):
-        if self._thread is None:
+        """Safe at any point after start() began, and more than once."""
+        if not self._started or self._stopped:
             return
+        self._stopped = True
         self._stop.set()
-        self._thread.join(timeout=10)
-        self._thread = None
-        self.after = snapshot()
-        self._samples.write(json.dumps({"phase": "after", **self.after}) + "\n")
-        self._samples.close()
+        if self._thread is not None and self._thread.is_alive():
+            # A round of readings is at most 4 helpers x 3 tries x 5 s; wait it
+            # out, so no helper outlives the guard.
+            self._thread.join(timeout=70)
+        if self.before is not None:
+            self.after = snapshot()
+            self._write({"phase": "after", **self.after})
         if self._dump is not None:
             self._dump.send_signal(signal.SIGINT)
             try:
@@ -116,8 +160,16 @@ class SoundGuard:
             except subprocess.TimeoutExpired:
                 self._dump.kill()
                 self._dump.wait(timeout=5)
-            self._dump_file.close()
-            self._dump = None
+        for f in (self._dump_file, self._samples):
+            if f is not None:
+                with self._lock:
+                    f.close()
+        self._samples = None
+
+    def helpers_left(self):
+        """PIDs this guard started that are still running (pw-dump; the sampler
+        thread's helpers end with the thread)."""
+        return [self._dump.pid] if self._dump is not None and self._dump.poll() is None else []
 
     # ------------------------------------------------------------ PipeWire links
 
@@ -168,6 +220,20 @@ class SoundGuard:
     # ------------------------------------------------------------ verdict
 
     def judge(self):
+        """The verdict; a record cut short (no before or after reading, no
+        samples file) is reported as incomplete, and fails, rather than raised."""
+        try:
+            return self._judge()
+        except (OSError, ValueError, KeyError, TypeError) as e:
+            verdict = {"pass": False, "incomplete": True, "problems": [f"incomplete record: {e!r}"],
+                       "summary": f"incomplete record ({e!r}): nothing is shown either way"}
+            try:
+                (self.out / "sound-guard.json").write_text(json.dumps(verdict, indent=1))
+            except OSError:
+                pass
+            return verdict
+
+    def _judge(self):
         null = None
         run = {}
         if self.run_dir and (Path(self.run_dir) / "run.json").exists():
@@ -177,6 +243,8 @@ class SoundGuard:
         during = [s for s in samples if s["phase"] == "during" and s["factorio"]]
         problems = []
         b, a = self.before, self.after
+        if b is None or a is None or b["default"] is None or a["default"] is None:
+            raise ValueError("the default sink was not read both before and after the run")
         if not null:
             problems.append("no null sink in the run's run.json")
         if b["default"] != a["default"] or b["configured"] != a["configured"]:
@@ -186,7 +254,8 @@ class SoundGuard:
             problems.append("the default was already the null sink before the run")
         if not during:
             problems.append("no sample was taken while the client ran")
-        off_default = [s for s in during if s["default"] != null]
+        unread = [s for s in during if s["default"] is None]
+        off_default = [s for s in during if s["default"] is not None and s["default"] != null]
         if off_default:
             problems.append(f"{len(off_default)} samples while the client ran had the default "
                             f"{sorted({s['default'] for s in off_default})}")
@@ -220,8 +289,9 @@ class SoundGuard:
             "null_sink": null,
             "default_before": {"default": b["default"], "configured": b["configured"]},
             "default_after": {"default": a["default"], "configured": a["configured"]},
-            "default_during": sorted({s["default"] for s in during}),
+            "default_during": sorted({s["default"] for s in during if s["default"] is not None}),
             "samples_while_client_ran": len(during),
+            "samples_default_unread": len(unread),
             "client_streams": {str(k): sorted(map(str, v)) for k, v in streams.items()},
             "client_links": [{"link": lk["link"], "from": lk["from"].get("node.name") or lk["from"].get(
                 "application.name"), "to": lk["to"].get("node.name")} for lk in client_links],
@@ -231,18 +301,19 @@ class SoundGuard:
         verdict["summary"] = (
             f"default {b['default']} before, {verdict['default_during']} in {len(during)} samples while the "
             f"client ran, {a['default']} after; client streams {verdict['client_streams']}; "
-            f"{len(client_links)} client link(s), all to {null}" if not problems else "; ".join(problems))
+            f"{len(client_links)} client link(s), all to {null}"
+            + (f"; {len(unread)} sample(s) could not read the default" if unread else "")
+            if not problems else "; ".join(problems))
         (self.out / "sound-guard.json").write_text(json.dumps(verdict, indent=1))
         return verdict
 
 
 if __name__ == "__main__":
     # Re-judge an evidence folder: guard.py <audio-dir> <launcher-run-dir> [factorio-pid]
-    import sys
     g = SoundGuard(sys.argv[1])
     g.run_dir = sys.argv[2]
     g.fpid = int(sys.argv[3]) if len(sys.argv) > 3 else None
     rows = [json.loads(line) for line in open(Path(sys.argv[1]) / "sound-samples.jsonl")]
-    g.before = next(r for r in rows if r["phase"] == "before")
-    g.after = next(r for r in rows if r["phase"] == "after")
+    g.before = next((r for r in rows if r["phase"] == "before"), None)
+    g.after = next((r for r in rows if r["phase"] == "after"), None)
     print(json.dumps(g.judge(), indent=1))

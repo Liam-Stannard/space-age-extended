@@ -35,9 +35,11 @@ into three bands (below 250 Hz, 250-2500 Hz, above 2500 Hz); each band's RMS
 is taken every 2 ms; the rise at each step is how far each band's level
 stands above its own median 6-50 ms before, summed over the bands, in dB. An
 onset is a rise that is the highest within +-30 ms and at least
-spec.onset_rise_db (35 dB by default: the crusher's accents rise 39-82, the
-bed's own beat and the drop's grit tail at most 31), its time the first 2 ms
-step of that rise to reach half of it. Each onset is then labelled by the
+spec.onset_rise_db (35 dB by default: in the runs so far the crusher's
+accents rose 37.6-81.7, the bed's own beat 10-31, the drop's grit tail up to
+35.6 and the bed starting up 46.7 -- so some that are not accents clear it;
+they match no file, are reported as "unknown", and are never judged), its
+time the first 2 ms step of that rise to reach half of it. Each onset is then labelled by the
 sound file it matches best
 (spec.sounds): the same bands and steps worked out on each file, correlated
 (normalised, per band, weighted by the file's own band energy) against the

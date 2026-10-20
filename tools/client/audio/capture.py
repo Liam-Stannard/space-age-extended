@@ -61,9 +61,22 @@ sink in every sample while the client ran; every client stream was on the null
 sink in every sample; and no PipeWire link ever ran from a client node to
 anything but the null sink.
 
+Stopping. A Ctrl-C (SIGINT), SIGTERM or SIGHUP stops the run cleanly: the
+recorder, then the launcher (one SIGINT; SIGTERM if it is still up after 90 s),
+then the sound guard and its helpers. The launcher and every helper run in
+sessions of their own, so a Ctrl-C to the terminal's whole process group
+reaches only this tool, which stops each of them itself. Signals that land
+while a process is being started are held until its PID is recorded; while
+the cleanup runs, further signals are ignored (it is bounded: about 2.5 min at
+worst). Each cleanup step runs whatever happened in the one before. A launcher
+that survives SIGINT and SIGTERM is left running, never SIGKILLed (that would
+strand its client and the null sink), and reported with its --recover line.
+
 Exit: 0 recorded, analysed, every accent on its frame and the guard passed;
 1 something failed or an accent missed (see the output); 2 usage; 3 the
-launcher refused (another client running).
+launcher refused (another client running); 5 the cleanup could not finish
+(a launcher would not stop, or a helper was left: see the output); 130 stopped
+by a signal, with everything cleaned up.
 """
 
 import argparse
@@ -98,6 +111,36 @@ class Failed(Exception):
 
 def say(msg):
     print(f"capture: {msg}", flush=True)
+
+
+# ---------------------------------------------------------------- signals
+
+_SIGNALS = (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)
+_held = {"depth": 0, "pending": None}
+
+
+def _on_signal(signum, _frame):
+    if _held["depth"]:
+        _held["pending"] = signum     # raised when the start in progress is recorded
+        return
+    raise KeyboardInterrupt(f"signal {signum}")
+
+
+class held_signals:
+    """Hold SIGINT/SIGTERM/SIGHUP while a process is started and its handle
+    stored, so an interrupt can never leave one running that nothing knows of."""
+
+    def __enter__(self):
+        _held["depth"] += 1
+
+    def __exit__(self, *exc):
+        _held["depth"] -= 1
+        if _held["depth"] or _held["pending"] is None:
+            return False
+        signum, _held["pending"] = _held["pending"], None
+        if exc[0] is None:
+            raise KeyboardInterrupt(f"signal {signum} (held)")
+        return False                  # already leaving on an exception of its own
 
 
 def wait_for(cond, seconds, what, alive=None, step=0.05):
@@ -248,17 +291,23 @@ def run_dir_of(log_path):
     return Path(m.group(1)) if m else None
 
 
-def stop_launcher(proc, seconds=90):
+STOP_GRACE = (90, 30)    # seconds after SIGINT, then after SIGTERM
+
+
+def stop_launcher(proc):
+    """Stop a launcher the way it asks to be stopped. True once it is gone;
+    False if it survives SIGINT and SIGTERM (it is then left as it is)."""
     if proc is None or proc.poll() is not None:
-        return
-    say(f"stopping the launcher {proc.pid} (SIGINT)")
-    proc.send_signal(signal.SIGINT)
-    try:
-        proc.wait(timeout=seconds)
-    except subprocess.TimeoutExpired:
-        say(f"the launcher {proc.pid} is still up; SIGTERM")
-        proc.terminate()
-        proc.wait(timeout=30)
+        return True
+    for sig, grace in zip((signal.SIGINT, signal.SIGTERM), STOP_GRACE):
+        say(f"stopping the launcher {proc.pid} ({signal.Signals(sig).name})")
+        proc.send_signal(sig)
+        try:
+            proc.wait(timeout=grace)
+            return True
+        except subprocess.TimeoutExpired:
+            say(f"the launcher {proc.pid} is still up after {grace} s")
+    return False
 
 
 def probe_errors(out_dir):
@@ -298,14 +347,13 @@ def main():
     shutil.copy(args.spec, out / "spec.json")
 
     # Signals become exceptions, so the finally below always runs.
-    def on_signal(signum, _frame):
-        raise KeyboardInterrupt(f"signal {signum}")
-    signal.signal(signal.SIGTERM, on_signal)
-    signal.signal(signal.SIGHUP, on_signal)
+    for sig in _SIGNALS:
+        signal.signal(sig, _on_signal)
 
     scr = Path(tempfile.mkdtemp(prefix="sae-audio."))
     proc = logf = rec = snd = None
     run_dir = None
+    launch_log = None
     rc = 1
     try:
         mod = scr / "sae-audio"
@@ -313,8 +361,10 @@ def main():
         (mod / "config.lua").write_text("return [==[" + json.dumps(spec) + "]==]\n")
 
         say("creating the save")
-        proc, logf = launch(args, [*extra_mods, "--mod", str(mod), "--timeout", "300",
-                                   "--", "--create", str(scr / "audio.zip")], out / "launch-create.log")
+        launch_log = out / "launch-create.log"
+        with held_signals():
+            proc, logf = launch(args, [*extra_mods, "--mod", str(mod), "--timeout", "300",
+                                       "--", "--create", str(scr / "audio.zip")], launch_log)
         r = proc.wait(timeout=400)
         logf.close()
         proc = logf = None
@@ -324,12 +374,15 @@ def main():
         if r != 0 or not (scr / "audio.zip").exists():
             raise Failed(f"creating the save failed (launcher exit {r}; see {out / 'launch-create.log'})")
 
-        snd = guard.SoundGuard(out)
-        snd.start()
+        with held_signals():
+            snd = guard.SoundGuard(out)
+            snd.start()
         say(f"sound before: default {snd.before['default']}")
-        proc, logf = launch(args, [*extra_mods, "--mod", str(mod), "--audio", "--timeout", str(args.timeout),
-                                   "--done-file", "sae-audio/stop", "--", "--load-game", str(scr / "audio.zip")],
-                            out / "launch-record.log")
+        launch_log = out / "launch-record.log"
+        with held_signals():
+            proc, logf = launch(args, [*extra_mods, "--mod", str(mod), "--audio", "--timeout",
+                                       str(args.timeout), "--done-file", "sae-audio/stop",
+                                       "--", "--load-game", str(scr / "audio.zip")], launch_log)
         alive = lambda: proc.poll() is None  # noqa: E731
         run_dir = wait_for(lambda: run_dir_of(out / "launch-record.log"), 30, "the run directory", alive)
         snd.run_dir = run_dir
@@ -368,8 +421,9 @@ def main():
         say(f"window {win[2]}x{win[3]}+{win[0]}+{win[1]} on {display}; recording {cw}x{ch}+{box[0]}+{box[1]}"
             f" and {monitor}")
 
-        rec = Recorder(raw, display, xauth, box, cap.get("fps", 30), monitor, cap.get("rate", 48000))
-        rec.start()
+        with held_signals():
+            rec = Recorder(raw, display, xauth, box, cap.get("fps", 30), monitor, cap.get("rate", 48000))
+            rec.start()
         geometry["pipeline"] = rec.desc
         (out / "geometry.json").write_text(json.dumps(geometry, indent=1))
         work_s = (spec["start_after"] + spec["work_ticks"]) / 60
@@ -399,31 +453,59 @@ def main():
         rc = 1
     finally:
         # The cleanup is bounded (the recorder 5 s, the launcher 120 s, the
-        # guard 15 s) and must finish: further signals are ignored while it runs.
-        for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        # guard 75 s at worst) and must finish: further signals are ignored
+        # while it runs, and each step runs whatever became of the one before.
+        for sig in _SIGNALS:
             signal.signal(sig, signal.SIG_IGN)
-        if rec is not None:
-            rec.stop()
-        stop_launcher(proc)
-        if logf:
-            logf.close()
-        if snd is not None:
-            snd.stop()
-        shutil.rmtree(scr, ignore_errors=True)
-        if run_dir is not None:
+        problems = []
+        stuck = []
+
+        def step(what, fn):
+            try:
+                fn()
+            except Exception as e:  # noqa: BLE001 -- every step must get its turn
+                problems.append(f"{what}: {e!r}")
+                say(f"cleanup: {what} failed: {e!r}")
+
+        def stop_l():
+            if not stop_launcher(proc):
+                stuck.append(proc.pid)
+
+        def copy_probe():
             for name in ("status.jsonl", "log.txt", "errors.txt"):
                 p = run_dir / "data/script-output/sae-audio" / name
                 if p.exists():
                     shutil.copy(p, out / f"probe-{name}")
 
+        if rec is not None:
+            step("stopping the recorder", rec.stop)
+        step("stopping the launcher", stop_l)
+        if logf:
+            step("closing the launcher's log", logf.close)
+        if snd is not None:
+            step("stopping the sound guard", snd.stop)
+        if run_dir is not None:
+            step("copying the probe's files", copy_probe)
+        if stuck:
+            rd = run_dir_of(launch_log) if launch_log and launch_log.exists() else None
+            say(f"FAILED: the launcher {stuck[0]} would not stop (SIGINT, then SIGTERM); it is left running, "
+                f"and with it maybe its client and the null sink. Once it is gone, or after `kill -KILL "
+                f"{stuck[0]}`, run: {LAUNCH} --recover {rd or '<its run directory>'}")
+            say(f"kept {scr} (the client may still be reading it)")
+        else:
+            step("removing the scratch folder", lambda: shutil.rmtree(scr))
+        left = snd.helpers_left() if snd is not None else []
+        if left:
+            problems.append(f"helper(s) still running: {left}")
+            say(f"FAILED: the sound guard's helper(s) {left} are still running")
+        if stuck or problems:
+            rc = 5
+
     verdict = 1
     g = {"pass": False}
     if snd is not None:
-        try:
-            g = snd.judge()
-            say(f"sound guard: {'PASS' if g['pass'] else 'FAIL'} -- {g['summary']}")
-        except (OSError, ValueError, KeyError) as e:
-            say(f"sound guard FAILED to judge: {e!r}")
+        g = snd.judge()
+        say(f"sound guard: {'PASS' if g['pass'] else 'FAIL'} -- {g['summary']}")
     if rc == 0:
         try:
             res = analyse.run(out, spec, REPO)
