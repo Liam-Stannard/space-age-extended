@@ -9,7 +9,12 @@ Nothing reaches Liam's desktop or speakers, one Factorio runs at a time,
 and everything started is stopped.
 
 ## 1. Before any run
-- `tools/check-data-stage.sh` passes on the worktree first.
+- `tools/check-data-stage.sh` passes on the worktree first. It takes the
+  launcher's lock: while a client runs it waits (at most
+  SAE_DATA_STAGE_LOCK_WAIT, default 600 s) and exits 3 if the lock is
+  still held: the data stage was not checked, not failed. Do not run it
+  during a capture: it can take the lock between capture.py's two
+  launches, and the recording is refused.
 - `pgrep -af factorio`: if one runs, wait for it (bounded); the launcher's
   lock refuses a second one anyway.
 - Evidence goes to <repo>/evidence/<task>/ (git-ignored); name its paths.
@@ -26,7 +31,9 @@ and everything started is stopped.
 - Sound: `tools/client/audio/capture.py --task <t> --spec <json>` -- an MP4
   (VP9, plays in Chrome/Firefox/VLC) of the building with its sound and
   accents.json of where each accent lands, all through a null sink, with a
-  guard proving nothing reached the speakers.
+  guard proving nothing reached the speakers. raw/ is deleted unless
+  --keep-raw; exit 3 when the launcher refuses at either launch; MP4s are
+  git-ignored (`*.mp4`).
 - Anything else: `tools/client/launch.sh --task <t> [--audio]` with a probe
   mod of your own in scratch, following shot/'s mod.
 

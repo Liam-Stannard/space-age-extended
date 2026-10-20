@@ -24,6 +24,11 @@ on". Two are measure.py's own:
 - joins: no gap of 2 px or more in more than 2 of the pipe body's columns
   (beside the pipe is information only; clipping is Liam's eye);
 - collide: 0 clashes not allowed.
+- white and clipped: since 2026-10-20 pack.py rolls highlights off every
+  drawn sheet but light passes (render.json `rolloff`, on by default):
+  new sheets have no pixel at 245 or over, so white_px is the shipped
+  look's. Compare sheets packed before and after only with the newer
+  packed `rolloff: false`.
 
 ## 3. Timing
 measure.py plays each layer's frame_sequence at its animation_speed, as
