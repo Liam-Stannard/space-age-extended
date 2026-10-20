@@ -724,26 +724,33 @@ local turbine_remnants =
   }
 }
 
--- **Vanilla metal, no smoke, sparks for fire** (Liam, 2026-10-20: "Vanilla
--- metal, no smoke", then "Yes, no smoke at all" and "Swap for a spark burst").
--- The steam turbine's own explosion -- its sound and its shower of metal and
--- machine parts -- with nothing in it that needs air: there is none here to
--- hold a cloud or feed a flame, the same reason derive.from drops the
--- turbine's exhaust.
+-- **Vanilla metal and fire, sparks, no smoke** (Liam, 2026-10-20: "Vanilla
+-- metal, no smoke", then "Yes, no smoke at all"; sparks in place of the
+-- fireball, and then, from the T06 shots, "I think we should add the
+-- explosion, the core has a small atmosphere if pressure >0": "Fireball +
+-- sparks, no smoke"). The steam turbine's own explosion -- its fireball, its
+-- sound and its shower of metal and machine parts -- with sparks thrown in
+-- and every wisp of smoke taken out.
 --
 --   * **No smoke.** The explosion's `smoke-fast` puffs go, and so do the
 --     wisps the big and medium metal pieces trail as they fly (their
 --     `regular_trigger_effect`, base/prototypes/particles.lua): those two fly
 --     as copies of our own with the trail struck off. Smoke is struck by
 --     field and by effect type, so one vanilla adds later goes too.
---   * **Sparks, not a fireball.** The medium-explosion flame is replaced by
---     the construction robot's repair sparks (base/graphics/entity/sparks,
---     `robot_animations.sparks` in base/prototypes/entity/flying-robots.lua):
---     a short burst of falling metal sparks, one of its six picked at random,
---     glowing and with no flame in it. They are a robot's, a spot under a
---     tile across, so vanilla's hit sparks (`spark-particle` and
---     `spark-particle-debris`, what a bullet strikes off metal) are thrown
---     over the turbine with the debris, to carry the burst to its 3x5.
+--   * **The fireball stays**, vanilla's medium explosion: the Core has a
+--     small atmosphere wherever its pressure is above 0, so a flash of fire
+--     is fair even where smoke is not.
+--   * **And sparks with it.** The construction robot's repair sparks
+--     (base/graphics/entity/sparks, `robot_animations.sparks` in
+--     base/prototypes/entity/flying-robots.lua), a short fall of glowing
+--     metal sparks, one of its six picked at random. An explosion draws one
+--     animation, and the fireball is it, so the sparks are a small explosion
+--     of their own the big one sets off where it stands -- as a bullet's hit
+--     sets off vanilla's `spark-explosion` (base/prototypes/entity/
+--     hit-effects.lua). They are a robot's, a spot under a tile across, so
+--     vanilla's hit sparks (`spark-particle` and `spark-particle-debris`, what
+--     a bullet strikes off metal) are thrown over the turbine with the debris,
+--     to carry the burst to its 3x5.
 local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
 
 -- A trigger, a delivery or an effect may each be one table or a list of them.
@@ -798,6 +805,26 @@ local function spark_burst(particle_name, count)
   }
 end
 
+-- The robot's sparks, as an explosion of their own: drawn once where it is
+-- set off, silent, and with nothing else in it.
+local robot_sparks = data.raw["construction-robot"]["construction-robot"].sparks
+assert(robot_sparks, "construction-robot/construction-robot has no sparks")
+local turbine_sparks =
+{
+  type = "explosion",
+  name = "sae-crust-turbine-sparks",
+  icon = "__space-age-extended__/graphics/icons/crust-turbine.png",
+  icon_size = 64,
+  flags = { "not-on-map" },
+  hidden = true,
+  subgroup = "energy-explosions",
+  order = "a-g-a-z[sae-crust-turbine]-b[sparks]",
+  -- On the ground, as the fireball it goes off beside, and as the sparks drew
+  -- when they were the explosion's own animation (T06).
+  height = 0,
+  animations = table.deepcopy(robot_sparks)
+}
+
 local turbine_explosion = table.deepcopy(data.raw.explosion["steam-turbine-explosion"])
 assert(turbine_explosion, "explosion/steam-turbine-explosion does not exist")
 turbine_explosion.name = "sae-crust-turbine-explosion"
@@ -808,9 +835,6 @@ turbine_explosion.localised_name = { "dying-explosion-name", { "entity-name.sae-
 turbine_explosion.smoke = nil
 turbine_explosion.smoke_count = nil
 turbine_explosion.smoke_slow_down_factor = nil
-local robot_sparks = data.raw["construction-robot"]["construction-robot"].sparks
-assert(robot_sparks, "construction-robot/construction-robot has no sparks")
-turbine_explosion.animations = table.deepcopy(robot_sparks)
 for _, trigger in ipairs(each(turbine_explosion.created_effect)) do
   for _, delivery in ipairs(each(trigger.action_delivery)) do
     for _, key in ipairs({ "target_effects", "source_effects" }) do
@@ -824,13 +848,15 @@ for _, trigger in ipairs(each(turbine_explosion.created_effect)) do
       delivery.target_effects = delivery.target_effects or {}
       table.insert(delivery.target_effects, spark_burst("spark-particle", 40))
       table.insert(delivery.target_effects, spark_burst("spark-particle-debris", 20))
+      table.insert(delivery.target_effects,
+                   { type = "create-explosion", entity_name = turbine_sparks.name })
     end
   end
 end
 
 turbine.corpse = turbine_remnants.name
 turbine.dying_explosion = turbine_explosion.name
-data:extend({ turbine, turbine_remnants, turbine_explosion })
+data:extend({ turbine, turbine_remnants, turbine_sparks, turbine_explosion })
 
 --------------------------------------------------------------------------------
 -- Items and build recipes.
