@@ -1161,45 +1161,76 @@ data:extend({ furnace })
 -- **The plate is the machine without its moving parts**, and every moving part
 -- is its own cropped sheet drawn over it (spec §6.2, §7): the agitator drive,
 -- the dosing-pump and pump couplings, the three gauge needles, the condenser
--- drip and the filter press. So none of them can be a working visualisation the
--- engine stops drawing when the machine stops, except where something else
--- draws it then: the press, below. The plate's legs are unlit dark navy; the
--- lit legs are drawn over them only while crafting.
+-- drip and the filter press. The plate's legs are unlit dark navy; the lit legs
+-- are drawn over them only while crafting.
 --
--- **The 24-frame layers play at 14/60 frames a tick, a loop in ~1.7 s**
--- (measures.txt). The layers of one Animation all run at the first layer's
--- speed (Animation::layers, 2.1.22 docs), so the plate and shadow, one frame
--- each, are repeated 24 times and carry the same speed.
+-- **The 24-frame parts play at 14/60 frames a tick, a loop in ~1.7 s**
+-- (measures.txt), in the main animation, which an assembling machine draws in
+-- every state and advances only while crafting. The layers of one Animation all
+-- run at the first layer's speed (Animation::layers, 2.1.22 docs), so the plate
+-- and shadow, one frame each, are repeated 24 times and carry the same speed.
 --
 -- **`animation_progress = 1`, so that speed is the rate in game.** A crafting
 -- machine advances by `animation_speed x crafting_speed x animation_progress`
 -- a tick, and `animation_progress` defaults to 0.5 (see the Drop Crusher's
 -- note): left there, the press would run once every two crafts and the loops at
--- 7 fps. The spec's numbers -- 14 fps, and the press's 140 entries in 1200
--- ticks, one 20 s craft -- are rates in game, so this set says 1 rather than
--- doubling every speed. Every machine above keeps the default.
+-- 7 fps. The spec's numbers -- 14 fps for the loops, and the press's 140
+-- entries in 1200 ticks, one 20 s craft -- are rates in game, so this set says
+-- 1 rather than doubling every speed. Every machine above keeps the default.
 --
 -- **The press is its own working visualisation** (Liam, 2026-10-20: "Own
--- working visualisation"), once per craft, rate-locked and not phase-locked:
--- the engine does not reset an animation when a craft starts, so it runs once
--- in every craft's worth of animation without being tied to when one begins.
--- Its 16 frames, each shown twice (the stroke at 14 fps), then frame 1 held 108
--- times: 140 entries (AnimationFrameSequence holds 255) at 7/60 frames a tick
--- is 1200 ticks, one craft of `sae-radiant-precipitation` (20 s) at crafting
--- speed 1. Frames 1-4 (0-based) open it west, 5 the cake hangs, 6-9 it falls,
--- 10 it lands in the drop box, 11-15 it closes. A visualisation of its own
--- because it cannot share the main animation's clock: at 14/60, 140 entries'
--- worth of hold would need 280, past the limit. Drawn only while working;
--- stopped, it is the idle animation's.
+-- working visualisation"), once per craft. Its clock is the machine's: it starts
+-- at zero, advances only while the machine crafts and at the craft's own rate
+-- (slowed when browned out, sped by modules), and is never reset; so one cycle
+-- is one craft and the two stay in step (below).
+-- Its 16 frames, each shown twice, then frame 1 held 108 times: 140 entries
+-- (AnimationFrameSequence holds 255) at 7/60 entries a tick is 1200 ticks, one
+-- craft of `sae-radiant-precipitation` (20 s) at crafting speed 1. Seven
+-- entries a second, two to a frame: each frame of the stroke holds ~17 ticks,
+-- 3.5 frames a second, and the stroke takes ~4.6 s (measured in T04). Frames
+-- 1-4 (0-based) open it west, 5 the cake hangs, 6-9 it falls, 10 it lands in
+-- the drop box, 11-15 it closes. A visualisation of its own because it cannot
+-- be a layer of the main animation: at the parts' 14/60, 140 entries' worth of
+-- hold would need 280, past the limit.
 --
--- **Idle, the press is shut and the legs are dark** (`idle_animation`, spec
--- §6.1): the same layers each held on its frame 1 by `frame_sequence`, plus the
--- press held shut, 24 frames like `animation` ("Idle animation must have the
--- same frame count as animation", WorkingVisualisations::idle_animation). The
--- Drop Crusher found the engine draws it in every stopped state but one: no
--- power with a recipe and its inputs, which draws `animation` frozen. Here that
--- state would draw no press at all, since the press is neither in `animation`
--- nor drawn by a visualisation that is not working: for the in-game test.
+-- **Stopped, the press stays where it stopped: it is `always_draw`, because
+-- `idle_animation` is never drawn on this plant** (Liam, 2026-10-20: "Find out
+-- why, then fix", the fallback if the idle could not be made to draw). The
+-- engine draws a crafting machine's `idle_animation` only while it has no live
+-- fluid boxes, and this plant keeps its boxes in every state (above). Measured
+-- in a client on the Core, 2026-10-20 (T02b), with each variant's idle tinted
+-- red, unpowered, powered with no recipe, with a recipe and no input, working
+-- and after a power cut. The plant as wired drew its frozen `animation` in
+-- every stopped state and never the idle, and so did each variant with one
+-- thing changed: no `animation_progress`, no `use_mirroring`, the crusher's
+-- `perceived_performance`, a random start frame, an idle without the press, no
+-- working visualisations, `always_draw_idle_animation`, a 4-way animation.
+-- With its fluid boxes removed, its idle drew. With
+-- `fluid_boxes_off_when_no_fluid_recipe` true it drew only with no recipe, when
+-- the engine had switched the boxes off, and assembling machine 2 likewise.
+-- The Drop Crusher has no fluid boxes, which is why its idle draws. So there is
+-- no `idle_animation` here: it could only ever have been dead weight.
+--
+-- Visual `states` (the electromagnetic plant's) can draw a shut press whenever
+-- the machine stops -- the same client drew one in every stopped state -- but a
+-- visualisation gated by a state plays from the moment its state began, so a
+-- press held to "working" restarted every time the state renewed and never left
+-- frame 0. Keeping it once a craft that way means a chain of states timed to the
+-- stroke, which would tie the press to the states rather than the craft: not
+-- done.
+--
+-- **In practice a stopped plant shows its press shut, all but after a power
+-- cut.** The press's clock and the craft move together, so each stroke opens a
+-- craft, and a plant that stops for want of input or room stops between crafts,
+-- on the shut hold. Measured in the same client (T02b), one press shot every 2
+-- ticks over three crafts, the power cut for 90 ticks of every 250, then the
+-- inputs starved: strokes began at r118, 1318, 2518 and 3822, each 18 ticks
+-- (two entries of frame 1) after its craft began; every shot of the plant
+-- stopped for want of input showed it shut. Only a stop in mid-craft -- the
+-- power going -- can catch it open: cut 120 working ticks into a craft, it
+-- stood open on its frame 7 with the cake falling, and a cut during a stroke
+-- held it with the cake hanging (frame 4 or 5) until the power came back and
+-- it carried on.
 --
 -- **The legs glow only while crafting, at one strength.** legs.png is the lit
 -- legs, 24 frames, and legs-glow.png is the lit render minus the plate. The
@@ -1269,26 +1300,12 @@ for f = 1, RP_PRESS_FRAMES do
 end
 for i = 2 * RP_PRESS_FRAMES + 1, RP_PRESS_LENGTH do RP_PRESS_SEQUENCE[i] = 1 end
 
--- Every layer's frame 1, 24 times: what the idle animation holds.
-local RP_HELD = {}
-for i = 1, RP_FRAMES do RP_HELD[i] = 1 end
-
---- The main animation's layers: the plate, the 24-frame parts and the shadow.
---- `held` holds every part on its frame 1 and adds the press, shut, for the
---- idle animation; otherwise the parts play and the press is left to its own
---- visualisation.
-local function rp_layers(held)
-  local layers =
-  {
-    rp_sheet("base", { repeat_count = RP_FRAMES, animation_speed = RP_SPEED })
-  }
+--- The main animation's layers: the plate, the 24-frame parts and the shadow,
+--- the plate and shadow repeated to the parts' 24 frames.
+local function rp_layers()
+  local layers = { rp_sheet("base", { repeat_count = RP_FRAMES, animation_speed = RP_SPEED }) }
   for _, name in ipairs(RP_PARTS) do
-    layers[#layers + 1] = rp_sheet(name,
-      { frame_sequence = held and RP_HELD or nil, animation_speed = RP_SPEED })
-  end
-  if held then
-    layers[#layers + 1] = rp_sheet("press",
-      { frame_sequence = RP_HELD, animation_speed = RP_SPEED })
+    layers[#layers + 1] = rp_sheet(name, { animation_speed = RP_SPEED })
   end
   -- The whole machine at frame 0. The moving parts' shadows on the ground do
   -- not move with them: each is a sliver, and no player looks at it.
@@ -1376,19 +1393,23 @@ reaction_plant.corpse = "oil-refinery-remnants"
 reaction_plant.dying_explosion = "oil-refinery-explosion"
 -- The lead reactor and its two lit legs (spec §14), a 64 px mipmap strip.
 reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
+-- The alt-mode recipe icon at twice the size, as the oil refinery's is, and on
+-- the lead reactor's roof (Liam, 2026-10-20: "Double, like the refinery"),
+-- clear of the legs, which are the working read.
+reaction_plant.icon_draw_specification = { scale = 2, shift = { 1.35, -1.55 } }
 
 derive.own_graphics(reaction_plant,
 {
   status_colors = rp_status_colors(),
   animation_progress = 1,               -- see "animation_progress = 1" above
-  animation = { layers = rp_layers(false) },
-  idle_animation = { layers = rp_layers(true) },
+  animation = { layers = rp_layers() },
   working_visualisations =
   {
     -- The filter press, once a craft: see "The press" above. Named, so the
     -- landing's accent can be cued to it.
     {
       name = "press",
+      always_draw = true,                 -- see "Stopped" above
       animation = rp_sheet("press",
         { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED })
     },
