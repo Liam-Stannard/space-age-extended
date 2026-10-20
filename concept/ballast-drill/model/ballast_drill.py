@@ -222,6 +222,8 @@ DUST_ONLY = "--dust" in argv              # debugging: every direction's dust fr
 F0 = "--f0" in argv
 FITTINGS = "--fittings" in argv            # T03a: the fittings, a layer set per direction (section 7b)
 BLIND = "--blind" in argv                  # with --fittings: every stub blind-capped (the cover's cap)
+# T03c: with --fittings, the runs from every connection to the head, one of fitting_runs.TAKES
+RUNS = next((a.split("=")[1] for a in argv if a.startswith("--runs=")), None)
 
 # ---------------------------------------------------------------- the stroke, the chain, the ore
 
@@ -2950,6 +2952,13 @@ if FITTINGS:
     for d, deg in contract.DIRECTIONS["four"]:
         for x, y, f in fit_conns(deg):
             fitting(dict(tile=(x, y), face=f), cap=BLIND, group=f"fit-{'front' if y > 0 else 'behind'}-{d}")
+    if RUNS:                                    # T03c: fitting_runs.py says where they go
+        sys.path.insert(0, HERE)
+        import fitting_runs
+        RUN_SIZES = {}
+        for d, deg in contract.DIRECTIONS["four"]:
+            RUN_SIZES[d] = fitting_runs.build(globals(), RUNS, d, fit_conns(deg),
+                                              lambda y, d=d: f"fit-{'front' if y > 0 else 'behind'}-{d}")
 
 if "--blend" in argv:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT_DIR, "scene.blend"))
@@ -3014,6 +3023,9 @@ if FITTINGS:
     with open(os.path.join(OUT_DIR, "fittings.json"), "w") as _f:
         json.dump({d: [dict(position=[x, y], face=f, layer="front" if y > 0 else "behind")
                        for x, y, f in fit_conns(deg)] for d, deg in contract.DIRECTIONS["four"]}, _f, indent=1)
+    if RUNS:
+        with open(os.path.join(OUT_DIR, "runs.json"), "w") as _f:
+            json.dump(dict(take=RUNS, units="outer diameter, tiles (64 px a tile)", directions=RUN_SIZES), _f, indent=1)
     held = STATIC + DOORS                   # the plate's parts
     for d, deg in contract.DIRECTIONS["four"]:
         b, fr = f"fit-behind-{d}", f"fit-front-{d}"
