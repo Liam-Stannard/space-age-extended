@@ -46,7 +46,10 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              sheet is the old one's pixels where it lies, byte for byte, but its opaque pixels
              outside the box (in its rim) cleared, colour and all. And with LIGHT_SHARE set to 1
              (the whole light), glow_layer on every glow pass, the fixture's and each
-             --renders', byte for byte as the baseline's: the box is all that changed.
+             --renders', byte for byte as the baseline's: the box is all that changed. Both
+             pack.py's pack a copy of the renders whose render.json says rolloff false: this
+             tree's rolls the highlights of every sheet but a shadow's or a light's off by
+             default since T07 and the baseline's does not (test_rolloff.py holds the roll-off).
 """
 import argparse
 import importlib.util
@@ -312,9 +315,18 @@ def compare(label, rdir, out, base):
     with open(os.path.join(rdir, contract.FILE)) as f:
         decl = json.load(f)
     mine, theirs = os.path.join(out, f"{label}-mine"), os.path.join(out, f"{label}-base")
+    off = os.path.join(out, f"{label}-renders-rolloff-off")
+    if os.path.exists(off):
+        shutil.rmtree(off)
+    os.makedirs(off)
+    for f in os.listdir(rdir):          # every render a link to the original's; render.json opted out
+        if f != contract.FILE and os.path.isfile(os.path.join(rdir, f)):
+            os.symlink(os.path.join(os.path.abspath(rdir), f), os.path.join(off, f))
+    with open(os.path.join(off, contract.FILE), "w") as f:
+        json.dump(dict(decl, rolloff=False), f, indent=1)
     runs = {}
     for who, tools, o in (("this tree", TOOLS, mine), ("baseline", base, theirs)):
-        code, text, meta = packed(rdir, o, tools)
+        code, text, meta = packed(off, o, tools)
         runs[who] = (code, meta)
         if meta is None:
             check(f"{label}: pack.py ({who}) writes meta.json", False, f"exit {code}: {text[-300:]}")

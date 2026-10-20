@@ -85,6 +85,25 @@ the corpse's default is "corpse", CorpsePrototype). It goes after every other sh
                 0.64; the chemical plant's debris goes 0.61 past its north edge, its shadow 2.23
                 past its east.
 
+The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
+"On by default, new renders only"; then "Yes, animations and wrecks too"): every sheet the engine
+draws as it is -- plate, glow and paint passes, every animation but a light one, and the remnants
+sheet -- is rolled off as it is written (roll): a pixel whose brightest channel m passes KNEE (236) is
+scaled whole, every channel by the one factor that takes m to KNEE + (TOP - KNEE) *
+(1 - exp(-(m - KNEE) / (TOP - KNEE))) -- TOP 244: 255 lands on 243.3, so once rounded no channel is
+over 244, and no rolled pixel is white to white() or measure.py's white_px (every channel 245 or over) --
+each channel rounded up or down, whichever of the eight keeps the hue nearest the pixel's own
+(within 0.49 degrees on every colour; a grey stays grey) and then lies nearest the exact scale.
+Alpha is never touched, nor is any pixel at or under KNEE, so crops, sizes and shifts are as
+they were. Only the sheets change: every check is made on the renders as rendered (a glow
+animation's white and clipped pixels too), so the roll-off never hides a light the model
+over-drives. Light passes and light animations are never rolled: their white is the engine's to
+tint. Nor is a shadow, which is black. checks rolloff_px gives, per direction, each rolled sheet's
+pixels changed and the most any channel moved (the remnants sheet's, that direction's render in
+it). preview.py draws through the same roll-off, so the review is what ships (Liam: "Match
+shipped"). A model opts out with "rolloff": false in render.json (contract.py); its sheets and
+meta.json are then as before the roll-off, byte for byte, and so is its preview.
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
@@ -92,9 +111,12 @@ LIMIT_PX off its declared curve or off its line in any frame, measured from fram
 reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge.
 meta.json is written first.
 """
+import functools
+import itertools
 import json
 import math
 import os
+import re
 import sys
 from fractions import Fraction
 from PIL import Image, ImageChops, ImageFilter
@@ -153,6 +175,14 @@ DEBRIS_ALPHA = 128  # a remnants pixel above this, and not shadow, is the wreck 
 # model's to match (the check prints the share beside vanilla's).
 SHADOW_SHARE = 0.01
 SHADOW_MIN_PX = 64
+# The highlight roll-off (roll): a pixel's brightest channel past KNEE is eased toward TOP. The
+# Vent Pump's curve and knee (concept/vent-pump/options/round-5/vp5_shoulder.py and vp5_roll.py,
+# vent-pump-model branch). Its top was 250, under its own white count (every channel 250 or over),
+# but this pipeline counts white from 245 (white(), measure.py's white_px), and at 250 a rolled glint
+# landed on 246 and still counted (Liam, 2026-10-20: "Lower the top to 244"). At 244 the curve
+# tops out at 243.3, and rounded up 244: under 245.
+KNEE = 236
+TOP = 244
 
 
 def clean(im):
@@ -334,6 +364,70 @@ def white(im):
     return ImageChops.darker(ImageChops.darker(r, g), b).point(lambda v: 255 if v >= 245 else 0)
 
 
+def shoulder(m):
+    """Where the roll-off takes a brightest channel m: m itself at or under KNEE; past it eased
+    toward TOP, never reaching it (255 -> 243.3)."""
+    return m if m <= KNEE else KNEE + (TOP - KNEE) * (1 - math.exp(-(m - KNEE) / (TOP - KNEE)))
+
+
+def hue(rgb):
+    """A colour's hue in degrees (HSV's, 0-360), or None for a grey."""
+    r, g, b = rgb
+    hi, lo = max(rgb), min(rgb)
+    if hi == lo:
+        return None
+    c = hi - lo
+    h = (g - b) / c if hi == r else (b - r) / c + 2 if hi == g else (r - g) / c + 4
+    return (60 * h) % 360
+
+
+def hue_miss(a, b):
+    """Degrees between two colours' hues: 0 for two greys, 360 for a grey and a colour."""
+    ha, hb = hue(a), hue(b)
+    if ha is None or hb is None:
+        return 0 if ha is None and hb is None else 360
+    d = abs(ha - hb) % 360
+    return min(d, 360 - d)
+
+
+@functools.lru_cache(maxsize=1 << 16)
+def rolled(rgb):
+    """One pixel's colour (r, g, b) rolled off: as it is when its brightest channel m is at or under
+    KNEE; past it, every channel times shoulder(m) / m, each rounded down or up -- of the eight
+    ways, the one whose hue is nearest the colour's own, then nearest the exact scale, then the
+    first. Rounding each to its nearest would turn a pale colour's hue by up to 30 degrees, as a
+    level is much of its chroma; this keeps it within 0.49 everywhere (test/test_rolloff.py)."""
+    m = max(rgb)
+    if m <= KNEE:
+        return rgb
+    k = shoulder(m) / m
+    exact = [c * k for c in rgb]
+    ways = itertools.product(*(sorted({math.floor(v), math.ceil(v)}) for v in exact))
+    return min(ways, key=lambda w: (hue_miss(rgb, w), sum((c - v) ** 2 for c, v in zip(w, exact)), w))
+
+
+def roll(im):
+    """An RGBA image with its highlights rolled off (rolled, on every pixel's colour; alpha as it
+    was, every pixel whose channels are all at or under KNEE byte for byte), the pixels it changed
+    and the most any channel moved."""
+    im = im.convert("RGBA")
+    red, green, blue, _ = im.split()
+    over = ImageChops.lighter(ImageChops.lighter(red, green), blue).point(lambda v: 255 if v > KNEE else 0)
+    if over.getbbox() is None:
+        return im, 0, 0
+    px = bytearray(im.tobytes())
+    changed = most = 0
+    for run in re.finditer(rb"\xff+", over.tobytes()):
+        for i in range(4 * run.start(), 4 * run.end(), 4):
+            was = tuple(px[i:i + 3])
+            now = rolled(was)
+            if now != was:
+                px[i:i + 3] = bytes(now)
+                changed += 1
+                most = max(most, *(a - b for a, b in zip(was, now)))
+    return Image.frombytes("RGBA", im.size, bytes(px)), changed, most
+
+
 def paint_layer(painted, under):
     """A paint pass's sheet: the pass itself, wherever it differs from the plate under it.
 
@@ -442,8 +536,10 @@ class Packer:
         self.clipped = []   # every glow animation that clips, as a line to exit with
         self.masks = {d: cut_mask(decl, d) for d, _ in contract.DIRECTIONS[decl["directions"]]}
         self.cut_px = {}    # per direction, {render stem: px the footprint cut cleared or thinned}
-        self.wrecks = {}    # per direction, the remnants pass's render, cleaned: packed into one sheet by run()
         self.wrecked = []   # every remnants check that fails, as a line to exit with
+        self.roll_on = decl.get("rolloff", True)    # render.json's opt-out (contract.py)
+        self.rolls = {}     # per direction, {sheet: its pixels the roll-off changed, the most a channel moved}
+        self.wrecks = {}    # per direction, the remnants pass's render, cleaned and rolled off: packed into one sheet
 
     def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false.
@@ -473,6 +569,15 @@ class Packer:
         return (round(((bb[0] + bb[2]) / 2 - ox) / self.ppt, 5),
                 round(((bb[1] + bb[3]) / 2 - oy) / self.ppt, 5))
 
+    def rolloff(self, im, sheet, d):
+        """im rolled off (roll) for the sheet it goes into in direction d, what it changed recorded
+        for checks rolloff_px; im as it is when the model opts out."""
+        if not self.roll_on:
+            return im
+        im, n, most = roll(im)
+        self.rolls.setdefault(d, {})[sheet] = dict(px=n, most=most)
+        return im
+
     def save(self, im, bb, sheet, **extra):
         im.crop(bb).save(os.path.join(self.out, sheet + ".png"))
         self.meta[sheet] = dict(size=(bb[2] - bb[0], bb[3] - bb[1]), shift=self.shift(bb), **extra)
@@ -497,7 +602,7 @@ class Packer:
             im, sheet = renders[p["name"]], contract.named(p["sheet"], d)
             what = contract.named(p["name"], d) + ".png"
             if p["kind"] == "plate":
-                self.save(im, self.box_of(im.getchannel("A"), what), sheet)
+                self.save(self.rolloff(im, sheet, d), self.box_of(im.getchannel("A"), what), sheet)
             elif p["kind"] == "shadow":
                 a = clean(im).getchannel("A")
                 blk = Image.merge("RGBA", (*Image.new("RGB", im.size, (0, 0, 0)).split(), a))
@@ -505,7 +610,8 @@ class Packer:
             elif p["kind"] == "glow":
                 under = renders[p["over"]]
                 layer = glow_layer(im, under)
-                self.save(layer, self.box_of(layer.getchannel("A"), what + " minus its plate"), sheet)
+                self.save(self.rolloff(layer, sheet, d), self.box_of(layer.getchannel("A"), what + " minus its plate"),
+                          sheet)
                 # Light the glow drove to white: white in the lit pass and not already
                 # white under it (a glint on bare steel is). Over-driven emission clips
                 # there, and the glow layer, being lit minus unlit, comes out grey
@@ -517,7 +623,8 @@ class Packer:
                     white, "pixels the working light clipped to white; 0 = the light keeps its colour")
             elif p["kind"] == "paint":
                 layer = paint_layer(im, renders[p["over"]])
-                self.save(layer, self.box_of(layer.getchannel("A"), what + " where it differs from its plate"), sheet)
+                self.save(self.rolloff(layer, sheet, d),
+                          self.box_of(layer.getchannel("A"), what + " where it differs from its plate"), sheet)
             elif p["kind"] == "light":
                 self.save(im, self.box_of(im.getchannel("A"), what, 8), sheet)
             elif p["kind"] == "remnants":
@@ -550,6 +657,8 @@ class Packer:
             for i, fr in enumerate(frames):
                 sheet.paste(fr.crop(u), ((i % line) * fw, (i // line) * fh))
             stem = contract.named(name, d)
+            if not light:
+                sheet = self.rolloff(sheet, stem, d)     # its frames, unrolled, are what the checks read
             sheet.save(os.path.join(self.out, stem + ".png"))
             self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
             if light or glow:
@@ -646,6 +755,11 @@ class Packer:
         if decl.get("cut"):
             appendix["cut_px"] = (self.cut_px.get(d, {}), f"per render, the px with alpha the footprint cut "
                                   f"({', '.join(decl['cut'])}) cleared or thinned; the shadow is never cut")
+        if self.roll_on:
+            appendix["rolloff_px"] = (self.rolls.get(d, {}), f"per sheet but a shadow's or a light's, the px the "
+                                      f"highlight roll-off changed (brightest channel over {KNEE}, eased under "
+                                      f"{TOP}, hue kept) and the most a channel moved; render.json's rolloff false "
+                                      f"opts out")
         return appendix
 
     def glow_checks(self, anim, packed, plate, d, siblings=()):
@@ -730,7 +844,7 @@ class Packer:
         its checks -- the shadow baked in, nothing on the canvas's edge, how far it reaches."""
         canvas = contract.canvas_of(self.decl, p)
         self.box_of(im.getchannel("A"), what)         # an empty wreck is refused, as an empty pass is
-        self.wrecks[d] = im
+        self.wrecks[d] = self.rolloff(im, p["sheet"], d)    # as the sheet carries it; the checks read im
         shadow, debris = wreck_parts(im)
         n_shadow = shadow.histogram()[255]
         area = im.getchannel("A").point(lambda v: 255 if v else 0).histogram()[255]

@@ -158,6 +158,12 @@ a pass: everything they act on is declared here.
               of its alpha inside. pack.py counts what it cleared (meta.json's
               cut_px, counted on the renders before any bloom is added) and
               preview.py draws the renders cut the same way.
+  rolloff     (optional; true when left out) false opts the model out of pack.py's
+              highlight roll-off, which otherwise eases the pixels past 236 of every
+              sheet but a shadow's or a light's under 245, scaled whole, hue kept, and
+              preview.py draws them the same way (pack.py's docstring; Liam,
+              2026-10-20: "On by default, new renders only"). Left out of render.json
+              when not given, so a model without it declares what it always did
 
 Run as a script, it lists a render directory's plate renders, one per direction:
   python3 contract.py plates <render-dir>
@@ -272,7 +278,7 @@ def each_direction(root, directions):
 
 
 def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None,
-            ports_turn=None):
+            ports_turn=None, rolloff=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
@@ -282,6 +288,8 @@ def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(),
         decl["cut"] = cut   # left out when not given, so a model without one declares what it always did
     if ports_turn is not None:
         decl["ports_turn"] = ports_turn     # likewise
+    if rolloff is not None:
+        decl["rolloff"] = rolloff           # likewise
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -547,6 +555,8 @@ def validate(decl, where):
                 f"of a {w}x{h} footprint")
     if "ports_turn" in decl and not isinstance(decl["ports_turn"], bool):
         bad("ports_turn", f"{decl['ports_turn']!r} is not true or false")
+    if "rolloff" in decl and not isinstance(decl["rolloff"], bool):
+        bad("rolloff", f"{decl['rolloff']!r} is not true or false: false opts out of pack.py's highlight roll-off")
     missing = [f for f in reached_faces(decl) if f not in faces]
     if missing:
         how = ("ports_turn turns them through all four directions" if decl.get("ports_turn")

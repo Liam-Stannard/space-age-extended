@@ -31,7 +31,13 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              px (the packed frame left alone): exits 1 naming slider-slider-02-north.png.
   baseline   with --baseline: the old pack.py passes the 1.2 px move along (the bug: the mean
              fit shares the miss, ~0.9 px); on the box as is, this tree's sheets byte for byte
-             as the baseline's, and meta.json equal but for slider_path_px.
+             as the baseline's, and meta.json equal, every key in order, but for slider_path_px
+             -- both packing a copy whose render.json says rolloff false, as pack.py rolls the
+             highlights of every sheet but a shadow's or a light's off by default since T07 and
+             the baseline does not (test_rolloff.py holds the roll-off). A glow pass's sheets,
+             and their size and shift in meta.json, are set aside (each in both, or it fails):
+             T06 crops a still glow to the box holding pack.LIGHT_SHARE of its light, which the
+             baseline does not (test_glow_crop.py holds the crop).
 """
 import argparse
 import json
@@ -250,19 +256,40 @@ def test_baseline(rdir, out, rev):
     old = path_of(meta, "north")["off_curve"] if meta else None
     check(f"the old pack.py passes slider-02-north.png 1.2 px along (off_curve {old}: the bug)",
           code == 0 and old is not None and old <= 1.0, text[-400:])
-    mine, theirs = os.path.join(out, "as-is"), os.path.join(out, "base-as-is")
-    code, text, meta_b = packed(rdir, theirs, base)
+    off = os.path.join(out, "as-is-rolloff-off-renders")
+    if os.path.exists(off):
+        shutil.rmtree(off)
+    os.makedirs(off)
+    for f in os.listdir(rdir):          # every render a link to the box's; render.json opted out
+        if f != contract.FILE and os.path.isfile(os.path.join(rdir, f)):
+            os.symlink(os.path.join(os.path.abspath(rdir), f), os.path.join(off, f))
+    with open(os.path.join(off, contract.FILE), "w") as f:
+        json.dump(dict(load_decl(rdir), rolloff=False), f, indent=1)
+    mine, theirs = os.path.join(out, "as-is-rolloff-off"), os.path.join(out, "base-as-is")
+    code, text, _ = packed(off, mine)
+    check("this tree's pack.py on the box as is, roll-off opted out, exits 0", code == 0, text[-400:])
+    code, text, meta_b = packed(off, theirs, base)
     check("the old pack.py on the box as is exits 0", code == 0, text[-400:])
-    sheets = sorted(f for f in os.listdir(mine) if f != "meta.json")
+    decl = load_decl(rdir)
+    glows = [contract.named(p["sheet"], d) for p in decl["passes"] if p["kind"] == "glow"
+             for d, _ in contract.DIRECTIONS[decl["directions"]]]
+    check(f"every glow pass's sheet written by both ({len(glows)}; set aside: T06's crop)",
+          all(os.path.isfile(os.path.join(o, g + ".png")) for o in (mine, theirs) for g in glows))
+    sheets = sorted(f for f in os.listdir(mine) if f != "meta.json" and f[:-4] not in glows)
     same = [f for f in sheets
             if open(os.path.join(mine, f), "rb").read() == open(os.path.join(theirs, f), "rb").read()]
-    check(f"every sheet byte for byte as the baseline's ({len(sheets)})",
+    check(f"every sheet but the glow passes' byte for byte as the baseline's ({len(sheets)})",
           same == sheets and sorted(os.listdir(mine)) == sorted(os.listdir(theirs)), str(set(sheets) - set(same)))
     meta_m = json.load(open(os.path.join(mine, "meta.json")))
+    missing = [g for g in glows for m in (meta_m, meta_b) if g not in m]
     for m in (meta_m, meta_b):
         for c in m["checks"].values():
             c.pop(f"{ANIM}_path_px")
-    check("meta.json equal but for slider_path_px", meta_m == meta_b)
+        for g in glows:
+            if g in m:
+                m[g] = {k: v for k, v in m[g].items() if k not in ("size", "shift")}
+    check("meta.json equal, every key in order, but for slider_path_px and the glow passes' size and shift",
+          not missing and json.dumps(meta_m) == json.dumps(meta_b), f"missing {missing}" if missing else "")
 
 
 def main():
