@@ -1,38 +1,35 @@
 # Factorio Building — Art & Implementation Specification
 
-**Radiant Generator.** Began as a brief — enough to commission and judge a
-concept sheet — and was filled out into a specification once that sheet was
-approved. Every gameplay number is read off `prototypes/corridor.lua` and the
-vanilla `burner-generator` it deep-copies.
+**Radiant Generator.** The concept is signed off: the Carousel Foundry, options
+round 7 (`options/round-7/1-the-carousel-foundry.png`), Liam, 2026-10-19:
+"Sign off". This document describes that machine for the shipping model in
+`concept/radiant-generator/model/`. Gameplay numbers are read off
+`prototypes/corridor.lua` on master; where they disagree with this document,
+the code is right, and §20 lists what was decided and what the wiring must change.
 
-**The inherited art is the problem this document exists to solve.** The
-placeholder is literally a steam engine, on a world where nothing burns and
-there is no air to carry sound or smoke. §3.1's anti-read is unusually long for
-that reason.
-
-§13 is the one section still open: its numbers are measured off the canonical
-plates, and those do not exist yet.
+The old art is a steam engine's on a 3×5 chassis. The new building is a 5×5
+power plant in which you watch the cell go from the hood to the wire.
 
 ---
 
 # 0. Generation Contract
 
-| # | Asset | Canvas | Gate before moving on | State |
-| - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **passed — `concept/v2-sheet.png`** |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
-| 2 | Idle plate (unlit) | portrait 2:3 | Same machine, nothing lit | blocked on 1 |
-| 3 | Directional frames | portrait 2:3 | **Two are needed** — see §5 | blocked on 2 |
-| 4 | Glow plates | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+| # | Stage | Gate | State |
+| - | ----- | ---- | ----- |
+| 1 | Options | Liam picks | **done: round 6, the Carousel Foundry, 2026-10-12** |
+| 2 | Refine | Liam signs off the concept | **done: round 7, 2026-10-19** |
+| 3 | Spec | Wording agreed and written | this document |
+| 4 | Model | Liam signs off the model | next: `radiant-generator-model` |
+| 5 | Wiring | Liam signs off in game | after 4 |
 
-### Where generation happens
-
-Browser — ChatGPT's image tool. Template Appendices B and C apply in full.
-
-### Round log
-
-See §19.
+**Where it is made.** Blender, through `tools/blender/render.sh --ports --icon`, in
+`concept/radiant-generator/model/`, starting from the round-7 scripts
+(`r7_carousel_foundry.py`, `r7_kit.py`). `--ports` stays so the contract
+confirms the building has no ports. The light goes through
+`tools/blender/radiant.py` (§3.3). Every new render takes the pipeline's
+defaults: highlights rolled off above 236 to a top of 244, never on a light
+pass; glow layers cropped to 99.9 % of their light. Measures through
+`factorio-art-measure` only.
 
 ---
 
@@ -41,20 +38,20 @@ See §19.
 **Building Name:** `Radiant Generator`
 **Internal Prototype Name:** `sae-radiant-generator`
 
-**Building Type:** `burner-generator`, deep-copied from the base game's hidden
-`burner-generator` — which is itself a steam engine's art on a burner chassis.
-**That inheritance is the problem this art exists to solve:** the placeholder is
-literally a steam engine, and a steam engine is the single most wrong object
-that could stand on a vacuum world.
+**Building Type:** `burner-generator`, written out field by field (the steam
+engine's field set), not copied from vanilla's hidden one.
 
-**Purpose:** The one power source that is *made where it is spent*. Radiant fuel
-has its own `fuel_category`, so it cannot be shovelled into anything that
-already exists, and this generator will take nothing else. Ten megawatts, in
-vacuum, from rock crushed out of the corridor.
+**Purpose:** Stage 1 of the radiant power line (`design/08-core-power.md`): it
+burns radiant cells, 500 MJ a cell, fifty seconds each at 10 MW, and hands back
+a spent cell. Radiant fuel has its own `fuel_category`, so nothing else will
+burn it, and this generator burns nothing else. The stage-4 Radiant Reactor,
+40 MW with a neighbour bonus, must outclass it; this building leaves it the
+spire, the arcs and the tiling.
 
 **Locale:** *"Ten megawatts from the only fuel out here. Nothing else will take
-that fuel, and it will take nothing else."* / *"Burns the only fuel out here…
-Works in vacuum, which is the point: it is made where it is spent."*
+that fuel, and it will take nothing else."* / *"Ten megawatts from radiant
+cells, fifty seconds a cell, and each one handed back spent."* The `.cfg`
+changes at wiring.
 
 ---
 
@@ -62,17 +59,17 @@ Works in vacuum, which is the point: it is made where it is spent."*
 
 | | |
 | --- | --- |
-| Tile footprint | 3×5 (`collision_box {-1.35,-2.35},{1.35,2.35}`, inherited) |
-| Directions | 2 distinct (N/S share art, E/W share art) |
+| Tile footprint | **5×5** (Liam, 2026-10-11: "i think the generator should be 5x5"): `collision_box {{-2.2,-2.2},{2.2,2.2}}`, `selection_box {{-2.5,-2.5},{2.5,2.5}}`, the nuclear reactor's. The prototype is still 3×5 until wiring |
+| Directions | one picture for all four (§5) |
 | Output | 10 MW, electric, `primary-output` |
-| Fuel | `sae-radiant` category only; 2 fuel slots, no burnt-result slot |
-| Surface conditions | pressure ≤ 9 — the Core and space platforms |
-| Stack size / weight | 10 / 40000 |
+| Fuel | `sae-radiant` only; 2 fuel slots; 1 burnt-result slot, which takes the spent cell (`sae-spent-cell`) |
+| Surface conditions | pressure ≤ 9: the Core and space platforms |
+| Stack size / weight | 10 / 40 kg |
 | Recipe | 20 processing unit, 20 low-density structure, 40 steel plate |
 
-**No emissions and no burnt result.** The `burner` block sets no
-`emissions_per_minute` and `burnt_inventory_size = 0`, so nothing is vented and
-nothing comes out. The art must not contradict either.
+**No emissions.** The burner sets no `emissions_per_minute` and the fuel's
+`fuel_emissions_multiplier` is 0, so nothing is vented. **A spent cell does come
+out**, and the art shows where: the chute to the lead bin.
 
 ---
 
@@ -80,84 +77,99 @@ nothing comes out. The art must not contradict either.
 
 ## 3.1 Design Concept
 
-A **radiant** generator, not a combustion one. The fuel does not burn in the
-ordinary sense; it is a rock that emits, and the machine's job is to stand
-around that emission and collect it. So the building is not an engine — it has
-no moving parts the player can see, no reciprocating anything, no exhaust.
+A **cell-fed power plant on a 5×5**, one chain from cell to wire that the player
+can follow. Cells go in through two charging ports on the carousel's lead
+loading hood, the two fuel slots. The great turntable, the west half of the
+building, carries them round. The collector head reads each cell's charge as it
+passes. At the pick pocket a twin-hoist crane takes the fresh cell and leaves
+the spent one, runs east and swaps them in the lead crucible's served well. In
+the crucible the cells stand between copper collector plates, the plate rack;
+thermionic tubes on its east flank turn its heat to current. Plates and tubes
+feed the DC bus to the switchgear; the rotary converter makes AC, the
+transformer steps it up, armoured trunks take it out at the south-west. Spent
+cells leave the hood by a chute into a lead bin. A coolant pump, a radiator and
+an expansion tank cool the crucible jacket and the tube caps.
 
-It is a **long armoured trough** lying on its 3×5 footprint: a fuel magazine at
-one end, a shielded reaction throat down the middle, and a heavy conversion
-block at the other end where the cabling leaves. The one thing that moves is
-light: a cool blue glow that lives *inside* the throat and shows only
-through narrow shielded slots, because anything that can put out ten megawatts
-in vacuum is something you look at through a slot.
-
-**The anti-read, and it is the whole point:** it must not read as a steam
-engine. No pistons, no connecting rods, no flywheel, no crankshaft, no boiler
-drum, no chimney, no exhaust, no steam, no smoke, no fire, no orange heat. The
-placeholder art has every one of those and each is a lie on a vacuum world.
+**The anti-read.** It must not read as a steam engine: no pistons, connecting
+rods, crank or flywheel, no boiler, chimney or exhaust, no steam, smoke or fire,
+no orange heat. A turning rotor or converter is fine. This is the art's choice;
+the Core's thin atmosphere would allow fire, so the reason is the read, not the
+air. It must also not look like the Siderane turbine or the Reaction Plant.
 
 ## 3.2 Key Visual Features
 
-* A **long low armoured trough**, running the length of the 5-tile axis, ribbed
-  with heavy cooling fins along both flanks — the fins are radiators, and in
-  vacuum radiators are the only way heat leaves, so they should be the most
-  prominent structure on the building.
-* A **fuel magazine** at one end: a squat armoured hopper with a heavy sliding
-  lid and two loading ports, matching the two fuel slots.
-* A **shielded reaction throat** down the centre: a thick-walled tube with
-  three or four narrow horizontal viewing slots, cool blue light showing
-  through them and nowhere else.
-* A **conversion block** at the far end — a dense finned mass with heavy
-  armoured cable trunks leaving from its base.
-* Lead-grey **shielding collars** clamped around the throat at intervals,
-  bolted, obviously heavy.
+* The **carousel**: a lead-clad, banded drum carrying an indexing turntable of
+  eight lead-capped cell pockets, its loading hood with two charging ports, a
+  geared drive motor whose pinion turns the ring gear.
+* The **collector head** over the pocket before the pick, with a bolted
+  bullseye port.
+* The **twin-hoist crane**, ochre, on rails on the north shield housing and on
+  posts along the crucible's south face.
+* The **lead crucible** holding the plate rack, seen through a glazed slot, and
+  the served well with a lid that lifts while the crane works it.
+* **Five thermionic tubes** on the crucible's east flank: glass, a lit emitter
+  low in each, finned copper collector caps.
+* The **rotary converter** along the south: open commutator, brush gear,
+  coupling, AC machine, exciter.
+* The **switchgear** and the DC bus tray in the south-east; the **transformer**
+  and armoured **trunks** in the south-west.
+* **Cooling**: the pump and hoses, the radiator on the north shield housing, the
+  expansion tank in the north-east corner.
+* **Clutter**: gas bottles, valves, barrels, ladders, a cable tray, stains.
 
 ### Signature Feature
 
-The radiator fins. They say "this machine sheds heat with nowhere for the heat
-to go", which is the vacuum read, and they hold the silhouette at one tile.
+The crane's cell swap: a fresh cell lifted from the carousel and lowered into
+the crucible while the spent one comes back. It is the cell-to-wire chain made
+visible, and the one motion a player stops to watch.
 
 ## 3.3 Colour Palette
 
+(base colours from `r7_kit.py`, worn by `worn_paint()` as the Reaction Plant's
+finish)
+
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Armour and trough body | `#4A463F` → `#6E685C` | the mass of the building |
-| Radiator fins | `#8A8580` | flanks, conversion block |
-| Shielding collars | `#3B3B40` | clamps around the throat |
-| Radiant light | `#1F63FF` → `#73ADFF` | throat slots only |
-| Cable terminations | `#8A5A32` | conversion block base |
+| Lead (holds the isotope) | `#6A6258`, new lead `#7A7266` | carousel drum and table, crucible, loading hood, bin |
+| Grey paint | `#6E6A62` | shield housing, radiator, tank, AC machine, cabinet |
+| Teal paint, the radiant family's roofs | `#3E6462` | housing roof, tank top |
+| Ochre paint | `#9C7426` | crane, ladders |
+| Weathered green | `#4E6034` | motors, switchgear cabinet |
+| Cream paint | `#ACA084` | transformer, exciter |
+| Oxide red | `#6E2C1E` | pump |
+| Dark steel | `#3E3934` | decks, frames, foot rings |
+| Copper | `#94592C` | collector plates, tube caps, bus |
+| The isotope's light | `#1F63FF` → `#73ADFF`, through `tools/blender/radiant.py` | port, slot, tubes, well |
 
-The radiant blue is the colour of the radiant solution itself -- the pool, the
-pipe, the drop -- and of the radiant chunk and fuel icons, and that is
-deliberate: the solution, the rock, the fuel and the machine that burns it
-should be recognisably one family. **No orange anywhere** — orange is heat, and
-heat is the read this building is avoiding.
+**The light is one light in four openings**: the bullseye port, the plate-rack
+slot, the tube emitters and the well's mouth. Each is a bright core grading to
+deep blue at the rim, seen through glass with a thin highlight and a dark bezel,
+with the plates, cells and tube grids dark against it. No moving pattern inside
+any opening; only its strength moves (§6). `radiant.py` with its disc, slot and
+tube shapes, flicker 0, round 7's strength curves in place of its pulse. Blue
+share 0.7 % of the building at round 7. **Orange** is kept for copper and paint;
+nothing glows orange.
 
 ---
 
 # 4. Factorio Visual Style
 
-Between the two camera cases: 3×5 on the ground and low, so mostly roof and a
-shallow near face, but long enough that the trough's length has to be legible.
-Name the camera exactly — "the game's characteristic 45-degree top-down
-perspective" — and do not add the tall building's leaning clause.
-
-**Style reference to attach:** a vanilla sprite that is not the anti-read —
-the fusion reactor or the nuclear reactor, cropped to one frame and upscaled,
-with the standing disclaimer. **Do not attach the steam engine**; it is the
-exact object the design is trying to escape.
+Vanilla clutter, FFF #146 contrast, FFF #350 outline, readable at 1x. **A
+building, not a deck**: footprint cover 94 % and no flat base; the corners
+broken by equipment, unevenly (round 7: NW 71.9 %, NE 96.1 %, SW 88.1 %,
+SE 63.7 %). **Rise** 0.47 tiles above the north edge, under the fusion
+reactor's 0.66. **Finish**: the Reaction Plant model's, tonal p50 ~75–81, p95
+in vanilla's range. Compared beside vanilla's steam engine, steam turbine and
+fusion generator, the Reaction Plant and the Siderane turbine.
 
 ---
 
 # 5. Building Orientation
 
-* [x] North · [x] East · [x] South · [x] West
-
-**Direction count:** `2`. The inherited prototype maps north/south to one
-animation and east/west to the other, so two plates are needed: the trough
-running vertically and the trough running horizontally. They are the same
-machine rotated, not two designs.
+**One picture for all four directions.** The generator has no fluid box and no
+facing port, and `Animation4Way` loaded as a single animation applies to every
+direction. The model declares `directions="one"`. No pipe sheets: the
+turning-ports rule applies only to a model with ports.
 
 ---
 
@@ -165,76 +177,17 @@ machine rotated, not two designs.
 
 # 8. Connections
 
-**What the engine will draw whatever the art does.** Vanilla never butts a
-generic pipe or effect against a flat wall — the connector is modelled into the
-building's own plate and the engine only reveals it. The foundry is the
-reference: `pipe_picture = util.empty_sprite()`, `always_draw_covers = false`,
-and `enable_working_visualisations = { "input-pipe" }`, so the flange lives in
-the building's graphics set at exactly the tile the fluid box names.
+| Connection | Where | Shown as |
+| ---------- | ----- | -------- |
+| Fuel in | any adjacent tile, by inserter | the two charging ports on the loading hood |
+| Spent cell out | any adjacent tile, by inserter | the chute and the lead bin, west face |
+| Electric out | no connector; poles reach it | the armoured trunks, south-west |
+| Fluids | none | no pipe flange anywhere |
 
-| Connection | Where | Inherited from |
-| ---------- | ----- | -------------- |
-| Fuel in | any adjacent tile | inserters, unconstrained |
-| Electric out | no visible connector — poles reach it wirelessly | `energy_source` |
-| Fluids | none | `burner-generator` has no fluid box |
-| Burnt result | none | `burnt_inventory_size = 0` |
-
-**Nothing to reconcile.** A `burner-generator` accepts fuel from any tile
-touching its footprint, so the fuel hopper at one end of §3.2 is honest
-decoration in exactly the way a vanilla furnace's is — it tells the player where
-the fuel conceptually goes without constraining where an inserter may stand.
-
-Two things the art must still not imply: there is **no burnt-result slot**, so
-nothing should look like an ash or waste port, and there is **no fluid box**, so
-no pipe flange anywhere on the building. Every pipe-like form on this machine is
-internal plumbing, not a connection.
-
-# 11. Generation Requirements
-
-**Canvas:** portrait 2:3 for the north plate, landscape for the east plate,
-landscape 3:2 for the sheet. Generate at the largest size available.
-
-## Concept Sheet Prompt
-
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio Space
-Age building, every panel drawn from the game's characteristic 45-degree
-top-down perspective, laid out as labelled panels on a dark charcoal
-background, in the style of a game art bible page.
-
-Panels: two large hero views of the building, one labelled VERTICAL and one
-labelled HORIZONTAL, the same machine rotated ninety degrees; an in-game icon
-panel showing it simplified to a 64x64 item icon; a tile-grid panel showing it
-from directly overhead on a 3 by 5 tile grid; three close-up detail panels
-showing the fuel magazine with its sliding lid, a shielding collar clamped
-around the reaction throat, and a radiator fin bank; a layer breakdown row
-showing shadow, trough, fins, shielding and glow separated; a row of four
-animation key frames showing the light in the throat slots rising from dark to
-full; and a palette strip of eight swatches.
-
-The building in every panel is the same machine: a long low armoured trough
-lying flat on the ground and filling a three by five tile footprint, no taller
-than about one tile. Heavy cooling radiator fins run in banks along both long
-flanks and are the most prominent structure on it. At one end sits a squat
-armoured fuel hopper with a heavy sliding lid and two loading ports. Down the
-centre runs a thick-walled shielded tube with three narrow horizontal viewing
-slots in its side, cool blue light showing through those slots and
-nowhere else on the building. Lead-grey shielding collars are bolted around the
-tube at intervals. At the far end is a dense finned conversion block with heavy
-armoured cable trunks leaving from its base.
-
-Dark iron-nickel grey-brown metal, #4A463F to #6E685C, pale grey #8A8580
-radiator fins, near-black #3B3B40 shielding collars, cool radiant blue
-#1F63FF to #73ADFF confined entirely to the throat slots, and copper-brown
-#8A5A32 cable terminations.
-
-It must read as a sealed radiant power source standing in vacuum, never as a
-steam engine or a combustion engine: no pistons, no connecting rods, no
-flywheel, no crankshaft, no boiler, no chimney, no exhaust pipe, no steam, no
-smoke, no fire, and no orange or red heat anywhere on the building. Panel labels
-and small caption text are wanted on this sheet. Painted semi-realistic
-industrial game art. No characters, no photorealism.
-```
+The hood and the bin are honest decoration, as a furnace's are: they say where
+the cell goes and comes out without constraining where an inserter stands.
+Every pipe and hose on the building is its own coolant plumbing, not a
+connection.
 
 ---
 
@@ -242,186 +195,119 @@ industrial game art. No characters, no photorealism.
 
 # 6. Sprite Assets Required
 
-`burner-generator` has the smallest art surface of any building in this mod:
-one animation, optionally two.
+| Slot | What it is |
+| ---- | ---------- |
+| `animation` | the working loop, 32 frames: the plate, the moving parts, the glow |
+| `idle_animation` | chosen by Liam after the spike (below) |
+| Shadow | a layer of each |
+| Remnants | the machine's own wreck, rendered at the model stage, as the Siderane turbine's |
 
-| Slot | Frames | Directions | Plan |
-| ---- | -----: | ---------: | ---- |
-| `animation.north` / `.south` | 1 | shared | **Replace** — the trough running away from the viewer. |
-| `animation.east` / `.west` | 1 | shared | **Replace** — the same machine turned a quarter turn. |
-| `idle_animation` | 1 each | 2 | **Replace** — identical to `animation` but with the throat slots dark. |
-| Shadow | 1 each | 2 | **Derive**, as a layer inside each animation. |
+**The loop: 32 frames, one crane cycle** (from `r7_sheets.py`):
+frames 0–4 hoist A takes the fresh cell; 4–10 hoist B sets the spent cell in
+the pocket; 10–16 the bridge runs to the crucible; 16–26 B takes the spent cell
+from the well and A sets the fresh one; 26–32 the bridge runs back. The
+carousel indexes one pocket in frames 11–20 and its drive pinion turns with it.
+The well's lid is up in frames 15–27. **Pace:** round 7's signed-off 1x GIF,
+70 ms a frame; the model task sets `animation_speed` to match it. That is the
+reference pace: the prototype's `perceived_performance` stays, so the engine
+speeds the loop up and slows it with output. The commutator, the couplings and the
+gauge needles turn; the status lamps light. The commutator turns half a turn a
+loop.
 
-**Two plates, not four.** The inherited prototype maps north and south to one
-animation and east and west to the other, which is the whole reason §5 asks for
-two hero views rather than four.
+**The light (glow layer):** tubes swell in turn along the row, twice a loop,
+70–100 %; the bullseye port holds steady and dims to 50 % while the table
+indexes; the slot breathes ±8 %; the well's mouth rises over three frames as
+its lid lifts (hoist B covers it at this camera).
 
-**`idle_animation` is what makes the fuel state readable.** Without it the
-throat glows whether or not the generator has fuel, and a burner with no fuel
-looking exactly like one at full output is a lie the player has to open the GUI
-to catch. The idle plate is the same pixels with layer 3 omitted.
+**Flicker, as signed off**: the commutator has 8 dark copper bars; the ring
+gear half round 6's teeth; no hazard ticks on the bridge. Strobe 5.6 % at 1x,
+moving share 31.6 %. The model's strobe must be ≤ 5.6 %.
+
+**Idle: test first, then Liam chooses.** The API says `idle_animation` plays
+while the generator is inactive and must have the same frame count as
+`animation`. What the engine shows is not yet known, so a spike at the
+model/wiring stage finds what it draws with no fuel, and when fuelled with no
+demand. Liam chooses the idle look after; this spec does not set it.
 
 ---
 
 # 7. Layer Structure
 
-| # | Layer | Draw as | Animated | Notes |
-| - | ----- | ------- | -------: | ----- |
-| 1 | Shadow | `draw_as_shadow = true` | no | Derived. Long, because the building is long. |
-| 2 | Trough, fins, hopper, collars, conversion block | normal | no | The whole machine, **throat slots dark**. |
-| 3 | Throat glow | `draw_as_glow = true`, additive | yes | The three slots, and nothing else on the building. |
+| Layer | Draw as | Animated |
+| ----- | ------- | -------- |
+| Plate: everything that does not move, openings dark | normal | no |
+| Shadow | `draw_as_shadow` | no |
+| Moving parts: carousel table, crane, well lid, commutator, couplings, pinion, gauges | normal | 32 frames |
+| The isotope's light | `draw_as_glow`, from `radiant.py` | 32 frames, strength only |
+| Status lamps | as the model packs them | on while working |
 
-### Layer Notes
-
-**The slots are cut in layer 2 and lit in layer 3.** Layer 2 carries the slot
-openings, their depth and their shadowed interior; layer 3 carries only the
-blue light inside them. Derived by differencing, so registration is exact.
-
-**Radiator fins are never emissive.** They shed heat; they do not make it. If
-anything but the throat slots ends up in the glow plate, the difference was taken
-against the wrong pair of images.
+**The light is rendered apart from the lit glass in the plate**, with
+everything in front of it held out, so the plates, cells and grids cut it
+exactly. Nothing but the isotope's four openings is in the glow layer.
 
 ---
 
 # 12. Image Processing
 
-### Processing Checklist
-
-1. `--report` before judging anything.
-2. `--dekey` if the export was flattened.
-3. Cut **both** direction plates to the §13 canvases. They are different sizes —
-   3×5 one way, 5×3 the other — and that is the whole point of having two.
-4. Derive the shadow per plate.
-5. Derive the glow per plate, by differencing lit against unlit.
-6. `idle_animation` is the unlit plate; no extra work.
-
-**Do not derive one direction from the other by rotating it.** The camera does
-not rotate, so the east plate is a different drawing of the same object, not the
-north plate turned ninety degrees. Rotating it produces a machine lit from the
-wrong side, which is the tell that gives away a bad directional set.
+`tools/blender/render.sh <model> <out> --ports --icon` renders, packs and
+checks every layer; `--ports` confirms there are no ports. Highlights rolled
+off above 236 to 244 (not light passes); glow cropped to 99.9 % of its light;
+leave about a tile of canvas round every radiant opening so the glow's tail is
+whole (`radiant.py`). Measured with `factorio-art-measure`.
 
 ---
 
 # 13. Sprite Dimensions
 
-**Not yet measurable.** Fixed in advance:
-
-**Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
-
-**Footprint:** 3×5 tiles. `collision_box` `{{-1.35,-2.35},{1.35,2.35}}`,
-`selection_box` `{{-1.5,-2.5},{1.5,2.5}}`, both inherited from the vanilla
-`burner-generator`, itself a steam-engine chassis.
-
-**Load-bearing numbers, per direction:**
-
-| Direction | Deck must span | Source px at scale 0.5 |
-| --------- | -------------- | ---------------------- |
-| North / south | 3.00 tiles wide × 5.00 tall | `192 × 320` |
-| East / west | 5.00 tiles wide × 3.00 tall | `320 × 192` |
-
-Get these exactly right or a row of generators will not tile.
-
-**Height above the deck:** low — §3.1 says no taller than about one tile — so the
-visible mass sits close to the footprint and the shadow does most of the work of
-seating it.
-
-**Shift:** anchor on the trough's base, the part that touches the ground.
+64 source px a tile, scale 0.5. Footprint 5×5. The canvas, frame size and
+shift are read off the packed sheets at the model stage and written here then.
 
 ---
 
 # 14. File Structure
 
-```
-graphics/entity/radiant-generator/
-    base-v.png       colour plate, vertical (north/south), throat dark
-    base-h.png       colour plate, horizontal (east/west), throat dark
-    shadow-v.png     derived
-    shadow-h.png     derived
-    glow-v.png       throat slots, additive
-    glow-h.png       throat slots, additive
-    concept/         v1-sheet.png, v2-sheet.png
-graphics/icons/
-    radiant-generator.png   64 px mipmap strip, derived from base-v.png
-```
+`concept/radiant-generator/model/`: the model script and its renders.
+`graphics/entity/radiant-generator/`: the sheets as `pack.py` names them;
+the old `base-vertical*`, `base-horizontal*`, `glow-*` files removed at wiring.
+`graphics/icons/radiant-generator.png` from `--icon`.
 
 ---
 
 # 15. Factorio Prototype
 
-### Graphics
-
 ```lua
-local ART = "__space-age-extended__/graphics/entity/radiant-generator/"
-local function plate(tag, w, h, shift)
-  return { layers = { <base-tag.png>, <shadow-tag.png draw_as_shadow>, <glow-tag.png draw_as_glow> } }
-end
-gen.animation =
-{
-  north = plate("v", ...), south = plate("v", ...),
-  east  = plate("h", ...), west  = plate("h", ...)
-}
-gen.idle_animation = -- the same, minus the glow layer
-{
-  north = idle("v", ...), south = idle("v", ...),
-  east  = idle("h", ...), west  = idle("h", ...)
-}
+gen.animation      = { layers = { plate, shadow, moving parts, glow } }  -- one for all directions
+gen.idle_animation = -- chosen after the spike (§6); same frame count
 ```
 
-### Other Visual Properties
-
-`gen.working_sound` is already the steam engine's, inherited deliberately in
-`prototypes/corridor.lua`. **That should change with the art**: a steam engine's
-reciprocating sound is the audio equivalent of the piston this design spent its
-whole anti-read removing. A low continuous hum would match the machine. Out of
-scope for the art pass, but worth doing in the same commit.
-
-There is no smoke, no `emissions_per_minute` and no burnt result; §8 covers why
-none of them may appear.
+Changes at wiring: the 5×5 boxes, `idle_animation`, its own remnants for
+`corpse`, and a death explosion like the Siderane turbine's: fireball and
+sparks, no smoke. **Working sound:** its own, designed in the model task; the
+steam engine's goes.
 
 ---
 
 # 17. Visual QA Checklist
 
-### Building
-
-- [ ] Reads as a sealed radiant source, never as a steam or combustion engine
-- [ ] No piston, rod, flywheel, boiler, chimney, exhaust, steam or smoke
-- [ ] No orange or red anywhere — heat is the wrong colour on this building
-- [ ] Radiator fins are the dominant silhouette feature
-- [ ] Fuel hopper shows exactly two loading ports, matching `fuel_inventory_size`
-- [ ] Body metal luminance inside the §3.3 range, **measured**
-
-### Directions
-
-- [ ] Vertical and horizontal plates are the same machine, lit identically
-- [ ] Neither is a rotation of the other
-- [ ] Both tile cleanly against a neighbour of the same orientation
-
-### Animation
-
-- [ ] Light appears only in the throat slots
-- [ ] Idle plate is genuinely dark — a fuelless generator must look fuelless
-- [ ] Glow registers exactly on the slots modelled in layer 2
-
-### In-Game
-
-- [ ] Sits on its footprint in both orientations
-- [ ] Selection box matches the visible building
-- [ ] Reads correctly on a space platform as well as on the Core
+- [ ] Reads as a cell-fed generator; no steam-engine part (§3.1)
+- [ ] The chain can be followed: hood, carousel, crane, crucible, tubes, converter, transformer, trunks
+- [ ] Cover ≥ 92 %, corners broken, rise ≤ 0.66, measured
+- [ ] Light only in the four openings; blue share near round 7's 0.7 %
+- [ ] Strobe no higher than round 7's 5.6 % at 1x
+- [ ] Idle as Liam chose after the spike (§6)
+- [ ] Tonal p50 ~75–81, no clipped pixels
+- [ ] In game: sits on its 5×5, selection box matches, reads on the Core and a platform, fuelled and unfuelled
 
 ---
 
 # 18. Final Asset Checklist
 
-- [ ] `base-v.png`, `base-h.png` cut and measured
-- [ ] `shadow-v.png`, `shadow-h.png` derived
-- [ ] `glow-v.png`, `glow-h.png` derived by differencing
-- [ ] Icon derived from `base-v.png`
-- [ ] §13 filled in with **measured** numbers for both orientations
-- [ ] Prototype wired with `animation` **and** `idle_animation`
-- [ ] Working sound reconsidered — see §15
+- [ ] Model signed off by Liam
+- [ ] Sheets packed by `render.sh --ports --icon`; §13 filled in from them
+- [ ] Its own working sound, from the model task
+- [ ] Prototype: 5×5 boxes, `animation` and `idle_animation`, remnants, death explosion
 - [ ] `./tools/check-data-stage.sh` passes
-- [ ] Verified in a client, fuelled and unfuelled
+- [ ] Client test, fuelled and unfuelled; Liam signs off in game
 
 # 19. Design Notes / Iteration History
 
@@ -429,3 +315,30 @@ none of them may appear.
 | ----- | ----- | -------------- | ------- | ------------- |
 | 1 | sheet | The machine landed first time and the anti-read held completely — radiator fin banks dominate the silhouette, the shielded throat shows light only through its slots, and there is no piston, flywheel, boiler, chimney, exhaust, steam, smoke or warm colour anywhere. Fuel hopper carries exactly two loading ports, matching `fuel_inventory_size = 2`. Palette strip carries the §3.3 hexes. **But the VERTICAL and HORIZONTAL hero panels showed the same orientation**, so the sheet did not actually show the two directions §5 needs — the same turntable-versus-rotation trap the Vent Pump spec warns about. | **Machine accepted; direction panels rejected** | Two fixes: (1) HORIZONTAL must be the same machine rotated a quarter turn on the ground under a fixed camera, long axis running across the screen rather than up it; (2) the sheet titled itself RADIANT POWER SOURCE, should be RADIANT GENERATOR. |
 | 2 | sheet | Both fixes landed. VERTICAL is now tall and narrow with the trough running away from the viewer, HORIZONTAL is wide and short with it running across — the same machine under the same camera, rotated a quarter turn, which is what §5 needs. Title corrected. The building itself came back unchanged. | **Accepted — `concept/v2-sheet.png` is the locked design** | None. |
+| Options 1 | five options | Liam: "Look at the nuclear and fusion reactors for inspiration, the radiant reactor options seem a little boring and flat in comparison, we need opportunity for some impressive animations." | none picked | a showpiece |
+| Options 2 | five animated options | Liam: "I like both the gyre and the arc spire, i think the generator should be 5x5." | A and C combined | 5×5 |
+| Options 3 | three combinations | Liam: "the reactor needs to look bulkier still. A reactor needs cooling etc. See the current factorio reactors." | reworked | bulk, cooling |
+| Options 4 | three, bulked | the Gyre Spire chosen, 2026-10-11 | then set aside | — |
+| Options 5 | ten generators | Liam: "As this is supposed to be a generator and not a reactor i think we rethink the model. It still should contain animated parts and be up to the core mods standard. Create 10 suggestions. They can be up to 5x5." Then: "For the generator combine features of 3, 4 and 7 but make them a lot bulkier. Not much ground should be visible on the area it covers as its a building." | 3, 4, 7 combined | — |
+| Options 6 | three combinations | Liam: "use one but the blue textures look out of place and could be improved." | the Carousel Foundry, 2026-10-12 | the blue |
+| Options 7 | the Carousel Foundry refined | cover 94 %, rise 0.47, blue 0.7 %, strobe 5.6 % | Liam: "Sign off", 2026-10-19 | none |
+| Spec | rewrite | the Carousel Foundry described for the model | Liam: "Agreed to all the drafts", 2026-10-20 | none |
+
+# 20. Decisions
+
+1. Footprint: "5×5, reactor boxes" (collision ±2.2, selection ±2.5).
+2. Light: "radiant.py, no flicker" (flicker 0, round 7's strength curves).
+3. Idle: "Test first, then ask": a spike finds what the engine shows with no
+   fuel and fuelled with no demand; Liam chooses the idle look after.
+4. Commutator: "Half a turn" per loop.
+5. Strobe: "≤ 5.6 %".
+6. Wreck: "Own wreck, like turbine": own remnants; fireball and sparks, no smoke.
+7. Sound: "Sound: in model task".
+8. Locale: "Text: reword now" (§1 Locale above).
+9. Render: "Keep --ports".
+10. Animation speed: "Match the 1x GIF" (set in the model task to round 7's
+    signed-off pace, 70 ms a frame).
+11. Descriptions: "Cut entity's last line" (the entity description ends
+    "…each one handed back spent."; the item description is unchanged).
+12. Pace under load: "Engine varies it" (the prototype's `perceived_performance`
+    stays; the GIF's pace is the reference pace).
