@@ -25,7 +25,13 @@ applies exactly it:
   meta     every .json under sheets/ (meta.json, ports/meta.json) equal, key for key and value
            for value (-0.0 equal to 0.0), but for its light stats -- a dict of exactly peak,
            core and halo, pack.py's light_stats(), the <glow>_light checks -- whose core and
-           halo (%) may differ by up to CORE_HALO (0.1) and peak by up to PEAK (1).
+           halo (%) may differ by up to CORE_HALO (0.1) and peak by up to PEAK (1); and for
+           its roll-off counts -- checks/<direction>/rolloff_px/0/<sheet>, a dict of exactly px
+           and most, pack.py's rolloff() -- whose px (pixels rolled) and most (levels a channel
+           moved) may each differ by 1 % of the larger count, or by 1, whichever is more
+           (Liam, blender-pipeline-fixes T11b, 2026-10-20: "Within 1 %", "1 % or 1 px", most
+           "1 % or 1 level"; a level at the roll-off's knee moves a pixel in or out of it).
+           Any other count under checks (cut_px among them) must be equal.
   other    any other file under sheets/: the same bytes.
 
 With --renders, every PNG under renders/ is held to the sheets' bar as well (renders/ is
@@ -41,6 +47,7 @@ them had -- then each meta difference, allowed or not, then PASS or FAIL with wh
 import argparse
 import json
 import os
+import re
 import sys
 
 from PIL import Image, ImageChops
@@ -51,6 +58,10 @@ SHARE = 0.02        # under this share of a sheet's visible pixels may differ at
 CORE_HALO = 0.1     # light stats: core and halo % within this
 PEAK = 1            # light stats: peak luminance within this
 LIGHT_KEYS = frozenset(("peak", "core", "halo"))
+ROLL_SHARE = 0.01   # roll-off counts: px and most within this share of the larger count ...
+ROLL_FLOOR = 1      # ... or within this, whichever is more
+ROLL_KEYS = frozenset(("px", "most"))
+ROLL_PATH = re.compile(r"^/checks/[^/]+/rolloff_px/0/[^/]+$")
 EPS = 1e-6          # for the float sums a stat's rounding leaves (5.8 + 0.1)
 
 
@@ -132,34 +143,56 @@ def is_light(o):
     return isinstance(o, dict) and set(o) == LIGHT_KEYS
 
 
+def is_roll(o, path):
+    return isinstance(o, dict) and set(o) == ROLL_KEYS and bool(ROLL_PATH.match(path))
+
+
+def is_num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def roll_ok(x, y):
+    """Two roll-off counts within ROLL_SHARE of the larger, or within ROLL_FLOOR."""
+    return abs(x - y) <= max(ROLL_FLOOR, ROLL_SHARE * max(abs(x), abs(y))) + EPS
+
+
 def compare_json(a, b, path=""):
-    """Every difference between two JSON values: (path, a, b, allowed) a leaf."""
+    """Every difference between two JSON values: (path, a, b, allowed, rule) a leaf, rule the
+    tolerance that allowed it ("light stat", "rolloff count") or None."""
     if is_light(a) and is_light(b):
         out = []
         for k, tol in (("peak", PEAK), ("core", CORE_HALO), ("halo", CORE_HALO)):
             x, y = a[k], b[k]
-            num = all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (x, y))
             if x != y:
-                out.append((f"{path}/{k}", x, y, num and abs(x - y) <= tol + EPS))
+                ok = is_num(x) and is_num(y) and abs(x - y) <= tol + EPS
+                out.append((f"{path}/{k}", x, y, ok, "light stat" if ok else None))
+        return out
+    if is_roll(a, path) and is_roll(b, path):
+        out = []
+        for k in ("px", "most"):
+            x, y = a[k], b[k]
+            if x != y:
+                ok = is_num(x) and is_num(y) and roll_ok(x, y)
+                out.append((f"{path}/{k}", x, y, ok, "rolloff count" if ok else None))
         return out
     if isinstance(a, dict) and isinstance(b, dict):
         out = []
         for k in sorted(set(a) | set(b)):
             if k not in a or k not in b:
-                out.append((f"{path}/{k}", a.get(k, "<absent>"), b.get(k, "<absent>"), False))
+                out.append((f"{path}/{k}", a.get(k, "<absent>"), b.get(k, "<absent>"), False, None))
             else:
                 out += compare_json(a[k], b[k], f"{path}/{k}")
         return out
     if isinstance(a, list) and isinstance(b, list):
         if len(a) != len(b):
-            return [(path, f"<{len(a)} items>", f"<{len(b)} items>", False)]
+            return [(path, f"<{len(a)} items>", f"<{len(b)} items>", False, None)]
         out = []
         for i, (x, y) in enumerate(zip(a, b)):
             out += compare_json(x, y, f"{path}/{i}")
         return out
     if a == b and isinstance(a, bool) == isinstance(b, bool) and isinstance(a, str) == isinstance(b, str):
         return []
-    return [(path, a, b, False)]
+    return [(path, a, b, False, None)]
 
 
 def compare_stage(da, db):
@@ -175,7 +208,8 @@ def compare_stage(da, db):
                 ja = json.load(f)
             with open(pb) as f:
                 jb = json.load(f)
-            res["json"][rel] = [dict(path=p, a=x, b=y, allowed=ok) for p, x, y, ok in compare_json(ja, jb)]
+            res["json"][rel] = [dict(path=p, a=x, b=y, allowed=ok, rule=rule)
+                                for p, x, y, ok, rule in compare_json(ja, jb)]
         else:
             with open(pa, "rb") as f:
                 ba = f.read()
@@ -219,7 +253,8 @@ def report(res):
     lines = [f"a {res['a']}", f"b {res['b']}",
              f"bar: premultiplied, every px within {LEVELS} levels; under {100 * SHARE:g} % of visible px "
              f"differ; alpha flips only where colour <= {FLIP_COLOUR}; light stats core/halo within "
-             f"{CORE_HALO}, peak within {PEAK}"]
+             f"{CORE_HALO}, peak within {PEAK}; rolloff_px px and most within {100 * ROLL_SHARE:g} % of the "
+             f"larger or {ROLL_FLOOR}"]
     for st, r in res["stages"].items():
         lines.append(f"[{st}]")
         lines.append(f"  {'image':34s} {'size':>9s} {'visible':>8s} {'differ':>7s} {'share':>7s} "
@@ -244,7 +279,7 @@ def report(res):
             lines.append(f"  {rel}: " + (f"{len(diffs)} difference(s)" if diffs else "equal"))
             for d in diffs:
                 lines.append(f"    {d['path']}: {d['a']!r} v {d['b']!r}  "
-                             + ("allowed (light stat)" if d["allowed"] else "FAIL"))
+                             + (f"allowed ({d['rule']})" if d["allowed"] else "FAIL"))
         for rel, same in r["other"].items():
             lines.append(f"  {rel}: " + ("same bytes" if same else "FAIL: bytes differ"))
     lines.append("PASS" if res["pass"] else f"FAIL ({len(res['fail'])}):")

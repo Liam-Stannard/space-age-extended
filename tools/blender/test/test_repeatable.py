@@ -7,7 +7,8 @@ The bar is Liam's (blender-pipeline-fixes T02, 2026-10-20, "GPU tolerance"), app
 same_render.py (its docstring has it): sheets compared by their pixels in premultiplied colour,
 every pixel within 3 levels, under 2 % of a sheet's visible pixels differing, alpha flips only
 where the colour is 3 or less; meta.json equal but for the light stats (core/halo within 0.1,
-peak within 1).
+peak within 1) and the roll-off counts (rolloff_px's px and most within 1 % of the larger, or
+1, whichever is more: T11b).
 
 Renders, one at a time, through render.sh on the GPU (SAE_BLENDER_DEVICE=GPU): the test box
 (test/box.py --ports --icon) twice and the radiant box (test/radiant_box.py) twice, into
@@ -51,6 +52,16 @@ listed, and nothing else:
   note       box meta.json: a check's note reworded -> FAIL, meta.json, that note.
   missing    slider-east.png gone from b -> FAIL, slider-east "only in a".
   size       base-north a column narrower in b -> FAIL, base-north, its size.
+The roll-off counts (T11b), radiant meta.json's checks/west/rolloff_px/0/<sheet>, set on
+both sides (a v b); meta.json must show that one difference, allowed as a rolloff count
+where the case passes and not allowed where it fails:
+  roll-760-759     column-glow-west px 760 v 759 (T11's flake) -> PASS.
+  roll-760-752     px 760 v 752 (1.05 %) -> FAIL, meta.json, that px.
+  roll-edge        px 9900 v 10000 (1 % of the larger, 1.01 % of the smaller) -> PASS.
+  roll-0-1         base-west px 0 v 1 (within 1 px) -> PASS.
+  roll-2-4         base-west px 2 v 4 -> FAIL, meta.json, that px.
+  most-12-13       column-glow-west most 12 v 13 (within 1 level) -> PASS.
+  most-12-14       most 12 v 14 -> FAIL, meta.json, that most.
 """
 import argparse
 import json
@@ -268,6 +279,20 @@ def cases(out, box, radiant):
             c[1] = c[1] + " (reworded)"
         edit_meta(b, f)
 
+    def roll(name, key, va, vb, allowed):
+        """<name>'s rolloff_px <key> set to va in a, vb in b: meta.json's one difference, allowed
+        as a rolloff count or not."""
+        def change(a, b):
+            for side, v in ((a, va), (b, vb)):
+                def f(m, v=v):
+                    m["checks"]["west"]["rolloff_px"][0][name][key] = v
+                edit_meta(side, f)
+            want = [(f"/checks/west/rolloff_px/0/{name}/{key}", va, vb, allowed,
+                     "rolloff count" if allowed else None)]
+            return {"assert": [(lambda r: [(d["path"], d["a"], d["b"], d["allowed"], d["rule"])
+                                           for d in r["stages"]["sheets"]["json"]["meta.json"]], want)]}
+        return change
+
     def missing(a, b):
         os.remove(sheet(b, "slider-east.png"))
 
@@ -299,6 +324,17 @@ def cases(out, box, radiant):
     case(out, "note", box, note, [(sm + "/checks/north/half_width_tiles/1", "")])
     case(out, "missing", box, missing, [("sheets/slider-east.png: only in a", "")])
     case(out, "size", box, size, [(sb, "size ")])
+    rp = "/checks/west/rolloff_px/0/"
+    case(out, "roll-760-759", radiant, roll("column-glow-west", "px", 760, 759, True), None)
+    case(out, "roll-760-752", radiant, roll("column-glow-west", "px", 760, 752, False),
+         [(sm + rp + "column-glow-west/px", "760 v 752")])
+    case(out, "roll-edge", radiant, roll("column-glow-west", "px", 9900, 10000, True), None)
+    case(out, "roll-0-1", radiant, roll("base-west", "px", 0, 1, True), None)
+    case(out, "roll-2-4", radiant, roll("base-west", "px", 2, 4, False),
+         [(sm + rp + "base-west/px", "2 v 4")])
+    case(out, "most-12-13", radiant, roll("column-glow-west", "most", 12, 13, True), None)
+    case(out, "most-12-14", radiant, roll("column-glow-west", "most", 12, 14, False),
+         [(sm + rp + "column-glow-west/most", "12 v 14")])
 
 
 def main():
