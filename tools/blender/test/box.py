@@ -6,8 +6,9 @@ Not a building. Four directions, so every pass is rendered per direction by
 turning the root (<pass>-<direction>.png); a 4-frame part sliding in a straight
 line on a curve that accelerates, so the declared-path check runs instead of
 the turning drift; every
-pass kind (plate, still, glow, shadow, light, remnants); two ports, off the middle of
-their faces, on a canvas of their own size; and an icon.
+pass kind (plate, still, glow, shadow, light, remnants); four ports, one on each face, as
+a turning model must have (contract.py, `ports`), off the middle of their faces, on a canvas
+of their own size; and an icon.
 
 The wreck (the remnants pass, on a 256x256 canvas of its own, four tiles): the box
 collapsed on its plinth -- the block fallen into two tilted slabs, the roof with its north
@@ -28,7 +29,8 @@ What should come out, in sheets/meta.json and sheets/ports/meta.json:
     along its line as declared (steps of 4, 8 and 16), measured off the curve
     and off the line by under 1 px;
   * port-N and cover-N shifted from tile (-0.5, -1.5), port-E and cover-E from
-    (1.5, 0.5): the tiles those ports point into;
+    (1.5, 0.5), port-S and cover-S from (0.5, 1.5), port-W and cover-W from
+    (-1.5, 0.5): the tiles those ports point into;
   * remnants: one sheet of four rows, north, east, south, west (direction_count 4,
     line_length 1); in every direction remnants_shadow_px at least pack.py's floor (about
     430-500 px, 2.4-2.7 % of the wreck), remnants_edge_px 0, and remnants_reach_tiles' debris
@@ -71,7 +73,9 @@ DECL = dict(
         dict(name="wreck", kind="remnants", sheet="remnants", canvas=WRECK_CANVAS),
     ],
     animations=[dict(name="slider", frames=len(STROKE), motion="slide", path=[(x, 0, 0) for x in STROKE])],
-    ports=[dict(tile=(-0.5, -0.5), face="N"), dict(tile=(0.5, 0.5), face="E")],
+    # the box turns, so its ports reach every face: S and W are the N port turned 180 and 270
+    ports=[dict(tile=(-0.5, -0.5), face="N"), dict(tile=(0.5, 0.5), face="E"),
+           dict(tile=(0.5, 0.5), face="S"), dict(tile=(-0.5, 0.5), face="W")],
 )
 
 sc = rig.reset()
