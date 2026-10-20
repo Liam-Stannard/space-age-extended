@@ -56,9 +56,11 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              --collide clears the last run's collide.log and collide/. A "COLLIDE meant
              <a> x <b>" line with "clashes 1": FAIL alone, PASS with a --collide-allow
              naming the whole pair line (1 allowed, and the render goes ahead), a second
-             pattern that matched nothing printed as such; a pattern that is not a regular
-             expression, one that matches the empty string (".*"), or --collide-allow without
-             --collide: exit 2.
+             pattern that matched nothing printed as such. An allowed pair line, then
+             "moving: 0 clashes", then "model: 1 clashes": FAIL, nothing rendered (a count
+             answers to the allowed lines of its own block, since the count line before
+             it). A pattern that is not a regular expression, one that matches the empty
+             string (".*"), or --collide-allow without --collide: exit 2.
 """
 import argparse
 import copy
@@ -504,6 +506,15 @@ def test_collide(out):
           and os.path.isfile(os.path.join(o5, "blender.log")), text[-400:])
     check("an allow pattern that matched nothing is printed", "--collide-allow 'no such' matched no pair line" in text,
           text[-400:])
+    # the reviewer's case: the allowed line is the first block's (its count 0); the second
+    # block's count of 1 has no allowed line of its own, so the first one cannot answer for it
+    blocks = ("COLLIDE meant moving [g] a x b: cross  (why)\\nCOLLIDE moving: 0 clashes, 1 meant contacts\\n"
+              "COLLIDE model: 1 clashes\\n")
+    o8, code, text, _ = render("other-block", blocks, "--collide",
+                               "--collide-allow", r"meant moving \[[^]]+\] .+ x .+  \(why\)")
+    check("an allowed line in block 1, a count of 1 in block 2: FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and "'COLLIDE model: 1 clashes' counts 1, its block 0 allowed" in text
+          and not os.path.exists(os.path.join(o8, "blender.log")), f"exit {code}: {text[-400:]}")
     o6, code, text, _ = render("bad-pattern", meant, "--collide", "--collide-allow", "(")
     check("--collide-allow '(': exit 2, nothing rendered",
           code == 2 and "not a regular expression" in text and not os.path.exists(os.path.join(o6, "blender.log")),
