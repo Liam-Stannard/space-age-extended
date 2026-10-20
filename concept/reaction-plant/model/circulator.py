@@ -2453,12 +2453,14 @@ def collide_check():
             n_real += tag == "REAL"
             n_deep += tag == "touch"
             pairs.append((tag, -dp, f"{tag} {a.desc} x {b.desc}: {kind}, {dp:.3f} deep" + (f"  ({why})" if why else "")))
+            if tag == "REAL":                  # a pair line measure.py's collide gates (no allow names it)
+                out(f"COLLIDE REAL fixed {a.desc} x {b.desc}: {kind}, {dp:.3f} deep")
     order = {"REAL": 0, "touch": 1, "seated": 2}
     with open(os.path.join(OUT, "collide-model.txt"), "w") as f_:
         f_.write("\n".join(l_ for _, _, l_ in sorted(pairs, key=lambda p_: (order[p_[0]], p_[1], p_[2]))) + "\n")
-    out(f"COLLIDE model: {len(fixed)} fixed parts, {len(pairs)} touching pairs: {n_real} reach more than "
-        f"{DEEP} tile into each other and no rule explains them (REAL), {n_deep} touch at under {DEEP} "
-        f"(collide-model.txt)")
+    out(f"COLLIDE model: {n_real} clashes (REAL: reach more than {DEEP} tile into each other and no rule "
+        f"explains them), {len(fixed)} fixed parts, {len(pairs)} touching pairs, {n_deep} touch at under "
+        f"{DEEP} (collide-model.txt)")
     with open(os.path.join(OUT, "collide.txt"), "w") as f_:
         f_.write("\n".join(lines) + "\n")
 
