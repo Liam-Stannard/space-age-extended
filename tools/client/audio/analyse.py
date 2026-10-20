@@ -33,20 +33,38 @@ trail the phase by up to one grab (1/fps).
 **Where the sounds start** is read from the audio alone. The mono mix is split
 into three bands (below 250 Hz, 250-2500 Hz, above 2500 Hz); each band's RMS
 is taken every 2 ms; the rise at each step is how far each band's level
-stands above its own median 6-50 ms before, summed over the bands, in dB. An
-onset is a rise that is the highest within +-30 ms and at least
-spec.onset_rise_db (35 dB by default: in the runs so far the crusher's
-accents rose 37.6-81.7, the bed's own beat 10-31, the drop's grit tail up to
-35.6 and the bed starting up 46.7 -- so some that are not accents clear it;
-they match no file, are reported as "unknown", and are never judged), its
-time the first 2 ms step of that rise to reach half of it. Each onset is then labelled by the
-sound file it matches best
-(spec.sounds): the same bands and steps worked out on each file, correlated
-(normalised, per band, weighted by the file's own band energy) against the
-recording over 400 ms from the onset, allowing the file's own onset to sit
-within +-16 ms of it. An onset that matches no file at 0.5 or better is
-"unknown". The labels say only which sound it is; the times are the
-recording's.
+stands above its own median 6-50 ms before, summed over the bands, in dB. A
+rise that is the highest within +-30 ms is an onset, its time the first 2 ms
+step of that rise to reach half of it. At spec.onset_rise_db or more (35 dB
+by default: in the runs so far the crusher's accents rose 37.6-81.7, the
+bed's own beat 10-31, the drop's grit tail up to 35.6 and the bed starting up
+46.7) it is an onset in its own right: the markers' clicks are taken from
+these, and one that matches no file is reported as "unknown" and never
+judged. From spec.candidate_rise_db (15 dB by default) up it is a candidate,
+kept only if it matches a file: a quiet accent under a loud one's tail (the
+crusher's pawl on frame 18, 0.67 s after the drop, rose 21.6-26.3) is one.
+
+**Which sound it is** is read from the waveform: the engine plays each file
+sample for sample, so the file itself is looked for in the recording. The
+recording's mono mix and every file in spec.sounds (decoded at the
+recording's rate) are high-passed at 60 Hz (below is the bed's rotor) and
+taken down to 12 kHz; the file's first 300 ms is slid over the recording
+within +-16 ms of where its own attack (its first sample at a tenth of its
+peak) would put it for the onset, and its normalised cross-correlation taken
+at its best (1: the file alone, as it was played; about 0: none of it). The
+best match of all, at spec.match_min (0.35) or better, labels its onset, and
+that file, whole, at the gain that fits it, is subtracted from the recording;
+the onsets it overlapped are matched again against what is left, and so on
+until nothing left matches. Sounds add, so a part of one sound that looks like
+another is explained away by the one it belongs to (the crusher's drop.ogg
+holds, 0.8 s in, a pebble that matches pawl.ogg at 0.58), as is an onset just
+before a sound that reached it a period or more off. An onset that matched a
+file before and nothing after is "explained" (listed, never judged); one that
+never matched is "unknown" if an onset in its own right, else dropped. (The
+band envelopes alone, correlated file by file, could not tell the crusher's
+pitched-down pawl from its trip: under the bed's low hum the pawl's mid-band
+click had the trip's shape.) The labels say only which sound it is; the times
+are the onsets'.
 
 **Accents.** Each labelled onset's phase gives the frame it sounded on. The
 markers (a flash and a click the probe starts on one tick, before the machine
@@ -72,6 +90,7 @@ import math
 import sys
 import time
 from array import array
+from operator import mul
 from pathlib import Path
 
 import gi
@@ -82,10 +101,15 @@ from PIL import Image, ImageDraw  # noqa: E402
 
 HOP_S = 0.002
 BANDS = (("low", None, 250.0), ("mid", 250.0, 2500.0), ("high", 2500.0, None))
-WINDOW_S = 0.4
-MATCH_MIN = 0.5
+WINDOW_S = 0.4        # the recording an accent's pass needs after it
 ONSET_DB = 35.0       # the default rise, summed over the bands, that counts as an onset
+CANDIDATE_DB = 15.0   # the default rise from which an onset may be labelled
 NMS_HOPS = 15         # +-30 ms
+MATCH_HP_HZ = 60.0    # the waveform match: high-pass,
+MATCH_DECIM = 4       # taken down 4 times (48 kHz to 12 kHz),
+MATCH_S = 0.3         # the file's first 300 ms,
+MATCH_REACH_S = 0.016  # slid +-16 ms,
+MATCH_MIN = 0.35      # and the correlation that labels an onset
 
 
 class Failed(Exception):
@@ -195,38 +219,104 @@ def onsets(env, t0, threshold=ONSET_DB):
     return found
 
 
-def template(x, fs):
-    env = band_envelopes(x, fs)
-    names = [b[0] for b in BANDS]
-    w = int(round(WINDOW_S / HOP_S))
-    total = [sum(env[b][k] for b in names) for k in range(len(env[names[0]]))]
-    peak = max(total)
-    onset = next(k for k, v in enumerate(total) if v >= 0.1 * peak)
-    t = {}
-    for b in names:
-        seg = (env[b][onset:onset + w] + [0.0] * w)[:w]
-        mean = sum(seg) / w
-        z = [v - mean for v in seg]
-        t[b] = (z, sum(v * v for v in z))
-    energy = sum(t[b][1] for b in names) or 1.0
-    return {"bands": t, "weights": {b: t[b][1] / energy for b in names}, "onset_hops": onset,
-            "seconds": len(x) / fs}
+def for_matching(x, fs):
+    """x high-passed at MATCH_HP_HZ, low-passed below the new Nyquist and taken down MATCH_DECIM times."""
+    y = biquad(biquad(x, "hp", MATCH_HP_HZ, fs), "hp", MATCH_HP_HZ, fs)
+    lp = 0.4 * fs / MATCH_DECIM
+    y = biquad(biquad(y, "lp", lp, fs), "lp", lp, fs)
+    return y[::MATCH_DECIM]
 
 
-def match(env, hop, tpl):
-    """Weighted normalised correlation of the recording from `hop` with a template."""
-    w = int(round(WINDOW_S / HOP_S))
-    score = 0.0
-    for b, (z, zz) in tpl["bands"].items():
-        seg = env[b][hop:hop + w]
-        if len(seg) < w or zz <= 0:
-            return None
-        mean = sum(seg) / w
-        rr = sum((v - mean) ** 2 for v in seg)
-        if rr <= 0:
+class Matcher:
+    """Each sound file's waveform looked for in the recording, and taken out of
+    it once found (see the header)."""
+
+    def __init__(self, mono, fs, t0, files):
+        self.fs, self.t0 = fs / MATCH_DECIM, t0
+        self.res = for_matching(mono, fs)    # the recording, less every sound taken out
+        self._energy()
+        self.files = {}
+        for name, x in files.items():
+            full = for_matching(x, fs)
+            y = full[:int(MATCH_S * self.fs)]
+            peak = max((abs(v) for v in y), default=0.0)
+            if peak <= 0:
+                raise Failed(f"the sound file '{name}' is silent")
+            attack = next(i for i, v in enumerate(y) if abs(v) >= 0.1 * peak)
+            self.files[name] = {"head": y, "norm": math.sqrt(sum(v * v for v in y)), "attack": attack,
+                                "full": full}
+
+    def _energy(self):
+        """The running energy of what is left, for each window's norm."""
+        self.cum = [0.0]
+        e = 0.0
+        for v in self.res:
+            e += v * v
+            self.cum.append(e)
+
+    def rank(self, t):
+        """Every file at its best alignment near an onset at t, best first:
+        [(name, correlation, start in seconds, gain)]."""
+        out = [(name, *self.best(t, name)) for name in self.files]
+        return sorted(out, key=lambda r: r[1], reverse=True)
+
+    def best(self, t, name):
+        """(correlation, start, gain) at the file's best alignment within
+        MATCH_REACH_S of where its attack would put it for an onset at t."""
+        f = self.files[name]
+        y, norm, n = f["head"], f["norm"], len(f["head"])
+        centre = int(round((t - self.t0) * self.fs)) - f["attack"]
+        reach = int(round(MATCH_REACH_S * self.fs))
+        best, at, dot = -1.0, None, 0.0
+        for a in range(max(0, centre - reach), centre + reach + 1):
+            if a + n >= len(self.cum):
+                break
+            e = self.cum[a + n] - self.cum[a]
+            if e <= 0:
+                continue
+            d = sum(map(mul, self.res[a:a + n], y))
+            v = d / (norm * math.sqrt(e))
+            if v > best:
+                best, at, dot = v, a, d
+        if at is None:
+            return -1.0, None, 0.0
+        return best, self.t0 + at / self.fs, dot / norm ** 2
+
+    def take_out(self, name, start, gain):
+        """Subtract the whole file, at that start and gain, from what is left;
+        the span it covered, in seconds."""
+        full = self.files[name]["full"]
+        a = int(round((start - self.t0) * self.fs))
+        for i in range(max(0, -a), min(len(full), len(self.res) - a)):
+            self.res[a + i] -= gain * full[i]
+        self._energy()
+        return start, start + len(full) / self.fs
+
+
+def label_onsets(matcher, cands, match_min):
+    """The best match of all labels its onset and is taken out; the onsets it
+    overlapped are matched again; until nothing left matches (see the header).
+    Returns (taken, left): each {"o": onset, "raw": rank in the recording as it
+    was, "now": rank when it was decided}, taken also with its "span"."""
+    pending = []
+    for o in cands:
+        r = matcher.rank(o["t"])
+        pending.append({"o": o, "raw": r, "now": r})
+    taken, left = [], []
+    while pending:
+        c = max(pending, key=lambda c: c["now"][0][1])
+        pending.remove(c)
+        name, v, start, gain = c["now"][0]
+        if v < match_min:
+            left.append(c)
             continue
-        score += tpl["weights"][b] * sum(v * zv for v, zv in zip(seg, z)) / math.sqrt(rr * zz)
-    return score
+        c["span"] = matcher.take_out(name, start, gain)
+        taken.append(c)
+        lo, hi = c["span"]
+        for p in pending:
+            if lo - MATCH_S - MATCH_REACH_S <= p["o"]["t"] <= hi + MATCH_REACH_S:
+                p["now"] = matcher.rank(p["o"]["t"])
+    return taken, left
 
 
 # ---------------------------------------------------------------- raw capture
@@ -427,13 +517,16 @@ def write_mp4(path, video, audio, t_from, t_to, spec):
     # needs the interpreter lock that a blocked push would be holding.
     rate = audio["rate"]
     lr = audio["left_right"]
-    i0 = max(0, int(round((t_from - audio["t0"]) * rate)))
+    # The first sample is the first at or after t_from (rounded up, never to
+    # the nearer one): a start within half a sample of the one before would
+    # give it a negative timestamp, which a buffer cannot carry.
+    i0 = max(0, math.ceil((t_from - audio["t0"]) * rate))
     i1 = min(len(lr) // 2, int(round((t_to - audio["t0"]) * rate)))
     chunk = rate // 10
     for i in range(i0, i1, chunk):
         j = min(i1, i + chunk)
         buf = Gst.Buffer.new_wrapped(lr[2 * i:2 * j].tobytes())
-        buf.pts = int(round((audio["t0"] + i / rate - t_from) * 1e9))
+        buf.pts = max(0, int(round((audio["t0"] + i / rate - t_from) * 1e9)))
         buf.duration = int(round((j - i) / rate * 1e9))
         asrc.emit("push-buffer", buf)
     asrc.emit("end-of-stream")
@@ -530,28 +623,38 @@ def run(out, spec, repo):
         before = [r for r in rows if r["t"] <= t]
         return before[-1]["frame"] if before else None
 
-    # Label every onset from the start on.
-    tpls = {name: template(decode(repo / p, audio["rate"]), audio["rate"]) for name, p in spec["sounds"].items()}
-    events = []
-    for o in found:
-        if o["t"] < t_start - 0.05:
-            continue
-        best = (None, -2.0, 0)
-        for name, tp in tpls.items():
-            for lag in range(-8, 9):
-                h = o["hop"] - tp["onset_hops"] + lag
-                if h < 0:
-                    continue
-                s = match(env, h, tp)
-                if s is not None and s > best[1]:
-                    best = (name, s, lag)
-        label = best[0] if best[1] >= MATCH_MIN else "unknown"
+    # Label every onset and candidate from the start on, by its waveform: the
+    # best match is taken out of the recording, and the rest looked at again.
+    rise_min = spec.get("onset_rise_db", ONSET_DB)
+    cands = onsets(env, audio["t0"], min(rise_min, spec.get("candidate_rise_db", CANDIDATE_DB)))
+    matcher = Matcher(audio["mono"], audio["rate"], audio["t0"],
+                      {name: decode(repo / p, audio["rate"]) for name, p in spec["sounds"].items()})
+    match_min = spec.get("match_min", MATCH_MIN)
+    taken, left = label_onsets(matcher, [o for o in cands if o["t"] >= t_start - 0.05], match_min)
+
+    def event(cand, label):
+        o, (name, v, start, gain) = cand["o"], cand["now"][0]
         ph = phase(o["t"])
-        events.append({"t_s": round(o["t"], 4), "since_start_s": round(o["t"] - t_start, 4),
-                       "sound": label, "match": round(best[1], 3), "match_lag_ms": best[2] * HOP_S * 1000,
-                       "best_file": best[0], "rise_db": o["rise_db"], "level_db": o["level_db"],
-                       "phase": round(ph, 3), "frame_by_phase": int(ph), "frame_in_last_grab": shown(o["t"]),
-                       "phase_less_chain_delay": round(phase(o["t"] - chain), 3)})
+        return {"t_s": round(o["t"], 4), "since_start_s": round(o["t"] - t_start, 4),
+                "sound": label, "match": round(v, 3), "best_file": name,
+                "matches_in_recording": {r[0]: round(r[1], 3) for r in cand["raw"]},
+                "file_start_s": None if start is None else round(start, 5), "gain": round(gain, 4),
+                "rise_db": o["rise_db"], "level_db": o["level_db"],
+                "phase": round(ph, 3), "frame_by_phase": int(ph), "frame_in_last_grab": shown(o["t"]),
+                "phase_less_chain_delay": round(phase(o["t"] - chain), 3)}
+
+    events = [event(cand, cand["now"][0][0]) for cand in taken]
+    explained = []
+    for cand in left:
+        by = [f"{k['now'][0][0]} at {k['o']['t']:.4f}" for k in taken
+              if k["span"][0] - MATCH_S - MATCH_REACH_S <= cand["o"]["t"] <= k["span"][1] + MATCH_REACH_S]
+        if cand["raw"][0][1] >= match_min:
+            # It matched a file in the recording as it is, and nothing once the
+            # sounds found were taken out: part of one of them.
+            explained.append({**event(cand, "explained"), "by": by})
+        elif cand["o"]["rise_db"] >= rise_min:
+            events.append(event(cand, "unknown"))
+    events.sort(key=lambda e: e["t_s"])
 
     # Judge against what was agreed (only here). An accent cued on frame F
     # should start as frame F starts, at phase F: its error is phase - F in
@@ -627,6 +730,10 @@ def run(out, spec, repo):
         "fit": {k: (round(v, 5) if isinstance(v, float) else v) for k, v in fit.items()},
         "accents": judged,
         "onsets": events,
+        "explained_onsets": explained,
+        "labelling": {"onset_rise_db": rise_min, "candidate_rise_db": min(rise_min, spec.get("candidate_rise_db",
+                      CANDIDATE_DB)), "match_min": match_min, "high_pass_hz": MATCH_HP_HZ,
+                      "rate_hz": audio["rate"] / MATCH_DECIM, "file_s": MATCH_S, "reach_s": MATCH_REACH_S},
         "stray_labelled_onsets": stray,
         "tolerance_frames": tol,
         "mp4": mp4,

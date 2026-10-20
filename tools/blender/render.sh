@@ -11,12 +11,15 @@
 #                 are called; the packers act on nothing else
 #   materials.py  the layered finish every building uses
 #   downsample.py renders are 4x; this brings them to sprite size
-#   pack.py       plate/glow/shadow/light/animation sheets, shifts, geometry checks
+#   pack.py       plate/glow/shadow/light/animation sheets, shifts, geometry checks;
+#                 a remnants pass (the wreck, its shadow baked in) into one sheet in
+#                 vanilla's remnants layout, a row a direction (pack.py's docstring)
 #   pack_ports.py pipe_picture / pipe_covers sheets
 #   finish.py, tonal.py, preview.py, port_preview.py   measures and review sheets:
 #                 preview.py <out-dir>/renders <sheet.png> [--adopted <png> ...]
 #                 port_preview.py <out-dir> <sheet.png>   (after --ports)
-#   test/box.py   a 2x2 test model that exercises every path through the packers
+#   test/box.py   a 2x2 test model that exercises every path through the packers,
+#                 its wreck (a remnants pass) too
 #
 # The model is run as: blender -b --python <model.py> -- <dir> [--ports | --icon]
 # and must write <dir>/render.json (contract.declare) and the renders it declares;
@@ -41,6 +44,8 @@
 #                                [--collide [--collide-allow <pattern> ...]]
 #   <out-dir>/renders  per-pass renders at sprite size
 #   <out-dir>/sheets   packed sheets + meta.json (shifts, sizes, checks)
+#                      (a remnants pass's wreck is one sheet for every direction,
+#                      named for its sheet alone: contract.py, pack.py)
 #   <out-dir>/sheets/ports     with --ports
 #   <out-dir>/sheets/icon.png  with --icon: the 64 px mipmap strip
 #                              (tools/key-icons.py; its keyed master in sheets/masters/)

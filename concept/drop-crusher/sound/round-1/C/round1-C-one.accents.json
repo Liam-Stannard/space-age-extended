@@ -1,0 +1,574 @@
+{
+ "pass": true,
+ "summary": "drop 14: at [14.118, 14.075, 13.973]; pawl 18: at [18.15, 18.048, 18.018]; pawl 22: at [22.088, 21.997, 21.955]; pawl 2: at [2.132, 2.018, 1.916]; trip 6: at [6.184, 6.081, 5.991, 5.949]",
+ "how_frames_map_to_time": "Every video frame and every audio buffer carries its timestamp\nfrom the one GStreamer pipeline that recorded both (its running time, in\nnanoseconds). A video frame's time is its own timestamp; an audio sample's is\nits buffer's timestamp plus its place in the buffer over the sample rate.\nEvery time below is on that clock, in seconds.\n\n**Which animation frame is on screen** is read from the picture, never from\nthe prototype's accent frames. The stroke sheet (spec.stroke) is cut into its\nframes and scaled as the engine draws them (scale x zoom), and each recorded\nframe is compared with every one of them where that sheet frame is opaque\n(mean absolute luminance difference, the sprite placed by its shift from the\ncamera, which sits on the machine, then registered by a small search). The\nbest is the frame shown. Over the working part of the recording the shown\nframe is unwrapped (it only ever steps forward, 0 to 23 and round) and a line\nfitted to it: phase(t) = rate x t + c, phase + 0.5 being the middle of a frame\nshown from phase's whole number to the next. So any time t maps to a\nfractional animation frame, phase(t) mod frame_count; the frame shown at t is\nits whole part. The fit's residuals and the frames that disagree with it are\nreported. Each onset also carries frame_in_last_grab, the frame matched in the\nlast video grab at or before it: the picture itself, not the fit, so it can\ntrail the phase by up to one grab (1/fps).\n\n**Where the sounds start** is read from the audio alone. The mono mix is split\ninto three bands (below 250 Hz, 250-2500 Hz, above 2500 Hz); each band's RMS\nis taken every 2 ms; the rise at each step is how far each band's level\nstands above its own median 6-50 ms before, summed over the bands, in dB. An\nonset is a rise that is the highest within +-30 ms and at least\nspec.onset_rise_db (35 dB by default: in the runs so far the crusher's\naccents rose 37.6-81.7, the bed's own beat 10-31, the drop's grit tail up to\n35.6 and the bed starting up 46.7 -- so some that are not accents clear it;\nthey match no file, are reported as \"unknown\", and are never judged), its\ntime the first 2 ms step of that rise to reach half of it. Each onset is then labelled by the\nsound file it matches best\n(spec.sounds): the same bands and steps worked out on each file, correlated\n(normalised, per band, weighted by the file's own band energy) against the\nrecording over 400 ms from the onset, allowing the file's own onset to sit\nwithin +-16 ms of it. An onset that matches no file at 0.5 or better is\n\"unknown\". The labels say only which sound it is; the times are the\nrecording's.\n\n**Accents.** Each labelled onset's phase gives the frame it sounded on. The\nmarkers (a flash and a click the probe starts on one tick, before the machine\nstarts) measure the recording chain: the strongest onset within -0.25..+0.35 s\nof each flash is its click, and the click's onset minus the flash's first\nrecorded frame is the delay of the sound behind the picture through the\nengine, the sinks and the capture (to the video's 1/fps). It is reported, and\nthe frame each accent lands on is given both as recorded and with that delay\ntaken off; only the recorded one is judged. The two markers' tick gap over\ntheir time gap also gives the game's seconds a tick, which places the start\n(the ingredients going in, a tick the probe logs) on the clock.",
+ "clock": {
+  "video_frames": 494,
+  "video_first_s": 0.0,
+  "video_last_s": 16.4333,
+  "audio_first_s": 0.0,
+  "audio_seconds": 16.45,
+  "audio_buffers": 1645,
+  "audio_worst_drift_s": 0.0,
+  "audio_discontinuities_s": []
+ },
+ "markers": {
+  "found": [
+   {
+    "marker": 1,
+    "flash_first_frame_s": 1.4667,
+    "click_onset_s": 1.46,
+    "click_rise_db": 153.6,
+    "sound_after_picture_s": -0.0067
+   },
+   {
+    "marker": 2,
+    "flash_first_frame_s": 2.4667,
+    "click_onset_s": 2.458,
+    "click_rise_db": 150.0,
+    "sound_after_picture_s": -0.0087
+   }
+  ],
+  "sound_after_picture_s": -0.0077,
+  "seconds_per_tick": 0.016667,
+  "square_px": [
+   80,
+   64,
+   112,
+   96
+  ]
+ },
+ "start_s": 3.4667,
+ "registration": {
+  "dx": 0,
+  "dy": 0,
+  "mean_best_score": 14.88,
+  "sprite_box_in_capture": [
+   273,
+   176,
+   96,
+   68
+  ]
+ },
+ "fit": {
+  "rate_frames_per_s": 5.98342,
+  "c": -15.28491,
+  "residual_sd_frames": 0.28906,
+  "frames_used": 380,
+  "frames_left_out": 0,
+  "outlier_times": [],
+  "from_s": 3.7667,
+  "to_s": 16.43333
+ },
+ "accents": [
+  {
+   "sound": "drop",
+   "frame": 14,
+   "passes": [
+    {
+     "frame_reached_s": 4.8943,
+     "found": true,
+     "onset_s": 4.914,
+     "phase": 14.118,
+     "frames_from_cue": 0.118,
+     "frames_from_cue_less_chain_delay": 0.164,
+     "frame_in_last_grab": 14,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 8.9054,
+     "found": true,
+     "onset_s": 8.918,
+     "phase": 14.075,
+     "frames_from_cue": 0.075,
+     "frames_from_cue_less_chain_delay": 0.121,
+     "frame_in_last_grab": 13,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 12.9165,
+     "found": true,
+     "onset_s": 12.912,
+     "phase": 13.973,
+     "frames_from_cue": -0.027,
+     "frames_from_cue_less_chain_delay": 0.019,
+     "frame_in_last_grab": 13,
+     "within_tolerance": true
+    }
+   ],
+   "measured_phases": [
+    14.118,
+    14.075,
+    13.973
+   ],
+   "missing": 0,
+   "pass": true
+  },
+  {
+   "sound": "pawl",
+   "frame": 18,
+   "passes": [
+    {
+     "frame_reached_s": 5.5629,
+     "found": true,
+     "onset_s": 5.588,
+     "phase": 18.15,
+     "frames_from_cue": 0.15,
+     "frames_from_cue_less_chain_delay": 0.197,
+     "frame_in_last_grab": 18,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 9.5739,
+     "found": true,
+     "onset_s": 9.582,
+     "phase": 18.048,
+     "frames_from_cue": 0.048,
+     "frames_from_cue_less_chain_delay": 0.094,
+     "frame_in_last_grab": 17,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 13.585,
+     "found": true,
+     "onset_s": 13.588,
+     "phase": 18.018,
+     "frames_from_cue": 0.018,
+     "frames_from_cue_less_chain_delay": 0.064,
+     "frame_in_last_grab": 17,
+     "within_tolerance": true
+    }
+   ],
+   "measured_phases": [
+    18.15,
+    18.048,
+    18.018
+   ],
+   "missing": 0,
+   "pass": true
+  },
+  {
+   "sound": "pawl",
+   "frame": 22,
+   "passes": [
+    {
+     "frame_reached_s": 6.2314,
+     "found": true,
+     "onset_s": 6.246,
+     "phase": 22.088,
+     "frames_from_cue": 0.088,
+     "frames_from_cue_less_chain_delay": 0.134,
+     "frame_in_last_grab": 22,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 10.2425,
+     "found": true,
+     "onset_s": 10.242,
+     "phase": 21.997,
+     "frames_from_cue": -0.003,
+     "frames_from_cue_less_chain_delay": 0.043,
+     "frame_in_last_grab": 21,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 14.2535,
+     "found": true,
+     "onset_s": 14.246,
+     "phase": 21.955,
+     "frames_from_cue": -0.045,
+     "frames_from_cue_less_chain_delay": 0.001,
+     "frame_in_last_grab": 21,
+     "within_tolerance": true
+    }
+   ],
+   "measured_phases": [
+    22.088,
+    21.997,
+    21.955
+   ],
+   "missing": 0,
+   "pass": true
+  },
+  {
+   "sound": "pawl",
+   "frame": 2,
+   "passes": [
+    {
+     "frame_reached_s": 6.8999,
+     "found": true,
+     "onset_s": 6.922,
+     "phase": 2.132,
+     "frames_from_cue": 0.132,
+     "frames_from_cue_less_chain_delay": 0.178,
+     "frame_in_last_grab": 2,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 10.911,
+     "found": true,
+     "onset_s": 10.914,
+     "phase": 2.018,
+     "frames_from_cue": 0.018,
+     "frames_from_cue_less_chain_delay": 0.064,
+     "frame_in_last_grab": 1,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 14.9221,
+     "found": true,
+     "onset_s": 14.908,
+     "phase": 1.916,
+     "frames_from_cue": -0.084,
+     "frames_from_cue_less_chain_delay": -0.038,
+     "frame_in_last_grab": 1,
+     "within_tolerance": true
+    }
+   ],
+   "measured_phases": [
+    2.132,
+    2.018,
+    1.916
+   ],
+   "missing": 0,
+   "pass": true
+  },
+  {
+   "sound": "trip",
+   "frame": 6,
+   "passes": [
+    {
+     "frame_reached_s": 3.5573,
+     "found": true,
+     "onset_s": 3.588,
+     "phase": 6.184,
+     "frames_from_cue": 0.184,
+     "frames_from_cue_less_chain_delay": 0.23,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 7.5684,
+     "found": true,
+     "onset_s": 7.582,
+     "phase": 6.081,
+     "frames_from_cue": 0.081,
+     "frames_from_cue_less_chain_delay": 0.127,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 11.5795,
+     "found": true,
+     "onset_s": 11.578,
+     "phase": 5.991,
+     "frames_from_cue": -0.009,
+     "frames_from_cue_less_chain_delay": 0.037,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    },
+    {
+     "frame_reached_s": 15.5906,
+     "found": true,
+     "onset_s": 15.582,
+     "phase": 5.949,
+     "frames_from_cue": -0.051,
+     "frames_from_cue_less_chain_delay": -0.005,
+     "frame_in_last_grab": 5,
+     "within_tolerance": true
+    }
+   ],
+   "measured_phases": [
+    6.184,
+    6.081,
+    5.991,
+    5.949
+   ],
+   "missing": 0,
+   "pass": true
+  }
+ ],
+ "onsets": [
+  {
+   "t_s": 3.482,
+   "since_start_s": 0.0153,
+   "sound": "unknown",
+   "match": -0.139,
+   "match_lag_ms": 14.0,
+   "best_file": "drop",
+   "rise_db": 81.0,
+   "level_db": -45.1,
+   "phase": 5.549,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.595
+  },
+  {
+   "t_s": 3.588,
+   "since_start_s": 0.1213,
+   "sound": "trip",
+   "match": 0.983,
+   "match_lag_ms": 4.0,
+   "best_file": "trip",
+   "rise_db": 70.3,
+   "level_db": -31.1,
+   "phase": 6.184,
+   "frame_by_phase": 6,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 6.23,
+   "cued_frame": 6,
+   "frames_from_cue": 0.184
+  },
+  {
+   "t_s": 4.914,
+   "since_start_s": 1.4473,
+   "sound": "drop",
+   "match": 0.855,
+   "match_lag_ms": 2.0,
+   "best_file": "drop",
+   "rise_db": 73.2,
+   "level_db": -25.2,
+   "phase": 14.118,
+   "frame_by_phase": 14,
+   "frame_in_last_grab": 14,
+   "phase_less_chain_delay": 14.164,
+   "cued_frame": 14,
+   "frames_from_cue": 0.118
+  },
+  {
+   "t_s": 5.588,
+   "since_start_s": 2.1213,
+   "sound": "pawl",
+   "match": 0.852,
+   "match_lag_ms": 2.0,
+   "best_file": "pawl",
+   "rise_db": 39.9,
+   "level_db": -29.3,
+   "phase": 18.15,
+   "frame_by_phase": 18,
+   "frame_in_last_grab": 18,
+   "phase_less_chain_delay": 18.197,
+   "cued_frame": 18,
+   "frames_from_cue": 0.15
+  },
+  {
+   "t_s": 6.246,
+   "since_start_s": 2.7793,
+   "sound": "pawl",
+   "match": 0.938,
+   "match_lag_ms": 6.0,
+   "best_file": "pawl",
+   "rise_db": 57.8,
+   "level_db": -31.2,
+   "phase": 22.088,
+   "frame_by_phase": 22,
+   "frame_in_last_grab": 22,
+   "phase_less_chain_delay": 22.134,
+   "cued_frame": 22,
+   "frames_from_cue": 0.088
+  },
+  {
+   "t_s": 6.922,
+   "since_start_s": 3.4553,
+   "sound": "pawl",
+   "match": 0.945,
+   "match_lag_ms": 2.0,
+   "best_file": "pawl",
+   "rise_db": 62.8,
+   "level_db": -31.5,
+   "phase": 2.132,
+   "frame_by_phase": 2,
+   "frame_in_last_grab": 2,
+   "phase_less_chain_delay": 2.178,
+   "cued_frame": 2,
+   "frames_from_cue": 0.132
+  },
+  {
+   "t_s": 7.582,
+   "since_start_s": 4.1153,
+   "sound": "trip",
+   "match": 0.984,
+   "match_lag_ms": 4.0,
+   "best_file": "trip",
+   "rise_db": 71.6,
+   "level_db": -30.4,
+   "phase": 6.081,
+   "frame_by_phase": 6,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 6.127,
+   "cued_frame": 6,
+   "frames_from_cue": 0.081
+  },
+  {
+   "t_s": 8.918,
+   "since_start_s": 5.4513,
+   "sound": "drop",
+   "match": 0.768,
+   "match_lag_ms": 4.0,
+   "best_file": "drop",
+   "rise_db": 72.9,
+   "level_db": -23.6,
+   "phase": 14.075,
+   "frame_by_phase": 14,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 14.121,
+   "cued_frame": 14,
+   "frames_from_cue": 0.075
+  },
+  {
+   "t_s": 9.582,
+   "since_start_s": 6.1153,
+   "sound": "pawl",
+   "match": 0.848,
+   "match_lag_ms": 2.0,
+   "best_file": "pawl",
+   "rise_db": 37.9,
+   "level_db": -30.3,
+   "phase": 18.048,
+   "frame_by_phase": 18,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 18.094,
+   "cued_frame": 18,
+   "frames_from_cue": 0.048
+  },
+  {
+   "t_s": 10.242,
+   "since_start_s": 6.7753,
+   "sound": "pawl",
+   "match": 0.934,
+   "match_lag_ms": 2.0,
+   "best_file": "pawl",
+   "rise_db": 65.4,
+   "level_db": -31.8,
+   "phase": 21.997,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 22.043,
+   "cued_frame": 22,
+   "frames_from_cue": -0.003
+  },
+  {
+   "t_s": 10.914,
+   "since_start_s": 7.4473,
+   "sound": "pawl",
+   "match": 0.949,
+   "match_lag_ms": 4.0,
+   "best_file": "pawl",
+   "rise_db": 66.3,
+   "level_db": -31.9,
+   "phase": 2.018,
+   "frame_by_phase": 2,
+   "frame_in_last_grab": 1,
+   "phase_less_chain_delay": 2.064,
+   "cued_frame": 2,
+   "frames_from_cue": 0.018
+  },
+  {
+   "t_s": 11.578,
+   "since_start_s": 8.1113,
+   "sound": "trip",
+   "match": 0.987,
+   "match_lag_ms": 2.0,
+   "best_file": "trip",
+   "rise_db": 73.8,
+   "level_db": -29.0,
+   "phase": 5.991,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 6.037,
+   "cued_frame": 6,
+   "frames_from_cue": -0.009
+  },
+  {
+   "t_s": 12.912,
+   "since_start_s": 9.4453,
+   "sound": "drop",
+   "match": 0.778,
+   "match_lag_ms": 4.0,
+   "best_file": "drop",
+   "rise_db": 70.7,
+   "level_db": -25.3,
+   "phase": 13.973,
+   "frame_by_phase": 13,
+   "frame_in_last_grab": 13,
+   "phase_less_chain_delay": 14.019,
+   "cued_frame": 14,
+   "frames_from_cue": -0.027
+  },
+  {
+   "t_s": 13.588,
+   "since_start_s": 10.1213,
+   "sound": "pawl",
+   "match": 0.87,
+   "match_lag_ms": 0.0,
+   "best_file": "pawl",
+   "rise_db": 38.4,
+   "level_db": -30.2,
+   "phase": 18.018,
+   "frame_by_phase": 18,
+   "frame_in_last_grab": 17,
+   "phase_less_chain_delay": 18.064,
+   "cued_frame": 18,
+   "frames_from_cue": 0.018
+  },
+  {
+   "t_s": 14.246,
+   "since_start_s": 10.7793,
+   "sound": "pawl",
+   "match": 0.95,
+   "match_lag_ms": 4.0,
+   "best_file": "pawl",
+   "rise_db": 58.5,
+   "level_db": -31.9,
+   "phase": 21.955,
+   "frame_by_phase": 21,
+   "frame_in_last_grab": 21,
+   "phase_less_chain_delay": 22.001,
+   "cued_frame": 22,
+   "frames_from_cue": -0.045
+  },
+  {
+   "t_s": 14.908,
+   "since_start_s": 11.4413,
+   "sound": "pawl",
+   "match": 0.953,
+   "match_lag_ms": 4.0,
+   "best_file": "pawl",
+   "rise_db": 54.6,
+   "level_db": -32.5,
+   "phase": 1.916,
+   "frame_by_phase": 1,
+   "frame_in_last_grab": 1,
+   "phase_less_chain_delay": 1.962,
+   "cued_frame": 2,
+   "frames_from_cue": -0.084
+  },
+  {
+   "t_s": 15.582,
+   "since_start_s": 12.1153,
+   "sound": "trip",
+   "match": 0.978,
+   "match_lag_ms": 4.0,
+   "best_file": "trip",
+   "rise_db": 65.6,
+   "level_db": -30.9,
+   "phase": 5.949,
+   "frame_by_phase": 5,
+   "frame_in_last_grab": 5,
+   "phase_less_chain_delay": 5.995,
+   "cued_frame": 6,
+   "frames_from_cue": -0.051
+  }
+ ],
+ "stray_labelled_onsets": [],
+ "tolerance_frames": 1,
+ "mp4": {
+  "path": "/home/liam-stannard/git/space-age-extended/.claude/worktrees/factorio-tools-skills/evidence/crusher-sound-t01/audio-20261020-105611-748742/round1-C-one.mp4",
+  "seconds": 13.567,
+  "frames": 407,
+  "bytes": 2723003,
+  "video": "VP9",
+  "audio": "Opus 48000 Hz stereo",
+  "starts_at_s": 2.867
+ }
+}

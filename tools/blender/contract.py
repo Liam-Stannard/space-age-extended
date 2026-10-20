@@ -23,6 +23,21 @@ a pass: everything they act on is declared here.
                 light   a white-cut lens the engine tints (alpha above 8 kept)
                 still   every animation at frame 0 with the machine: the
                         reference for the frame-0 check; not packed
+                remnants  the machine's wreck, what its corpse prototype draws once
+                        it is destroyed: the wreck alone, lying on the ground
+                        catcher, rendered so its shadow is caught in the same
+                        picture -- vanilla's remnants have no shadow layer, the
+                        shadow is baked into the one sprite -- with debris free to
+                        lie past the footprint. Never cut (`cut`), like a shadow.
+                        At most one. pack.py packs every direction's render into
+                        one sheet in vanilla's layout (remnant_rows, below; its
+                        docstring has the sheet and its checks), named for its
+                        sheet alone, so the sheet may not be a name another sheet
+                        or animation takes in any direction ("base-north") nor
+                        "checks". Its own `canvas`
+                        (optional, this kind only): [w, h] in sprite px, when the
+                        wreck spreads past the model's canvas; the entity origin is
+                        its centre too
   animations  [{name, frames, motion, path}], frames <name>-NN.png (and
               <name>-NN-<direction>.png). motion "turn": a part turning about
               its own axis, held to its centroid. motion "slide": a part moving
@@ -106,7 +121,23 @@ a pass: everything they act on is declared here.
               "neck": true (optional, off by default) keeps a part of the
               fitting joined to the rest only by a neck too faint for the noise
               floor -- a thin strip, as on assembler 3's west outline -- which
-              pack_ports.py otherwise drops (its docstring says when to use it)
+              pack_ports.py otherwise drops (its docstring says when to use it).
+              Every face the ports reach must have a port declared on it: the
+              engine draws each connection with the picture of the face it points
+              to, whichever way the building stands. The faces the ports reach
+              (reached_faces(), below) are each port's face turned clockwise -- N to
+              E, E to S, S to W, W to N -- through every angle the model is
+              rendered at (DIRECTIONS): 0 for "one", so a port reaches only its own
+              face; 0 and 90 for "horizontal-vertical", so N reaches N and E, and S
+              reaches S and W; 0, 90, 180 and 270 for "four", so any port reaches all
+              four faces. With ports_turn true, through all four angles, whatever
+              the directions. A face reached with no port on it fails the contract,
+              naming the faces missing
+  ports_turn  (optional; false when left out) true when the engine turns the
+              ports through all four directions though the model is rendered in
+              fewer: the Vacuum Furnace, drawn once, whose input turns with the
+              building. Left out of render.json when not given, so a model without
+              it declares what it always did
   rig         {elevation, px_per_tile}: the camera's, copied from rig.py by
               declare(), so the packers can put a tile on the screen
   cut         (optional; none when left out) the footprint's edges past which
@@ -127,6 +158,12 @@ a pass: everything they act on is declared here.
               of its alpha inside. pack.py counts what it cleared (meta.json's
               cut_px, counted on the renders before any bloom is added) and
               preview.py draws the renders cut the same way.
+  rolloff     (optional; true when left out) false opts the model out of pack.py's
+              highlight roll-off, which otherwise eases the pixels past 236 of every
+              sheet but a shadow's or a light's under 245, scaled whole, hue kept, and
+              preview.py draws them the same way (pack.py's docstring; Liam,
+              2026-10-20: "On by default, new renders only"). Left out of render.json
+              when not given, so a model without it declares what it always did
 
 Run as a script, it lists a render directory's plate renders, one per direction:
   python3 contract.py plates <render-dir>
@@ -141,11 +178,25 @@ DIRECTIONS = {
     "four": [("north", 0), ("east", 90), ("south", 180), ("west", 270)],
     "horizontal-vertical": [("vertical", 0), ("horizontal", 90)],
 }
-KINDS = ("plate", "shadow", "glow", "paint", "light", "still")
+KINDS = ("plate", "shadow", "glow", "paint", "light", "still", "remnants")
+# The engine direction each row of a remnants sheet is drawn for, top to bottom, and the render
+# drawn in it: vanilla's building remnants are one column (line_length 1) of direction_count
+# rows, north, east, south, west -- steam-turbine-remnants a 460x1632 sheet of four 460x408
+# rows at scale 0.5 (base/prototypes/entity/remnants.lua:2739-2765) -- or one row for a
+# building that does not turn (chemical-plant-remnants, remnants.lua:2907-2933). The steam
+# turbine builds only north and east and its sheet still has four rows, the vertical wreck in
+# 1 and 3, the horizontal in 2 and 4 (they differ in 50 and 118 px by 15 at most), so a
+# horizontal-vertical model's two renders fill four rows the same way.
+REMNANT_ROWS = {
+    "one": [""],
+    "four": ["north", "east", "south", "west"],
+    "horizontal-vertical": ["vertical", "horizontal", "vertical", "horizontal"],
+}
 WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate while working
 MOTIONS = ("turn", "slide", "flow", "cycle")
 ANIM_KINDS = ("paint", "light", "glow")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
+FACE_ORDER = "NESW"                     # clockwise seen from above: a quarter turn is one step on
 CUT_FACES = ("E", "W", "S")             # the footprint edges `cut` may name: not N
 HOLD_KEYS = ("frame", "entries", "each")
 SEQUENCE_MAX = 255                      # the engine's limit on an animation's actual length
@@ -195,6 +246,17 @@ def speed(decl, anim):
     return anim.get("animation_speed")
 
 
+def canvas_of(decl, p):
+    """The canvas a pass's renders are on, [w, h] sprite px: its own (a remnants pass's) or the model's."""
+    return p.get("canvas", decl["canvas"])
+
+
+def remnant_rows(decl):
+    """The render (its direction's name) drawn in each row of a remnants sheet, top to bottom:
+    REMNANT_ROWS for the model's directions."""
+    return REMNANT_ROWS[decl["directions"]]
+
+
 def footprint_in(decl, direction):
     """The footprint as the engine sees it in a direction: turned a quarter, w and h swap."""
     w, h = decl["footprint"]
@@ -215,7 +277,8 @@ def each_direction(root, directions):
     root.rotation_euler.z = 0.0
 
 
-def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None):
+def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None,
+            ports_turn=None, rolloff=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
@@ -223,6 +286,10 @@ def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(),
                 rig=dict(elevation=math.degrees(rig.ELEVATION), px_per_tile=rig.PX_PER_TILE))
     if cut is not None:
         decl["cut"] = cut   # left out when not given, so a model without one declares what it always did
+    if ports_turn is not None:
+        decl["ports_turn"] = ports_turn     # likewise
+    if rolloff is not None:
+        decl["rolloff"] = rolloff           # likewise
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -243,6 +310,21 @@ def load(render_dir):
         raise ContractError(f"{path}: is not JSON: {e}") from None
     validate(decl, path)
     return decl
+
+
+def turned(face, deg):
+    """A face turned clockwise seen from above by deg (a multiple of 90), as the engine turns a building."""
+    return FACE_ORDER[(FACE_ORDER.index(face) + deg // 90) % 4]
+
+
+def reached_faces(decl):
+    """The faces the model's ports reach, in N, E, S, W order: each port's face turned through
+    every angle the model is rendered at (0 alone for "one"; 0 and 90 for "horizontal-vertical";
+    0, 90, 180 and 270 for "four"), or through all four when ports_turn is true. Each needs a
+    port declared on it (the contract's docstring, `ports`)."""
+    angles = (0, 90, 180, 270) if decl.get("ports_turn") else [deg for _, deg in DIRECTIONS[decl["directions"]]]
+    reached = {turned(p["face"], deg) for p in decl["ports"] for deg in angles}
+    return [f for f in FACE_ORDER if f in reached]
 
 
 def _number(v):
@@ -314,9 +396,18 @@ def validate(decl, where):
             if p["sheet"] in sheets:
                 bad(f"{field}.sheet", f"{p['sheet']!r} is already another pass's sheet")
             sheets.add(p["sheet"])
+        if "canvas" in p:
+            if p["kind"] != "remnants":
+                bad(f"{field}.canvas", f"{p['kind']} pass {p['name']!r} has a canvas of its own: only a remnants "
+                    f"pass may (every other pass is on the model's canvas, which the packers register them on)")
+            v = p["canvas"]
+            if not (_seq(v, 2) and all(_whole(c) and c > 0 for c in v)):
+                bad(f"{field}.canvas", f"{v!r} is not [w, h], two whole numbers of px above 0")
     kinds = [p["kind"] for p in decl["passes"]]
     if decl["passes"] and kinds.count("plate") != 1:
         bad("passes", f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
+    if kinds.count("remnants") > 1:
+        bad("passes", f"declares {kinds.count('remnants')} remnants passes; a corpse draws one wreck")
     for i, p in enumerate(decl["passes"]):
         if p["kind"] in WORKING and not any(q["name"] == p.get("over") and q["kind"] == "plate"
                                             for q in decl["passes"]):
@@ -417,6 +508,20 @@ def validate(decl, where):
         if under["frames"] != a["frames"]:
             bad(f"animations[{i}].frames", f"glow animation {a['name']!r} has {a['frames']} frames and "
                 f"its plate layer {under['name']!r} {under['frames']}: one glow frame per plate frame")
+    # A remnants sheet is one file for every direction, named for its sheet alone, where every
+    # other sheet is named per direction: it must not be the name another sheet takes in some
+    # direction (pack.py would write one over the other), nor meta.json's "checks".
+    for i, p in enumerate(decl["passes"]):
+        if p["kind"] != "remnants":
+            continue
+        others = [q["sheet"] for q in decl["passes"] if q["kind"] not in ("still", "remnants")] \
+            + [a["name"] for a in decl["animations"]]
+        taken = {named(s, d): s for s in others for d, _ in DIRECTIONS[decl["directions"]]}
+        if p["sheet"] in taken:
+            bad(f"passes[{i}].sheet", f"{p['sheet']!r} is the name sheet {taken[p['sheet']]!r} takes in one of the "
+                f"model's directions: a remnants sheet is one file for every direction, and would be written over it")
+        if p["sheet"] == "checks":
+            bad(f"passes[{i}].sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
@@ -448,6 +553,18 @@ def validate(decl, where):
         if not (edge and inside):
             bad(f"{field}.tile", f"{list(p['tile'])} is not a tile centre on the {p['face']} edge "
                 f"of a {w}x{h} footprint")
+    if "ports_turn" in decl and not isinstance(decl["ports_turn"], bool):
+        bad("ports_turn", f"{decl['ports_turn']!r} is not true or false")
+    if "rolloff" in decl and not isinstance(decl["rolloff"], bool):
+        bad("rolloff", f"{decl['rolloff']!r} is not true or false: false opts out of pack.py's highlight roll-off")
+    missing = [f for f in reached_faces(decl) if f not in faces]
+    if missing:
+        how = ("ports_turn turns them through all four directions" if decl.get("ports_turn")
+               else f"directions {decl['directions']!r} turns them through "
+               f"{', '.join(str(deg) for _, deg in DIRECTIONS[decl['directions']])} degrees")
+        bad("ports", f"the ports reach face(s) {', '.join(missing)}, which no port is declared on: {how} "
+            f"(declared: {', '.join(sorted(faces, key=FACE_ORDER.index))}), and the engine draws a "
+            f"connection with the picture of the face it points to; declare a port on each")
 
 
 def screen(decl, offset, direction):

@@ -9,7 +9,10 @@ rendered on that one canvas with the entity origin exactly at its centre, so
 every layer's shift is its crop's centre minus that point, computed rather than
 measured and adjusted. Crops keep a 1 px transparent rim. A glow pass drops its
 isolated specks of render noise (SPECK_PX) from both its crop and its sheet, so its
-size and shift do not change from one render of the same model to the next.
+size and shift do not change from one render of the same model to the next, and then
+keeps only the smallest box that holds LIGHT_SHARE (99.9 %) of its light -- alpha times
+luminance -- so a faint haze too wide to be a speck does not stretch it either (glow_layer).
+An animated glow keeps every pixel of its light, its faint tail too (GLOW_FLOOR).
 
 Sheets are named for the pass's declared sheet (and the animation's name), with
 -<direction> after it when the model has more than one direction; meta.json
@@ -47,16 +50,75 @@ past a cut edge, as light does (Liam, 2026-10-19: "Halo may cross"). checks cut_
 gives, per render, the pixels with any alpha the cut cleared or thinned, counted on the
 render before any bloom; {} = nothing reached past the edge.
 
+The remnants pass (kind "remnants", contract.py): the wreck the corpse prototype draws, its
+shadow baked in. Vanilla's building remnants are one sprite sheet with the shadow in it and no
+shadow layer of its own (base/prototypes/entity/remnants.lua: steam-turbine-remnants at
+2739-2765, steam-engine 1073-1099, boiler 1129-1155, chemical plant 2907-2933), whose
+part-transparent pixels are near black (those under alpha 200 average RGB 1-8 at alpha 60-90,
+on those four and on assembling machine 2's and the electric mining drill's): the shadow and
+the darkened ground round the wreck. So the render is cleaned of the catcher's haze below NOISE, as a shadow is, and
+otherwise packed as it is, colour, shadow and all, and it is never cut. Every direction's
+render goes into one sheet, as vanilla's: one column (line_length 1), one row per entry of
+contract.remnant_rows -- north, east, south, west for "four"; vertical, horizontal, vertical,
+horizontal for "horizontal-vertical", as steam-turbine-remnants repeats its two; one row for
+"one" -- every row cropped to the one box that holds every direction's wreck (with the 1 px
+rim), since a RotatedAnimation has one size and one shift for all its directions. The shift is
+from the centre of the pass's own canvas (contract.canvas_of). Its meta.json entry, keyed by
+the pass's sheet with no direction after it: size (one row), shift, direction_count (the rows),
+line_length 1, rows (the render drawn in each row, top to bottom), kind "remnants" and
+final_render_layer "remnants" (what every vanilla building's remnants set, remnants.lua:2753;
+the corpse's default is "corpse", CorpsePrototype). It goes after every other sheet, before
+"checks". Checks, per direction (the sheet's name before each):
+  _shadow_px    the shadow baked in: pixels part transparent (alpha under 255) and near black
+                (every channel at or under SHADOW_RGB), and their share of the wreck's area
+                (every pixel kept, alpha above NOISE). Fewer than SHADOW_MIN_PX, or a share under
+                SHADOW_SHARE, fails the pack: a wreck lies on the ground, and one rendered
+                without the catcher has no shadow but its edges' anti-aliasing over nothing
+  _edge_px      pixels of it (alpha above NOISE) on its canvas's outermost row or column: 0, or
+                the canvas cuts the wreck or its shadow off (a remnants pass may have a canvas
+                of its own, larger, for that); above 0 fails the pack
+  _reach_tiles  how far past each edge of the footprint (N, E, S, W, the footprint as it stands
+                in that direction, on the screen) the debris -- pixels of the wreck itself,
+                alpha over DEBRIS_ALPHA and not near black -- and everything kept (the shadow
+                too) reach, in tiles; below 0, short of the edge. Information: vanilla's
+                turbine keeps its debris inside (-0.45 to -0.03) and its shadow reaches 0.11 to
+                0.64; the chemical plant's debris goes 0.61 past its north edge, its shadow 2.23
+                past its east.
+
+The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
+"On by default, new renders only"; then "Yes, animations and wrecks too"): every sheet the engine
+draws as it is -- plate, glow and paint passes, every animation but a light one, and the remnants
+sheet -- is rolled off as it is written (roll): a pixel whose brightest channel m passes KNEE (236) is
+scaled whole, every channel by the one factor that takes m to KNEE + (TOP - KNEE) *
+(1 - exp(-(m - KNEE) / (TOP - KNEE))) -- TOP 244: 255 lands on 243.3, so once rounded no channel is
+over 244, and no rolled pixel is white to white() or measure.py's white_px (every channel 245 or over) --
+each channel rounded up or down, whichever of the eight keeps the hue nearest the pixel's own
+(within 0.49 degrees on every colour; a grey stays grey) and then lies nearest the exact scale.
+Alpha is never touched, nor is any pixel at or under KNEE, so crops, sizes and shifts are as
+they were. Only the sheets change: every check is made on the renders as rendered (a glow
+animation's white and clipped pixels too), so the roll-off never hides a light the model
+over-drives. Light passes and light animations are never rolled: their white is the engine's to
+tint. Nor is a shadow, which is black. checks rolloff_px gives, per direction, each rolled sheet's
+pixels changed and the most any channel moved (the remnants sheet's, that direction's render in
+it). preview.py draws through the same roll-off, so the review is what ships (Liam: "Match
+shipped"). A model opts out with "rolloff": false in render.json (contract.py); its sheets and
+meta.json are then as before the roll-off, byte for byte, and so is its preview.
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
-LIMIT_PX off its declared curve or off its line, or a glow animation clips or
-reaches the canvas's edge.
+LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
+(Packer.slide; naming those frames), or a glow animation clips or
+reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge.
 meta.json is written first.
 """
+import functools
+import itertools
 import json
 import math
 import os
+import re
 import sys
+from fractions import Fraction
 from PIL import Image, ImageChops, ImageFilter
 
 import contract
@@ -82,12 +144,45 @@ LAYER_FLOOR = 8     # a working layer's difference from its plate at or under th
 # pixels seen; 4 drops those with a pixel to spare, and is an order of magnitude under
 # any light.
 SPECK_PX = 4
+# A glow pass (a still glow: one frame, glow_layer) keeps the smallest box that holds this
+# share of its light, its light being each pixel's alpha times its luminance (PIL's "L", the
+# luma the LAYER_FLOOR cut is made on), and nothing outside it: a faint wide haze over the
+# floor, in groups too big to drop as specks, no longer stretches its crop (Liam, 2026-10-20:
+# "99.5% of light, stills"; then, shown that 99.5 % also trimmed lit edges -- up to 55 % of the
+# peak on the Reaction Plant's legs, 28 % on test/box.py's window -- "Accept, raise to 99.9%").
+# Light passes keep their own crop (Liam: "No, glows only"). Glow animations keep every lit
+# pixel (GLOW_FLOOR, below).
+LIGHT_SHARE = 0.999
 # An animated glow's frame (glow_frame) is cut where its light falls to this, not to
 # LAYER_FLOOR: a bloom's faint tail fading out over the housing, cut at 8, left a visible
 # edge round it (a step of 8 in blue, on test/radiant_box.py with radiant.py's 16 px tail,
 # 2026-10-15); at 2 the step is under what the eye takes. Noise is still dropped as specks.
+# For that tail it is not cropped to LIGHT_SHARE either: a box cut through a bloom is an edge.
 GLOW_FLOOR = 2
 MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
+# A remnants render's shadow: a shadow catcher's pixels are black, part transparent; a lit
+# part's edge over its own shadow is not (vanilla's remnants' shadows average RGB 1-8)
+SHADOW_RGB = 8
+DEBRIS_ALPHA = 128  # a remnants pixel above this, and not shadow, is the wreck itself
+# The least shadow a wreck may carry, as a share of its area and in pixels. Measured
+# 2026-10-20, cleaned below NOISE as pack.py cleans a wreck: vanilla's building remnants carry
+# 24-52 % (steam turbine 39.5 and 52.1, steam engine 29.5-29.7, boiler 24.1 and 46.6, chemical
+# plant 49.5, assembling machine 2 30.8-36.6, electric mining drill 43.2-47.0, oil refinery
+# 25.1, pumpjack 25.5; at least 5625 px); test/box.py's wreck, over the catcher, 2.4-2.7 %
+# (428-499 px): low debris on a plinth that covers the footprint casts little; the same wreck
+# rendered with no catcher 0.0-0.02 % (0-3 px, the edges' anti-aliasing). So the floor sits
+# between that leak and a wreck's least real shadow, not at vanilla's look, which is the
+# model's to match (the check prints the share beside vanilla's).
+SHADOW_SHARE = 0.01
+SHADOW_MIN_PX = 64
+# The highlight roll-off (roll): a pixel's brightest channel past KNEE is eased toward TOP. The
+# Vent Pump's curve and knee (concept/vent-pump/options/round-5/vp5_shoulder.py and vp5_roll.py,
+# vent-pump-model branch). Its top was 250, under its own white count (every channel 250 or over),
+# but this pipeline counts white from 245 (white(), measure.py's white_px), and at 250 a rolled glint
+# landed on 246 and still counted (Liam, 2026-10-20: "Lower the top to 244"). At 244 the curve
+# tops out at 243.3, and rounded up 244: under 245.
+KNEE = 236
+TOP = 244
 
 
 def clean(im):
@@ -97,20 +192,95 @@ def clean(im):
 
 
 def glow_layer(lit, under):
-    """A glow pass's sheet: lit minus the plate under it, opaque wherever that is above noise.
+    """A glow pass's sheet, on the full canvas: lit minus the plate under it, opaque wherever
+    that is above noise inside the box that holds LIGHT_SHARE of its light.
 
     Drawn additively, so its colour is what the light adds. Isolated specks -- any
     8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
     all, so the crop (and so the sheet's size and shift) is the light's own and does
-    not move with render noise; nothing dropped is drawn either.
+    not move with render noise; nothing dropped is drawn either. So is every opaque pixel
+    outside light_box -- the smallest box holding LIGHT_SHARE of the light the specks left,
+    a pixel's light its alpha times its luminance -- so the crop (Packer.box_of, any alpha,
+    with its 1 px rim) is that box, and a faint haze too wide to be a speck drops out of the
+    sheet instead of stretching it. At a LIGHT_SHARE of 1 the box is every opaque pixel's
+    and the sheet is as it was before the box.
     """
     diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
-    alpha = diff.convert("L").point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    luma = diff.convert("L")
+    alpha = luma.point(lambda v: 255 if v > LAYER_FLOOR else 0)
     kept = drop_specks(alpha)
+    # alpha is 0 or 255, so a pixel's light is its luminance where it is opaque
+    bb = light_box(ImageChops.multiply(luma, kept), LIGHT_SHARE)
+    if bb is not None:                  # None, no light: Packer.box_of refuses the empty layer
+        inside = Image.new("L", kept.size)
+        inside.paste(255, bb)
+        kept = ImageChops.multiply(kept, inside)
     # clear the dropped pixels' colour too (a preview adds the colour and ignores alpha);
     # every other pixel, faint or not, is left exactly as it was
     keep = ImageChops.invert(ImageChops.subtract(alpha, kept)).convert("RGB")
     return Image.merge("RGBA", (*ImageChops.multiply(diff, keep).split(), kept))
+
+
+def light_box(light, share=LIGHT_SHARE):
+    """The smallest box (x0, y0, x1, y1, ends exclusive) holding at least `share` of an L
+    image's light, the sum of its values; None when it has none.
+
+    Smallest by area, exactly: every pair of rows that could bound it is tried, from the
+    rows nearest the light outward, with the narrowest run of columns between them that holds
+    the share (two pointers over the columns' sums). Of boxes of one area, the one with the
+    most light wins, then the topmost, then the leftmost. A box this small has light on every
+    edge, so its bounding box of lit pixels is itself.
+    """
+    lit = light.getbbox()
+    if lit is None:
+        return None
+    lx, ly, rx, ry = lit
+    w, h = rx - lx, ry - ly
+    px = list(light.crop(lit).get_flattened_data())
+    # cum[y][x]: column x's light in rows above y
+    cum = [[0] * w]
+    for y in range(h):
+        prev, row = cum[-1], px[y * w:(y + 1) * w]
+        cum.append([a + b for a, b in zip(prev, row)])
+    total = sum(cum[h])
+    need = math.ceil(total * Fraction(str(share)))
+    spare = total - need                # light that may be left out above and below together
+    rows = [sum(r) for r in cum]        # light in the rows above y
+    tops = [y for y in range(h) if rows[y] <= spare]
+    bottoms = [y for y in range(1, h + 1) if total - rows[y] <= spare]
+
+    def narrowest(sums):
+        """The narrowest run of columns holding `need`, the most light for that width:
+        (width, -light, x0), or None."""
+        found, s, x0 = None, 0, 0
+        for x1, v in enumerate(sums):
+            s += v
+            while s - sums[x0] >= need:
+                s -= sums[x0]
+                x0 += 1
+            if s >= need:
+                key = (x1 + 1 - x0, -s, x0)
+                found = key if found is None or key < found else found
+        return found
+
+    floor_w = narrowest(cum[h])[0]      # no box is narrower than the narrowest over every row
+    best = None                         # (area, -light, y0, x0, width, height)
+    for y0 in reversed(tops):
+        for y1 in bottoms:
+            if y1 <= y0:
+                continue
+            if best is not None and (y1 - y0) * floor_w > best[0]:
+                break                   # taller from here, never narrower than floor_w
+            if rows[y1] - rows[y0] < need:
+                continue
+            got = narrowest([a - b for a, b in zip(cum[y1], cum[y0])])
+            if got is None:
+                continue
+            key = ((y1 - y0) * got[0], got[1], y0, got[2], got[0], y1 - y0)
+            if best is None or key < best:
+                best = key
+    _, _, y0, x0, bw, bh = best
+    return (lx + x0, ly + y0, lx + x0 + bw, ly + y0 + bh)
 
 
 def drop_specks(alpha):
@@ -194,6 +364,70 @@ def white(im):
     return ImageChops.darker(ImageChops.darker(r, g), b).point(lambda v: 255 if v >= 245 else 0)
 
 
+def shoulder(m):
+    """Where the roll-off takes a brightest channel m: m itself at or under KNEE; past it eased
+    toward TOP, never reaching it (255 -> 243.3)."""
+    return m if m <= KNEE else KNEE + (TOP - KNEE) * (1 - math.exp(-(m - KNEE) / (TOP - KNEE)))
+
+
+def hue(rgb):
+    """A colour's hue in degrees (HSV's, 0-360), or None for a grey."""
+    r, g, b = rgb
+    hi, lo = max(rgb), min(rgb)
+    if hi == lo:
+        return None
+    c = hi - lo
+    h = (g - b) / c if hi == r else (b - r) / c + 2 if hi == g else (r - g) / c + 4
+    return (60 * h) % 360
+
+
+def hue_miss(a, b):
+    """Degrees between two colours' hues: 0 for two greys, 360 for a grey and a colour."""
+    ha, hb = hue(a), hue(b)
+    if ha is None or hb is None:
+        return 0 if ha is None and hb is None else 360
+    d = abs(ha - hb) % 360
+    return min(d, 360 - d)
+
+
+@functools.lru_cache(maxsize=1 << 16)
+def rolled(rgb):
+    """One pixel's colour (r, g, b) rolled off: as it is when its brightest channel m is at or under
+    KNEE; past it, every channel times shoulder(m) / m, each rounded down or up -- of the eight
+    ways, the one whose hue is nearest the colour's own, then nearest the exact scale, then the
+    first. Rounding each to its nearest would turn a pale colour's hue by up to 30 degrees, as a
+    level is much of its chroma; this keeps it within 0.49 everywhere (test/test_rolloff.py)."""
+    m = max(rgb)
+    if m <= KNEE:
+        return rgb
+    k = shoulder(m) / m
+    exact = [c * k for c in rgb]
+    ways = itertools.product(*(sorted({math.floor(v), math.ceil(v)}) for v in exact))
+    return min(ways, key=lambda w: (hue_miss(rgb, w), sum((c - v) ** 2 for c, v in zip(w, exact)), w))
+
+
+def roll(im):
+    """An RGBA image with its highlights rolled off (rolled, on every pixel's colour; alpha as it
+    was, every pixel whose channels are all at or under KNEE byte for byte), the pixels it changed
+    and the most any channel moved."""
+    im = im.convert("RGBA")
+    red, green, blue, _ = im.split()
+    over = ImageChops.lighter(ImageChops.lighter(red, green), blue).point(lambda v: 255 if v > KNEE else 0)
+    if over.getbbox() is None:
+        return im, 0, 0
+    px = bytearray(im.tobytes())
+    changed = most = 0
+    for run in re.finditer(rb"\xff+", over.tobytes()):
+        for i in range(4 * run.start(), 4 * run.end(), 4):
+            was = tuple(px[i:i + 3])
+            now = rolled(was)
+            if now != was:
+                px[i:i + 3] = bytes(now)
+                changed += 1
+                most = max(most, *(a - b for a, b in zip(was, now)))
+    return Image.frombytes("RGBA", im.size, bytes(px)), changed, most
+
+
 def paint_layer(painted, under):
     """A paint pass's sheet: the pass itself, wherever it differs from the plate under it.
 
@@ -259,6 +493,30 @@ def cut(im, mask):
     return Image.merge("RGBA", (*rgb.split(), ImageChops.multiply(a, mask))), touched.histogram()[255]
 
 
+def wreck_parts(im):
+    """A remnants render's (cleaned) shadow and debris, as L masks of 0 and 255: the shadow part
+    transparent and near black (SHADOW_RGB), the debris above DEBRIS_ALPHA and not near black."""
+    r, g, b, a = im.split()
+    lit = ImageChops.lighter(ImageChops.lighter(r, g), b).point(lambda v: 255 if v > SHADOW_RGB else 0)
+    part = a.point(lambda v: 255 if 0 < v < 255 else 0)
+    shadow = ImageChops.subtract(part, lit)
+    debris = ImageChops.multiply(lit, a.point(lambda v: 255 if v > DEBRIS_ALPHA else 0))
+    return shadow, debris
+
+
+def reach(bb, decl, direction, canvas):
+    """How far a box (x0, y0, x1, y1, px) reaches past each edge of the footprint as it stands in
+    a direction, on a canvas whose centre is the entity origin: {N, E, S, W} in tiles, below 0
+    short of the edge; None for no box."""
+    if bb is None:
+        return None
+    ppt = float(decl["rig"]["px_per_tile"])
+    fw, fh = contract.footprint_in(decl, direction)
+    cx, cy = canvas[0] / 2, canvas[1] / 2
+    return dict(N=round((cy - fh / 2 * ppt - bb[1]) / ppt, 2), E=round((bb[2] - cx - fw / 2 * ppt) / ppt, 2),
+                S=round((bb[3] - cy - fh / 2 * ppt) / ppt, 2), W=round((cx - fw / 2 * ppt - bb[0]) / ppt, 2))
+
+
 def centroid(im):
     a = im.getchannel("A")
     px = list(a.get_flattened_data())
@@ -278,13 +536,19 @@ class Packer:
         self.clipped = []   # every glow animation that clips, as a line to exit with
         self.masks = {d: cut_mask(decl, d) for d, _ in contract.DIRECTIONS[decl["directions"]]}
         self.cut_px = {}    # per direction, {render stem: px the footprint cut cleared or thinned}
+        self.wrecked = []   # every remnants check that fails, as a line to exit with
+        self.roll_on = decl.get("rolloff", True)    # render.json's opt-out (contract.py)
+        self.rolls = {}     # per direction, {sheet: its pixels the roll-off changed, the most a channel moved}
+        self.wrecks = {}    # per direction, the remnants pass's render, cleaned and rolled off: packed into one sheet
 
-    def open(self, stem, d, cut_it=True):
-        """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false."""
+    def open(self, stem, d, cut_it=True, canvas=None):
+        """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false.
+        canvas: the size it must be, when not the model's (a remnants pass's own)."""
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
-        if list(im.size) != list(self.decl["canvas"]):
+        want = list(canvas or self.decl["canvas"])
+        if list(im.size) != want:
             sys.exit(f"pack.py: {stem}.png is {im.size[0]}x{im.size[1]}, but render.json "
-                     f"declares a {self.decl['canvas'][0]}x{self.decl['canvas'][1]} canvas")
+                     f"declares a {want[0]}x{want[1]} canvas")
         if cut_it and self.masks[d] is not None:
             im, n = cut(im, self.masks[d])
             if n:
@@ -298,9 +562,21 @@ class Packer:
         x0, y0, x1, y1 = bb
         return (x0 - 1, y0 - 1, x1 + 1, y1 + 1)
 
-    def shift(self, bb):
-        return (round(((bb[0] + bb[2]) / 2 - self.origin[0]) / self.ppt, 5),
-                round(((bb[1] + bb[3]) / 2 - self.origin[1]) / self.ppt, 5))
+    def shift(self, bb, origin=None):
+        """A crop's shift in tiles: its centre from the entity origin, the canvas's centre (origin,
+        when the crop is off a canvas of its own)."""
+        ox, oy = origin or self.origin
+        return (round(((bb[0] + bb[2]) / 2 - ox) / self.ppt, 5),
+                round(((bb[1] + bb[3]) / 2 - oy) / self.ppt, 5))
+
+    def rolloff(self, im, sheet, d):
+        """im rolled off (roll) for the sheet it goes into in direction d, what it changed recorded
+        for checks rolloff_px; im as it is when the model opts out."""
+        if not self.roll_on:
+            return im
+        im, n, most = roll(im)
+        self.rolls.setdefault(d, {})[sheet] = dict(px=n, most=most)
+        return im
 
     def save(self, im, bb, sheet, **extra):
         im.crop(bb).save(os.path.join(self.out, sheet + ".png"))
@@ -313,7 +589,9 @@ class Packer:
         renders = {}
         for p in decl["passes"]:
             stem = contract.named(p["name"], d)
-            renders[p["name"]] = self.open(stem, d, cut_it=p["kind"] != "shadow")   # a shadow falls past the footprint
+            # a shadow falls past the footprint, and so does a wreck's debris and shadow
+            renders[p["name"]] = self.open(stem, d, cut_it=p["kind"] not in ("shadow", "remnants"),
+                                           canvas=contract.canvas_of(decl, p))
         checks = {}
         plate = next(p for p in decl["passes"] if p["kind"] == "plate")
         idle = renders[plate["name"]]
@@ -324,7 +602,7 @@ class Packer:
             im, sheet = renders[p["name"]], contract.named(p["sheet"], d)
             what = contract.named(p["name"], d) + ".png"
             if p["kind"] == "plate":
-                self.save(im, self.box_of(im.getchannel("A"), what), sheet)
+                self.save(self.rolloff(im, sheet, d), self.box_of(im.getchannel("A"), what), sheet)
             elif p["kind"] == "shadow":
                 a = clean(im).getchannel("A")
                 blk = Image.merge("RGBA", (*Image.new("RGB", im.size, (0, 0, 0)).split(), a))
@@ -332,7 +610,8 @@ class Packer:
             elif p["kind"] == "glow":
                 under = renders[p["over"]]
                 layer = glow_layer(im, under)
-                self.save(layer, self.box_of(layer.getchannel("A"), what + " minus its plate"), sheet)
+                self.save(self.rolloff(layer, sheet, d), self.box_of(layer.getchannel("A"), what + " minus its plate"),
+                          sheet)
                 # Light the glow drove to white: white in the lit pass and not already
                 # white under it (a glint on bare steel is). Over-driven emission clips
                 # there, and the glow layer, being lit minus unlit, comes out grey
@@ -344,12 +623,15 @@ class Packer:
                     white, "pixels the working light clipped to white; 0 = the light keeps its colour")
             elif p["kind"] == "paint":
                 layer = paint_layer(im, renders[p["over"]])
-                self.save(layer, self.box_of(layer.getchannel("A"), what + " where it differs from its plate"), sheet)
+                self.save(self.rolloff(layer, sheet, d),
+                          self.box_of(layer.getchannel("A"), what + " where it differs from its plate"), sheet)
             elif p["kind"] == "light":
                 self.save(im, self.box_of(im.getchannel("A"), what, 8), sheet)
+            elif p["kind"] == "remnants":
+                checks.update(self.wreck(p, clean(im), d, what))
 
         frame0 = []
-        packed = {}                         # every animation's frames, as packed: a glow's checks read its plate layer's
+        packed = {}         # every animation's frames, as packed: a glow's checks read its plate layer's
         for a in decl["animations"]:
             name, n = a["name"], int(a["frames"])
             light = a.get("kind", "paint") == "light"
@@ -375,6 +657,8 @@ class Packer:
             for i, fr in enumerate(frames):
                 sheet.paste(fr.crop(u), ((i % line) * fw, (i // line) * fh))
             stem = contract.named(name, d)
+            if not light:
+                sheet = self.rolloff(sheet, stem, d)     # its frames, unrolled, are what the checks read
             sheet.save(os.path.join(self.out, stem + ".png"))
             self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
             if light or glow:
@@ -421,11 +705,15 @@ class Packer:
                 path = checks[f"{name}_path_px"] = self.slide(a, cs, d)
                 if a.get("track"):
                     path["tracked"] = a["track"]
-                if max(path["off_curve"], path["off_line"]) > LIMIT_PX:
-                    self.over.append(f"animation {name!r}, {where(d)}: a frame is {path['off_curve']} px off "
-                                     f"its declared curve and {path['off_line']} px off its line; both stay "
-                                     f"within {LIMIT_PX:g} (declared {path['declared']}, measured "
-                                     f"{path['measured']})")
+                if path["frames_over"]:
+                    # named as the render measured: the tracked part's own, for a tracked slide
+                    stems = [contract.track_frame(name, a["track"], f, d) if a.get("track")
+                             else contract.frame(name, f, d) for f in path["frames_over"]]
+                    shown = ", ".join(f"{f} ({s}.png)" for f, s in zip(path["frames_over"], stems))
+                    self.over.append(f"animation {name!r}, {where(d)}: frame(s) {shown} more than "
+                                     f"{LIMIT_PX:g} px off, measured from frame 0 (the still): at most "
+                                     f"{path['off_curve']} px off its declared curve and {path['off_line']} px "
+                                     f"off its line (declared {path['declared']}, measured {path['measured']})")
 
         for a in decl["animations"]:
             if a.get("kind") == "glow":
@@ -467,6 +755,11 @@ class Packer:
         if decl.get("cut"):
             appendix["cut_px"] = (self.cut_px.get(d, {}), f"per render, the px with alpha the footprint cut "
                                   f"({', '.join(decl['cut'])}) cleared or thinned; the shadow is never cut")
+        if self.roll_on:
+            appendix["rolloff_px"] = (self.rolls.get(d, {}), f"per sheet but a shadow's or a light's, the px the "
+                                      f"highlight roll-off changed (brightest channel over {KNEE}, eased under "
+                                      f"{TOP}, hue kept) and the most a channel moved; render.json's rolloff false "
+                                      f"opts out")
         return appendix
 
     def glow_checks(self, anim, packed, plate, d, siblings=()):
@@ -515,34 +808,94 @@ class Packer:
 
         The declared path, put on the screen for this direction, is where the part
         should be in each frame; its centroid is where it is. The centroid sits a
-        fixed distance from whatever point the path follows, so that offset is
-        fitted (the mean over the frames) and what is left in each frame is the
-        miss: along the line, the frame is off the curve; across it, off the line.
+        fixed distance from whatever point the path follows, and that offset is
+        taken from frame 0 -- the still, the part as the stopped machine shows it
+        (the frame-0 rule) -- so frame 0 misses by nothing and every other frame's
+        miss is measured from it: along the line, the frame is off the curve; across
+        it, off the line. Either past LIMIT_PX fails, and the frames that are
+        (frames_over, numbered as their renders are) are named. Until 2026-10-20 the
+        offset was the mean over the frames, which shared one frame's miss among the
+        rest: on a 4-frame slide one frame up to ~1.33 px off passed (Liam: "From
+        frame 0").
         """
         # a root that never turns (turns: false) leaves the path as modelled in every direction
         facing = d if anim.get("turns", True) else contract.DIRECTIONS[self.decl["directions"]][0][0]
         want = [contract.screen(self.decl, p, facing) for p in anim["path"]]
-        ox = sum(c[0] - w[0] for c, w in zip(cs, want)) / len(cs)
-        oy = sum(c[1] - w[1] for c, w in zip(cs, want)) / len(cs)
+        ox, oy = cs[0][0] - want[0][0], cs[0][1] - want[0][1]
         far = max(((w[0] - want[0][0], w[1] - want[0][1]) for w in want), key=lambda v: math.hypot(*v))
         ux, uy = far[0] / math.hypot(*far), far[1] / math.hypot(*far)
         got, along, across = [], [], []
         for c, w in zip(cs, want):
             rx, ry = c[0] - ox - w[0], c[1] - oy - w[1]
             got.append(round((c[0] - ox - want[0][0]) * ux + (c[1] - oy - want[0][1]) * uy, 2))
-            along.append(rx * ux + ry * uy)
-            across.append(-rx * uy + ry * ux)
+            along.append(round(rx * ux + ry * uy, 2))
+            across.append(round(-rx * uy + ry * ux, 2))
         return dict(declared=[round((w[0] - want[0][0]) * ux + (w[1] - want[0][1]) * uy, 2) for w in want],
                     measured=got,
-                    off_curve=round(max(abs(v) for v in along), 2),
-                    off_line=round(max(abs(v) for v in across), 2),
+                    off_curve=max(abs(v) for v in along),
+                    off_line=max(abs(v) for v in across),
+                    frames_over=[f for f, (a, b) in enumerate(zip(along, across)) if max(abs(a), abs(b)) > LIMIT_PX],
                     note="each frame's position along the line, declared and measured (px from frame 0's "
-                         "declared point); the most any frame is off the curve and off the line: both must "
-                         "stay within 1")
+                         "point: the still's); the most any frame is off the curve and off the line, measured "
+                         "from frame 0: both must stay within 1; frames_over, the frames that do not")
+
+    def wreck(self, p, im, d, what):
+        """A remnants pass's render in direction d, cleaned: kept for its sheet (wreck_sheet), and
+        its checks -- the shadow baked in, nothing on the canvas's edge, how far it reaches."""
+        canvas = contract.canvas_of(self.decl, p)
+        self.box_of(im.getchannel("A"), what)         # an empty wreck is refused, as an empty pass is
+        self.wrecks[d] = self.rolloff(im, p["sheet"], d)    # as the sheet carries it; the checks read im
+        shadow, debris = wreck_parts(im)
+        n_shadow = shadow.histogram()[255]
+        area = im.getchannel("A").point(lambda v: 255 if v else 0).histogram()[255]
+        share = n_shadow / area
+        edge = edge_px(im.getchannel("A").point(lambda v: 255 if v else 0))
+        name = p["sheet"]
+        if n_shadow < SHADOW_MIN_PX or share < SHADOW_SHARE:
+            self.wrecked.append(f"remnants {p['name']!r}, {where(d)}: no shadow baked in ({n_shadow} part-"
+                                f"transparent near-black px, {100 * share:.2f} % of the wreck; at least "
+                                f"{SHADOW_MIN_PX} and {100 * SHADOW_SHARE:g} %): render the wreck over the ground "
+                                f"catcher, as vanilla's remnants carry their shadow in the one sprite")
+        if edge:
+            self.wrecked.append(f"remnants {p['name']!r}, {where(d)}: {edge} px of it on its canvas's edge, so the "
+                                f"canvas cuts the wreck or its shadow off: give the pass a larger canvas of its own")
+        return {
+            f"{name}_shadow_px": (dict(px=n_shadow, share=round(share, 4)),
+                                  f"pixels of shadow baked into the wreck (part transparent, every channel at most "
+                                  f"{SHADOW_RGB}) and their share of its area; under {SHADOW_MIN_PX} px or "
+                                  f"{SHADOW_SHARE:g} fails (no catcher); vanilla's remnants 0.24-0.52"),
+            f"{name}_edge_px": (edge, "pixels of the wreck or its shadow on its canvas's edge; 0 = the canvas "
+                                "holds it"),
+            f"{name}_reach_tiles": (
+                dict(debris=reach(debris.getbbox(), self.decl, d, canvas),
+                     all=reach(im.getchannel("A").getbbox(), self.decl, d, canvas)),
+                "how far past each footprint edge, as it stands in this direction, the debris (alpha over "
+                f"{DEBRIS_ALPHA}, not near black) and everything kept (the shadow too) reach, tiles; below 0 short "
+                "of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"),
+        }
+
+    def wreck_sheet(self, p):
+        """The remnants sheet: every direction's wreck, one row each in vanilla's order
+        (contract.remnant_rows), all cropped to the one box that holds them all."""
+        rows = contract.remnant_rows(self.decl)
+        cw, ch = contract.canvas_of(self.decl, p)
+        boxes = [self.box_of(im.getchannel("A"), contract.named(p["name"], d) + ".png")
+                 for d, im in self.wrecks.items()]
+        u = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
+        w, h = u[2] - u[0], u[3] - u[1]
+        sheet = Image.new("RGBA", (w, h * len(rows)))
+        for i, d in enumerate(rows):
+            sheet.paste(self.wrecks[d].crop(u), (0, i * h))
+        sheet.save(os.path.join(self.out, p["sheet"] + ".png"))
+        self.meta[p["sheet"]] = dict(size=(w, h), shift=self.shift(u, (cw / 2, ch / 2)), direction_count=len(rows),
+                                     line_length=1, rows=rows, kind="remnants", final_render_layer="remnants")
 
     def run(self):
         dirs = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         per = {d: self.direction(d) for d in dirs}
+        for p in self.decl["passes"]:
+            if p["kind"] == "remnants":
+                self.wreck_sheet(p)
         self.meta["checks"] = per[""] if dirs == [""] else per
         return self.meta
 
@@ -588,6 +941,9 @@ def main(src, out):
     if packer.clipped:
         failed.append(f"pack.py: {len(packer.clipped)} glow animation check(s) failed "
                       f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.clipped))
+    if packer.wrecked:
+        failed.append(f"pack.py: {len(packer.wrecked)} remnants check(s) failed "
+                      f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.wrecked))
     if failed:
         sys.exit("\n".join(failed))
 

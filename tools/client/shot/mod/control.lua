@@ -14,7 +14,7 @@
 -- Every error the probe catches is also appended to errors.txt; shot.sh fails
 -- the run if that file has anything in it.
 
--- luacheck: read globals helpers prototypes
+-- luacheck: read globals helpers prototypes remote
 
 local spec = helpers.json_to_table(require("config"))
 
@@ -264,6 +264,17 @@ local function run(what, k, j)
     helpers.write_file(OUT .. "done", "done\n")
   end
 end
+
+-- Off the freeplay intro and crash site, as the sound probe does: left on,
+-- they take the camera and the client froze near tick 750 on any spec running
+-- past ~700 ticks (Reaction Plant, 2026-10-20). The remote interface is the
+-- scenario's own, and may not be there.
+script.on_init(function()
+  if remote.interfaces["freeplay"] then
+    pcall(remote.call, "freeplay", "set_skip_intro", true)
+    pcall(remote.call, "freeplay", "set_disable_crashsite", true)
+  end
+end)
 
 script.on_event(defines.events.on_tick, function(e)
   if not S.t0 then
