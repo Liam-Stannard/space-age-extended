@@ -32,10 +32,16 @@ Usage:
                     name          the MP4's name (<name>.mp4)
                     onset_rise_db optional: what counts as an onset (35; see
                                   analyse.py)
+                    candidate_rise_db  optional: the rise from which an onset
+                                  may be labelled by its sound (15)
+                    match_min     optional: the waveform correlation that
+                                  labels an onset (0.35)
   --worktree DIR  The mod to load (default: this repo), as the launcher's.
   --mod PATH      An extra mod, as the launcher's. Repeatable.
   --timeout S     The recording run's limit in seconds (default 600).
-  --keep-raw      Keep the raw capture (raw/: RGB frames and PCM, ~30 MB/s).
+  --keep-raw      Keep the raw capture (raw/: RGB frames and PCM, ~30 MB/s),
+                  which analyse.py can be run on again. Without it raw/ is
+                  deleted at the end of every run, passed or failed.
 
 How it runs. Only through tools/client/launch.sh, twice: once to --create a
 save with the probe mod (tools/client/audio/mod, copied to a scratch folder
@@ -74,7 +80,8 @@ strand its client and the null sink), and reported with its --recover line.
 
 Exit: 0 recorded, analysed, every accent on its frame and the guard passed;
 1 something failed or an accent missed (see the output); 2 usage; 3 the
-launcher refused (another client running); 5 the cleanup could not finish
+launcher refused, at either launch (another client running, its lock held,
+or a null sink left as the default); 5 the cleanup could not finish
 (a launcher would not stop, or a helper was left: see the output); 130 stopped
 by a signal, with everything cleaned up.
 """
@@ -108,6 +115,10 @@ import guard  # noqa: E402
 
 class Failed(Exception):
     pass
+
+
+class Refused(Exception):
+    """The launcher refused to start (its exit 3)."""
 
 
 def say(msg):
@@ -371,8 +382,7 @@ def main():
         logf.close()
         proc = logf = None
         if r == 3:
-            say("the launcher refused (a client is running); see launch-create.log")
-            return 3
+            raise Refused(f"creating the save: see {launch_log}")
         if r != 0 or not (scr / "audio.zip").exists():
             raise Failed(f"creating the save failed (launcher exit {r}; see {out / 'launch-create.log'})")
 
@@ -386,7 +396,12 @@ def main():
                                        str(args.timeout), "--done-file", "sae-audio/stop",
                                        "--", "--load-game", str(scr / "audio.zip")], launch_log)
         alive = lambda: proc.poll() is None  # noqa: E731
-        run_dir = wait_for(lambda: run_dir_of(out / "launch-record.log"), 30, "the run directory", alive)
+        try:
+            run_dir = wait_for(lambda: run_dir_of(out / "launch-record.log"), 30, "the run directory", alive)
+        except Failed:
+            if proc.poll() == 3:
+                raise Refused(f"the recording run: see {launch_log}") from None
+            raise
         snd.run_dir = run_dir
         say(f"client run: {run_dir}")
         probe_out = run_dir / "data/script-output/sae-audio"
@@ -444,6 +459,10 @@ def main():
         if lrc != 0:
             raise Failed(f"the recording run ended with launcher exit {lrc} (see launch-record.log)")
         rc = 0
+    except Refused as e:
+        say(f"the launcher refused (another client running, its lock held, or a null sink left as the "
+            f"default) at {e}")
+        rc = 3
     except Failed as e:
         say(f"FAILED: {e}")
         rc = 1
@@ -506,19 +525,27 @@ def main():
 
     verdict = 1
     g = {"pass": False}
-    if snd is not None:
-        g = snd.judge()
-        say(f"sound guard: {'PASS' if g['pass'] else 'FAIL'} -- {g['summary']}")
-    if rc == 0:
-        try:
-            res = analyse.run(out, spec, REPO)
-            say(f"accents: {'PASS' if res['pass'] else 'FAIL'} -- {res['summary']}")
-            say(f"MP4: {res['mp4']}")
-            verdict = 0 if res["pass"] and g["pass"] else 1
-        except analyse.Failed as e:
-            say(f"analysis FAILED: {e}")
-    if verdict == 0 and not args.keep_raw:
-        shutil.rmtree(raw, ignore_errors=True)
+    try:
+        if snd is not None:
+            g = snd.judge()
+            say(f"sound guard: {'PASS' if g['pass'] else 'FAIL'} -- {g['summary']}")
+        if rc == 0:
+            try:
+                res = analyse.run(out, spec, REPO)
+                say(f"accents: {'PASS' if res['pass'] else 'FAIL'} -- {res['summary']}")
+                say(f"MP4: {res['mp4']}")
+                verdict = 0 if res["pass"] and g["pass"] else 1
+            except analyse.Failed as e:
+                say(f"analysis FAILED: {e}")
+    finally:
+        # raw/ is ~0.5 GB a run: gone however the analysis ended, unless asked for.
+        if args.keep_raw:
+            say(f"kept the raw capture: {raw}")
+        else:
+            shutil.rmtree(raw, ignore_errors=True)
+            if raw.exists():
+                say(f"could not delete {raw}")
+                verdict = 1
     say(f"evidence: {out}")
     if stuck_msg:
         # Last, so it is what is seen: the launcher, and what the sound is now.

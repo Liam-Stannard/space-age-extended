@@ -85,8 +85,11 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
              heat ramps #C8541E -> #E8A24A -> #FFD9A0: R >= 180, R - B >= 90, G - B >= 30,
              R - G >= 30) px and pct; white_px (every channel >= 245, pack.py's white());
              clipped_px (the most pixels, in any frame of the loop, that the light drives
-             to white and that are not white without it: pack.py's glow_checks, over every
-             glow at once); and idle_blue_pct / idle_orange_pct, the same shares on the still
+             to white and that are not white without it: pack.py's glow_checks' count, over
+             every glow at once). Both are of what ships: the packed sheets, rolled off
+             under white by pack.py since T07 -- not glow_checks' own figures, which read
+             the renders unrolled -- so a rolled glint a glow lifts back to white counts
+             as clipped; and idle_blue_pct / idle_orange_pct, the same shares on the still
   glow       per glow layer (a glow pass, or a glow animation's frame 0), its light (RGB
              times alpha, as the engine adds it): look_common.light_measures -- area, peak,
              core %, halo %, sat_core, sat_halo, white -- and blue_pct of its lit pixels;
@@ -243,11 +246,14 @@ Blender exits non-zero, the output holds a Python "Traceback" (an exception afte
 were printed), or the model prints no count. Its output is kept in <out>/collide.log. With
 --collide-allow, a pair line whose text after "COLLIDE " a pattern matches whole is allowed
 (listed, with the pattern, under "allowed"); the run still fails on any pair line no pattern
-matches ("not_allowed"), and when the counts add up to more clashes than the allowed pair lines.
-Only pair lines can be allowed, so a line naming no pair -- a count, a header, a size -- never
-adds to the allowed number; a model that counts clashes without naming each as "<a> x <b>"
-(ballast_drill.py's "COLLIDE <a> <b> <material>" lines) cannot have them allowed. A pattern that
-matched nothing is listed under "allow_unused" (information).
+matches ("not_allowed"), and when a count line's counts add up to more clashes than the allowed
+pair lines of its own block: those after the count line before it, up to and including its own
+line (the models print each check's pair lines and then its count). So a pair line allowed in
+one block never accounts for a count in another. Only pair lines can be allowed, so a line
+naming no pair -- a count, a header, a size -- never adds to the allowed number; a model that
+counts clashes without naming each as "<a> x <b>" (ballast_drill.py's "COLLIDE <a> <b>
+<material>" lines) cannot have them allowed. A pattern that matched nothing is listed under
+"allow_unused" (information).
 
 The comparison sheet (<out>/comparison.png, or comparison-1.png, -2.png ... when one image
 would reach --max-side on either side): per direction ours as seen at 1x (the still, its
@@ -1549,7 +1555,12 @@ def names_pair(text):
 def collide(model, out, blender, allow=()):
     """The model's --collide, read (see the module docstring). allow: patterns (strings) for the
     pair lines the model means, each matched against the whole of a pair line's text after
-    "COLLIDE "; each pair line one matches is listed as allowed, with it."""
+    "COLLIDE "; each pair line one matches is listed as allowed, with it. The lines are read
+    in blocks, each ending at a count line (one COLLIDE_COUNT matches): a count line's counts,
+    added, must not exceed the allowed pair lines of its own block -- those after the count
+    line before it, up to and including its own line -- so pair lines allowed above one count
+    cannot account for a later one. Pair lines after the last count line answer to no count
+    (a not-allowed one still fails the run)."""
     allow = allow_patterns(allow)
     d = os.path.join(out, "collide")
     os.makedirs(d, exist_ok=True)
@@ -1571,15 +1582,25 @@ def collide(model, out, blender, allow=()):
     with open(log, "w") as f:
         f.write(text)
     lines = [ln for ln in (raw.strip() for raw in text.splitlines()) if re.match(r"COLLIDE\b", ln)]
-    counts = [int(a or b) for ln in lines for a, b in COLLIDE_COUNT.findall(ln)]
     pairs = [ln for ln in lines if names_pair(collide_text(ln))]
-    allowed, not_allowed = [], []
-    for ln in pairs:
-        hit = next((p for p, rx in allow if rx.fullmatch(collide_text(ln))), None)
-        if hit is None:
-            not_allowed.append(ln)
-        else:
-            allowed.append(dict(line=ln, pattern=hit))
+    # a count answers for its own block: the pair lines after the count line before it, up to
+    # and including its own line; allowed ones further up were another count's to account for
+    counts, allowed, not_allowed, over = [], [], [], []
+    block = 0                                       # allowed pair lines in this block so far
+    for ln in lines:
+        if names_pair(collide_text(ln)):
+            hit = next((p for p, rx in allow if rx.fullmatch(collide_text(ln))), None)
+            if hit is None:
+                not_allowed.append(ln)
+            else:
+                allowed.append(dict(line=ln, pattern=hit))
+                block += 1
+        n = [int(a or b) for a, b in COLLIDE_COUNT.findall(ln)]
+        if n:
+            counts += n
+            if sum(n) > block:
+                over.append(f"{ln!r} counts {sum(n)}, its block {block} allowed")
+            block = 0
     why = []
     if code != 0:
         why.append(f"Blender exited {code} (see {log})")
@@ -1591,9 +1612,9 @@ def collide(model, out, blender, allow=()):
         why.append("the model printed no clash count")
     if not_allowed:
         why.append(f"{len(not_allowed)} clash line(s) not allowed ({len(allowed)} allowed), counts {counts}")
-    elif sum(counts) > len(allowed):
-        why.append(f"counts {counts} come to {sum(counts)} clash(es), more than the {len(allowed)} "
-                   f"allowed pair line(s) account for")
+    elif over:
+        why.append(f"{len(over)} count line(s) above the allowed pair lines of their own block "
+                   f"(those since the count line before): " + "; ".join(over))
     res.update(returncode=code, lines=lines, clash_lines=pairs, counts=counts, allowed=allowed,
                not_allowed=not_allowed, allow_unused=[p for p, _ in allow if p not in {a["pattern"] for a in allowed}],
                why="; ".join(why) or None)

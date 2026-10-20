@@ -49,6 +49,12 @@ entries lasts; a glow plays its plate layer's.
 Every render but a shadow is drawn cut to the footprint as pack.py cuts it, when
 render.json declares a `cut`: cut first, then a glow animation's bloom added, so the
 halo may spill past a cut edge as it does in the sheets.
+
+Every layer but a shadow or a light is drawn through pack.py's highlight roll-off (pack.roll),
+as its sheet carries it -- the plate, a paint or glow pass's layer, each animation's frame but a
+light one's, the wreck -- each before it is drawn over the rest, so the review is what ships
+(Liam, 2026-10-20: "Match shipped"). A model whose render.json opts out (rolloff false) is drawn
+as it was before the roll-off, byte for byte.
 """
 import argparse
 import os
@@ -85,6 +91,11 @@ class Model:
         self.directions = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         self.ppt = float(self.decl["rig"]["px_per_tile"])
         self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
+        self.roll_on = self.decl.get("rolloff", True)
+
+    def shipped(self, im):
+        """A layer as its sheet carries it: rolled off (pack.roll), unless the model opts out."""
+        return pack.roll(im)[0] if self.roll_on else im
 
     def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint as pack.py cuts it (render.json's `cut`)
@@ -111,16 +122,18 @@ class Model:
         for p in self.kind("shadow"):
             alpha = pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False)).getchannel("A")
             im.paste(black, (0, 0), alpha.point(lambda v: v // 2))
-        im.alpha_composite(plate)
+        im.alpha_composite(self.shipped(plate))
         glows = []
         for a in self.decl["animations"]:
             if a.get("working") and not working:
                 continue                    # drawn only while the machine works (contract.py)
             fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0), d), d)
             if a.get("kind") == "glow":
-                glows.append(pack.glow_frame(fr, a.get("bloom")))     # light: added below, while working
+                glows.append(self.shipped(pack.glow_frame(fr, a.get("bloom"))))     # added below, while working
+            elif a.get("kind") == "light":
+                im.alpha_composite(pack.clean(fr))      # a white the engine tints: never rolled off
             else:
-                im.alpha_composite(pack.clean(fr))
+                im.alpha_composite(self.shipped(pack.clean(fr)))
         for g in glows if working else ():
             im = pack.add_light(im, g)
         for p in self.decl["passes"] if working else ():
@@ -129,9 +142,9 @@ class Model:
             layer = self.open(contract.named(p["name"], d), d)
             under = self.open(contract.named(p["over"], d), d)
             if p["kind"] == "paint":
-                im.alpha_composite(pack.paint_layer(layer, under))
+                im.alpha_composite(self.shipped(pack.paint_layer(layer, under)))
             else:
-                glow = pack.glow_layer(layer, under).convert("RGB")
+                glow = self.shipped(pack.glow_layer(layer, under)).convert("RGB")
                 im = Image.merge("RGBA", (*ImageChops.add(im.convert("RGB"), glow).split(), im.getchannel("A")))
         for p in self.kind("light"):
             lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
@@ -146,7 +159,8 @@ class Model:
             return None
         canvas = contract.canvas_of(self.decl, p)
         im = Image.new("RGBA", tuple(canvas), GROUND)
-        im.alpha_composite(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False, canvas=canvas)))
+        im.alpha_composite(self.shipped(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False,
+                                                             canvas=canvas))))
         return im
 
 

@@ -121,7 +121,23 @@ a pass: everything they act on is declared here.
               "neck": true (optional, off by default) keeps a part of the
               fitting joined to the rest only by a neck too faint for the noise
               floor -- a thin strip, as on assembler 3's west outline -- which
-              pack_ports.py otherwise drops (its docstring says when to use it)
+              pack_ports.py otherwise drops (its docstring says when to use it).
+              Every face the ports reach must have a port declared on it: the
+              engine draws each connection with the picture of the face it points
+              to, whichever way the building stands. The faces the ports reach
+              (reached_faces(), below) are each port's face turned clockwise -- N to
+              E, E to S, S to W, W to N -- through every angle the model is
+              rendered at (DIRECTIONS): 0 for "one", so a port reaches only its own
+              face; 0 and 90 for "horizontal-vertical", so N reaches N and E, and S
+              reaches S and W; 0, 90, 180 and 270 for "four", so any port reaches all
+              four faces. With ports_turn true, through all four angles, whatever
+              the directions. A face reached with no port on it fails the contract,
+              naming the faces missing
+  ports_turn  (optional; false when left out) true when the engine turns the
+              ports through all four directions though the model is rendered in
+              fewer: the Vacuum Furnace, drawn once, whose input turns with the
+              building. Left out of render.json when not given, so a model without
+              it declares what it always did
   rig         {elevation, px_per_tile}: the camera's, copied from rig.py by
               declare(), so the packers can put a tile on the screen
   cut         (optional; none when left out) the footprint's edges past which
@@ -142,6 +158,12 @@ a pass: everything they act on is declared here.
               of its alpha inside. pack.py counts what it cleared (meta.json's
               cut_px, counted on the renders before any bloom is added) and
               preview.py draws the renders cut the same way.
+  rolloff     (optional; true when left out) false opts the model out of pack.py's
+              highlight roll-off, which otherwise eases the pixels past 236 of every
+              sheet but a shadow's or a light's under 245, scaled whole, hue kept, and
+              preview.py draws them the same way (pack.py's docstring; Liam,
+              2026-10-20: "On by default, new renders only"). Left out of render.json
+              when not given, so a model without it declares what it always did
 
 Run as a script, it lists a render directory's plate renders, one per direction:
   python3 contract.py plates <render-dir>
@@ -174,6 +196,7 @@ WORKING = ("glow", "paint")             # the kinds drawn over an `over` plate w
 MOTIONS = ("turn", "slide", "flow", "cycle")
 ANIM_KINDS = ("paint", "light", "glow")
 FACES = {"N": (0, -1), "E": (1, 0), "S": (0, 1), "W": (-1, 0)}     # tiles, y down
+FACE_ORDER = "NESW"                     # clockwise seen from above: a quarter turn is one step on
 CUT_FACES = ("E", "W", "S")             # the footprint edges `cut` may name: not N
 HOLD_KEYS = ("frame", "entries", "each")
 SEQUENCE_MAX = 255                      # the engine's limit on an animation's actual length
@@ -254,7 +277,8 @@ def each_direction(root, directions):
     root.rotation_euler.z = 0.0
 
 
-def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None):
+def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None,
+            ports_turn=None, rolloff=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
@@ -262,6 +286,10 @@ def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(),
                 rig=dict(elevation=math.degrees(rig.ELEVATION), px_per_tile=rig.PX_PER_TILE))
     if cut is not None:
         decl["cut"] = cut   # left out when not given, so a model without one declares what it always did
+    if ports_turn is not None:
+        decl["ports_turn"] = ports_turn     # likewise
+    if rolloff is not None:
+        decl["rolloff"] = rolloff           # likewise
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -282,6 +310,21 @@ def load(render_dir):
         raise ContractError(f"{path}: is not JSON: {e}") from None
     validate(decl, path)
     return decl
+
+
+def turned(face, deg):
+    """A face turned clockwise seen from above by deg (a multiple of 90), as the engine turns a building."""
+    return FACE_ORDER[(FACE_ORDER.index(face) + deg // 90) % 4]
+
+
+def reached_faces(decl):
+    """The faces the model's ports reach, in N, E, S, W order: each port's face turned through
+    every angle the model is rendered at (0 alone for "one"; 0 and 90 for "horizontal-vertical";
+    0, 90, 180 and 270 for "four"), or through all four when ports_turn is true. Each needs a
+    port declared on it (the contract's docstring, `ports`)."""
+    angles = (0, 90, 180, 270) if decl.get("ports_turn") else [deg for _, deg in DIRECTIONS[decl["directions"]]]
+    reached = {turned(p["face"], deg) for p in decl["ports"] for deg in angles}
+    return [f for f in FACE_ORDER if f in reached]
 
 
 def _number(v):
@@ -510,6 +553,18 @@ def validate(decl, where):
         if not (edge and inside):
             bad(f"{field}.tile", f"{list(p['tile'])} is not a tile centre on the {p['face']} edge "
                 f"of a {w}x{h} footprint")
+    if "ports_turn" in decl and not isinstance(decl["ports_turn"], bool):
+        bad("ports_turn", f"{decl['ports_turn']!r} is not true or false")
+    if "rolloff" in decl and not isinstance(decl["rolloff"], bool):
+        bad("rolloff", f"{decl['rolloff']!r} is not true or false: false opts out of pack.py's highlight roll-off")
+    missing = [f for f in reached_faces(decl) if f not in faces]
+    if missing:
+        how = ("ports_turn turns them through all four directions" if decl.get("ports_turn")
+               else f"directions {decl['directions']!r} turns them through "
+               f"{', '.join(str(deg) for _, deg in DIRECTIONS[decl['directions']])} degrees")
+        bad("ports", f"the ports reach face(s) {', '.join(missing)}, which no port is declared on: {how} "
+            f"(declared: {', '.join(sorted(faces, key=FACE_ORDER.index))}), and the engine draws a "
+            f"connection with the picture of the face it points to; declare a port on each")
 
 
 def screen(decl, offset, direction):
