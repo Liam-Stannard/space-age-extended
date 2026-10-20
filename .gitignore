@@ -14,3 +14,6 @@ evidence/
 
 # Doubled-size preview GIFs made for review
 *-2x.gif
+
+# Videos (capture.py's MP4s, concept turntables): evidence for review, never shipped
+*.mp4
