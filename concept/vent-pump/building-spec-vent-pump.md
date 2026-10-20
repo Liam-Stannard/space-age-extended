@@ -1,18 +1,8 @@
 # Factorio Building — Art & Implementation Specification
 
-**Vent Pump.** Filled from `building-spec-template.md`. Every gameplay number
-here is the implemented value read off `prototypes/core/entities.lua` and the
-vanilla prototypes it deep-copies, not a proposal. The art sections *are*
-proposals: the building currently wears vanilla's pumpjack unmodified, and this
-document exists to commission a replacement.
+**Vent Pump.** Filled from `building-spec-template.md`. Every gameplay number here is the implemented value read off `prototypes/core/entities.lua` and the vanilla prototypes it deep-copies. The art sections describe the signed-off concept: the **Gas Lift Tower**, round 5, variant (a) "Warmer paints" (Liam, 2026-10-20). The shipping model is built from `concept/vent-pump/options/round-5/vpb5_08_gas_lift_tower.py --variant a`.
 
-**The central art decision — see §3.1.** A pumpjack is a *beam pump*: a
-counterweighted horsehead nodding over an open sucker rod, lifting cold crude
-by suction. The Vent Pump does none of that. It draws 1200 °C molten metal out
-of a sealed hole by injecting cryogenic helium-3 — which is **gas lift**, a real
-and completely different piece of machinery, with no reciprocating parts and
-nothing open to the sky. The replacement art should be a **gas-lift wellhead**,
-not a recoloured nodding donkey.
+**The central art decision — see §3.1.** A pumpjack is a beam pump. The Vent Pump is a **gas lift**: helium-3 is blown into the melt at the foot of a tower, and its bubbles carry the melt up. The building shows that happen, in glass.
 
 ---
 
@@ -23,6 +13,32 @@ stays `{ "sae-vent" }`, which now holds only `sae-melt-vent`, while the gas vent
 move to `sae-gas`. Its input fluid box, the helium it burns to draw melt, and
 everything else in this spec are unchanged. Where it says the Vent Pump draws
 helium or stands on a gas vent, read the Gas Pump.
+
+**Amended 2026-10-20 (Liam): the Gas Lift Tower.** Round 1's model and the ChatGPT plates are set aside. From twenty ideas Liam picked eight (round 2), then "Gas lift tower - now we can review the textures" (round 4), then "(a) Warmer paints" (round 5). His other rulings:
+- "The pump should include no frost/cold as part of the model, this would be from animations/effects."
+- The helium seen in glass, mix "A: violet, pink pulse per stroke". The helium glow is allowed beside the melt's orange.
+- Clipping: "Fix both in the model" (melt crest `#F89A50`, satin bare steel), then "Accept, add to the shared rig" for the highlight roll-off (§11).
+- Rise: "Accept 0.77" — the bar for this building is the foundry's 0.78, not the pumpjack's 0.47.
+- South join: "Fix in the model" — widen the south helium nozzle or carry the footing under it, so measure.py's join gate passes.
+- Strobe 0.27–0.29 % on the moving parts: noted, not raised.
+- Lamps: "Two lenses, two states": one green while working, one amber when the input fluid is missing.
+- Boil-off wisp: "Put it on the tower"; "Artist proposes spot": two or three spots shown at the model stage, only while working.
+- Effects: "Add effects"; "Artist proposes": options shown at the model stage, Liam picks.
+- Loop speed: "Model stage proposes": the artist proposes it from the 1x GIF, Liam picks at model sign-off.
+
+**What the model must keep** (round 5, variant (a), measure.py):
+
+| Measure | Round 5 (a) | Bar |
+| --- | --- | --- |
+| Footprint coverage | 95.9 % | ≥ 92 % |
+| Rise above the north edge | 0.77 tiles | ≤ 0.78 (foundry) |
+| Tonal, plate / still | p50 79 / 77, p95 170 / 169 | p50 ~75–81, p95 in vanilla's range |
+| White and clipped px, whole frame | 0 | 0 |
+| Helium glow peak, 1x | 122 | 87–171 |
+| Pale cyan and frost px | 0 | 0 |
+| Strobe | 0.29 % | noted |
+| North join | pass | pass |
+| South join | fail: 7 of 39 columns, up to 6 px | pass |
 
 ## 1. Building Overview
 
@@ -75,14 +91,12 @@ Inherited from `pumpjack` unless stated.
 
 **Placement Restrictions:**
 Requires a `sae-melt-vent` resource under it (`resource_categories =
-{"basic-fluid"}`). No `surface_conditions` — see §1. `fast_replaceable_group`
+{ "sae-vent" }`). No `surface_conditions` — see §1. `fast_replaceable_group`
 and `next_upgrade` are both cleared, so it never fast-replaces a pumpjack and
 never offers an upgrade path.
 
 **Rotation:**
-`4-way.` **The output pipe moves to a different corner in each direction** and
-the three input pipes rotate with the body. This is the most important art
-constraint in this document; see §5 and §8.
+`4-way.` One helium-3 input on the south face and one molten kamacite output on the north face, both on the centre tile, turning with the building as a pair. See §5 and §8.
 
 **Crafting Speed:**
 n/a. `mining_speed = 1`, against `sae-melt-vent`'s `minable.mining_time = 1`
@@ -103,38 +117,15 @@ that.
 
 ## 3.1 Design Concept
 
-**Primary Visual Theme:**
-**Sealed cryogenic gas-lift wellhead.** Heavy, squat, pressure-tight
-extraction plumbing bolted to bare metal. Explicitly **not** a beam pump, and
-explicitly **not** a furnace: nothing burns anywhere on the Core, so the
-building may glow with the melt it carries but must never look like it is
-combusting anything.
+**Primary Visual Theme:** **A gas-lift tower.** A tall, narrow iron shaft over the vent with a glass riser down its south face, a head tank on top, and the plant that serves it packed round its foot. Not a beam pump. It glows with the melt it carries, the helium in its sight glass, and its two status lenses, and nothing else.
 
-**Overall Appearance:**
-A low, wide armoured base plate anchored into the crust, carrying a stepped
-stack of valve bodies over the vent bore — a christmas tree. Two thick pipes
-meet the stack from opposite characters: a **frost-jacketed helium-3 injection
-line** entering low and cold, and a **glowing production riser** leaving high
-and hot, elbowing out to the pipe connection. The whole thing is bolted,
-gasketed and closed; there is no open shaft, no exposed rod, no moving arm.
+**Overall Appearance:** The tower stands over the vent on a refractory footing, just north of centre. Its kit fills the rest of the footprint, each unit on its own footing, with no deck: the helium inlet, stop valve, flow meter and sight glass (south); the recovery compressor (south-east); the recovery receiver (south-west); the switchgear (east); the control house (north-east); the lagged downcomer and the skimmings bin (north-west); two gas bottles and a tool chest (west); a ladder up the tower's west side.
 
-**Silhouette:**
-A blocky square base with one asymmetric stepped tower offset over the bore,
-and one thick pipe running low into it and one thick pipe leaving high out of
-it. From altitude the read is *"valve stack, in and out"* — instantly not a
-drill, instantly not an assembler, and it tells the player which way the
-building faces from the pipe geometry alone.
+**Silhouette:** The head tank rises above the north edge; the units break each corner at different heights (FFF #350). From altitude the read is *"a glass tower full of melt, fed from below"*.
 
-**Visual Complexity:**
-`Medium.` The Core's opening hours are wide belt-and-rail sprawl, and vents
-come in clusters, so ten of these will be on screen at once beside settling
-vessels and arc masts. One clear focal point — the stack — with the plumbing
-subordinate to it.
+**Visual Complexity:** `Medium-high.` Clutter and hoses after vanilla, readable at 1x.
 
-**Visual Age:**
-`Advanced.` This is the last planet in the game and everything here was
-shipped in by rocket. Precise, plated, deliberately engineered — but working
-machinery covered in condensation and metal dust, not a laboratory instrument.
+**Visual Age:** `Advanced, and used.` Paint per unit, worn paint, rust only where it forms, in vanilla's warmth and saturation (the Reaction Plant model's finish).
 
 ---
 
@@ -142,65 +133,36 @@ machinery covered in condensation and metal dust, not a laboratory instrument.
 
 The building should contain:
 
-* A **stepped valve stack** (christmas tree) rising off-centre over the bore,
-  three or four bodies tall, with flanged joints and hand-wheel valve caps.
-* A **frost-jacketed injection line** entering low: a ribbed cryogenic pipe in
-  a pale insulating sleeve, rimed white-blue, with a visible frost bloom where
-  it meets the warm stack.
-* A **production riser** leaving high: a thick, unlagged, heat-stained pipe
-  carrying melt, dull orange at the seams, with heat-shimmer discolouration on
-  the metal around it.
-* A **heavy anchored base plate** with bolt rings and a raised gasketed collar
-  around the bore, keeping the crust sealed.
-* **A sight port on the riser** — a small armoured window through which moving
-  melt is visible. This is the working tell and the one animated element.
+* The **tower shaft**, iron, banded every 0.42 of its height, with a slot down its south face.
+* The **glass riser** in that slot: orange melt with helium bubbles climbing it.
+* The **head tank** on the tower top, where the helium breaks out of the melt, with a melt window and a **float chamber** whose lever rocks.
+* The **helium line**: in at the south nozzle, through the stop valve and the turning **flow meter**, past a tee and a gauge, through the **sight glass**, down to the **sparger ring** round the tower's foot. Bare steel at the intake; the line lagged grey-violet with ID bands.
+* The **recovery loop**: down the tower's east side to the **compressor** (its coupling turning), west over the inlet to the **receiver**, back into the line at the tee.
+* The **lagged downcomer** carrying the melt from the head tank down to the north nozzle.
 
 ### Signature Feature
 
-**Cold and hot on the same machine, touching.** One frosted pipe going in, one
-glowing pipe coming out, meeting at a single valve stack. No other building in
-the mod or in vanilla puts rime and molten metal within a tile of each other,
-and it renders the Core's central coupling — the rare vent paying for the rich
-one — as something the player can see rather than read.
+**The helium seen at work.** Violet helium in its sight glass drops and flushes pink at each charge, and its bubbles carry the orange melt up the glass riser. The player watches the scarce vent pay for the rich one.
 
 ---
 
 ## 3.3 Colour Palette
 
-Hexes are taken from the fluid prototypes in `prototypes/core/fluids.lua`, so
-the building matches the fluids it moves wherever they appear in the UI.
+Variant (a), "Warmer paints" (`vpb5_kit.py`). A paint or metal per unit.
 
-**Primary:**
-Dark iron-nickel grey-brown machined casing, `#4A463F` → `#6E685C`. Kamacite is
-meteoric iron-nickel; the metal should look faintly warm and slightly oxidised,
-not blue-steel.
+**Iron:** the tower `#6A5642`; the head tank `#523F33`.
 
-**Secondary:**
-Pale nickel-white machined bands and flange faces, `#B9B4A8`. Used sparingly,
-to break the stack into readable steps.
+**Unit paints:** oxide red `#963220` (compressor, skimmings bin); ochre `#BC8624` (ladder, a gas bottle); green `#5C7A2C` (meter transmitter, compressor motor, a gas bottle); cream `#C0A676` (control house); grey `#86704C` (receiver, injection controller, switchgear).
 
-**Metal:**
-Warm dark steel. Deliberately desaturated so both accent colours read as
-*material being carried* rather than as paint.
+**Metal:** bare steel and nickel bands, satin, so no glint reaches white. The brightest paints are a step down (`CAPS` in `vpb5_kit.py`).
 
-**Accent — injection side:**
-Helium-3 cyan, `#8CC7E5` base ramping to `#C7E5FF` at the frost highlights.
-Confined to the injection line, its collar, and its status lamp.
+**Helium line:** grey-violet lagging, ID bands `#84769A`. No frost, rime, ice or cold colour anywhere in the model.
 
-**Accent — production side:**
-Molten kamacite orange, `#D96B29` base ramping to `#FF9E52` at the hottest
-seams. Confined to the riser, the sight port and the seam lines near it.
+**Molten kamacite:** `#D96B29` → crest `#F89A50`, only where melt is seen: the glass riser and the head-tank window.
 
-**Working Glow:**
-Warm orange `#FF9E52` at the sight port and riser seams, low and pulsing.
-Separately, a faint cold `#C7E5FF` bloom at the injection collar. **The two
-glows must never bleed into each other** — the gap between them is the whole
-idea.
+**Helium glow:** mix A, violet with a peach-pink flush at each charge, in the sight glass only, while working only. Peak 122 at 1x.
 
-**Warning / Status Lights:**
-One small amber lamp on the stack for `missing_required_fluid` — no helium, no
-melt. It is the failure the player will hit most often, so it gets the only
-indicator on the building.
+**Status lenses:** two, lit, drawn as lights: the control house's (north-east) green while working; the switchgear's (east) amber when the input fluid is missing (Liam, "Two lenses, two states", "House green, gear amber", "Light").
 
 ---
 
@@ -223,31 +185,15 @@ The building should visually fit alongside the vanilla Factorio / Space Age grap
 * [x] No UI elements
 * [x] No unrelated background objects
 
-**Note on the perspective line above.** The template says "45°", and that is
-the wrong number to hand an image generator: asked for 45° it produces a clean
-isometric three-quarter view, which reads as a different game. Factorio's
-camera sits roughly **60° above the horizon** — the player sees mostly the roof
-of a building, a shallow slice of its north face, and no south face at all,
-with the vanishing point far enough away to be effectively orthographic.
-Prompts in §11 say this the long way round rather than naming an angle.
+**The camera is the shared rig's** (`tools/blender/`), not a prompt.
 
 ### Style Reference Buildings
 
-1. `Pumpjack` (base)
-2. `Cryogenic plant` (Space Age)
-3. `Foundry` (Space Age)
+1. `Pumpjack` (base) — the same 3×3 over a fluid resource; the comparison on every sheet.
+2. `Chemical plant` (base) — a 3×3 built up in height, clutter and pipes.
+3. `Foundry` (Space Age) — molten metal seen in the building, and the rise bar (0.78).
 
-**Reason for references:**
-Take the **footprint, base plate and anchoring** from the pumpjack — it is the
-same 3×3 over a fluid resource and its base is already proven to read at this
-size. Take **nothing else** from it: the horsehead, the counterweight and the
-rocking motion are all wrong for gas lift, and the recolour's whole problem is
-that it still reads as an oil derrick on a planet with no oil. Take the
-**frost, insulation sleeves and pale cryogenic plumbing** from the cryogenic
-plant, which is the correct treatment for the helium line. Take the **heavy
-flanged construction and the way molten material glows through seams** from the
-foundry, which is the only vanilla building that already carries molten metal
-in pipes.
+The cryogenic plant is no longer a reference: no frost is modelled.
 
 ---
 
@@ -280,17 +226,7 @@ The following must remain consistent:
 
 Only the viewing direction should change.
 
-**How the four directions actually differ.** The pumpjack solves this cheaply
-and the Vent Pump inherits the solution: the base is **one sheet of four
-frames**, one per direction, and the entity is *not* re-rendered from four
-camera angles — the camera never moves in Factorio. Each frame is the same
-machine with its **plumbing rotated a quarter turn** on the base plate. The
-stack, the base, the bolt rings and the lighting are identical in all four; the
-injection line, the riser and the output elbow move around the stack.
-
-This matters for generation: **do not ask for four viewpoints.** Ask for four
-arrangements, seen from the one fixed camera. Generators reliably get this
-wrong and will hand back a rotating turntable, which is unusable.
+**How the four directions differ.** The whole machine is turned a quarter turn under the one fixed camera, as round 5's sheets show it. The fluid boxes turn with it, so helium enters the face opposite the melt's outlet in every direction. Each direction is its own render.
 
 ---
 
@@ -298,62 +234,25 @@ wrong and will hand back a rotating turntable, which is unusable.
 
 ## 6.1 Main Building
 
-| Asset         | Required | Frames | Directions |
-| ------------- | -------: | -----: | ---------: |
-| Main building |        ✓ |    `1` |      `4` |
-| Shadow        |        ✓ |    `1` |      `4` |
-| Working glow  |        ✓ |   `16` |      `4` |
-
-**This table used to say the working layer needed one direction, "because the
-sight port and flow disc sit on the stack, which does not rotate".** The sight
-port is on the **riser**, and the riser is the fluid box — it is the one part of
-this building that *must* rotate. Measured off the cut plates, the port's glow
-sits at top-centre in north, right in east, bottom in south and left in west. It
-is four directions.
-
-**And sixteen frames, not thirty-two.** The port is 9 × 16 screen pixels in the
-north view and 12–13 tall in the others, so a rising level has at most sixteen
-distinct pictures in it. Thirty-two frames would be sixteen images and sixteen
-duplicates — the same arithmetic that cut the Dross Classifier's shake from
-sixty-four frames to twelve.
+Four directions, each a whole render (§5). Layers as `tools/blender/render.sh --ports --icon` packs them: the plate, its shadow, the working loop, the glow, the pipe pictures and the icon.
 
 ---
 
 ## 6.2 Animation Layers
 
-| Layer          | Required | Animated | Frames |
-| -------------- | -------: | -------: | -----: |
-| Main structure |        ✓ |       No |      1 |
-| Machinery      |      `✓` |      `✓` |   `32` |
-| Pistons        |      `—` |      `—` |    `—` |
-| Belts          |      `—` |      `—` |    `—` |
-| Fans           |      `—` |      `—` |    `—` |
-| Glow           |      `✓` |      `✓` |   `16` |
-| Steam          |      `—` |      `—` |    `—` |
+**What moves, in a 24-frame loop with two helium charges a loop:**
+* bubbles climbing the glass riser, faster in each charge;
+* the melt flowing in the riser and the head-tank window;
+* the sight glass: the level drops and flushes pink at each charge, then refills;
+* the flow meter turning, racing in each charge;
+* the line gauge swinging with each charge;
+* the float lever rocking, once a charge;
+* the compressor's coupling turning;
+* the receiver's gauge swinging.
 
-**Animation FPS:**
-`animation_speed = 0.25` — a sixteen-frame loop in a little over one second,
-which is the same pace the 32-frame figure was aiming for and half the frames.
+Idle: everything still, no glow. Moving share 2.67 %; strobe 0.29 %, noted (Liam).
 
-**The steam row is struck.** §5 of this document and the planet brief both say
-there is no air here: no flame, no exhaust, no smoke, no steam plume. A steam
-layer was in this table by inheritance from a wellhead on a world that has an
-atmosphere.
-
-**And the moving part is small — knowingly.** At 16.7 % of the building's own
-box it is well under vanilla's 72–113 % band, and the plate is cut, so it cannot
-grow. It is built anyway because it costs sixteen tiny derived sprites and gives
-the building a running-versus-stopped tell it otherwise has none of; it is not
-built under any illusion that it carries the read at play zoom. `04-the-core.md`
-§26 is the standing warning, and this is the exception taken with its eyes open.
-
-**Animation Loop:**
-`Yes` — seamless. Nothing on this building has a stroke or a cycle start; it is
-continuous flow, and a visible seam would read as a stutter.
-
-**No pistons, no fans, no belts, deliberately.** Gas lift has no moving parts
-below the wellhead. If the art shows something reciprocating, the mechanic has
-been misread.
+**The lift itself has no moving parts.** The motion is the helium's kit doing its job. Nothing nods or strokes.
 
 ---
 
@@ -383,50 +282,24 @@ Building
 
 ### Layer Notes
 
-**Shadow:**
-Cast down-right, matching every vanilla building. The Core has
-`day-night-cycle = 0` and a sky that does not move, so the shadow is fixed
-forever — worth getting right once. The stack throws the long shadow; the base
-plate throws almost none.
+**Shadow:** from the model, cast down-right; fixed, as the Core has `day-night-cycle = 0`.
 
-**Base:**
-The anchored plate, bolt ring, gasketed bore collar, and the ground scarring
-around it. Four frames, one per direction, drawn always.
+**Structure:** one model; no base plate. Four directions.
 
-**Main Structure:**
-The valve stack itself, its flanges and hand-wheels. Identical in all four
-directions.
+**Working:** the 24-frame loop (§6.2), four directions.
 
-**Static Machinery:**
-Choke body, injection collar, riser elbow, the armoured sight port housing.
-Rotates with direction.
+**Glow:** two lights, kept apart: the melt's orange in the riser and the head-tank window, and the helium's violet-to-pink in the sight glass, working only.
 
-**Working Machinery:**
-Contents of the sight port only — melt moving past the window, and a small
-flow-meter disc turning in the injection line. 32 frames, one direction.
+**Lighting:** the two status lenses, drawn as lights (never rolled off): the control house's green while working, the switchgear's amber when the input fluid is missing. What the engine can trigger the amber from is checked by a spike at the model stage; if it cannot, back to Liam ("Check engine first").
 
-**Lighting:**
-The amber `missing_required_fluid` lamp. Drawn as a light, so it reads at
-night — though the Core has no night, so this is really about local darkness
-under a roof of other buildings.
-
-**Glow:**
-Two separate additive sheets that must not be merged: warm `#FF9E52` at the
-riser seams and sight port, cold `#C7E5FF` at the injection collar. Merging
-them into one sheet makes the middle of the building an unreadable brown.
-
-**Effects:**
-A faint cold vapour wisp lifting off the injection collar, rising a tile at
-most and fading. **Not steam, not smoke, not exhaust** — a cryogenic boil-off
-wisp, thin and blue-white. At pressure 5 it should look like it barely holds
-together before it disperses.
+**Effects:** any cold shown comes from effects, never the model (Liam). A boil-off wisp on the tower, only while working; the artist shows two or three spots, and its look, at the model stage and Liam picks. Other effects as §10.
 
 ---
 
 # 8. Input / Output Visualisation
 
 **Both fluid boxes are declared by this mod, not inherited.** What the pumpjack
-and the mining drill hand down is unusable, and §19 records why.
+and the mining drill hand down is unusable, and §18 records why.
 
 ```
 north-facing:   . O .      O = molten kamacite out, faces north
@@ -474,15 +347,11 @@ Two connectors, and they must not be confusable — the player is threading two
 different fluids into one 3×3 building and reversing them is the likeliest
 mistake on the planet.
 
-* The **intake** is pale, ribbed, insulated and rimed with frost: obviously
-  cryogenic, obviously the cold side.
-* The **riser** is bare, dark, heat-stained metal, sitting higher on the stack
-  and glowing faintly at its flange, with the armoured sight window on it.
-* They sit on **opposite faces**, which is a second, redundant cue on top of
-  frost-versus-heat.
+* The **intake** (south) is bare steel and turns at once into the grey-violet helium line, through valve and meter.
+* The **outlet** (north) is the end of the lagged downcomer, fed from the head tank high on the tower.
+* They sit on **opposite faces**, and the two colours (violet, orange) are a second cue.
 
-Both flanges are modelled into the plate, square to their edge — see the
-foundry's `enable_working_visualisations` pattern in the briefs' §8.
+Each face's flange stands at the edge on assembler 3's pipe axis (z 0.42). The pipe pictures are the model's own, in assembler 3's outline, in its own metal; the pipe covers are vanilla's. Every join passes measure.py's no-gap rule; the south nozzle is fixed in the model (Liam, "Fix in the model").
 
 ---
 
@@ -490,35 +359,22 @@ foundry's `enable_working_visualisations` pattern in the briefs' §8.
 
 ## Animation Concept
 
-Continuous flow, not a stroke. Helium goes down cold, melt comes up hot, and
-the building's only job is to look like it is *moving fluid steadily* rather
-than *cycling*. The player reads "working" from glow and flow, never from an
-arm going up and down.
+Two helium charges a loop. Each charge is let in, and the melt answers: bubbles climb faster, the level in the head tank lifts.
 
 ### Sequence
 
-1. Idle: stack dark, sight port black, frost static, no glow, amber lamp lit if
-   helium is missing.
-2. Injection begins: a cold bloom brightens at the injection collar and the
-   flow-meter disc starts to turn.
-3. Melt arrives: the riser seams warm from `#D96B29` up toward `#FF9E52`,
-   travelling **upward from the bore to the elbow** over several frames.
-4. Steady state: melt visibly moving past the sight port, glow pulsing gently
-   around the peak, boil-off wisp lifting from the collar.
-5. Steady state continues — there is no completion event, the loop simply
-   repeats.
-6. On stop, everything fades back to (1) over the engine's own fade, not a
-   scripted sequence.
+1. Idle: everything still, no glow.
+2. Charge: the meter races, the line gauge swings, the sight glass drops and flushes pink.
+3. The bubbles in the riser climb faster; the float lever rocks.
+4. Between charges: the glass refills and fades back to violet; the bubbles slow but keep climbing.
+5. The second charge, the same; the loop repeats.
+6. On stop, the engine's own fade back to (1).
 
-**Frame Count:** `32`
+**Frame Count:** `24`
 
-**FPS:** `animation_speed = 0.4` → ~24 animation frames per second
+**FPS / Loop Duration:** proposed at the model stage from the 1x GIF; Liam picks at model sign-off.
 
-**Loop Duration:** `~1.33` seconds
-
-The upward travel in step 3 must divide evenly into the loop so it reads as
-continuous flow rather than a repeating pulse train — two full travels per
-32-frame loop is the target.
+The loop is seamless: its wrap is within the frame-to-frame steps (measure.py).
 
 ---
 
@@ -526,257 +382,27 @@ continuous flow rather than a repeating pulse train — two full travels per
 
 ## Working Effects
 
-* [x] Glow
-* [ ] Steam
-* [ ] Smoke
-* [ ] Sparks
-* [ ] Flames
-* [ ] Electrical arcs
+* [x] Glow (melt, helium glass, status lenses)
 * [x] Moving fluids
-* [x] Other: `cryogenic boil-off wisp at the injection collar`
+* [x] Other: a boil-off wisp on the tower, only while working
 
 ### Effect Description
 
-While working: the sight port shows melt moving; the riser seams glow warm and
-pulse; the injection collar carries a faint cold bloom and lifts a thin
-blue-white boil-off wisp about one tile before dispersing.
+While working: the melt moves in the riser and the head-tank window; the helium glass drops and flushes at each charge; a boil-off wisp lifts from the tower.
 
-**No flame, no smoke, no exhaust plume, ever.** Pressure 5 is the Core's
-defining number and it means nothing on the planet burns. A single lick of
-flame on this building contradicts the reason boilers and furnaces are refused
-here, and a player who sees one will reasonably conclude the mod is
-inconsistent.
-
-**No steam either**, despite the melt being at 1200 °C. Steam on the Core comes
-from the settling recipes, in a different building; putting a plume on this one
-blurs the split that the whole surface economy turns on.
+**The effects are proposed at the model stage.** The artist shows the wisp at two or three spots, each with its proposed look, and effect options beside it; nothing is ruled out (Liam, "Nothing ruled out"). Liam picks.
 
 ---
 
-# 11. DALL·E Generation Requirements
+# 11. Image Processing
 
-Generate square, at the largest size the tool supports (1024×1024 or better);
-we downscale ourselves. Transparent background if the tool supports it,
-otherwise flat magenta `#FF00FF` for keying — the colour appears nowhere on the
-building.
-
-## Master Concept Prompt
-
-```text
-A Factorio Space Age industrial building sprite: a sealed cryogenic gas-lift
-wellhead, seen from a fixed high camera about sixty degrees above the horizon,
-so mostly the top of the machine is visible with a shallow slice of its near
-face and no far face at all, drawn almost orthographically like a game asset
-rather than in perspective.
-
-A low heavy armoured base plate, bolted and anchored into bare metallic ground,
-carries an off-centre stepped stack of flanged valve bodies with hand-wheel
-caps over a gasketed bore collar. One thick ribbed pipe in a pale insulating
-sleeve enters the stack low from one side, rimed with white-blue frost that
-blooms where cold meets warm metal. A second thick unlagged pipe leaves the
-stack high on the opposite side, bare heat-stained metal glowing dull orange at
-its seams, elbowing away to a flanged connection. A small armoured sight window
-on that hot riser shows molten metal inside.
-
-Dark iron-nickel grey-brown machined casing with pale nickel-white flange
-bands. Cold cyan #8CC7E5 confined to the frosted intake side, molten orange
-#D96B29 confined to the hot riser side, with clean dark metal between them so
-the two never blend. Subtle wear, metal dust and condensation.
-
-It must read as sealed pressure plumbing moving fluid, not as an oil derrick:
-no nodding beam, no horsehead, no counterweight, no exposed rod, no derrick
-tower, no flame, no fire, no smoke, no exhaust plume. Painted semi-realistic
-industrial game art, strong readable silhouette, square footprint roughly three
-tiles across, fully transparent background, no text, no logos, no characters,
-no UI, no ground texture, no background scenery.
-```
+The model goes through `tools/blender/render.sh --ports --icon` on the GPU; every layer is packed by `pack.py`. The highlight roll-off is on by default (knee 236, top 244) and never on light passes. `--collide` over every frame: 0 clashes.
 
 ---
 
-## Directional Prompts
+# 12. Sprite Dimensions — measured
 
-**The four prompts that used to sit here were wrong and have been replaced.**
-They asked for the intake "from the left edge", the riser "elbowed out to the
-top-right corner", and "two capped, unused intake stubs" — which is the v3
-design that §8 argues against in as many words: the corner-tile output was read
-as a diagonal hookup, the elbow was the result, and the prototype now declares
-one connection in and one out on opposite **centre** tiles with no stubs at all.
-Following them would have produced art the player cannot plumb.
-
-**One strip, four arrangements, one camera.** Generated together so they are
-unmistakably four rotations of one machine, then split by
-`tools/cut-rotation-strip.py --tiles 3`, which scales and centres every view on
-its **base square** rather than on its content — otherwise the view whose pipes
-stick out furthest is drawn smallest and sits off its own tile.
-
-### Round 1 — the strip, and what it took
-
-**Generated 2026-09-10 from the prompt below**, attached to
-`concept/v4-sheet.png`, and cut with
-`tools/cut-rotation-strip.py --tiles 3`. Kept at
-`concept/rotation-strip-v2.png`.
-
-**The first attempt returned the reference sheet itself, essentially
-unchanged.** The sheet already carries four sprites in a row across its top, so
-"draw four sprites in a row" read as "return this". The `DO NOT RETURN THE
-ATTACHED IMAGE` block that opens the prompt is the answer, and the strip came
-back correct with it in place. Two attempts in between died on ChatGPT's own
-"Something went wrong" — server-side, and not worth reading anything into.
-
-**Checked against the prototype rather than trusted**, because on this building
-the pipes *are* the fluid boxes: north puts the riser out of the top edge and the
-intake out of the bottom, which is output `{0,-1}` facing north and input
-`{0,1}` facing south; east, south and west rotate the pair rigidly, exactly as
-the entity does. Both pipes sit on the centre line of their edge, square to it,
-with the flange passing through the connection tile. Rendered over a real grid
-with the declared connections marked, which is the only way to see it.
-
-### Rotation strip
-
-```text
-FACTORIO SPACE AGE BUILDING SPRITE -- FOUR-DIRECTION STRIP
-
-== DO NOT RETURN THE ATTACHED IMAGE ==
-The attachment is a REFERENCE for the machine's design only. Produce a NEW
-image. Do not reproduce it, do not copy its layout, and do not return it with
-changes. The attachment is a design document with a title, captions, detail
-insets, an icon panel, a tile grid, a layer breakdown and a palette strip: the
-output has NONE of those. The output is four machine sprites on an empty
-transparent background and NOTHING else -- no title, no text, no captions, no
-panel boxes, no borders, no palette, no insets, no icon, no grid.
-
-Draw the machine from the attachment as four game sprites in ONE horizontal row,
-evenly spaced, with clear empty space between them. Same building, same design,
-same camera, same size and same lighting in all four. This is ONE machine drawn
-four times with its plumbing moved, NOT four camera angles and NOT a turntable.
-
-== THE MACHINE ==
-The Vent Pump: a sealed cryogenic gas-lift wellhead on an airless metal world.
-A heavy octagonal armoured base plate filling a 3x3 footprint, with a sealed
-valve stack and hand wheel over the bore collar at its centre. Two connections
-and no others:
-  - a HOT RISER: bare dark heat-stained metal, standing higher than the stack,
-    with an armoured sight port glowing orange, and a bolted flange at its mouth
-  - a FROSTED INTAKE: pale, ribbed, insulated pipe heavily rimed with white
-    frost, lower and squatter than the riser, with a bolted flange at its mouth
-
-== THE FOUR ARRANGEMENTS, IN THIS ORDER ==
-Left to right, and the riser and the intake are ALWAYS on OPPOSITE faces:
-  1. NORTH -- riser out of the TOP edge,    intake out of the BOTTOM edge
-  2. EAST  -- riser out of the RIGHT edge,  intake out of the LEFT edge
-  3. SOUTH -- riser out of the BOTTOM edge, intake out of the TOP edge
-  4. WEST  -- riser out of the LEFT edge,   intake out of the RIGHT edge
-
-== HOW THE PIPES MUST SIT -- THIS IS THE PART THAT MATTERS ==
-- Each pipe leaves from the CENTRE of its edge, on the middle tile of that edge,
-  square to the edge and pointing STRAIGHT out of it along the axis
-- NEVER diagonal, never out of a corner, never elbowed across a shoulder
-- The riser and the intake are on the SAME straight line through the machine
-- Each flange stops flush at the edge of the base plate. It does not float clear
-  of the building and it does not stop short inside it
-- NO other pipes, stubs, caps, blanks or spare ports anywhere. There are exactly
-  two connections on this building
-
-== CAMERA ==
-Looking steeply down from above, MOSTLY ROOF with only a shallow near face
-visible, square to the tile grid, identical in all four. The base plate reads as
-a SQUARE footprint, never a diamond. Not rotated corner-on. The camera does NOT
-move between the four -- only the plumbing does.
-
-== HARD REQUIREMENTS ==
-- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no cast shadow, no panel
-  borders, no labels, no text, no grid, no backdrop
-- The four machines are the same size and sit on the same horizontal line
-- The ONLY light is the riser's orange sight port and the faint heat at its
-  flange. The frost is pale blue-white and does NOT glow
-- No flame, no exhaust, no smoke, no steam plume, no dust: there is no air here
-- No loose material anywhere
-- Nothing extends past the base plate except the two pipes
-
-== OUTPUT ==
-One wide image, four sprites in a row on transparency, sharp and clean at full
-resolution, in the rendering and finish of the attached sheet.
-```
-
----
-
-## Layer Prompts
-
-### Main Structure
-
-```text
-[Master prompt] Static structure only: base plate, bolt rings, bore collar,
-valve stack, flanges, hand-wheels, pipework, insulation and frost. Everything
-cold and unlit — no orange glow anywhere, no light in the sight window, which
-is dark and empty. Nothing that moves.
-```
-
-### Working Machinery
-
-```text
-Only the contents of a small armoured sight window, on a fully transparent
-background, viewed from the same fixed high camera: molten orange metal
-flowing steadily upward past the inside of the window, plus a small toothed
-flow-meter disc turning in a separate circular port. Thirty-two frames in which
-the flow travels the height of the window exactly twice, so the sequence loops
-seamlessly with no visible seam. Nothing else in frame.
-```
-
-### Glow / Lighting
-
-```text
-Two separate glow plates on a fully transparent background, for additive
-blending, with nothing else in frame.
-
-Plate one: a warm orange #FF9E52 glow shaped to the seam lines of a vertical
-pipe and to a small rectangular sight window, brightest at the window, falling
-off within a few pixels of the seams.
-
-Plate two: a faint cold #C7E5FF bloom shaped to a circular pipe collar, plus a
-single small amber indicator lamp glow, both soft and low intensity.
-```
-
-### Effects
-
-```text
-A thin cryogenic boil-off wisp on a fully transparent background: pale
-blue-white vapour lifting from a circular pipe collar, rising a short distance
-and dispersing into nothing, thin and wispy in near-vacuum rather than a dense
-plume. No smoke, no fire, no steam cloud, no snow, no particles leaving the
-shape.
-```
-
----
-
-# 12. Image Processing
-
-Generated artwork must be processed before being used by Factorio.
-
-### Processing Checklist
-
-* [ ] Remove background
-* [ ] Remove unwanted shadows/background objects
-* [ ] Crop to building
-* [ ] Correct perspective
-* [ ] Match Factorio scale
-* [ ] Convert to appropriate resolution
-* [ ] Align to tile grid
-* [ ] Separate layers
-* [ ] Generate directional sprites
-* [ ] Generate animation frames
-* [ ] Generate spritesheets
-* [ ] Optimise PNGs
-
-**Order matters, and the first three are the expensive ones.** Generators
-attach a ground plane and a baked shadow to anything that looks like it stands
-on the floor, and both have to come off before the sprite is cropped or the
-crop lands in the wrong place. The baked shadow is not reusable — Factorio
-needs the shadow as a separate `draw_as_shadow` sheet, and a shadow left in the
-colour layer will double up against the engine's own.
-
----
-
-# 13. Sprite Dimensions — measured
+**These are the ChatGPT plates now in `graphics/`.** The model's own sizes and shifts replace them at wiring, measured off the packed sheets.
 
 **This section used to say frame geometry was "taken verbatim from the
 pumpjack", so the inherited shifts would stay correct.** That was a plan, not a
@@ -874,27 +500,13 @@ building's does.
 
 ---
 
-# 14. File Structure
+# 13. File Structure
 
-```text
-graphics/
-└── entity/
-    └── vent-pump/
-        ├── vent-pump-base.png            (4 frames, one per direction)
-        ├── vent-pump-base-shadow.png     (4 frames, draw_as_shadow)
-        ├── vent-pump-working.png         (32 frames, sight port + flow disc)
-        ├── vent-pump-glow-hot.png        (32 frames, additive)
-        ├── vent-pump-glow-cold.png       (32 frames, additive)
-        └── vent-pump-lamp.png            (1 frame, amber status light)
-```
-
-Concept art from the generation pass lives alongside, in
-`concept/vent-pump/`, and is kept: it is what the four
-directional frames have to stay faithful to.
+Set at wiring by what `pack.py` writes into `graphics/entity/vent-pump/`. The model, its script and its renders live in `concept/vent-pump/model/`.
 
 ---
 
-# 15. Factorio Prototype
+# 14. Factorio Prototype
 
 **Prototype Type:**
 `mining-drill`
@@ -904,58 +516,7 @@ directional frames have to stay faithful to.
 
 ### Graphics
 
-```lua
--- Replaces the inherited pumpjack graphics_set in prototypes/core/entities.lua.
--- The base is drawn always, as a 4-frame directional working visualisation,
--- exactly as the pumpjack draws its own base beneath the horsehead.
-local vp = "__space-age-extended__/graphics/entity/vent-pump/"
-
-local base_sheets = {
-  { filename = vp .. "vent-pump-base.png",
-    priority = "extra-high", width = 261, height = 273,
-    shift = util.by_pixel(-2.25, -4.75), scale = 0.5 },
-  { filename = vp .. "vent-pump-base-shadow.png",
-    width = 261, height = 273, scale = 0.5,
-    draw_as_shadow = true, shift = util.by_pixel(-2, -5) }
-}
-
-local base_visualisation = { always_draw = true, secondary_draw_order = -1 }
-for i, dir in ipairs({ "north_animation", "east_animation",
-                       "south_animation", "west_animation" }) do
-  local layers = {}
-  for _, sheet in pairs(base_sheets) do
-    sheet = table.deepcopy(sheet)
-    sheet.x = sheet.width * (i - 1)
-    table.insert(layers, sheet)
-  end
-  base_visualisation[dir] = { layers = layers }
-end
-
-pump.graphics_set = {
-  animation = {
-    north = { layers = {
-      { filename = vp .. "vent-pump-working.png",
-        priority = "high", animation_speed = 0.4, scale = 0.5,
-        line_length = 8, width = 206, height = 172, frame_count = 32,
-        shift = util.by_pixel(-4.5, -29) }
-    } }
-  },
-  working_visualisations = {
-    base_visualisation,
-    { animation = { filename = vp .. "vent-pump-glow-hot.png",
-        draw_as_glow = true, blend_mode = "additive",
-        animation_speed = 0.4, scale = 0.5, line_length = 8,
-        width = 206, height = 172, frame_count = 32,
-        shift = util.by_pixel(-4.5, -29) } },
-    { animation = { filename = vp .. "vent-pump-glow-cold.png",
-        draw_as_glow = true, blend_mode = "additive",
-        animation_speed = 0.4, scale = 0.5, line_length = 8,
-        width = 206, height = 172, frame_count = 32,
-        shift = util.by_pixel(-4.5, -29) } }
-  }
-}
-pump.graphics_set_flipped = nil
-```
+The graphics are written at wiring, against `pack.py`'s sheets; `prototypes/core/entities.lua` is the record until then.
 
 `graphics_set_flipped` must be cleared, not inherited. The pumpjack ships a
 mirrored variant so its horsehead can nod the other way; this building has no
@@ -978,69 +539,30 @@ Base (always_draw, 4 directions, static) + hot glow (additive) + cold glow
 (additive). Three entries, in that order.
 
 Lights:
-One amber lamp for missing_required_fluid. Small, on the stack.
+Two status lenses, drawn as lights: the control house's green while working, the switchgear's amber when the input fluid is missing (its trigger checked at the model stage).
 
 Fluid Boxes:
-input_fluid_box  — helium-3, volume 200, three connections at [-1,0] W,
-                   [1,0] E, [0,1] S; rotate with the entity.
-output_fluid_box — molten kamacite, corner connection whose position changes
-                   per direction: N [1,-1], E [1,1], S [-1,1], W [-1,-1].
+input_fluid_box  — helium-3, volume 200, one connection at [0,1] facing south.
+output_fluid_box — molten kamacite, volume 1000, one connection at [0,-1] facing north.
+Both turn with the entity.
 
 Circuit Connections:
 Inherited from the pumpjack (circuit_connector_definitions["pumpjack"]). The
 connector sprite sits on the base plate and must not be occluded by the new
-stack — check this before the art is signed off.
+tower — check this before the art is signed off.
 ```
 
 ---
 
-# 16. Icon
+# 15. Icon
 
-**Done 2026-09-10 — `graphics/icons/vent-pump.png`, derived from the north plate
-rather than generated separately**, so it cannot disagree with the building it is
-an icon for. The whole machine, riser and frosted intake included: both survive
-at 32 px, and they are what makes it unmistakably this building rather than
-another grey box. What follows is the record of what was asked for.
+**Icon Required:** ✓ · **Icon Size:** `64×64`
 
-
-**Icon Required:** ✓
-
-**Icon Size:**
-`64×64`
-
-**Icon Concept:**
-The valve stack alone, seen straight on, with one frosted pale-blue pipe
-entering low from the left and one glowing orange pipe leaving high to the
-right. Drop the base plate entirely — at 32 px it is a grey smudge that eats
-the silhouette. The read at inventory size is a dark stepped tower with one
-cold end and one hot end, which is the same read as the building.
-
-### Icon Prompt
-
-```text
-Factorio "Space Age" item icon. A small sealed wellhead valve stack: three
-stacked flanged valve bodies in dark iron-nickel grey-brown metal with pale
-nickel-white flange bands and hand-wheel caps. A ribbed, frost-rimed pale blue
-insulated pipe enters low from the left; a bare heat-stained pipe glowing dull
-orange leaves high to the right. Cold cyan #8CC7E5 on the left, molten orange
-#D96B29 on the right, dark clean metal between them.
-
-Rendered in a semi-realistic sci-fi industrial style — not flat, not cartoon,
-not photo-real. Three-quarter, slightly top-down perspective, as if resting on
-a workbench. Soft single-direction studio lighting from the upper-left, visible
-specular highlight, subtle ambient occlusion where surfaces meet, gentle drop
-shadow beneath the object. The object fills roughly 75–85% of the frame,
-centred, with even padding on all sides. Bold simple silhouette that still
-reads at 32 pixels. Background fully transparent. No text, no logos, no
-watermark, no border, no frame, no ground or platform under the object, no
-scene or background elements. Square canvas.
-```
-
-The icon should remain recognisable at Factorio's normal inventory/UI scale.
+**To be redone from the model** (`render.sh --icon`). The current icon is cut from the ChatGPT north plate.
 
 ---
 
-# 17. Visual QA Checklist
+# 16. Visual QA Checklist
 
 ### Building
 
@@ -1080,15 +602,18 @@ The icon should remain recognisable at Factorio's normal inventory/UI scale.
 
 ### Mod-specific
 
-* [ ] Nothing on the building looks like it is burning
-* [ ] The cold accent and the hot accent do not blend into each other
-* [ ] The output elbow cannot be mistaken for an input stub
-* [ ] The circuit connector is not occluded by the stack
-* [ ] It does not read as a pumpjack
+* [ ] No frost, rime or cold colour in the model
+* [ ] The helium violet and the melt orange read apart
+* [ ] The outlet cannot be mistaken for the intake
+* [ ] Both pipe joins pass measure.py's no-gap rule
+* [ ] The circuit connector is not occluded by the tower
+* [ ] The control house's green lens lights only while working; the switchgear's amber only when the input fluid is missing
+* [ ] The boil-off wisp shows only while working
+* [ ] It does not read as a pumpjack, the generator or the Reaction Plant
 
 ---
 
-# 18. Final Asset Checklist
+# 17. Final Asset Checklist
 
 ```text
 [ ] Master concept
@@ -1112,7 +637,7 @@ The icon should remain recognisable at Factorio's normal inventory/UI scale.
 
 ---
 
-# 19. Design Notes / Iteration History
+# 18. Design Notes / Iteration History
 
 ### 2026-09-10 — the plates, and a prompt that described the wrong building
 
@@ -1148,6 +673,10 @@ Tap's plates by about a pixel. Those are shipped, declared in
 `prototypes/core/crust-tap.lua` and verified against that building's own §13, so
 they are deliberately not re-cut. The tool says so at the top.
 
+
+### 2026-10-20 — the Gas Lift Tower signed off
+
+Round 1's Blender model read as a square deck with a small stack and was set aside. Rounds 2–5 (`concept/vent-pump/options/`): twenty ideas, eight picked; the helium seen at work and every pipe going somewhere (round 3); the helium in glass, mix A (round 4); the Gas Lift Tower in three surfacings (round 5). Liam signed off variant (a) on 2026-10-20 (see the amendment at the top). The ChatGPT prompts (the old §11, and the icon prompt in the old §16) were deleted the same day, and §12–§19 renumbered.
 
 ### Version 0 — inherited pumpjack (current, in repo)
 
@@ -1185,7 +714,7 @@ another generation on refinement:
   and will need pushing toward Factorio's flatter, higher angle. §4 explains why
   the template's "45°" was not used in the prompts.
 * **The base plate.** Generators attach a ground plane and a baked shadow to
-  anything resting on a surface. Both come off in processing (§12), but if the
+  anything resting on a surface. Both come off in processing (§11), but if the
   building is generated *sitting in a hole* rather than *bolted to a flat
   surface*, the crop has nothing clean to work with and the prompt needs the
   fix, not the image.
@@ -1205,6 +734,8 @@ honest, and the fluid path reads as the single straight line the pipes in front
 of it will actually form.
 
 ### Final
+
+**Superseded 2026-10-20** by the Gas Lift Tower; the plates below `concept/v2-sheet.png` describe the art now in `graphics/`.
 
 The concept sheet is approved and the design is locked. What remains is the
 production pipeline of template Appendix C — canonical plate, idle plate, the
