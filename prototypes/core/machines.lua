@@ -343,11 +343,28 @@ derive.own_graphics(crusher,
   }
 })
 
--- Sound: §3.4 of the building spec, signed off by Liam 2026-10-11. The files
--- are built by concept/drop-crusher/sound/drop_crusher_sound.py, and each
--- volume here is that script's VOLUME, levelled as a whole against vanilla's
--- crusher (its loop at 0.8). It replaces assembler 3's working sound, which
--- `derive.own_graphics` left behind as an ungated loop.
+-- Sound: §3.4 of the building spec, signed off by Liam 2026-10-11, its accents
+-- softened in the crusher-sound task (round 3, take A, picked by Liam
+-- 2026-10-20: "A: no grit"). The files are that take's, written by
+-- concept/drop-crusher/sound/round-3/A/option_a.py: drop.ogg is the generator's
+-- drop (concept/drop-crusher/sound/drop_crusher_sound.py) rebuilt without its
+-- grit layer and then made heavier as round 2's C (round-3/clean_tail.py,
+-- round-2/heavier.py); pawl.ogg and trip.ogg are round 2 C's
+-- (round-2/C/option_c.py); bed.ogg is the generator's, unchanged. Each take is
+-- levelled to the file it replaces, so the volumes are still the generator's
+-- VOLUME, levelled as a whole against vanilla's crusher (its loop at 0.8). It
+-- replaces assembler 3's working sound, which `derive.own_graphics` left behind
+-- as an ungated loop.
+--
+-- **The working sound is grouped like vanilla's crusher's**, at Liam's word in
+-- round 3 ("Yes, like vanilla"). The accents were hardest on the ears "when
+-- there is multiple", each machine's stacking on the rest. Vanilla's crusher
+-- plays at most three working sounds at once (`max_sounds_per_prototype = 3`,
+-- space-age entities.lua), and each accent here carries the aggregation vanilla
+-- gives one-shots that can pile up (the biters' and the mech armour's): no more
+-- than two of the same sound at once, counting those already playing, the rest
+-- dropped rather than turned down. Captured with six crushers working, the
+-- bank measured within 1 LU of the bank before the change (T01c).
 --
 -- **The accents name no visualisation, because the stroke is a layer of the
 -- main animation** (see "The stroke is the animation" above), and an accent
@@ -368,25 +385,35 @@ derive.working_sound(crusher, {
   -- defaults to 0 (doc-html/types/SoundAccent.html), so 0 reads as unset, and
   -- no vanilla accent is cued to it. derive.working_sound now refuses frame 0.
   -- So the loop starts cocked (above) and the landing falls on frame 14.
+  max_sounds_per_prototype = 3,
   accents =
   {
     -- drop.ogg on frame 14: the weight lands seated in the collar there, the end
     -- of the fall from the top at 6. One craft, one bang: an oxide asteroid
-    -- breaking, the mech armour landing on rock, pebbles and grit. Off frame 0
-    -- it should play on the first stroke after start-up as well as on every
-    -- wrap; the recording found frame 0 silent in both.
-    { sound = { filename = "__space-age-extended__/sound/drop-crusher/drop.ogg", volume = 0.35 }, frame = 14 },
+    -- breaking, the mech armour landing on rock, and pebbles, pitched down 7
+    -- semitones over a 40 Hz iron body; the grit that crackled in its tail is
+    -- gone (round 3 A). Off frame 0 it should play on the first stroke after
+    -- start-up as well as on every wrap; the recording found frame 0 silent in
+    -- both.
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/drop.ogg", volume = 0.35,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 14 },
     -- pawl.ogg on frames 18, 22 and 2: the pawl clicks every fourth frame of
     -- the wind-up from the seat, 14, 18, 22, 2 and 6. Not on 14 or 6, which
     -- carry the drop and the trip; a click under either would not be heard.
     -- Frame 0 falls between 22 and 2, so nothing is lost to it. A cryogenic
-    -- plant gear's tooth.
-    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6 }, frame = 18 },
-    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6 }, frame = 22 },
-    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6 }, frame = 2 },
+    -- plant gear's tooth, pitched down 8 semitones over a 115 Hz iron body
+    -- (round 2 C).
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 18 },
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 22 },
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 2 },
     -- trip.ogg on frame 6: the top of the wind-up, where the pawl kicks clear
-    -- and the weight is let go. The foundry's clamp and a struck-steel click.
-    { sound = { filename = "__space-age-extended__/sound/drop-crusher/trip.ogg", volume = 0.5 }, frame = 6 }
+    -- and the weight is let go. The foundry's clamp and a struck-steel click,
+    -- low-passed at 3.5 kHz with its attack rounded (round 1 C, kept in 2 and 3).
+    { sound = { filename = "__space-age-extended__/sound/drop-crusher/trip.ogg", volume = 0.5,
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 6 }
   }
 })
 data:extend({ crusher })
