@@ -8,6 +8,7 @@
              and the rotor in every frame against everything fixed; prints "COLLIDE ..."
              and each clash
   --icon     icon.png: the machine, horizontal, on transparency at 1024 px
+  --wreck    wreck-<direction>.png only (section 10): the quick loop for the wreck
   $TURBINE_FLAT=1  the blockout: every material a flat colour, so the form is judged alone
 
 Round 2 (Liam, 2026-10-11, on round 1's review.png): "Remove the frost from the turbine and
@@ -93,6 +94,7 @@ os.makedirs(OUT_DIR, exist_ok=True)
 IDLE = "--idle" in argv
 COLLIDE = "--collide" in argv
 ICON = "--icon" in argv
+WRECK_ONLY = "--wreck" in argv
 FLAT = os.environ.get("TURBINE_FLAT") == "1"
 
 CANVAS = (448, 448)                  # 7 x 7 tiles: the 5-tile length either way, the shadow east
@@ -107,6 +109,8 @@ DECL = dict(
         dict(name="shadow", kind="shadow", sheet="base-shadow"),
         # spec 3.3: the status lens, cut white for the engine to tint
         dict(name="lens", kind="light", sheet="status-lens"),
+        # section 10: the wreck the corpse draws, its shadow and scorch baked in, on its own canvas
+        dict(name="wreck", kind="remnants", sheet="remnants", canvas=(576, 576)),
     ],
     # spec 9: the rotor, a face pointed at the camera; twelve vanes, so 30 degrees is a loop
     animations=[dict(name="rotor", frames=ROTOR_FRAMES, motion="turn")],
@@ -256,6 +260,10 @@ _asm = ["core"]
 ONLY = {}           # object name -> the one direction it is drawn in (None: both)
 _only = [None]
 CUR = [None]        # the direction being rendered
+# the wreck (section 10) only: the group its parts go in and the frame they are built in;
+# None, as for every part of the machine, keeps _finish's own
+_group = [None]
+_parent = [None]
 
 
 class only:
@@ -300,7 +308,8 @@ def _finish(obj, mat, group, bevel=0.012, smooth=False, parent=None):
     if smooth:
         for p in obj.data.polygons:
             p.use_smooth = True
-    obj.parent = parent or BODY
+    obj.parent = parent or _parent[-1] or BODY
+    group = _group[-1] or group
     PARTS.setdefault(group, []).append(obj)
     ASM[obj.name] = _asm[-1]
     ONLY[obj.name] = _only[-1]
@@ -984,6 +993,438 @@ with only("vertical"), assembly("stub-S", on=("collar-S",)):
     ya = Y_COLLAR_SV[1] - 0.02
     cyl((X_STUB_SV, -(ya + Y_STUB_SV) / 2, ZB), R_STUB_SV, Y_STUB_SV - ya, "pipe", verts=64, rot=AX_Y, bevel=0.0)
 
+# ---------------------------------------------------------------- 10. the wreck (the remnants pass)
+# What the corpse draws once the turbine is destroyed (tools/blender/contract.py, kind
+# "remnants"): this machine broken where it stood, in its own materials, low on the ground as
+# vanilla's steam-turbine-remnants lies. Built last, after every part above, so every part of
+# the machine keeps the name (and so the render noise) it had; drawn only when CUR is "wreck"
+# (`only`) and only in the wreck's group, so no render of the machine shows it, nor does it
+# show them, and --collide never tests it (a wreck's pieces lie in and on each other).
+#   - the skids stay, one rail broken and kinked, a cross member shoved askew;
+#   - the end collars split open and sunk on crushed saddles, the north one leaning out; the
+#     stubs torn off short, one lying on the ground;
+#   - the volute drum burst open on its east side, its well open to the sky; the middle collar
+#     thrown off and tilted on the rubble; the rotor fallen out of it, tilted, four vanes and
+#     a third of its shroud torn away, three loose vanes on the ground;
+#   - the let-down housing collapsed, its bonnet rolled off; the expansion bell knocked over
+#     onto its flank; a gauge face down in the dirt beside it;
+#   - the generator can split, its upper skin torn off and lying on its back; the bushing
+#     chamber knocked over with one bushing still on it, another broken on the ground, shards;
+#   - pipes torn: the copper bus and the top run bent and snapped, the gas pipe ripped from the
+#     volute; the corrugated hose loose across the near flank, its far ferrule gone; the cable
+#     bundle sprawled along the far flank, its end frayed; the lagged balance line in two;
+#   - plates, bolts and lumps of heaved ground thrown low round it;
+#   - and a scorch: the ground darkened under and round it, black and part transparent as
+#     vanilla's remnants darken theirs (pack.py's _shadow_px counts it with the cast shadow).
+# Coordinates are the machine's, as modelled (vertical: north +Y, the near flank +X); the
+# horizontal direction is the same wreck turned, as the machine is.
+import random  # noqa: E402
+
+RNG = random.Random(20261020)
+WRECK_CANVAS = (576, 576)            # 9 x 9 tiles: the 5-tile length, the debris and the scorch past it
+
+
+class frame:
+    """Everything built inside is placed in an empty's frame: its coordinates are the empty's."""
+
+    def __init__(self, loc=(0, 0, 0), rot=(0, 0, 0)):
+        self.e = empty("wreck-frame", loc, rot, parent=_parent[-1])
+
+    def __enter__(self):
+        _parent.append(self.e)
+        return self.e
+
+    def __exit__(self, *a):
+        _parent.pop()
+
+
+def shell(loc, r_out, r_in, h, mat, a0=0.0, a1=2 * math.pi, jag=0.0, seg=64, rot=(0, 0, 0), bevel=0.006):
+    """A cylinder's wall about local Z from angle a0 to a1, its foot at 0 and its top at h, torn
+    to a ragged top edge up to `jag` deep: a casing or a ring broken open."""
+    full = abs(a1 - a0) >= 2 * math.pi - 1e-6
+    n = seg if full else max(3, round(seg * abs(a1 - a0) / (2 * math.pi)))
+    # the tear: a slow wave along the edge, a fine serration on it and a deep notch or two,
+    # never a row of even teeth
+    f1, f2, p1, p2 = RNG.uniform(2, 4), RNG.uniform(5, 9), RNG.uniform(0, 6.3), RNG.uniform(0, 6.3)
+    notches = [RNG.uniform(0, 1) for _ in range(2)]
+    tops = []
+    for i in range(n + 1):
+        u = i / n
+        w = 0.5 + 0.3 * math.sin(f1 * 2 * math.pi * u + p1) + 0.2 * math.sin(f2 * 2 * math.pi * u + p2)
+        w += 0.18 * (RNG.random() - 0.5)
+        w += sum(0.6 * max(0.0, 1 - abs(u - c) * 14) for c in notches)
+        tops.append(h - jag * min(1.0, max(0.0, w)))
+
+    def build(bm):
+        cols = []
+        for i in range(n if full else n + 1):
+            a = a0 + (a1 - a0) * i / n
+            c, s = math.cos(a), math.sin(a)
+            cols.append([bm.verts.new((r * c, r * s, z)) for r, z in
+                         ((r_out, 0.0), (r_out, tops[i]), (r_in, tops[i]), (r_in, 0.0))])
+        m = len(cols)
+        for i in range(m if full else m - 1):
+            A, B = cols[i], cols[(i + 1) % m]
+            for k in range(4):
+                bm.faces.new((A[k], B[k], B[(k + 1) % 4], A[(k + 1) % 4]))
+        if not full:
+            bm.faces.new(cols[0][::-1])
+            bm.faces.new(cols[-1])
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    o = mesh_object("shell", build, mat, "static", bevel, smooth=True)
+    o.location, o.rotation_euler = loc, rot
+    return o
+
+
+def shard(loc, r, t, mat, rot=None, n=7, stretch=(1.0, 1.0)):
+    """A torn plate: a ragged polygon r across, t thick."""
+    pts = []
+    for i in range(n):
+        a = 2 * math.pi * (i + RNG.uniform(-0.3, 0.3)) / n
+        rr = r * RNG.uniform(0.5, 1.0)
+        pts.append((rr * math.cos(a) * stretch[0], rr * math.sin(a) * stretch[1]))
+
+    def build(bm):
+        lo = [bm.verts.new((x, y, -t / 2)) for x, y in pts]
+        hi = [bm.verts.new((x, y, t / 2)) for x, y in pts]
+        bm.faces.new(lo[::-1])
+        bm.faces.new(hi)
+        for i in range(n):
+            j = (i + 1) % n
+            bm.faces.new((lo[i], lo[j], hi[j], hi[i]))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    o = mesh_object("shard", build, mat, "static", min(0.005, t / 3))
+    o.location = loc
+    o.rotation_euler = rot if rot is not None else (RNG.uniform(-0.25, 0.25), RNG.uniform(-0.25, 0.25),
+                                                    RNG.uniform(0, 2 * math.pi))
+    return o
+
+
+def lump(loc, r, mat="skid", flat=0.45):
+    """A lump of heaved ground or rubble, low and rough."""
+    def build(bm):
+        bmesh.ops.create_icosphere(bm, subdivisions=1, radius=1.0)
+        sy = RNG.uniform(0.75, 1.25)
+        for v in bm.verts:
+            k = RNG.uniform(0.7, 1.15)
+            v.co = Vector((v.co.x * k * r, v.co.y * k * r * sy, max(v.co.z, -0.2) * k * r * flat))
+    o = mesh_object("lump", build, mat, "static", 0.0, smooth=False)
+    o.location, o.rotation_euler = loc, (0, 0, RNG.uniform(0, 2 * math.pi))
+    return o
+
+
+def scorch_material():
+    """The ground darkened round the wreck: black, part transparent, its edge ragged -- the
+    vanilla remnants' own darkening, which shows on any ground. A mix of a transparent and a
+    black diffuse shader, so every pixel it adds is RGB 0 at the alpha it is drawn at."""
+    m = bpy.data.materials.new("scorch")
+    m.use_nodes = True
+    t = m.node_tree
+    for nd in list(t.nodes):
+        if nd.bl_idname != "ShaderNodeOutputMaterial":
+            t.nodes.remove(nd)
+    out = next(nd for nd in t.nodes if nd.bl_idname == "ShaderNodeOutputMaterial")
+    tc = t.nodes.new("ShaderNodeTexCoord")
+    mp = t.nodes.new("ShaderNodeMapping")                      # the ellipse to a unit circle
+    mp.inputs["Scale"].default_value = (1 / SCORCH[0], 1 / SCORCH[1], 1.0)
+    t.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    ln = t.nodes.new("ShaderNodeVectorMath")
+    ln.operation = "LENGTH"
+    t.links.new(mp.outputs["Vector"], ln.inputs[0])
+    nz = t.nodes.new("ShaderNodeTexNoise")                    # the ragged edge
+    nz.inputs["Scale"].default_value = 2.2
+    nz.inputs["Detail"].default_value = 6.0
+    nz.inputs["Roughness"].default_value = 0.6
+    t.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    edge = t.nodes.new("ShaderNodeMath")                       # the distance, broken by the noise
+    edge.operation = "MULTIPLY_ADD"
+    t.links.new(nz.outputs["Fac"], edge.inputs[0])
+    edge.inputs[1].default_value = 0.55
+    t.links.new(ln.outputs["Value"], edge.inputs[2])
+    fall = t.nodes.new("ShaderNodeMapRange")                   # dark inside, gone by the rim
+    fall.inputs["From Min"].default_value = 0.55 + 0.55 * 0.5
+    fall.inputs["From Max"].default_value = 1.0 + 0.55 * 0.5
+    fall.inputs["To Min"].default_value = SCORCH[2]
+    fall.inputs["To Max"].default_value = 0.0
+    fall.clamp = True
+    t.links.new(edge.outputs["Value"], fall.inputs["Value"])
+    nz2 = t.nodes.new("ShaderNodeTexNoise")                    # blotched, not even
+    nz2.inputs["Scale"].default_value = 6.0
+    nz2.inputs["Detail"].default_value = 4.0
+    t.links.new(tc.outputs["Object"], nz2.inputs["Vector"])
+    blot = t.nodes.new("ShaderNodeMapRange")
+    blot.inputs["From Min"].default_value = 0.3
+    blot.inputs["From Max"].default_value = 0.7
+    blot.inputs["To Min"].default_value = 0.7
+    blot.inputs["To Max"].default_value = 1.1
+    t.links.new(nz2.outputs["Fac"], blot.inputs["Value"])
+    a = t.nodes.new("ShaderNodeMath")
+    a.operation = "MULTIPLY"
+    a.use_clamp = True
+    t.links.new(fall.outputs["Result"], a.inputs[0])
+    t.links.new(blot.outputs["Result"], a.inputs[1])
+    tr = t.nodes.new("ShaderNodeBsdfTransparent")
+    blk = t.nodes.new("ShaderNodeBsdfDiffuse")
+    blk.inputs["Color"].default_value = (0, 0, 0, 1)
+    mix = t.nodes.new("ShaderNodeMixShader")
+    t.links.new(a.outputs["Value"], mix.inputs["Fac"])
+    t.links.new(tr.outputs["BSDF"], mix.inputs[1])
+    t.links.new(blk.outputs["BSDF"], mix.inputs[2])
+    t.links.new(mix.outputs["Shader"], out.inputs["Surface"])
+    return m
+
+
+# the scorch's half-axes on the ground, tiles, and its darkest alpha
+SCORCH = (2.15, 3.15, 0.85)
+M["scorch"] = scorch_material()
+
+
+def collar_ring(a0, a1, drum_h=0.3, jag=0.18, skip=()):
+    """An end collar lying on its face, broken: its outer ring with the bronze bolts that held
+    it, the drum's stub standing torn out of it, dark inside. Built in a frame: z up off it."""
+    shell((0, 0, 0), R_COLLAR, R_COLLAR - 0.14, 0.12, "collar", a0, a1, jag=0.02, seg=96, bevel=0.02)
+    shell((0, 0, 0.1), R_COLLAR - 0.06, R_COLLAR - 0.12, drum_h, "collar", a0 + 0.3, a1 - 0.25, jag=jag, seg=96)
+    shell((0, 0, 0.02), R_COLLAR - 0.125, R_COLLAR - 0.16, drum_h - 0.04, "recess", a0 + 0.3, a1 - 0.25,
+          jag=jag, seg=96)
+    for k in range(20):
+        a = 2 * math.pi * (k + 0.5) / 20
+        if not 0.05 < (a - a0) % (2 * math.pi) < a1 - a0 - 0.05 or k in skip:     # on what is left of it
+            continue
+        hexbolt(((R_COLLAR - 0.07) * math.cos(a), (R_COLLAR - 0.07) * math.sin(a), 0.12), (0, 0, 1), 0.034, 0.03)
+
+
+with only("wreck"), assembly("wreck"):
+    _group.append("wreck")
+
+    # -- the ground: the scorch, and lumps of it heaved up round the machine's foot and over its edges
+    bpy.ops.mesh.primitive_plane_add(size=1, location=(0, 0, 0.002))
+    sp = bpy.context.active_object
+    sp.scale = (2 * SCORCH[0] + 1.0, 2 * SCORCH[1] + 1.0, 1.0)
+    bpy.ops.object.transform_apply(scale=True)
+    _finish(sp, "scorch", "static", bevel=0)
+    sp.visible_shadow = False                         # it darkens the ground; it casts nothing
+    for k in range(120):
+        a = RNG.uniform(0, 2 * math.pi)
+        rr = RNG.uniform(0.7, 1.02)
+        lump((1.4 * rr * math.cos(a), 2.4 * rr * math.sin(a), 0.0), RNG.uniform(0.05, 0.14),
+             RNG.choice(("skid", "skid", "body_dark")))
+    for k in range(40):
+        lump((RNG.uniform(-1.1, 1.1), RNG.uniform(-2.1, 2.1), 0.0), RNG.uniform(0.05, 0.13), "skid")
+
+    # -- the skids: the far rail whole, the near one broken and kinked, a cross member shoved
+    box((-0.6, -0.05, 0.04), (0.12, 3.9, 0.08), "skid", bevel=0.01)
+    box((0.62, -1.15, 0.04), (0.12, 1.7, 0.08), "skid", rot=(0, 0, 0.05), bevel=0.01)
+    box((0.74, 0.95, 0.06), (0.12, 1.75, 0.08), "skid", rot=(0.06, 0.04, -0.09), bevel=0.01)
+    for y, rz in ((-1.0, 0.0), (0.05, 0.32), (1.0, -0.06)):
+        box((0.05, y, 0.03), (1.36, 0.08, 0.06), "skid", rot=(0, 0, rz), bevel=0.008)
+    for y, rz in ((-1.86, 0.08), (1.85, -0.06)):                          # the saddles, cracked and crushed flat
+        box((-0.42, y, 0.07), (0.86, 0.3, 0.14), "body_dark", rot=(0.05, 0.12, rz), bevel=0.02)
+        box((0.5, y + 0.05, 0.06), (0.8, 0.3, 0.12), "body_dark", rot=(-0.04, -0.1, rz - 0.22), bevel=0.02)
+
+    # -- the south (let-down) collar, fallen on its face, sunk at its west side; the let-down
+    # stage's dark well open inside it
+    with frame((-0.12, -1.6, -0.05), (0.2, -0.16, 0.3)):
+        collar_ring(0.7, 5.5, drum_h=0.3, skip=(4, 11))
+        cyl((0, 0, 0.03), R_COLLAR - 0.16, 0.03, "recess", verts=64, bevel=0.0)
+        for k in range(9):                                             # rubble fallen into it
+            a, rr = RNG.uniform(0, 2 * math.pi), RNG.uniform(0.1, 0.65)
+            lump((rr * math.cos(a), rr * math.sin(a), 0.04), RNG.uniform(0.06, 0.12), "skid")
+    # its stub, torn off and lying at the south-east, the flange still on it
+    with frame((0.6, -2.18, R_STUB - 0.06), (math.pi / 2, 0, -1.1)):
+        shell((0, 0, 0), R_STUB, R_STUB - 0.04, 0.46, "collar", jag=0.12)
+        cyl((0, 0, 0.04), R_END, 0.08, "collar", verts=64, bevel=0.012)
+        for k in range(10):
+            a = 2 * math.pi * (k + 0.5) / 10
+            hexbolt(((R_STUB + R_END) / 2 * math.cos(a), (R_STUB + R_END) / 2 * math.sin(a), 0.0), (0, 0, -1),
+                    0.017, 0.02)
+
+    # -- the let-down housing, crushed flat between the collar and the drum; its bonnet a torn
+    # skin on the ground to the west
+    box((0.42, -0.98, 0.1), (1.0, 0.56, 0.2), "body", rot=(0.1, -0.12, 0.18), bevel=0.05)
+    box((0.42, -0.98, 0.17), (1.03, 0.59, 0.06), "body", rot=(0.1, -0.12, 0.18), bevel=0.012)
+    for k in range(7):
+        rivet((0.92 + 0.004, -1.2 + k * 0.07, 0.12), 0.017, "steel")
+    with frame((-1.02, -0.92, 0.0), (0.0, 0.0, 0.35)):
+        with frame((0, 0, R_BON * 0.55), (0, math.pi / 2, 0)):
+            shell((0, 0, -0.45), R_BON, R_BON - 0.04, 0.9, "body", math.pi * 0.55, math.pi * 1.45, jag=0.12)
+    with frame((-0.55, -2.36, 0.03), (0.12, -0.08, 0.7)):             # the inspection cover, off
+        cyl((0, 0, 0), 0.2, 0.04, "body_dark", verts=32, bevel=0.008)
+        for k in range(6):
+            if k == 2:
+                continue
+            a = 2 * math.pi * k / 6
+            hexbolt((0.16 * math.cos(a), 0.16 * math.sin(a), 0.02), (0, 0, 1), 0.016, 0.014, "steel")
+
+    # -- the expansion bell, knocked over onto the near flank, its foot flange to the east
+    with frame((0.88, -1.62, LD_R - 0.02), (0, -math.pi / 2 + 0.12, 0.42)):
+        cyl((0, 0, 0.36), LD_R, 0.72, "body_dark", verts=48, bevel=0.03)
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=LD_R, location=(0, 0, 0.72), segments=32, ring_count=16)
+        o = bpy.context.active_object
+        o.scale.z = 0.5
+        _finish(o, "body_dark", "static", bevel=0, smooth=True)
+        cyl((0, 0, 0.02), LD_R + 0.03, 0.08, "body_dark", verts=48, bevel=0.01)
+        for z in (0.3, 0.54):
+            torus((0, 0, z), LD_R + 0.004, 0.02, "steel")
+    with frame((1.16, -0.6, 0.03), (0.18, -0.1, 0.4)):              # a gauge, face up in the dirt
+        cyl((0, 0, 0), 0.105, 0.05, "steel", verts=40, bevel=0.01)
+        torus((0, 0, 0.026), 0.098, 0.011, "brass", rot=(0.08, 0, 0), seg=40)
+        cyl((0, 0, 0.026), 0.088, 0.004, "dial", verts=40, bevel=0.0)
+        strut((-0.01, 0.0, 0.032), (0.06, -0.04, 0.032), 0.012, 0.006, "tie", bevel=0.0)
+
+    # -- the rotor casing: the volute drum burst open to the east, low, its well open to the sky
+    shell((RC[0], RC[1], 0.0), R_VOLUTE, R_VOLUTE - 0.06, 0.34, "body_dark", 0.95, 5.75, jag=0.16)
+    shell((RC[0], RC[1], 0.0), R_VOLUTE - 0.065, R_VOLUTE - 0.1, 0.28, "recess", 0.95, 5.75, jag=0.14)
+    cyl((RC[0], RC[1], 0.03), R_VOLUTE - 0.07, 0.04, "recess", verts=64, bevel=0.0)          # the well's floor
+    for k in range(10):                                                                     # rubble in it
+        a, rr = RNG.uniform(0, 2 * math.pi), RNG.uniform(0.15, 0.78)
+        lump((rr * math.cos(a), rr * math.sin(a), 0.05), RNG.uniform(0.06, 0.13), RNG.choice(("skid", "body_dark")))
+    torus((RC[0], RC[1], 0.06), R_VOLUTE + 0.005, 0.03, "body_dark", seg=96)                 # its foot
+    for k in range(20):
+        a = 2 * math.pi * (k + 0.5) / 20
+        if not 1.05 < a < 5.6 or k % 5 == 2:
+            continue
+        nrm = (math.cos(a), math.sin(a), 0)
+        hexbolt((R_VOLUTE * nrm[0], R_VOLUTE * nrm[1], 0.18), nrm, 0.022, 0.018, "steel")
+    shard((1.0, 0.12, 0.05), 0.22, 0.03, "body_dark", rot=(0.15, 0.3, 0.3), stretch=(0.7, 1.2))
+    shard((0.95, -0.36, 0.04), 0.18, 0.03, "body", rot=(-0.1, 0.3, 1.0), stretch=(0.8, 1.1))
+    # the middle collar, thrown off, tilted on the drum's broken rim
+    with frame((-0.16, 0.06, 0.26), (0.14, -0.2, 0.4)):
+        shell((0, 0, 0), R_CASE, R_WIN, 0.14, "collar", 0.5, 5.6, seg=96, bevel=0.018)
+        for k in range(12):
+            a = 2 * math.pi * (k + 0.5) / 12
+            if not 0.55 < a < 5.5 or k == 6:
+                continue
+            hexbolt((0.62 * math.cos(a), 0.62 * math.sin(a), 0.14), (0, 0, 1), 0.036, 0.03)
+        cyl((-0.72, 0, 0.16), 0.075, 0.04, "steel", verts=32, bevel=0.008)              # the lens's bezel, empty
+
+    # -- the rotor, fallen out of the drum to the east, tilted on the rubble; four vanes and a
+    # third of its shroud torn away; three loose vanes on the ground
+    with frame((0.66, 0.34, 0.1), (0.3, 0.25, 0.9)):
+        cyl((0, 0, 0.0), R_WIN - 0.03, 0.02, "rotor", verts=64, bevel=0.0)
+        cyl((0, 0, 0.05), 0.09, 0.09, "rotor", verts=32, bevel=0.01)
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.07, location=(0, 0, 0.1), segments=24, ring_count=12)
+        o = bpy.context.active_object
+        o.scale.z = 0.6
+        _finish(o, "vane", "static", bevel=0, smooth=True)
+        for k in range(VANES):
+            if k in (2, 3, 7, 10):
+                continue
+            mesh_object("vane", lambda bm, k=k: vane_build(bm, k), "vane", "static", 0.0)
+        shell((0, 0, 0.018), R_WIN - 0.033, R_WIN - 0.057, 0.024, "rotor", 0.3, 4.6, bevel=0.0)
+    for (x, y, rz) in ((1.0, 0.86, 0.4), (-0.3, -0.62, 2.2), (1.24, -0.12, 4.1)):
+        with frame((x, y, 0.01), (0.1, 0.0, rz)):
+            with frame((-0.25, 0, 0)):
+                mesh_object("vane", lambda bm: vane_build(bm, 0), "vane", "static", 0.0)
+
+    # -- the north (generator) collar, fallen on its face and leaning on the can's wreck, its
+    # winding bared inside it, copper; the can's skin torn off in pieces round it
+    with frame((0.06, 1.6, -0.02), (-0.24, 0.12, -0.2)):
+        collar_ring(2.1, 2.1 + 5.0, drum_h=0.3, skip=(1, 8))
+        with frame((0, 0, 0.22), (0.0, math.pi / 2, 0.3)):                # the winding, on its side
+            cyl((0, 0, 0), 0.36, 0.6, "copper", verts=48, bevel=0.01)
+            for k in range(12):
+                torus((0, 0, -0.27 + k * 0.049), 0.37, 0.018, "copper", seg=48)
+    with frame((-1.02, 1.0, 0.0), (0.0, 0.0, 0.12)):                     # the can's skin, on its back
+        with frame((0, 0, GC["r"] * 0.78), (math.pi / 2, 0, 0)):
+            shell((0, 0, -0.3), GC["r"], GC["r"] - 0.04, 0.6, "gencan", math.pi * 1.33, math.pi * 1.67, jag=0.08,
+                  seg=96)
+    with frame((0.98, 2.02, 0.0), (0.0, 0.0, 1.9)):
+        with frame((0, 0, GC["r"] * 0.85), (math.pi / 2, 0, 0)):
+            shell((0, 0, -0.2), GC["r"], GC["r"] - 0.04, 0.4, "gencan", math.pi * 1.36, math.pi * 1.62, jag=0.06,
+                  seg=96)
+    # its north stub, torn short, lying off the collar to the north-west
+    with frame((-0.62, 2.12, R_STUB - 0.08), (math.pi / 2, 0, 1.25)):
+        shell((0, 0, 0), R_STUB, R_STUB - 0.04, 0.34, "collar", jag=0.14)
+        cyl((0, 0, 0.03), R_STUB + 0.08, 0.06, "collar", verts=64, bevel=0.01)
+    # the bushing chamber, knocked over onto the far side, one bushing still on it
+    with frame((-0.62, 0.98, 0.16), (0.0, -1.3, 0.35)):
+        box((0, 0, 0.0), (0.46, 0.6, 0.3), "gencan", bevel=0.03)
+        box((0, 0, 0.162), (0.5, 0.64, 0.024), "body_dark", bevel=0.008)
+        for y in (-0.19, 0.0):
+            cyl((0, y, 0.19), 0.08, 0.04, "steel", verts=24, bevel=0.006)
+        cyl((0, 0.0, 0.36), 0.045, 0.34, "porcelain", verts=24, bevel=0.0)
+        for k in range(4):
+            cyl((0, 0.0, 0.24 + k * 0.07), 0.088 - 0.006 * k, 0.026, "porcelain", verts=32, bevel=0.01)
+        cyl((0, 0.0, 0.54), 0.05, 0.05, "brass", verts=24, bevel=0.008)
+        cyl((0, -0.19, 0.25), 0.045, 0.1, "porcelain", verts=24, bevel=0.0)        # one snapped at its root
+        cyl((0, -0.19, 0.24), 0.088, 0.026, "porcelain", verts=32, bevel=0.01)
+    with frame((1.0, 1.42, 0.07), (math.pi / 2 - 0.08, 0, 2.3)):         # a bushing broken off, on the ground
+        cyl((0, 0, 0.0), 0.045, 0.26, "porcelain", verts=24, bevel=0.0)
+        for k in range(3):
+            cyl((0, 0, -0.08 + k * 0.07), 0.088 - 0.006 * k, 0.026, "porcelain", verts=32, bevel=0.01)
+        cyl((0, 0, 0.15), 0.05, 0.05, "brass", verts=24, bevel=0.008)
+    for x, y in ((0.55, 2.3), (0.3, 2.42), (-0.15, 2.36), (1.2, 1.7), (-1.15, 2.1)):
+        shard((x, y, 0.012), RNG.uniform(0.04, 0.07), 0.018, "porcelain")
+
+    # -- the far flank: the balance line in two, the tray down, the cables sprawled
+    for (x, y, rz, L) in ((-1.26, -1.0, 0.06, 1.0), (-1.12, 0.2, -0.42, 0.78)):
+        with frame((x, y, R_LAG), (math.pi / 2, 0, rz)):
+            cyl((0, 0, 0), R_LAG, L, "lagging", verts=24, bevel=0.01)
+            for k in range(int(L / 0.2)):
+                torus((0, 0, -L / 2 + 0.1 + 0.2 * k), R_LAG + 0.002, 0.012, "seam", seg=24)
+            cyl((0, 0, L / 2 + 0.02), R_LAG + 0.04, 0.05, "steel", verts=24, bevel=0.008)
+    with frame((-1.2, -0.38, 0.12), (0.0, 1.35, 0.15)):                  # the gate valve, on its side
+        cyl((0, 0, 0), R_LAG + 0.04, 0.24, "body_dark", verts=24, rot=AX_Y, bevel=0.015)
+        torus((0, 0, 0.3), 0.11, 0.014, "steel", seg=32)
+        cyl((0, 0, 0.18), 0.018, 0.2, "steel", verts=12, bevel=0.0)
+    with frame((-1.36, -0.55, 0.02), (0.04, 0.08, 0.03)):                 # the tray: its floor down, a rail bent
+        box((0, 0, 0), (0.24, 1.5, 0.02), "steel", bevel=0.004)
+        box((-0.115, 0, 0.04), (0.012, 1.5, 0.08), "steel", bevel=0.003)
+        for k in range(6):
+            box((0, -0.65 + k * 0.26, 0.012), (0.22, 0.03, 0.006), "steel", bevel=0.0)
+    with frame((-1.3, 0.62, 0.08), (0.3, -0.1, -0.18)):
+        box((0, 0, 0), (0.24, 0.7, 0.02), "steel", bevel=0.004)
+        box((0.115, 0, 0.04), (0.012, 0.7, 0.08), "steel", bevel=0.003)
+    for (x, y) in ((X_FAR + 0.06, -1.0), (X_FAR + 0.1, 0.05)):            # the posts, sheared at their feet
+        box((x, y, 0.03), (0.06, 0.06, 0.06), "steel", bevel=0.005)
+        foot_plate(x, y, 0.12)
+    strut((X_FAR + 0.1, 0.05, 0.03), (X_FAR + 0.4, 0.62, 0.05), 0.06, 0.06)
+    bundle([(-1.32, 1.42, 0.05), (-1.24, 0.95, 0.04), (-1.36, 0.3, 0.03), (-1.28, -0.4, 0.06), (-1.4, -1.1, 0.04),
+            (-1.18, -1.62, 0.08)], ["cable-black", "cable-red", "cable-grey", "cable-black"], r=0.016, gap=0.034,
+           lie=(0, 0, 1))
+    for k, (dx, dy, m) in enumerate(((-0.1, 0.2, "cable-black"), (0.02, 0.28, "cable-red"),
+                                     (0.12, 0.18, "cable-grey"))):          # its end, frayed
+        poly_tube(spline([(-1.32 + (k - 1) * 0.03, 1.42, 0.05), (-1.32 + dx * 0.5, 1.42 + dy * 0.5, 0.06),
+                          (-1.32 + dx, 1.42 + dy, 0.02)], per=8), 0.016, m)
+    # the terminal box, crushed; its brass lid thrown off to the north
+    box(((TBF["x0"] + TBF["x1"]) / 2 + 0.05, 1.62, 0.15), (TBF["x1"] - TBF["x0"], 0.56, 0.3), "body_dark",
+        rot=(0.1, 0.18, 0.05), bevel=0.03)
+    with frame((-0.9, 2.2, 0.03), (0.06, -0.05, 0.62)):
+        box((0, 0, 0), (TBF["x1"] - TBF["x0"] - 0.04, TBF["y1"] - TBF["y0"] - 0.04, 0.04), "brass", bevel=0.012)
+        for sx, sy in ((-0.17, -0.3), (0.17, 0.3), (0.17, -0.3)):
+            hexbolt((sx, sy, 0.02), (0, 0, 1), 0.016, 0.014, "steel")
+
+    # -- the near flank: the brass terminal box fallen on its back, the hose loose, the gas pipe torn
+    box((1.12, 0.98, 0.09), (0.44, 0.42, 0.16), "brass", rot=(0, 0.06, 0.35), bevel=0.02)
+    box((1.12, 0.98, 0.18), (0.38, 0.36, 0.02), "brass", rot=(0, 0.06, 0.35), bevel=0.01)
+    pts = hose([(0.5, -0.82, 0.22), (1.0, -0.62, 0.05), (1.22, -0.25, 0.04), (1.0, 0.25, 0.16), (1.2, 0.62, 0.04),
+                (1.3, 1.35, 0.03), (1.06, 1.78, 0.05)], 0.032, ends=False)
+    ferrule(pts[0] + (pts[3] - pts[0]).normalized() * 0.03, pts[3] - pts[0], 0.032)
+    pipe([(0.72, -0.6, 0.26), (0.98, -0.42, 0.22), (1.02, -0.1, 0.06)], 0.06, "copper", bend=0.16)   # ripped out
+    cyl((0.7, -0.62, 0.26), 0.095, 0.05, "steel", verts=24, rot=facing((-0.6, -0.5, 0)), bevel=0.008)
+    bundle([(0.86, 0.98, 0.1), (0.98, 1.3, 0.05), (0.84, 1.62, 0.03), (0.66, 2.0, 0.05)],
+           ["cable-black", "cable-red", "cable-grey"], r=0.016, gap=0.034, lie=(0, 0, 1))
+
+    # -- the top runs, fallen: the copper bus bent and snapped, the top pipe across the wreck
+    for k, y in enumerate(BUSH_Y):
+        pipe([(-0.35 - 0.06 * k, y - 0.1, 0.32 - 0.05 * k), (-0.7, y, 0.26), (-0.92, y + 0.12 * k - 0.1, 0.1),
+              (-1.06 + 0.05 * k, y + 0.2 + 0.1 * k, 0.03)], 0.024, "copper", bend=0.12)
+    pipe([(-0.42, -1.3, 0.34), (-0.62, -0.95, 0.3), (-0.8, -0.4, 0.16), (-0.66, 0.42, 0.05), (-0.36, 0.78, 0.05)],
+         0.042, "copper", bend=0.18)
+
+    # -- plates, bolts thrown low round it, a few past the footprint's edge
+    for k in range(22):
+        a = RNG.uniform(0, 2 * math.pi)
+        rr = RNG.uniform(0.55, 1.08)
+        shard((1.5 * rr * math.cos(a), 2.5 * rr * math.sin(a), 0.012), RNG.uniform(0.05, 0.12), 0.022,
+              RNG.choice(("body", "body_dark", "gencan", "collar", "steel")))
+    for k in range(34):
+        a = RNG.uniform(0, 2 * math.pi)
+        rr = RNG.uniform(0.3, 1.06)
+        hexbolt((1.5 * rr * math.cos(a), 2.5 * rr * math.sin(a), 0.0),
+                (RNG.uniform(-0.6, 0.6), RNG.uniform(-0.6, 0.6), 1.0), 0.024, 0.022, RNG.choice(("bronze", "steel")))
+    _group.pop()
+
 # ---------------------------------------------------------------- passes
 
 SUN = rig.sun()
@@ -1131,7 +1572,7 @@ ROT = DECL["animations"][0]
 if FLAT or IDLE:
     sc.cycles.samples = int(os.environ.get("SAMPLES", "24" if FLAT else "48"))
 
-for d in contract.each_direction(ROOT, DECL["directions"]):
+for d in ([] if WRECK_ONLY else contract.each_direction(ROOT, DECL["directions"])):
     def path(stem, d=d):
         return f"{OUT_DIR}/{contract.named(stem, d)}.png"
     BODY.location.x, BODY.location.y = PLACE[d], -SOUTH[d]
@@ -1168,3 +1609,17 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
     sc.render.use_border = False
 BODY.location.x, BODY.location.y = 0.0, 0.0
 CUR[0] = None
+
+# the wreck (section 10), on its own canvas over the ground catcher: its shadow and scorch
+# caught in the same picture, as vanilla's remnants carry theirs; the machine where it stood
+# (BODY at the origin: the wreck lies on the footprint, not on the plate's PLACE or SOUTH)
+if not IDLE:
+    if FLAT:
+        sc.cycles.samples = int(os.environ.get("SAMPLES", "24"))
+    rig.camera(*WRECK_CANVAS)
+    sc.render.use_border = False
+    CUR[0] = "wreck"
+    for d in contract.each_direction(ROOT, DECL["directions"]):
+        setup(visible=("wreck",), ground=True)
+        rig.render(f"{OUT_DIR}/{contract.named('wreck', d)}.png")
+    CUR[0] = None
