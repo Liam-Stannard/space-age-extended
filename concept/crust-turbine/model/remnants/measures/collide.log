@@ -6,5 +6,5 @@ Blender 5.0.1 (hash a3db93c5b259 built 2025-12-16 01:30:59)
   m.use_nodes = True
 /home/liam-stannard/git/space-age-extended/.claude/worktrees/turbine-remnants/concept/crust-turbine/model/crust_turbine.py:178: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   m.use_nodes = True
-/home/liam-stannard/git/space-age-extended/.claude/worktrees/turbine-remnants/concept/crust-turbine/model/crust_turbine.py:1121: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+/home/liam-stannard/git/space-age-extended/.claude/worktrees/turbine-remnants/concept/crust-turbine/model/crust_turbine.py:1124: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
   m.use_nodes = True

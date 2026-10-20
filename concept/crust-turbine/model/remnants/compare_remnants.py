@@ -2,7 +2,7 @@
 """The Siderane turbine's wreck beside vanilla's steam-turbine-remnants, at 1x and 2x, on the Core's ground and
 on vanilla's.
 
-  python3 compare_remnants.py <render.sh out-dir> <compare.png>
+  python3 compare_remnants.py <render.sh out-dir> <compare.png> [--previous <sheets dir> <label>]
 
 Reads <out-dir>/sheets (remnants.png and meta.json, as pack.py packed them) and <out-dir>/renders (the intact
 machine: still-<direction>.png and shadow-<direction>.png). One row per direction and ground, every panel on
@@ -11,6 +11,7 @@ are) with the footprint's grid:
 
   intact    ours, the stopped machine: its shadow at 50 %, then the still -- for reference
   wreck     ours: the remnants sheet's row for the direction, at its shift, as the corpse draws it
+  previous  with --previous: an earlier round's wreck (its remnants.png and meta.json), for the change
   vanilla   steam-turbine-remnants, its row for the direction (north for vertical, east for horizontal), at its
             shift (util.by_pixel(6, 0): 12 px), remnants.lua:2739-2765
   2x        the wreck and vanilla's, the middle 3.5 x 3.5 tiles, doubled (nearest)
@@ -151,32 +152,43 @@ def fmt(f):
 
 
 def main():
-    if len(sys.argv) != 3:
+    args = sys.argv[1:]
+    prev = None
+    if "--previous" in args:
+        i = args.index("--previous")
+        prev = (args[i + 1], args[i + 2])
+        del args[i:i + 3]
+    if len(args) != 2:
         sys.exit(__doc__)
-    src, out = sys.argv[1], sys.argv[2]
+    src, out = args
     sheets, renders = os.path.join(src, "sheets"), os.path.join(src, "renders")
     LBL, TXT, PAD = 20, 96, 10
     rows = []
     for d in ("vertical", "horizontal"):
         ow, osh = ours_wreck(sheets, d)
         vw, vsh = vanilla_wreck(d)
-        texts = ["\n".join(fmt(figures(ow, osh, d)) + look(ow)), "\n".join(fmt(figures(vw, vsh, d)) + look(vw))]
+        wrecks = [("Siderane turbine wreck", ow, osh)]
+        if prev:
+            pw, psh = ours_wreck(prev[0], d)
+            wrecks.append((f"wreck, {prev[1]}", pw, psh))
+        wrecks.append(("vanilla steam-turbine-remnants", vw, vsh))
+        texts = ["\n".join(fmt(figures(w_, s_, d)) + look(w_)) for _, w_, s_ in wrecks]
         for gi, (gname, gsrc) in enumerate(GROUNDS):
             g = ground(tile_sheet(gsrc), 7 + gi)
             panels = []
-            for lbl, layer in (("Siderane turbine, intact", intact(renders, d)),
-                               ("Siderane turbine wreck", placed(ow, osh)),
-                               ("vanilla steam-turbine-remnants", placed(vw, vsh))):
+            for lbl, layer in [("Siderane turbine, intact", intact(renders, d))] + \
+                    [(n_, placed(w_, s_)) for n_, w_, s_ in wrecks]:
                 p = g.copy()
                 p.alpha_composite(layer)
                 grid(p, d)
                 panels.append((f"{lbl}, {d}, 1x", p))
             c, h2 = S // 2, int(3.5 * PPT / 2)
-            for lbl, p in panels[1:]:
+            for lbl, p in (panels[1], panels[-1]):
                 panels.append((lbl.replace(", 1x", ", 2x"),
                                p.crop((c - h2, c - h2, c + h2, c + h2)).resize((S, S), Image.NEAREST)))
-            rows.append((f"{d} on {gname}", panels, ["", texts[0], texts[1], "", ""] if gi == 0 else [""] * 5))
-    W = 5 * S + 6 * PAD
+            rows.append((f"{d} on {gname}", panels, ([""] + texts + ["", ""]) if gi == 0 else [""] * len(panels)))
+    n = len(rows[0][1])
+    W = n * S + (n + 1) * PAD
     H = 40 + sum(LBL * 2 + S + (TXT if any(t for t in tx) else 0) + PAD for _, _, tx in rows)
     sheet = Image.new("RGBA", (W, H), (30, 30, 30, 255))
     dr = ImageDraw.Draw(sheet)

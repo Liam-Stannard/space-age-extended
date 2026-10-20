@@ -1,8 +1,8 @@
 {
  "source": {
-  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full",
-  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full/sheets",
-  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full/renders/render.json",
+  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4",
+  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4/sheets",
+  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/turbine-wreck/full4/renders/render.json",
   "directions": "horizontal-vertical",
   "footprint": [
    3,
@@ -218,8 +218,8 @@
     ],
     "remnants_shadow_px": [
      {
-      "px": 32808,
-      "share": 0.4151
+      "px": 22202,
+      "share": 0.4174
      },
      "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
     ],
@@ -230,16 +230,16 @@
     "remnants_reach_tiles": [
      {
       "debris": {
-       "N": 0.31,
-       "E": 0.02,
-       "S": 0.12,
-       "W": 0.06
+       "N": -0.2,
+       "E": -0.25,
+       "S": -0.34,
+       "W": -0.22
       },
       "all": {
-       "N": 0.56,
-       "E": 0.7,
-       "S": 0.59,
-       "W": 0.61
+       "N": 0.02,
+       "E": 0.3,
+       "S": 0.05,
+       "W": 0.22
       }
      },
      "how far past each footprint edge, as it stands in this direction, the debris (alpha over 128, not near black) and everything kept (the shadow too) reach, tiles; below 0 short of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"
@@ -612,8 +612,8 @@
     ],
     "remnants_shadow_px": [
      {
-      "px": 32183,
-      "share": 0.4073
+      "px": 21720,
+      "share": 0.4085
      },
      "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
     ],
@@ -624,16 +624,16 @@
     "remnants_reach_tiles": [
      {
       "debris": {
-       "N": 0.23,
-       "E": 0.11,
-       "S": 0.02,
-       "W": 0.23
+       "N": -0.08,
+       "E": -0.36,
+       "S": -0.25,
+       "W": -0.27
       },
       "all": {
-       "N": 0.61,
-       "E": 0.56,
-       "S": 0.7,
-       "W": 0.59
+       "N": 0.22,
+       "E": 0.0,
+       "S": 0.3,
+       "W": 0.05
       }
      },
      "how far past each footprint edge, as it stands in this direction, the debris (alpha over 128, not near black) and everything kept (the shadow too) reach, tiles; below 0 short of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"

@@ -1038,9 +1038,11 @@ class frame:
         _parent.pop()
 
 
-def shell(loc, r_out, r_in, h, mat, a0=0.0, a1=2 * math.pi, jag=0.0, seg=64, rot=(0, 0, 0), bevel=0.006):
+def shell(loc, r_out, r_in, h, mat, a0=0.0, a1=2 * math.pi, jag=0.0, seg=64, rot=(0, 0, 0), bevel=0.006,
+          warp=None):
     """A cylinder's wall about local Z from angle a0 to a1, its foot at 0 and its top at h, torn
-    to a ragged top edge up to `jag` deep: a casing or a ring broken open."""
+    to a ragged top edge up to `jag` deep: a casing or a ring broken open. warp(a): how far the
+    whole wall is pushed along Z at angle a -- a dent, a bent end (T02b)."""
     full = abs(a1 - a0) >= 2 * math.pi - 1e-6
     n = seg if full else max(3, round(seg * abs(a1 - a0) / (2 * math.pi)))
     # the tear: a slow wave along the edge, a fine serration on it and a deep notch or two,
@@ -1060,7 +1062,8 @@ def shell(loc, r_out, r_in, h, mat, a0=0.0, a1=2 * math.pi, jag=0.0, seg=64, rot
         for i in range(n if full else n + 1):
             a = a0 + (a1 - a0) * i / n
             c, s = math.cos(a), math.sin(a)
-            cols.append([bm.verts.new((r * c, r * s, z)) for r, z in
+            dz = warp(a) if warp else 0.0
+            cols.append([bm.verts.new((r * c, r * s, z + dz)) for r, z in
                          ((r_out, 0.0), (r_out, tops[i]), (r_in, tops[i]), (r_in, 0.0))])
         m = len(cols)
         for i in range(m if full else m - 1):
@@ -1193,6 +1196,14 @@ def collar_ring(a0, a1, drum_h=0.3, jag=0.18, skip=()):
         hexbolt(((R_COLLAR - 0.07) * math.cos(a), (R_COLLAR - 0.07) * math.sin(a), 0.12), (0, 0, 1), 0.034, 0.03)
 
 
+# T02b (Liam, "Pull in to vanilla's"): the whole wreck, scorch and all, drawn in about the
+# machine's centre by WRECK_SCALE, so its debris lies inside the footprint and its darkened ground
+# within half a tile of it, as vanilla's; one scale for everything, so the shadow's share is kept
+WRECK_SCALE = 0.82
+WRECK_ROOT = empty("wreck-root")
+WRECK_ROOT.scale = (WRECK_SCALE,) * 3
+_parent.append(WRECK_ROOT)
+
 with only("wreck"), assembly("wreck"):
     _group.append("wreck")
 
@@ -1288,13 +1299,17 @@ with only("wreck"), assembly("wreck"):
     shard((1.0, 0.12, 0.05), 0.22, 0.03, "body_dark", rot=(0.15, 0.3, 0.3), stretch=(0.7, 1.2))
     shard((0.95, -0.36, 0.04), 0.18, 0.03, "body", rot=(-0.1, 0.3, 1.0), stretch=(0.8, 1.1))
     # the middle collar, thrown off, tilted on the drum's broken rim
+    # T02b (Liam, "Dull it"): dented where it struck, its broken end bent up, sooted as the rest
+    def collar_dent(a):
+        return (-0.06 * math.exp(-((a - 1.7) / 0.3) ** 2) - 0.045 * math.exp(-((a - 3.8) / 0.25) ** 2)
+                + 0.12 * max(0.0, a - 4.8) / 0.8)
     with frame((-0.16, 0.06, 0.26), (0.14, -0.2, 0.4)):
-        shell((0, 0, 0), R_CASE, R_WIN, 0.14, "collar", 0.5, 5.6, seg=96, bevel=0.018)
+        shell((0, 0, 0), R_CASE, R_WIN, 0.14, "collar", 0.5, 5.6, seg=96, bevel=0.018, warp=collar_dent)
         for k in range(12):
             a = 2 * math.pi * (k + 0.5) / 12
-            if not 0.55 < a < 5.5 or k == 6:
+            if not 0.55 < a < 5.5 or k in (6, 2):
                 continue
-            hexbolt((0.62 * math.cos(a), 0.62 * math.sin(a), 0.14), (0, 0, 1), 0.036, 0.03)
+            hexbolt((0.62 * math.cos(a), 0.62 * math.sin(a), 0.14 + collar_dent(a)), (0, 0, 1), 0.036, 0.03)
         cyl((-0.72, 0, 0.16), 0.075, 0.04, "steel", verts=32, bevel=0.008)              # the lens's bezel, empty
 
     # -- the rotor, fallen out of the drum to the east, tilted on the rubble; four vanes and a
@@ -1424,6 +1439,77 @@ with only("wreck"), assembly("wreck"):
         hexbolt((1.5 * rr * math.cos(a), 2.5 * rr * math.sin(a), 0.0),
                 (RNG.uniform(-0.6, 0.6), RNG.uniform(-0.6, 0.6), 1.0), 0.024, 0.022, RNG.choice(("bronze", "steel")))
     _group.pop()
+_parent.pop()
+
+
+# T02b (Liam, "Soot it", "Dull it"): the wreck burnt -- every material it wears copied, the copy
+# blotched toward soot, rougher and less metallic; the machine keeps the originals, so none of
+# its renders change. Toward vanilla's remnants (p50 35-37, near-black 11-15 %).
+SOOT = "#0D0B09"
+SOOT_MIX = (0.78, 0.98)               # the soot's share, where the noise is thinnest and thickest
+SOOT_ROUGH = 0.82
+SOOT_METAL = 0.45                     # metallic kept
+
+
+def sooted(m):
+    s_ = m.copy()
+    s_.name = m.name + "-soot"
+    t = s_.node_tree
+    b = next((nd for nd in t.nodes if nd.bl_idname == "ShaderNodeBsdfPrincipled"), None)
+    if b is None:
+        return m                      # not a lit surface (the scorch): left as it is
+    geo = t.nodes.new("ShaderNodeNewGeometry")
+    nz = t.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 3.5
+    nz.inputs["Detail"].default_value = 5.0
+    t.links.new(geo.outputs["Position"], nz.inputs["Vector"])
+    mask = t.nodes.new("ShaderNodeMapRange")
+    mask.inputs["From Min"].default_value = 0.35
+    mask.inputs["From Max"].default_value = 0.65
+    mask.inputs["To Min"].default_value = SOOT_MIX[0]
+    mask.inputs["To Max"].default_value = SOOT_MIX[1]
+    mask.clamp = True
+    t.links.new(nz.outputs["Fac"], mask.inputs["Value"])
+
+    def toward(sock, value, rgba):
+        """sock's input, whatever drives it, mixed toward value by the soot's mask."""
+        mix = t.nodes.new("ShaderNodeMix")
+        mix.data_type = "RGBA" if rgba else "FLOAT"
+        ins = {i.identifier: i for i in mix.inputs}
+        a, bb = (ins["A_Color"], ins["B_Color"]) if rgba else (ins["A_Float"], ins["B_Float"])
+        t.links.new(mask.outputs["Result"], ins["Factor_Float"])
+        if sock.links:
+            t.links.new(sock.links[0].from_socket, a)
+        else:
+            a.default_value = sock.default_value
+        bb.default_value = value
+        out = {o.identifier: o for o in mix.outputs}["Result_Color" if rgba else "Result_Float"]
+        t.links.new(out, sock)
+    toward(b.inputs["Base Color"], rig.srgb(SOOT), True)
+    toward(b.inputs["Roughness"], SOOT_ROUGH, False)
+    met = b.inputs["Metallic"]
+    k = t.nodes.new("ShaderNodeMath")
+    k.operation = "MULTIPLY"
+    k.inputs[1].default_value = SOOT_METAL
+    if met.links:
+        t.links.new(met.links[0].from_socket, k.inputs[0])
+    else:
+        k.inputs[0].default_value = met.default_value
+    t.links.new(k.outputs["Value"], met)
+    return s_
+
+
+def soot_wreck():
+    """Every wreck part into its material's sooted copy. Called only after the machine's last
+    render (and before the wreck's), so the copies do not exist while the machine renders: with
+    them in the scene, one pixel of rotor-horizontal moved by one level."""
+    cache = {}
+    for o in PARTS["wreck"]:
+        for i, m in enumerate(o.data.materials if o.data else []):
+            if m is not None:
+                if m.name not in cache:
+                    cache[m.name] = sooted(m)
+                o.data.materials[i] = cache[m.name]
 
 # ---------------------------------------------------------------- passes
 
@@ -1616,6 +1702,7 @@ CUR[0] = None
 if not IDLE:
     if FLAT:
         sc.cycles.samples = int(os.environ.get("SAMPLES", "24"))
+    soot_wreck()
     rig.camera(*WRECK_CANVAS)
     sc.render.use_border = False
     CUR[0] = "wreck"
