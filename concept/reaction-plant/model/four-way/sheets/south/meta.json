@@ -65,12 +65,12 @@
  },
  "coupling-compressor": {
   "size": [
-   7,
-   12
+   4,
+   5
   ],
   "shift": [
-   -0.42969,
-   1.23438
+   -0.45312,
+   1.28906
   ],
   "frames": 24,
   "line_length": 24

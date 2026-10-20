@@ -77,11 +77,11 @@
  },
  "coupling-pump": {
   "size": [
-   16,
+   17,
    13
   ],
   "shift": [
-   1.90625,
+   1.89844,
    -1.67969
   ],
   "frames": 24,
@@ -102,11 +102,11 @@
  "gauge-reactor-lower": {
   "size": [
    4,
-   9
+   10
   ],
   "shift": [
    0.85938,
-   -1.74219
+   -1.73438
   ],
   "frames": 24,
   "line_length": 24
@@ -186,7 +186,7 @@
   ],
   "frame0_vs_still": [
    36,
-   0.0018,
+   0.0017,
    "max channel difference, and share of pixels over 8 (sampling noise)"
   ]
  }

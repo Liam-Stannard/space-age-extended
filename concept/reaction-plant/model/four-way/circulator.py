@@ -152,7 +152,7 @@ HIDDEN = ("coupling-compressor",)
 ALL_LAYERS = ("drive",) + COUPLINGS + ("press",) + GAUGES + ("drip",)
 UNSEEN = {
     "north": ("coupling-compressor",),
-    "east": (),
+    "east": ("coupling-dosing",),   # T06c: covered since the lines and hoses were reworked (probe: 2 px, T06b 133)
     "south": ("coupling-dosing",) + GAUGES,
     "west": ("coupling-compressor", "gauge-reactor-upper", "gauge-scrubber", "drip"),
 }
@@ -1418,6 +1418,11 @@ if PROPOSAL == "legs-nw":
     LEGS = [(-0.68, 1.42, 2, "fl_f1"), (0.12, 1.45, -2, "fl_f2")]
 CXO = 0.75 if PROPOSAL == "legs-nw" else 0.0
 Z0, Z1, LR = 0.42, 2.45, 0.27
+# T06c: the hoses' one internal size. Vanilla's internal lines run 0.26-0.67 of its pipe (the
+# refinery's 14-26 px, the chemical plant's 16-22 px at 2x); the fattest hoses here were 0.26 tile,
+# fatter than the input lines they cross. Now no hose is fatter than 0.2 tile (12.8 px, 0.33 of a
+# pipe): under the input lines (LEAD_R), which carry the building's feed
+HOSE_R = 0.10
 EDGE = 2.465                     # a wall's face at the footprint edge, less a hair
 # The corner vessels, drawn in so their foot rings stop at the footprint's edge (+-2.5):
 # round 5 had the scrubber's at -2.57, the condenser's and the east pot's at +2.52
@@ -1510,10 +1515,13 @@ def legs_loop():
                             Z0 + 0.04 + (Z1 - Z0 - 0.08) * u), 16, 12, mat="fleck", size=(0.014, 0.024),
               scale=(1.5, 1, 0.6), down=True)
     # the loop's top: fat hoses from each leg's cap into the reactor's shoulder
-    hose([(ax, ay, Z1 + 0.42), (ax + 0.14, ay + 0.06, 3.0), (0.3, 0.62, 3.05), (RX - R + 0.04, RY + 0.3, 2.74)],
-         r=0.13, mat="hose")
+    # (T06c: leg 1's hose bends south off its cap and meets the reactor's west wall just south of its
+    # middle, not 0.3 north of it: run across the reactor's north-west shoulder it stood in front of
+    # the gas line's drop into the compressor, facing north)
+    hose([(ax, ay, Z1 + 0.42), (ax + 0.14, ay - 0.04, 3.0), (0.08, 0.2, 2.98), (RX - R + 0.03, RY - 0.05, 2.74)],
+         r=HOSE_R, mat="hose")
     hose([(bx, by, Z1 + 0.42), (bx + 0.16, by + 0.02, 2.95), (0.62, -0.55, 2.8),
-          (RX - R * 0.62, RY - R * 0.72, 2.4)], r=0.13, mat="hose_k")
+          (RX - R * 0.62, RY - R * 0.72, 2.4)], r=HOSE_R, mat="hose_k")
     # the loop's foot: a cast header from the reactor's foot to both legs, a valve on it
     pipe([(RX - R + 0.02, RY + 0.25, 0.3), (0.3, 0.5, 0.24), (ax + LR, ay, 0.24)], r=0.11, mat="dark_steel",
          marks=((0.5, "red"),))
@@ -1551,11 +1559,11 @@ def north():
         cyl((-0.03 + CXO + 0.12 * i, 1.36, 0.4), 0.265, 0.03, "bare", rot=(0, PI / 2, 0), verts=32, bevel=0)
     box((0.66 + CXO, 1.36, 0.38), (0.38, 0.4, 0.42), "green")
     coupling(0.43 + CXO, 1.36, 0.38, 0.12, axis=(1, 0, 0), axial=0.7, layer="coupling-compressor")     # centred in its 0.08 gap
-    hose([(0.15 + CXO, 1.36, 0.66), (0.08 + CXO, 1.05, 0.98), (LEGS[0][0] + 0.2, LEGS[0][1] + 0.2, 1.25)], r=0.1,
+    hose([(-0.02 + CXO, 1.3, 0.62), (-0.06 + CXO, 1.05, 0.98), (LEGS[0][0] + 0.2, LEGS[0][1] + 0.2, 1.25)], r=0.1,
          mat="hose")
     # the scrubber's line, high, into the reactor head
     hose([(nx, ny, sh + 0.32), (-1.3, 1.35, 2.35), (-0.4, 1.12, 2.8), (0.6, 0.85, 3.12),
-          (RX - 0.25, RY + 0.42, 3.22)], r=0.12, mat="hose")
+          (RX - 0.25, RY + 0.42, 3.22)], r=HOSE_R, mat="hose")
     # (T06b: the long exchanger's hose into the reactor is gone with its length: rising from between the
     # two input fittings, it read as a third input line)
     pipe([(tx - 0.32, ty - 0.12, 0.9), (1.55, 1.25, 0.92), (RX + 0.45, RY + R * 0.75, 0.95)], r=0.07, mat="copper")
@@ -1571,7 +1579,7 @@ def west():
     ax, ay = LEGS[0][0], LEGS[0][1]
     # (round 5 ran it 0.05 through the dosing pump's motor; the clip fixes lifted it 0.05 over the
     # coupling: now north of the motor, under the make-up pot)
-    hose([(-1.5, 0.42, 0.5), (-1.0, 0.43, 0.46), (ax - LR - 0.08, ay - 0.08, 0.3)], r=0.11, mat="hose")
+    hose([(-1.5, 0.42, 0.5), (-1.0, 0.43, 0.46), (ax - LR - 0.08, ay - 0.08, 0.3)], r=HOSE_R, mat="hose")
     # a dosing pump between the drum and the riser, olive, on its skid
     skid(-1.42, -0.05, -0.62, 0.32, 0.1)
     box((-1.2, 0.13, 0.3), (0.34, 0.3, 0.3), "green")
@@ -1666,7 +1674,7 @@ def south():
     gauge((1.35, -2.45, 0.62), (0, -1, 0.15), r=0.07)
     status_lamp(1.42, -2.2, 0.86)
     pv = pump(1.1, -1.9, (-1, 0), 0.75, z0=0.84)
-    hose([pv, (0.7, -1.55, 1.45), (0.4, -1.25, 1.25), (bx + 0.1, by - LR - 0.04, 0.9)], r=0.12, mat="hose")
+    hose([pv, (0.7, -1.55, 1.45), (0.4, -1.25, 1.25), (bx + 0.1, by - LR - 0.04, 0.9)], r=HOSE_R, mat="hose")
     # under the legs, west of the downcomer: the sampling cabinet, where the precipitate is drawn off
     # (moved north and narrowed: round 5's stood into the settling pot's foot and shell and the
     # downcomer's foot)
@@ -2239,13 +2247,20 @@ LEAD_PATHS = (
     # about z 1.3, and down into the feed drum's crown
     [(-1.0, 1.98, 0.8), (-1.0, 1.9, 1.25), (-1.3, 1.5, 1.32), (-1.62, 1.12, 1.3), (-1.9, 0.95, 1.22),
      (-1.96, 0.93, 1.07)],
-    # the gas: up off the reducer, high over the compressor's motor, and down into the top of its
-    # suction stack (SUCTION), which stands on the barrel where the camera sees it in every direction
-    [(1.0, 1.98, 0.7), (1.0, 1.9, 1.05), (0.75, 1.7, 1.16), (0.46, 1.5, 1.16), (0.37, 1.43, 1.08),
-     (0.36, 1.42, 0.97)],
+    # the gas (T06c): up off the reducer as a riser at the back, the way vanilla's refinery and
+    # chemical plant take a north port in (a full elbow climbing over the back), west along the
+    # back above the exchanger, and down into the top of the compressor's suction stack (SUCTION)
+    [(1.0, 1.98, 0.75), (1.0, 1.95, 1.3), (0.85, 1.92, 1.5), (0.5, 1.85, 1.5), (0.3, 1.66, 1.4),
+     (0.26, 1.52, 1.24), (0.26, 1.5, 1.13)],
 )
-SUCTION = (0.36, 1.42)       # the compressor's suction stack: on its barrel, east of the riser's hose
-LEAD_R = 0.1                 # as fat as the feed main, so the line reads at 1x
+SUCTION = (0.26, 1.5)        # the compressor's suction stack: on its barrel's north shoulder
+# T06c (Liam, 2026-10-20: "The diameter of the hoses compared to the pipes doesn't look right, look
+# at how other buildings handle the pipe to in the machine"): vanilla takes a port in at full bore and
+# steps it down once, at a flange, to about half a pipe (the oil refinery's north ports: 38 px to
+# ~20 px at 2x; the chemical plant's lines 16-22 px), and nothing that crosses it is fatter. The
+# line was 0.2 tile (12.8 px, a third of a pipe), thinner than the hoses beside it; now 0.32 tile
+# (20.5 px, 0.52 of vanilla's 39 px pipe), the refinery's step
+LEAD_R = 0.16
 if PROPOSAL == "legs-nw":        # the compressor beside the gas input: the line drops straight into it
     LEAD_PATHS = (LEAD_PATHS[0], [(1.0, 1.98, 0.7), (1.0, 1.9, 1.05), (1.05, 1.6, 1.12), (1.1, 1.43, 1.08),
                                   (1.11, 1.42, 0.97)])
@@ -2259,18 +2274,18 @@ def suction_stack():
     if PROPOSAL == "legs-nw":
         x += CXO
     with asm():
-        pipe([(x, y, 0.56), (x, y, 1.02)], r=0.085, mat="bare")
-        cyl((x, y, 0.66), 0.12, 0.04, "dark_steel", verts=24)                 # its flange on the barrel
-        cyl((x, y, 0.84), 0.12, 0.15, "dark_steel", verts=20)                 # the valve body
-        cyl((x, y - 0.16, 0.84), 0.018, 0.12, "bare", rot=(PI / 2, 0, 0), verts=8)
-        handwheel((x, y - 0.22, 0.84), 0.075, axis=(0, 1, 0), mat="red")
-        cyl((x, y, 1.03), 0.12, 0.04, "dark_steel", verts=24)                 # the line's flange on its top
+        pipe([(x, y, 0.5), (x, y, 1.12)], r=LEAD_R, mat="bare")               # the line's own bore (T06c)
+        cyl((x, y, 0.64), LEAD_R + 0.05, 0.04, "dark_steel", verts=32)        # its flange on the barrel
+        cyl((x, y, 0.86), LEAD_R + 0.05, 0.16, "dark_steel", verts=28)        # the valve body
+        cyl((x, y - 0.25, 0.86), 0.018, 0.1, "bare", rot=(PI / 2, 0, 0), verts=8)
+        handwheel((x, y - 0.3, 0.86), 0.085, axis=(0, 1, 0), mat="red")
+        cyl((x, y, 1.13), LEAD_R + 0.05, 0.04, "dark_steel", verts=32)        # the line's flange on its top
 
 
 suction_stack()
 
 
-def reducer(p, r0=0.27, r1=0.11, depth=0.12):
+def reducer(p, r0=0.27, r1=LEAD_R, depth=0.12):
     """A bolted reducer on the fitting's inner end, stepping down south (model -y)."""
     x, y, z = p
     cyl((x, y - 0.02, z), r0 + 0.04, 0.04, "dark_steel", rot=(PI / 2, 0, 0), verts=40)
@@ -2292,7 +2307,7 @@ for _d, _deg in contract.DIRECTIONS["four"]:
             LEADS[_d].append([_st] + list(_path))
             pipe([_st] + list(_path), r=LEAD_R, mat="bare")
             if _k == 0:
-                cyl((-1.96, 0.93, 1.1), 0.12, 0.04, "dark_steel", verts=24)        # its flange on the drum's crown
+                cyl((-1.96, 0.93, 1.1), LEAD_R + 0.05, 0.04, "dark_steel", verts=32)   # its flange on the drum's crown
     for o in OBJS[first:]:
         DIRONLY[o.name] = _d
 

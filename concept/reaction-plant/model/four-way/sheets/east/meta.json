@@ -75,18 +75,6 @@
   "frames": 24,
   "line_length": 24
  },
- "coupling-dosing": {
-  "size": [
-   13,
-   6
-  ],
-  "shift": [
-   0.13281,
-   -1.17188
-  ],
-  "frames": 24,
-  "line_length": 24
- },
  "coupling-pump": {
   "size": [
    17,
@@ -179,10 +167,6 @@
    "frames of a closed loop; no positional check"
   ],
   "coupling-compressor_cycle": [
-   24,
-   "frames of a closed loop; no positional check"
-  ],
-  "coupling-dosing_cycle": [
    24,
    "frames of a closed loop; no positional check"
   ],
