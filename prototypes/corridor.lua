@@ -18,13 +18,51 @@ local item_sounds = require("__base__.prototypes.item_sounds")
 local item_tints = require("__base__.prototypes.item-tints")
 
 --------------------------------------------------------------------------------
+-- The radiant look, on the engine's asteroid shader.
+--
+-- An asteroid is not drawn from a sprite but lit by the engine: each variation
+-- is a colour, a normal and a roughness map (whose RGB is the subsurface colour
+-- the shader adds on the dark side), and the graphics set around them is the
+-- shading data -- space-age/prototypes/entity/asteroid.lua. Our maps are drawn
+-- in promethium's layout, size for size and variation for variation, so only
+-- the three filenames of each variation change; the size, scale, shadow shift
+-- and premultiplication the copy carries are vanilla's and stay.
+--
+-- The shading stays promethium's -- dark rock with its light inside it -- bar
+-- the rim: promethium's second light is a red back light, and here it is the
+-- radiant ramp's #1F63FF at 0.2.
+--------------------------------------------------------------------------------
+
+local RA = "__space-age-extended__/graphics/entity/radiant-asteroid/"
+local RIM = { 0.024, 0.078, 0.2 }
+
+local function radiant_look(set, size, count)
+  assert(#set.variations == count,
+         "radiant " .. size .. ": " .. count .. " maps drawn for " .. #set.variations .. " variations")
+  for i, v in ipairs(set.variations) do
+    local stem = RA .. size .. "/asteroid-radiant-" .. size .. "-"
+    local n = string.format("-%02d.png", i)
+    v.color_texture.filename = stem .. "colour" .. n
+    v.normal_map.filename = stem .. "normal" .. n
+    v.roughness_map.filename = stem .. "roughness" .. n
+  end
+  -- The rim is the second light, the one whose z is the key light's opposite
+  -- (key -1, rim +0.95). Checked rather than trusted, since vanilla overrides
+  -- this very light on two of its chunks.
+  local rim = set.lights[2]
+  assert(rim and rim.direction[3] > 0, "radiant " .. size .. ": the second light is not a rim light")
+  rim.color = table.deepcopy(RIM)
+end
+
+--------------------------------------------------------------------------------
 -- Chunks. A chunk needs BOTH an asteroid-chunk prototype and an item of the
 -- same name: the first is the thing that floats, the second is what a collector
 -- puts in its hold. Copying only the first gives a chunk with no item form.
 --------------------------------------------------------------------------------
 
--- The floating form keeps vanilla's chunk graphics (a chunk is a tumbling
--- sprite set, and vanilla's tumble); everything that named the source goes.
+-- The floating form keeps vanilla's chunk graphics set (a chunk is a tumbling
+-- set of lit maps, and vanilla's tumble) with our maps and rim in it;
+-- everything that named the source goes.
 -- A chunk is not an entity, so its description does not come from
 -- [entity-description] by itself -- vanilla points each one at its asteroid's,
 -- and these point at their own item's, so the two forms of the rock say the
@@ -34,6 +72,7 @@ radiant_chunk.order = "z[sae]-a[radiant]"
 radiant_chunk.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
 radiant_chunk.localised_description = { "item-description.sae-radiant-chunk" }
 radiant_chunk.minable = { mining_time = 0.5, results = { { type = "item", name = "sae-radiant-chunk", amount = 1 } } }
+radiant_look(radiant_chunk.graphics_set, "chunk", 6)
 
 -- The held form, on vanilla's chunk-item pattern: one to a stack, a hundred
 -- kilos, and the sounds of a sack of rock.
@@ -64,8 +103,8 @@ data:extend({
 -- The asteroids themselves.
 --------------------------------------------------------------------------------
 
--- The rock keeps the small promethium asteroid's graphics set. Its icon and
--- its place in the menu they do not: until the far field has its own icon art,
+-- The rock keeps the small promethium asteroid's graphics set, with our maps
+-- and rim in it. Its icon and its place in the menu it does not: until the far field has its own icon art,
 -- each asteroid shows the icon of the chunk it breaks into.
 --
 -- The preview on an asteroid's Factoriopedia page is a script naming the rock
@@ -82,6 +121,7 @@ end
 local radiant = derive.from("asteroid", "small-promethium-asteroid", "sae-radiant-asteroid")
 radiant.icon = "__space-age-extended__/graphics/icons/radiant-chunk.png"
 radiant.order = "z[sae]-a[radiant]"
+radiant_look(radiant.graphics_set, "small", 7)
 -- Terminal on purpose: destroyed by ordinary fire it leaves nothing behind.
 radiant.dying_trigger_effect =
 {

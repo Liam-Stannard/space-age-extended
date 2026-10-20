@@ -1,0 +1,216 @@
+{
+ "RP legs": {
+  "blue_stats": {
+   "blue": 2.78,
+   "L": 122,
+   "sat": 0.66,
+   "pale": 12.3
+  },
+  "glow": {
+   "area": 3000,
+   "peak": 85,
+   "core": 43.0,
+   "halo": 15.2,
+   "sat_core": 0.95,
+   "sat_halo": 0.99,
+   "white": 0,
+   "under_L": 119,
+   "under_sat": 0.69
+  }
+ },
+ "generator r6 1": {
+  "blue_stats": {
+   "blue": 1.4,
+   "L": 119,
+   "sat": 0.61,
+   "pale": 34.7
+  },
+  "blue_pct_r6": 1.7
+ },
+ "generator r6 2": {
+  "blue_stats": {
+   "blue": 2.62,
+   "L": 130,
+   "sat": 0.66,
+   "pale": 21.6
+  },
+  "blue_pct_r6": 3.5
+ },
+ "generator r6 3": {
+  "blue_stats": {
+   "blue": 1.85,
+   "L": 119,
+   "sat": 0.68,
+   "pale": 34.4
+  },
+  "blue_pct_r6": 2.3
+ },
+ "pool day": {
+  "blue_stats": {
+   "blue": 61.15,
+   "L": 90,
+   "sat": 0.79,
+   "pale": 0.1
+  }
+ },
+ "pool night": {
+  "blue_stats": {
+   "blue": 42.98,
+   "L": 73,
+   "sat": 0.74,
+   "pale": 0.0
+  }
+ },
+ "icon fluid/radiant-solution.png": {
+  "blue_stats": {
+   "blue": 70.92,
+   "L": 109,
+   "sat": 0.72,
+   "pale": 1.0
+  }
+ },
+ "icon radiant-fuel.png": {
+  "blue_stats": {
+   "blue": 33.0,
+   "L": 142,
+   "sat": 0.57,
+   "pale": 0.2
+  }
+ },
+ "icon radiant-chunk.png": {
+  "blue_stats": {
+   "blue": 14.99,
+   "L": 151,
+   "sat": 0.44,
+   "pale": 26.1
+  }
+ },
+ "icon spent-cell.png": {
+  "blue_stats": {
+   "blue": 3.54,
+   "L": 61,
+   "sat": 0.71,
+   "pale": 0.0
+  }
+ },
+ "vanilla chemical-plant": {
+  "glow": {
+   "area": 0,
+   "peak": 0,
+   "core": 0,
+   "halo": 0,
+   "sat_core": 0,
+   "sat_halo": 0,
+   "white": 0
+  }
+ },
+ "vanilla oil-refinery": {
+  "glow": {
+   "area": 14835,
+   "peak": 226,
+   "core": 1.8,
+   "halo": 87.9,
+   "sat_core": 0.65,
+   "sat_halo": 0.94,
+   "white": 0,
+   "under_L": 198,
+   "under_sat": 0.15,
+   "lit_share": 14.8
+  }
+ },
+ "vanilla nuclear-reactor": {
+  "glow": {
+   "area": 3953,
+   "peak": 171,
+   "core": 8.2,
+   "halo": 77.5,
+   "sat_core": 0.93,
+   "sat_halo": 1.0,
+   "white": 0,
+   "under_L": 65,
+   "under_sat": 0.33,
+   "lit_share": 6.3
+  }
+ },
+ "vanilla fusion-generator": {
+  "glow": {
+   "area": 14309,
+   "peak": 97,
+   "core": 2.8,
+   "halo": 79.6,
+   "sat_core": 1.0,
+   "sat_halo": 0.98,
+   "white": 0,
+   "under_L": 63,
+   "under_sat": 0.31,
+   "lit_share": 24.3
+  }
+ },
+ "vanilla fusion-reactor": {
+  "glow": {
+   "area": 25349,
+   "peak": 87,
+   "core": 5.1,
+   "halo": 79.1,
+   "sat_core": 1.0,
+   "sat_halo": 0.98,
+   "white": 0,
+   "under_L": 61,
+   "under_sat": 0.24,
+   "lit_share": 24.9
+  }
+ },
+ "vanilla centrifuge": {
+  "glow": {
+   "area": 9355,
+   "peak": 156,
+   "core": 6.4,
+   "halo": 77.2,
+   "sat_core": 1.0,
+   "sat_halo": 1.0,
+   "white": 0,
+   "under_L": 29,
+   "under_sat": 0.16,
+   "lit_share": 28.5
+  }
+ },
+ "vanilla uranium-ore": {
+  "glow": {
+   "area": 8329,
+   "peak": 103,
+   "core": 30.9,
+   "halo": 28.2,
+   "sat_core": 1.0,
+   "sat_halo": 1.0,
+   "white": 0,
+   "under_L": 50,
+   "under_sat": 0.75,
+   "lit_share": 197.1
+  }
+ },
+ "vanilla cryogenic-plant": {
+  "glow": {
+   "area": 3437,
+   "peak": 166,
+   "core": 3.3,
+   "halo": 76.9,
+   "sat_core": 0.54,
+   "sat_halo": 0.88,
+   "white": 0,
+   "under_L": 39,
+   "under_sat": 0.2,
+   "lit_share": 3.6
+  }
+ },
+ "vanilla lithium-brine": {
+  "glow": {
+   "area": 0,
+   "peak": 0,
+   "core": 0,
+   "halo": 0,
+   "sat_core": 0,
+   "sat_halo": 0,
+   "white": 0
+  }
+ }
+}

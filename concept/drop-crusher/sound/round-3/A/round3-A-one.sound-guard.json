@@ -1,0 +1,49 @@
+{
+ "pass": true,
+ "null_sink": "sae_client_null_1013287",
+ "default_before": {
+  "default": "alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo",
+  "configured": "{ \"name\": \"alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo\" }"
+ },
+ "default_after": {
+  "default": "alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo",
+  "configured": "{ \"name\": \"alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo\" }"
+ },
+ "default_during": [
+  "sae_client_null_1013287"
+ ],
+ "samples_while_client_ran": 147,
+ "samples_default_unread": 0,
+ "client_streams": {
+  "32870": [
+   "sae_client_null_1013287"
+  ]
+ },
+ "client_links": [
+  {
+   "link": 100,
+   "from": "Factorio: Space Age 2.1.22",
+   "to": "sae_client_null_1013287"
+  },
+  {
+   "link": 114,
+   "from": "Factorio: Space Age 2.1.22",
+   "to": "sae_client_null_1013287"
+  }
+ ],
+ "launcher_audio": {
+  "null_sink": "sae_client_null_1013287",
+  "monitor": "sae_client_null_1013287.monitor",
+  "default_before": "alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo",
+  "configured_before": "{ \"name\": \"alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo\" }",
+  "default_after": "alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo",
+  "configured_after": "{ \"name\": \"alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo\" }",
+  "result": "default restored; sae_client_null_1013287 unloaded (verified)",
+  "checks_while_running": 138,
+  "client_streams": [
+   "sink-input 32870 on sink 32834"
+  ]
+ },
+ "problems": [],
+ "summary": "default alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo before, ['sae_client_null_1013287'] in 147 samples while the client ran, alsa_output.usb-Audioengine_Ltd._Audioengine_2__ABCDEFB1180003-00.analog-stereo after; client streams {'32870': ['sae_client_null_1013287']}; 2 client link(s), all to sae_client_null_1013287"
+}

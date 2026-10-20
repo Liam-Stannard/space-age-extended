@@ -1,0 +1,109 @@
+{
+ "sizes": [
+  256,
+  128,
+  64,
+  32
+ ],
+ "ss": 4,
+ "margin": 1,
+ "finishes": [
+  "tech"
+ ],
+ "items": [
+  "sae-vacuum-sintering"
+ ],
+ "post": {
+  "sae-vacuum-sintering": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  }
+ },
+ "framing": {
+  "sae-vacuum-sintering/tech/256": {
+   "ortho_scale": 4.05891257838199,
+   "w": 228.00000000000003,
+   "h": 212.22252340825548
+  },
+  "sae-vacuum-sintering/tech/128": {
+   "ortho_scale": 4.05891257838199,
+   "w": 114.00000000000001,
+   "h": 106.11126170412774
+  },
+  "sae-vacuum-sintering/tech/64": {
+   "ortho_scale": 4.05891257838199,
+   "w": 57.00000000000001,
+   "h": 53.05563085206387
+  },
+  "sae-vacuum-sintering/tech/32": {
+   "ortho_scale": 3.8559669494628905,
+   "w": 30.0,
+   "h": 27.92401623792835
+  }
+ },
+ "elevation_deg": 40.0
+}

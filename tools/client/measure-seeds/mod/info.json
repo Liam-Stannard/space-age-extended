@@ -1,0 +1,9 @@
+{
+  "name": "sae-measure-seeds",
+  "version": "0.1.0",
+  "title": "SAE map-gen seed harness (test tool, never shipped)",
+  "author": "Liam Stannard",
+  "factorio_version": "2.1",
+  "dependencies": ["base", "space-age-extended"],
+  "description": "Loaded only by tools/client/measure-seeds/measure.py (a headless server, over RCON) and rings.py (a client through tools/client/launch.sh). Generates a planet's surface on given seeds and measures the nearest pool and the starting patches round the landing; in a client, screenshots the landing with distance rings drawn."
+}

@@ -12,11 +12,19 @@ construction and nothing is placed by hand.
 The sheet has one row per direction, every panel on one ground with the
 footprint's tile grid drawn over it (the footprint itself brighter):
 
-  idle      each shadow pass at 50 %, the plate, each animation at frame 0, and
-            each light pass tinted as the engine tints the status lamp when idle
+  idle      each shadow pass at 50 %, the plate, each animation at frame 0 (but
+            those marked working), and each light pass tinted as the engine tints
+            the status lamp when idle
   working   the same, with the working layers in the order render.json declares
             them, each as pack.py packs it: a paint pass drawn as paint, a glow
-            pass added; the lamp tinted as when working
+            pass added, a glow animation's frame added over the animations; the
+            lamp tinted as when working
+
+A model that declares a remnants pass (contract.py) gets a third panel in each row, its
+wreck: the render as pack.py packs it (cleaned of the catcher's haze, never cut), shadow and
+all, on the same ground and grid, so the debris past the footprint shows against it. The
+panels grow to the wreck's own canvas when it is larger. A model without one draws as it
+always did.
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -29,10 +37,24 @@ util.by_pixel(0, -9) in the prototype plus by_pixel(1, 0) in its .lua:
   --adopted chemical-plant-north-base.png@0.03125,-0.28125
 
 --gif writes a looping GIF of one animation playing in the working panel, every
-direction side by side, at game speed: 60 x animation_speed frames a second.
+direction side by side, at game speed: 60 x animation_speed frames a second. A
+glow animation, the plate layer it is over and every other glow over that layer
+play together, whichever is named.
 A GIF counts time in hundredths of a second, so each frame is held to the
 nearest hundredth of when the engine would show it and the loop as a whole
-runs at the game's rate.
+runs at the game's rate. An animation that declares a frame_sequence or a hold
+(contract.py) plays in that order, a held frame shown for as long as its run of
+entries lasts; a glow plays its plate layer's.
+
+Every render but a shadow is drawn cut to the footprint as pack.py cuts it, when
+render.json declares a `cut`: cut first, then a glow animation's bloom added, so the
+halo may spill past a cut edge as it does in the sheets.
+
+Every layer but a shadow or a light is drawn through pack.py's highlight roll-off (pack.roll),
+as its sheet carries it -- the plate, a paint or glow pass's layer, each animation's frame but a
+light one's, the wreck -- each before it is drawn over the rest, so the review is what ships
+(Liam, 2026-10-20: "Match shipped"). A model whose render.json opts out (rolloff false) is drawn
+as it was before the roll-off, byte for byte.
 """
 import argparse
 import os
@@ -68,12 +90,24 @@ class Model:
                      "\n".join(f"  {stem}.png  ({what})" for what, stem in gone))
         self.directions = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         self.ppt = float(self.decl["rig"]["px_per_tile"])
+        self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
+        self.roll_on = self.decl.get("rolloff", True)
 
-    def open(self, stem):
+    def shipped(self, im):
+        """A layer as its sheet carries it: rolled off (pack.roll), unless the model opts out."""
+        return pack.roll(im)[0] if self.roll_on else im
+
+    def open(self, stem, d, cut_it=True, canvas=None):
+        """A render of direction d, cut to the footprint as pack.py cuts it (render.json's `cut`)
+        unless cut_it is false: a shadow is never cut. canvas: the size it must be, when not the
+        model's (a remnants pass's own)."""
         im = Image.open(os.path.join(self.src, stem + ".png")).convert("RGBA")
-        if list(im.size) != list(self.decl["canvas"]):
+        want = list(canvas or self.decl["canvas"])
+        if list(im.size) != want:
             sys.exit(f"preview.py: {stem}.png is {im.size[0]}x{im.size[1]}, but render.json "
-                     f"declares a {self.decl['canvas'][0]}x{self.decl['canvas'][1]} canvas")
+                     f"declares a {want[0]}x{want[1]} canvas")
+        if cut_it and self.masks[d] is not None:
+            im = pack.cut(im, self.masks[d])[0]
         return im
 
     def kind(self, kind):
@@ -82,28 +116,51 @@ class Model:
     def panel(self, d, working, frames=None):
         """The building in direction d on the ground, at canvas size. frames: {animation: frame}, else 0."""
         frames = frames or {}
-        plate = self.open(contract.named(self.kind("plate")[0]["name"], d))
+        plate = self.open(contract.named(self.kind("plate")[0]["name"], d), d)
         im = Image.new("RGBA", plate.size, GROUND)
         black = Image.new("RGBA", plate.size, (0, 0, 0, 255))
         for p in self.kind("shadow"):
-            alpha = pack.clean(self.open(contract.named(p["name"], d))).getchannel("A")
+            alpha = pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False)).getchannel("A")
             im.paste(black, (0, 0), alpha.point(lambda v: v // 2))
-        im.alpha_composite(plate)
+        im.alpha_composite(self.shipped(plate))
+        glows = []
         for a in self.decl["animations"]:
-            im.alpha_composite(pack.clean(self.open(contract.frame(a["name"], frames.get(a["name"], 0), d))))
+            if a.get("working") and not working:
+                continue                    # drawn only while the machine works (contract.py)
+            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0), d), d)
+            if a.get("kind") == "glow":
+                glows.append(self.shipped(pack.glow_frame(fr, a.get("bloom"))))     # added below, while working
+            elif a.get("kind") == "light":
+                im.alpha_composite(pack.clean(fr))      # a white the engine tints: never rolled off
+            else:
+                im.alpha_composite(self.shipped(pack.clean(fr)))
+        for g in glows if working else ():
+            im = pack.add_light(im, g)
         for p in self.decl["passes"] if working else ():
             if p["kind"] not in contract.WORKING:
                 continue
-            layer = self.open(contract.named(p["name"], d))
-            under = self.open(contract.named(p["over"], d))
+            layer = self.open(contract.named(p["name"], d), d)
+            under = self.open(contract.named(p["over"], d), d)
             if p["kind"] == "paint":
-                im.alpha_composite(pack.paint_layer(layer, under))
+                im.alpha_composite(self.shipped(pack.paint_layer(layer, under)))
             else:
-                glow = pack.glow_layer(layer, under).convert("RGB")
+                glow = self.shipped(pack.glow_layer(layer, under)).convert("RGB")
                 im = Image.merge("RGBA", (*ImageChops.add(im.convert("RGB"), glow).split(), im.getchannel("A")))
         for p in self.kind("light"):
-            lamp = pack.light_layer(self.open(contract.named(p["name"], d)))
+            lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
+        return im
+
+    def wreck(self, d):
+        """The remnants pass in direction d on the ground, at its canvas's size, as pack.py packs it;
+        None when the model declares none."""
+        p = next(iter(self.kind("remnants")), None)
+        if p is None:
+            return None
+        canvas = contract.canvas_of(self.decl, p)
+        im = Image.new("RGBA", tuple(canvas), GROUND)
+        im.alpha_composite(self.shipped(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False,
+                                                             canvas=canvas))))
         return im
 
 
@@ -172,7 +229,9 @@ def review(model, out, adopted):
                  f"{len(model.directions)} ({decl['directions']}), and {len(adopted)} given")
     adopted = [adopted_arg(a) for a in adopted]
     plates = [(Image.open(path).convert("RGBA"), (x * model.ppt, y * model.ppt)) for path, (x, y) in adopted]
-    cw, ch = decl["canvas"]
+    # the model's canvas, and a remnants pass's own when it has one
+    canvases = [decl["canvas"]] + [contract.canvas_of(decl, p) for p in model.kind("remnants")]
+    cw, ch = max(c[0] for c in canvases), max(c[1] for c in canvases)
     pw = max([cw] + [p.width + 2 * abs(s[0]) for p, s in plates]) + 2 * PAD
     ph = max([ch] + [p.height + 2 * abs(s[1]) for p, s in plates]) + 2 * PAD
     pw, ph = int(-(-pw // 1)), int(-(-ph // 1))
@@ -189,6 +248,9 @@ def review(model, out, adopted):
                            f"{name}: adopted" + (f" @{adopted[i][1][0]:g},{adopted[i][1][1]:g}" if any(shift) else "")))
         panels.append((place(model.panel(d, False), (pw, ph), origin), f"{name}: idle"))
         panels.append((place(model.panel(d, True), (pw, ph), origin), f"{name}: working"))
+        wreck = model.wreck(d)
+        if wreck is not None:
+            panels.append((place(wreck, (pw, ph), origin), f"{name}: wreck"))
         for im, _ in panels:
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])
@@ -205,28 +267,41 @@ def gif(model, out, name, speed):
     if not speed > 0:
         sys.exit(f"preview.py: --speed {speed} is not an animation_speed above 0")
     n = anims[name]["frames"]
+    # a glow animation and its plate layer are one animation in the engine, frame for frame:
+    # whichever is asked for, the plate layer and every glow over it play
+    plate = anims[name]["over"] if anims[name].get("kind") == "glow" else name
+    together = {name, plate} | {a["name"] for a in anims.values() if a.get("kind") == "glow" and a["over"] == plate}
+    # the order the engine plays them in: render.json's frame_sequence or hold (1-based), else each once
+    seq = contract.sequence(model.decl, anims[plate])
+    order = [k - 1 for k in seq] if seq else list(range(n))
     fps = 60 * speed
-    frames = []
-    for f in range(n):
-        row = [model.panel(d, True, {name: f}) for d in model.directions]
+    shown = sorted(set(order))
+    frames = {}
+    for f in shown:
+        row = [model.panel(d, True, {a: f for a in together}) for d in model.directions]
         im = Image.new("RGBA", (sum(p.width for p in row), row[0].height), GROUND)
         for i, p in enumerate(row):
             im.alpha_composite(p, (i * p.width, 0))
-        frames.append(im.convert("RGB"))
+        frames[f] = im.convert("RGB")
     # one palette for the loop, so nothing flickers between frames
-    strip = Image.new("RGB", (frames[0].width, frames[0].height * n))
-    for f, im in enumerate(frames):
-        strip.paste(im, (0, f * im.height))
+    w, h = frames[shown[0]].size
+    strip = Image.new("RGB", (w, h * len(shown)))
+    for i, f in enumerate(shown):
+        strip.paste(frames[f], (0, i * h))
     palette = strip.quantize(colors=256)
-    frames = [im.quantize(palette=palette, dither=Image.Dither.NONE) for im in frames]
-    # frame f is up from f / fps seconds: held to the hundredth, as a GIF counts
-    ticks = [round(100 * f / fps) for f in range(n + 1)]
+    frames = {f: im.quantize(palette=palette, dither=Image.Dither.NONE) for f, im in frames.items()}
+    # entry e is up from e / fps seconds; a run of entries on one frame (a hold) is one GIF
+    # frame, up from its first entry to the next run's: each held to the hundredth, as a GIF counts
+    runs = [e for e in range(len(order)) if e == 0 or order[e] != order[e - 1]] + [len(order)]
+    ticks = [round(100 * e / fps) for e in runs]
     durations = [10 * (b - a) for a, b in zip(ticks, ticks[1:])]
     if min(durations) < 20:
         print(f"preview.py: at {fps:g} frames a second some frames are held under 2/100 s, "
               f"which most viewers slow to 1/10 s", file=sys.stderr)
-    frames[0].save(out, save_all=True, append_images=frames[1:], duration=durations, loop=0)
-    print(f"{out}: {name}, {n} frames at {fps:g} a second (held {durations} ms), looping")
+    seen = [frames[order[e]] for e in runs[:-1]]
+    seen[0].save(out, save_all=True, append_images=seen[1:], duration=durations, loop=0)
+    played = f"its frame_sequence, {len(order)} entries of its {n} frames" if seq else f"{n} frames"
+    print(f"{out}: {name}, {played} at {fps:g} a second (held {durations} ms), looping")
 
 
 def main():

@@ -243,6 +243,17 @@ with `working_visualisations`; some prototype types have no such hook (the
 `offshore-pump` has none), so check what the type offers before the art is
 planned. Liam, 2026-10-02.
 
+**Radiant light.** Anything that shows the radiant solution (a glass column
+or tube, a port, a glazed slot, an open surface) is drawn with the shared
+helper, `tools/blender/radiant.py`: smoked glass over a dim navy liquid, with
+the light in an animated glow layer and C's rising bubbles in glass columns
+only. The spec names each such window, its shape, and whether it bubbles. The
+model declares its plate layer and its glow animations (one per halo width,
+grouped by the helper's `groups`) with `window_animation` and
+`glow_animation`, and the pack must show `<glow>_white_px` and
+`<glow>_clipped_px` at 0 for each. No model draws the radiant blue with a
+material of its own.
+
 **Warning / Status Lights:**
 `[hex, what state drives it, or "decorative — the prototype offers no hook"]`
 

@@ -19,8 +19,8 @@
 -- `no_minable_resources` with no script. A future gas costs a resource and a
 -- fluid, and no new machine. The Vent Pump keeps the kamacite vent, alone.
 --
--- Two measurements from spike S10 shape the turbine, and both are the kind that
--- pass every check in the repo while being wrong:
+-- Two measurements from spike S10 and one engine change shape the turbine, and
+-- all three are the kind that pass every check in the repo while being wrong:
 --
 --   1. **`burns_fluid` ignores temperature entirely**, taking its power from the
 --      fluid's `fuel_value`. Measured: a turbine burning gas at 25 degrees with
@@ -31,6 +31,11 @@
 --   2. **`maximum_temperature` is mandatory on a generator even so.** Leaving it
 --      out fails the data stage outright. It does no work in this mode; it still
 --      has to be declared.
+--
+--   3. **`minimum_input_temperature` has to be cleared.** Factorio 2.1.22 gave
+--      the vanilla steam turbine a 100-degree minimum, and the turbine derives
+--      from it: inherited, a minimum stops a generator taking any fluid below
+--      it, so 25-degree gas would never burn. Unset, there is no minimum.
 --
 -- Proven end to end on the rig, because none of it is visible from the data
 -- stage: a pump on a vent, piped to a turbine, under load, produced the declared
@@ -62,7 +67,7 @@ data:extend({
   {
     type = "fluid",
     name = "sae-crust-gas",
-    icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+    icon = "__space-age-extended__/graphics/icons/fluid/siderane.png",
     subgroup = "fluid",
     order = "z[sae]-e[crust-gas]",
     default_temperature = 25,
@@ -215,7 +220,7 @@ local crust_vent =
 {
   type = "resource",
   name = "sae-crust-vent",
-  icon = "__space-age-extended__/graphics/icons/fluid/helium-3.png",
+  icon = "__space-age-extended__/graphics/icons/fluid/siderane.png",
   flags = { "placeable-neutral" },
   category = "sae-gas",
   subgroup = "mineable-fluids",
@@ -520,6 +525,8 @@ turbine.fluid_usage_per_tick = 0.15 -- 9/s at 200 kJ = 1.8 MW
 -- Mandatory even with burns_fluid, where it does nothing at all. Omitting it
 -- fails the data stage with `Key "maximum_temperature" not found`.
 turbine.maximum_temperature = 1000
+-- Inherited from the 2.1.22 steam turbine, it would refuse the gas -- note 3.
+turbine.minimum_input_temperature = nil
 turbine.surface_conditions = { { property = "pressure", max = 9 } }
 turbine.fluid_box = table.deepcopy(turbine.fluid_box)
 turbine.fluid_box.filter = "sae-crust-gas"
@@ -667,7 +674,189 @@ derive.own_graphics(turbine, {
                       ct_still(CT .. "base-shadow-horizontal.png", 350, 168, { 0.39062, 0.15625 }),
                       ct_still(CT .. "status-lens-horizontal.png", 10, 10, { 0.0, -1.10938 }))
 }, "pictures")
-data:extend({ turbine })
+
+-- **Its wreck, and how it goes.** The steam turbine's corpse and explosion
+-- rode along with `derive.from` (derive.lua keeps both on purpose), so the
+-- Siderane turbine died into the steam turbine's rubble. It has its own now,
+-- each written after its vanilla counterpart.
+--
+-- The wreck is the model's remnants pass (T02c, signed off by Liam 2026-10-20),
+-- one sheet of four rows -- lying north-south, east-west, north-south,
+-- east-west -- because a rotated animation's four directions are north, east,
+-- south and west, and a turbine built south or west is built north or east.
+-- Size, shift and layout are copied from
+-- concept/crust-turbine/model/remnants/sheets/meta.json; regenerate with the
+-- turbine's command above and copy sheets/remnants.png here. The shadow is
+-- baked in, as vanilla's is, so it is one layer. Everything else mirrors
+-- steam-turbine-remnants (base/prototypes/entity/remnants.lua): the 3x5
+-- footprint, fifteen minutes on the ground, and left in place under a tile.
+-- Both are named as vanilla names its own, "<the building> (remnant)" and
+-- "(dying explosion)" from core's locale, by the turbine's own entity-name key,
+-- so strings.cfg needs nothing new.
+local turbine_remnants =
+{
+  type = "corpse",
+  name = "sae-crust-turbine-remnants",
+  localised_name = { "remnant-name", { "entity-name.sae-crust-turbine" } },
+  icon = "__space-age-extended__/graphics/icons/crust-turbine.png",
+  icon_size = 64,
+  flags = { "placeable-neutral", "not-on-map" },
+  hidden_in_factoriopedia = true,
+  subgroup = "energy-remnants",
+  order = "a-h-a-z[sae-crust-turbine]",
+  selection_box = { { -1.5, -2.5 }, { 1.5, 2.5 } },
+  tile_width = 3,
+  tile_height = 5,
+  selectable_in_game = false,
+  time_before_removed = 60 * 60 * 15, -- 15 minutes
+  expires = false,
+  final_render_layer = "remnants",
+  remove_on_tile_placement = false,
+  animation =
+  {
+    filename = CT .. "remnants.png",
+    line_length = 1,
+    width = 325,
+    height = 326,
+    direction_count = 4,
+    shift = { -0.02344, 0.01562 },
+    scale = 0.5
+  }
+}
+
+-- **Vanilla metal and fire, sparks, no smoke** (Liam, 2026-10-20: "Vanilla
+-- metal, no smoke", then "Yes, no smoke at all"; sparks in place of the
+-- fireball, and then, from the T06 shots, "I think we should add the
+-- explosion, the core has a small atmosphere if pressure >0": "Fireball +
+-- sparks, no smoke"). The steam turbine's own explosion -- its fireball, its
+-- sound and its shower of metal and machine parts -- with sparks thrown in
+-- and every wisp of smoke taken out.
+--
+--   * **No smoke.** The explosion's `smoke-fast` puffs go, and so do the
+--     wisps the big and medium metal pieces trail as they fly (their
+--     `regular_trigger_effect`, base/prototypes/particles.lua): those two fly
+--     as copies of our own with the trail struck off. Smoke is struck by
+--     field and by effect type, so one vanilla adds later goes too.
+--   * **The fireball stays**, vanilla's medium explosion: the Core has a
+--     small atmosphere wherever its pressure is above 0, so a flash of fire
+--     is fair even where smoke is not.
+--   * **And sparks with it.** The construction robot's repair sparks
+--     (base/graphics/entity/sparks, `robot_animations.sparks` in
+--     base/prototypes/entity/flying-robots.lua), a short fall of glowing
+--     metal sparks, one of its six picked at random. An explosion draws one
+--     animation, and the fireball is it, so the sparks are a small explosion
+--     of their own the big one sets off where it stands -- as a bullet's hit
+--     sets off vanilla's `spark-explosion` (base/prototypes/entity/
+--     hit-effects.lua). They are a robot's, a spot under a tile across, so
+--     vanilla's hit sparks (`spark-particle` and `spark-particle-debris`, what
+--     a bullet strikes off metal) are thrown over the turbine with the debris,
+--     to carry the burst to its 3x5.
+local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
+
+-- A trigger, a delivery or an effect may each be one table or a list of them.
+local function each(x)
+  if x == nil then return {} end
+  if x.type then return { x } end
+  return x
+end
+
+-- A list of trigger effects less any that make smoke, or nil if none is left.
+local function without_smoke(effects)
+  local kept = {}
+  for _, effect in ipairs(each(effects)) do
+    if not SMOKE_EFFECTS[effect.type] then kept[#kept + 1] = effect end
+  end
+  return #kept > 0 and kept or nil
+end
+
+-- The two smoking pieces of vanilla's debris, as ours, without the smoke.
+local SMOKELESS = {}
+for _, size in ipairs({ "big", "medium" }) do
+  local from = "steam-turbine-metal-particle-" .. size
+  local particle = table.deepcopy(data.raw["optimized-particle"][from])
+  assert(particle, "optimized-particle/" .. from .. " does not exist")
+  particle.name = "sae-crust-turbine-metal-particle-" .. size
+  for _, key in ipairs({ "regular_trigger_effect", "ended_on_ground_trigger_effect",
+                         "ended_in_water_trigger_effect" }) do
+    particle[key] = without_smoke(particle[key])
+  end
+  if particle.regular_trigger_effect == nil then particle.regular_trigger_effect_frequency = nil end
+  SMOKELESS[from] = particle.name
+  data:extend({ particle })
+end
+
+-- Vanilla's hit sparks, thrown from about head height. An explosion's offsets
+-- do not turn with the building, so the spread is square, inside the 3x5 lying
+-- either way.
+local function spark_burst(particle_name, count)
+  return
+  {
+    type = "create-particle",
+    repeat_count = count,
+    particle_name = particle_name,
+    offset_deviation = { { -1.25, -1.25 }, { 1.25, 1.25 } },
+    initial_height = 1,
+    initial_height_deviation = 0.5,
+    initial_vertical_speed = 0.04,
+    initial_vertical_speed_deviation = 0.04,
+    speed_from_center = 0.03,
+    speed_from_center_deviation = 0.03,
+    frame_speed = 0.5
+  }
+end
+
+-- The robot's sparks, as an explosion of their own: drawn once where it is
+-- set off, silent, and with nothing else in it.
+local robot_sparks = data.raw["construction-robot"]["construction-robot"].sparks
+assert(robot_sparks, "construction-robot/construction-robot has no sparks")
+local turbine_sparks =
+{
+  type = "explosion",
+  name = "sae-crust-turbine-sparks",
+  icon = "__space-age-extended__/graphics/icons/crust-turbine.png",
+  icon_size = 64,
+  flags = { "not-on-map" },
+  hidden = true,
+  subgroup = "energy-explosions",
+  order = "a-g-a-z[sae-crust-turbine]-b[sparks]",
+  -- On the ground, as the fireball it goes off beside, and as the sparks drew
+  -- when they were the explosion's own animation (T06).
+  height = 0,
+  animations = table.deepcopy(robot_sparks)
+}
+
+local turbine_explosion = table.deepcopy(data.raw.explosion["steam-turbine-explosion"])
+assert(turbine_explosion, "explosion/steam-turbine-explosion does not exist")
+turbine_explosion.name = "sae-crust-turbine-explosion"
+turbine_explosion.icon = "__space-age-extended__/graphics/icons/crust-turbine.png"
+turbine_explosion.icon_size = 64
+turbine_explosion.order = "a-g-a-z[sae-crust-turbine]"
+turbine_explosion.localised_name = { "dying-explosion-name", { "entity-name.sae-crust-turbine" } }
+turbine_explosion.smoke = nil
+turbine_explosion.smoke_count = nil
+turbine_explosion.smoke_slow_down_factor = nil
+for _, trigger in ipairs(each(turbine_explosion.created_effect)) do
+  for _, delivery in ipairs(each(trigger.action_delivery)) do
+    for _, key in ipairs({ "target_effects", "source_effects" }) do
+      local effects = without_smoke(delivery[key])
+      for _, effect in ipairs(effects or {}) do
+        effect.particle_name = SMOKELESS[effect.particle_name] or effect.particle_name
+      end
+      delivery[key] = effects
+    end
+    if delivery.type == "instant" then
+      delivery.target_effects = delivery.target_effects or {}
+      table.insert(delivery.target_effects, spark_burst("spark-particle", 40))
+      table.insert(delivery.target_effects, spark_burst("spark-particle-debris", 20))
+      table.insert(delivery.target_effects,
+                   { type = "create-explosion", entity_name = turbine_sparks.name })
+    end
+  end
+end
+
+turbine.corpse = turbine_remnants.name
+turbine.dying_explosion = turbine_explosion.name
+data:extend({ turbine, turbine_remnants, turbine_sparks, turbine_explosion })
 
 --------------------------------------------------------------------------------
 -- Items and build recipes.

@@ -1,0 +1,109 @@
+{
+ "sizes": [
+  256,
+  128,
+  64,
+  32
+ ],
+ "ss": 4,
+ "margin": 1,
+ "finishes": [
+  "tech"
+ ],
+ "items": [
+  "sae-gravity-crushing"
+ ],
+ "post": {
+  "sae-gravity-crushing": {
+   "256": {
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     5.0,
+     190
+    ]
+   },
+   "128": {
+    "sharpen": [
+     0.6,
+     40
+    ],
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.6,
+     40,
+     2.5,
+     190
+    ]
+   },
+   "64": {
+    "sharpen": [
+     0.6,
+     60
+    ],
+    "contrast": 1.1,
+    "alpha": [
+     30,
+     255
+    ],
+    "shadow": [
+     1.5,
+     40,
+     1.2,
+     190
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "contrast": 1.2,
+    "rim": [
+     0.7,
+     36
+    ],
+    "alpha": [
+     36,
+     255
+    ],
+    "shadow": [
+     1.4,
+     40,
+     0.6,
+     190
+    ]
+   }
+  }
+ },
+ "framing": {
+  "sae-gravity-crushing/tech/256": {
+   "ortho_scale": 4.666907996462102,
+   "w": 213.49373548679546,
+   "h": 228.0
+  },
+  "sae-gravity-crushing/tech/128": {
+   "ortho_scale": 4.666907996462102,
+   "w": 106.74686774339773,
+   "h": 114.0
+  },
+  "sae-gravity-crushing/tech/64": {
+   "ortho_scale": 4.666907996462102,
+   "w": 53.373433871698865,
+   "h": 57.0
+  },
+  "sae-gravity-crushing/tech/32": {
+   "ortho_scale": 4.433562596638997,
+   "w": 28.091280985104667,
+   "h": 30.000000000000004
+  }
+ },
+ "elevation_deg": 40.0
+}

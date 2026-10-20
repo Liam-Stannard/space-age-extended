@@ -121,7 +121,8 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-gas-pump" },
       { type = "unlock-recipe", recipe = "sae-crust-turbine" }
     },
-    { type = "mine-entity", entities = { "sae-core-boulder" } }),
+    { type = "mine-entity", entities = { "sae-core-boulder" } },
+    "__space-age-extended__/graphics/technology/sae-crust-tapping.png"),
 
   -- The survey finds the ore, and the drill is how it comes out. Nothing here
   -- runs without power, and the only power on this planet starts at a gas pump
@@ -137,7 +138,8 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-ballast-drill" }
     },
-    { type = "craft-item", item = "sae-gas-pump" }),
+    { type = "craft-item", item = "sae-gas-pump" },
+    "__space-age-extended__/graphics/technology/sae-core-survey.png"),
 
   -- The crusher and smelting land together, because plate smelting was
   -- re-sourced onto crushed kamacite when the Drop Crusher landed (see
@@ -156,7 +158,8 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-crushing" },
       { type = "unlock-recipe", recipe = "sae-kamacite-smelting" }
     },
-    { type = "craft-item", item = "sae-ballast-drill" }),
+    { type = "craft-item", item = "sae-ballast-drill" },
+    "__space-age-extended__/graphics/technology/sae-gravity-crushing.png"),
 
   -- The furnace for the crusher's second stream, once there is a pile of it.
   --
@@ -171,7 +174,8 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-vacuum-furnace" },
       { type = "unlock-recipe", recipe = "sae-fines-smelting" }
     },
-    { type = "craft-item", item = "sae-kamacite-fines", count = 50 }),
+    { type = "craft-item", item = "sae-kamacite-fines", count = 50 },
+    "__space-age-extended__/graphics/technology/sae-vacuum-sintering.png"),
 
   -- The vent pump, once the furnace is built. Triggered by crafting a Vacuum
   -- furnace, Vacuum sintering's own recipe, so reachable from this
@@ -225,8 +229,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-cryogen",
-    -- Placeholder, recorded below with the others.
-    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon = "__space-age-extended__/graphics/technology/sae-fa-cryogen.png",
     icon_size = 256,
     effects =
     {
@@ -249,8 +252,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-fluorinated-holmium",
-    -- Placeholder, recorded below with the others.
-    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon = "__space-age-extended__/graphics/technology/sae-fa-fluorinated-holmium.png",
     icon_size = 256,
     -- Recovery moved here from `sae-fa-cryogen`. Nothing makes spent cryogen
     -- until fluorination does, so unlocking the loop-closer a technology early
@@ -277,8 +279,7 @@ data:extend({
   {
     type = "technology",
     name = "sae-fa-superconducting-winding",
-    -- Placeholder, recorded below with the others.
-    icon = "__space-age__/graphics/technology/cryogenic-science-pack.png",
+    icon = "__space-age-extended__/graphics/technology/sae-fa-superconducting-winding.png",
     icon_size = 256,
     essential = true,
     effects =
@@ -301,7 +302,3 @@ data:extend({
     }
   }
 })
-
-for _, name in ipairs({ "sae-fa-cryogen", "sae-fa-fluorinated-holmium", "sae-fa-superconducting-winding" }) do
-  derive.placeholder_art(data.raw.technology[name], "wears the cryogenic science pack's technology icon until its own exists")
-end

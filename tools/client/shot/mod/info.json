@@ -1,0 +1,9 @@
+{
+  "name": "sae-shot",
+  "version": "0.1.0",
+  "title": "SAE screenshot probe (test tool, never shipped)",
+  "author": "Liam Stannard",
+  "factorio_version": "2.1",
+  "dependencies": ["base"],
+  "description": "Loaded only by tools/client/shot/shot.sh through tools/client/launch.sh. Builds one entity in each requested direction and state on a cleared patch of a planet's own surface and screenshots it by day and night at each zoom."
+}

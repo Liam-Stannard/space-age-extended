@@ -1,0 +1,62 @@
+{
+ "small | promethium: its own maps and shading": {
+  "lum_p5_50_95": [
+   15,
+   45,
+   135
+  ],
+  "white_px": 248,
+  "clipped_px": 744,
+  "px": 39630
+ },
+ "small | radiant: shading as inherited (red rim)": {
+  "lum_p5_50_95": [
+   6,
+   32,
+   117
+  ],
+  "white_px": 0,
+  "clipped_px": 2185,
+  "px": 42029
+ },
+ "small | radiant: rim light blue (T03, previewed)": {
+  "lum_p5_50_95": [
+   7,
+   34,
+   117
+  ],
+  "white_px": 0,
+  "clipped_px": 2345,
+  "px": 42029
+ },
+ "chunk | promethium: its own maps and shading": {
+  "lum_p5_50_95": [
+   21,
+   49,
+   166
+  ],
+  "white_px": 50,
+  "clipped_px": 247,
+  "px": 5163
+ },
+ "chunk | radiant: shading as inherited (red rim)": {
+  "lum_p5_50_95": [
+   10,
+   44,
+   114
+  ],
+  "white_px": 0,
+  "clipped_px": 377,
+  "px": 5800
+ },
+ "chunk | radiant: rim light blue (T03, previewed)": {
+  "lum_p5_50_95": [
+   11,
+   47,
+   115
+  ],
+  "white_px": 0,
+  "clipped_px": 423,
+  "px": 5800
+ }
+}

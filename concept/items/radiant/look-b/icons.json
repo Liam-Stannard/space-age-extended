@@ -1,0 +1,332 @@
+{
+ "sizes": [
+  64,
+  32,
+  16,
+  8
+ ],
+ "ss": 4,
+ "margin": 1,
+ "finishes": [
+  "radiant"
+ ],
+ "items": [
+  "radiant-chunk",
+  "radiant-fuel",
+  "sae-spent-cell",
+  "radiant-solution"
+ ],
+ "post": {
+  "radiant-chunk": {
+   "64": {
+    "alpha": [
+     16,
+     245
+    ],
+    "rim": [
+     0.7,
+     36
+    ],
+    "contrast": 1.15
+   },
+   "32": {
+    "sharpen": [
+     0.6,
+     50
+    ],
+    "alpha": [
+     20,
+     235
+    ],
+    "rim": [
+     0.7,
+     38
+    ],
+    "contrast": 1.15
+   },
+   "16": {
+    "contrast": 1.25,
+    "sharpen": [
+     0.5,
+     90
+    ],
+    "alpha": [
+     48,
+     208
+    ],
+    "rim": [
+     0.8,
+     40
+    ]
+   },
+   "8": {
+    "contrast": 1.35,
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "alpha": [
+     72,
+     184
+    ],
+    "rim": [
+     0.9,
+     44
+    ]
+   }
+  },
+  "radiant-fuel": {
+   "64": {
+    "alpha": [
+     16,
+     245
+    ],
+    "rim": [
+     1.0,
+     50
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.6,
+     50
+    ],
+    "alpha": [
+     20,
+     235
+    ],
+    "rim": [
+     1.0,
+     50
+    ]
+   },
+   "16": {
+    "contrast": 1.25,
+    "sharpen": [
+     0.5,
+     90
+    ],
+    "alpha": [
+     48,
+     208
+    ],
+    "rim": [
+     1.0,
+     50
+    ]
+   },
+   "8": {
+    "contrast": 1.35,
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "alpha": [
+     72,
+     184
+    ],
+    "rim": [
+     1.0,
+     52
+    ]
+   }
+  },
+  "sae-spent-cell": {
+   "64": {
+    "alpha": [
+     16,
+     245
+    ],
+    "rim": [
+     1.0,
+     50
+    ],
+    "contrast": 1.45
+   },
+   "32": {
+    "sharpen": [
+     0.6,
+     50
+    ],
+    "alpha": [
+     20,
+     235
+    ],
+    "rim": [
+     1.0,
+     50
+    ],
+    "contrast": 1.45
+   },
+   "16": {
+    "contrast": 1.25,
+    "sharpen": [
+     0.5,
+     90
+    ],
+    "alpha": [
+     48,
+     208
+    ],
+    "rim": [
+     1.0,
+     50
+    ]
+   },
+   "8": {
+    "contrast": 1.35,
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "alpha": [
+     72,
+     184
+    ],
+    "rim": [
+     1.0,
+     52
+    ]
+   }
+  },
+  "radiant-solution": {
+   "64": {
+    "alpha": [
+     16,
+     245
+    ],
+    "rim": [
+     1.0,
+     48
+    ]
+   },
+   "32": {
+    "sharpen": [
+     0.6,
+     50
+    ],
+    "alpha": [
+     20,
+     235
+    ],
+    "rim": [
+     1.0,
+     48
+    ]
+   },
+   "16": {
+    "contrast": 1.25,
+    "sharpen": [
+     0.5,
+     90
+    ],
+    "alpha": [
+     48,
+     208
+    ],
+    "rim": [
+     1.0,
+     48
+    ]
+   },
+   "8": {
+    "contrast": 1.35,
+    "sharpen": [
+     0.5,
+     80
+    ],
+    "alpha": [
+     72,
+     184
+    ],
+    "rim": [
+     1.0,
+     50
+    ]
+   }
+  }
+ },
+ "framing": {
+  "radiant-chunk/radiant/64": {
+   "ortho_scale": 1.196618056878811,
+   "w": 61.5,
+   "h": 56.11060842525886
+  },
+  "radiant-chunk/radiant/32": {
+   "ortho_scale": 1.23799605288748,
+   "w": 29.500000000000004,
+   "h": 27.05309115135422
+  },
+  "radiant-chunk/radiant/16": {
+   "ortho_scale": 1.219769248255977,
+   "w": 12.675258304164727,
+   "h": 13.5
+  },
+  "radiant-chunk/radiant/8": {
+   "ortho_scale": 1.346391240755717,
+   "w": 5.7097443869050135,
+   "h": 6.0
+  },
+  "radiant-fuel/radiant/64": {
+   "ortho_scale": 1.9376991085889863,
+   "w": 61.5,
+   "h": 50.08490642365743
+  },
+  "radiant-fuel/radiant/32": {
+   "ortho_scale": 2.031326940504171,
+   "w": 29.500000000000004,
+   "h": 23.925489567760145
+  },
+  "radiant-fuel/radiant/16": {
+   "ortho_scale": 2.2663136234989874,
+   "w": 13.5,
+   "h": 10.83963874675404
+  },
+  "radiant-fuel/radiant/8": {
+   "ortho_scale": 2.577927748362223,
+   "w": 6.0,
+   "h": 4.779376603335894
+  },
+  "sae-spent-cell/radiant/64": {
+   "ortho_scale": 1.9376991085889863,
+   "w": 61.5,
+   "h": 50.08490642365743
+  },
+  "sae-spent-cell/radiant/32": {
+   "ortho_scale": 2.031326940504171,
+   "w": 29.500000000000004,
+   "h": 23.925489567760145
+  },
+  "sae-spent-cell/radiant/16": {
+   "ortho_scale": 2.2663136234989874,
+   "w": 13.5,
+   "h": 10.83963874675404
+  },
+  "sae-spent-cell/radiant/8": {
+   "ortho_scale": 2.577927748362223,
+   "w": 6.0,
+   "h": 4.779376603335894
+  },
+  "radiant-solution/radiant/64": {
+   "ortho_scale": 2.081300750980532,
+   "w": 39.38828105891589,
+   "h": 61.50000000000001
+  },
+  "radiant-solution/radiant/32": {
+   "ortho_scale": 2.169491460767843,
+   "w": 18.893565711187296,
+   "h": 29.5
+  },
+  "radiant-solution/radiant/16": {
+   "ortho_scale": 2.370370299727828,
+   "w": 8.646208037323,
+   "h": 13.500000000000002
+  },
+  "radiant-solution/radiant/8": {
+   "ortho_scale": 2.666666587193807,
+   "w": 3.8427591276991104,
+   "h": 6.0
+  }
+ },
+ "elevation_deg": 45.0
+}
