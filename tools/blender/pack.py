@@ -32,7 +32,9 @@ other, its frames once each in order; its meta.json entry gains frame_sequence, 
 order the engine plays them in (1-based, a hold written out: the prototype's
 frame_sequence as it stands), and its checks <name>_sequence: the entries it plays
 (the actual length every other layer drawn with it must have) and the frames it never
-shows. A glow animation carries its plate layer's.
+shows. A glow animation carries its plate layer's. An animation that declares an
+animation_speed gets it in its meta.json entry as animation_speed, as declared (a glow its
+plate layer's), for measure.py to play it at.
 
 The footprint cut (render.json's `cut`, contract.py): before anything is packed or
 checked, every render but a shadow's -- plate, still, glow, paint and light passes,
@@ -386,6 +388,9 @@ class Packer:
                     dict(entries=len(seq), unused=[k for k in range(1, n + 1) if k not in seq]),
                     f"the frame_sequence it plays in (meta.json, 1-based): its entries, the actual length every "
                     f"layer drawn with it must have ({contract.SEQUENCE_MAX} at most), and the frames it never shows")
+            speed = contract.speed(decl, a)
+            if speed is not None:
+                self.meta[stem]["animation_speed"] = speed
             if a["motion"] == "flow":
                 continue                     # contents moving in place: nothing to hold to a centroid
             if a["motion"] == "cycle":

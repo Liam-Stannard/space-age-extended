@@ -89,25 +89,44 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
              core %, halo %, sat_core, sat_halo, white -- and blue_pct of its lit pixels;
              for an animated glow its frames and its flicker: the light's total luminance
              per frame, flicker_step_pct (the largest change between consecutive frames,
-             the wrap included, over the mean) and range_pct ((max - min) / mean)
-  motion     over the loop (the least common multiple of the animations' frame counts,
-             at most 240, else the longest), each frame drawn as working frame 0 is:
-             moving_pct (covered pixels whose luminance difference from frame 0 is over 30
-             in any frame: r5a's "changing"), strobe_pct (covered pixels whose on-ground
-             luminance reverses by over 20 on consecutive frames 3 or more times a loop:
-             r7's strobe()), the frame steps (pixels changed by over 8 between consecutive
-             frames, measure_animation.py's) with the wrap from the last frame to the
-             first against them, and per layer the same moving_pct with that layer alone
-             over the plate
+             the wrap included, over the mean) and range_pct ((max - min) / mean). A timed
+             glow (below) is played over its own loop: the frames it shows in the order it
+             shows them, the mean over time (each frame weighted by the ticks it is held),
+             frame 0 the one showing at tick 0; and played_frames and loop_ticks are added
+  motion     over the loop (below), each frame drawn as working frame 0 is: moving_pct
+             (covered pixels whose luminance difference from frame 0 is over 30 in any
+             frame: r5a's "changing"), strobe_pct (covered pixels whose on-ground luminance
+             reverses by over 20 on consecutive frames 3 or more times a loop: r7's
+             strobe(); a pixel's consecutive frames are the steps in which a layer drawn at it
+             changes frame, so another layer's change between two of them does not break its
+             run -- the same as r7's when every layer changes in every step), the frame steps
+             (pixels changed by over 8 between consecutive frames, measure_animation.py's)
+             with the wrap from the last frame to the first against them, and per layer the
+             same moving_pct with that layer alone over the plate, over the frames it shows.
+             Timed, it adds timing (loop_ticks, loop_seconds, complete, frame_ticks: the tick
+             each drawn frame starts at, and per layer its entries, animation_speed, the
+             fraction read from it and its own loop in ticks) and, for information,
+             strobe_own_loop_pct and _px: the pixels reversing 3 or more times in their own
+             loop (that of the layers drawn at them), not the true loop -- a 24-frame layer
+             repeats five times in the Reaction Plant's 3600 ticks, and once a loop five times
+             over reads as five reversals a loop to strobe_pct
   layers_alone  per animation layer with more than one frame (paint, glow or light), its own
              frames as packed, RGBA, not over the plate (concept/crust-tap's
              measure_animation.py's c2 and c4): frame_px, step_px (pixels with a channel or
              alpha more than STEP_CHANGE (8) apart between consecutive frames), wrap_px (the
              last frame to the first) and wrap_within_steps, and most_changed_px with
              between_frames (the two most different frames, more than MOST_CHANGE (24) apart;
-             over every pair up to PAIRS_CAP (120) frames, else null)
+             over every pair up to PAIRS_CAP (120) frames, else null). A timed layer is
+             played alone over its own loop: the steps and the wrap are between the frames
+             it shows, in the order it shows them (a held frame once; a frame shown twice in
+             its sequence twice), the most-changed pair is over the frames it shows
+             (between_frames still 0-based frames of the sheet), and played lists that order
+             (0-based); with no frame changing, step_px is [] and the wrap null. Its speed
+             matters to it alone only above 1, where entries are skipped
   light      per light layer (a white cut the engine tints, not drawn in the figures above),
-             every frame alone, its pixels at alpha over LIGHT_LIT (8): px_range over the
+             every frame alone, in sprite order whatever its sequence (each frame's own
+             figures: px_range and channel_spread_max are over every frame in the sheet,
+             shown or not), its pixels at alpha over LIGHT_LIT (8): px_range over the
              frames, channel_spread_max (the most, in any frame, between its alpha-weighted
              channel means: neutral white is a small spread), and frame 0's px, mean_rgb,
              channel_spread and luminance_range (concept/crust-tap's measure.py
@@ -118,6 +137,38 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
   joins      below
   ports      when the model has port pictures (<sheets>/ports), measure_ports.py's
              comparison of each against assembler 3's outline (missed, extra, far_px)
+
+The timing, the loop the motion figures and a glow's flicker are measured over. Each animated
+layer (paint, glow or light, more than one frame) plays its meta.json frame_sequence (1-based;
+pack.py writes it from render.json's frame_sequence or hold; else its frames in order) at its
+meta.json animation_speed (pack.py copies it from render.json; else 1, the engine's default).
+For a meta.json packed before either was copied, render.json's own (contract.sequence and
+speed) is read. The model, from the 2.1.22 prototype docs (doc-html/prototype-api.json):
+AnimationParameters.animation_speed "the default of `1` means one animation frame per tick
+(60 fps)"; AnimationFrameSequence: "a list of 1-based frame indices into the spritesheet. The
+actual length of the animation will then be the length of the frame_sequence"; the runtime
+docs' LuaRendering.draw_animation: animation_speed "How many frames the animation goes forward
+per tick". So at tick t a layer shows entry floor(t x animation_speed) mod its actual length,
+every layer counted from tick 0 together (the floor and the common start are measure.py's reading:
+the docs give the rate, not the rounding or the phase; the engine's float speed is read as the
+fraction it was written for, 0.11666666666666667 as 7/60: exact_speed). A layer's own loop is
+the ticks until entry 0 starts on a tick again; the true loop the least common multiple of the
+layers' own loops; a drawn frame is each tick at which any layer's frame changes (a held entry,
+or a repeated frame, is no change), the first the one showing at tick 0. At most LOOP_CAP (1200)
+drawn frames: past that, the first 1200 from tick 0, with loop_complete false and a note (the
+wrap is then not one the engine shows). Not modelled, as they scale every layer of a machine
+alike (except a constant_speed working visualisation's): the machine's speed
+(CraftingMachinePrototype.match_animation_speed_to_activity, "based on the machine's speed
+(boosted or slowed by modules)"; perceived_performance) and the graphics set's
+animation_progress (undocumented; vanilla's assembler 3 sets 0.5, the electromagnetic plant
+0.25). Layers put together in one Animation's `layers` run at the first one's speed
+(AnimationPrototype.layers: "animation_speed and max_advance of the first layer are used for
+all layers"); a speed of its own is a working visualisation of its own. A layer with neither a
+sequence nor a speed plays one frame a tick in sprite order, so a loop with none of either
+(untimed) is the least common multiple of the frame counts, as before T05b, and gives the same
+measures.json -- except where that multiple is over 240, which was measured over the longest
+layer's frames alone and is now the true loop (up to LOOP_CAP). With any of either (timed),
+motion gains timing, and a timed glow or layer alone its played order.
 
 The pipe joins, per connection in each direction. A vanilla straight pipe
 (base/graphics/entity/pipe, vertical for a north or south face, horizontal for east or
@@ -230,12 +281,14 @@ imported: `sys.path.insert(0, "tools/blender"); import measure`.
 """
 import argparse
 import glob
+import heapq
 import json
 import math
 import os
 import re
 import subprocess
 import sys
+from fractions import Fraction
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageMath
 
@@ -260,7 +313,8 @@ DARK = 40                           # beside (information): no channel this brig
 SOLID = 224
 BLACK = 20                          # beside (information): no channel this bright, whatever its alpha: shadow
 MAX_SIDE = 8000
-LOOP_CAP = 240
+LOOP_CAP = 1200                     # motion: the most drawn frames of a loop measured (the timing model, above)
+SPEED_DEN = 10 ** 6                 # an animation_speed is read as the simplest fraction this close (exact_speed)
 STEP_CHANGE = 8                     # layers_alone: a step counts a pixel with a channel or alpha over this apart
 MOST_CHANGE = 24                    # layers_alone: the two most different frames, a pixel more than this apart
 PAIRS_CAP = 120                     # layers_alone: most_changed_px over every pair only up to this many frames
@@ -412,18 +466,25 @@ def orange_mask(im):
     return both(both(m1, m2), both(m3, m4))
 
 
-def colour(drawn, paint, idle, frames_drawn=(), frames_paint=()):
+def clip_px(drawn, paint):
+    """Pixels the light drives to white that are not white without it (pack.py's glow_checks)."""
+    return count(ImageChops.subtract(pack.white(drawn), pack.white(on_ground(paint))))
+
+
+def colour(drawn, paint, idle, frames_drawn=(), frames_paint=(), clipped=None):
     """drawn: working frame 0 on ground with its light (RGB); paint: the same without the light
-    (RGBA); idle: the still (RGBA). frames_*: the whole loop, for clipped_px."""
+    (RGBA); idle: the still (RGBA). frames_*: the whole loop, for clipped_px; or clipped: the
+    most clip_px over the loop, worked out already (measure_direction, which streams the loop)."""
     op = covered(paint.getchannel("A"))
     n = max(1, count(op))
     blue = both(blue_mask(drawn), op)
     pale = both(blue, drawn.convert("L").point(lambda v: 255 if v >= 170 else 0))
     orange = both(orange_mask(drawn), op)
     nb = count(blue)
-    clipped = 0
-    for d, p in zip(frames_drawn or [drawn], frames_paint or [paint]):
-        clipped = max(clipped, count(ImageChops.subtract(pack.white(d), pack.white(on_ground(p)))))
+    if clipped is None:
+        clipped = 0
+        for d, p in zip(frames_drawn or [drawn], frames_paint or [paint]):
+            clipped = max(clipped, clip_px(d, p))
     iop = covered(idle.getchannel("A"))
     ig = on_ground(idle)
     ni = max(1, count(iop))
@@ -451,20 +512,27 @@ def light_measures(light, thresh=12):
                 white=sum(1 for p in px if min(p) >= 245))
 
 
-def glow_figures(lights):
-    """One glow layer, its light per frame (RGB)."""
+def glow_figures(lights, durations=None, frames=None):
+    """One glow layer, its light per frame (RGB): every frame in order, or -- durations given --
+    the frames it shows over its own loop as it plays them (Timeline.frames), each held that many
+    ticks, so the mean is over time; frames is then its sprite count."""
     out = light_measures(lights[0])
     lit = Image.new("L", lights[0].size)
     for c in lights[0].split():
         lit = ImageChops.lighter(lit, c.point(lambda v: 255 if v > 12 else 0))
     out["blue_pct"] = round(100 * count(both(blue_mask(lights[0]), lit)) / max(1, count(lit)), 1)
-    out["frames"] = len(lights)
+    out["frames"] = len(lights) if frames is None else frames
     if len(lights) > 1:
         tot = [sum(lights[f].convert("L").histogram()[v] * v for v in range(256)) for f in range(len(lights))]
-        mean = sum(tot) / len(tot)
+        if durations is None:
+            mean = sum(tot) / len(tot)
+        else:
+            mean = sum(t * d for t, d in zip(tot, durations)) / sum(durations)
         steps = [abs(tot[(f + 1) % len(tot)] - tot[f]) for f in range(len(tot))]
         out.update(flicker_step_pct=round(100 * max(steps) / mean, 1) if mean else 0.0,
                    range_pct=round(100 * (max(tot) - min(tot)) / mean, 1) if mean else 0.0)
+    if durations is not None:
+        out.update(played_frames=len(lights), loop_ticks=sum(durations))
     return out
 
 
@@ -512,10 +580,15 @@ def changed(a, b, thr):
     return count(most.point(lambda v: 255 if v > thr else 0))
 
 
-def layer_alone(frames, cap=PAIRS_CAP):
+def layer_alone(frames, cap=PAIRS_CAP, order=None):
     """One animation layer's own frames (RGBA, as packed, not over the plate): its frame steps
     with the wrap against them, and its two most different frames (measure_animation.py's c2
-    and c4)."""
+    and c4). order (0-based frames): the frames as it plays them over its own loop, each change
+    once (Timeline.frames of the layer alone); the steps and the wrap are then between those,
+    the most-changed pair is over the frames it shows, and between_frames still names frames
+    (0-based) of the sheet. None: every frame in sprite order, as before."""
+    if order is not None:
+        return layer_played(frames, list(order), cap)
     n = len(frames)
     s = [changed(frames[f], frames[(f + 1) % n], STEP_CHANGE) for f in range(n)]
     out = dict(frames=n, frame_px=list(frames[0].size), step_px=s[:-1], wrap_px=s[-1],
@@ -527,6 +600,168 @@ def layer_alone(frames, cap=PAIRS_CAP):
     best = max((changed(frames[i], frames[j], MOST_CHANGE), i, j) for i in range(n) for j in range(i + 1, n))
     out.update(most_changed_px=best[0], between_frames=[best[1], best[2]])
     return out
+
+
+def layer_played(frames, order, cap):
+    """layer_alone over the frames a layer plays, in the order it plays them."""
+    m = len(order)
+    out = dict(frames=len(frames), frame_px=list(frames[0].size))
+    if m < 2:
+        out.update(step_px=[], wrap_px=None, step_range=None, wrap_within_steps=None)
+    else:
+        s = [changed(frames[order[i]], frames[order[(i + 1) % m]], STEP_CHANGE) for i in range(m)]
+        out.update(step_px=s[:-1], wrap_px=s[-1], step_range=[min(s[:-1]), max(s[:-1])],
+                   wrap_within_steps=min(s[:-1]) <= s[-1] <= max(s[:-1]))
+    shown = sorted(set(order))
+    if len(shown) > cap:
+        out.update(most_changed_px=None, between_frames=None,
+                   note=f"{len(shown)} frames shown: most_changed_px is measured over every pair only up to {cap}")
+    elif len(shown) < 2:
+        out.update(most_changed_px=None, between_frames=None)
+    else:
+        best = max((changed(frames[i], frames[j], MOST_CHANGE), i, j)
+                   for a, i in enumerate(shown) for j in shown[a + 1:])
+        out.update(most_changed_px=best[0], between_frames=[best[1], best[2]])
+    out["played"] = order
+    return out
+
+
+class Motion:
+    """moving, strobe and the frame steps over a loop's drawn frames, fed one at a time (so a long
+    loop is never held in memory): the same figures as moving(), strobe() and steps() on the whole
+    list. add() each frame after the first with the mask of the step into it, close() with the
+    wrap's. A step's mask (an "L" image, 255 where a layer that changes frame in that step is
+    drawn; None: everywhere) says which pixels the step counts for in the strobe: a pixel's own
+    frames are the steps a layer drawn at it changes in, so another layer's change between two of
+    its frames does not break its run of reversals (strobe() counts every step for every pixel,
+    which is the same when every layer changes in every step)."""
+
+    def __init__(self, first, move=30, thr=20, need=3, step=8):
+        self.first, self.prev = first, first
+        self.g0 = first.convert("L").convert("F")
+        self.gprev = self.g0
+        self.move, self.thr, self.need, self.step = move, thr, need, step
+        self.moving = Image.new("L", first.size)
+        self.steps = []
+        zero = Image.new("F", first.size)
+        self.last, self.firstd, self.seen, self.acc = zero, zero, zero, zero
+
+    def _rev(self, p, q):
+        thr = self.thr
+        return ImageMath.lambda_eval(lambda a: ((a["p"] * a["q"]) < 0) * (abs(a["p"]) > thr) * (abs(a["q"]) > thr),
+                                     p=p, q=q)
+
+    def _step(self, rgb, g, mask):
+        d3 = ImageChops.difference(self.prev, rgb).split()
+        most = ImageChops.lighter(ImageChops.lighter(d3[0], d3[1]), d3[2])
+        self.steps.append(count(most.point(lambda v: 255 if v > self.step else 0)))
+        d = ImageMath.lambda_eval(lambda a: a["x"] - a["y"], x=g, y=self.gprev)
+        r = self._rev(self.last, d)
+        add = ImageMath.lambda_eval(lambda a: a["x"] + a["y"], x=self.acc, y=r)
+        if mask is None:
+            self.acc = add
+            self.firstd = ImageMath.lambda_eval(lambda a: a["f"] + a["d"] * (1 - a["s"]),
+                                                f=self.firstd, d=d, s=self.seen)
+            self.seen = Image.new("F", d.size, 1.0)
+            self.last = d
+        else:
+            m = ImageMath.lambda_eval(lambda a: a["m"] > 0, m=mask.convert("F"))
+            self.acc = ImageMath.lambda_eval(lambda a: a["x"] + a["r"] * a["m"], x=self.acc, r=r, m=m)
+            self.firstd = ImageMath.lambda_eval(lambda a: a["f"] + a["d"] * a["m"] * (1 - a["s"]),
+                                                f=self.firstd, d=d, m=m, s=self.seen)
+            self.seen = ImageMath.lambda_eval(lambda a: a["s"] + a["m"] * (1 - a["s"]), s=self.seen, m=m)
+            self.last = ImageMath.lambda_eval(lambda a: a["l"] * (1 - a["m"]) + a["d"] * a["m"], l=self.last, d=d, m=m)
+
+    def add(self, rgb, mask=None):
+        """The next drawn frame (RGB), and the mask of the step into it."""
+        self.moving = ImageChops.lighter(self.moving, ImageChops.difference(self.first, rgb).convert("L").point(
+            lambda v: 255 if v > self.move else 0))
+        g = rgb.convert("L").convert("F")
+        self._step(rgb, g, mask)
+        self.prev, self.gprev = rgb, g
+
+    def close(self, mask=None):
+        """The wrap, from the last frame back to the first, and the strobe map: the mask, the steps
+        (the wrap last)."""
+        self._step(self.first, self.g0, mask)
+        self.acc = ImageMath.lambda_eval(lambda a: a["x"] + a["y"], x=self.acc, y=self._rev(self.last, self.firstd))
+        need = self.need
+        return ImageMath.lambda_eval(lambda a: (a["x"] >= need) * 255, x=self.acc).convert("L")
+
+
+# ---------------------------------------------------------------- the engine's timing
+
+def exact_speed(v):
+    """An animation_speed as the fraction it was written for: 0.11666666666666667 is 7/60 (the
+    simplest fraction with a denominator up to SPEED_DEN within a billionth of it), else the
+    float's own value."""
+    f = Fraction(v)
+    g = f.limit_denominator(SPEED_DEN)
+    return g if abs(g - f) <= f / 10 ** 9 else f
+
+
+class Play:
+    """One layer as the engine plays it (see the timing model in the module docstring): entries
+    (0-based frames: its frame_sequence, else its frames in order) at speed (a Fraction) entries
+    a tick; at tick t it shows entries[floor(t * speed) mod len(entries)]."""
+
+    def __init__(self, entries, speed):
+        self.entries, self.speed = list(entries), speed
+        self.n = len(self.entries)
+        self.p, self.q = speed.numerator, speed.denominator
+        self.loop = self.n * self.q // math.gcd(self.p, self.n)     # ticks until entry 0 starts on a tick again
+
+    def at(self, t):
+        return self.entries[(t * self.p // self.q) % self.n]
+
+    def changes(self, end):
+        """The ticks in [0, end), in order, whose frame differs from the tick before's (tick 0's
+        against the loop's last tick)."""
+        if len(set(self.entries)) < 2:          # one frame throughout: it never changes
+            return
+        if self.p <= self.q:                    # at most one entry a tick: only where an entry starts
+            k = 0
+            while True:
+                t = -(-k * self.q // self.p)
+                if t >= end:
+                    return
+                if self.entries[k % self.n] != self.entries[(k - 1) % self.n]:
+                    yield t
+                k += 1
+        for t in range(end):
+            if self.at(t) != self.at(t - 1):
+                yield t
+
+
+class Timeline:
+    """Layers played together over their true loop: the least common multiple of their own loops,
+    in ticks. frames: the tick each drawn frame starts at, one per change of any layer, the first
+    the frame showing at tick 0 (negative when it began in the loop's last ticks, as a hold across
+    the loop's end does); states: each frame's frames (0-based), one per layer. At most cap
+    frames: past it, the first cap from tick 0, complete False."""
+
+    def __init__(self, plays, cap=LOOP_CAP):
+        self.plays = plays
+        self.ticks = 1
+        for pl in plays:
+            self.ticks = self.ticks * pl.loop // math.gcd(self.ticks, pl.loop)
+        ev = []
+        for t in heapq.merge(*(pl.changes(self.ticks) for pl in plays)):
+            if not ev or ev[-1] != t:
+                ev.append(t)
+                if len(ev) > cap:
+                    break
+        self.complete = len(ev) <= cap
+        if not ev:
+            ev = [0]
+        elif not self.complete:
+            ev = ev[:cap] if ev[0] == 0 else [0] + ev[:cap - 1]
+        elif ev[0] != 0:
+            ev = [ev[-1] - self.ticks] + ev[:-1]
+        self.frames = ev
+        self.states = [tuple(pl.at(t) for pl in plays) for t in ev]
+        ends = ev[1:] + [ev[0] + self.ticks]
+        self.durations = [b - a for a, b in zip(ev, ends)] if self.complete else None
 
 
 def light_figures(frames):
@@ -562,9 +797,38 @@ def pack_checks(meta, dn):
 # ---------------------------------------------------------------- what is being measured
 
 class Layer:
-    def __init__(self, stem, kind, meta, working=False):
+    """One sheet. Its timing: meta.json's frame_sequence (1-based) and animation_speed, which
+    pack.py copies from render.json; declared, render.json's own (contract.sequence and speed),
+    for a meta.json packed before they were copied."""
+
+    def __init__(self, stem, kind, meta, working=False, declared=(None, None)):
         self.stem, self.kind, self.meta, self.working = stem, kind, meta, working
         self.frames = int(meta.get("frames", 1))
+        seq = meta.get("frame_sequence", declared[0])
+        speed = meta.get("animation_speed", declared[1])
+        n = self.frames
+        if seq is not None and not (isinstance(seq, list) and seq and all(
+                isinstance(k, int) and not isinstance(k, bool) and 1 <= k <= n for k in seq)):
+            raise Usage(f"{stem}: frame_sequence {seq!r} is not a list of frame numbers from 1 to {n} (1-based)")
+        if speed is not None and not (isinstance(speed, (int, float)) and not isinstance(speed, bool)
+                                      and math.isfinite(speed) and speed > 0):
+            raise Usage(f"{stem}: animation_speed {speed!r} is not a number above 0")
+        self.sequence, self.speed = seq, speed
+        self.timed = seq is not None or speed is not None
+        self.play = Play([k - 1 for k in seq] if seq else range(n),
+                         exact_speed(speed) if speed is not None else Fraction(1))
+        self._alone = None
+
+    @property
+    def alone(self):
+        """The layer played alone over its own loop (a Timeline)."""
+        if self._alone is None:
+            self._alone = Timeline([self.play])
+        return self._alone
+
+    def order(self):
+        """The frames (0-based) it shows over its own loop, as it plays them, each change once."""
+        return [st[0] for st in self.alone.states]
 
 
 class Source:
@@ -638,7 +902,8 @@ class Source:
                 stem = contract.named(a["name"], dn)
                 kind = {"paint": "anim", "light": "light", "glow": "glow-anim"}[a.get("kind", "paint")]
                 if stem in self.meta:
-                    layers.append(Layer(stem, kind, self.meta[stem], working=a.get("working", False)))
+                    layers.append(Layer(stem, kind, self.meta[stem], working=a.get("working", False),
+                                        declared=(contract.sequence(self.decl, a), contract.speed(self.decl, a))))
         else:
             suffix = f"-{dn}" if dn else ""
             for k, m in self.meta.items():
@@ -709,7 +974,8 @@ class Source:
 
 
 class Scene:
-    """One direction, drawn: the plate, the still, the loop's frames and their light."""
+    """One direction, drawn: the plate, the still, the loop's frames and their light. The loop is
+    the animated layers' Timeline: drawn frame j shows each layer at its frame in states[j]."""
 
     def __init__(self, src, dn):
         self.src, self.dn = src, dn
@@ -721,11 +987,12 @@ class Scene:
         self.paints = [lay for lay in L if lay.kind == "paint"]
         self.glows = [lay for lay in L if lay.kind in ("glow", "glow-anim")]
         self.shadows = [lay for lay in L if lay.kind == "shadow"]
-        counts = [lay.frames for lay in self.anims + self.glows if lay.frames > 1]
-        n = 1
-        for c in counts:
-            n = n * c // math.gcd(n, c)
-        self.loop = n if n <= LOOP_CAP else max(counts)
+        self.moving = [lay for lay in self.anims + self.glows if lay.frames > 1]
+        self.slot = {lay.stem: i for i, lay in enumerate(self.moving)}
+        self.timeline = Timeline([lay.play for lay in self.moving])
+        self.loop = len(self.timeline.frames)
+        self.timed = any(lay.timed for lay in self.moving)
+        self._touch = {}
         self.still = self.plate.copy()
         for lay in self.anims:
             if not lay.working:
@@ -736,23 +1003,85 @@ class Scene:
             s.putalpha(s.getchannel("A").point(lambda v: v // 2))
             self.shadow.alpha_composite(Image.merge("RGBA", (*Image.new("RGB", s.size).split(), s.getchannel("A"))))
 
-    def paint(self, f):
+    def sprite(self, lay, j):
+        """lay's frame (0-based) in drawn frame j."""
+        i = self.slot.get(lay.stem)
+        return 0 if i is None else self.timeline.states[j][i]
+
+    def paint(self, j=0):
         im = self.plate.copy()
         for lay in self.anims + self.paints:
-            im.alpha_composite(self.src.place(self.src.frame(lay, f), lay.meta["shift"]))
+            im.alpha_composite(self.src.place(self.src.frame(lay, self.sprite(lay, j)), lay.meta["shift"]))
         return im
 
-    def light(self, f, only=None):
+    def light(self, j=0, only=None, sprite=None):
+        """The glows' light in drawn frame j; only: one glow alone, at its frame `sprite` if given."""
         out = Image.new("RGB", self.plate.size)
         for lay in self.glows:
             if only is None or lay is only:
-                out = ImageChops.add(out, light_of(self.src.place(self.src.frame(lay, f), lay.meta["shift"])))
+                k = self.sprite(lay, j) if sprite is None else sprite
+                out = ImageChops.add(out, light_of(self.src.place(self.src.frame(lay, k), lay.meta["shift"])))
         return out
 
-    def drawn(self, f):
-        """Frame f as the engine draws it working, on ground."""
-        p = self.paint(f)
-        return ImageChops.add(on_ground(p), self.light(f)), p
+    def drawn(self, j=0):
+        """Drawn frame j as the engine draws it working, on ground."""
+        p = self.paint(j)
+        return ImageChops.add(on_ground(p), self.light(j)), p
+
+    def touch(self, lay):
+        """Where a layer draws anything in any frame it shows ("L"): a paint layer's alpha above 0,
+        a glow's light above 0."""
+        if lay.stem not in self._touch:
+            m = Image.new("L", self.plate.size)
+            for k in set(lay.order()):
+                im = self.src.place(self.src.frame(lay, k), lay.meta["shift"])
+                if lay.kind == "anim":
+                    a = im.getchannel("A")
+                else:
+                    a = Image.new("L", im.size)
+                    for c in light_of(im).split():
+                        a = ImageChops.lighter(a, c)
+                m = ImageChops.lighter(m, a.point(lambda v: 255 if v > 0 else 0))
+            self._touch[lay.stem] = m
+        return self._touch[lay.stem]
+
+    def step_mask(self, j, k):
+        """The step from drawn frame j to k: None when every layer changes frame in it, else where
+        the layers that do are drawn."""
+        a, b = self.timeline.states[j], self.timeline.states[k]
+        ch = [lay for lay, x, y in zip(self.moving, a, b) if x != y]
+        if len(ch) == len(self.moving):
+            return None
+        m = Image.new("L", self.plate.size)
+        for lay in ch:
+            m = ImageChops.lighter(m, self.touch(lay))
+        return m
+
+
+def strobe_own_loop(sc, acc, need=3):
+    """Information beside strobe_pct, for a timed loop: the pixels whose reversals (acc, Motion's
+    count over the true loop) come to `need` or more in their own loop -- the loop of the layers
+    drawn at them (the least common multiple of theirs), which repeats true loop / own loop times
+    in the true loop -- so a pixel of a layer that repeats five times in it is not counted for
+    reversing once a loop. An "L" mask; None when the loop is cut at the cap or has over 30 layers."""
+    tl = sc.timeline
+    if not tl.complete or len(sc.moving) > 30:
+        return None
+    code = Image.new("I", sc.plate.size)
+    for i, lay in enumerate(sc.moving):
+        bit = 1 << i
+        code = ImageMath.lambda_eval(lambda a: a["c"] + (a["m"] > 0) * bit, c=code, m=sc.touch(lay))
+    thr = Image.new("I", sc.plate.size)
+    for _, c in code.getcolors(code.width * code.height):
+        if c == 0:
+            continue
+        own = 1
+        for i, lay in enumerate(sc.moving):
+            if c >> i & 1:
+                own = own * lay.play.loop // math.gcd(own, lay.play.loop)
+        n = need * (tl.ticks // own)
+        thr = ImageMath.lambda_eval(lambda a: a["t"] + (a["c"] == c) * n, t=thr, c=code)
+    return ImageMath.lambda_eval(lambda a: (a["x"] >= a["t"]) * (a["c"] > 0) * 255, x=acc, t=thr, c=code).convert("L")
 
 
 def measure_direction(src, dn, conns):
@@ -764,39 +1093,70 @@ def measure_direction(src, dn, conns):
     out["coverage"] = coverage(sc.still, foot, src.origin)
     out["tonal"] = dict(plate=tonal(sc.plate), still=tonal(sc.still))
     out["finish"] = dict(plate=finish(sc.plate), still=finish(sc.still))
-    frames = [sc.drawn(f) for f in range(sc.loop)]
-    out["colour"] = colour(frames[0][0], frames[0][1], sc.still, [d for d, _ in frames], [p for _, p in frames])
+    # the loop, drawn frame by frame and not kept: colour's clipped_px and the motion figures
+    first, clipped, mo = None, 0, None
+    for j in range(sc.loop):
+        d, p = sc.drawn(j)
+        clipped = max(clipped, clip_px(d, p))
+        if j == 0:
+            first = (d, p)
+            mo = Motion(d) if sc.loop > 1 else None
+        else:
+            mo.add(d, sc.step_mask(j - 1, j))
+    out["colour"] = colour(first[0], first[1], sc.still, clipped=clipped)
     out["glow"] = {}
     for lay in sc.glows:
-        lights = [sc.light(f, lay) for f in range(lay.frames)]
-        out["glow"][lay.stem] = glow_figures(lights)
+        if lay.timed and lay.frames > 1:
+            lights = [sc.light(only=lay, sprite=k) for k in lay.order()]
+            out["glow"][lay.stem] = glow_figures(lights, lay.alone.durations, lay.frames)
+        else:
+            lights = [sc.light(only=lay, sprite=f) for f in range(lay.frames)]
+            out["glow"][lay.stem] = glow_figures(lights)
     out["motion"] = None
     maps = {}
-    if sc.loop > 1:
-        rgb = [d for d, _ in frames]
+    if mo:
+        st_map = mo.close(sc.step_mask(sc.loop - 1, 0))
         op = covered(sc.still.getchannel("A"))
         n = max(1, count(op))
-        mv, st = both(moving(rgb), op), both(strobe(rgb), op)
-        s = steps(rgb)
+        mv, st = both(mo.moving, op), both(st_map, op)
+        s = mo.steps
         per = {}
         for lay in sc.anims + [g for g in sc.glows if g.frames > 1]:
             if lay.kind == "anim":
                 fr = []
-                for f in range(lay.frames):
+                for f in lay.order():
                     im = sc.plate.copy()
                     im.alpha_composite(src.place(src.frame(lay, f), lay.meta["shift"]))
                     fr.append(on_ground(im))
             else:
-                fr = [ImageChops.add(on_ground(sc.plate), sc.light(f, lay)) for f in range(lay.frames)]
+                fr = [ImageChops.add(on_ground(sc.plate), sc.light(only=lay, sprite=f)) for f in lay.order()]
             per[lay.stem] = round(100 * count(both(moving(fr), op)) / n, 2)
         out["motion"] = dict(loop_frames=sc.loop, moving_pct=round(100 * count(mv) / n, 2),
                              strobe_pct=round(100 * count(st) / n, 2), strobe_px=count(st),
                              step_px=s[:-1], wrap_px=s[-1],
                              wrap_within_steps=(min(s[:-1]) <= s[-1] <= max(s[:-1])) if len(s) > 1 else True,
                              per_layer_moving_pct=per)
+        tl = sc.timeline
+        if sc.timed:
+            own = strobe_own_loop(sc, mo.acc)
+            if own is not None:
+                own = both(own, op)
+                out["motion"].update(strobe_own_loop_pct=round(100 * count(own) / n, 2), strobe_own_loop_px=count(own))
+            out["motion"]["timing"] = dict(
+                loop_ticks=tl.ticks, loop_seconds=round(tl.ticks / 60, 3), complete=tl.complete,
+                frame_ticks=tl.frames,
+                layers={lay.stem: dict(entries=lay.play.n, frame_sequence=lay.sequence is not None,
+                                       animation_speed=lay.speed, as_fraction=f"{lay.play.speed}",
+                                       loop_ticks=lay.play.loop) for lay in sc.moving})
+        if not tl.complete:
+            out["motion"]["loop_complete"] = False
+            out["motion"]["note"] = (f"the true loop is {tl.ticks} ticks, over {LOOP_CAP} drawn frames: measured "
+                                     f"over its first {LOOP_CAP} from tick 0; the wrap is from the last of them "
+                                     f"back to the first, not a step the engine shows")
         maps = dict(moving=mv, strobe=st)
     alone = [lay for lay in sc.anims + sc.glows + src.lights[dn] if lay.frames > 1]
-    out["layers_alone"] = {lay.stem: layer_alone([src.frame(lay, f) for f in range(lay.frames)]) for lay in alone}
+    out["layers_alone"] = {lay.stem: layer_alone([src.frame(lay, f) for f in range(lay.frames)],
+                                                 order=lay.order() if lay.timed else None) for lay in alone}
     out["light"] = {lay.stem: light_figures([src.frame(lay, f) for f in range(lay.frames)])
                     for lay in src.lights[dn]}
     out["pack_checks"] = pack_checks(src.meta, dn)
@@ -1514,7 +1874,9 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
             mo = m["motion"]
             panels.append(captioned(mv.crop(box), ["motion map: moving magenta, strobing cyan, 1x",
                                                    f"moving {mo['moving_pct']} %, strobe {mo['strobe_pct']} % "
-                                                   f"over {mo['loop_frames']} frames",
+                                                   f"over {mo['loop_frames']} frames" + (
+                                                       f", {mo['timing']['loop_ticks']} ticks" if "timing" in mo
+                                                       else ""),
                                                    f"wrap {mo['wrap_px']} px against steps "
                                                    f"{min(mo['step_px'] or [0])}-{max(mo['step_px'] or [0])}"]))
         for name in refs:
@@ -1550,9 +1912,12 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
                                  "both white"]))
     lines = []
     for dn in scenes:
-        lines.append(f"[{dn or 'one'}] " + json.dumps({k: v for k, v in result["directions"][dn].items()
-                                                       if k in ("coverage", "tonal", "finish", "colour", "glow",
-                                                                "motion")}))
+        figs = {k: v for k, v in result["directions"][dn].items()
+                if k in ("coverage", "tonal", "finish", "colour", "glow", "motion")}
+        if figs.get("motion") and "timing" in figs["motion"]:       # a long loop's ticks: measures.json only
+            figs["motion"] = dict(figs["motion"], timing={k: v for k, v in figs["motion"]["timing"].items()
+                                                          if k != "frame_ticks"})
+        lines.append(f"[{dn or 'one'}] " + json.dumps(figs))
     blocks.append(text_block("FIGURES (measures.json)", lines, 1600))
     ims, unsplit = pages(blocks, max_side)
     for old in glob.glob(os.path.join(out, "comparison*.png")):

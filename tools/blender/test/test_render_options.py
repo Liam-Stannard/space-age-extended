@@ -18,7 +18,9 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              frame_sequence with a frame outside 1..frames, empty, or over 255 entries; a hold
              without entries, with a key it does not know, or over 255 entries written out;
              both at once; either on a glow animation; a cut naming N, a face twice, or not
-             a list. Accepted: 255 entries exactly, a hold with and without each, cut [].
+             a list; an animation_speed of 0, below 0, a string, true or not finite, or on a
+             glow animation. Accepted: 255 entries exactly, a hold with and without each,
+             cut [], animation_speed 7/60 and 1.
   sequence   hold {frame 1, entries 6, each 2} on the slider: meta.json's slider-<direction>
              carries frame_sequence [1,1,2,2,3,3,4,4,1,1,1,1,1,1], checks slider_sequence
              entries 14, unused []; every sheet byte for byte as packed without it, and the
@@ -29,6 +31,10 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              frame the same picture; without it, four frames held [70, 60, 70, 70].
              With <radiant-out>: a hold on "window" is carried by window-glow and
              column-glow too.
+  speed      animation_speed 0.25 on the slider: meta.json's slider-<direction> carries
+             animation_speed 0.25; every sheet byte for byte as packed without it, and the
+             rest of meta.json the same. With <radiant-out>: animation_speed 7/60 on "window"
+             is carried by window-glow and column-glow too.
   cut        cut [E, W, S] on the box's own renders: the plate's faint haze one pixel past
              its edges (alpha 3) cleared, so base is 2 tiles + the 1 px rims wide (130 px,
              134 uncut) and half_width_tiles and footprint_rows_tiles stay 1.0; cut_px lists
@@ -51,7 +57,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              <a> x <b>" line with "clashes 1": FAIL alone, PASS with a --collide-allow
              naming the whole pair line (1 allowed, and the render goes ahead), a second
              pattern that matched nothing printed as such; a pattern that is not a regular
-             expression, or --collide-allow without --collide: exit 2.
+             expression, one that matches the empty string (".*"), or --collide-allow without
+             --collide: exit 2.
 """
 import argparse
 import copy
@@ -173,6 +180,15 @@ def test_contract(decl0):
         d["animations"].append(dict(name="slider-light", frames=4, motion="flow", kind="glow", over="slider",
                                     hold=dict(frame=1, entries=2)))
     case("hold on a glow animation refused", glow_with_hold, "animations[1].hold")
+    case("animation_speed 7/60 accepted", anim(animation_speed=7 / 60))
+    case("animation_speed 1 accepted", anim(animation_speed=1))
+    for label, v in (("0", 0), ("below 0", -0.5), ("a string", "7/60"), ("true", True), ("not finite", float("inf"))):
+        case(f"animation_speed {label} refused", anim(animation_speed=v), f"{slider}.animation_speed")
+
+    def glow_with_speed(d):
+        d["animations"].append(dict(name="slider-light", frames=4, motion="flow", kind="glow", over="slider",
+                                    animation_speed=0.5))
+    case("animation_speed on a glow animation refused", glow_with_speed, "animations[1].animation_speed")
 
 
 # ---------------------------------------------------------------- sequence
@@ -244,6 +260,42 @@ def test_sequence(box, out, radiant):
         ok = code == 0 and all(meta[contract.named(n, d)].get("frame_sequence") == want_r
                                for n in ("window", "window-glow", "column-glow") for d in rdirs)
         check("radiant: a hold on window is carried by window-glow and column-glow", ok, text[-400:])
+
+
+# ---------------------------------------------------------------- speed
+
+def test_speed(box, out, radiant):
+    print("speed")
+    src = os.path.join(box, "renders")
+    dirs = [d for d, _ in contract.DIRECTIONS[json.load(open(os.path.join(src, contract.FILE)))["directions"]]]
+    base = renders_copy(src, os.path.join(out, "speed-none"))
+    _, _, meta0 = packed(base, os.path.join(out, "speed-none-sheets"))
+    fast = renders_copy(src, os.path.join(out, "speed-slider"),
+                        lambda d: d["animations"][0].update(animation_speed=0.25))
+    code, text, meta = packed(fast, os.path.join(out, "speed-slider-sheets"))
+    check("speed: pack.py exits 0", code == 0, text[-400:])
+    for d in dirs:
+        stem = contract.named("slider", d)
+        check(f"speed: meta.json {stem} animation_speed 0.25", meta[stem].get("animation_speed") == 0.25,
+              f"{meta[stem].get('animation_speed')}")
+    same = all(same_bytes(os.path.join(out, "speed-none-sheets", f), os.path.join(out, "speed-slider-sheets", f))
+               for f in sheets(os.path.join(out, "speed-none-sheets")))
+    check("speed: every sheet byte for byte as without it", same and sheets(os.path.join(out, "speed-none-sheets"))
+          == sheets(os.path.join(out, "speed-slider-sheets")))
+    stripped = copy.deepcopy(meta)
+    for d in dirs:
+        stripped[contract.named("slider", d)].pop("animation_speed")
+    check("speed: the rest of meta.json as without it", stripped == meta0)
+    if radiant:
+        rsrc = os.path.join(radiant, "renders")
+        rd = renders_copy(rsrc, os.path.join(out, "speed-radiant"),
+                          lambda d: next(a for a in d["animations"] if a["name"] == "window").update(
+                              animation_speed=7 / 60))
+        code, text, meta = packed(rd, os.path.join(out, "speed-radiant-sheets"))
+        rdirs = [d for d, _ in contract.DIRECTIONS[json.load(open(os.path.join(rd, contract.FILE)))["directions"]]]
+        ok = code == 0 and all(meta[contract.named(n, d)].get("animation_speed") == 7 / 60
+                               for n in ("window", "window-glow", "column-glow") for d in rdirs)
+        check("radiant: animation_speed on window is carried by window-glow and column-glow", ok, text[-400:])
 
 
 # ---------------------------------------------------------------- cut
@@ -456,6 +508,10 @@ def test_collide(out):
     check("--collide-allow '(': exit 2, nothing rendered",
           code == 2 and "not a regular expression" in text and not os.path.exists(os.path.join(o6, "blender.log")),
           f"exit {code}: {text[-300:]}")
+    o7, code, text, _ = render("empty-pattern", meant, "--collide", "--collide-allow", ".*")
+    check("--collide-allow '.*' (matches the empty string): exit 2, nothing rendered",
+          code == 2 and "matches the empty string" in text and not os.path.exists(os.path.join(o7, "blender.log")),
+          f"exit {code}: {text[-300:]}")
     _, code, text, _ = render("lone-allow", meant, "--collide-allow", "x")
     check("--collide-allow without --collide: exit 2", code == 2 and "goes with --collide" in text,
           f"exit {code}: {text[-300:]}")
@@ -471,6 +527,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     test_contract(json.load(open(os.path.join(a.box, "renders", contract.FILE))))
     test_sequence(a.box, out, a.radiant)
+    test_speed(a.box, out, a.radiant)
     test_cut(a.box, out)
     test_collide(out)
     print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))

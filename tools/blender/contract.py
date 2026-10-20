@@ -88,6 +88,17 @@ a pass: everything they act on is declared here.
               checks; preview.py --gif plays it. A glow animation declares neither: it
               is drawn frame for frame with its plate layer, so it plays that layer's
               sequence (sequence(), below)
+              animation_speed (optional): the prototype's animation_speed, the entries
+              (of frame_sequence, or the frames in order) the layer goes forward a tick
+              at the machine's own speed: a number above 0, 1 (the engine's default)
+              one a tick, 7/60 one every 60/7 ticks. Left out, the layer has no declared
+              speed, and measure.py takes the engine's default, 1. Each layer may have
+              its own, as a working_visualisation of its own; layers put together in one
+              Animation's `layers` all run at the first one's speed (AnimationPrototype,
+              2.1: "animation_speed ... of the first layer are used for all layers"), so
+              give those one speed. pack.py copies it into meta.json; measure.py plays
+              each layer at it. A glow animation declares none: it plays its plate
+              layer's (speed(), below)
   ports       [{tile, face, neck}]: one fitting per face, `tile` the centre of the
               footprint tile it sits on (tiles, y down, entity centre 0,0, as a
               pipe connection's position), `face` N, E, S or W. Rendered with
@@ -174,6 +185,14 @@ def sequence(decl, anim):
     if anim.get("kind") == "glow":
         anim = next(a for a in decl["animations"] if a["name"] == anim["over"])
     return _played(anim) if "frame_sequence" in anim or "hold" in anim else None
+
+
+def speed(decl, anim):
+    """The animation_speed the engine plays an animation at: its own, or -- a glow -- its plate
+    layer's. None when it declares none (the engine then takes 1)."""
+    if anim.get("kind") == "glow":
+        anim = next(a for a in decl["animations"] if a["name"] == anim["over"])
+    return anim.get("animation_speed")
 
 
 def footprint_in(decl, direction):
@@ -358,6 +377,14 @@ def validate(decl, where):
         if given and a.get("kind") == "glow":
             bad(f"{field}.{given[0]}", f"glow animation {a['name']!r} is drawn frame for frame with its plate "
                 f"layer {a.get('over')!r} and plays its sequence: declare the sequence there")
+        if "animation_speed" in a:
+            v = a["animation_speed"]
+            if a.get("kind") == "glow":
+                bad(f"{field}.animation_speed", f"glow animation {a['name']!r} is drawn frame for frame with its "
+                    f"plate layer {a.get('over')!r} and plays at its speed: declare the speed there")
+            if not (_number(v) and v > 0):
+                bad(f"{field}.animation_speed", f"{v!r} is not a number above 0: the entries the layer goes "
+                    f"forward a tick, as the prototype's animation_speed (1 = one a tick)")
         n = a["frames"]
         if "frame_sequence" in a:
             s = a["frame_sequence"]

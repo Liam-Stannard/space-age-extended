@@ -52,7 +52,10 @@
 # run. A run without --ports, --icon or --collide leaves none of those behind either.
 #
 # **--collide** runs the model's own clash check first, before anything renders:
-#   $BLENDER -b --python-exit-code 1 --python <model.py> -- <out-dir>/collide --collide
+#   $BLENDER -b --python-exit-code 1 --python-expr <make Python's output line-buffered> \
+#            --python <model.py> -- <out-dir>/collide --collide
+# (measure.py's collide(), which runs it: the --python-expr keeps Blender's own output from
+# cutting a COLLIDE line in two)
 # A model with a --collide moves every part through every frame and tests it against
 # the rest, printing lines that start "COLLIDE". They are read by measure.py's collide
 # step -- one rule for both tools, given in its docstring: a line naming a pair ("<a> x
@@ -62,7 +65,8 @@
 # model means, as a regular expression that names the whole pair line -- it must match
 # all of the line's text after "COLLIDE ", not just part of it -- and a line it matches
 # is allowed. A pattern that matched no line is listed as unused. A clash ends the run
-# there, exit 1 (exit 2 for a pattern that is not a regular expression), with nothing
+# there, exit 1 (exit 2 for a pattern that is not a regular expression, or that matches
+# the empty string, as ".*" or "" do), with nothing
 # rendered. Either way it prints the pair lines no pattern allows (the first 40), the
 # lines naming a count, how many lines were allowed, any unused pattern, and the
 # verdict. test/collide_box.py is the test box with a --collide.
