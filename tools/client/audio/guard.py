@@ -33,6 +33,7 @@ import time
 from pathlib import Path
 
 CLIENT = re.compile(r"factorio", re.I)
+UNREAD_MAX = 0.10     # the share of samples while the client ran that may fail to read the default
 
 
 def _run(cmd, tries=3):
@@ -254,7 +255,14 @@ class SoundGuard:
             problems.append("the default was already the null sink before the run")
         if not during:
             problems.append("no sample was taken while the client ran")
+        # An unread default is no evidence either way: the run has to have read
+        # it in at least 90 % of the samples taken while the client ran.
         unread = [s for s in during if s["default"] is None]
+        if during and len(unread) == len(during):
+            problems.append(f"no sample read the default while the client ran (0 of {len(during)})")
+        elif during and len(unread) > UNREAD_MAX * len(during):
+            problems.append(f"{len(unread)} of {len(during)} samples while the client ran could not read the "
+                            f"default (more than {UNREAD_MAX:.0%})")
         off_default = [s for s in during if s["default"] is not None and s["default"] != null]
         if off_default:
             problems.append(f"{len(off_default)} samples while the client ran had the default "

@@ -100,6 +100,7 @@ from gi.repository import Gst  # noqa: E402
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 LAUNCH = REPO / "tools/client/launch.sh"
+NULL_PREFIX = "sae_client_null_"     # launch.sh's null sinks are named this, then its PID
 sys.path.insert(0, str(HERE))
 import analyse  # noqa: E402
 import guard  # noqa: E402
@@ -354,6 +355,7 @@ def main():
     proc = logf = rec = snd = None
     run_dir = None
     launch_log = None
+    stuck_msg = None
     rc = 1
     try:
         mod = scr / "sae-audio"
@@ -488,9 +490,10 @@ def main():
             step("copying the probe's files", copy_probe)
         if stuck:
             rd = run_dir_of(launch_log) if launch_log and launch_log.exists() else None
-            say(f"FAILED: the launcher {stuck[0]} would not stop (SIGINT, then SIGTERM); it is left running, "
-                f"and with it maybe its client and the null sink. Once it is gone, or after `kill -KILL "
-                f"{stuck[0]}`, run: {LAUNCH} --recover {rd or '<its run directory>'}")
+            stuck_msg = (f"FAILED: the launcher {stuck[0]} would not stop (SIGINT, then SIGTERM); it is left "
+                         f"running, and with it maybe its client and the null sink. Once it is gone, or after "
+                         f"`kill -KILL {stuck[0]}`, run: {LAUNCH} --recover {rd or '<its run directory>'}")
+            say(stuck_msg)
             say(f"kept {scr} (the client may still be reading it)")
         else:
             step("removing the scratch folder", lambda: shutil.rmtree(scr))
@@ -517,6 +520,12 @@ def main():
     if verdict == 0 and not args.keep_raw:
         shutil.rmtree(raw, ignore_errors=True)
     say(f"evidence: {out}")
+    if stuck_msg:
+        # Last, so it is what is seen: the launcher, and what the sound is now.
+        now = (guard._run(["pactl", "get-default-sink"]) or "").strip() or "(could not be read)"
+        state = ("IS a null sink -- other apps' sound goes nowhere until --recover"
+                 if now.startswith(NULL_PREFIX) else "is not a null sink")
+        say(f"{stuck_msg} -- the default sink right now is {now}, which {state}")
     return rc if rc != 0 else verdict
 
 
