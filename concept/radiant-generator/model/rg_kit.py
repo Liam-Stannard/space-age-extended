@@ -646,10 +646,11 @@ def gland(p, t, r_b):
     cyl(tuple(p - t * 0.058), rg * 0.85, 0.016, "bare", rot=along(t), verts=12, bevel=0.002)
 
 
-def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014, glands=(False, False)):
+def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014, glands=(False, False), sleeve_ok=None):
     """Cables twisted along pts. glands (start, end): a gland where that end enters its host, the
     end point on the host's face and the run arriving square to it (T08d); the cables go on 0.02
-    into the host, so no gap shows round the gland."""
+    into the host, so no gap shows round the gland. sleeve_ok(p): False where no label sleeve may
+    sit (T08i: in a tray, where its cleats hold the cables and a sleeve would stand through the floor)."""
     P = catmull(pts)
     for k_, on in enumerate(glands):
         if on:
@@ -671,7 +672,8 @@ def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014, glands=(False,
     nxt = 0.2
     for i, p in enumerate(P):
         if s[i] >= nxt and s[i] < s[-1] - 0.1:
-            cyl(tuple(p), r * 2.9, 0.045, "label", rot=along(T[i]), verts=12, bevel=0.002)
+            if sleeve_ok is None or sleeve_ok(p):       # one skipped keeps its place in the 0.4 rhythm
+                cyl(tuple(p), r * 2.9, 0.045, "label", rot=along(T[i]), verts=12, bevel=0.002)
             nxt += 0.4
     rb = r * 1.3 + r
     for k_, on in enumerate(glands):
@@ -1138,14 +1140,59 @@ def housing(x0, y0, x1, y1, h, mat="grey", roof="teal", seams=0.45, louvres=Fals
                 rot=(0.5, 0, 0))
 
 
-def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None, legs=()):
+def strap(c, X, Y, Z, path, width, thick, mat):
+    """A flat steel band: its mid-line path [(v, u), ...] in the plane through c spanned by Y (v) and
+    Z (u), the band width along X and thick across the path (T08i: a tray's cleat)."""
+    me = bpy.data.meshes.new("strap")
+    bm = bmesh.new()
+    n_ = len(path)
+    rings = []
+    for i, (v, u) in enumerate(path):
+        a_, b_ = path[max(i - 1, 0)], path[min(i + 1, n_ - 1)]
+        tv, tu = b_[0] - a_[0], b_[1] - a_[1]
+        ln = math.hypot(tv, tu) or 1.0
+        nv, nu = -tu / ln, tv / ln                 # the path's normal in the (v, u) plane
+        ring = []
+        for sx, sn in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+            q = c + X * (sx * width / 2) + Y * (v + sn * nv * thick / 2) + Z * (u + sn * nu * thick / 2)
+            ring.append(bm.verts.new(q))
+        rings.append(ring)
+    for a_, b_ in zip(rings, rings[1:]):
+        for k in range(4):
+            j = (k + 1) % 4
+            bm.faces.new((a_[k], a_[j], b_[j], b_[k]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bm.normal_update()
+    bm.to_mesh(me)
+    bm.free()
+    o = bpy.data.objects.new("strap", me)
+    sc.collection.objects.link(o)
+    return _finish(o, mat, 0)
+
+
+TRAY_HC = 0.06          # the cables' centre over a tray's floor line
+TRAY_FLOOR = 0.0125     # the floor's top over its line
+TRAY_FRAME = set()      # a tray's floor, rails and cleats: the collide check holds its own cables off them (T08i)
+
+
+def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None, legs=(), cleat_step=0.45):
     """A cable tray in straight runs between points (the floor's centre line), cables laid on its
     floor. T08d: each run's floor and rails pitched along it, so a sloping run's cables lie in it
-    instead of passing through it (round 7's boxes stayed level); the cables' centre 0.06 over the
+    instead of passing through it (round 7's boxes stayed level); the cables' centre TRAY_HC over the
     floor line (the floor's top 0.0125, the bundle 0.046 round its line). lead_in / lead_out: the
     points the cables come from before the tray and go on to after it, each ending in a gland on
-    its host (bundle()), with a clamp strap over them at that end of the tray. legs: x positions
-    along the tray (the run there) of a stand from the deck to the floor."""
+    its host (bundle()). legs: x positions along the tray (the run there) of a stand from the deck
+    to the floor.
+    T08i (Liam 2026-10-21, "it still doesn't look like it should be like that"): T08d's clamp was a
+    flat bar across the tray's top on two posts, and the cables ran under it, so from above they read
+    as passing through a rung, with the label sleeves standing inside it. As vanilla's cables are
+    held (the substation's leads clipped along its frame, the accumulator's draped over its cans):
+    the tray is open, top and ends, the cables lie on its floor and leave over its open ends, and
+    each cleat is a band that wraps over the bundle and is bolted to the floor either side of it, 0.08
+    in from each end of every straight run (none on a bend, where the bundle rounds the corner) and at
+    most cleat_step apart between; the cables follow the floor's line through points 0.05 apart (round
+    7's few far-apart points let the spline bow off it); no label sleeve inside the tray."""
     def frame_of(a, b):
         d = b - a
         rz = math.atan2(d.y, d.x)
@@ -1158,19 +1205,32 @@ def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None,
         mid = (a + b) / 2
         R_, eul = frame_of(a, b)
         X_, Y_, Z_ = R_.col[0], R_.col[1], R_.col[2]
-        box(tuple(mid), (L + 0.02, w, 0.025), "dark_steel", rot=eul, bevel=0.004)
+        TRAY_FRAME.add(box(tuple(mid), (L + 0.02, w, 0.025), "dark_steel", rot=eul, bevel=0.004).name)
         for s in (-1, 1):
-            box(tuple(mid + Y_ * s * w / 2 + Z_ * 0.035), (L + 0.02, 0.018, 0.07), "ochre", rot=eul, bevel=0.003)
-    for end, lead in ((0, lead_in), (-1, lead_out)):
-        if not lead:
-            continue
-        a, b = (P_[0], P_[1]) if end == 0 else (P_[-1], P_[-2])
-        R_, eul = frame_of(b, a)
-        c = a - R_.col[0] * 0.05
-        box(tuple(c + R_.col[2] * 0.115), (0.03, w + 0.02, 0.015), "dark_steel", rot=eul, bevel=0.003)
+            TRAY_FRAME.add(box(tuple(mid + Y_ * s * w / 2 + Z_ * 0.035), (L + 0.02, 0.018, 0.07), "ochre", rot=eul,
+                               bevel=0.003).name)
+    # the cleats: the band's inner face 0.01 clear of the bundle (0.046 round its line), down to the
+    # floor's top either side, its feet out to 0.021 short of the rails and a bolt in each
+    rb, th = 0.046, 0.006
+    rm = rb + 0.01 + th / 2
+    fl = TRAY_FLOOR - TRAY_HC + th / 2                    # the feet's mid-line, on the floor (cable axis frame)
+    fo = w / 2 - 0.009 - 0.012                            # the feet's outer end, clear of the rails
+    arch = [(rm * math.cos(PI - PI * k / 12), rm * math.sin(PI - PI * k / 12)) for k in range(13)]
+    path = [(-fo, fl), (-rm - th / 2, fl), (-rm, fl + th / 2)] + arch + [(rm, fl + th / 2), (rm + th / 2, fl), (fo, fl)]
+    at = []
+    for a, b in zip(P_, P_[1:]):
+        L = (b - a).length
+        n_in = max(1, math.ceil((L - 0.16) / cleat_step))
+        at += [(a, b, (0.08 + (L - 0.16) * k / n_in) / L) for k in range(n_in + 1)] if L > 0.2 else [(a, b, 0.5)]
+    for a, b, f_ in at:
+        q = a + (b - a) * f_
+        R_, _ = frame_of(a, b)
+        X_, Y_, Z_ = R_.col[0], R_.col[1], R_.col[2]
+        c = q + Z_ * TRAY_HC
+        TRAY_FRAME.add(strap(c, X_, Y_, Z_, path, 0.032, th, "ochre").name)
         for s in (-1, 1):
-            box(tuple(c + R_.col[1] * s * (w / 2 + 0.005) + R_.col[2] * 0.09), (0.03, 0.012, 0.05), "dark_steel",
-                rot=eul, bevel=0.002)
+            cyl(tuple(c + Y_ * s * (rm + th / 2 + fo) / 2 + Z_ * (fl + th / 2 + 0.004)), 0.009, 0.008, "bolt",
+                rot=R_.to_euler(), verts=6, bevel=0)
     for xl in legs:
         for a, b in zip(P_, P_[1:]):
             if min(a.x, b.x) - 1e-6 <= xl <= max(a.x, b.x) + 1e-6 and abs(b.x - a.x) > 1e-6:
@@ -1180,8 +1240,21 @@ def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None,
             continue
         box((q.x, q.y, (q.z - 0.0125) / 2), (0.045, 0.045, q.z - 0.0125), "ochre", bevel=0.004)
         box((q.x, q.y, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
-    run = list(lead_in or ()) + [p + Vector((0, 0, 0.06)) for p in P_] + list(lead_out or ())
-    bundle(run, cols=cols, r=0.02, glands=(bool(lead_in), bool(lead_out)))
+    lifted = [p + Vector((0, 0, TRAY_HC)) for p in P_]
+    line = [lifted[0]]
+    for a, b in zip(lifted, lifted[1:]):
+        n_ = max(1, math.ceil((b - a).length / 0.05))
+        line += [a + (b - a) * (k / n_) for k in range(1, n_ + 1)]
+
+    def off_tray(p):
+        for a, b in zip(lifted, lifted[1:]):
+            d = b - a
+            t = max(0.0, min(1.0, (p - a).dot(d) / d.length_squared))
+            if (p - (a + d * t)).length < w / 2 + 0.06:
+                return False
+        return True
+    run = list(lead_in or ()) + line + list(lead_out or ())
+    bundle(run, cols=cols, r=0.02, glands=(bool(lead_in), bool(lead_out)), sleeve_ok=off_tray)
 
 
 def tube(x, y, z0, k, h=0.8, arm=(0, 0), arm_len=0.0):
@@ -1203,8 +1276,14 @@ def tube(x, y, z0, k, h=0.8, arm=(0, 0), arm_len=0.0):
     cyl((x, y, ze - he / 2 - 0.03), 0.078, 0.07, "bezel", verts=24, bevel=0)
     cyl((x, y, z0 + 0.22 + h * 0.75), 0.02, h * 0.42, "bare", verts=8, bevel=0)
     box((x - 0.072, y - 0.085, z0 + 0.22 + h * 0.5), (0.014, 0.006, h * 0.72), "glint", rz=-0.7, bevel=0)
+    # T08i, a study aid for Liam's question (not a decision): --tube-band dark draws the glass's two bands
+    # in dark steel, --tube-band low drops the upper one (tube 0's upper band, cut by the bus terminal
+    # block, shows as a bare arc that reads as a lead); keep (the default) is the adopted look
+    band = opt("--tube-band", "keep")
     for f in (0.08, 0.6):
-        torus((x, y, z0 + 0.22 + h * f), 0.117, 0.012, "bare", seg=24)
+        if band == "low" and f > 0.5:
+            continue
+        torus((x, y, z0 + 0.22 + h * f), 0.117, 0.012, "dark_steel" if band == "dark" else "bare", seg=24)
     zc = z0 + 0.22 + h
     cyl((x, y, zc + 0.05), 0.13, 0.12, "copper", verts=24)
     for j in range(8):

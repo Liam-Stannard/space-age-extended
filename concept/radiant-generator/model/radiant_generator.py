@@ -113,7 +113,24 @@ DECL = dict(
     animations=[anim(n) for n in LAYERS] + [window]
     + [K.R.glow_animation(name, "window", NF, shapes) for name, shapes in GLOWS],
     ports=[],                       # spec 8: no fluid box, no facing port
+    lights=None,                    # set below (LIGHTS)
 )
+
+# the four steady blue lights at the openings, for the dark (Liam 2026-10-21, Q11 "Add steady blue lights";
+# T08c's positions, sizes and intensities, "Accept": four draw_as_light layers in the animation only).
+# Declared here (T08i; contract.py's lights): each a draw_as_light layer of the game's light-medium.png
+# (300 px), scale = size x 32 / 300, tint = colour x intensity, drawn only while working
+LIGHT_COLOUR = (0.29, 0.53, 1.0)
+LIGHTS = [  # name, shift (tiles from the entity's centre on the screen, x right, y down), size (tiles), intensity
+    ("port", (-1.05, -0.05), 2.0, 0.5),
+    ("well", (1.25, -1.02), 2.5, 0.45),
+    ("slot", (1.25, -1.70), 3.5, 0.6),
+    ("tubes", (2.25, -0.60), 4.0, 0.5),
+]
+DECL["lights"] = [dict(name=f"{n}-light", kind="layer", filename="__core__/graphics/light-medium.png",
+                       width=300, height=300, scale=round(size * 32 / 300, 5),
+                       tint=[round(c * inten, 4) for c in LIGHT_COLOUR], shift=list(shift), working=True)
+                  for n, shift, size, inten in LIGHTS]
 
 # ---------------------------------------------------------------- the machine (round 7, as signed off)
 K.build_materials(((0.45, 0.3), (0.95, 0.35), (1.4, 0.3)))
@@ -162,6 +179,7 @@ crane("x", (-1.0, 1.78), ZR, CY, P[0], W[0], P[2], W[2] + WELL_DROP, -0.55, 1.74
 # passed through its floor, and they ended in the air over the cabinets. Now the tray runs level from a
 # terminal block on the tubes' copper bar, on a stand at its end, and its cables drop into a gland on the
 # switchgear's top
+# T08i: the tray open, its cables held by cleats over them, none under a bar (rg_kit.tray)
 box((2.37, -0.86, 1.25), (0.22, 0.08, 0.11), "dark_steel", bevel=0.008)        # the bus terminal block
 tray([(2.3, -0.95, 1.2), (2.3, -1.42, 1.2)], lead_in=[(2.3, -0.9, 1.26), (2.3, -0.93, 1.26)],
      lead_out=[(2.3, -1.5, 1.27), (2.26, -1.64, 1.25), (2.245, -1.72, 1.19), (2.24, -1.74, 1.15)])

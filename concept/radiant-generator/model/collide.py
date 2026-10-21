@@ -16,6 +16,10 @@ from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 
 DEEP = 0.03         # tiles: 2 px at the sprite's scale; less is two faces meeting
+# T08i: a tray's cables and sleeves against its floor, rails and cleats (rg_kit.TRAY_FRAME) are judged,
+# not excused as one unit's parts or a cable on its host (T08d's cables ran through the tray's clamp bars
+# unflagged); they lie on the floor and under the cleats with a few thousandths to spare, so this is tight
+DEEP_TRAY = 0.004
 DETAIL_MATS = {"bolt", "seam", "stencil", "hazard", "label", "gauge", "needle", "red", "yellow", "brass", "dark",
                "lamp", "oil", "glint", "bezel", "sil"}
 
@@ -174,9 +178,10 @@ def check(K, machine, part, layers, pose, nf, show):
             kind = clash(a, b)
             if not kind:
                 continue
-            why = seated(a, b, MEANT_FIXED, K)
+            in_tray = tray_pair(a, b, K)
+            why = None if in_tray else seated(a, b, MEANT_FIXED, K)
             dp = 0.0 if why else max(depth(a, b), depth(b, a))
-            tag = "seated" if why else ("REAL" if dp > DEEP else "touch")
+            tag = "seated" if why else ("REAL" if dp > (DEEP_TRAY if in_tray else DEEP) else "touch")
             pairs.append((tag, -dp, f"{tag} {a.desc} with {b.desc}: {kind}, {dp:.3f} deep" + (f"  ({why})" if why else "")))
             if tag == "REAL":
                 n_real += 1
@@ -188,6 +193,15 @@ def check(K, machine, part, layers, pose, nf, show):
     with open(os.path.join(out_dir, "collide.txt"), "w") as f_:
         f_.write("\n".join(lines) + "\n\n" + "\n".join(notes) + "\n\n"
                  + "\n".join(l_ for _, _, l_ in sorted(pairs, key=lambda p_: (order[p_[0]], p_[1], p_[2]))) + "\n")
+
+
+def tray_pair(a, b, K):
+    """A cable or label sleeve against a tray's floor, rails or cleats (T08i)."""
+    frame = getattr(K, "TRAY_FRAME", set())
+    for x, y in ((a, b), (b, a)):
+        if x.o.name in frame and (y.mat.startswith("cable_") or y.mat == "label"):
+            return True
+    return False
 
 
 def seated(a, b, table, K):
