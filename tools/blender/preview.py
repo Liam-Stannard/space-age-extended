@@ -2,7 +2,7 @@
 """A model's review sheet: its renders composited the way the engine layers them.
 
   python3 preview.py <render-dir> <out.png> [--adopted <png> [...]] [--day-only]
-  python3 preview.py <render-dir> <out.gif> --gif <animation> --speed <animation_speed>
+  python3 preview.py <render-dir> <out.gif> --gif <animation> --speed <animation_speed> [--day-only]
 
 <render-dir> is render.sh's <out-dir>/renders. What to draw comes from its
 render.json (contract.py): every pass and frame there is on one canvas, at
@@ -41,7 +41,7 @@ drawn: the night view shows what the sheets carry. The adopted plate is vanilla'
 are not known here: its night panel is left empty. The grid is drawn as by day. --day-only
 leaves the night rows out, every one (a wreck's glow is then seen by day only): one row per
 direction, byte for byte the sheet from before the night view, but for a wreck's glow, which
-that did not draw. --night, the default, is still taken.
+that did not draw, and a glow's haze, which it did (below). --night, the default, is still taken.
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -67,6 +67,15 @@ entries lasts; a glow plays its plate layer's.
 Every render but a shadow is drawn cut to the footprint as pack.py cuts it, when
 render.json declares a `cut`: cut first, then a glow animation's bloom added, so the
 halo may spill past a cut edge as it does in the sheets.
+
+A glow -- a glow pass, a glow animation's frame, the wreck's glow -- adds its colour only where its
+alpha is above 0, by day and at night (T08f-3; Liam, 2026-10-21: "Fix in preview, day and night"):
+pack.glow_layer leaves a glow pass's faint difference from its plate (at or under LAYER_FLOOR) as
+colour on pixels it leaves clear, and pack.add_light adds colour whatever the alpha, so drawn as
+they came they put a faint haze over the whole panel, far past the sheet's crop. A glow
+animation's frame carries no colour where it is clear, so it draws as it did; a glow pass's (and a
+wreck glow's) may, so a glowing model's working panel can be a little darker than before, by day
+too, wherever that haze lay.
 
 Every layer but a shadow or a light is drawn through pack.py's highlight roll-off (pack.roll),
 as its sheet carries it -- the plate, a paint or glow pass's layer, each animation's frame but a
@@ -101,6 +110,15 @@ def dim(im, by):
         return im
     r, g, b, a = im.split()
     return Image.merge("RGBA", [c.point(lambda v: round(v * by)) for c in (r, g, b)] + [a])
+
+
+def add_glow(under, glow):
+    """under (RGBA) with a glow added as pack.add_light adds it (RGB only, under's alpha kept), but
+    only where the glow's alpha is above 0: its colour on a clear pixel is not drawn (the module's
+    docstring, T08f-3)."""
+    seen = glow.getchannel("A").point(lambda v: 255 if v else 0)
+    lit = ImageChops.multiply(glow.convert("RGB"), Image.merge("RGB", (seen,) * 3))
+    return pack.add_light(under, lit)
 
 
 def ground(by=1):
@@ -170,7 +188,7 @@ class Model:
             else:
                 im.alpha_composite(dim(self.shipped(pack.clean(fr)), k))
         for g in glows if working else ():
-            im = pack.add_light(im, g)
+            im = add_glow(im, g)
         for p in self.decl["passes"] if working else ():
             if p["kind"] not in contract.WORKING:
                 continue
@@ -179,8 +197,7 @@ class Model:
             if p["kind"] == "paint":
                 im.alpha_composite(dim(self.shipped(pack.paint_layer(layer, under)), k))
             else:
-                glow = self.shipped(pack.glow_layer(layer, under)).convert("RGB")
-                im = Image.merge("RGBA", (*ImageChops.add(im.convert("RGB"), glow).split(), im.getchannel("A")))
+                im = add_glow(im, self.shipped(pack.glow_layer(layer, under)))
         for p in self.kind("light"):
             lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
@@ -204,7 +221,7 @@ class Model:
         im.alpha_composite(dim(self.shipped(wreck), k))
         if "glow" in p:
             lit = self.open(contract.named(p["glow"]["name"], d), d, cut_it=False, canvas=canvas)
-            im = pack.add_light(im, self.shipped(pack.glow_layer(lit, wreck)))
+            im = add_glow(im, self.shipped(pack.glow_layer(lit, wreck)))
         return im
 
 

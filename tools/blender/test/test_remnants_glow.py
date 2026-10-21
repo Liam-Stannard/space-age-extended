@@ -55,7 +55,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              meta.json as this tree's less the glow (as in identity). On every --renders directory
              (render.sh output: its renders/), pack.py's sheets and meta.json, and preview.py's sheet
              (this tree's with --day-only, its default since T08f-2 having night rows), byte for byte
-             as the baseline's, and both exit the same.
+             as the baseline's (its preview.py run with its glow passes' haze cleared, as this tree's
+             draws them since T08f-3: baseline_preview.py), and both exit the same.
 """
 import argparse
 import copy
@@ -74,6 +75,7 @@ sys.path.insert(0, TOOLS)
 import contract  # noqa: E402
 import measure  # noqa: E402
 import pack  # noqa: E402
+import baseline_preview  # noqa: E402
 
 FAILED = []
 MODEL = (192, 192)
@@ -474,8 +476,8 @@ def test_identity(out, meta_with):
     check("preview.py on the fixture: exit 0", code == 0, text[-300:])
     code2, _ = run([sys.executable, os.path.join(TOOLS, "preview.py"), bare, os.path.join(out, "preview-no-glow.png")])
     same = code == code2 == 0 and same_bytes(os.path.join(out, "preview.png"), os.path.join(out, "preview-no-glow.png"))
-    print(f"  info  preview.py draws the fixture as without its glow: {same} (False since T08f: the wreck panel "
-          f"carries its glow, and a night row; test_preview_night.py)")
+    print(f"  info  preview.py draws the fixture as without its glow: {same} (False since T08f, the wreck panel "
+          f"carrying its glow, and T08f-2, a night row by default; test_preview_night.py)")
 
 
 # ---------------------------------------------------------------- baseline
@@ -505,8 +507,10 @@ def compare(label, rdir, out, base):
         if code:
             print(f"    pack.py ({'this tree' if tools == TOOLS else 'baseline'}) exit {code}: {text[-200:]}")
         day = ["--day-only"] if tools == TOOLS else []     # night rows by default since T08f-2
-        pcode, ptext = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, "preview.png"),
-                            *day])
+        args = [rdir, os.path.join(o, "preview.png"), *day]
+        # the baseline's glow passes' haze cleared, as this tree's preview.py draws them (T08f-3)
+        pcode, ptext = run([sys.executable, os.path.join(tools, "preview.py"), *args] if tools == TOOLS
+                           else baseline_preview.command(tools, args))
         codes.append(pcode)
         if pcode:
             print(f"    preview.py ({'this tree' if tools == TOOLS else 'baseline'}) exit {pcode}: {ptext[-200:]}")
@@ -516,7 +520,8 @@ def compare(label, rdir, out, base):
     n = len(files(os.path.join(mine, "sheets")))
     check(f"{label}: pack.py's sheets and meta.json byte for byte as the baseline's ({n} files)", ok and n > 0, why)
     ok, why = same_dirs(mine, theirs)
-    check(f"{label}: preview.py's sheet byte for byte as the baseline's", ok and "preview.png" in files(mine), why)
+    check(f"{label}: preview.py's sheet byte for byte as the baseline's, its haze cleared", ok and "preview.png" in
+          files(mine), why)
 
 
 def test_baseline(out, base, renders):

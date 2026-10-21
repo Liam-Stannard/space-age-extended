@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""preview.py's wreck glow and night view (T08f; the default since T08f-2) held to its docs.
+"""preview.py's wreck glow and night view (T08f; the default since T08f-2) and its glows' haze
+cleared (T08f-3) held to its docs.
 
   python3 tools/blender/test/test_preview_night.py [--out <dir>] [--baseline <git-rev>
                                                    [--renders <render-out> ...]]
@@ -10,26 +11,37 @@ wreck again with a blue light in its mouth as the glow's render), with and witho
 building's is one direction, a 2x2 plate on a 192 px canvas with a layer of every kind preview.py
 draws, each on pixels of its own: a shadow east of the plate, a glow pass (orange, over the
 plate), a paint pass (frost), a light pass (the lamp), a paint animation (a red bar) with a glow
-animation over it (cyan) and a light animation (a white beacon). --baseline names a commit from
-before T08f (fbe533d): its contract.py, pack.py and preview.py, taken out with `git show`, are run
-beside this tree's. Everything is written under --out (default: a new directory under the system's
+animation over it (cyan) and a light animation (a white beacon). Each fixture is drawn again with
+haze: its glow's render a little brighter than the plate (the building's glow pass) or the wreck (the
+wreck's glow) over a band of its own -- the plate's or the debris's foot, the shadow, bare film -- by
+(4, 6, 9), luma 6, under pack.LAYER_FLOOR, so pack.glow_layer leaves the band clear but coloured.
+--baseline names a commit from before T08f (fbe533d): its contract.py, pack.py and preview.py, taken
+out with `git show`, are run beside this tree's, its preview.py both as it is and with its glow
+passes' haze cleared (baseline_preview.py: the colour pack.glow_layer leaves where its alpha is 0,
+and nothing else). Everything is written under --out (default: a new directory under the system's
 temporary one, named when it starts) and kept: its night-*.png are the sheets to look at.
 
 Exits 0 when every case below comes out as listed, 1 naming those that do not. "Dimmed" is a
 colour times preview.NIGHT (0.15), each channel rounded.
 
   building  the panel by day as before (this test's own composition of pack.py's layers, in
-            preview.py's order, pixel for pixel), and at night the same composition with the
-            ground, the plate, the paint animation's frame and the paint pass dimmed, every glow
-            and light as by day: pixel for pixel, idle and working. Probes, working: the ground
-            (11, 10, 9); the plate and the frost dimmed; the shadow off the plate within 1 of its
-            day pixel dimmed; the glow pass and the glow animation adding by night what they add
-            by day (night minus the dimmed plate under it = day minus the plate); the lamp and the
-            beacon the same pixels as by day.
+            preview.py's order, each glow's colour added only where its alpha is above 0, pixel for
+            pixel), and at night the same composition with the ground, the plate, the paint
+            animation's frame and the paint pass dimmed, every glow and light as by day: pixel for
+            pixel, idle and working. Probes, working: the ground (11, 10, 9); the plate and the
+            frost dimmed; the shadow off the plate within 1 of its day pixel dimmed; the glow pass
+            and the glow animation adding by night what they add by day (night minus the dimmed
+            plate under it = day minus the plate); the lamp and the beacon the same pixels as by
+            day. With haze: pack.glow_layer leaves colour on the band's
+            clear pixels (so there is haze to clear), and every panel, idle and working, by day and
+            at night, pixel for pixel as without it; the sheet (night rows and all) and a --gif of the
+            bar the same bytes as without it.
   wreck     by day, the wreck panel without its glow plus the glow (pack.glow_layer of its renders,
             rolled off) added: the same pixels wherever the glow is clear, brighter in every core;
             at night, the ground dimmed, the debris dimmed, and every core pixel the dimmed floor
-            plus the glow, as by day.
+            plus the glow, as by day. With haze: pack.glow_layer leaves colour on the band's clear
+            pixels, and in each direction the wreck panel, by day and at night, pixel for pixel as
+            without it.
   sheet     by default (no flag), every model has a night row under each direction's, every
             place in it the panel at night, placed and gridded as the day one is: the building
             (two rows, idle and working), the wreck-glow fixture and the fixture without its glow
@@ -40,12 +52,17 @@ colour times preview.NIGHT (0.15), each channel rounded.
             glow. With --adopted, the adopted place in the night row empty, the others filled.
             Refused: --night with --day-only, --night with --gif. --gif by default, and with
             --day-only, exit 0, the two GIFs the same bytes.
-  identity  with --day-only, the fixture without its glow and the building fixture: preview.py's
-            sheet byte for byte as the baseline's (with --baseline). On every --renders directory
-            (render.sh output: its renders/): preview.py's sheet with --day-only, and a GIF of its
-            first animation (no flag), byte for byte as the baseline's (no flag), both exiting the
-            same; and preview.py with no flag, exit 0 and twice the --day-only sheet's rows
-            (night-<label>.png kept for review).
+  identity  with --baseline. With --day-only, the fixture without its glow and the building fixture:
+            preview.py's sheet byte for byte as the baseline's, both as it is and with its haze
+            cleared (neither fixture has any), and the building's GIF of the bar likewise; the
+            building with haze: its sheet as the baseline's with its haze cleared, and not as the
+            baseline's as it is (which draws the haze). On every --renders directory (render.sh
+            output: its renders/): preview.py's sheet with --day-only, and a GIF of its first
+            animation (no flag), byte for byte as the baseline's with its haze cleared (no flag),
+            both exiting the same; the sheet nowhere brighter than the baseline's as it is, in any
+            channel (information: how many pixels are darker, and by how much at most); and
+            preview.py with no flag, exit 0 and twice the --day-only sheet's rows (night-<label>.png
+            kept for review).
 """
 import argparse
 import os
@@ -64,6 +81,7 @@ import contract  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
 import test_remnants_glow as rg  # noqa: E402
+import baseline_preview  # noqa: E402
 
 FAILED = []
 ROWS = {}                               # a --renders label: its --day-only sheet's height (compare)
@@ -82,6 +100,9 @@ BAR_RGB = (150, 40, 40)
 FAN_GLOW = (90, 100, 110, 110)          # the glow animation: cyan light on film
 FAN_GLOW_RGB = (20, 140, 150)
 BEACON = (60, 130, 64, 134)             # the light animation: white
+HAZE = (10, 150, 182, 175)              # the building's haze band: the plate's foot and the ground under it
+WRECK_HAZE = (20, 152, 236, 215)        # the wreck's: the debris's foot, its shadow and the bare film
+HAZE_ADDS = (4, 6, 9)                   # luma 6, under pack.LAYER_FLOOR (8)
 K = preview.NIGHT
 
 
@@ -117,7 +138,26 @@ def plate_im():
     return im
 
 
-def building(rdir):
+def hazed(im, box):
+    """im with HAZE_ADDS added to the colour of every pixel in box, its alpha as it was: the haze."""
+    px = im.load()
+    for x in range(box[0], box[2]):
+        for y in range(box[1], box[3]):
+            r, g, b, a = px[x, y]
+            px[x, y] = (r + HAZE_ADDS[0], g + HAZE_ADDS[1], b + HAZE_ADDS[2], a)
+    return im
+
+
+def haze_px(glow):
+    """A glow sheet's pixels that are clear (alpha 0) but carry colour."""
+    return sum(1 for r, g, b, a in glow.get_flattened_data() if a == 0 and (r or g or b))
+
+
+def area(box):
+    return (box[2] - box[0]) * (box[3] - box[1])
+
+
+def building(rdir, haze=False):
     if os.path.exists(rdir):
         shutil.rmtree(rdir)
     os.makedirs(rdir)
@@ -143,7 +183,7 @@ def building(rdir):
     save(im, "shadow")
     im = plate_im()
     rect(ImageDraw.Draw(im), GLOW, tuple(min(255, p + a) for p, a in zip(PLATE_RGB, GLOW_ADDS)) + (255,))
-    save(im, "working")
+    save(hazed(im, HAZE) if haze else im, "working")
     im = plate_im()
     rect(ImageDraw.Draw(im), FROST, FROST_RGB + (255,))
     save(im, "frost")
@@ -176,7 +216,7 @@ def dim(im, by):
 
 def expected(rdir, working, night):
     """The building's panel as preview.py's docs compose it: by day, and at night with every layer
-    but a glow or a light dimmed."""
+    but a glow or a light dimmed; each glow's colour added only where its alpha is above 0."""
     k = K if night else 1
     roll = (lambda im: pack.roll(im)[0])
     im = Image.new("RGBA", CANVAS, dimmed(preview.GROUND[:3]) + (255,) if night else preview.GROUND)
@@ -186,8 +226,10 @@ def expected(rdir, working, night):
     im.alpha_composite(dim(roll(pack.clean(opened(rdir, contract.frame("bar", 0, "")))), k))
     im.alpha_composite(pack.clean(opened(rdir, contract.frame("beacon", 0, ""))))
     if working:
-        im = pack.add_light(im, roll(pack.glow_frame(opened(rdir, contract.frame("bar-glow", 0, "")))))
-        im = pack.add_light(im, roll(pack.glow_layer(opened(rdir, "working"), opened(rdir, "idle"))))
+        glows = (pack.glow_frame(opened(rdir, contract.frame("bar-glow", 0, ""))),
+                 pack.glow_layer(opened(rdir, "working"), opened(rdir, "idle")))
+        for g in glows:
+            im = pack.add_light(im, baseline_preview.cleared(roll(g)))
         im.alpha_composite(dim(roll(pack.paint_layer(opened(rdir, "frost"), opened(rdir, "idle"))), k))
     lamp = pack.light_layer(opened(rdir, "lamp"))
     im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, preview.LAMP[working])))
@@ -227,17 +269,42 @@ def test_building(out):
     for name, (x, y) in (("the lamp", (143, 143)), ("the beacon", (62, 132))):
         check(f"{name} the same by night as by day", px(nit, x, y) == px(day, x, y),
               f"{px(day, x, y)} -> {px(nit, x, y)}")
-    return rdir
+
+    hz = building(os.path.join(out, "building-haze"), haze=True)
+    n = haze_px(pack.glow_layer(opened(hz, "working"), opened(hz, "idle")))
+    check(f"with haze: pack.glow_layer leaves colour on every clear pixel of the band ({n} of {area(HAZE)})",
+          n == area(HAZE))
+    mh = preview.Model(hz)
+    for (working, night), want in panels.items():
+        what = f"{'working' if working else 'idle'} {'at night' if night else 'by day'}"
+        check(f"with haze, {what}: pixel for pixel as without it",
+              mh.panel("", working, night=night).tobytes() == want.tobytes())
+    return rdir, hz
 
 
 # ---------------------------------------------------------------- the wreck
+
+def haze_wreck(_decl, rdir):
+    """write_fixture's edit: each direction's glow render with the haze band (WRECK_HAZE)."""
+    for d in rg.DIRS:
+        path = os.path.join(rdir, contract.named(rg.LIT, d) + ".png")
+        hazed(Image.open(path).convert("RGBA"), WRECK_HAZE).save(path)
+
 
 def test_wreck(out):
     print("wreck")
     src = rg.write_fixture(os.path.join(out, "wreck-glow"))
     bare = rg.write_fixture(os.path.join(out, "wreck-bare"), rg.drop_glow)
-    m, mb = preview.Model(src), preview.Model(bare)
+    hz = rg.write_fixture(os.path.join(out, "wreck-haze"), haze_wreck)
+    m, mb, mh = preview.Model(src), preview.Model(bare), preview.Model(hz)
     for d in rg.DIRS:
+        lit = Image.open(os.path.join(hz, contract.named(rg.LIT, d) + ".png")).convert("RGBA")
+        n = haze_px(pack.glow_layer(lit, rg.wreck(d)))
+        check(f"{d}: with haze, pack.glow_layer leaves colour on every clear pixel of the band ({n} of "
+              f"{area(WRECK_HAZE)})", n == area(WRECK_HAZE))
+        for night in (False, True):
+            check(f"{d}: with haze, the wreck panel {'at night' if night else 'by day'} pixel for pixel as without it",
+                  mh.wreck(d, night=night).tobytes() == m.wreck(d, night=night).tobytes())
         day, plain, nit = m.wreck(d), mb.wreck(d), m.wreck(d, night=True)
         glow = pack.roll(pack.glow_layer(rg.lit(d), rg.wreck(d)))[0]
         check(f"{d}: by day, the wreck without its glow plus the glow, pixel for pixel",
@@ -311,7 +378,7 @@ def night_places(s, m, cols, pw, ph, wreck_col=None):
     return bad
 
 
-def test_sheet(out, building_dir, src, bare):
+def test_sheet(out, building_dir, hazy, src, bare):
     print("sheet")
     m = preview.Model(building_dir)
     pw = ph = CANVAS[0] + 2 * preview.PAD
@@ -345,6 +412,15 @@ def test_sheet(out, building_dir, src, bare):
     check("--gif by default and with --day-only: exit 0, the same bytes",
           code == code2 == 0 and same_bytes(os.path.join(out, "bar.gif"), os.path.join(out, "bar-day-only.gif")),
           f"exit {code}, {code2}: {(text + text2)[-300:]}")
+    hazy_png = os.path.join(out, "night-building-haze.png")
+    code, text, _ = sheet_of(hazy, hazy_png)
+    check("with haze, the building's sheet by default (night rows and all): the same bytes as without it",
+          code == 0 and same_bytes(os.path.join(out, "night-building.png"), hazy_png), f"exit {code}: {text[-300:]}")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), hazy, os.path.join(out, "bar-haze.gif"),
+                      "--gif", "bar", "--speed", "1"])
+    check("with haze, the building's --gif of the bar: the same bytes as without it",
+          code == 0 and same_bytes(os.path.join(out, "bar.gif"), os.path.join(out, "bar-haze.gif")),
+          f"exit {code}: {text[-300:]}")
 
     pw = ph = rg.CANVAS[0] + 2 * preview.PAD
     for label, rdir in (("the wreck-glow fixture", src), ("the fixture without its glow", bare)):
@@ -387,37 +463,73 @@ def baseline_tools(rev, out):
     return d
 
 
-def compare(label, rdir, out, base, gif_of=None):
-    """This tree's preview.py and the baseline's on rdir, byte for byte: the sheet (this tree's with
-    --day-only), and a GIF of gif_of (no flag in either)."""
+def darker(mine, theirs):
+    """(brighter, darker, most): of two same-sized sheets, the pixels where mine is brighter than
+    theirs in any channel, those where it is darker in some and brighter in none, and the most a
+    channel of mine falls under theirs."""
+    a, b = Image.open(mine).convert("RGBA"), Image.open(theirs).convert("RGBA")
+    up, down = ImageChops.subtract(a, b), ImageChops.subtract(b, a)
+    brighter = sum(1 for p in up.get_flattened_data() if any(p))
+    fell = sum(1 for p, q in zip(down.get_flattened_data(), up.get_flattened_data()) if any(p) and not any(q))
+    return brighter, fell, max(hi for _, hi in down.getextrema())
+
+
+def compare(label, rdir, out, base, gif_of=None, plain="same"):
+    """This tree's preview.py and the baseline's on rdir: the sheet (this tree's with --day-only), and a
+    GIF of gif_of (no flag in either), byte for byte as the baseline's with its haze cleared
+    (baseline_preview). The baseline's as it is: plain "same", byte for byte as well; "haze", the
+    sheet not (the fixture's haze, which it draws); "render", the sheet nowhere brighter (listed)."""
     jobs = [("preview.png", ["--day-only"])]
     if gif_of:
         jobs.append(("anim.gif", ["--gif", gif_of, "--speed", "1"]))
     for name, extra in jobs:
-        res = []
-        for tools, who in ((TOOLS, "mine"), (base, "base")):
+        res = {}
+        for who in ("mine", "base", "base-plain"):
             o = os.path.join(out, f"{label}-{who}")
             os.makedirs(o, exist_ok=True)
-            flags = [f for f in extra if tools == TOOLS or f != "--day-only"]
-            code, _ = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, name), *flags])
-            res.append((code, os.path.join(o, name)))
-        (c1, f1), (c2, f2) = res
+            args = [rdir, os.path.join(o, name), *[f for f in extra if who == "mine" or f != "--day-only"]]
+            if who == "mine":
+                cmd = [sys.executable, os.path.join(TOOLS, "preview.py"), *args]
+            elif who == "base":
+                cmd = baseline_preview.command(base, args)
+            else:
+                cmd = [sys.executable, os.path.join(base, "preview.py"), *args]
+            code, text = run(cmd)
+            res[who] = (code, os.path.join(o, name), text)
+        (c1, f1, t1), (c2, f2, t2), (c3, f3, _) = res["mine"], res["base"], res["base-plain"]
         mine = " (this tree's with --day-only)" if "--day-only" in extra else ""
-        check(f"{label}: preview.py's {name}{mine} byte for byte as the baseline's (exit {c1}, baseline {c2})",
-              c1 == c2 and (c1 != 0 or same_bytes(f1, f2)))
+        check(f"{label}: preview.py's {name}{mine} byte for byte as the baseline's with its haze cleared "
+              f"(exit {c1}, baseline {c2})", c1 == c2 and (c1 != 0 or same_bytes(f1, f2)), (t1 + t2)[-300:])
+        if c1 != 0 or c3 != 0:
+            check(f"{label}: preview.py's {name} and the baseline's as it is exit 0 ({c1}, {c3})", False)
+        elif plain == "same":
+            check(f"{label}: preview.py's {name}{mine} byte for byte as the baseline's as it is too (no haze)",
+                  same_bytes(f1, f3))
+        elif name != "preview.png":
+            pass                        # a GIF's palette is its own: held to the cleared baseline's only
+        elif plain == "haze":
+            check(f"{label}: preview.py's {name}{mine} not as the baseline's as it is (which draws the haze)",
+                  not same_bytes(f1, f3))
+        else:
+            up, fell, most = darker(f1, f3)
+            check(f"{label}: preview.py's {name}{mine} nowhere brighter than the baseline's as it is", up == 0,
+                  f"{up} px brighter")
+            print(f"  info  {label}: against the baseline's as it is, {fell} px darker, by {most} at most "
+                  f"in a channel (the haze cleared)")
         if c1 == 0 and "--day-only" in extra:
             ROWS[label] = Image.open(f1).size[1]
 
 
-def test_identity(out, base, renders, building_dir, bare):
+def test_identity(out, base, renders, building_dir, hazy, bare):
     print("identity")
     compare("building", building_dir, out, base, "bar")
+    compare("building-haze", hazy, out, base, plain="haze")
     compare("wreck-bare", bare, out, base)
     for r in renders:
         label = os.path.basename(os.path.normpath(r))
         rdir = os.path.join(r, "renders")
         anims = contract.load(rdir)["animations"]
-        compare(label, rdir, out, base, anims[0]["name"] if anims else None)
+        compare(label, rdir, out, base, anims[0]["name"] if anims else None, plain="render")
         night = os.path.join(out, f"night-{label}.png")
         code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, night])
         n = len(contract.DIRECTIONS[contract.load(rdir)["directions"]])
@@ -441,11 +553,11 @@ def main():
     os.makedirs(out, exist_ok=True)
     print(f"writing under {out}")
     base = baseline_tools(a.baseline, out) if a.baseline else None
-    building_dir = test_building(out)
+    building_dir, hazy = test_building(out)
     src, bare = test_wreck(out)
-    test_sheet(out, building_dir, src, bare)
+    test_sheet(out, building_dir, hazy, src, bare)
     if base:
-        test_identity(out, base, [os.path.abspath(r) for r in a.renders], building_dir, bare)
+        test_identity(out, base, [os.path.abspath(r) for r in a.renders], building_dir, hazy, bare)
     print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))
     sys.exit(1 if FAILED else 0)
 

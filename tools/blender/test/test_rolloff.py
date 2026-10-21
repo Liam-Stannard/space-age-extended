@@ -66,7 +66,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              packed by this tree and by the baseline: every file, meta.json too, byte for byte,
              and both exit the same; and preview.py's sheet (this tree's with --day-only, its
              default since T08f-2 having night rows), and the fixture's GIF of the hatch, byte for
-             byte as the baseline's.
+             byte as the baseline's (its preview.py run with its glow passes' haze cleared, as this
+             tree's draws them since T08f-3: baseline_preview.py).
 """
 import argparse
 import colorsys
@@ -89,6 +90,7 @@ sys.path.insert(0, TOOLS)
 import contract  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
+import baseline_preview  # noqa: E402
 
 FAILED = []
 CANVAS = (256, 256)
@@ -603,11 +605,13 @@ def test_opt_out(out, base, fixture, renders):
             for tools, o in ((TOOLS, mine + "-preview"), (base, theirs + "-preview")):
                 os.makedirs(o, exist_ok=True)
                 flags = [f for f in extra if tools == TOOLS or f != "--day-only"]   # the baseline's has none
-                code, text = run([sys.executable, os.path.join(tools, "preview.py"), src, os.path.join(o, name),
-                                  *flags])
+                args = [src, os.path.join(o, name), *flags]
+                # the baseline's glow passes' haze cleared, as this tree's preview.py draws them (T08f-3)
+                code, text = run([sys.executable, os.path.join(tools, "preview.py"), *args] if tools == TOOLS
+                                 else baseline_preview.command(tools, args))
                 got.append(open(os.path.join(o, name), "rb").read() if code == 0 else None)
                 why += "" if code == 0 else f"{tools}: exit {code}: {text[-200:]} "
-            check(f"{label}: opted out, preview.py's {name} byte for byte as the baseline's",
+            check(f"{label}: opted out, preview.py's {name} byte for byte as the baseline's, its haze cleared",
                   got[0] is not None and got[0] == got[1], why)
 
 

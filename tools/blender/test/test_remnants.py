@@ -72,8 +72,10 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              --day-only, its default since T08f-2 having night rows); on one with a glow pass,
              which preview.py draws through pack.glow_layer, this tree's are drawn with
              pack.LIGHT_SHARE set to 1 (the whole light, as before the crop: glow_layer's
-             docstring), so the crop is set aside and nothing else is. A glow animation's sheets
-             are never set aside. Both trees pack and preview a copy of the renders whose
+             docstring), so the crop is set aside and nothing else is; and the baseline's is run
+             with its glow passes' haze cleared, as this tree's draws them since T08f-3
+             (baseline_preview.py), so that is set aside and nothing else is. A glow animation's
+             sheets are never set aside. Both trees pack and preview a copy of the renders whose
              render.json says rolloff false (every other file a link to the original's):
              pack.py rolls the highlights of every sheet but a shadow's or a light's off by
              default since T07, and preview.py draws the same, which the baseline does not;
@@ -97,6 +99,7 @@ import contract  # noqa: E402
 import measure  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
+import baseline_preview  # noqa: E402
 
 FAILED = []
 NO_CATCHER = []         # --no-catcher directories
@@ -498,7 +501,10 @@ def opted_out(src, dst):
 
 def preview_run(tools, args, whole_light):
     """preview.py of tools with args; with whole_light, pack.LIGHT_SHARE set to 1 first, so a glow
-    pass is drawn with the whole of its light, as before T06's crop."""
+    pass is drawn with the whole of its light, as before T06's crop. A baseline's (tools not this
+    tree's) is run with its glow passes' haze cleared, as this tree's draws them (T08f-3)."""
+    if tools != TOOLS:
+        return run(baseline_preview.command(tools, args))
     if not whole_light:
         return run([sys.executable, os.path.join(tools, "preview.py"), *args])
     boot = ("import runpy, sys; sys.path.insert(0, sys.argv[1]); import pack; pack.LIGHT_SHARE = 1.0; "
