@@ -1,6 +1,6 @@
 # Factorio Building — Art & Implementation Specification
 
-**Vent Pump.** Filled from `building-spec-template.md`. Every gameplay number here is the implemented value read off `prototypes/core/entities.lua` and the vanilla prototypes it deep-copies. The art sections describe the signed-off concept: the **Gas Lift Tower**, round 5, variant (a) "Warmer paints" (Liam, 2026-10-20). The shipping model is built from `concept/vent-pump/options/round-5/vpb5_08_gas_lift_tower.py --variant a`.
+**Vent Pump.** Filled from `building-spec-template.md`. Every gameplay number here is the implemented value read off `prototypes/core/entities.lua` and the vanilla prototypes it deep-copies. The art sections describe the signed-off concept: the **Gas Lift Tower**, round 5, variant (a) "Warmer paints" (Liam, 2026-10-20). The shipping model is `concept/vent-pump/model/vent_pump.py`, built from round 5's script and signed off by Liam on 2026-10-21 (T07, T07c, T07d).
 
 **The central art decision — see §3.1.** A pumpjack is a beam pump. The Vent Pump is a **gas lift**: helium-3 is blown into the melt at the foot of a tower, and its bubbles carry the melt up. The building shows that happen, in glass.
 
@@ -26,19 +26,31 @@ helium or stands on a gas vent, read the Gas Pump.
 - Effects: "Add effects"; "Artist proposes": options shown at the model stage, Liam picks.
 - Loop speed: "Model stage proposes": the artist proposes it from the 1x GIF, Liam picks at model sign-off.
 
-**What the model must keep** (round 5, variant (a), measure.py):
+**Amended 2026-10-21 (Liam): the model.** "Sign off the model" (T07 a184f70 + T07c + T07d 820038b). His rulings on the way:
+- Directions: "Handle it how factorio handles it for the chemical plant. A variation of the mode which shows it still": each direction its own variation, the glass seen in all four (§5). West: "Keep the mirror".
+- Rise: west "Accept 1.22" (T07), then east 0.81 and the riser's peak 172 "Accept" (T07c). Tonal: "Accept the spread".
+- Lenses: "Glow + light" (a glow sprite, seen by day and night, plus a light halo shown in the dark), replacing "Light"; amber "Missing fluid only"; "Own colour"; size "Keep".
+- Loop speed: "0.2".
+- Effects: the wisp "A2"; E2 embers, E3 ground light, E4 cold breath, E5 purge puff (§10). South: "Leave E4 out facing south". Embers: "Enbers don't really look right and aren't the right perspective, they're infront of parts of the model which are closed to the camera than the box" (T07c), redone in the model, then "Accept", edge bleed "Accept" (T07d).
+- The Core's sky: "Day-night cycle", "Mostly dark" (shipped: a 3-minute day, fully dark about 82 % of it).
 
-| Measure | Round 5 (a) | Bar |
+**What the model measures** (T07c, `measures.json`; per direction N / E / S / W):
+
+| Measure | Model | Bar |
 | --- | --- | --- |
-| Footprint coverage | 95.9 % | ≥ 92 % |
-| Rise above the north edge | 0.77 tiles | ≤ 0.78 (foundry) |
-| Tonal, plate / still | p50 79 / 77, p95 170 / 169 | p50 ~75–81, p95 in vanilla's range |
-| White and clipped px, whole frame | 0 | 0 |
-| Helium glow peak, 1x | 122 | 87–171 |
+| Footprint coverage | 96.4 / 94.7 / 92.1 / 94.4 % | ≥ 92 % |
+| Rise above the north edge | 0.77 / 0.81 / 0.58 / 0.78 tiles | ≤ 0.78 (foundry); east 0.81 accepted (Liam) |
+| Tonal, plate p50 / p95 | 80/169, 85/185, 84/174, 81/184 | p50 ~75–81; the spread accepted (Liam) |
+| White and clipped px | 0 | 0 |
 | Pale cyan and frost px | 0 | 0 |
-| Strobe | 0.29 % | noted |
-| North join | pass | pass |
-| South join | fail: 7 of 39 columns, up to 6 px | pass |
+| Moving share / strobe | 2.71/0.24, 2.61/0.32, 2.92/0.39, 2.62/0.33 % | strobe noted |
+| Joins (no-gap rule) | 16 of 16 pass | pass |
+| Collide | 0 | 0 |
+| Embers over nearer parts (T07d) | 20 px, each 1 px from a seen spark | accepted (Liam) |
+| Helium glow peak, the loop's brightest frame, 1x | 122 / 124 / 125 / 125 | 87–171 |
+| Melt glow peak, the loop's brightest frame, 1x | 168 / 172 / 168 / 171 | 87–171; east 172 accepted (Liam) |
+
+The glow peaks are the sheets' light (RGB times alpha) at its brightest pixel, over all 24 frames, as `measure.py` measures one frame (round 5's 122 was measured so).
 
 ## 1. Building Overview
 
@@ -119,7 +131,7 @@ that.
 
 **Primary Visual Theme:** **A gas-lift tower.** A tall, narrow iron shaft over the vent with a glass riser down its south face, a head tank on top, and the plant that serves it packed round its foot. Not a beam pump. It glows with the melt it carries, the helium in its sight glass, and its two status lenses, and nothing else.
 
-**Overall Appearance:** The tower stands over the vent on a refractory footing, just north of centre. Its kit fills the rest of the footprint, each unit on its own footing, with no deck: the helium inlet, stop valve, flow meter and sight glass (south); the recovery compressor (south-east); the recovery receiver (south-west); the switchgear (east); the control house (north-east); the lagged downcomer and the skimmings bin (north-west); two gas bottles and a tool chest (west); a ladder up the tower's west side.
+**Overall Appearance:** The tower stands over the vent on a refractory footing, just north of centre. Its kit fills the rest of the footprint, each unit on its own footing, with no deck: the helium inlet, stop valve, flow meter and sight glass (south); the recovery compressor (south-east); the recovery receiver (south-west); the switchgear (east); the control house (north-east); the lagged downcomer and the skimmings bin (north-west); two gas bottles and a tool chest (west); a ladder up the tower's west side. These are the places facing north; turned, the kit moves round the tower (§5).
 
 **Silhouette:** The head tank rises above the north edge; the units break each corner at different heights (FFF #350). From altitude the read is *"a glass tower full of melt, fed from below"*.
 
@@ -160,9 +172,9 @@ Variant (a), "Warmer paints" (`vpb5_kit.py`). A paint or metal per unit.
 
 **Molten kamacite:** `#D96B29` → crest `#F89A50`, only where melt is seen: the glass riser and the head-tank window.
 
-**Helium glow:** mix A, violet with a peach-pink flush at each charge, in the sight glass only, while working only. Peak 122 at 1x.
+**Helium glow:** mix A, violet with a peach-pink flush at each charge, in the sight glass only, while working only. Peak 122–125 at 1x, at each charge.
 
-**Status lenses:** two, lit, drawn as lights: the control house's (north-east) green while working; the switchgear's (east) amber when the input fluid is missing (Liam, "Two lenses, two states", "House green, gear amber", "Light").
+**Status lenses:** two, each a glow and a light (Liam, "Glow + light"): a glow sprite, seen by day and by night, and a light's halo in the dark. The control house's (north-east, facing north) green `#46F05A` while working; the switchgear's (east) amber `#FF9A12` only when the input fluid is missing (Liam, "Missing fluid only"). Each in its own colour (Liam, "Own colour"); unlit, the plate's dark glass.
 
 ---
 
@@ -190,7 +202,7 @@ The building should visually fit alongside the vanilla Factorio / Space Age grap
 ### Style Reference Buildings
 
 1. `Pumpjack` (base) — the same 3×3 over a fluid resource; the comparison on every sheet.
-2. `Chemical plant` (base) — a 3×3 built up in height, clutter and pipes.
+2. `Chemical plant` (base) — a 3×3 built up in height, clutter and pipes; and its four directions, each its own variation with its window facing the camera (§5).
 3. `Foundry` (Space Age) — molten metal seen in the building, and the rise bar (0.78).
 
 The cryogenic plant is no longer a reference: no frost is modelled.
@@ -226,7 +238,7 @@ The following must remain consistent:
 
 Only the viewing direction should change.
 
-**How the four directions differ.** The whole machine is turned a quarter turn under the one fixed camera, as round 5's sheets show it. The fluid boxes turn with it, so helium enters the face opposite the melt's outlet in every direction. Each direction is its own render.
+**How the four directions differ.** Each direction is its own variation, as vanilla's chemical plant (Liam, "A variation of the mode which shows it still"). The tower, its glass riser, the head tank with its window and float chamber, the ladder and the sparger ring face the camera in all four. The plumbing and the units turn with the fluid boxes, so helium enters the face opposite the melt's outlet in every direction; the lines between them are routed per direction. The sight glass, the meter's dial, the two gauges and the receiver's plate face the camera wherever they stand. Facing south the sight glass stands east of the tower, and the tool chest takes its place. West is east's arrangement mirrored, the tower not (Liam, "Keep the mirror").
 
 ---
 
@@ -234,7 +246,7 @@ Only the viewing direction should change.
 
 ## 6.1 Main Building
 
-Four directions, each a whole render (§5). Layers as `tools/blender/render.sh --ports --icon` packs them: the plate, its shadow, the working loop, the glow, the pipe pictures and the icon.
+Four directions, each its own variation (§5). Per direction, as `tools/blender/render.sh --ports --icon` packs them (`sheets/meta.json`): the plate (`base`) and its shadow; the working layers `riser` and `glass`, each with its light (`riser-light`, `glass-light`); the moving parts, `mech`; the embers and their light (`embers`, `embers-light`); the lenses' glows (`lens-working-glow`, `lens-no-fluid-glow`) and halos (`lens-working-halo`, `lens-no-fluid-halo`). Once for the building: the four pipe pictures and covers, and the icon. The wisp and the two puffs are sheets of their own (`effects/`, §10).
 
 ---
 
@@ -250,7 +262,7 @@ Four directions, each a whole render (§5). Layers as `tools/blender/render.sh -
 * the compressor's coupling turning;
 * the receiver's gauge swinging.
 
-Idle: everything still, no glow. Moving share 2.67 %; strobe 0.29 %, noted (Liam).
+Idle: everything still; nothing lit but the amber lens when the helium is missing. Moving share 2.61–2.92 %; strobe 0.24–0.39 %, noted.
 
 **The lift itself has no moving parts.** The motion is the helium's kit doing its job. Nothing nods or strokes.
 
@@ -282,17 +294,17 @@ Building
 
 ### Layer Notes
 
-**Shadow:** from the model, cast down-right; fixed, as the Core has `day-night-cycle = 0`.
+**Shadow:** from the model, cast down-right, one per direction.
 
-**Structure:** one model; no base plate. Four directions.
+**Structure:** one model in four variations (§5); no base plate. The plate is the stopped machine: the melt and the helium unlit, the glass full and still, no moving part.
 
-**Working:** the 24-frame loop (§6.2), four directions.
+**Working:** `riser` (the melt, glass and bubbles of the riser, and the head tank's window) and `glass` (the sight glass) are working layers, drawn only while working. The meter, the two gauges, the float lever and the coupling are one layer, `mech`, drawn always: its frame 0 is the stopped machine, and it moves only while working. 24 frames, `animation_speed` 0.2 (§9).
 
-**Glow:** two lights, kept apart: the melt's orange in the riser and the head-tank window, and the helium's violet-to-pink in the sight glass, working only.
+**Glow:** each working layer has its light over it as a glow animation: the melt's orange (`riser-light`) and the helium's violet-to-pink (`glass-light`), kept apart, working only. The light falls on the melt and the glass and nowhere else.
 
-**Lighting:** the two status lenses, drawn as lights (never rolled off): the control house's green while working, the switchgear's amber when the input fluid is missing. What the engine can trigger the amber from is checked by a spike at the model stage; if it cannot, back to Liam ("Check engine first").
+**Lighting:** the two status lenses, each a glow sprite (seen by day and by night) and a light halo (seen in the dark), never rolled off: the control house's green while working, the switchgear's amber only on `missing_required_fluid` (T07b: an unpowered dry pump shows none).
 
-**Effects:** any cold shown comes from effects, never the model (Liam). A boil-off wisp on the tower, only while working; the artist shows two or three spots, and its look, at the model stage and Liam picks. Other effects as §10.
+**Effects:** any cold shown comes from effects, never the model (Liam). The wisp and E2–E5, §10.
 
 ---
 
@@ -363,7 +375,7 @@ Two helium charges a loop. Each charge is let in, and the melt answers: bubbles 
 
 ### Sequence
 
-1. Idle: everything still, no glow.
+1. Idle: everything still; nothing lit but the amber lens when the helium is missing.
 2. Charge: the meter races, the line gauge swings, the sight glass drops and flushes pink.
 3. The bubbles in the riser climb faster; the float lever rocks.
 4. Between charges: the glass refills and fades back to violet; the bubbles slow but keep climbing.
@@ -372,7 +384,7 @@ Two helium charges a loop. Each charge is let in, and the melt answers: bubbles 
 
 **Frame Count:** `24`
 
-**FPS / Loop Duration:** proposed at the model stage from the 1x GIF; Liam picks at model sign-off.
+**FPS / Loop Duration:** `animation_speed = 0.2` (Liam, "0.2"): 24 frames in 120 ticks, a 2 s loop, a charge a second — one charge per mining operation (`mining_time` 1, `mining_speed` 1).
 
 The loop is seamless: its wrap is within the frame-to-frame steps (measure.py).
 
@@ -382,21 +394,29 @@ The loop is seamless: its wrap is within the frame-to-frame steps (measure.py).
 
 ## Working Effects
 
-* [x] Glow (melt, helium glass, status lenses)
+* [x] Glow (melt, helium glass, status lenses, embers)
 * [x] Moving fluids
-* [x] Other: a boil-off wisp on the tower, only while working
+* [x] Smoke / vapour (wisp, cold breath, purge puff)
+* [x] Sparks (embers)
+* [x] Light (the melt's ground light)
 
 ### Effect Description
 
-While working: the melt moves in the riser and the head-tank window; the helium glass drops and flushes at each charge; a boil-off wisp lifts from the tower.
+Each is a working visualisation, drawn only while working and faded out on stop, placed per direction as the chemical plant places its smoke (`effects/effects.json`). Picked by Liam (T07, Q5).
 
-**The effects are proposed at the model stage.** The artist shows the wisp at two or three spots, each with its proposed look, and effect options beside it; nothing is ruled out (Liam, "Nothing ruled out"). Liam picks.
+* **A2, the wisp:** a melt-lit fume off the head tank's gas offtake. A loop of its own: 32 frames, `animation_speed` 0.25, constant speed; drawn above the building, as the chemical plant's smoke.
+* **E2, embers:** sparks rising off the slag in the skimmings bin. Rendered in the model with every nearer part held out, so a part nearer the camera hides them in the sheet itself (Liam, T07d). Two layers, the sparks and their light as glow; 48 frames at `animation_speed` 0.4, two to each machine frame, in step with the loop.
+* **E3, ground light:** the melt's orange light on the ground round the tower's foot. A light, so seen only in the dark — most of the Core's day. Its values are `effects.json`'s, judged in a client.
+* **E4, cold breath:** a breath of cold vapour off the stop valve at each charge; 24 frames at 0.2, in step with the loop. Not drawn facing south, where the valve stands behind the tower (Liam, "Leave E4 out facing south").
+* **E5, purge puff:** a violet-grey puff off the float chamber's cap as each charge breaks out; 24 frames at 0.2, in step with the loop.
+
+Unchecked in a client until wiring: the sync, the fade, the layer.
 
 ---
 
 # 11. Image Processing
 
-The model goes through `tools/blender/render.sh --ports --icon` on the GPU; every layer is packed by `pack.py`. The highlight roll-off is on by default (knee 236, top 244) and never on light passes. `--collide` over every frame: 0 clashes.
+The model goes through `tools/blender/render.sh --ports --icon` on the GPU; every layer is packed by `pack.py`. The highlight roll-off is on by default (knee 236, top 244) and never on light passes. `--collide` over every frame: 0 clashes. The embers are rendered with the rest of the model as a holdout and checked by `vent_pump.py --ember-check`: 20 px over nearer parts, every one at the edge of a seen spark, accepted (Liam).
 
 ---
 
@@ -527,19 +547,22 @@ pumpjack files that no longer describe the entity.
 
 ```text
 Animation:
-32 frames, animation_speed 0.4, single direction, seamless loop. Sight port
-contents and flow-meter disc only.
+Four directions, each its own variation. The plate, with mech over it: 24
+frames, animation_speed 0.2; mech moves only while working.
 
 Shadow:
-Separate draw_as_shadow sheet, 4 frames, matching the base frame for frame.
-Cast down-right. The Core has day-night-cycle 0, so it never moves.
+Separate draw_as_shadow sheet per direction. Cast down-right.
 
 Working Visualisation:
-Base (always_draw, 4 directions, static) + hot glow (additive) + cold glow
-(additive). Three entries, in that order.
+riser and glass, each with its light as a glow, per direction; working only.
+The lenses (below). The effects of §10, each placed per direction; E4 has
+no south.
 
 Lights:
-Two status lenses, drawn as lights: the control house's green while working, the switchgear's amber when the input fluid is missing (its trigger checked at the model stage).
+Two status lenses, each a glow sprite (draw_as_glow) and a light halo, in
+their own colours. Green: drawn only while working (lit in working and
+low_power). Amber: always_draw + apply_tint "status", every status colour
+clear but the one missing_required_fluid shows (T07b). E3's ground light.
 
 Fluid Boxes:
 input_fluid_box  — helium-3, volume 200, one connection at [0,1] facing south.
@@ -548,8 +571,8 @@ Both turn with the entity.
 
 Circuit Connections:
 Inherited from the pumpjack (circuit_connector_definitions["pumpjack"]). The
-connector sprite sits on the base plate and must not be occluded by the new
-tower — check this before the art is signed off.
+connector sprite must not be occluded by the tower: checked at wiring and in
+the client test.
 ```
 
 ---
@@ -558,7 +581,7 @@ tower — check this before the art is signed off.
 
 **Icon Required:** ✓ · **Icon Size:** `64×64`
 
-**To be redone from the model** (`render.sh --icon`). The current icon is cut from the ChatGPT north plate.
+**From the model** (`render.sh --icon`): the tower facing north, working (Liam, "Icon OK").
 
 ---
 
@@ -607,8 +630,11 @@ tower — check this before the art is signed off.
 * [ ] The outlet cannot be mistaken for the intake
 * [ ] Both pipe joins pass measure.py's no-gap rule
 * [ ] The circuit connector is not occluded by the tower
-* [ ] The control house's green lens lights only while working; the switchgear's amber only when the input fluid is missing
-* [ ] The boil-off wisp shows only while working
+* [ ] The glass (melt and helium) is seen in all four directions
+* [ ] The green lens lights only while working; the amber only on missing fluid, an unpowered dry pump showing none
+* [ ] Both lenses read by day, and their halos show in the dark
+* [ ] The wisp, embers, cold breath and purge puff show only while working; no cold breath facing south
+* [ ] No ember over a part nearer the camera
 * [ ] It does not read as a pumpjack, the generator or the Reaction Plant
 
 ---
@@ -677,6 +703,10 @@ they are deliberately not re-cut. The tool says so at the top.
 ### 2026-10-20 — the Gas Lift Tower signed off
 
 Round 1's Blender model read as a square deck with a small stack and was set aside. Rounds 2–5 (`concept/vent-pump/options/`): twenty ideas, eight picked; the helium seen at work and every pipe going somewhere (round 3); the helium in glass, mix A (round 4); the Gas Lift Tower in three surfacings (round 5). Liam signed off variant (a) on 2026-10-20 (see the amendment at the top). The ChatGPT prompts (the old §11, and the icon prompt in the old §16) were deleted the same day, and §12–§19 renumbered.
+
+### 2026-10-21 — the model signed off
+
+T07 built round 5 (a) as the shipping model and fixed the south join; turned whole, facing south hid the glass. T07c made each direction its own variation, as the chemical plant, and added the wisp and E2–E5; T07d rendered the embers in the model so nearer parts hide them. Liam signed off the model on 2026-10-21 (see the amendment at the top).
 
 ### Version 0 — inherited pumpjack (current, in repo)
 
