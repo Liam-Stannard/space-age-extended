@@ -1,0 +1,13 @@
+T06h refined casing: measure.py (tools/blender/measure.py, factorio-art-measure) on its four runs
+(render.sh on the GPU, one run a direction, sun 10.8, the world's fill 0.55; --vanilla chemical-plant oil-refinery;
+collide on north with the plant's 13 allow patterns and T06g's one more meant contact). Bars (T06h): cover >= 92,
+joins 12/12, collide 0, the clipping check, tonal p50 75-81 in every direction.
+
+Form 1 as T06g committed it (round-forms/measures.txt, sun 9.46, fill 0.24): plate p50 N 75, E 70, S 74, W 67;
+cover 95.3/94.3/95.1/94.0; joins 12/12; collide PASS.
+
+1 casing   north cover  95.3  rise 0.64  p50/p95 plate 81/177 still 83/180  black 8.9 ratio 0.61  blue 2.09  white 0  clipped 3  moving 5.24  strobe 2.12  joins PASS/PASS/PASS  legs 38359  press 26173  collide PASS
+1 casing   east  cover  94.3  rise 0.81  p50/p95 plate 78/176 still 80/179  black 5.9 ratio 0.61  blue 1.21  white 0  clipped 1  moving 3.67  strobe 1.31  joins PASS/PASS/PASS  legs 22594  press 18993
+1 casing   south cover  95.1  rise 0.52  p50/p95 plate 80/181 still 82/183  black 7.8 ratio 0.6  blue 1.34  white 0  clipped 0  moving 4.0  strobe 1.43  joins PASS/PASS/PASS  legs 25323  press 24703
+1 casing   west  cover  94.0  rise 0.73  p50/p95 plate 74/173 still 77/176  black 9.2 ratio 0.6  blue 1.52  white 0  clipped 2  moving 4.64  strobe 1.53  joins PASS/PASS/PASS  legs 28686  press 32949
+
