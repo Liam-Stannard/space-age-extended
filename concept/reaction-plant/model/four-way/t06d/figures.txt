@@ -1,0 +1,60 @@
+== base: legs px N/E/S/W [45966, 13772, 36774, 34017]  (east 30% of north)
+  north cov  85.5  rise 0.78  p50/p95 plate 72/163 still 74/166  white 0  clipped 6  blue 2.77  joins 3/3  black 9.9 ratio 0.63  moving 6.05 strobe 2.36
+  east  cov  84.1  rise 0.86  p50/p95 plate 72/159 still 74/162  white 0  clipped 2  blue 0.89  joins 3/3  black 9.6 ratio 0.63  moving 3.66 strobe 1.66
+  south cov  86.5  rise 0.47  p50/p95 plate 70/154 still 72/156  white 0  clipped 0  blue 2.3  joins 3/3  black 11.6 ratio 0.6  moving 5.18 strobe 1.71
+  west  cov  81.2  rise 1.25  p50/p95 plate 71/162 still 74/165  white 0  clipped 2  blue 2.06  joins 3/3  black 12.4 ratio 0.58  moving 5.3 strobe 1.63
+  collide: True ['COLLIDE moving: 0 clashes, 411 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1175 fixed parts, 1769 touching pairs, 56 touch at under 0.03 (collide-model.txt)']
+== fat: legs px N/E/S/W [41237, 4334, 16341, 27646]  (east 11% of north)
+  north cov  86.7  rise 0.78  p50/p95 plate 74/161 still 76/163  white 1  clipped 7  blue 2.46  joins 3/3  black 9.8 ratio 0.62  moving 5.63 strobe 2.25
+  east  cov  85.0  rise 0.86  p50/p95 plate 71/156 still 72/158  white 0  clipped 2  blue 0.27  joins 3/3  black 11.3 ratio 0.62  moving 2.51 strobe 1.07
+  south cov  87.4  rise 0.48  p50/p95 plate 72/152 still 73/154  white 0  clipped 0  blue 1.02  joins 3/3  black 11.5 ratio 0.58  moving 3.25 strobe 1.1
+  west  cov  82.9  rise 1.25  p50/p95 plate 71/157 still 73/160  white 0  clipped 2  blue 1.63  joins 3/3  black 15.3 ratio 0.57  moving 4.76 strobe 1.53
+  collide: True ['COLLIDE moving: 0 clashes, 416 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1177 fixed parts, 1863 touching pairs, 57 touch at under 0.03 (collide-model.txt)']
+== legs-apart: legs px N/E/S/W [50778, 38074, 47682, 31887]  (east 75% of north)
+  north cov  83.5  rise 0.97  p50/p95 plate 73/162 still 75/164  white 0  clipped 4  blue 3.07  joins 3/3  black 10.2 ratio 0.63  moving 6.29 strobe 2.35
+  east  cov  84.2  rise 0.86  p50/p95 plate 72/157 still 74/160  white 0  clipped 2  blue 2.38  joins 3/3  black 10.4 ratio 0.62  moving 5.04 strobe 1.7
+  south cov  85.7  rise 0.47  p50/p95 plate 69/152 still 71/154  white 0  clipped 0  blue 3.04  joins 3/3  black 11.9 ratio 0.61  moving 5.72 strobe 1.72
+  west  cov  82.0  rise 1.25  p50/p95 plate 69/160 still 72/163  white 0  clipped 2  blue 1.86  joins 3/3  black 12.8 ratio 0.6  moving 5.23 strobe 1.64
+  collide: True ['COLLIDE moving: 0 clashes, 412 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1171 fixed parts, 1750 touching pairs, 57 touch at under 0.03 (collide-model.txt)']
+== reactor-narrow: legs px N/E/S/W [46040, 31773, 35807, 36793]  (east 69% of north)
+  north cov  82.8  rise 0.97  p50/p95 plate 69/157 still 71/160  white 1  clipped 3  blue 2.81  joins 3/3  black 10.9 ratio 0.64  moving 6.15 strobe 2.38
+  east  cov  81.5  rise 0.86  p50/p95 plate 71/156 still 72/160  white 0  clipped 2  blue 2.06  joins 3/3  black 8.7 ratio 0.63  moving 4.91 strobe 1.72
+  south cov  84.3  rise 0.47  p50/p95 plate 67/149 still 69/151  white 0  clipped 0  blue 2.3  joins 3/3  black 11.8 ratio 0.6  moving 5.11 strobe 1.73
+  west  cov  81.5  rise 1.17  p50/p95 plate 69/157 still 71/161  white 0  clipped 3  blue 2.3  joins 3/3  black 12.9 ratio 0.59  moving 5.52 strobe 1.61
+  collide: True ['COLLIDE moving: 0 clashes, 411 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1174 fixed parts, 1746 touching pairs, 50 touch at under 0.03 (collide-model.txt)']
+== reactor-south: legs px N/E/S/W [41705, 31631, 37523, 32773]  (east 76% of north)
+  north cov  85.4  rise 0.97  p50/p95 plate 75/159 still 77/162  white 0  clipped 4  blue 2.49  joins 2/3  black 9.3 ratio 0.62  moving 5.79 strobe 2.3
+  east  cov  84.7  rise 0.86  p50/p95 plate 71/159 still 73/162  white 0  clipped 0  blue 2.01  joins 3/3  black 10.5 ratio 0.64  moving 4.81 strobe 1.63
+  south cov  85.8  rise 0.47  p50/p95 plate 70/150 still 72/153  white 0  clipped 0  blue 2.37  joins 3/3  black 11.8 ratio 0.59  moving 4.95 strobe 1.73
+  west  cov  84.4  rise 1.25  p50/p95 plate 68/160 still 71/163  white 0  clipped 2  blue 1.95  joins 3/3  black 14.2 ratio 0.58  moving 5.16 strobe 1.58
+  collide: True ['COLLIDE moving: 0 clashes, 416 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1171 fixed parts, 1760 touching pairs, 56 touch at under 0.03 (collide-model.txt)']
+== base-full: legs px N/E/S/W [45966, 13772, 36774, 34017]  (east 30% of north)
+  north cov  85.9  rise 0.78  p50/p95 plate 73/165 still 75/168  white 0  clipped 6  blue 2.76  joins 3/3  black 10.2 ratio 0.63  moving 6.02 strobe 2.35
+  east  cov  84.8  rise 0.86  p50/p95 plate 72/158 still 74/161  white 0  clipped 2  blue 0.88  joins 3/3  black 9.5 ratio 0.62  moving 3.63 strobe 1.65
+  south cov  87.5  rise 0.47  p50/p95 plate 70/152 still 72/155  white 0  clipped 0  blue 2.27  joins 3/3  black 11.8 ratio 0.6  moving 5.13 strobe 1.69
+  west  cov  82.3  rise 1.25  p50/p95 plate 71/162 still 74/165  white 0  clipped 2  blue 2.04  joins 3/3  black 12.2 ratio 0.58  moving 5.23 strobe 1.62
+  collide: True ['COLLIDE moving: 0 clashes, 411 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1199 fixed parts, 1733 touching pairs, 55 touch at under 0.03 (collide-model.txt)']
+== fat-full: legs px N/E/S/W [41278, 4334, 16341, 27646]  (east 10% of north)
+  north cov  87.1  rise 0.78  p50/p95 plate 74/163 still 76/166  white 1  clipped 7  blue 2.45  joins 3/3  black 10.2 ratio 0.62  moving 5.61 strobe 2.24
+  east  cov  85.7  rise 0.86  p50/p95 plate 71/156 still 72/158  white 0  clipped 2  blue 0.27  joins 3/3  black 11.4 ratio 0.61  moving 2.49 strobe 1.06
+  south cov  88.2  rise 0.48  p50/p95 plate 72/150 still 73/152  white 0  clipped 0  blue 1.02  joins 3/3  black 11.8 ratio 0.59  moving 3.22 strobe 1.09
+  west  cov  83.8  rise 1.25  p50/p95 plate 71/157 still 74/160  white 0  clipped 2  blue 1.62  joins 3/3  black 15.1 ratio 0.56  moving 4.72 strobe 1.52
+  collide: True ['COLLIDE moving: 0 clashes, 416 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1201 fixed parts, 1824 touching pairs, 56 touch at under 0.03 (collide-model.txt)']
+== legs-apart-full: legs px N/E/S/W [50821, 37498, 47104, 25625]  (east 74% of north)
+  north cov  83.7  rise 0.97  p50/p95 plate 74/165 still 76/168  white 0  clipped 4  blue 3.07  joins 3/3  black 10.5 ratio 0.63  moving 6.27 strobe 2.35
+  east  cov  84.7  rise 0.86  p50/p95 plate 72/156 still 74/159  white 0  clipped 2  blue 2.34  joins 3/3  black 10.8 ratio 0.62  moving 4.98 strobe 1.69
+  south cov  86.6  rise 0.47  p50/p95 plate 70/150 still 71/153  white 0  clipped 0  blue 2.97  joins 3/3  black 11.4 ratio 0.6  moving 5.65 strobe 1.71
+  west  cov  82.4  rise 1.25  p50/p95 plate 69/160 still 72/163  white 0  clipped 2  blue 1.47  joins 3/3  black 12.6 ratio 0.59  moving 4.89 strobe 1.6
+  collide: True ['COLLIDE moving: 0 clashes, 412 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1195 fixed parts, 1728 touching pairs, 59 touch at under 0.03 (collide-model.txt)']
+== reactor-narrow-full: legs px N/E/S/W [46040, 31773, 35807, 35107]  (east 69% of north)
+  north cov  83.3  rise 0.97  p50/p95 plate 70/159 still 72/162  white 1  clipped 3  blue 2.8  joins 3/3  black 10.8 ratio 0.63  moving 6.12 strobe 2.36
+  east  cov  82.2  rise 0.86  p50/p95 plate 71/156 still 73/160  white 0  clipped 2  blue 2.04  joins 3/3  black 8.9 ratio 0.63  moving 4.88 strobe 1.71
+  south cov  85.5  rise 0.47  p50/p95 plate 66/146 still 68/149  white 0  clipped 0  blue 2.27  joins 3/3  black 11.9 ratio 0.6  moving 5.07 strobe 1.71
+  west  cov  82.1  rise 1.17  p50/p95 plate 69/156 still 71/160  white 0  clipped 3  blue 2.18  joins 3/3  black 12.7 ratio 0.59  moving 5.43 strobe 1.61
+  collide: True ['COLLIDE moving: 0 clashes, 411 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1198 fixed parts, 1715 touching pairs, 52 touch at under 0.03 (collide-model.txt)']
+== reactor-south-full: legs px N/E/S/W [41705, 28446, 32921, 26110]  (east 68% of north)
+  north cov  85.7  rise 0.97  p50/p95 plate 76/162 still 77/164  white 0  clipped 4  blue 2.49  joins 3/3  black 9.6 ratio 0.62  moving 5.78 strobe 2.29
+  east  cov  85.3  rise 0.86  p50/p95 plate 72/160 still 73/163  white 0  clipped 0  blue 1.79  joins 3/3  black 10.5 ratio 0.63  moving 4.58 strobe 1.61
+  south cov  87.4  rise 0.47  p50/p95 plate 70/149 still 71/151  white 0  clipped 0  blue 2.05  joins 3/3  black 11.9 ratio 0.59  moving 4.69 strobe 1.7
+  west  cov  85.0  rise 1.25  p50/p95 plate 69/160 still 72/163  white 0  clipped 2  blue 1.53  joins 3/3  black 13.8 ratio 0.57  moving 4.77 strobe 1.54
+  collide: True ['COLLIDE moving: 0 clashes, 416 meant contacts', 'COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them), 1195 fixed parts, 1745 touching pairs, 61 touch at under 0.03 (collide-model.txt)']

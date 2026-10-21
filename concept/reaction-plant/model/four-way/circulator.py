@@ -156,6 +156,24 @@ UNSEEN = {
     "south": ("coupling-dosing",) + GAUGES,
     "west": ("coupling-compressor", "gauge-reactor-upper", "gauge-scrubber", "drip"),
 }
+# T06d's variants (RP_HOSE, RP_LAYOUT: see HOSE_VARIANT and LAYOUT below), from each one's --probe: a layer
+# the variant hides wholly in a direction (0 px) has no sheet there either
+# hides wholly in a direction (0 px) has no sheet there either; one it brings into view (T06c's unseen, now
+# 40 px or more) gets its sheet ("-name")
+UNSEEN_VARIANT = {
+    ("fat", ""): {"east": ("gauge-scrubber",), "west": ("gauge-reactor-lower",)},   # behind the fat hoses
+    ("", "legs-apart"): {"south": ("coupling-compressor",), "east": ("-coupling-dosing",)},          # 0 px; 59 px
+    ("", "reactor-narrow"): {"south": ("coupling-compressor",)},                                     # 0 px
+    ("", "reactor-south"): {"south": ("coupling-pump",), "east": ("-coupling-dosing",)},             # 0 px; 151 px
+    # with RP_RUNS=full (T06c's layout with full runs: T06c's set)
+    ("fat", "", "full"): {"east": ("gauge-scrubber",), "west": ("gauge-reactor-lower",)},
+    ("", "legs-apart", "full"): {"east": ("-coupling-dosing",)},                                      # 59 px
+    ("", "reactor-narrow", "full"): {"south": ("coupling-compressor",)},
+    ("", "reactor-south", "full"): {"south": ("coupling-pump",), "east": ("-coupling-dosing",)},
+}
+for _d_, _l_ in UNSEEN_VARIANT.get((os.environ.get("RP_HOSE", ""), os.environ.get("RP_LAYOUT", ""))
+                                   + ((os.environ["RP_RUNS"],) if os.environ.get("RP_RUNS") else ()), {}).items():
+    UNSEEN[_d_] = tuple(n_ for n_ in UNSEEN[_d_] if "-" + n_ not in _l_) + tuple(n_ for n_ in _l_ if n_[0] != "-")
 if RUN_DIR:
     HIDDEN = UNSEEN[RUN_DIR]
 PRESS_PATH_RUN = _turned_path(PRESS_PATH, dict(contract.DIRECTIONS["four"])[RUN_DIR] if RUN_DIR else 0)
@@ -884,14 +902,19 @@ def sweep(P, r, mat, corr=0.0, pitch=0.03, seg=16):
 
 def hose(pts, r=0.085, mat="hose"):
     """A fat corrugated hose with crimped ferrules and big nuts at both ends."""
+    fat = HOSE_VARIANT == "fat" and r >= 0.1 - 1e-9 and mat in ("hose", "hose_k")
+    if fat:
+        r = FAT_R
     P = catmull(pts)
     RUN_ENDS[_ASM[0]] = (P[0], P[-1])
-    sweep(P, r, mat, corr=0.055, pitch=0.095, seg=18)  # round 4: ribs shallower, less small detail
+    # (fat: the cryogenic plant's ribs, coarser and deeper)
+    sweep(P, r, mat, corr=0.07 if fat else 0.055, pitch=0.16 if fat else 0.095, seg=24 if fat else 18)
+    kf, kn = (1.12, 1.22) if fat else (1.3, 1.6)
     for p, q in ((P[0], P[1]), (P[-1], P[-2])):
         t = (p - q).normalized()
-        cyl(tuple(p - t * 0.05), r * 1.3, 0.11, "bare", rot=along(t), verts=20, bevel=0.006)
-        torus(tuple(p - t * 0.09), r * 1.3, 0.010, "bare", rot=along(t), seg=20)
-        cyl(tuple(p + t * 0.005), r * 1.6, 0.04, "brass", rot=along(t), verts=6, bevel=0.0)
+        cyl(tuple(p - t * 0.05), r * kf, 0.11, "bare", rot=along(t), verts=20, bevel=0.006)
+        torus(tuple(p - t * 0.09), r * kf, 0.010, "bare", rot=along(t), seg=20)
+        cyl(tuple(p + t * 0.005), r * kn, 0.04, "brass", rot=along(t), verts=6, bevel=0.0)
     return P
 
 
@@ -1423,6 +1446,38 @@ Z0, Z1, LR = 0.42, 2.45, 0.27
 # fatter than the input lines they cross. Now no hose is fatter than 0.2 tile (12.8 px, 0.33 of a
 # pipe): under the input lines (LEAD_R), which carry the building's feed
 HOSE_R = 0.10
+# T06d (Liam, 2026-10-20, hoses "Need to see both"): RP_HOSE=fat, a variant for the comparison only,
+# the cryogenic plant's sizing: its hoses are its process lines, 32-33 px at 2x, 0.82-0.84 of
+# vanilla's 39 px pipe (four-way/pipe-scale.png). Every process hose (r 0.10 here: the legs' loop,
+# the scrubber's line, the compressor's, the feed's, the settling pot's, the pump's, the press's)
+# is drawn at FAT_R, 0.47 tile across, 30 px of tube and ~2 px of rib at 2x (0.8 of a pipe), its
+# ferrule and nut no wider than the cryogenic plant's clamp rings; the small hoses, the cables and
+# the rigid lines keep T06c's sizes. Unset: T06c's sizing, the model as committed.
+HOSE_VARIANT = os.environ.get("RP_HOSE", "")
+if HOSE_VARIANT not in ("", "fat"):
+    sys.exit(f"RP_HOSE={HOSE_VARIANT!r} is not fat")
+FAT_R = 0.235
+FAT = HOSE_VARIANT == "fat"
+# T06d, Liam's notes (2026-10-20) on the connections: "Especially if the connection into the green tank looks a bit
+# more realistic", and "A connection could have a pipe/hose run to a vessal but the piping would have to be
+# appropriately sized - it wouldn't make sense to suddenly half the diameter of the pipe". RP_RUNS=full, for every
+# T06d variant (unset: T06c's runs, the model as committed):
+#   - each input's line keeps its fitting's bore from the fitting to its vessel (0.27 tile radius where the fitting
+#     lands on a north or south face, 0.24 on an east or west one: the necks' own), bolted to the neck at a flange
+#     pair, not stepped down to 0.16 at a reducer behind the fitting (T06c). It narrows once, at the vessel that
+#     takes a smaller bore: a visible reducer on the compressor's suction stack (the compressor's inlet is the
+#     stack's 0.16), not at the drum (its crown takes the full line);
+#   - the filtrate receiver (the green tank) is lowered so its axis stands 0.05 over the fitting's (z 0.47, was
+#     0.58: the output's neck left the drum below its middle, nearly as fat as the drum is deep, and a wall
+#     flange with a rivet ring hung half over its flank) and the neck leaves it through a nozzle collar welded into
+#     the shell (0.06 wider than the neck), with a bolted flange pair where it meets the stub: the receiver's own
+#     outlet nozzle, as the chemical plant's and the refinery's vessels take their lines
+FULL_RUNS = os.environ.get("RP_RUNS", "") == "full"
+if os.environ.get("RP_RUNS", "") not in ("", "full"):
+    sys.exit("RP_RUNS is full or unset")
+RECV_Z = 0.47 if FULL_RUNS else 0.58         # the receiver's axis
+RECV_Y, RECV_R = -2.04, 0.4
+FG = 0.06 if FAT else 0.0        # a fat hose's nut stands this much further off a leg's curved glass
 EDGE = 2.465                     # a wall's face at the footprint edge, less a hair
 # The corner vessels, drawn in so their foot rings stop at the footprint's edge (+-2.5):
 # round 5 had the scrubber's at -2.57, the condenser's and the east pot's at +2.52
@@ -1435,6 +1490,114 @@ XC0, XC1 = -0.50, 0.50                            # the exchanger (round 5 -1.55
                                                   # at tiles -1 and +1)
 MX, MY, MR = -1.04, 0.76, 0.22                    # the make-up pot (round 5: -1.02, 0.62, r 0.3)
 CAB = (-0.38, -0.33, 0.36, 0.36)                  # the sampling cabinet: centre, w, d (round 5: -0.38, -0.5, 0.44, 0.42)
+
+# T06d (Liam, 2026-10-20, the legs facing east: "Options for both"): RP_LAYOUT picks one of three
+# layouts for the comparison only; unset, T06c's layout, the model as committed. Turned east, the
+# reactor (model east of the legs) stands in front of both legs: a leg reads facing east only where
+# the reactor's span across the screen (model y, RY +- R) misses it, and every other direction has its
+# own tall vessel in front of somewhere (west: the scrubber; north: the reactor again for a leg north
+# of it). Each layout moves what it must and reroutes what joins what it moved; nothing else changes.
+#   legs-apart      the reactor as signed off; the leg pair split north and south of its span:
+#                   leg 1 to (-0.55, 1.35) where the compressor's west end stood (the compressor
+#                   0.2 east, the scrubber's drain header shortened to the make-up pot), leg 2 to
+#                   (0.15, -1.15) where the sampling manifold stood (the manifold moved north into
+#                   the leg's old place, shortened)
+#   reactor-narrow  the reactor narrowed from 0.9 to 0.7 tile radius (its head kit drawn in with it)
+#                   and the legs nudged out of its narrower span: leg 1 0.33 north, leg 2 0.06
+#                   south (the compressor 0.25 east, the drain header shortened, the manifold 0.06
+#                   south)
+#   reactor-south   the reactor moved 0.55 south (RY 0.1 -> -0.45), both legs north of its span:
+#                   (-0.6, 1.3) and (0.0, 0.7); the instrument house moved from beside the reactor
+#                   into the south-east corner (with the north and east connector sockets on it),
+#                   the drain header and the manifold shortened
+LAYOUT = os.environ.get("RP_LAYOUT", "")
+if LAYOUT not in ("", "legs-apart", "reactor-narrow", "reactor-south"):
+    sys.exit(f"RP_LAYOUT={LAYOUT!r} is not legs-apart, reactor-narrow or reactor-south")
+if LAYOUT and PROPOSAL:
+    sys.exit("RP_LAYOUT and RP_PROPOSAL are separate mock-ups: set one")
+KR = 1.0                                          # the reactor's head kit, drawn in with a narrower shell
+MANI = (-0.48, -1.55, 0.62, -1.1, 0.07, -1.32, 0.95, (-0.3, 0.07, 0.42))   # the manifold: skid x0 y0 x1 y1, its
+                                                  # line's centre x, y, length, the three valves' x
+DRAIN_X1 = -0.5                                   # the drain header's east end (its skid; the lagged line ends 0.02 short)
+VALVE_AT = (0.15, 0.0)                            # the loop's foot valve
+INSTR_DY = 0.0                                    # the instrument house moved south by this
+if LAYOUT == "legs-apart":
+    LEGS = [(-0.55, 1.35, 2, "fl_f1"), (0.15, -1.15, -2, "fl_f2")]
+    CXO = 0.2
+    MANI = (-0.15, -0.75, 0.45, -0.45, 0.15, -0.6, 0.5, (-0.03, 0.15, 0.33))
+    DRAIN_X1 = -0.95
+elif LAYOUT == "reactor-narrow":
+    R = 0.7
+    KR = R / 0.9
+    LEGS = [(-0.32, 0.95, 2, "fl_f1"), (0.12, -0.78, -2, "fl_f2")]
+    CXO = 0.25
+    MANI = (-0.48, -1.58, 0.62, -1.17, 0.07, -1.38, 0.95, (-0.3, 0.07, 0.42))
+    DRAIN_X1 = -0.65
+elif LAYOUT == "reactor-south":
+    RY = -0.45
+    LEGS = [(-0.6, 1.3, 2, "fl_f1"), (0.0, 0.7, -2, "fl_f2")]
+    MANI = (-0.48, -1.55, 0.35, -1.1, -0.06, -1.32, 0.7, (-0.3, -0.06, 0.18))
+    DRAIN_X1 = -0.95
+    VALVE_AT = (0.25, 0.3)
+    INSTR_DY = -0.48
+
+
+def _routes():
+    """Each layout's runs into what it moved (model space, tiles): name -> points. A run not named
+    keeps T06c's."""
+    (ax, ay, _, _), (bx, by, _, _) = LEGS
+    if LAYOUT == "legs-apart":
+        return dict(
+            loop1=[(ax, ay, Z1 + 0.42), (ax + 0.14, ay - 0.06, 3.0), (-0.1, 0.7, 3.0), (RX - R + 0.03, RY - 0.05, 2.74)],
+            loop2=[(bx, by, Z1 + 0.42), (bx + 0.12, by + 0.06, 2.95), (0.5, -0.88, 2.82),
+                   (RX - R * 0.62, RY - R * 0.72, 2.4)],
+            foot1=[(RX - R + 0.02, RY + 0.25, 0.3), (0.0, 0.75, 0.24), (ax + LR * 0.7, ay - LR * 0.7, 0.24)],
+            foot2=[(RX - R * 0.65, RY - R * 0.7, 0.3), (0.65, -0.68, 0.24), (bx + LR, by, 0.24)],
+            gas=[(-0.02 + CXO, 1.3, 0.62), (0.05, 1.2, 0.9), (ax + LR + 0.02, ay - 0.02, 1.1)],
+            scrub=[(-1.3, 1.35, 2.35), (-0.9, 1.75, 2.9), (-0.4, 1.75, 3.15), (0.4, 1.2, 3.3), (RX - 0.25, RY + 0.42, 3.22)],
+            drum=[(-1.5, 0.42, 0.5), (-0.85, 0.42, 0.46), (-0.68, 0.8, 0.36), (ax - 0.12, ay - 0.33, 0.3)],
+            dosing=[(-0.85, 0.13, 0.45), (-0.62, 0.5, 0.75), (ax - 0.18, ay - 0.2, 0.62)],
+            feed=[(-1.48, 1.1, 0.42), (-1.1, 1.15, 0.45), (ax - LR, ay - 0.05, 0.32)],
+            makeup=[(-0.9, 1.0, 1.55), (ax - LR - 0.02, ay - 0.05, 1.45)],
+            settle=[(-0.45, -0.95, 1.9), (bx - LR - 0.02, by + 0.05, 1.7)],
+            bundle_w=[(-1.42, -0.62, 0.4), (-1.0, -0.55, 0.14), (-0.6, -0.8, 0.14), (bx - 0.3, by, 0.3)],
+            pump=[(0.75, -1.6, 1.5), (0.6, -1.25, 1.25), (bx + LR + 0.03, by - 0.08, 1.05)],
+            cable=[(-0.2, -0.55, 1.0), (bx - LR - 0.02, by + 0.08, 1.05)],
+        )
+    if LAYOUT == "reactor-narrow":
+        return dict(
+            scrub=[(-1.3, 1.35, 2.35), (-0.9, 1.75, 2.9), (-0.4, 1.75, 3.15), (0.4, 1.2, 3.3), (RX - 0.25, RY + 0.42, 3.22)],
+            drum=[(-1.5, 0.42, 0.5), (-0.95, 0.4, 0.46), (-0.68, 0.6, 0.38), (ax - LR - 0.08, ay - 0.08, 0.3)],
+            feed=[(-1.48, 1.1, 0.42), (-1.05, 1.12, 0.45), (-0.75, 1.05, 0.4), (ax - LR, ay + 0.05, 0.32)],
+            makeup=[(-0.8, 0.8, 1.55), (ax - LR - 0.02, ay - 0.05, 1.45)],
+        )
+    if LAYOUT == "reactor-south":
+        return dict(
+            loop1=[(ax, ay, Z1 + 0.42), (ax + 0.14, ay - 0.04, 3.05), (0.5, 0.75, 3.0),
+                   (RX - R * 0.35, RY + R * 0.88, 2.74)],
+            loop2=[(bx, by, Z1 + 0.42), (bx + 0.12, by - 0.04, 2.95), (0.3, 0.42, 2.7),
+                   (RX - R * 0.75, RY + R * 0.6, 2.4)],
+            foot1=[(RX - R + 0.02, RY + 0.25, 0.3), (-0.45, 0.3, 0.24), (ax, ay - LR, 0.24)],
+            foot2=[(RX - R * 0.7, RY + R * 0.65, 0.3), (bx + LR * 0.7, by - LR * 0.7, 0.24)],
+            scrub=[(-1.3, 1.35, 2.35), (-0.9, 1.75, 2.9), (-0.2, 1.7, 3.15), (0.6, 0.7, 3.35), (RX - 0.25, RY + 0.42, 3.22)],
+            drum=[(-1.5, 0.42, 0.5), (-0.85, 0.42, 0.46), (-0.7, 0.75, 0.36), (ax - 0.12, ay - 0.33, 0.3)],
+            dosing=[(-0.85, 0.13, 0.45), (-0.62, 0.5, 0.75), (ax - 0.18, ay - 0.2, 0.62)],
+            feed=[(-1.48, 1.1, 0.42), (-1.15, 1.2, 0.45), (ax - LR, ay + 0.05, 0.32)],
+            makeup=[(-0.9, 1.0, 1.55), (ax - LR - 0.02, ay - 0.05, 1.45)],
+            settle=[(-0.5, 0.0, 1.95), (bx - LR - 0.02, by + 0.05, 1.7)],
+            pump=[(0.7, -1.55, 1.45), (0.25, -0.9, 1.3), (0.05, 0.3, 1.0), (bx + 0.1, by - LR - 0.04, 0.9)],
+            cable=[(-0.3, 0.2, 1.0), (bx - LR - 0.02, by + 0.08, 1.05)],
+            bundle_e=[(2.22, -1.25, 1.25), (2.1, -1.1, 0.4), (RX + R * 0.6, RY - R * 0.75, 0.35)],
+        )
+    return {}
+
+
+ROUTES = _routes()
+
+
+def route(name, pts):
+    """A run's points: the layout's own if it moved what the run joins, else T06c's (pts)."""
+    return ROUTES.get(name, pts)
 
 
 def reactor():
@@ -1452,15 +1615,15 @@ def reactor():
     # the head: lead, the agitator drive and its motor, a manway
     head(RX, RY, H, R, 0.3, "lead")
     flange_ring(RX, RY, H + 0.005, R - 0.02, mat="bare", h=0.06, nb=20)
-    cyl((RX + 0.42, RY - 0.32, H + 0.26), 0.19, 0.12, "dark_steel", verts=32)
-    bolts(RX + 0.42, RY - 0.32, H + 0.33, 0.15, 8, r=0.018)
-    cyl((RX - 0.48, RY + 0.3, H + 0.28), 0.07, 0.18, "bare", verts=16)          # relief valve
-    cyl((RX - 0.48, RY + 0.3, H + 0.39), 0.1, 0.07, "brass", verts=6, bevel=0)
+    cyl((RX + 0.42 * KR, RY - 0.32 * KR, H + 0.26), 0.19, 0.12, "dark_steel", verts=32)
+    bolts(RX + 0.42 * KR, RY - 0.32 * KR, H + 0.33, 0.15, 8, r=0.018)
+    cyl((RX - 0.48 * KR, RY + 0.3 * KR, H + 0.28), 0.07, 0.18, "bare", verts=16)          # relief valve
+    cyl((RX - 0.48 * KR, RY + 0.3 * KR, H + 0.39), 0.1, 0.07, "brass", verts=6, bevel=0)
     cyl((RX - 0.1, RY - 0.05, H + 0.34), 0.22, 0.18, "dark_steel", verts=32)     # the agitator's gearbox
     box((RX + 0.24, RY + 0.24, H + 0.44), (0.36, 0.38, 0.32), "green", rz=0.3)
-    bundle([(RX + 0.24, RY + 0.42, H + 0.47), (RX + 0.5, RY + 0.62, H + 0.1), (RX + 0.66, RY + 0.55, 2.4)],
-           cols=("black", "yellow"))
-    ladder(RX + 0.44, RY - R * 0.88 - 0.09, 0.2, H - 0.05, axis="x")     # (round 5: 0.04 nearer, into the shell)
+    bundle([(RX + 0.24, RY + 0.42, H + 0.47), (RX + 0.5 * KR, RY + 0.62 * KR, H + 0.1),
+            (RX + 0.66 * KR, RY + 0.55 * KR, 2.4)], cols=("black", "yellow"))
+    ladder(RX + 0.44 * KR, RY - R * 0.88 - 0.09, 0.2, H - 0.05, axis="x")     # (round 5: 0.04 nearer, into the shell)
     gauge((RX - 0.05, RY - R - 0.02, 1.0), (0.0, -1, 0.15), r=0.08, double="gauge-reactor-lower")
     # the east wall at tile 0 is the reactor's own foot; at tile +1 its side nozzle runs
     # out to the edge on a pot, at tile -1 the instrument house
@@ -1518,16 +1681,21 @@ def legs_loop():
     # (T06c: leg 1's hose bends south off its cap and meets the reactor's west wall just south of its
     # middle, not 0.3 north of it: run across the reactor's north-west shoulder it stood in front of
     # the gas line's drop into the compressor, facing north)
-    hose([(ax, ay, Z1 + 0.42), (ax + 0.14, ay - 0.04, 3.0), (0.08, 0.2, 2.98), (RX - R + 0.03, RY - 0.05, 2.74)],
-         r=HOSE_R, mat="hose")
-    hose([(bx, by, Z1 + 0.42), (bx + 0.16, by + 0.02, 2.95), (0.62, -0.55, 2.8),
-          (RX - R * 0.62, RY - R * 0.72, 2.4)], r=HOSE_R, mat="hose_k")
+    hose(route("loop1", [(ax, ay, Z1 + 0.42), (ax + 0.14, ay - 0.04, 3.0), (0.08, 0.2, 2.98),
+                         (RX - R + 0.03, RY - 0.05, 2.74)]), r=HOSE_R, mat="hose")
+    if FAT:     # (fat: over the reactor's shoulder it ran 0.29 into the shell; now it comes in square to it)
+        hose([(bx, by, Z1 + 0.42), (bx + 0.08, by, 3.0), (0.32, -0.74, 2.8),
+              (RX - (R + 0.16) * 0.65, RY - (R + 0.16) * 0.76, 2.45), (RX - R * 0.65, RY - R * 0.76, 2.42)],
+             r=HOSE_R, mat="hose_k")
+    else:
+        hose(route("loop2", [(bx, by, Z1 + 0.42), (bx + 0.16, by + 0.02, 2.95), (0.62, -0.55, 2.8),
+                             (RX - R * 0.62, RY - R * 0.72, 2.4)]), r=HOSE_R, mat="hose_k")
     # the loop's foot: a cast header from the reactor's foot to both legs, a valve on it
-    pipe([(RX - R + 0.02, RY + 0.25, 0.3), (0.3, 0.5, 0.24), (ax + LR, ay, 0.24)], r=0.11, mat="dark_steel",
-         marks=((0.5, "red"),))
-    pipe([(RX - R * 0.65, RY - R * 0.7, 0.3), (0.65, -0.68, 0.24), (bx + LR, by, 0.24)], r=0.11, mat="dark_steel",
-         marks=((0.5, "red"),))
-    valve(0.15, 0.0, 0.0, 0.62)
+    pipe(route("foot1", [(RX - R + 0.02, RY + 0.25, 0.3), (0.3, 0.5, 0.24), (ax + LR, ay, 0.24)]), r=0.11,
+         mat="dark_steel", marks=((0.5, "red"),))
+    pipe(route("foot2", [(RX - R * 0.65, RY - R * 0.7, 0.3), (0.65, -0.68, 0.24), (bx + LR, by, 0.24)]), r=0.11,
+         mat="dark_steel", marks=((0.5, "red"),))
+    valve(VALVE_AT[0], VALVE_AT[1], 0.0, 0.62)
     return ax, ay, bx, by
 
 
@@ -1559,11 +1727,11 @@ def north():
         cyl((-0.03 + CXO + 0.12 * i, 1.36, 0.4), 0.265, 0.03, "bare", rot=(0, PI / 2, 0), verts=32, bevel=0)
     box((0.66 + CXO, 1.36, 0.38), (0.38, 0.4, 0.42), "green")
     coupling(0.43 + CXO, 1.36, 0.38, 0.12, axis=(1, 0, 0), axial=0.7, layer="coupling-compressor")     # centred in its 0.08 gap
-    hose([(-0.02 + CXO, 1.3, 0.62), (-0.06 + CXO, 1.05, 0.98), (LEGS[0][0] + 0.2, LEGS[0][1] + 0.2, 1.25)], r=0.1,
-         mat="hose")
+    hose(route("gas", [(-0.02 + CXO, 1.3, 0.62), (-0.06 + CXO, 1.05, 0.98), (LEGS[0][0] + 0.2, LEGS[0][1] + 0.2, 1.25)]),
+         r=0.1, mat="hose")
     # the scrubber's line, high, into the reactor head
-    hose([(nx, ny, sh + 0.32), (-1.3, 1.35, 2.35), (-0.4, 1.12, 2.8), (0.6, 0.85, 3.12),
-          (RX - 0.25, RY + 0.42, 3.22)], r=HOSE_R, mat="hose")
+    hose([(nx, ny, sh + 0.32)] + route("scrub", [(-1.3, 1.35, 2.35), (-0.4, 1.12, 2.8), (0.6, 0.85, 3.12),
+                                                 (RX - 0.25, RY + 0.42, 3.22)]), r=HOSE_R, mat="hose")
     # (T06b: the long exchanger's hose into the reactor is gone with its length: rising from between the
     # two input fittings, it read as a third input line)
     pipe([(tx - 0.32, ty - 0.12, 0.9), (1.55, 1.25, 0.92), (RX + 0.45, RY + R * 0.75, 0.95)], r=0.07, mat="copper")
@@ -1579,34 +1747,41 @@ def west():
     ax, ay = LEGS[0][0], LEGS[0][1]
     # (round 5 ran it 0.05 through the dosing pump's motor; the clip fixes lifted it 0.05 over the
     # coupling: now north of the motor, under the make-up pot)
-    hose([(-1.5, 0.42, 0.5), (-1.0, 0.43, 0.46), (ax - LR - 0.08, ay - 0.08, 0.3)], r=HOSE_R, mat="hose")
+    hose(route("drum", [(-1.5, 0.42, 0.5), (-1.0, 0.43, 0.46), (ax - LR - 0.08, ay - 0.08, 0.3)]), r=HOSE_R, mat="hose")
     # a dosing pump between the drum and the riser, olive, on its skid
     skid(-1.42, -0.05, -0.62, 0.32, 0.1)
     box((-1.2, 0.13, 0.3), (0.34, 0.3, 0.3), "green")
     cyl((-0.85, 0.13, 0.28), 0.14, 0.22, "dark_steel", rot=(0, PI / 2, 0), verts=24)
     coupling(-0.995, 0.13, 0.28, 0.09, axis=(1, 0, 0), axial=0.6, layer="coupling-dosing")
-    hose([(-0.85, 0.13, 0.45), (-0.62, 0.3, 0.7), (ax - 0.18, ay - 0.2, 0.62)], r=0.06, mat="hose_k")
+    hose(route("dosing", [(-0.85, 0.13, 0.45), (-0.62, 0.3, 0.7), (ax - 0.18, ay - 0.2, 0.62)]), r=0.06, mat="hose_k")
     # the scrubber's drain header, on its skid behind the make-up pot
     if PROPOSAL != "legs-nw":
-        skid(-1.33, 1.12, -0.5, 1.76, 0.12)
-        lagged([(-1.5, 1.46, 0.36), (-1.0, 1.42, 0.38), (-0.52, 1.36, 0.36)], r=0.13,
-               marks=((0.62, "green"),))
-        valve(-0.75, 1.62, 0.12, 0.5, wheel="yellow")
+        skid(-1.33, 1.12, DRAIN_X1, 1.76, 0.12)
+        if DRAIN_X1 == -0.5:
+            lagged([(-1.5, 1.46, 0.36), (-1.0, 1.42, 0.38), (-0.52, 1.36, 0.36)], r=0.13,
+                   marks=((0.62, "green"),))
+            valve(*((-0.62, 1.55) if FULL_RUNS else (-0.75, 1.62)), 0.12, 0.5, wheel="yellow")
+        else:       # (T06d: a leg stands where its east end was; it stops short of it, its valve with it)
+            lagged([(-1.5, 1.46, 0.36), (-1.25, 1.43, 0.37), (DRAIN_X1 - 0.02, 1.4, 0.36)], r=0.13,
+                   marks=((0.62, "green"),))
+            valve(*((-1.4, 1.55) if FULL_RUNS else (-1.12, 1.64)), 0.12, 0.5, wheel="yellow")
     # the settling pot between the drum and the downcomer: the hollow filled with one mass
     vtank(-0.92, -0.92, 0.44, 1.4, "lead", bands=(0.6, 1.05), top="dark_steel", nozzle=(0.3, 0.3))
-    hose([(-0.92 + 0.13, -0.92 + 0.13, 1.72), (-0.55, -0.7, 1.9), (LEGS[1][0] - LR - 0.02, LEGS[1][1] + 0.05, 1.7)],
+    hose([(-0.92 + 0.13, -0.92 + 0.13, 1.72)] + route("settle", [(-0.55, -0.7, 1.9 - FG)] +
+         ([(LEGS[1][0] - LR - FG - 0.12, LEGS[1][1] + 0.05, 1.7)] if FAT else []) +
+         [(LEGS[1][0] - LR - 0.02 - FG, LEGS[1][1] + 0.05, 1.7)]),
          r=0.1, mat="hose")
     hose([(-1.5, -0.95, 0.45), (-1.3, -1.25, 0.3), (-0.92, -1.42, 0.3)], r=0.09, mat="hose_k")
     # the feed main from the drum to the riser's foot, lagged, a valve station on it
-    lagged([(-1.48, 1.1, 0.42), (-1.05, 1.1, 0.45), (-0.62, 0.92, 0.4), (LEGS[0][0] - LR, LEGS[0][1] + 0.05, 0.32)],
-           r=0.11, marks=((0.3, "green"), (0.62, "yellow")))
+    lagged(route("feed", [(-1.48, 1.1, 0.42), (-1.05, 1.1, 0.45), (-0.62, 0.92, 0.4),
+                          (LEGS[0][0] - LR, LEGS[0][1] + 0.05, 0.32)]), r=0.11, marks=((0.3, "green"), (0.62, "yellow")))
     # the make-up pot over the feed main, olive-banded lead: the hollow behind the dosing pump
     vtank(MX, MY, MR, 1.05, "cream", bands=(0.5,), top="dark_steel", nozzle=(0.2, -0.3))
-    hose([(MX + 0.06 * MR / 0.3, MY - 0.09 * MR / 0.3, 1.35), (-0.8, 0.52, 1.5),
-          (LEGS[0][0] - LR - 0.02, LEGS[0][1] - 0.05, 1.45)],
+    hose([(MX + 0.06 * MR / 0.3, MY - 0.09 * MR / 0.3, 1.35)] + route("makeup", [(-0.8, 0.52, 1.5),
+          (LEGS[0][0] - LR - 0.02, LEGS[0][1] - 0.05, 1.45)]),
          r=0.08, mat="hose_k")
-    bundle([(-1.42, -0.62, 0.4), (-1.0, -0.55, 0.14), (-0.5, -0.2, 0.14), (LEGS[1][0] - 0.3, LEGS[1][1], 0.3)],
-           cols=("red", "black", "grey"))
+    bundle(route("bundle_w", [(-1.42, -0.62, 0.4), (-1.0, -0.55, 0.14), (-0.5, -0.2, 0.14),
+                              (LEGS[1][0] - 0.3, LEGS[1][1], 0.3)]), cols=("red", "black", "grey"))
 
 
 def skid(x0, y0, x1, y1, h, mat="dark_steel"):
@@ -1662,11 +1837,18 @@ def south():
         CAKE.append(box((LAST_LEAF_E + CAKE_T / 2, yp, CAKE_Z0 + 0.25), (CAKE_T, CAKE_D, 0.5), "cake", bevel=0.02))
     # the filtrate receiver: lying east-west on saddles, its flank at the edge; its west
     # head drawn back clear of the press head, its skid clear of the drop box
-    skid(-0.56, -2.46, 0.66, -1.6, 0.12)
-    drum_ew(-0.46, 0.54, -2.04, 0.58, 0.4, mat="green", bands=(-0.25, 0.3), saddles=(-0.31, 0.38))
-    stencil((0.05, -2.43, 0.62), (0.36, 0.01, 0.1), 0.0)
+    skid(-0.56, -2.46, 0.66, -1.6, 0.06 if FULL_RUNS else 0.12)
+    drum_ew(-0.46, 0.54, RECV_Y, RECV_Z, RECV_R, mat="green", bands=(-0.25, 0.3), saddles=(-0.31, 0.38))
+    stencil((0.05, -2.43, RECV_Z + 0.04), (0.36, 0.01, 0.1), 0.0)
     # (the clip fixes: it started 0.04 over the last leaf)
-    hose([(L1 - 0.08, yp + 0.06, 1.33), (-0.35, -1.55, 1.25), (-0.1, -1.75, 0.95)], r=0.1, mat="hose_k")
+    if FAT:     # (fat: its ferrule stood in the leaf pack's stroke; a short nozzle on the head lifts it clear)
+        with asm():
+            pipe([(L1 - 0.1, yp + 0.08, 1.24), (L1 - 0.1, yp + 0.08, 1.46)], r=0.1, mat="bare")
+            cyl((L1 - 0.1, yp + 0.08, 1.32), 0.14, 0.04, "dark_steel", verts=24)
+        hose([(L1 - 0.1, yp + 0.08, 1.56), (L1 - 0.05, yp + 0.2, 1.75), (-0.35, -1.5, 1.6), (-0.1, -1.75, RECV_Z + 0.37)],
+             r=0.1, mat="hose_k")
+    else:
+        hose([(L1 - 0.08, yp + 0.06, 1.33), (-0.35, -1.55, 1.25), (-0.1, -1.75, RECV_Z + 0.37)], r=0.1, mat="hose_k")
     # the pump house: the motor olive, it lifts the downcomer's return
     box((1.12, -1.98, 0.42), (0.86, 0.92, 0.84), "cream", bevel=0.025)
     for i in range(4):
@@ -1674,7 +1856,8 @@ def south():
     gauge((1.35, -2.45, 0.62), (0, -1, 0.15), r=0.07)
     status_lamp(1.42, -2.2, 0.86)
     pv = pump(1.1, -1.9, (-1, 0), 0.75, z0=0.84)
-    hose([pv, (0.7, -1.55, 1.45), (0.4, -1.25, 1.25), (bx + 0.1, by - LR - 0.04, 0.9)], r=HOSE_R, mat="hose")
+    hose([pv] + route("pump", [(0.7, -1.55, 1.45), (0.4, -1.25, 1.25), (bx + 0.1, by - LR - 0.04, 0.9)]), r=HOSE_R,
+         mat="hose")
     # under the legs, west of the downcomer: the sampling cabinet, where the precipitate is drawn off
     # (moved north and narrowed: round 5's stood into the settling pot's foot and shell and the
     # downcomer's foot)
@@ -1682,13 +1865,15 @@ def south():
     box((cx_, cy_, 0.38), (cw_, cd_, 0.76), "oxide", bevel=0.02)
     box((cx_, cy_ - cd_ / 2 - 0.01, 0.42), (cw_ * 0.68, 0.02, 0.36), "dark_steel", bevel=0.004)
     gauge((cx_ + 0.1, cy_ - cd_ / 2 - 0.02, 0.62), (0, -1, 0.2), r=0.06)
-    hose([(cx_, cy_, 0.8), (-0.2, -0.5, 1.0), (LEGS[1][0] - LR - 0.02, LEGS[1][1] + 0.08, 1.05)], r=0.05,
+    hose([(cx_, cy_, 0.8)] + route("cable", [(-0.2, -0.5, 1.0), (LEGS[1][0] - LR - 0.02, LEGS[1][1] + 0.08, 1.05)]),
+         r=0.05,
          mat="cable_black")
     # between the legs' feet and the south units: the sampling manifold, low, its valves
-    skid(-0.48, -1.55, 0.62, -1.1, 0.14)
-    cyl((0.07, -1.32, 0.32), 0.15, 0.95, "dark_steel", rot=(0, PI / 2, 0), verts=24)
-    for xx, wh in ((-0.3, "red"), (0.07, "yellow"), (0.42, "red")):
-        valve(xx, -1.32, 0.3, 0.45, wheel=wh)
+    mx0, my0, mx1, my1, mcx, mcy, mlen, mvx = MANI
+    skid(mx0, my0, mx1, my1, 0.14)
+    cyl((mcx, mcy, 0.32), 0.15, mlen, "dark_steel", rot=(0, PI / 2, 0), verts=24)
+    for xx, wh in zip(mvx, ("red", "yellow", "red")):
+        valve(xx, mcy, 0.3, 0.45, wheel=wh)
     bundle([(1.42, -1.6, 0.85), (1.6, -1.2, 0.2), (RX + R * 0.55, RY - R * 0.75, 0.45)],
            cols=("red", "yellow", "black"))
 
@@ -1698,12 +1883,18 @@ def east():
     nozzle's pot at +1 (reactor()). The south-east corner is ground."""
     # its north-west corner chamfered along the reactor's foot ring (round 5's box stood 0.06-0.12
     # into the reactor's foot ring, shell, bands and ladder)
-    prism([(1.77, -1.42), (2.43, -1.42), (2.43, -0.58), (2.11, -0.58), (1.77, -0.92)], 0.0, 1.3, "grey")
+    dy = INSTR_DY
+    if dy:      # (T06d reactor-south: the reactor stands where its north-west corner was; chamfered along its foot)
+        prism([(1.77, -1.42 + dy), (2.43, -1.42 + dy), (2.43, -0.64 + dy), (2.25, -0.64 + dy), (1.77, -1.07 + dy)],
+              0.0, 1.3, "grey")
+    else:
+        prism([(1.77, -1.42), (2.43, -1.42), (2.43, -0.58), (2.11, -0.58), (1.77, -0.92)], 0.0, 1.3, "grey")
     for i in range(4):
-        box((2.1, -1.43, 0.45 + 0.08 * i), (0.4, 0.02, 0.03), "dark_steel", bevel=0)
-    gauge((1.76, -1.12, 0.95), (-1, -0.2, 0.2), r=0.07)
-    status_lamp(2.2, -0.9, 1.32)
-    bundle([(2.22, -0.72, 1.2), (2.0, -0.42, 0.3), (RX + R * 0.8, RY - R * 0.5, 0.35)], cols=("grey", "red"))
+        box((2.1, -1.43 + dy, 0.45 + 0.08 * i), (0.4, 0.02, 0.03), "dark_steel", bevel=0)
+    gauge((1.76, -1.12 + dy * (1.3 if dy else 1), 0.95), (-1, -0.2, 0.2), r=0.07)
+    status_lamp(2.2, -0.9 + dy * (1.2 if dy else 1), 1.32)
+    bundle(route("bundle_e", [(2.22, -0.72, 1.2), (2.0, -0.42, 0.3), (RX + R * 0.8, RY - R * 0.5, 0.35)]),
+           cols=("grey", "red"))
 
 
 # ======================================================================= round 5: the details
@@ -1880,8 +2071,8 @@ def details():
     gauge((p.x, p.y - 0.01, 1.04), (0, -1, 0.15), r=0.06)
     # ---- the receiver (green): weld rings, a manway on top, a hazard tag on its west head side
     for xx in (-0.02, 0.48):
-        weld_ring_x(xx, -2.04, 0.58, 0.4)
-    manway_top(0.32, -2.0, 0.98, r=0.11, nb=8)
+        weld_ring_x(xx, RECV_Y, RECV_Z, RECV_R)
+    manway_top(0.32, -2.0, RECV_Z + 0.4, r=0.11, nb=8)
     # ---- the pump house (cream): a riveted top edge, a hazard tag, an ID plate, a bolted
     # inspection plate
     for k in range(11):
@@ -1889,15 +2080,15 @@ def details():
     hazard_tag((1.42, -2.44, 0.3), 0.18, 0.12)
     id_panel((1.15, -2.44, 0.2), 0.2, 0.12, stripe="red")
     # ---- the instrument house (grey): a hazard band, an ID plate, a bolted plate
-    hazard_tag((2.1, -1.425, 1.16), 0.56, 0.06)
-    id_panel((1.92, -1.425, 0.95), 0.2, 0.13, stripe="yellow")
-    flat_plate((2.28, -1.425, 0.86), 0.18, 0.2, mat="bare")
+    hazard_tag((2.1, -1.425 + INSTR_DY, 1.16), 0.56, 0.06)
+    id_panel((1.92, -1.425 + INSTR_DY, 0.95), 0.2, 0.13, stripe="yellow")
+    flat_plate((2.28, -1.425 + INSTR_DY, 0.86), 0.18, 0.2, mat="bare")
     # ---- the sampling cabinet (oxide): an ID plate on its top
     id_panel((CAB[0], CAB[1], 0.76), 0.24, 0.15, stripe="yellow", face="T")
     # ---- the press: a hazard tag on the head
     hazard_tag((-0.72, -2.335, 1.12), 0.14, 0.06)
     # ---- the compressor (dark steel, green motor): a gauge on its casing
-    gauge((0.15, 1.1, 0.5), (0, -1, 0.3), r=0.055)
+    gauge((0.15 + CXO, 1.1, 0.5), (0, -1, 0.3), r=0.055)
     # ---- oil and wet dirt on the ground at the feet: under the pumps and the press, at
     # the reactor's foot, the legs' feet, the drum's saddles
     stain(1.05, -2.34, 0.42, 0.14, 0.1)
@@ -2153,7 +2344,7 @@ def nut(loc, r, h, rot):
     return o
 
 
-def fitting(face, tile):
+def fitting(face, tile, out=False):
     """One fitting, built as the building stands turned: x east, y north, the connection's
     `tile` (prototype, y down) on `face` of the footprint as it stands."""
     cx, cy = tile[0], -tile[1]
@@ -2166,10 +2357,18 @@ def fitting(face, tile):
             ye = -2.53 - ZA / 2              # the end ring widest 0.47 above the outside tile's centre
             inner = (x, -NECK0, ZA)
             pipe([(x, -NECK0, ZA), (x, yw + 0.02, ZA)], r=0.27, mat="bare")      # out of the wall
-            annulus((x, yw - 0.03, ZA), 0.3, 0.42, 0.05, "bare", rot=ax)        # wall flange
-            for k in range(14):
-                t = 2 * PI * k / 14
-                rivet((x + 0.37 * math.cos(t), yw - 0.06, ZA + 0.37 * math.sin(t)), 0.016)
+            if FULL_RUNS and out:   # (T06d: the receiver's nozzle, then a bolted flange pair, not a wall flange)
+                nozzle_collar((x, -1, ZA), (0, -1, 0), 0.27, flange=True)
+                cyl((x, yw + 0.005, ZA), 0.37, 0.035, "dark_steel", rot=ax, verts=40)
+                cyl((x, yw - 0.035, ZA), 0.37, 0.035, "bare", rot=ax, verts=40)
+                for k in range(10):
+                    t = 2 * PI * (k + 0.5) / 10
+                    nut((x + 0.33 * math.cos(t), yw - 0.06, ZA + 0.33 * math.sin(t)), 0.02, 0.014, ax)
+            else:
+                annulus((x, yw - 0.03, ZA), 0.3, 0.42, 0.05, "bare", rot=ax)        # wall flange
+                for k in range(14):
+                    t = 2 * PI * k / 14
+                    rivet((x + 0.37 * math.cos(t), yw - 0.06, ZA + 0.37 * math.sin(t)), 0.016)
             cyl((x, (yw + ye) / 2, ZA), 0.28, abs(ye - yw), "bare", rot=ax, verts=48, bevel=0.0)
             cyl((x, ye + 0.03, ZA), V_RING_R - 0.02, 0.06, "bare", rot=ax, verts=48, bevel=0.01)
             for k in range(8):
@@ -2180,6 +2379,8 @@ def fitting(face, tile):
             yr = E5 - 0.025                  # the end ring's centre: its outer face on the edge
             inner = (x, NECK0, ZA)
             pipe([(x, NECK0, ZA), (x, yr - 0.02, ZA)], r=0.27, mat="bare")
+            if FULL_RUNS and out:
+                nozzle_collar((x, 1, ZA), (0, 1, 0), 0.27)
             cyl((x, yr, ZA), V_RING_R - 0.02, 0.05, "bare", rot=ax, verts=48, bevel=0.01)
             for k in range(8):
                 t = 2 * PI * (k + 0.5) / 8
@@ -2191,11 +2392,38 @@ def fitting(face, tile):
         xf = sgn * (2.5 - 0.03)
         inner = (sgn * NECK0, ya, ZA)
         pipe([(sgn * NECK0, ya, ZA), (xf - sgn * 0.01, ya, ZA)], r=0.24, mat="bare")          # neck
+        if FULL_RUNS and out:
+            nozzle_collar((sgn, ya, ZA), (sgn, 0, 0), 0.24)
         cyl((xf, ya, ZA), H_RING_R - 0.02, 0.045, "bare", rot=ax, verts=48, bevel=0.006)
         for k in range(8):
             t = 2 * PI * (k + 0.5) / 8
             nut((xf - sgn * 0.025, ya + 0.27 * math.cos(t), ZA + 0.27 * math.sin(t)), 0.018, 0.012, ax)
     return inner
+
+
+def nozzle_collar(at, n, rn, flange=False):
+    """T06d (RP_RUNS=full): the receiver's outlet nozzle round the output's neck, as the building stands turned:
+    a collar 0.06 wider than the neck from inside the drum out past its shell (it meets the curved shell in a
+    saddle, as a welded nozzle does), its weld bead, and a flange on its outer end that the fitting's ring or
+    flange bolts to. at: (the axis's across-face coordinate, or +-1 for the face, ...) as fitting() passes it;
+    n: the outward normal."""
+    n = Vector(n)
+    shell = abs(RECV_Y) + math.sqrt(RECV_R ** 2 - (ZA - RECV_Z) ** 2)       # where the axis meets the drum's shell
+    if n.x == 0:
+        c = lambda d_: Vector((at[0], n.y * d_, at[2]))
+    else:
+        c = lambda d_: Vector((n.x * d_, at[1], at[2]))
+    rot = (PI / 2, 0, 0) if n.x == 0 else (0, PI / 2, 0)
+    d0, d1 = shell - 0.22, shell + 0.025
+    cyl(tuple(c((d0 + d1) / 2)), rn + 0.06, d1 - d0, "green", rot=rot, verts=48, bevel=0.008)      # the collar
+    torus(tuple(c(shell - 0.005)), rn + 0.065, 0.012, "seam", rot=rot, seg=40)                    # its weld
+    if not flange:      # (an east, west or north face: the fitting's end ring at the edge is the joint)
+        return
+    cyl(tuple(c(d1 + 0.012)), rn + 0.1, 0.03, "dark_steel", rot=rot, verts=40)                     # its flange
+    for k in range(8):
+        t = 2 * PI * (k + 0.5) / 8
+        off = Vector((math.cos(t), 0, math.sin(t))) if n.x == 0 else Vector((0, math.cos(t), math.sin(t)))
+        nut(tuple(c(d1 + 0.03) + off * (rn + 0.065)), 0.017, 0.012, rot)
 
 
 def for_direction(d, deg, build):
@@ -2219,13 +2447,13 @@ INNER = {}                   # direction -> each connection's fitting's inner en
 for _d, _deg in contract.DIRECTIONS["four"]:
     FITTINGS[_d] = []
     INNER[_d] = []
-    for _tile, _face in CONNS:
+    for _ci, (_tile, _face) in enumerate(CONNS):
         _t, _f = turned(_tile, _face, _deg)
         _in = []
 
-        def _b(_t=_t, _f=_f, _in=_in):
+        def _b(_t=_t, _f=_f, _in=_in, _o=_ci == 2):
             with asm():
-                _in.append(fitting(_f, _t))
+                _in.append(fitting(_f, _t, out=_o))
         FITTINGS[_d].append((_t, _f, for_direction(_d, _deg, _b)))
         INNER[_d].append(tuple(Matrix.Rotation(math.radians(_deg), 3, "Z") @ Vector(_in[0])))
 
@@ -2253,7 +2481,8 @@ LEAD_PATHS = (
     [(1.0, 1.98, 0.75), (1.0, 1.95, 1.3), (0.85, 1.92, 1.5), (0.5, 1.85, 1.5), (0.3, 1.66, 1.4),
      (0.26, 1.52, 1.24), (0.26, 1.5, 1.13)],
 )
-SUCTION = (0.26, 1.5)        # the compressor's suction stack: on its barrel's north shoulder
+SUCTION = (0.26, 1.42 if FULL_RUNS else 1.5)   # the compressor's suction stack: on its barrel's north shoulder
+                                                # (T06d full runs: 0.08 south, clear of the full-bore riser)
 # T06c (Liam, 2026-10-20: "The diameter of the hoses compared to the pipes doesn't look right, look
 # at how other buildings handle the pipe to in the machine"): vanilla takes a port in at full bore and
 # steps it down once, at a flange, to about half a pipe (the oil refinery's north ports: 38 px to
@@ -2264,6 +2493,9 @@ LEAD_R = 0.16
 if PROPOSAL == "legs-nw":        # the compressor beside the gas input: the line drops straight into it
     LEAD_PATHS = (LEAD_PATHS[0], [(1.0, 1.98, 0.7), (1.0, 1.9, 1.05), (1.05, 1.6, 1.12), (1.1, 1.43, 1.08),
                                   (1.11, 1.42, 0.97)])
+if LAYOUT and CXO:              # (T06d: the compressor moved CXO east; its suction stack, and the line's drop, with it)
+    LEAD_PATHS = (LEAD_PATHS[0], LEAD_PATHS[1][:3] + [(x + CXO * (k + 1) / 4, y, z) for k, (x, y, z)
+                                                      in enumerate(LEAD_PATHS[1][3:])])
 LEADS = {}
 
 
@@ -2271,7 +2503,7 @@ def suction_stack():
     """The crust-gas compressor's suction: a stack standing on its barrel with a gate valve on it
     (a red handwheel facing south), the gas line dropping into its top."""
     x, y = SUCTION
-    if PROPOSAL == "legs-nw":
+    if PROPOSAL == "legs-nw" or LAYOUT:
         x += CXO
     with asm():
         pipe([(x, y, 0.5), (x, y, 1.12)], r=LEAD_R, mat="bare")               # the line's own bore (T06c)
@@ -2280,6 +2512,14 @@ def suction_stack():
         cyl((x, y - 0.25, 0.86), 0.018, 0.1, "bare", rot=(PI / 2, 0, 0), verts=8)
         handwheel((x, y - 0.3, 0.86), 0.085, axis=(0, 1, 0), mat="red")
         cyl((x, y, 1.13), LEAD_R + 0.05, 0.04, "dark_steel", verts=32)        # the line's flange on its top
+        if FULL_RUNS:   # (T06d: the full-bore line steps down to the compressor's inlet here, at a visible reducer)
+            bpy.ops.mesh.primitive_cone_add(vertices=40, radius1=LEAD_R + 0.01, radius2=0.27, depth=0.18,
+                                            location=(x, y, 1.15 + 0.09))
+            _finish(bpy.context.active_object, "bare", 0.006, smooth=True)
+            cyl((x, y, 1.345), 0.31, 0.035, "dark_steel", verts=40)
+            for k in range(8):
+                t = 2 * PI * (k + 0.5) / 8
+                nut((x + 0.285 * math.cos(t), y + 0.285 * math.sin(t), 1.37), 0.017, 0.012, (0, 0, 0))
 
 
 suction_stack()
@@ -2298,11 +2538,50 @@ def reducer(p, r0=0.27, r1=LEAD_R, depth=0.12):
     return (x, y - 0.04 - depth + 0.01, z)
 
 
+def flange_pair(p, r0):
+    """T06d (full runs): the fitting's neck bolted to its line at the same bore, facing south (model -y)."""
+    x, y, z = p
+    for dy, m in ((-0.015, "dark_steel"), (-0.05, "bare")):
+        cyl((x, y + dy, z), r0 + 0.05, 0.035, m, rot=(PI / 2, 0, 0), verts=40)
+    for k in range(8):
+        t = 2 * PI * (k + 0.5) / 8
+        nut((x + (r0 + 0.02) * math.cos(t), y - 0.075, z + (r0 + 0.02) * math.sin(t)), 0.018, 0.012, (PI / 2, 0, 0))
+    return (x, y - 0.06, z)
+
+
+def full_path(k, st):
+    """T06d (full runs): an input's line at its fitting's bore. Off the flange pair it turns up in one elbow and
+    climbs at the back; the solution then runs over the drain header and drops into the feed drum's crown, the
+    gas runs west along the back and drops onto the compressor's suction stack (its reducer)."""
+    x, y, z = st
+    # (the solution's riser always at x -1.0: facing west its fitting lands at -1.19, where a riser would stand in
+    # the scrubber's shell, facing east at -0.81, in a north-moved leg's glass; the elbow leans it there)
+    xr = -1.0 if k == 0 else x
+    up = [(x, y - 0.1, z + 0.02), (0.5 * (x + xr), y - 0.17, z + 0.25), (xr, y - 0.18, 1.15)]
+    x = xr
+    if k == 0:
+        # (south first, then west: run past the scrubber's south-east flank it stood in front of its gauge,
+        # facing north; clear of a north-moved leg and of the make-up pot's head)
+        return up + [(-1.05, 1.75, 1.6), (-1.17, 1.3, 1.65), (-1.5, 0.98, 1.5), (-1.88, 0.93, 1.38), (-1.96, 0.93, 1.13)]
+    sx = SUCTION[0] + (CXO if (LAYOUT or PROPOSAL == "legs-nw") else 0.0)
+    return up + [(x - 0.15, 1.82, 1.55), (0.5 * (x + sx), 1.72, 1.62), (sx + 0.06, 1.48, 1.58), (sx, SUCTION[1], 1.48),
+                 (sx, SUCTION[1], 1.37)]
+
+
 for _d, _deg in contract.DIRECTIONS["four"]:
     first = len(OBJS)
     LEADS[_d] = []
+    _rn = 0.27 if _d in ("north", "south") else 0.24      # the inputs' necks: N/S faces 0.27, E/W 0.24 (fitting())
     for _k, _path in enumerate(LEAD_PATHS):
         with asm():
+            if FULL_RUNS:
+                _st = flange_pair(INNER[_d][_k], _rn)
+                _path = full_path(_k, _st)
+                LEADS[_d].append([_st] + list(_path))
+                pipe([_st] + list(_path), r=_rn, mat="bare")
+                if _k == 0:
+                    cyl((-1.96, 0.93, 1.1), _rn + 0.05, 0.04, "dark_steel", verts=32)   # its flange on the drum's crown
+                continue
             _st = reducer(INNER[_d][_k])
             LEADS[_d].append([_st] + list(_path))
             pipe([_st] + list(_path), r=LEAD_R, mat="bare")
@@ -2323,8 +2602,8 @@ for _d, _deg in contract.DIRECTIONS["four"]:
 #   south, west: the scrubber's foot (candidate 3, (-2.0, -1.85) facing north): its north
 #                wall, then (turned west) its west wall
 SOCKET_AT = {   # direction: (centre, the wall's outward normal, candidate), model space
-    "north": ((2.1, -1.47, 0.78), (0, -1, 0), 2),
-    "east": ((2.47, -0.95, 0.78), (1, 0, 0), 2),
+    "north": ((2.1, -1.47 + INSTR_DY, 0.78), (0, -1, 0), 2),
+    "east": ((2.47, -0.95 + INSTR_DY, 0.78), (1, 0, 0), 2),
     "south": ((-2.0, 2.385, 1.25), (0, 1, 0), 3),
     "west": ((-2.455, 1.85, 1.25), (-1, 0, 0), 3),
 }
@@ -2670,7 +2949,8 @@ MEANT = [
     (r"^drive$", "", r"^belt\[", "a lacing clip on the belt"),
     (r"^drive$", "", rf"\[bare\] at \(\+({C1.x:.2f}|{C2.x:.2f})", "a pulley on its shaft"),
     (r"^leg particle$", "", r"\[(glass|fl_f\d)\]", "a fleck or bubble in the solution, inside the glass"),
-    (r"^leg particle$", "", r"\[bare\] at \((-0\.32,\+0\.62|\+0\.12,-0\.72),1\.43\)",
+    (r"^leg particle$", "", r"\[bare\] at \((" + "|".join(re.escape(f"{l_[0]:+.2f},{l_[1]:+.2f}").replace("\\+", "\\+")
+                                                       for l_ in LEGS) + r"),1\.43\)",
      "inside the glass, behind the leg's middle band"),
     (r"^leg particle$", "", r"\[(bare|brass|hose|hose_k)\] at \((-0\.5|-0\.6|\+0\.2|\+0\.5)",
      "inside the glass, past the end of a hose let into the leg (round 5)"),
@@ -2681,6 +2961,26 @@ MEANT = [
     (r"^cake$", "", r"\[(lead|dark_steel|dark)\] at \(-(1\.0[256]|0\.89),-1\.98,0\.(27|56|58)",
      "the cake dropping through the chute mouth into the drop box"),
 ]
+
+
+def _leg_hose_parts():
+    """T06d (a layout or the fat hoses): every part of a hose or line whose end is let into a leg's
+    glass (an end within LR + 0.06 of a leg's axis, at the glass's height), named, for the rule
+    T06c's x-prefixes give for T06c's legs: a particle inside the glass passes the end let into it."""
+    names = []
+    for o in OBJS:
+        ends = RUN_ENDS.get(ASM.get(o.name))
+        if not ends or o.type != "MESH":
+            continue
+        if any(Z0 - 0.1 < e.z < Z1 + 0.6 and math.hypot(e.x - lx, e.y - ly) < LR + 0.06
+               for e in ends for lx, ly, _, _ in LEGS):
+            names.append(re.escape(o.name))
+    return names
+
+
+if LAYOUT or FAT:
+    MEANT.append((r"^leg particle$", "", r"^(" + "|".join(_leg_hose_parts()) + r")\[",
+                  "inside the glass, past the end of a hose let into the leg (round 5)"))
 
 # Fixed parts that touch by design: a fastener or a fitting (small, or one of the detail
 # materials) on what carries it; a hose or pipe let into its vessel; a vessel on its skid,
@@ -2695,7 +2995,8 @@ DETAIL_MATS = {"bolt", "seam", "stencil", "hazard", "label", "gauge", "needle", 
 MEANT_FIXED = [
     (r"^Cylinder\[dark_steel\] at \(\+1\.30,\+0\.10,0\.08\)", rf"\[dark_steel\] at \(\+{PX:.2f},\+{PY:.2f},0\.07\)",
      "the side nozzle's pot stands on the reactor's foot ring: the two cast feet run together"),
-    (r"^Cylinder\.\d+\[dark_steel\] at \(\+0\.07,-1\.32,0\.32\)", r"\[dark_steel\] at \([-+]0\.\d+,-1\.32,0\.40\)",
+    (r"^Cylinder\.\d+\[dark_steel\] at \(" + re.escape(f"{MANI[4]:+.2f},{MANI[5]:+.2f}") + r",0\.32\)",
+     r"\[dark_steel\] at \([-+]0\.\d+," + re.escape(f"{MANI[5]:+.2f}") + r",0\.40\)",
      "a valve's body standing on the sampling manifold"),
 ]
 
@@ -3029,7 +3330,7 @@ with open(os.path.join(OUT, "model.json"), "w") as f_:
                    # receiver's axis out to the pipe tile
                    runs={d: dict(solution=[(INNER[d][0][0], 3.0, ZA), (INNER[d][0][0], 2.5, ZA)] + LEADS[d][0],
                                  gas=[(INNER[d][1][0], 3.0, ZA), (INNER[d][1][0], 2.5, ZA)] + LEADS[d][1],
-                                 output=[(INNER[d][2][0], -2.04, 0.58), INNER[d][2], (INNER[d][2][0], -2.5, ZA),
+                                 output=[(INNER[d][2][0], RECV_Y, RECV_Z), INNER[d][2], (INNER[d][2][0], -2.5, ZA),
                                          (INNER[d][2][0], -3.0, ZA)])
                          for d in INNER}, direction=RUN_DIR, unseen=list(HIDDEN)), f_, indent=1, default=list)
 print("cut past the footprint's edges (px with alpha, per render):", {k: v for k, v in CUT.items() if v})
