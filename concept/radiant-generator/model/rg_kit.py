@@ -1176,7 +1176,8 @@ TRAY_FLOOR = 0.0125     # the floor's top over its line
 TRAY_FRAME = set()      # a tray's floor, rails and cleats: the collide check holds its own cables off them (T08i)
 
 
-def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None, legs=(), cleat_step=0.45):
+def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None, legs=(), cleat_step=0.45,
+         fan_in=None, fan_len=0.04):
     """A cable tray in straight runs between points (the floor's centre line), cables laid on its
     floor. T08d: each run's floor and rails pitched along it, so a sloping run's cables lie in it
     instead of passing through it (round 7's boxes stayed level); the cables' centre TRAY_HC over the
@@ -1253,8 +1254,28 @@ def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None,
             if (p - (a + d * t)).length < w / 2 + 0.06:
                 return False
         return True
+    # T08j: fan_in, one (point, direction) per cable in cols' order: each cable comes on its own from a
+    # terminal's lug (the point, leaving along the direction) and joins the twisted bundle fan_len into
+    # the tray, where the bundle starts, each at its own place in the twist (bundle()'s offsets at s 0)
+    if fan_in:
+        acc, i0 = 0.0, 0
+        while i0 + 1 < len(line) and acc < fan_len:
+            acc += (line[i0 + 1] - line[i0]).length
+            i0 += 1
+        line = line[i0:]
+        P0 = catmull(line + list(lead_out or ()))
+        T0, N0, B0 = (v[0] for v in frames(P0))
+        r_, n_c = 0.02, len(cols)
+        for k, (c_, (lp, ld)) in enumerate(zip(cols, fan_in)):
+            S = P0[0] + r_ * 1.3 * (math.cos(2 * PI * k / n_c) * N0 + math.sin(2 * PI * k / n_c) * B0)
+            lp, ld = Vector(lp), Vector(ld).normalized()
+            sweep(catmull([lp, lp + ld * 0.02 + Vector((0, 0, -0.003)), S - T0 * 0.03, S, S + T0 * 0.012]),
+                  r_, "cable_" + c_, seg=8)
     run = list(lead_in or ()) + line + list(lead_out or ())
-    bundle(run, cols=cols, r=0.02, glands=(bool(lead_in), bool(lead_out)), sleeve_ok=off_tray)
+    # T08j: a fanned run starts fan_len later, which moves its sleeve rhythm on; the tube-column run, the
+    # one fanned, showed none (each fell in its tray), so a fanned run keeps none, not one new on its drop
+    bundle(run, cols=cols, r=0.02, glands=(bool(lead_in), bool(lead_out)),
+           sleeve_ok=(lambda p: False) if fan_in else off_tray)
 
 
 def tube(x, y, z0, k, h=0.8, arm=(0, 0), arm_len=0.0):

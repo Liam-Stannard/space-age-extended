@@ -180,8 +180,43 @@ crane("x", (-1.0, 1.78), ZR, CY, P[0], W[0], P[2], W[2] + WELL_DROP, -0.55, 1.74
 # terminal block on the tubes' copper bar, on a stand at its end, and its cables drop into a gland on the
 # switchgear's top
 # T08i: the tray open, its cables held by cleats over them, none under a bar (rg_kit.tray)
-box((2.37, -0.86, 1.25), (0.22, 0.08, 0.11), "dark_steel", bevel=0.008)        # the bus terminal block
-tray([(2.3, -0.95, 1.2), (2.3, -1.42, 1.2)], lead_in=[(2.3, -0.9, 1.26), (2.3, -0.93, 1.26)],
+# T08j (Liam 2026-10-21, "The terminal is floating snd doesnt look like a terminal"): T08d's block was a
+# plain steel box hung off the copper bar's end over open ground, its cables out of a gland in its face.
+# As vanilla's terminals read (the accumulator's pale bridge with the leads landing on its posts, the
+# substation's leads out of white insulators): an insulated block, cream ceramic, on an ochre bracket plate
+# on a steel pedestal standing on the ground beside the tubes' plinth, its foot bolted down; three studs
+# with barrier ribs between, each cable ending in a crimped copper lug under a nut, the three fanning into
+# the tray's bundle by its first cleat (rg_kit.tray's fan_in); the copper bar bent up at its end and bolted
+# onto a fourth stud. The block sits inside the tray's width, so the cables leave over its open end
+TERM_Y, TERM_Z = -0.875, 1.255                                                  # the studs' row, the block's top
+# a study aid for Liam's questions (not a decision): --terminal-mount post stands the bracket on a slim ochre
+# post like the tray's own stand; --terminal-body white draws the block in the white of the label sleeves
+if K.opt("--terminal-mount", "pedestal") == "post":
+    box((2.44, -0.8925, 0.59), (0.05, 0.05, 1.18), "ochre", bevel=0.004)        # the terminal's post
+    box((2.44, -0.9125, 0.015), (0.13, 0.115, 0.03), "dark_steel", bevel=0.004)
+else:
+    box((2.365, -0.8925, 0.59), (0.23, 0.075, 1.18), "dark_steel", bevel=0.008)  # the terminal's pedestal
+    box((2.365, -0.9125, 0.015), (0.26, 0.115, 0.03), "dark_steel", bevel=0.004)  # its foot
+    for bx in (2.26, 2.47):
+        cyl((bx, -0.94, 0.034), 0.012, 0.01, "bolt", verts=6, bevel=0)
+TERM_BODY = "label" if K.opt("--terminal-body", "ceramic") == "white" else "ceramic"
+box((2.345, -0.8925, 1.1875), (0.29, 0.085, 0.015), "ochre", bevel=0.003)       # the bracket plate
+box((2.3425, -0.89, 1.225), (0.255, 0.07, 0.06), TERM_BODY, bevel=0.006)        # the insulated block
+for rx in (2.275, 2.325, 2.3925):                                               # barrier ribs between the studs
+    box((rx, -0.89, TERM_Z + 0.0175), (0.006, 0.065, 0.035), TERM_BODY, bevel=0.002)
+for sx in (2.25, 2.30, 2.35, 2.435):                                            # the studs and their nuts
+    cyl((sx, TERM_Y, TERM_Z + 0.0175), 0.006, 0.035, "brass", verts=8, bevel=0)
+    cyl((sx, TERM_Y, TERM_Z + (0.018 if sx > 2.4 else 0.012)), 0.012, 0.012, "brass", verts=6, bevel=0.002)
+LUGS = []
+for sx in (2.25, 2.35, 2.30):                   # black, red, grey (the tray's cols): each cable's lug on its stud
+    cyl((sx, TERM_Y, TERM_Z + 0.003), 0.017, 0.006, "copper", verts=16, bevel=0)
+    box((sx, TERM_Y - 0.0175, TERM_Z + 0.004), (0.022, 0.03, 0.006), "copper", bevel=0)
+    cyl((sx, -0.91, TERM_Z + 0.02), 0.02, 0.03, "copper", rot=(PI / 2, 0, 0), verts=12, bevel=0.002)
+    LUGS.append(((sx, -0.925, TERM_Z + 0.02), (0, -1, 0)))
+# the copper bar's end bent up past the block's north face and over onto the fourth stud
+box((2.44, -0.843, 1.2185), (0.05, 0.014, 0.0975), "copper", bevel=0.002)
+box((2.44, -0.8705, TERM_Z + 0.006), (0.05, 0.041, 0.012), "copper", bevel=0.002)
+tray([(2.3, -0.95, 1.2), (2.3, -1.42, 1.2)], fan_in=LUGS,
      lead_out=[(2.3, -1.5, 1.27), (2.26, -1.64, 1.25), (2.245, -1.72, 1.19), (2.24, -1.74, 1.15)])
 box((2.3, -1.4, 0.6), (0.05, 0.05, 1.19), "ochre", bevel=0.004)                 # the tray's stand
 box((2.3, -1.4, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
