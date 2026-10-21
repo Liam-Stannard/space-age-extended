@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Vent Pump (T07c): the agreed effects as sheets the coder can attach, and where each one goes.
 
-  python3 -B effects.py --model-json <render.sh out-dir>/model.json --out <dir>
+  python3 -B effects.py --model-json <render.sh out-dir>/model.json --sheets <render.sh out-dir>/sheets --out <dir>
 
 Liam, 2026-10-21 (T07, Q5): the wisp "A2" (the head tank's gas offtake, a melt-lit fume, working only),
 and the effects E2 (embers off the skimmings bin), E3 (the melt's orange ground light: a light, seen only
@@ -18,12 +18,18 @@ direction): every effect is one working_visualisation of the mining drill, drawn
 frame's centre, negated) and its position per direction the model's anchor for that direction
 (model.json "effects", measured off the model: where the offtake, the bin, the valve and the float
 chamber stand in each variation). The two puffs synced to the charges (E4, E5) are 24 frames at the
-loop's animation_speed 0.2 and no constant_speed, so they run with the machine's own loop; the wisp and
-the embers have loops of their own (constant_speed). Unchecked in a client: the sync, the fade, the layer.
+loop's animation_speed 0.2 and no constant_speed, so they run with the machine's own loop; the wisp has
+a loop of its own (constant_speed); E2, the model's, runs in step with the loop. Unchecked in a client:
+the sync, the fade, the layer.
 
-Writes into --out: wisp-a2.png, embers-e2.png, cold-breath-e4.png, purge-e5.png (each a sheet), and
-effects.json (each sheet's frame size, frames, line_length, speed, blend, anchor, and per direction its
-position, plus E3's light).
+Writes into --out: wisp-a2.png, cold-breath-e4.png, purge-e5.png (each a sheet), and effects.json (each
+sheet's frame size, frames, line_length, speed, blend, anchor, and per direction its position, plus E3's
+light, and E2's layers as the model packs them).
+
+T07d (Liam, 2026-10-21, on T07c's E2): "Enbers don't really look right and aren't the right perspective,
+they're infront of parts of the model which are closed to the camera than the box". E2 is no longer drawn
+here: the model renders it (vent_pump.py, "E2: the embers"), every frame with the rest of the machine held
+out, as the layers embers and embers-light, per direction, in --sheets; effects.json says how they attach.
 """
 import argparse
 import json
@@ -36,6 +42,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 ap = argparse.ArgumentParser()
 ap.add_argument("--model-json", required=True)
 ap.add_argument("--out", required=True)
+ap.add_argument("--sheets", required=True)    # the model's packed sheets (meta.json): E2's layers
 A = ap.parse_args()
 os.makedirs(A.out, exist_ok=True)
 MODEL = json.load(open(A.model_json))
@@ -131,40 +138,6 @@ def wisp():
     return frames
 
 
-# ---------------------------------------------------------------- E2: embers off the skimmings bin
-EMBERS = dict(frames=24, size=(56, 104), src=(28, 92), line=12, speed=0.5)
-
-
-def embers():
-    n, (w, h), (sx, sy) = EMBERS["frames"], EMBERS["size"], EMBERS["src"]
-    rnd = random.Random(5)
-    sparks = [dict(phase=rnd.random(), x=rnd.uniform(-16, 16), drift=rnd.uniform(-8, 10), rise=rnd.uniform(48, 80),
-                   life=rnd.uniform(0.35, 0.6), size=rnd.uniform(1.1, 1.9)) for _ in range(9)]
-    frames = []
-    for f in range(n):
-        fr = Image.new("RGBA", (w * 4, h * 4))          # drawn at 4x, brought down for soft edges
-        dr = ImageDraw.Draw(fr)
-        for s in sparks:
-            age = ((f / n) - s["phase"]) % 1.0
-            if age > s["life"]:
-                continue
-            u = age / s["life"]
-            x = sx + s["x"] + s["drift"] * u + 2 * math.sin(9 * u + s["phase"] * 6)
-            y = sy - s["rise"] * u
-            k = (1 - u) ** 0.7 * (0.75 + 0.25 * math.sin(40 * u + s["phase"] * 20))
-            col = lerp((226, 130, 50), (178, 62, 26), u)
-            for tail in range(3):                      # a short trail below it
-                ty = y + tail * 2.2
-                rr = s["size"] * (1 - tail * 0.28) * 4
-                aa = round(255 * k * (1 - tail * 0.35))
-                dr.ellipse((x * 4 - rr, ty * 4 - rr, x * 4 + rr, ty * 4 + rr), fill=col + (aa,))
-        fr = fr.resize((w, h), Image.LANCZOS)
-        halo = fr.filter(ImageFilter.GaussianBlur(2.2))
-        halo.putalpha(halo.getchannel("A").point(lambda v: v // 2))     # a faint glow round each spark
-        frames.append(Image.alpha_composite(halo, fr))
-    return frames
-
-
 # ---------------------------------------------------------------- E4 and E5: a puff at each charge, synced to the loop
 COLD = dict(frames=24, size=(64, 72), src=(32, 60), line=12, speed=0.2, born=(1, 13), life=8,
             colour=(226, 229, 234), alpha=0.5, rise=30, r=(4, 15))
@@ -210,9 +183,6 @@ for name, cfg, frames, key, extra in (
         ("wisp-a2", WISP, wisp(), "wisp_a2",
          dict(what="A2: the boil-off wisp, a melt-lit fume rising off the head tank's gas offtake, working only",
               blend="normal (alpha)", constant_speed=True, fadeout=True, render_layer="wires (as the chemical plant's smoke)")),
-        ("embers-e2", EMBERS, embers(), "embers_e2",
-         dict(what="E2: embers rising off the slag in the skimmings bin, working only",
-              blend="additive, draw_as_glow = true", constant_speed=True, fadeout=True, render_layer="object")),
         ("cold-breath-e4", COLD, synced_puff(COLD, 31), "cold_breath_e4",
          dict(what="E4: a breath of cold vapour off the stop valve's bonnet at each charge (born frames 1 and 13)",
               blend="normal (alpha)", constant_speed=False, fadeout=True, render_layer="object",
@@ -231,6 +201,20 @@ for name, cfg, frames, key, extra in (
         line_length=cfg["line"], scale=0.5, animation_speed=cfg["speed"], shift=anchor_shift(cfg),
         source_px=list(cfg["src"]), **positions(key), checks=stats(frames, additive))
     print(name, sh.size, out["effects"][name]["checks"])
+SHEETS = json.load(open(os.path.join(A.sheets, "meta.json")))
+out["effects"]["embers-e2"] = dict(
+    what="E2: embers rising off the slag in the skimmings bin, working only (T07d: rendered in the model, every "
+         "other part held out, so a part nearer the camera hides them in the sheet itself)",
+    attach="one working_visualisation, north_animation ... west_animation each an Animation of two layers: "
+           "embers-<d>.png (normal blend: the cinders) then embers-light-<d>.png (draw_as_glow = true, "
+           "blend_mode additive: their light); each layer's size and shift from the model's meta.json as below, "
+           "scale 0.5; no north_position ... (the shift places it). animation_speed 0.4 and NOT constant_speed: "
+           "two ember frames to each of the machine's 24, in step with its loop (the mech layer is held out at "
+           "frame f // 2); fadeout = true. Drawn over the machine (it carries its own occlusion); unchecked in a "
+           "client",
+    frame_count=48, animation_speed=0.4, constant_speed=False, fadeout=True, scale=0.5,
+    layers={d: {k: dict(file=f"{k}-{d}.png", **{f: SHEETS[f"{k}-{d}"][f] for f in ("size", "shift", "frames", "line_length")})
+                for k in ("embers", "embers-light")} for d in DIRS})
 out["effects"]["ground-light-e3"] = dict(
     what="E3: the melt's orange light on the ground round the tower's foot: a light, so the engine shows it only "
          "in the dark (the Core's sky is mostly dark: Liam, 2026-10-20)",

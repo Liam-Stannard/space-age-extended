@@ -11,6 +11,15 @@
   --collide  no render: in every direction, every moving part in every frame against every other part,
              and every fixed part against every other, by BVH; collide.txt and collide-model.txt in <out-dir>
   --south round5   the south footing as round 5 had it (the join's "before", for the review only)
+  --ends     no render: every run's two ends, where they sit and on the sprite (ends.json), for the ends' crops
+  --embers-only    T07d tuning: render the ember layer (embers, embers-light) alone, nothing declared
+  --ember-check <renders dir>   no render: the holdout check of the packed-to-be ember frames (sprite size,
+             render.sh's <out-dir>/renders): for every frame and direction, every pixel the embers draw is cast
+             back into the scene as 4 x 4 rays through it; a pixel fails when the embers draw it (alpha 16 or
+             more) and no ray of it meets a spark before the machine, though one meets a spark behind a part
+             (a spark drawn over a part nearer the camera). Writes <out-dir>/ember-check.json, and per
+             direction near-<d>.pgm: the parts nearer the camera than the bin's slag by 0.1 tile or more
+             (the "before" count for T07c's PIL embers)
 
 Spec: concept/vent-pump/building-spec-vent-pump.md (written 9e067a3): the Gas Lift Tower, round 5,
 variant (a) "Warmer paints" (Liam, 2026-10-20). The geometry and the surfacing are round 5's
@@ -81,6 +90,9 @@ IDLE = "--idle" in argv
 PORTS = "--ports" in argv
 ICON = "--icon" in argv
 COLLIDE = "--collide" in argv
+EMBERS_ONLY = "--embers-only" in argv          # T07d tuning: the ember layer alone, no declaration
+EMBERS_FREE = "--embers-free" in argv          # with --embers-only: nothing held out (the check's "without")
+EMBER_CHECK = argv[argv.index("--ember-check") + 1] if "--ember-check" in argv else None
 SOUTH = argv[argv.index("--south") + 1] if "--south" in argv else "fixed"
 assert SOUTH in ("fixed", "round5"), SOUTH
 
@@ -133,6 +145,14 @@ DECL = dict(
         # behind the sight glass, the meter), and pack.py refuses a layer empty in a direction. "cycle": each
         # turns or rocks about a pivot off its own centroid, so nothing holds to a point or a line
         dict(name="mech", frames=NF, motion="cycle", animation_speed=SPEED),
+        # T07d (Liam, 2026-10-21, on T07c's E2): the embers off the skimmings bin, rendered here, not drawn
+        # in PIL, each frame with every other part held out, so a part nearer the camera than an ember hides
+        # it in the sheet itself and the engine may draw the layer over the whole machine. 48 frames at
+        # twice the loop's speed: two ember frames to a machine frame, in step with it (the mech parts are
+        # held out at frame f // 2), so it must not run at constant_speed. "embers" the cinders as the
+        # sun shows them (unlit, the riser's way), "embers-light" their light alone, drawn as glow
+        dict(name="embers", frames=48, motion="flow", working=True, animation_speed=round(2 * SPEED, 6)),
+        dict(name="embers-light", kind="glow", over="embers", frames=48, motion="flow"),
     ],
     # one picture per face, on the middle tile of each; facing north the melt leaves by the north
     # face and the helium comes in by the south (spec 8), and turned, the same pictures serve
@@ -925,7 +945,8 @@ def check_ends(tol=0.04):
                 dd = 0.0 if inside else dist
                 if dd <= tol and (best is None or dd < best[0]):
                     best = (dd, o.data.materials[0].name if o.data.materials else "?")
-            res.append(dict(at=[round(v, 2) for v in p], ok=best is not None, to=(best[1] if best else None)))
+            res.append(dict(at=[round(v, 2) for v in p], ok=best is not None, to=(best[1] if best else None),
+                            screen=screen_of(ROOT.matrix_world.inverted() @ w)))      # T07d: for the ends' crops
         out.append(dict(direction=d, name=name, ends=res, ok=all(r["ok"] for r in res)))
         print(("ok  " if out[-1]["ok"] else "LOOSE ") + f"{d}: {name}", [(r["at"], r["to"]) for r in res], flush=True)
     return out
@@ -1249,6 +1270,164 @@ def effect_anchors():
     return out
 
 
+# ================================================================ E2: the embers (T07d)
+#   Sparks off the slag in the skimmings bin (as modelled: the slag's top at z 0.72, 0.78 x 0.72 round
+#   (-0.92, 0.95)), each born at a point of the slag, rising and cooling, drifting a little with the same
+#   world wind in every direction. Real objects in the scene, not in OBJS (no part of the machine, its
+#   collide or its moving parts), hidden in every pass but their own. Each is a core (a short streak along
+#   its flight) and a soft halo, the halo drawn only in the light pass.
+NFE = 48
+EMBER_SLAG = (-0.92, 0.95, 0.725)
+EMBER_HALF = (0.33, 0.30)
+EMBER_WIND = (0.10, 0.03)                 # world tiles over a spark's life: east and a little north
+EMBER_STRENGTH = _opt("--ember-strength", 2.2)     # 9, 5, 3.2 and 2.8 drove 1-6 px to white (pack.py)
+_rnd = random.Random(23)
+SPARKS = [dict(phase=_rnd.random(), life=_rnd.uniform(0.24, 0.42), bx=_rnd.uniform(-1, 1), by=_rnd.uniform(-1, 1),
+               rise=_rnd.uniform(1.1, 2.0), spread=(_rnd.uniform(-0.1, 0.1), _rnd.uniform(-0.06, 0.06)),
+               r=_rnd.uniform(0.011, 0.016), wob=_rnd.uniform(0, TAU)) for _ in range(18)]
+# a tile of rise is half a tile on the screen (the camera's 60 degrees): 1.1-2.0 lifts them 35-64 px, T07c's 48-80
+
+
+def _ember_mat(name, halo=False):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    out_ = nt.nodes["Material Output"]
+    if not halo:
+        b = nt.nodes["Principled BSDF"]
+        b.inputs["Base Color"].default_value = rig.srgb("#2E1C14")       # a cinder, unlit
+        b.inputs["Roughness"].default_value = 0.85
+        b.inputs["Emission Strength"].default_value = 0.0
+        return m, b
+    nt.nodes.remove(nt.nodes["Principled BSDF"])
+    em = nt.nodes.new("ShaderNodeEmission")
+    tr = nt.nodes.new("ShaderNodeBsdfTransparent")
+    lw = nt.nodes.new("ShaderNodeLayerWeight")
+    lw.inputs["Blend"].default_value = 0.5
+    ramp = nt.nodes.new("ShaderNodeMath")
+    ramp.operation = "POWER"
+    ramp.inputs[1].default_value = 2.5
+    nt.links.new(lw.outputs["Facing"], ramp.inputs[0])
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(ramp.outputs[0], mix.inputs[0])            # facing the camera: light; the rim: clear
+    nt.links.new(em.outputs[0], mix.inputs[1])
+    nt.links.new(tr.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out_.inputs["Surface"])
+    return m, em
+
+
+EMBERS = {}                                # direction -> [(core, core material's BSDF, halo, halo emission)]
+for _d in DIRS:
+    EMBERS[_d] = []
+    for _i, _s in enumerate(SPARKS):
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=1.0, segments=12, ring_count=6)
+        core = bpy.context.active_object
+        core.name = f"ember-{_d}-{_i}"
+        cm, cb = _ember_mat(core.name)
+        core.data.materials.append(cm)
+        for p_ in core.data.polygons:
+            p_.use_smooth = True
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=1.0, segments=16, ring_count=8)
+        halo = bpy.context.active_object
+        halo.name = f"ember-halo-{_d}-{_i}"
+        hm, he = _ember_mat(halo.name, halo=True)
+        halo.data.materials.append(hm)
+        for o in (core, halo):
+            o.parent = ROOT
+            o.hide_render = True
+            o.visible_shadow = False        # they light nothing and shade nothing: the rest is held out
+            o.visible_diffuse = o.visible_glossy = False
+        EMBERS[_d].append((core, cb, halo, he))
+
+
+def ember_state(s, f):
+    """Spark s at ember frame f: None when not alive, else (model point, velocity, u in its life)."""
+    age = ((f / NFE) - s["phase"]) % 1.0
+    if age >= s["life"]:
+        return None
+    u = age / s["life"]
+    x0, y0, z0 = EMBER_SLAG
+    bx, by = x0 + s["bx"] * EMBER_HALF[0], y0 + s["by"] * EMBER_HALF[1]
+
+    def at(uu):
+        rise = s["rise"] * uu * (1.3 - 0.3 * uu)                  # quick off the slag, easing as it cools
+        lat = (s["spread"][0] * uu + 0.025 * math.sin(7 * uu + s["wob"]),
+               s["spread"][1] * uu + 0.02 * math.cos(6 * uu + s["wob"]))
+        return bx, by, z0 + rise, lat
+    return at(u), at(min(1.0, u + 0.05)), u
+
+
+def ember_world(d, st):
+    """A spark's place in ROOT's frame in direction d: its birth point turned with the periphery (pp),
+    its lift and drift in the world (the same wind facing every way)."""
+    bx, by, z, lat = st
+    x, y, _ = pp(d, (bx, by, 0.0))
+    return Vector((x + lat[0] + EMBER_WIND[0] * (z - EMBER_SLAG[2]) / 0.9,
+                   y + lat[1] + EMBER_WIND[1] * (z - EMBER_SLAG[2]) / 0.9, z))
+
+
+def place_embers(d, f, show=False, halo=False, lit=False):
+    """Every spark of direction d at ember frame f; shown (cores, and halos when `halo`) only when `show`;
+    lit: the cores glow (the light pass), else unlit cinders (the paint pass)."""
+    for dd in DIRS:
+        for core, cb, h, he in EMBERS[dd]:
+            core.hide_render = h.hide_render = True
+    if not show:
+        return
+    for s, (core, cb, h, he) in zip(SPARKS, EMBERS[d]):
+        st = ember_state(s, f)
+        if st is None:
+            continue
+        a, b, u = st
+        p0, p1 = ember_world(d, a), ember_world(d, b)
+        vel = p1 - p0
+        r = s["r"] * (1 - 0.45 * u)
+        core.location = p0
+        core.rotation_mode = "QUATERNION"
+        core.rotation_quaternion = vel.to_track_quat("Z", "Y") if vel.length > 1e-6 else (1, 0, 0, 0)
+        core.scale = (r, r, r * 4.5)                                   # a streak along its flight
+        k = (1 - u) ** 0.8 * (0.78 + 0.22 * math.sin(31 * u + s["wob"] * 3))
+        col = [c0 + (c1 - c0) * u ** 0.7 for c0, c1 in zip((1.0, 0.55, 0.16), (0.85, 0.2, 0.05))]
+        cb.inputs["Emission Color"].default_value = (*col, 1)
+        cb.inputs["Emission Strength"].default_value = EMBER_STRENGTH * k if lit else 0.0
+        core.hide_render = False
+        if halo:
+            h.location = p0
+            h.scale = (r * 2.4,) * 3
+            he.inputs["Color"].default_value = (*col, 1)
+            he.inputs["Strength"].default_value = 0.2 * EMBER_STRENGTH * k
+            h.hide_render = False
+    bpy.context.view_layer.update()
+
+
+def ember_window(d, pad=0.08):
+    """The render border (sprite px) round every spark's flight in direction d, halo and all."""
+    bpy.context.view_layer.update()         # a camera just made has no world matrix until the update
+    inv = sc.camera.matrix_world.inverted()
+    xs, ys = [], []
+    for f in range(NFE):
+        for s in SPARKS:
+            st = ember_state(s, f)
+            if st is None:
+                continue
+            p_ = inv @ (ROOT.matrix_world @ ember_world(d, st[0]))
+            xs.append(p_.x)
+            ys.append(p_.y)
+    ppt = rig.PX_PER_TILE
+    W, Hc = CANVAS
+    m = 0.08 + pad
+    return (max(0, int(W / 2 + (min(xs) - m) * ppt)), max(0, int(Hc / 2 - (max(ys) + m) * ppt)),
+            min(W, int(W / 2 + (max(xs) + m) * ppt) + 1), min(Hc, int(Hc / 2 - (min(ys) - m) * ppt) + 1))
+
+
+# ---------------------------------------------------------------- --ends (T07d): every run's two ends, placed on the sprite
+if "--ends" in argv:
+    os.makedirs(OUT, exist_ok=True)
+    with open(os.path.join(OUT, "ends.json"), "w") as f_:
+        json.dump(check_ends(), f_, indent=1)
+    print("done")
+    sys.exit(0)
+
 # ---------------------------------------------------------------- --collide
 if COLLIDE:
     collide_check()
@@ -1317,11 +1496,168 @@ if ICON:
 
 # ---------------------------------------------------------------- the passes, per direction
 rig.camera(*CANVAS)
-if not IDLE:
+
+
+def ember_check(renders):
+    """--ember-check (the docstring): the embers' holdout, checked by rays, not by the render's own holdout."""
+    import numpy as np
+    from mathutils.bvhtree import BVHTree
+    bpy.context.view_layer.update()
+    cam = sc.camera
+    cm = cam.matrix_world.copy()
+    fwd = (cm.to_3x3() @ Vector((0, 0, -1))).normalized()
+    ppt = rig.PX_PER_TILE
+    W, Hc = CANVAS
+    SUB = 4
+    dg = bpy.context.evaluated_depsgraph_get
+
+    def bvh(objs):
+        vs, ps = [], []
+        g = dg()
+        for o in objs:
+            if o.type != "MESH":
+                continue
+            ev = o.evaluated_get(g)
+            me = ev.to_mesh()
+            mw = ev.matrix_world
+            n0 = len(vs)
+            vs.extend(mw @ v.co for v in me.vertices)
+            ps.extend([n0 + i for i in p_.vertices] for p_ in me.polygons)
+            ev.to_mesh_clear()
+        return BVHTree.FromPolygons(vs, ps) if ps else None
+
+    def ray(tree, o):
+        if tree is None:
+            return None
+        hit = tree.ray_cast(o, fwd)
+        return hit[3] if hit[0] is not None else None
+
+    def origin(x, y):                        # sprite px (x right, y down) to a point on the camera's plane
+        return cm @ Vector(((x - W / 2) / ppt, (Hc / 2 - y) / ppt, 0.0))
+
+    def alpha(path):
+        im = bpy.data.images.load(path)
+        a = np.empty(W * Hc * 4, dtype=np.float32)
+        im.pixels.foreach_get(a)
+        bpy.data.images.remove(im)
+        return np.flipud(a.reshape(Hc, W, 4)[:, :, 3])
+
+    report = {}
+    for d in DIRS:
+        CUR_D[0] = d
+        set_pose(0)
+        setup(holdouts=GROUPS_ALL)
+        hide_glassy_holdouts()
+        still = [o for o in OBJS if not o.hide_render and PART[o.name] not in MECH + CONTENT]
+        t_still = bvh(still)
+        # the "before" mask: parts nearer the camera than a point on the vertical through the slag's centre
+        # that lands on the same sprite row (where T07c's flat sprite embers stood, notionally)
+        A = ROOT.matrix_world @ Vector(pp(d, EMBER_SLAG))
+        up_ = (ROOT.matrix_world.to_3x3() @ Vector((0, 0, 1)))
+        inv = cm.inverted()
+        a_c, up_c = inv @ A, inv.to_3x3() @ up_
+        near = bytearray(W * Hc)
+        for y in range(Hc):
+            h = ((Hc / 2 - (y + 0.5)) / ppt - a_c.y) / up_c.y
+            if h < -0.05:
+                continue
+            e_depth = -(a_c.z + h * up_c.z)        # distance along the view from the camera's plane
+            for x in range(W):
+                t = ray(t_still, origin(x + 0.5, y + 0.5))
+                if t is not None and t < e_depth - 0.1:
+                    near[y * W + x] = 255
+        with open(os.path.join(OUT, f"near-{d}.pgm"), "wb") as f_:
+            f_.write(f"P5 {W} {Hc} 255\n".encode() + bytes(near))
+        res = dict(frames=0, px=0, fail_px=0, fail_alpha_max=0, behind_rays=0, excess_px=0, fails=[])
+        dyn = {}
+        for f in range(NFE):
+            g = f // 2
+            if g not in dyn:
+                set_pose(g)
+                setup(holdouts=GROUPS_ALL)
+                hide_glassy_holdouts()
+                dyn = {g: bvh([o for o in OBJS if not o.hide_render and PART[o.name] in MECH + CONTENT])}
+            for layer, lit in (("embers", False), ("embers-light", True)):
+                a = alpha(os.path.join(renders, contract.named(contract.frame(layer, f), d) + ".png"))
+                place_embers(d, f, show=True, halo=lit, lit=lit)
+                t_emb = bvh([o for dd in (d,) for c, _, h, _ in EMBERS[dd] for o in (c, h) if not o.hide_render])
+                res["frames"] += 1
+                ys, xs = np.nonzero(a > 0)
+                seen, fails = [], []
+                for y, x in zip(ys.tolist(), xs.tolist()):
+                    vis = behind = 0
+                    for i in range(SUB):
+                        for j in range(SUB):
+                            o = origin(x + (j + 0.5) / SUB, y + (i + 0.5) / SUB)
+                            te = ray(t_emb, o)
+                            if te is None:
+                                continue
+                            tm = min([t for t in (ray(t_still, o), ray(dyn[g], o)) if t is not None], default=None)
+                            if tm is not None and tm < te:
+                                behind += 1
+                            else:
+                                vis += 1
+                    av = float(a[y, x])
+                    res["px"] += 1
+                    res["behind_rays"] += behind
+                    if vis:
+                        seen.append((x, y))
+                    if av >= 16 / 255 and vis == 0 and behind > 0:
+                        res["fail_px"] += 1
+                        res["fail_alpha_max"] = max(res["fail_alpha_max"], round(av * 255))
+                        fails.append((x, y, round(av * 255)))
+                    if behind and av > vis / SUB ** 2 + 0.25:
+                        res["excess_px"] += 1
+                for x, y, av in fails:      # how far the pixel is from one where a spark is seen (the resample's reach)
+                    near_ = min((max(abs(x - u), abs(y - v)) for u, v in seen), default=None)
+                    res["fails"].append(dict(layer=layer, frame=f, x=x, y=y, alpha=av, px_from_seen=near_))
+        place_embers(d, 0, show=False)
+        report[d] = res
+        print("EMBER-CHECK", d, {k: v for k, v in res.items() if k != "fails"},
+              "px_from_seen", sorted(x_["px_from_seen"] for x_ in res["fails"]), flush=True)
+    with open(os.path.join(OUT, "ember-check.json"), "w") as f_:
+        json.dump(dict(rule="a pixel fails when the embers draw it (alpha >= 16) and none of its 4x4 rays meets a "
+                            "spark before the machine while one meets a spark behind a part; excess_px: pixels "
+                            "drawn more than 0.25 above the share of rays that see a spark, where some ray "
+                            "meets a spark behind a part; fails: each failing pixel, and px_from_seen its distance "
+                            "(px, the larger axis) from the nearest pixel where a ray sees a spark first",
+                       directions=report), f_, indent=1)
+
+
+if EMBER_CHECK:
+    ember_check(EMBER_CHECK)
+    print("done")
+    sys.exit(0)
+if not IDLE and not EMBERS_ONLY:
     contract.declare(OUT, canvas=CANVAS, **DECL)
 MASKS = os.path.join(os.path.dirname(os.path.abspath(OUT)), "masks")
 os.makedirs(MASKS, exist_ok=True)
 OTHERS = lambda *gs: tuple(g for g in GROUPS_ALL if g not in gs)      # noqa: E731
+def render_embers(d, path):
+    """E2 (T07d): each ember frame with every part of the machine held out at the machine's frame f // 2,
+    so whatever stands nearer the camera than a spark hides it; the cinders unlit, then their light alone."""
+    border(ember_window(d))
+    for lit in (False, True):
+        lights_off(lit)
+        for f in range(NFE):
+            set_pose(f // 2)
+            setup(holdouts=() if EMBERS_FREE else GROUPS_ALL)
+            hide_glassy_holdouts()
+            place_embers(d, f, show=True, halo=lit, lit=lit)
+            rig.render(path(contract.frame("embers-light" if lit else "embers", f)))
+        lights_off(False)
+    place_embers(d, 0, show=False)
+    no_border()
+
+
+if EMBERS_ONLY:
+    sc.cycles.samples = ANIM_SAMPLES
+    for d in ONLY:
+        CUR_D[0] = d
+        render_embers(d, lambda stem, d=d: os.path.join(OUT, contract.named(stem, d) + ".png"))
+    print("done")
+    sys.exit(0)
+
 for d in ONLY:
     CUR_D[0] = d
 
@@ -1380,6 +1716,7 @@ for d in ONLY:
         hide_glassy_holdouts()
         rig.render(path(contract.frame("mech", f)))
     no_border()
+    render_embers(d, path)
     # not packed: the stray-light map's masks (the light's own silhouettes) and the whole machine working, lit
     set_pose(0)
     for g in CONTENT:

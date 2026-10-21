@@ -44,49 +44,6 @@
     "white_px": 0
    }
   },
-  "embers-e2": {
-   "what": "E2: embers rising off the slag in the skimmings bin, working only",
-   "blend": "additive, draw_as_glow = true",
-   "constant_speed": true,
-   "fadeout": true,
-   "render_layer": "object",
-   "file": "embers-e2.png",
-   "width": 56,
-   "height": 104,
-   "frame_count": 24,
-   "line_length": 12,
-   "scale": 0.5,
-   "animation_speed": 0.5,
-   "shift": [
-    -0.0,
-    -0.625
-   ],
-   "source_px": [
-    28,
-    92
-   ],
-   "north_position": [
-    -0.92,
-    -1.31
-   ],
-   "east_position": [
-    0.95,
-    -1.28
-   ],
-   "south_position": [
-    0.92,
-    0.59
-   ],
-   "west_position": [
-    -0.95,
-    -1.28
-   ],
-   "checks": {
-    "peak_luminance": 169,
-    "peak_alpha": 255,
-    "white_px": 0
-   }
-  },
   "cold-breath-e4": {
    "what": "E4: a breath of cold vapour off the stop valve's bonnet at each charge (born frames 1 and 13)",
    "blend": "normal (alpha)",
@@ -172,6 +129,129 @@
     "peak_luminance": 145,
     "peak_alpha": 107,
     "white_px": 0
+   }
+  },
+  "embers-e2": {
+   "what": "E2: embers rising off the slag in the skimmings bin, working only (T07d: rendered in the model, every other part held out, so a part nearer the camera hides them in the sheet itself)",
+   "attach": "one working_visualisation, north_animation ... west_animation each an Animation of two layers: embers-<d>.png (normal blend: the cinders) then embers-light-<d>.png (draw_as_glow = true, blend_mode additive: their light); each layer's size and shift from the model's meta.json as below, scale 0.5; no north_position ... (the shift places it). animation_speed 0.4 and NOT constant_speed: two ember frames to each of the machine's 24, in step with its loop (the mech layer is held out at frame f // 2); fadeout = true. Drawn over the machine (it carries its own occlusion); unchecked in a client",
+   "frame_count": 48,
+   "animation_speed": 0.4,
+   "constant_speed": false,
+   "fadeout": true,
+   "scale": 0.5,
+   "layers": {
+    "north": {
+     "embers": {
+      "file": "embers-north.png",
+      "size": [
+       46,
+       104
+      ],
+      "shift": [
+       -0.875,
+       -1.82812
+      ],
+      "frames": 48,
+      "line_length": 48
+     },
+     "embers-light": {
+      "file": "embers-light-north.png",
+      "size": [
+       49,
+       105
+      ],
+      "shift": [
+       -0.88281,
+       -1.83594
+      ],
+      "frames": 48,
+      "line_length": 48
+     }
+    },
+    "east": {
+     "embers": {
+      "file": "embers-east.png",
+      "size": [
+       45,
+       97
+      ],
+      "shift": [
+       1.11719,
+       -1.83594
+      ],
+      "frames": 48,
+      "line_length": 48
+     },
+     "embers-light": {
+      "file": "embers-light-east.png",
+      "size": [
+       46,
+       98
+      ],
+      "shift": [
+       1.10938,
+       -1.82812
+      ],
+      "frames": 48,
+      "line_length": 48
+     }
+    },
+    "south": {
+     "embers": {
+      "file": "embers-south.png",
+      "size": [
+       54,
+       87
+      ],
+      "shift": [
+       1.0,
+       0.08594
+      ],
+      "frames": 48,
+      "line_length": 48
+     },
+     "embers-light": {
+      "file": "embers-light-south.png",
+      "size": [
+       55,
+       87
+      ],
+      "shift": [
+       0.99219,
+       0.08594
+      ],
+      "frames": 48,
+      "line_length": 48
+     }
+    },
+    "west": {
+     "embers": {
+      "file": "embers-west.png",
+      "size": [
+       40,
+       103
+      ],
+      "shift": [
+       -0.9375,
+       -1.78906
+      ],
+      "frames": 48,
+      "line_length": 48
+     },
+     "embers-light": {
+      "file": "embers-light-west.png",
+      "size": [
+       42,
+       103
+      ],
+      "shift": [
+       -0.9375,
+       -1.78906
+      ],
+      "frames": 48,
+      "line_length": 48
+     }
+    }
    }
   },
   "ground-light-e3": {

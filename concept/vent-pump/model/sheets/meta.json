@@ -126,6 +126,33 @@
   "line_length": 24,
   "animation_speed": 0.2
  },
+ "embers-north": {
+  "size": [
+   46,
+   104
+  ],
+  "shift": [
+   -0.875,
+   -1.82812
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-north": {
+  "size": [
+   49,
+   105
+  ],
+  "shift": [
+   -0.88281,
+   -1.83594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
  "base-east": {
   "size": [
    194,
@@ -252,6 +279,33 @@
   "frames": 24,
   "line_length": 24,
   "animation_speed": 0.2
+ },
+ "embers-east": {
+  "size": [
+   45,
+   97
+  ],
+  "shift": [
+   1.11719,
+   -1.83594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-east": {
+  "size": [
+   46,
+   98
+  ],
+  "shift": [
+   1.10938,
+   -1.82812
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
  },
  "base-south": {
   "size": [
@@ -380,6 +434,33 @@
   "line_length": 24,
   "animation_speed": 0.2
  },
+ "embers-south": {
+  "size": [
+   54,
+   87
+  ],
+  "shift": [
+   1.0,
+   0.08594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-south": {
+  "size": [
+   55,
+   87
+  ],
+  "shift": [
+   0.99219,
+   0.08594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
  "base-west": {
   "size": [
    194,
@@ -507,6 +588,33 @@
   "line_length": 24,
   "animation_speed": 0.2
  },
+ "embers-west": {
+  "size": [
+   40,
+   103
+  ],
+  "shift": [
+   -0.9375,
+   -1.78906
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-west": {
+  "size": [
+   42,
+   103
+  ],
+  "shift": [
+   -0.9375,
+   -1.78906
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
  "checks": {
   "north": {
    "centre_offset_px": 0.0,
@@ -585,6 +693,33 @@
     },
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 188,
+     "core": 6.8,
+     "halo": 49.2
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
    "frame0_vs_still": [
     166,
     0.0008,
@@ -631,6 +766,14 @@
      },
      "mech-north": {
       "px": 3474,
+      "most": 12
+     },
+     "embers-north": {
+      "px": 135,
+      "most": 12
+     },
+     "embers-light-north": {
+      "px": 69,
       "most": 12
      }
     },
@@ -714,6 +857,33 @@
     },
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 149,
+     "core": 10.3,
+     "halo": 43.6
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
    "frame0_vs_still": [
     130,
     0.0007,
@@ -760,6 +930,14 @@
      },
      "mech-east": {
       "px": 1290,
+      "most": 12
+     },
+     "embers-east": {
+      "px": 107,
+      "most": 12
+     },
+     "embers-light-east": {
+      "px": 59,
       "most": 12
      }
     },
@@ -843,6 +1021,33 @@
     },
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 186,
+     "core": 16.1,
+     "halo": 33.9
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
    "frame0_vs_still": [
     26,
     0.0002,
@@ -889,6 +1094,14 @@
      },
      "mech-south": {
       "px": 720,
+      "most": 12
+     },
+     "embers-south": {
+      "px": 141,
+      "most": 12
+     },
+     "embers-light-south": {
+      "px": 74,
       "most": 12
      }
     },
@@ -972,6 +1185,33 @@
     },
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 174,
+     "core": 8.8,
+     "halo": 44.1
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
    "frame0_vs_still": [
     132,
     0.001,
@@ -1018,6 +1258,14 @@
      },
      "mech-west": {
       "px": 662,
+      "most": 12
+     },
+     "embers-west": {
+      "px": 115,
+      "most": 12
+     },
+     "embers-light-west": {
+      "px": 45,
       "most": 12
      }
     },
