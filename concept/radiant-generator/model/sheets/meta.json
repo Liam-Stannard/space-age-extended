@@ -1,0 +1,379 @@
+{
+ "base": {
+  "size": [
+   338,
+   360
+  ],
+  "shift": [
+   -0.04688,
+   -0.21875
+  ]
+ },
+ "shadow": {
+  "size": [
+   360,
+   330
+  ],
+  "shift": [
+   0.23438,
+   0.01562
+  ]
+ },
+ "status-lamp": {
+  "size": [
+   281,
+   170
+  ],
+  "shift": [
+   0.17969,
+   0.21875
+  ]
+ },
+ "carousel": {
+  "size": [
+   271,
+   242
+  ],
+  "shift": [
+   -0.30469,
+   -0.64062
+  ],
+  "frames": 32,
+  "line_length": 30,
+  "animation_speed": 0.23809523809523808
+ },
+ "drive": {
+  "size": [
+   105,
+   47
+  ],
+  "shift": [
+   -1.13281,
+   -2.35156
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "lid": {
+  "size": [
+   104,
+   97
+  ],
+  "shift": [
+   1.73438,
+   -1.36719
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "crane": {
+  "size": [
+   213,
+   222
+  ],
+  "shift": [
+   0.88281,
+   -1.23438
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "commutator": {
+  "size": [
+   100,
+   130
+  ],
+  "shift": [
+   1.35938,
+   1.46875
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "coupling-converter": {
+  "size": [
+   65,
+   81
+  ],
+  "shift": [
+   0.25781,
+   1.47656
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "coupling-pump": {
+  "size": [
+   14,
+   25
+  ],
+  "shift": [
+   -0.34375,
+   -2.30469
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-switchgear": {
+  "size": [
+   20,
+   15
+  ],
+  "shift": [
+   2.125,
+   1.74219
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-converter": {
+  "size": [
+   6,
+   5
+  ],
+  "shift": [
+   -0.51562,
+   2.07031
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-transformer": {
+  "size": [
+   20,
+   46
+  ],
+  "shift": [
+   -1.875,
+   2.0
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "window": {
+  "size": [
+   227,
+   164
+  ],
+  "shift": [
+   0.61719,
+   -0.70312
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "window-glow": {
+  "size": [
+   259,
+   251
+  ],
+  "shift": [
+   0.61719,
+   -0.77344
+  ],
+  "frames": 32,
+  "line_length": 31,
+  "kind": "glow",
+  "animation_speed": 0.23809523809523808
+ },
+ "remnants": {
+  "size": [
+   306,
+   297
+  ],
+  "shift": [
+   0.14062,
+   0.02344
+  ],
+  "direction_count": 1,
+  "line_length": 1,
+  "rows": [
+   ""
+  ],
+  "kind": "remnants",
+  "final_render_layer": "remnants"
+ },
+ "checks": {
+  "centre_offset_px": -3.5,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   2.640625,
+   "2.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   2.546875,
+   "bottom edge below origin; 2.5 = on the footprint"
+  ],
+  "remnants_shadow_px": [
+   {
+    "px": 5466,
+    "share": 0.0751
+   },
+   "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
+  ],
+  "remnants_edge_px": [
+   0,
+   "pixels of the wreck or its shadow on its canvas's edge; 0 = the canvas holds it"
+  ],
+  "remnants_reach_tiles": [
+   {
+    "debris": {
+     "N": -0.25,
+     "E": -0.25,
+     "S": -0.19,
+     "W": -0.27
+    },
+    "all": {
+     "N": -0.22,
+     "E": 0.02,
+     "S": -0.17,
+     "W": -0.27
+    }
+   },
+   "how far past each footprint edge, as it stands in this direction, the debris (alpha over 128, not near black) and everything kept (the shadow too) reach, tiles; below 0 short of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"
+  ],
+  "carousel_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "drive_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "lid_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "crane_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "commutator_drift_px": [
+   0.29,
+   "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
+  ],
+  "coupling-converter_drift_px": [
+   0.54,
+   "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
+  ],
+  "coupling-pump_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-switchgear_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-converter_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-transformer_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "window-glow_white_px": [
+   0,
+   "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+  ],
+  "window-glow_clipped_px": [
+   0,
+   "the most pixels, in any frame, the light drives to white added over 'window' on the plate; 0 = nothing clips"
+  ],
+  "window-glow_frames": [
+   [
+    32,
+    32
+   ],
+   "its frames and its plate layer 'window''s: equal"
+  ],
+  "window-glow_edge_px": [
+   0,
+   "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+  ],
+  "window-glow_light": [
+   {
+    "peak": 166,
+    "core": 4.3,
+    "halo": 81.1
+   },
+   "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+  ],
+  "frame0_vs_still": [
+   255,
+   0.0152,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ],
+  "rolloff_px": [
+   {
+    "base": {
+     "px": 284,
+     "most": 12
+    },
+    "remnants": {
+     "px": 39,
+     "most": 12
+    },
+    "carousel": {
+     "px": 2313,
+     "most": 12
+    },
+    "drive": {
+     "px": 104,
+     "most": 12
+    },
+    "lid": {
+     "px": 78,
+     "most": 12
+    },
+    "crane": {
+     "px": 469,
+     "most": 12
+    },
+    "commutator": {
+     "px": 457,
+     "most": 12
+    },
+    "coupling-converter": {
+     "px": 0,
+     "most": 0
+    },
+    "coupling-pump": {
+     "px": 42,
+     "most": 12
+    },
+    "gauge-switchgear": {
+     "px": 171,
+     "most": 12
+    },
+    "gauge-converter": {
+     "px": 92,
+     "most": 12
+    },
+    "gauge-transformer": {
+     "px": 102,
+     "most": 12
+    },
+    "window": {
+     "px": 225,
+     "most": 12
+    },
+    "window-glow": {
+     "px": 11111,
+     "most": 12
+    }
+   },
+   "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+  ]
+ }
+}

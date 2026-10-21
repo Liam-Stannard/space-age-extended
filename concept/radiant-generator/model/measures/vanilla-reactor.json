@@ -1,0 +1,164 @@
+{
+ "nuclear-reactor": {
+  "label": "nuclear reactor (north)",
+  "coverage": {
+   "footprint": [
+    5,
+    5
+   ],
+   "footprint_pct": 70.1,
+   "mass_pct": 70.6,
+   "corners_pct": {
+    "NW": 37.1,
+    "NE": 47.8,
+    "SW": 41.2,
+    "SE": 41.1
+   },
+   "outer_band_pct": 11.7,
+   "rise_tiles": 0.16,
+   "rise_by_column_tiles": [
+    -0.14,
+    -0.3,
+    -0.03,
+    0.16,
+    -0.02
+   ],
+   "extent_tiles": [
+    4.61,
+    4.97
+   ],
+   "centre_offset_px": -0.5,
+   "past_edges_tiles": {
+    "west": -0.19,
+    "east": -0.2,
+    "south": -0.19
+   }
+  },
+  "tonal": {
+   "p5": 5,
+   "p50": 43,
+   "p95": 201,
+   "spread": 196
+  }
+ },
+ "steam-engine": {
+  "label": "steam engine (north)",
+  "coverage": {
+   "footprint": [
+    3,
+    5
+   ],
+   "footprint_pct": 78.6,
+   "mass_pct": 82.7,
+   "corners_pct": {
+    "NW": 73.8,
+    "NE": 64.7,
+    "SW": 10.8,
+    "SE": 24.1
+   },
+   "outer_band_pct": 51.6,
+   "rise_tiles": 0.69,
+   "rise_by_column_tiles": [
+    0.08,
+    0.69,
+    0.5
+   ],
+   "extent_tiles": [
+    3.11,
+    5.69
+   ],
+   "centre_offset_px": -1.5,
+   "past_edges_tiles": {
+    "west": 0.08,
+    "east": 0.03,
+    "south": 0.0
+   }
+  },
+  "tonal": {
+   "p5": 15,
+   "p50": 56,
+   "p95": 183,
+   "spread": 168
+  }
+ },
+ "steam-turbine": {
+  "label": "steam turbine (north)",
+  "coverage": {
+   "footprint": [
+    3,
+    5
+   ],
+   "footprint_pct": 77.5,
+   "mass_pct": 79.1,
+   "corners_pct": {
+    "NW": 36.9,
+    "NE": 61.0,
+    "SW": 35.0,
+    "SE": 37.3
+   },
+   "outer_band_pct": 32.2,
+   "rise_tiles": 0.31,
+   "rise_by_column_tiles": [
+    -0.2,
+    0.31,
+    -0.16
+   ],
+   "extent_tiles": [
+    2.98,
+    5.33
+   ],
+   "centre_offset_px": 6.5,
+   "past_edges_tiles": {
+    "west": -0.11,
+    "east": 0.09,
+    "south": 0.02
+   }
+  },
+  "tonal": {
+   "p5": 13,
+   "p50": 60,
+   "p95": 189,
+   "spread": 176
+  }
+ },
+ "fusion-generator": {
+  "label": "fusion generator (working) (north)",
+  "coverage": {
+   "footprint": [
+    3,
+    5
+   ],
+   "footprint_pct": 91.7,
+   "mass_pct": 95.9,
+   "corners_pct": {
+    "NW": 91.4,
+    "NE": 96.3,
+    "SW": 43.0,
+    "SE": 60.1
+   },
+   "outer_band_pct": 75.7,
+   "rise_tiles": 0.23,
+   "rise_by_column_tiles": [
+    0.22,
+    0.23,
+    0.22
+   ],
+   "extent_tiles": [
+    3.14,
+    5.22
+   ],
+   "centre_offset_px": 0.5,
+   "past_edges_tiles": {
+    "west": 0.06,
+    "east": 0.08,
+    "south": -0.02
+   }
+  },
+  "tonal": {
+   "p5": 9,
+   "p50": 74,
+   "p95": 143,
+   "spread": 134
+  }
+ }
+}
