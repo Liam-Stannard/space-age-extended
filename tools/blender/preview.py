@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A model's review sheet: its renders composited the way the engine layers them.
 
-  python3 preview.py <render-dir> <out.png> [--adopted <png> [...]] [--night]
+  python3 preview.py <render-dir> <out.png> [--adopted <png> [...]] [--day-only]
   python3 preview.py <render-dir> <out.gif> --gif <animation> --speed <animation_speed>
 
 <render-dir> is render.sh's <out-dir>/renders. What to draw comes from its
@@ -9,8 +9,8 @@ render.json (contract.py): every pass and frame there is on one canvas, at
 sprite size, with the entity origin at its centre, so the layers register by
 construction and nothing is placed by hand.
 
-The sheet has one row per direction, every panel on one ground with the
-footprint's tile grid drawn over it (the footprint itself brighter):
+The sheet has two rows per direction, by day and under it at night (below), every panel
+on one ground with the footprint's tile grid drawn over it (the footprint itself brighter):
 
   idle      each shadow pass at 50 %, the plate, each animation at frame 0 (but
             those marked working), and each light pass tinted as the engine tints
@@ -25,24 +25,23 @@ wreck: the render as pack.py packs it (cleaned of the catcher's haze, never cut)
 all, on the same ground and grid, so the debris past the footprint shows against it. The
 panels grow to the wreck's own canvas when it is larger. A model without one draws as it
 always did. A wreck that declares a glow (the remnants pass's `glow`) has it added over the
-wreck, as pack.py packs it (its render minus the wreck's, kept to its light box, rolled off),
-and the sheet gains a night row (below).
+wreck, as pack.py packs it (its render minus the wreck's, kept to its light box, rolled off).
 
-The night view (--night; T08f, 2026-10-21) puts a second row under each direction's, every
-panel under its day one: the same panel at night. The model of night is the simplest the
-engine's rules allow: every layer drawn as by day, in the same order, but each layer the
-engine darkens -- the ground, the plate, a paint pass, each paint animation's frame, the
-wreck -- with its colour times NIGHT (0.15: the Core's darkest, darkness 0.85, its
-min_brightness), and every layer drawn as a glow (draw_as_glow, which shows day and night
-at full colour) as by day: a glow pass and a glow animation added, a light pass's lamp and a
-light animation drawn over, the wreck's glow added. The shadow, black, is as by day. So a
-glow on top of everything is the scene times 0.15 with the glow added. Nothing a prototype
-draws only in the dark (draw_as_light layers, LightDefinitions) is in render.json, so none
-is drawn: the night view shows what the sheets carry. The adopted plate is vanilla's, whose
-glows are not known here: its night panel is left empty. The grid is drawn as by day.
-Without --night the sheet has no night row, but a model whose wreck has a glow gets one
-holding the wreck's night panel alone, since that glow exists to be seen at night (Liam,
-2026-10-21, the Radiant Generator's dying blue: "Make it glow at night").
+The night view (T08f; the default since T08f-2, Liam 2026-10-21: "Night by default") puts a
+second row under each direction's, every panel under its day one: the same panel at night. The
+model of night is the simplest the engine's rules allow: every layer drawn as by day, in the
+same order, but each layer the engine darkens -- the ground, the plate, a paint pass, each
+paint animation's frame, the wreck -- with its colour times NIGHT (0.15: the Core's darkest,
+darkness 0.85, its min_brightness), and every layer drawn as a glow (draw_as_glow, which shows
+day and night at full colour) as by day: a glow pass and a glow animation added, a light pass's
+lamp and a light animation drawn over, the wreck's glow added. The shadow, black, is as by day.
+So a glow on top of everything is the scene times 0.15 with the glow added. Nothing a prototype
+draws only in the dark (draw_as_light layers, LightDefinitions) is in render.json, so none is
+drawn: the night view shows what the sheets carry. The adopted plate is vanilla's, whose glows
+are not known here: its night panel is left empty. The grid is drawn as by day. --day-only
+leaves the night rows out, every one (a wreck's glow is then seen by day only): one row per
+direction, byte for byte the sheet from before the night view, but for a wreck's glow, which
+that did not draw. --night, the default, is still taken.
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -55,7 +54,8 @@ util.by_pixel(0, -9) in the prototype plus by_pixel(1, 0) in its .lua:
   --adopted chemical-plant-north-base.png@0.03125,-0.28125
 
 --gif writes a looping GIF of one animation playing in the working panel, every
-direction side by side, at game speed: 60 x animation_speed frames a second. A
+direction side by side, at game speed: 60 x animation_speed frames a second, by day
+only (--night is refused with it; --day-only, what it draws anyway, is taken). A
 glow animation, the plate layer it is over and every other glow over that layer
 play together, whichever is named.
 A GIF counts time in hundredths of a second, so each frame is held to the
@@ -267,7 +267,7 @@ def sheet(rows):
     return out
 
 
-def review(model, out, adopted, night=False):
+def review(model, out, adopted, night=True):
     decl = model.decl
     if adopted and len(adopted) != len(model.directions):
         sys.exit(f"preview.py: --adopted takes one plate per direction: render.json declares "
@@ -282,8 +282,6 @@ def review(model, out, adopted, night=False):
     pw, ph = int(-(-pw // 1)), int(-(-ph // 1))
     pw, ph = pw + pw % 2, ph + ph % 2
     origin = (pw / 2, ph / 2)
-    # a wreck with a glow is seen at night too, --night or not (the module's docstring)
-    wreck_night = night or "glow" in (model.remnants() or {})
     rows = []
     for i, d in enumerate(model.directions):
         name = d or decl["directions"]
@@ -302,7 +300,7 @@ def review(model, out, adopted, night=False):
         if wreck is not None:
             panels.append((place(wreck, (pw, ph), origin), f"{name}: wreck"))
             dark.append((place(model.wreck(d, night=True), (pw, ph), origin, by=NIGHT), f"{name}: wreck at night")
-                        if wreck_night else None)
+                        if night else None)
         for im, _ in panels + [p for p in dark if p is not None]:
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])
@@ -365,8 +363,10 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--adopted", nargs="+", default=[], metavar="PNG[@X,Y]",
                     help="the adopted plate(s), one per direction, each with its prototype shift in tiles")
+    ap.add_argument("--day-only", action="store_true",
+                    help="no night rows: one row per direction, by day (the module's docstring)")
     ap.add_argument("--night", action="store_true",
-                    help="a night row under each direction's: every panel at night (the module's docstring)")
+                    help="a night row under each direction's, every panel at night: the default")
     ap.add_argument("--gif", metavar="ANIMATION", help="write a GIF of this animation instead of the sheet")
     ap.add_argument("--speed", type=float, metavar="ANIMATION_SPEED",
                     help="the prototype's animation_speed, for --gif")
@@ -377,11 +377,13 @@ def main():
         ap.error("--adopted is for the sheet, not the GIF")
     if args.gif and args.night:
         ap.error("--night is for the sheet, not the GIF")
+    if args.night and args.day_only:
+        ap.error("--night and --day-only cannot go together")
     model = Model(args.render_dir)
     if args.gif:
         gif(model, args.out, args.gif, args.speed)
     else:
-        review(model, args.out, args.adopted, args.night)
+        review(model, args.out, args.adopted, night=not args.day_only)
 
 
 if __name__ == "__main__":

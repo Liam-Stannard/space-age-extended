@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""preview.py's wreck glow and night view (T08f) held to its docs.
+"""preview.py's wreck glow and night view (T08f; the default since T08f-2) held to its docs.
 
   python3 tools/blender/test/test_preview_night.py [--out <dir>] [--baseline <git-rev>
                                                    [--renders <render-out> ...]]
@@ -30,17 +30,22 @@ colour times preview.NIGHT (0.15), each channel rounded.
             rolled off) added: the same pixels wherever the glow is clear, brighter in every core;
             at night, the ground dimmed, the debris dimmed, and every core pixel the dimmed floor
             plus the glow, as by day.
-  sheet     without --night: a model without a wreck glow has one row per direction (no night
-            row); the wreck-glow fixture has a night row under each, its idle and working places
-            empty (the gap's colour) and its wreck place the wreck's night panel, placed and
-            gridded as the day one is. With --night: every place in the night row filled, each
-            the panel at night placed and gridded; with --adopted, the adopted place in the night
-            row empty. --night with --gif refused.
-  identity  without --night, the fixture without its glow and the building fixture: preview.py's
+  sheet     by default (no flag), every model has a night row under each direction's, every
+            place in it the panel at night, placed and gridded as the day one is: the building
+            (two rows, idle and working), the wreck-glow fixture and the fixture without its glow
+            (eight rows each, the wreck's place too); the wreck-glow fixture's day row's wreck
+            place the wreck with its glow. --night: the same bytes as the default. --day-only:
+            one row per direction, no night row (the building one row of two panels, each
+            fixture four rows), the wreck-glow fixture's wreck place still the wreck with its
+            glow. With --adopted, the adopted place in the night row empty, the others filled.
+            Refused: --night with --day-only, --night with --gif. --gif by default, and with
+            --day-only, exit 0, the two GIFs the same bytes.
+  identity  with --day-only, the fixture without its glow and the building fixture: preview.py's
             sheet byte for byte as the baseline's (with --baseline). On every --renders directory
-            (render.sh output: its renders/): preview.py's sheet, and a GIF of its first
-            animation, byte for byte as the baseline's, both exiting the same; and --night run
-            on it, exit 0 (night-<label>.png kept for review).
+            (render.sh output: its renders/): preview.py's sheet with --day-only, and a GIF of its
+            first animation (no flag), byte for byte as the baseline's (no flag), both exiting the
+            same; and preview.py with no flag, exit 0 and twice the --day-only sheet's rows
+            (night-<label>.png kept for review).
 """
 import argparse
 import os
@@ -61,6 +66,7 @@ import preview  # noqa: E402
 import test_remnants_glow as rg  # noqa: E402
 
 FAILED = []
+ROWS = {}                               # a --renders label: its --day-only sheet's height (compare)
 CANVAS = (192, 192)
 PPT = 64
 PLATE = (32, 32, 160, 160)              # x0, y0, x1, y1, ends exclusive
@@ -290,54 +296,80 @@ def empty(im):
     return im.getcolors(1) is not None and im.getcolors(1)[0][1] == preview.GAP
 
 
+def night_places(s, m, cols, pw, ph, wreck_col=None):
+    """The places of every direction's night row in s (cols of them) that are not the panel at night,
+    placed and gridded; wreck_col: the wreck's place, when the model has one."""
+    bad = []
+    for i, d in enumerate(m.directions):
+        for c in range(cols):
+            if c == wreck_col:
+                want = m.wreck(d, night=True)
+            else:
+                want = m.panel(d, c == 1, night=True)
+            if body(cell(s, 2 * i + 1, c, pw, ph)).tobytes() != placed(want, pw, ph, m.decl, True, d).tobytes():
+                bad.append(f"{d or 'one'} place {c + 1}")
+    return bad
+
+
 def test_sheet(out, building_dir, src, bare):
     print("sheet")
     m = preview.Model(building_dir)
     pw = ph = CANVAS[0] + 2 * preview.PAD
-    code, text, s = sheet_of(building_dir, os.path.join(out, "building-day.png"))
-    check("without --night, no wreck glow: one row, three panels wide (no night row)",
-          code == 0 and s.size == (preview.PAD + 2 * (pw + preview.PAD), tall(1, ph)),
-          f"exit {code}, {s.size if s else text[-300:]}")
-    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building.png"), "--night")
-    check("--night: a night row under the day row", code == 0 and s.size[1] == tall(2, ph),
-          f"exit {code}: {text[-300:]}")
+    wide = preview.PAD + 2 * (pw + preview.PAD)
+    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building.png"))
+    check("by default, the building: a night row under the day row, two panels wide",
+          code == 0 and s.size == (wide, tall(2, ph)), f"exit {code}, {s.size if s else text[-300:]}")
     if s:
-        for c, working in enumerate((False, True)):
-            what = "working" if working else "idle"
-            check(f"--night: night place {c + 1} the {what} panel at night, placed, gridded",
-                  body(cell(s, 1, c, pw, ph)).tobytes() == placed(m.panel("", working, night=True), pw, ph, m.decl,
-                                                                  True).tobytes())
+        bad = night_places(s, m, 2, pw, ph)
+        check("by default, the building: each night place the panel at night (idle, working), placed, gridded",
+              not bad, ", ".join(bad))
+    code, text, n = sheet_of(building_dir, os.path.join(out, "building-night-flag.png"), "--night")
+    check("--night: the same bytes as the default", code == 0 and s is not None and n.tobytes() == s.tobytes(),
+          f"exit {code}: {text[-300:]}")
+    code, text, s = sheet_of(building_dir, os.path.join(out, "building-day.png"), "--day-only")
+    check("--day-only, the building: one row, two panels wide (no night row)",
+          code == 0 and s.size == (wide, tall(1, ph)), f"exit {code}, {s.size if s else text[-300:]}")
     adopted = os.path.join(out, "adopted.png")
     plate_im().save(adopted)
-    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building-adopted.png"), "--night", "--adopted",
-                             adopted)
-    check("--night --adopted: the adopted place in the night row empty, the others filled",
-          code == 0 and empty(cell(s, 1, 0, pw, ph)) and not empty(cell(s, 1, 1, pw, ph)),
-          f"exit {code}: {text[-300:]}")
-    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), building_dir, os.path.join(out, "x.gif"),
-                      "--gif", "bar", "--speed", "1", "--night"])
+    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building-adopted.png"), "--adopted", adopted)
+    check("by default with --adopted: the adopted place in the night row empty, the others filled",
+          code == 0 and empty(cell(s, 1, 0, pw, ph)) and not empty(cell(s, 1, 1, pw, ph))
+          and not empty(cell(s, 1, 2, pw, ph)), f"exit {code}: {text[-300:]}")
+    code, text, _ = sheet_of(building_dir, os.path.join(out, "x.png"), "--night", "--day-only")
+    check("--night with --day-only refused", code != 0 and "cannot go together" in text, f"exit {code}: {text[-200:]}")
+    gif = [sys.executable, os.path.join(TOOLS, "preview.py"), building_dir]
+    code, text = run(gif + [os.path.join(out, "x.gif"), "--gif", "bar", "--speed", "1", "--night"])
     check("--night with --gif refused", code != 0 and "--night is for the sheet" in text, f"exit {code}: {text[-200:]}")
+    code, text = run(gif + [os.path.join(out, "bar.gif"), "--gif", "bar", "--speed", "1"])
+    code2, text2 = run(gif + [os.path.join(out, "bar-day-only.gif"), "--gif", "bar", "--speed", "1", "--day-only"])
+    check("--gif by default and with --day-only: exit 0, the same bytes",
+          code == code2 == 0 and same_bytes(os.path.join(out, "bar.gif"), os.path.join(out, "bar-day-only.gif")),
+          f"exit {code}, {code2}: {(text + text2)[-300:]}")
 
-    w = preview.Model(src)
     pw = ph = rg.CANVAS[0] + 2 * preview.PAD
-    code, text, s = sheet_of(src, os.path.join(out, "night-wreck-default.png"))
-    check("the wreck-glow fixture, without --night: 8 rows (a night row under each direction's)",
-          code == 0 and s.size[1] == tall(8, ph), f"exit {code}: {text[-300:]}")
-    if s:
-        for i, d in enumerate(rg.DIRS):
-            check(f"{d}: day row's wreck place the wreck with its glow, placed, gridded",
-                  body(cell(s, 2 * i, 2, pw, ph)).tobytes() == placed(w.wreck(d), pw, ph, w.decl, False, d).tobytes())
-            check(f"{d}: night row's idle and working places empty, its wreck place the wreck at night",
-                  empty(cell(s, 2 * i + 1, 0, pw, ph)) and empty(cell(s, 2 * i + 1, 1, pw, ph))
-                  and body(cell(s, 2 * i + 1, 2, pw, ph)).tobytes() == placed(w.wreck(d, night=True), pw, ph, w.decl,
-                                                                              True, d).tobytes())
-    code, text, s = sheet_of(src, os.path.join(out, "night-wreck.png"), "--night")
-    check("the wreck-glow fixture, --night: every night place filled",
-          code == 0 and not any(empty(cell(s, 2 * i + 1, c, pw, ph)) for i in range(4) for c in range(3)),
-          f"exit {code}: {text[-300:]}")
-    code, text, s = sheet_of(bare, os.path.join(out, "wreck-bare.png"))
-    check("the fixture without its glow, without --night: 4 rows (no night row)",
-          code == 0 and s.size[1] == tall(4, ph), f"exit {code}: {text[-300:]}")
+    for label, rdir in (("the wreck-glow fixture", src), ("the fixture without its glow", bare)):
+        w = preview.Model(rdir)
+        stem = "night-wreck" if rdir == src else "night-wreck-bare"
+        code, text, s = sheet_of(rdir, os.path.join(out, stem + ".png"))
+        check(f"{label}, by default: 8 rows (a night row under each direction's)",
+              code == 0 and s.size[1] == tall(8, ph), f"exit {code}: {text[-300:]}")
+        if s:
+            bad = night_places(s, w, 3, pw, ph, wreck_col=2)
+            check(f"{label}, by default: every night place the panel at night (idle, working, wreck), placed, "
+                  "gridded", not bad, ", ".join(bad))
+            if rdir == src:
+                for i, d in enumerate(rg.DIRS):
+                    check(f"{label}, {d}: day row's wreck place the wreck with its glow, placed, gridded",
+                          body(cell(s, 2 * i, 2, pw, ph)).tobytes()
+                          == placed(w.wreck(d), pw, ph, w.decl, False, d).tobytes())
+        day_stem = "wreck-day-only" if rdir == src else "wreck-bare-day-only"
+        code, text, s = sheet_of(rdir, os.path.join(out, day_stem + ".png"), "--day-only")
+        check(f"{label}, --day-only: 4 rows (no night row)", code == 0 and s.size[1] == tall(4, ph),
+              f"exit {code}: {text[-300:]}")
+        if s and rdir == src:
+            check(f"{label}, --day-only: each wreck place the wreck with its glow",
+                  all(body(cell(s, i, 2, pw, ph)).tobytes() == placed(w.wreck(d), pw, ph, w.decl, False, d).tobytes()
+                      for i, d in enumerate(rg.DIRS)))
 
 
 # ---------------------------------------------------------------- identity
@@ -356,8 +388,9 @@ def baseline_tools(rev, out):
 
 
 def compare(label, rdir, out, base, gif_of=None):
-    """This tree's preview.py and the baseline's on rdir, byte for byte: the sheet, and a GIF of gif_of."""
-    jobs = [("preview.png", [])]
+    """This tree's preview.py and the baseline's on rdir, byte for byte: the sheet (this tree's with
+    --day-only), and a GIF of gif_of (no flag in either)."""
+    jobs = [("preview.png", ["--day-only"])]
     if gif_of:
         jobs.append(("anim.gif", ["--gif", gif_of, "--speed", "1"]))
     for name, extra in jobs:
@@ -365,11 +398,15 @@ def compare(label, rdir, out, base, gif_of=None):
         for tools, who in ((TOOLS, "mine"), (base, "base")):
             o = os.path.join(out, f"{label}-{who}")
             os.makedirs(o, exist_ok=True)
-            code, _ = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, name), *extra])
+            flags = [f for f in extra if tools == TOOLS or f != "--day-only"]
+            code, _ = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, name), *flags])
             res.append((code, os.path.join(o, name)))
         (c1, f1), (c2, f2) = res
-        check(f"{label}: preview.py's {name} byte for byte as the baseline's (exit {c1}, baseline {c2})",
+        mine = " (this tree's with --day-only)" if "--day-only" in extra else ""
+        check(f"{label}: preview.py's {name}{mine} byte for byte as the baseline's (exit {c1}, baseline {c2})",
               c1 == c2 and (c1 != 0 or same_bytes(f1, f2)))
+        if c1 == 0 and "--day-only" in extra:
+            ROWS[label] = Image.open(f1).size[1]
 
 
 def test_identity(out, base, renders, building_dir, bare):
@@ -381,9 +418,15 @@ def test_identity(out, base, renders, building_dir, bare):
         rdir = os.path.join(r, "renders")
         anims = contract.load(rdir)["animations"]
         compare(label, rdir, out, base, anims[0]["name"] if anims else None)
-        code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir,
-                          os.path.join(out, f"night-{label}.png"), "--night"])
-        check(f"{label}: --night exits 0", code == 0, text[-300:])
+        night = os.path.join(out, f"night-{label}.png")
+        code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, night])
+        n = len(contract.DIRECTIONS[contract.load(rdir)["directions"]])
+        day_h = ROWS.get(label)
+        # the --day-only sheet is PAD + n rows of (panel + PAD); the default has 2n of them
+        want = day_h and preview.PAD + 2 * (day_h - preview.PAD)
+        got = Image.open(night).size[1] if code == 0 else None
+        check(f"{label}: no flag, exit 0 and {2 * n} rows (twice --day-only's {n})", code == 0 and got == want,
+              f"exit {code}, {got} px high, want {want}: {text[-300:]}")
 
 
 def main():

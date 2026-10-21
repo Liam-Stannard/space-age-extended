@@ -53,8 +53,9 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
   baseline   with --baseline: on the fixture, the baseline's pack.py (which knows no glow, and leaves
              it be) writes every file this tree's does but remnants-glow.png, byte for byte, and
              meta.json as this tree's less the glow (as in identity). On every --renders directory
-             (render.sh output: its renders/), pack.py's sheets and meta.json, and preview.py's sheet,
-             byte for byte as the baseline's, and both exit the same.
+             (render.sh output: its renders/), pack.py's sheets and meta.json, and preview.py's sheet
+             (this tree's with --day-only, its default since T08f-2 having night rows), byte for byte
+             as the baseline's, and both exit the same.
 """
 import argparse
 import copy
@@ -503,7 +504,9 @@ def compare(label, rdir, out, base):
         codes.append(code)
         if code:
             print(f"    pack.py ({'this tree' if tools == TOOLS else 'baseline'}) exit {code}: {text[-200:]}")
-        pcode, ptext = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, "preview.png")])
+        day = ["--day-only"] if tools == TOOLS else []     # night rows by default since T08f-2
+        pcode, ptext = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, "preview.png"),
+                            *day])
         codes.append(pcode)
         if pcode:
             print(f"    preview.py ({'this tree' if tools == TOOLS else 'baseline'}) exit {pcode}: {ptext[-200:]}")
