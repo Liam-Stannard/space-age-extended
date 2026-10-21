@@ -42,7 +42,12 @@ with `factorio-brief`, and stop at the stage's gate.
   no sudden narrowing after the fitting, and a narrowing only where a
   visible reducer shows why, at a valve, pump or vessel nozzle; thin pipes
   only for side lines (dosing, instruments). A model that turns reads that
-  way in every direction. Its own pipe pictures to assembler 3's outline;
+  way in every direction. Each connection enters the building through a
+  fitting set into its wall or casing (a recessed boss with a sleeve and
+  flanges, as on the Reaction Plant's casing, or similar), never a stub
+  standing off the machine; the pipe picture shows it open, and vanilla's
+  cover is drawn when nothing is connected. Its own pipe pictures to
+  assembler 3's outline;
   vanilla covers; joins checked with `factorio-art-measure`. Before the
   options stage, study how the comparable vanilla buildings meet their
   pipes.
