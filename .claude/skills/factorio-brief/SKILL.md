@@ -45,11 +45,18 @@ Status "signed off" and the next ticket briefed.
 - **Processes:** stop everything it started by PID; never `pkill` by
   pattern.
 - **Art:** never signs off; Liam judges.
+- **Unknowns:** never chosen silently. Anything not settled by the
+  ticket, the task file or the files is reported as a question with
+  options and what each changes, a recommendation first.
+- **At most three agents** run on this machine at once; the brief names
+  the others running and their worktrees.
 
 ## 3. What the report must contain
 For each pass criterion: PASS, FAIL or NOT RUN, with the evidence path.
 The absolute path of every image, GIF and sheet Liam should see (each
-under 8000 px on its longer side, or a top-section copy that is). Any
+under 8000 px on its longer side, or a top-section copy that is). Liam
+reviews on his phone: every image, GIF and sheet a question refers to is
+named beside that question. Any
 wording for a `.md` file, spec or TODO entry as a proposal only. For art:
 a crops sheet of every cable, hose and pipe run's ends and of anything that
 crosses another part, at 2x, with each clip found and fixed listed. Anything
