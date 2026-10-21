@@ -50,10 +50,16 @@ Status "signed off" and the next ticket briefed.
 For each pass criterion: PASS, FAIL or NOT RUN, with the evidence path.
 The absolute path of every image, GIF and sheet Liam should see (each
 under 8000 px on its longer side, or a top-section copy that is). Any
-wording for a `.md` file, spec or TODO entry as a proposal only. Anything
+wording for a `.md` file, spec or TODO entry as a proposal only. For art:
+a crops sheet of every cable, hose and pipe run's ends and of anything that
+crosses another part, at 2x, with each clip found and fixed listed. Anything
 left for Liam.
 
 ## 4. Resuming
+Resume an agent only to fix its own ticket after a review; brief every new
+ticket to a fresh agent, since the task file and the brief carry what it
+needs.
+
 To continue an agent, `SendMessage` it with: what changed since it
 stopped (commits made, files moved, scratch emptied), what to do now, and
 the same standing rules.

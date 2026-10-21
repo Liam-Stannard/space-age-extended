@@ -204,21 +204,25 @@ value range across its chamfers, so the eye reads forged metal. *Unadorned* was
 the wrong word: it should carry no **machinery**, no panel lines, hatches or
 bolts, while carrying all the **forging** it likes.
 
-## 3.4 Sound (Liam, 2026-10-11)
+## 3.4 Sound (Liam, 2026-10-11; softened 2026-10-20)
 
 A bed and three accents, cued to the stroke (24 frames, four seconds, one drop
 per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
 (2026-10-11):** frame 0 is the weight just past halfway up, held by the pawl.
 Frames 0–6 wind up, 6 is the top, 7–13 fall, 14 lands seated, and 14–23 and 0
-wind up again. **Pawl clicks** tick on the wind-up on frames 18, 22 and 2. The
-**trip** on frame 6 is a sharp metallic clack as the pawl kicks clear. The
-**drop** on frame 14, where the weight lands, is a crushing impact with grit
-and rock breaking: one craft, one bang. No sound is cued on frame 0: Factorio
-2.1.21 never plays one there (it is the unset value), which is why the loop
-does not start at the seat. When the crusher stops working it rests cocked,
+wind up again. **Pawl clicks** tick on the wind-up on frames 18, 22 and 2, heavy
+and low: a gear tooth pitched down over an iron body. The **trip** on frame 6 is
+a rounded steel clack as the pawl kicks clear, its high end cut. The **drop** on
+frame 14, where the weight lands, is a heavy iron impact with rock breaking
+under it, and no grit: one craft, one bang. No sound is cued on frame 0:
+Factorio 2.1.21 never plays one there (it is the unset value), which is why the
+loop does not start at the seat. When the crusher stops working it rests cocked,
 through its idle animation; with no power and work still loaded, it freezes on
 the frame where it stopped. Built from vanilla's crusher and impact sounds plus
-scripted layers, matched to the vanilla crusher's loudness.
+scripted layers, matched to the vanilla crusher's loudness. **Grouped like
+vanilla's crusher (2026-10-20):** at most three crushers' working sounds play at
+once, and no more than two of any one accent; the rest are dropped, not turned
+down, so a bank is no harsher than one machine.
 
 ---
 

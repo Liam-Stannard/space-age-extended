@@ -11,6 +11,8 @@
 local map_gen = require("prototypes.core.map-gen")
 local asteroid_util = require("__space-age__.prototypes.planet.asteroid-spawn-definitions")
 
+local minute = 60 * 60 -- ticks
+
 data:extend({
   {
     type = "planet",
@@ -30,12 +32,21 @@ data:extend({
     solar_power_in_space = 0,
     surface_properties =
     {
-      -- Zero: a sky that genuinely does not move. This used to be 216000
-      -- because arc storms only struck at night, so night had to be reachable
-      -- and control.lua pinned the surface at midnight to keep it there. With
-      -- the storms gone the engine holds the dark on its own, and the script
-      -- that held it goes with them.
-      ["day-night-cycle"] = 0,
+      -- A 3-minute day. Above 0, the engine runs the surface's cycle: it sets
+      -- ticks_per_day to this value and clears always_day and freeze_daytime,
+      -- both when the surface is created and when a save made with another
+      -- value is loaded. At 0 the engine freezes the surface at noon instead
+      -- (always_day and freeze_daytime set, daytime 0, darkness 0): it never
+      -- gets dark at all.
+      -- What makes the cycle mostly dark is when dusk, evening, morning and
+      -- dawn fall. Those belong to the surface, not the prototype, and
+      -- control.lua sets them: darkness ramps from dusk and reaches its
+      -- floor just before evening, leaving it just after morning, so it is
+      -- fully dark for about 82 % of the cycle, and full light only in the
+      -- 4 % from dawn to dusk around noon.
+      -- At night the darkness is 0.85, from the engine's default
+      -- min_brightness of 0.15. The colour grading is the engine default.
+      ["day-night-cycle"] = 3 * minute,
       ["magnetic-field"] = 0,         -- a dead dynamo; restarting it is the goal
       ["solar-power"] = 0,            -- not a trickle: nothing
       pressure = 5,

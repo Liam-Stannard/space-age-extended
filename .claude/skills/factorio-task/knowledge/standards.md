@@ -19,6 +19,9 @@ Each line: the standard, Liam's words or the decision, and the date.
 - Bulky hoses, clutter, asymmetry; vanilla-like, not machined.
 - Every pipe input and output leads to a device that uses it; inputs and
   outputs visible doing their job (Liam, Vent Pump, 2026-10-12).
+- Connections lead to the vessel that uses them, sized to the connection
+  (no sudden halving of a run), and the flow reads through the building in
+  every direction (Liam, Reaction Plant, 2026-10-20).
 - Pipe joins: no gap and no edge of either object showing; the pipe's end
   ring is the joint, as on vanilla's steam turbine (Liam, turbine,
   2026-10-11: "There is still a gap between the joints. That is a fail.").
