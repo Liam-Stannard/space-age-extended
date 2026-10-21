@@ -10,7 +10,10 @@
   --icon     icon.png: the whole machine, working, framed to a 1024 px square
   --collide  no render: every moving part in every frame against every other part, by BVH;
              collide.txt in <out-dir>
-  --wreck    the wreck alone (wreck.png): the quick loop for the remnants
+  --wreck    the wreck alone (wreck.png): the quick loop for the remnants [--dying K: its well's dying blue]
+  --study F,F,..  [--glowframes F,..]  a study, nothing packed (T08c): at each frame the whole machine working
+             (look-NN) and stopped (unlit-NN); the well's light and the other openings' alone (wellglow-NN,
+             otherglow-NN); the openings' and the collide fixes' places on the screen (SPOT, REGION lines)
 
 Spec: concept/radiant-generator/building-spec-radiant-generator.md (written 35d626b, Liam
 "Agreed to all the drafts", 2026-10-20). Built from the signed-off concept, options round 7
@@ -31,7 +34,8 @@ places, the same finish. What the shipping model changes (task radiant-generator
     position, so each moving part reads the position it had at frame 0 instead (pin());
   - 32 frames, one crane cycle, at round 7's 1x GIF pace: 70 ms a frame, animation_speed
     60 x 0.070 = 4.2 ticks a frame, 5/21 (spec 6, decision 10);
-  - its own wreck (spec 6: "the machine's own wreck, as the Siderane turbine's"): wreck.py;
+  - its own wreck (spec 6: "the machine's own wreck, as the Siderane turbine's"): wreck.py, with a faint
+    dying blue in the well's torn mouth (T08c, Liam 2026-10-21: "Faint dying blue");
   - what --collide found in round 7's geometry, fixed (FIX 1-14, in rg_kit.py and here): the hood's
     walls over the turning table, the chute, the bin and its lid, the hub, the pinion and its case,
     the crane's wheels and the housing's roof fittings in its path, the well (a solid disc over its
@@ -492,6 +496,73 @@ if "--debug-light" in K.argv:
             o.hide_render = True
     with K.R.glow_pass(hide=(GROUND, BOUNCE)):
         render("debug-glow")
+    print("done")
+    sys.exit(0)
+
+def sprite_px(p):
+    """A model point (tiles, as modelled) to sprite px from the entity origin (x right, y down, 1x)."""
+    cam = K.sc.camera
+    q = cam.matrix_world.inverted() @ (K.ROOT.matrix_world @ Vector(p))
+    return q.x * K.rig.PX_PER_TILE, -q.y * K.rig.PX_PER_TILE
+
+
+if "--study" in K.argv:
+    # T08c, a study only (nothing here is packed): at each frame given, the whole machine working
+    # (look-NN: windows at the working plate's light, lamps lit, on the ground catcher, as round 7's
+    # working-NN renders were) and stopped (unlit-NN: the still's settings, the idle the engine will
+    # draw); at each --glowframes frame (default 20), the well's light alone and the other three
+    # openings' alone (wellglow-NN, otherglow-NN) for the tight / wide bloom; the openings' and the fix regions' places on the
+    # screen (SPOT and REGION lines), for the light definitions and the crops
+    fr_list = [int(v) for v in K.argv[K.argv.index("--study") + 1].split(",") if v]
+    glow_frames = [int(v) for v in str(K.opt("--glowframes", "20")).split(",") if v]
+    K.sc.cycles.samples = ANIM_SAMPLES
+    for f in fr_list:
+        pose(f)
+        K.pose_light(f / NF, "plate")
+        K.lamps(True)
+        K.glint(True)
+        setup(visible=MACHINE_GROUPS, ground=True)
+        render(f"look-{f:02d}")
+        K.pose_light(f / NF, "idle")
+        K.lamps(False)
+        setup(visible=MACHINE_GROUPS)
+        render(f"unlit-{f:02d}")
+    K.glint(False)
+    K.lamps(False)
+    for f in glow_frames:
+        pose(f)
+        for stem, shapes in ((f"wellglow-{f:02d}", ("surface",)), (f"otherglow-{f:02d}", ("disc", "slot", "tube"))):
+            K.pose_light(f / NF, "glow", shapes)
+            setup(visible=MACHINE_GROUPS)
+            with K.R.glow_pass(hide=(GROUND, BOUNCE)):
+                render(stem)
+            glow_floor(stem)
+    K.glint(True)
+    pose(0)
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+    inv_root = K.ROOT.matrix_world.inverted()
+    for name, (shape, _c) in K.LIQUIDS.items():
+        pts = []
+        for o in K.OBJS:
+            if o.data and getattr(o.data, "materials", None) and o.data.materials and \
+                    o.data.materials[0] and o.data.materials[0].name == name:
+                ev = o.evaluated_get(dg)
+                pts += [inv_root @ (ev.matrix_world @ Vector(c)) for c in ev.bound_box]
+        if not pts:
+            continue
+        sp = [sprite_px(p) for p in pts]
+        xs, ys = [s[0] for s in sp], [s[1] for s in sp]
+        mid = [sum(p[i] for p in pts) / len(pts) for i in range(3)]
+        print("SPOT", name, shape, "model", [round(v, 3) for v in mid],
+              "px", round((min(xs) + max(xs)) / 2, 1), round((min(ys) + max(ys)) / 2, 1),
+              "w", round(max(xs) - min(xs), 1), "h", round(max(ys) - min(ys), 1))
+    for tag, p in (("hood", (-2.05, -0.05, 0.95)), ("hub", (-1.05, 0.45, 1.1)), ("pick", (-0.225, 0.45, 0.9)),
+                   ("pinion", (-1.61, 1.87, 0.75)), ("roof", (0.8, 1.78, 1.8)), ("well", (1.25, 0.45, 1.2)),
+                   ("hinge", (1.48, 0.45, 1.3)), ("commutator", (1.055, -1.95, 0.6)), ("ladder", (2.15, 1.63, 0.7)),
+                   ("barrels", (0.7, -1.33, 0.3)), ("lagged", (0.3, 1.5, 0.8)), ("bin", (-2.28, -0.3, 0.6))):
+        x, y = sprite_px(p)
+        print("REGION", tag, round(x, 1), round(y, 1))
     print("done")
     sys.exit(0)
 

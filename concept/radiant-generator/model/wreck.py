@@ -12,13 +12,13 @@ the debris stays on the footprint.
   - the deck: most slabs where they lay, some heaved and tilted, a few gone;
   - the carousel: the lead drum burst open on its north-east side; the turning table thrown
     off its bearing and lying tilted on the rim; the hub's dome rolled off west; the loading
-    hood's plates fallen; spent cells spilled across the deck (no fresh one, and nothing lit:
-    the light is gone with the machine);
+    hood's plates fallen; spent cells spilled across the deck (no fresh one, nothing lit);
   - the crane: its bridge fallen across the deck from the crucible to the carousel, one end on
     the ground; the trolley fallen off it; two of the three posts snapped short;
   - the crucible: its lead walls standing to half their height, torn; the roof plates thrown
     off round it; copper collector plates leaning out of the open top; the well's collar on
-    the deck;
+    the deck, its mouth torn open in the floor with a faint dying blue in it, the only light
+    left (T08c, Liam 2026-10-21: "Faint dying blue");
   - the tubes: their sockets on the east strip, the glass broken to jagged stumps, two caps
     and one whole tube lying on the ground;
   - the converter: the bedplate in place, the AC machine rolled off it to the south, the DC
@@ -439,6 +439,81 @@ for k in range(12):
     a, r = RNG.uniform(0, 2 * PI), RNG.uniform(0.4, 2.2)
     lump((r * math.cos(a), r * math.sin(a), 0.02), RNG.uniform(0.05, 0.1), RNG.choice(("dark_steel", "lead")))
 
+
+# -- the well (T08c, Liam 2026-10-21: "Faint dying blue"): its mouth torn open in the crucible's
+# floor, where the well stood (spec 3.3's served well), and the last of the isotope's light dying
+# in it -- the only light in the wreck, faint, in the radiant blue's own hue (#1F63FF at the core,
+# #0B2A8C at the rim; never #73ADFF's pale top, never white), patchy as it fades. Baked into the
+# remnants picture: a corpse draws no glow layer of the pipeline's (contract.py's remnants pass).
+DYING = "wreck_dying"
+DYING_STRENGTH = K.opt("--dying", 0.4)        # the emission at the core: T08c tried 0.9, 0.5, 0.6, 0.4 at 1x;
+                                               # 0.4 peaks at (17, 52, 154), hue 225 (#1F63FF: 222): faint
+
+
+def dying_material():
+    m = bpy.data.materials.new(DYING)
+    m.use_nodes = True
+    t = m.node_tree
+    b = t.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = K.rig.srgb("#0C1838")     # radiant.py's LIQUID
+    b.inputs["Roughness"].default_value = 1.0
+    b.inputs["Specular IOR Level"].default_value = 0.0     # no sun glint on it: a pale highlight read as white
+    tc = t.nodes.new("ShaderNodeTexCoord")
+    ln = t.nodes.new("ShaderNodeVectorMath")
+    ln.operation = "LENGTH"
+    t.links.new(tc.outputs["Object"], ln.inputs[0])
+    core = t.nodes.new("ShaderNodeMapRange")              # 1 at the middle, 0.25 at the rim (r 0.115): not a ball
+    core.inputs["From Min"].default_value = 0.0
+    core.inputs["From Max"].default_value = 0.115
+    core.inputs["To Min"].default_value = 1.0
+    core.inputs["To Max"].default_value = 0.25
+    core.clamp = True
+    t.links.new(ln.outputs["Value"], core.inputs["Value"])
+    nz = t.nodes.new("ShaderNodeTexNoise")                # patchy: the light dying unevenly
+    nz.inputs["Scale"].default_value = 14.0
+    nz.inputs["Detail"].default_value = 2.0
+    t.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    patch = t.nodes.new("ShaderNodeMapRange")
+    patch.inputs["From Min"].default_value = 0.35
+    patch.inputs["From Max"].default_value = 0.65
+    patch.inputs["To Min"].default_value = 0.15
+    patch.inputs["To Max"].default_value = 1.0
+    patch.clamp = True
+    t.links.new(nz.outputs["Fac"], patch.inputs["Value"])
+    k = t.nodes.new("ShaderNodeMath")
+    k.operation = "MULTIPLY"
+    t.links.new(core.outputs["Result"], k.inputs[0])
+    t.links.new(patch.outputs["Result"], k.inputs[1])
+    ramp_ = t.nodes.new("ShaderNodeValToRGB")
+    els = ramp_.color_ramp.elements
+    els[0].position, els[0].color = 0.0, K.rig.srgb("#02081A")
+    els[1].position, els[1].color = 1.0, K.rig.srgb("#1F63FF")
+    mid = els.new(0.45)
+    mid.color = K.rig.srgb("#0B2A8C")
+    t.links.new(k.outputs["Value"], ramp_.inputs["Fac"])
+    t.links.new(ramp_.outputs["Color"], b.inputs["Emission Color"])
+    b.inputs["Emission Strength"].default_value = DYING_STRENGTH
+    return m
+
+
+K.M[DYING] = dying_material()
+WELL = (1.25, 0.45)
+# the rubble that fell into the crucible over the well's place is moved off it, so the mouth shows
+for o in [o for o in K.OBJS if K.GROUP.get(o.name) == "wreck" and o.name.startswith("lump")]:
+    dx, dy = o.location.x - WELL[0], o.location.y - WELL[1]
+    d = math.hypot(dx, dy)
+    if d < 0.36 and o.location.z > 0.2:
+        s_ = (0.36 + 0.02) / max(d, 1e-3)
+        o.location.x, o.location.y = WELL[0] + dx * s_, WELL[1] + dy * s_
+with frame((WELL[0], WELL[1], 0.25)):
+    shell((0, 0, 0), 0.21, 0.125, 0.1, "lead_new", jag=0.07, seg=40)        # the collar, torn to a stub
+    annulus((0, 0, 0.0), 0.115, 0.13, 0.08, "bezel", seg=40)
+    cyl((0, 0, 0.02), 0.115, 0.006, DYING, verts=40, bevel=0)                 # the light, low in the mouth
+    lump((0.075, -0.05, 0.05), 0.06, "dark_steel", flat=0.6)                    # a lump of rubble half over it
+    for j in range(2):                                                          # two of the guide pins left
+        a = 2 * PI * j / 3 + 0.4
+        cyl((0.1 * math.cos(a), 0.1 * math.sin(a), 0.06), 0.008, 0.07, "bezel", verts=8)
+
 K.PARENT.pop()
 K.CUR.pop()
 
@@ -543,7 +618,7 @@ def sooted(m):
     else:
         k.inputs[0].default_value = met.default_value
     t.links.new(k.outputs["Value"], met)
-    # nothing in the wreck glows: the light, the lamps and the glass's glint are dead
+    # nothing sooted glows: the lamps and the glass's glint are dead (the well's dying light is not sooted)
     b.inputs["Emission Strength"].default_value = 0.0
     for lk in list(b.inputs["Emission Strength"].links):
         t.links.remove(lk)
@@ -558,7 +633,7 @@ def soot():
         if K.GROUP[o.name] != "wreck":
             continue
         for i, m in enumerate(o.data.materials if o.data else []):
-            if m is not None and m.name != "scorch":
+            if m is not None and m.name not in ("scorch", DYING):     # the dying light keeps its glow
                 if m.name not in cache:
                     cache[m.name] = sooted(m)
                 o.data.materials[i] = cache[m.name]
