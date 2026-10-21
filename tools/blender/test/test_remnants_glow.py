@@ -48,7 +48,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              (there listed as ignored, as the wreck is).
   identity   the fixture without its glow: every file but remnants-glow.png byte for byte as with it,
              and meta.json as with it less the glow's entry, its white_px checks and its rolloff_px
-             entries, in the same order. preview.py exits 0 on the fixture (it does not draw the glow).
+             entries, in the same order. preview.py exits 0 on the fixture (it draws the glow, by day
+             and at night, since T08f: test_preview_night.py holds it to that).
   baseline   with --baseline: on the fixture, the baseline's pack.py (which knows no glow, and leaves
              it be) writes every file this tree's does but remnants-glow.png, byte for byte, and
              meta.json as this tree's less the glow (as in identity). On every --renders directory
@@ -472,7 +473,8 @@ def test_identity(out, meta_with):
     check("preview.py on the fixture: exit 0", code == 0, text[-300:])
     code2, _ = run([sys.executable, os.path.join(TOOLS, "preview.py"), bare, os.path.join(out, "preview-no-glow.png")])
     same = code == code2 == 0 and same_bytes(os.path.join(out, "preview.png"), os.path.join(out, "preview-no-glow.png"))
-    print(f"  info  preview.py draws the fixture as without its glow: {same} (the wreck panel has no glow)")
+    print(f"  info  preview.py draws the fixture as without its glow: {same} (False since T08f: the wreck panel "
+          f"carries its glow, and a night row; test_preview_night.py)")
 
 
 # ---------------------------------------------------------------- baseline

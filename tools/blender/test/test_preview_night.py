@@ -1,0 +1,411 @@
+#!/usr/bin/env python3
+"""preview.py's wreck glow and night view (T08f) held to its docs.
+
+  python3 tools/blender/test/test_preview_night.py [--out <dir>] [--baseline <git-rev>
+                                                   [--renders <render-out> ...]]
+
+Nothing is rendered here. Two fixtures are drawn with PIL. The wreck's is test_remnants_glow.py's
+(a 2x2 plate on a 192 px canvas, its wreck on a 256 px canvas of its own, four directions, the
+wreck again with a blue light in its mouth as the glow's render), with and without its glow. The
+building's is one direction, a 2x2 plate on a 192 px canvas with a layer of every kind preview.py
+draws, each on pixels of its own: a shadow east of the plate, a glow pass (orange, over the
+plate), a paint pass (frost), a light pass (the lamp), a paint animation (a red bar) with a glow
+animation over it (cyan) and a light animation (a white beacon). --baseline names a commit from
+before T08f (fbe533d): its contract.py, pack.py and preview.py, taken out with `git show`, are run
+beside this tree's. Everything is written under --out (default: a new directory under the system's
+temporary one, named when it starts) and kept: its night-*.png are the sheets to look at.
+
+Exits 0 when every case below comes out as listed, 1 naming those that do not. "Dimmed" is a
+colour times preview.NIGHT (0.15), each channel rounded.
+
+  building  the panel by day as before (this test's own composition of pack.py's layers, in
+            preview.py's order, pixel for pixel), and at night the same composition with the
+            ground, the plate, the paint animation's frame and the paint pass dimmed, every glow
+            and light as by day: pixel for pixel, idle and working. Probes, working: the ground
+            (11, 10, 9); the plate and the frost dimmed; the shadow off the plate within 1 of its
+            day pixel dimmed; the glow pass and the glow animation adding by night what they add
+            by day (night minus the dimmed plate under it = day minus the plate); the lamp and the
+            beacon the same pixels as by day.
+  wreck     by day, the wreck panel without its glow plus the glow (pack.glow_layer of its renders,
+            rolled off) added: the same pixels wherever the glow is clear, brighter in every core;
+            at night, the ground dimmed, the debris dimmed, and every core pixel the dimmed floor
+            plus the glow, as by day.
+  sheet     without --night: a model without a wreck glow has one row per direction (no night
+            row); the wreck-glow fixture has a night row under each, its idle and working places
+            empty (the gap's colour) and its wreck place the wreck's night panel, placed and
+            gridded as the day one is. With --night: every place in the night row filled, each
+            the panel at night placed and gridded; with --adopted, the adopted place in the night
+            row empty. --night with --gif refused.
+  identity  without --night, the fixture without its glow and the building fixture: preview.py's
+            sheet byte for byte as the baseline's (with --baseline). On every --renders directory
+            (render.sh output: its renders/): preview.py's sheet, and a GIF of its first
+            animation, byte for byte as the baseline's, both exiting the same; and --night run
+            on it, exit 0 (night-<label>.png kept for review).
+"""
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+
+from PIL import Image, ImageChops, ImageDraw
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+TOOLS = os.path.dirname(HERE)
+sys.path.insert(0, TOOLS)
+sys.path.insert(0, HERE)
+import contract  # noqa: E402
+import pack  # noqa: E402
+import preview  # noqa: E402
+import test_remnants_glow as rg  # noqa: E402
+
+FAILED = []
+CANVAS = (192, 192)
+PPT = 64
+PLATE = (32, 32, 160, 160)              # x0, y0, x1, y1, ends exclusive
+PLATE_RGB = (90, 90, 90)
+SHADOW = (150, 60, 190, 140)            # an ellipse east of the plate, black, alpha 200
+GLOW = (40, 40, 60, 60)                 # the glow pass: the plate lit orange here
+GLOW_ADDS = (150, 80, 20)
+FROST = (100, 40, 120, 60)              # the paint pass
+FROST_RGB = (180, 200, 230)
+LAMP = (140, 140, 146, 146)             # the light pass: a white lens
+BAR = (40, 100, 80, 110)                # the paint animation's frame 0 (frame 1 two px east)
+BAR_RGB = (150, 40, 40)
+FAN_GLOW = (90, 100, 110, 110)          # the glow animation: cyan light on film
+FAN_GLOW_RGB = (20, 140, 150)
+BEACON = (60, 130, 64, 134)             # the light animation: white
+K = preview.NIGHT
+
+
+def check(case, ok, detail=""):
+    print(f"  {'PASS' if ok else 'FAIL'}  {case}" + (f": {detail}" if detail and not ok else ""))
+    if not ok:
+        FAILED.append(f"{case}: {detail}")
+
+
+def run(cmd):
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    return p.returncode, p.stdout + p.stderr
+
+
+def same_bytes(a, b):
+    with open(a, "rb") as fa, open(b, "rb") as fb:
+        return fa.read() == fb.read()
+
+
+def dimmed(rgb):
+    return tuple(round(c * K) for c in rgb)
+
+
+def rect(dr, box, fill):
+    dr.rectangle((box[0], box[1], box[2] - 1, box[3] - 1), fill=fill)
+
+
+# ---------------------------------------------------------------- the building fixture
+
+def plate_im():
+    im = Image.new("RGBA", CANVAS)
+    rect(ImageDraw.Draw(im), PLATE, PLATE_RGB + (255,))
+    return im
+
+
+def building(rdir):
+    if os.path.exists(rdir):
+        shutil.rmtree(rdir)
+    os.makedirs(rdir)
+    decl = dict(footprint=[2, 2], canvas=list(CANVAS), directions="one",
+                passes=[dict(name="idle", kind="plate", sheet="base"),
+                        dict(name="still", kind="still", sheet="still"),
+                        dict(name="shadow", kind="shadow", sheet="shadow"),
+                        dict(name="working", kind="glow", sheet="glow", over="idle"),
+                        dict(name="frost", kind="paint", sheet="frost", over="idle"),
+                        dict(name="lamp", kind="light", sheet="lamp")],
+                animations=[dict(name="bar", frames=2, motion="cycle"),
+                            dict(name="bar-glow", frames=2, motion="flow", kind="glow", over="bar"),
+                            dict(name="beacon", frames=2, motion="flow", kind="light")],
+                ports=[], rig=dict(elevation=60.0, px_per_tile=PPT))
+    contract.validate(decl, rdir)
+
+    def save(im, stem):
+        im.save(os.path.join(rdir, stem + ".png"))
+    save(plate_im(), "idle")
+    save(plate_im(), "still")
+    im = Image.new("RGBA", CANVAS)
+    ImageDraw.Draw(im).ellipse(SHADOW, fill=(0, 0, 0, 200))
+    save(im, "shadow")
+    im = plate_im()
+    rect(ImageDraw.Draw(im), GLOW, tuple(min(255, p + a) for p, a in zip(PLATE_RGB, GLOW_ADDS)) + (255,))
+    save(im, "working")
+    im = plate_im()
+    rect(ImageDraw.Draw(im), FROST, FROST_RGB + (255,))
+    save(im, "frost")
+    im = Image.new("RGBA", CANVAS)
+    rect(ImageDraw.Draw(im), LAMP, (255, 255, 255, 255))
+    save(im, "lamp")
+    for f in range(2):
+        for stem, box, fill in (("bar", BAR, BAR_RGB), ("bar-glow", FAN_GLOW, FAN_GLOW_RGB),
+                                ("beacon", BEACON, (255, 255, 255))):
+            im = Image.new("RGBA", CANVAS)
+            rect(ImageDraw.Draw(im), (box[0] + 2 * f, box[1], box[2] + 2 * f, box[3]), fill + (255,))
+            save(im, contract.frame(stem, f, ""))
+    rg.save_decl(rdir, decl)
+    return rdir
+
+
+def opened(rdir, stem):
+    return Image.open(os.path.join(rdir, stem + ".png")).convert("RGBA")
+
+
+def dim(im, by):
+    """This test's own: colour times by, rounded, alpha kept."""
+    if by == 1:
+        return im
+    px = [(round(r * by), round(g * by), round(b * by), a) for r, g, b, a in im.get_flattened_data()]
+    out = Image.new("RGBA", im.size)
+    out.putdata(px)
+    return out
+
+
+def expected(rdir, working, night):
+    """The building's panel as preview.py's docs compose it: by day, and at night with every layer
+    but a glow or a light dimmed."""
+    k = K if night else 1
+    roll = (lambda im: pack.roll(im)[0])
+    im = Image.new("RGBA", CANVAS, dimmed(preview.GROUND[:3]) + (255,) if night else preview.GROUND)
+    alpha = pack.clean(opened(rdir, "shadow")).getchannel("A")
+    im.paste(Image.new("RGBA", CANVAS, (0, 0, 0, 255)), (0, 0), alpha.point(lambda v: v // 2))
+    im.alpha_composite(dim(roll(opened(rdir, "idle")), k))
+    im.alpha_composite(dim(roll(pack.clean(opened(rdir, contract.frame("bar", 0, "")))), k))
+    im.alpha_composite(pack.clean(opened(rdir, contract.frame("beacon", 0, ""))))
+    if working:
+        im = pack.add_light(im, roll(pack.glow_frame(opened(rdir, contract.frame("bar-glow", 0, "")))))
+        im = pack.add_light(im, roll(pack.glow_layer(opened(rdir, "working"), opened(rdir, "idle"))))
+        im.alpha_composite(dim(roll(pack.paint_layer(opened(rdir, "frost"), opened(rdir, "idle"))), k))
+    lamp = pack.light_layer(opened(rdir, "lamp"))
+    im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, preview.LAMP[working])))
+    return im
+
+
+def test_building(out):
+    print("building")
+    rdir = building(os.path.join(out, "building"))
+    m = preview.Model(rdir)
+    panels = {}
+    for working in (False, True):
+        for night in (False, True):
+            got = m.panel("", working, night=night)
+            panels[working, night] = got
+            what = f"{'working' if working else 'idle'} {'at night' if night else 'by day'}"
+            check(f"{what}: the documented composition, pixel for pixel",
+                  got.tobytes() == expected(rdir, working, night).tobytes())
+    day, nit = panels[True, False], panels[True, True]
+
+    def px(im, x, y):
+        return im.getpixel((x, y))[:3]
+    check("the ground at night (11, 10, 9)", px(nit, 5, 5) == (11, 10, 9) == dimmed(preview.GROUND[:3]),
+          f"{px(nit, 5, 5)}")
+    for name, (x, y) in (("the plate", (80, 140)), ("the frost", (110, 50))):
+        check(f"{name} dimmed", px(nit, x, y) == dimmed(px(day, x, y)), f"{px(day, x, y)} -> {px(nit, x, y)}")
+    sx, sy = 175, 100
+    check("the shadow off the plate within 1 of its day pixel dimmed",
+          all(abs(a - b) <= 1 for a, b in zip(px(nit, sx, sy), dimmed(px(day, sx, sy)))) and px(day, sx, sy) !=
+          preview.GROUND[:3], f"{px(day, sx, sy)} -> {px(nit, sx, sy)}")
+    for name, (x, y), under in (("the glow pass", (50, 50), PLATE_RGB),
+                                ("the glow animation", (100, 105), PLATE_RGB)):
+        adds_day = tuple(a - b for a, b in zip(px(day, x, y), under))
+        adds_night = tuple(a - b for a, b in zip(px(nit, x, y), dimmed(under)))
+        check(f"{name} adds by night what it adds by day {adds_day}", adds_day == adds_night and any(adds_day),
+              f"night adds {adds_night}")
+    for name, (x, y) in (("the lamp", (143, 143)), ("the beacon", (62, 132))):
+        check(f"{name} the same by night as by day", px(nit, x, y) == px(day, x, y),
+              f"{px(day, x, y)} -> {px(nit, x, y)}")
+    return rdir
+
+
+# ---------------------------------------------------------------- the wreck
+
+def test_wreck(out):
+    print("wreck")
+    src = rg.write_fixture(os.path.join(out, "wreck-glow"))
+    bare = rg.write_fixture(os.path.join(out, "wreck-bare"), rg.drop_glow)
+    m, mb = preview.Model(src), preview.Model(bare)
+    for d in rg.DIRS:
+        day, plain, nit = m.wreck(d), mb.wreck(d), m.wreck(d, night=True)
+        glow = pack.roll(pack.glow_layer(rg.lit(d), rg.wreck(d)))[0]
+        check(f"{d}: by day, the wreck without its glow plus the glow, pixel for pixel",
+              day.tobytes() == pack.add_light(plain, glow).tobytes())
+        clear = glow.getchannel("A").point(lambda v: 255 if v == 0 else 0)
+        r, g, b, a = ImageChops.difference(day, plain).split()
+        most = ImageChops.lighter(ImageChops.lighter(ImageChops.lighter(r, g), b), a)
+        check(f"{d}: by day, the same pixels wherever the glow is clear",
+              ImageChops.multiply(most, clear).getbbox() is None)
+        x0, y0, x1, y1 = rg.core_box(d)
+        brighter = all(sum(day.getpixel((x, y))[:3]) > sum(plain.getpixel((x, y))[:3])
+                       for x in range(x0, x1) for y in range(y0, y1))
+        check(f"{d}: by day, every core pixel brighter than without the glow", brighter)
+        check(f"{d}: at night, the ground dimmed", nit.getpixel((2, 2))[:3] == dimmed(preview.GROUND[:3]),
+              f"{nit.getpixel((2, 2))}")
+        dx, dy = rg.DEBRIS[0] + 2, rg.DEBRIS[3] - 3
+        check(f"{d}: at night, the debris dimmed", nit.getpixel((dx, dy))[:3] == dimmed(plain.getpixel((dx, dy))[:3]),
+              f"{plain.getpixel((dx, dy))} -> {nit.getpixel((dx, dy))}")
+        floor = dimmed(pack.roll(Image.new("RGBA", (1, 1), rg.FLOOR_RGB + (255,)))[0].getpixel((0, 0))[:3])
+        full = all(nit.getpixel((x, y))[:3] == tuple(min(255, f + g) for f, g in zip(floor, glow.getpixel((x, y))[:3]))
+                   for x in range(x0, x1) for y in range(y0, y1))
+        check(f"{d}: at night, every core pixel the dimmed floor plus the glow as by day", full)
+    return src, bare
+
+
+# ---------------------------------------------------------------- the sheet
+
+def cell(sheet, r, c, pw, ph):
+    """Row r, column c's place on a sheet of pw x ph panels (each with its label strip)."""
+    x, y = preview.PAD + c * (pw + preview.PAD), preview.PAD + r * (ph + preview.LABEL + preview.PAD)
+    return sheet.crop((x, y, x + pw, y + ph + preview.LABEL))
+
+
+def tall(rows, ph):
+    """A sheet's height: rows of ph px panels, each with its label strip."""
+    return preview.PAD + rows * (ph + preview.LABEL + preview.PAD)
+
+
+def body(im):
+    return im.crop((0, preview.LABEL, im.width, im.height))
+
+
+def placed(art, pw, ph, decl, night, d=""):
+    """A panel as the sheet shows it: placed, gridded, over the gap's colour (the label strip's)."""
+    im = preview.place(art, (pw, ph), (pw / 2, ph / 2), by=K if night else 1)
+    preview.grid(im, (pw / 2, ph / 2), contract.footprint_in(decl, d), float(decl["rig"]["px_per_tile"]))
+    return Image.alpha_composite(Image.new("RGBA", im.size, preview.GAP), im)
+
+
+def sheet_of(rdir, png, *extra):
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, png, *extra])
+    return code, text, (Image.open(png).convert("RGBA") if code == 0 else None)
+
+
+def empty(im):
+    return im.getcolors(1) is not None and im.getcolors(1)[0][1] == preview.GAP
+
+
+def test_sheet(out, building_dir, src, bare):
+    print("sheet")
+    m = preview.Model(building_dir)
+    pw = ph = CANVAS[0] + 2 * preview.PAD
+    code, text, s = sheet_of(building_dir, os.path.join(out, "building-day.png"))
+    check("without --night, no wreck glow: one row, three panels wide (no night row)",
+          code == 0 and s.size == (preview.PAD + 2 * (pw + preview.PAD), tall(1, ph)),
+          f"exit {code}, {s.size if s else text[-300:]}")
+    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building.png"), "--night")
+    check("--night: a night row under the day row", code == 0 and s.size[1] == tall(2, ph),
+          f"exit {code}: {text[-300:]}")
+    if s:
+        for c, working in enumerate((False, True)):
+            what = "working" if working else "idle"
+            check(f"--night: night place {c + 1} the {what} panel at night, placed, gridded",
+                  body(cell(s, 1, c, pw, ph)).tobytes() == placed(m.panel("", working, night=True), pw, ph, m.decl,
+                                                                  True).tobytes())
+    adopted = os.path.join(out, "adopted.png")
+    plate_im().save(adopted)
+    code, text, s = sheet_of(building_dir, os.path.join(out, "night-building-adopted.png"), "--night", "--adopted",
+                             adopted)
+    check("--night --adopted: the adopted place in the night row empty, the others filled",
+          code == 0 and empty(cell(s, 1, 0, pw, ph)) and not empty(cell(s, 1, 1, pw, ph)),
+          f"exit {code}: {text[-300:]}")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), building_dir, os.path.join(out, "x.gif"),
+                      "--gif", "bar", "--speed", "1", "--night"])
+    check("--night with --gif refused", code != 0 and "--night is for the sheet" in text, f"exit {code}: {text[-200:]}")
+
+    w = preview.Model(src)
+    pw = ph = rg.CANVAS[0] + 2 * preview.PAD
+    code, text, s = sheet_of(src, os.path.join(out, "night-wreck-default.png"))
+    check("the wreck-glow fixture, without --night: 8 rows (a night row under each direction's)",
+          code == 0 and s.size[1] == tall(8, ph), f"exit {code}: {text[-300:]}")
+    if s:
+        for i, d in enumerate(rg.DIRS):
+            check(f"{d}: day row's wreck place the wreck with its glow, placed, gridded",
+                  body(cell(s, 2 * i, 2, pw, ph)).tobytes() == placed(w.wreck(d), pw, ph, w.decl, False, d).tobytes())
+            check(f"{d}: night row's idle and working places empty, its wreck place the wreck at night",
+                  empty(cell(s, 2 * i + 1, 0, pw, ph)) and empty(cell(s, 2 * i + 1, 1, pw, ph))
+                  and body(cell(s, 2 * i + 1, 2, pw, ph)).tobytes() == placed(w.wreck(d, night=True), pw, ph, w.decl,
+                                                                              True, d).tobytes())
+    code, text, s = sheet_of(src, os.path.join(out, "night-wreck.png"), "--night")
+    check("the wreck-glow fixture, --night: every night place filled",
+          code == 0 and not any(empty(cell(s, 2 * i + 1, c, pw, ph)) for i in range(4) for c in range(3)),
+          f"exit {code}: {text[-300:]}")
+    code, text, s = sheet_of(bare, os.path.join(out, "wreck-bare.png"))
+    check("the fixture without its glow, without --night: 4 rows (no night row)",
+          code == 0 and s.size[1] == tall(4, ph), f"exit {code}: {text[-300:]}")
+
+
+# ---------------------------------------------------------------- identity
+
+def baseline_tools(rev, out):
+    d = os.path.join(out, f"baseline-{rev}")
+    os.makedirs(d, exist_ok=True)
+    top = subprocess.run(["git", "-C", TOOLS, "rev-parse", "--show-toplevel"], capture_output=True, text=True,
+                         check=True).stdout.strip()
+    rel = os.path.relpath(TOOLS, top)
+    for f in ("contract.py", "pack.py", "preview.py"):
+        body_ = subprocess.run(["git", "-C", top, "show", f"{rev}:{rel}/{f}"], capture_output=True, check=True).stdout
+        with open(os.path.join(d, f), "wb") as fh:
+            fh.write(body_)
+    return d
+
+
+def compare(label, rdir, out, base, gif_of=None):
+    """This tree's preview.py and the baseline's on rdir, byte for byte: the sheet, and a GIF of gif_of."""
+    jobs = [("preview.png", [])]
+    if gif_of:
+        jobs.append(("anim.gif", ["--gif", gif_of, "--speed", "1"]))
+    for name, extra in jobs:
+        res = []
+        for tools, who in ((TOOLS, "mine"), (base, "base")):
+            o = os.path.join(out, f"{label}-{who}")
+            os.makedirs(o, exist_ok=True)
+            code, _ = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, name), *extra])
+            res.append((code, os.path.join(o, name)))
+        (c1, f1), (c2, f2) = res
+        check(f"{label}: preview.py's {name} byte for byte as the baseline's (exit {c1}, baseline {c2})",
+              c1 == c2 and (c1 != 0 or same_bytes(f1, f2)))
+
+
+def test_identity(out, base, renders, building_dir, bare):
+    print("identity")
+    compare("building", building_dir, out, base, "bar")
+    compare("wreck-bare", bare, out, base)
+    for r in renders:
+        label = os.path.basename(os.path.normpath(r))
+        rdir = os.path.join(r, "renders")
+        anims = contract.load(rdir)["animations"]
+        compare(label, rdir, out, base, anims[0]["name"] if anims else None)
+        code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir,
+                          os.path.join(out, f"night-{label}.png"), "--night"])
+        check(f"{label}: --night exits 0", code == 0, text[-300:])
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--out")
+    ap.add_argument("--baseline", metavar="GIT_REV")
+    ap.add_argument("--renders", nargs="+", default=[], metavar="RENDER_OUT")
+    a = ap.parse_args()
+    if a.renders and not a.baseline:
+        ap.error("--renders goes with --baseline")
+    out = a.out or tempfile.mkdtemp(prefix="preview-night-test-")
+    os.makedirs(out, exist_ok=True)
+    print(f"writing under {out}")
+    base = baseline_tools(a.baseline, out) if a.baseline else None
+    building_dir = test_building(out)
+    src, bare = test_wreck(out)
+    test_sheet(out, building_dir, src, bare)
+    if base:
+        test_identity(out, base, [os.path.abspath(r) for r in a.renders], building_dir, bare)
+    print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))
+    sys.exit(1 if FAILED else 0)
+
+
+if __name__ == "__main__":
+    main()

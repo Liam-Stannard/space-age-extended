@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A model's review sheet: its renders composited the way the engine layers them.
 
-  python3 preview.py <render-dir> <out.png> [--adopted <png> [...]]
+  python3 preview.py <render-dir> <out.png> [--adopted <png> [...]] [--night]
   python3 preview.py <render-dir> <out.gif> --gif <animation> --speed <animation_speed>
 
 <render-dir> is render.sh's <out-dir>/renders. What to draw comes from its
@@ -24,7 +24,25 @@ A model that declares a remnants pass (contract.py) gets a third panel in each r
 wreck: the render as pack.py packs it (cleaned of the catcher's haze, never cut), shadow and
 all, on the same ground and grid, so the debris past the footprint shows against it. The
 panels grow to the wreck's own canvas when it is larger. A model without one draws as it
-always did.
+always did. A wreck that declares a glow (the remnants pass's `glow`) has it added over the
+wreck, as pack.py packs it (its render minus the wreck's, kept to its light box, rolled off),
+and the sheet gains a night row (below).
+
+The night view (--night; T08f, 2026-10-21) puts a second row under each direction's, every
+panel under its day one: the same panel at night. The model of night is the simplest the
+engine's rules allow: every layer drawn as by day, in the same order, but each layer the
+engine darkens -- the ground, the plate, a paint pass, each paint animation's frame, the
+wreck -- with its colour times NIGHT (0.15: the Core's darkest, darkness 0.85, its
+min_brightness), and every layer drawn as a glow (draw_as_glow, which shows day and night
+at full colour) as by day: a glow pass and a glow animation added, a light pass's lamp and a
+light animation drawn over, the wreck's glow added. The shadow, black, is as by day. So a
+glow on top of everything is the scene times 0.15 with the glow added. Nothing a prototype
+draws only in the dark (draw_as_light layers, LightDefinitions) is in render.json, so none
+is drawn: the night view shows what the sheets carry. The adopted plate is vanilla's, whose
+glows are not known here: its night panel is left empty. The grid is drawn as by day.
+Without --night the sheet has no night row, but a model whose wreck has a glow gets one
+holding the wreck's night panel alone, since that glow exists to be seen at night (Liam,
+2026-10-21, the Radiant Generator's dying blue: "Make it glow at night").
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -73,6 +91,21 @@ FOOTPRINT = (255, 255, 255, 110)
 LAMP = {False: (255, 0, 0, 255), True: (0, 255, 0, 255)}
 LABEL = 14                              # px of label strip over each panel
 PAD = 8
+# the scene's brightness at night: the Core's darkness 0.85 at its darkest (min_brightness 0.15)
+NIGHT = 0.15
+
+
+def dim(im, by):
+    """im (RGBA) with its colour times by, its alpha kept; im itself when by is 1 (the day)."""
+    if by == 1:
+        return im
+    r, g, b, a = im.split()
+    return Image.merge("RGBA", [c.point(lambda v: round(v * by)) for c in (r, g, b)] + [a])
+
+
+def ground(by=1):
+    """The ground's colour, by day (by 1) or at night (NIGHT)."""
+    return GROUND if by == 1 else tuple(round(c * by) for c in GROUND[:3]) + (255,)
 
 
 class Model:
@@ -113,16 +146,18 @@ class Model:
     def kind(self, kind):
         return [p for p in self.decl["passes"] if p["kind"] == kind]
 
-    def panel(self, d, working, frames=None):
-        """The building in direction d on the ground, at canvas size. frames: {animation: frame}, else 0."""
+    def panel(self, d, working, frames=None, night=False):
+        """The building in direction d on the ground, at canvas size. frames: {animation: frame}, else 0.
+        night: at night (the module's docstring), every layer but a glow or a light darkened."""
         frames = frames or {}
+        k = NIGHT if night else 1
         plate = self.open(contract.named(self.kind("plate")[0]["name"], d), d)
-        im = Image.new("RGBA", plate.size, GROUND)
+        im = Image.new("RGBA", plate.size, ground(k))
         black = Image.new("RGBA", plate.size, (0, 0, 0, 255))
         for p in self.kind("shadow"):
             alpha = pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False)).getchannel("A")
             im.paste(black, (0, 0), alpha.point(lambda v: v // 2))
-        im.alpha_composite(self.shipped(plate))
+        im.alpha_composite(dim(self.shipped(plate), k))
         glows = []
         for a in self.decl["animations"]:
             if a.get("working") and not working:
@@ -133,7 +168,7 @@ class Model:
             elif a.get("kind") == "light":
                 im.alpha_composite(pack.clean(fr))      # a white the engine tints: never rolled off
             else:
-                im.alpha_composite(self.shipped(pack.clean(fr)))
+                im.alpha_composite(dim(self.shipped(pack.clean(fr)), k))
         for g in glows if working else ():
             im = pack.add_light(im, g)
         for p in self.decl["passes"] if working else ():
@@ -142,7 +177,7 @@ class Model:
             layer = self.open(contract.named(p["name"], d), d)
             under = self.open(contract.named(p["over"], d), d)
             if p["kind"] == "paint":
-                im.alpha_composite(self.shipped(pack.paint_layer(layer, under)))
+                im.alpha_composite(dim(self.shipped(pack.paint_layer(layer, under)), k))
             else:
                 glow = self.shipped(pack.glow_layer(layer, under)).convert("RGB")
                 im = Image.merge("RGBA", (*ImageChops.add(im.convert("RGB"), glow).split(), im.getchannel("A")))
@@ -151,16 +186,25 @@ class Model:
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
         return im
 
-    def wreck(self, d):
-        """The remnants pass in direction d on the ground, at its canvas's size, as pack.py packs it;
-        None when the model declares none."""
-        p = next(iter(self.kind("remnants")), None)
+    def remnants(self):
+        """The remnants pass, or None."""
+        return next(iter(self.kind("remnants")), None)
+
+    def wreck(self, d, night=False):
+        """The remnants pass in direction d on the ground, at its canvas's size, as pack.py packs it,
+        its glow (when it declares one) added over it; None when the model declares none. night: at
+        night (the module's docstring), the ground and the wreck darkened, the glow as by day."""
+        p = self.remnants()
         if p is None:
             return None
+        k = NIGHT if night else 1
         canvas = contract.canvas_of(self.decl, p)
-        im = Image.new("RGBA", tuple(canvas), GROUND)
-        im.alpha_composite(self.shipped(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False,
-                                                             canvas=canvas))))
+        im = Image.new("RGBA", tuple(canvas), ground(k))
+        wreck = pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False, canvas=canvas))
+        im.alpha_composite(dim(self.shipped(wreck), k))
+        if "glow" in p:
+            lit = self.open(contract.named(p["glow"]["name"], d), d, cut_it=False, canvas=canvas)
+            im = pack.add_light(im, self.shipped(pack.glow_layer(lit, wreck)))
         return im
 
 
@@ -184,9 +228,9 @@ def grid(im, origin, footprint, ppt):
                    outline=FOOTPRINT)
 
 
-def place(art, size, origin, shift=(0, 0)):
-    """art centred on the panel's origin, moved by shift (px), on the ground."""
-    im = Image.new("RGBA", size, GROUND)
+def place(art, size, origin, shift=(0, 0), by=1):
+    """art centred on the panel's origin, moved by shift (px), on the ground (at night when by is NIGHT)."""
+    im = Image.new("RGBA", size, ground(by))
     im.alpha_composite(art, (round(origin[0] + shift[0] - art.width / 2),
                              round(origin[1] + shift[1] - art.height / 2)))
     return im
@@ -212,17 +256,18 @@ def label(im, text):
 
 
 def sheet(rows):
-    """rows: [[panel, ...], ...], every panel the same size."""
+    """rows: [[panel, ...], ...], every panel the same size; a None leaves its place empty."""
     pw, ph = rows[0][0].size
     cols = max(len(r) for r in rows)
     out = Image.new("RGBA", (PAD + cols * (pw + PAD), PAD + len(rows) * (ph + PAD)), GAP)
     for r, row in enumerate(rows):
         for c, im in enumerate(row):
-            out.alpha_composite(im, (PAD + c * (pw + PAD), PAD + r * (ph + PAD)))
+            if im is not None:
+                out.alpha_composite(im, (PAD + c * (pw + PAD), PAD + r * (ph + PAD)))
     return out
 
 
-def review(model, out, adopted):
+def review(model, out, adopted, night=False):
     decl = model.decl
     if adopted and len(adopted) != len(model.directions):
         sys.exit(f"preview.py: --adopted takes one plate per direction: render.json declares "
@@ -237,25 +282,35 @@ def review(model, out, adopted):
     pw, ph = int(-(-pw // 1)), int(-(-ph // 1))
     pw, ph = pw + pw % 2, ph + ph % 2
     origin = (pw / 2, ph / 2)
+    # a wreck with a glow is seen at night too, --night or not (the module's docstring)
+    wreck_night = night or "glow" in (model.remnants() or {})
     rows = []
     for i, d in enumerate(model.directions):
         name = d or decl["directions"]
         fp = contract.footprint_in(decl, d)
-        panels = []
+        panels, dark = [], []           # the day row, and the night row under it (None: left empty)
         if plates:
             plate, shift = plates[i]
             panels.append((place(plate, (pw, ph), origin, shift),
                            f"{name}: adopted" + (f" @{adopted[i][1][0]:g},{adopted[i][1][1]:g}" if any(shift) else "")))
-        panels.append((place(model.panel(d, False), (pw, ph), origin), f"{name}: idle"))
-        panels.append((place(model.panel(d, True), (pw, ph), origin), f"{name}: working"))
+            dark.append(None)           # vanilla's glows are not known here
+        for working, what in ((False, "idle"), (True, "working")):
+            panels.append((place(model.panel(d, working), (pw, ph), origin), f"{name}: {what}"))
+            dark.append((place(model.panel(d, working, night=True), (pw, ph), origin, by=NIGHT),
+                         f"{name}: {what} at night") if night else None)
         wreck = model.wreck(d)
         if wreck is not None:
             panels.append((place(wreck, (pw, ph), origin), f"{name}: wreck"))
-        for im, _ in panels:
+            dark.append((place(model.wreck(d, night=True), (pw, ph), origin, by=NIGHT), f"{name}: wreck at night")
+                        if wreck_night else None)
+        for im, _ in panels + [p for p in dark if p is not None]:
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])
+        if any(dark):
+            rows.append([label(*p) if p is not None else None for p in dark])
     sheet(rows).save(out)
-    print(f"{out}: {len(rows)} row(s), {', '.join(d or decl['directions'] for d in model.directions)}; "
+    print(f"{out}: {len(rows)} row(s), {', '.join(d or decl['directions'] for d in model.directions)}"
+          f"{', each with a night row under it' if len(rows) > len(model.directions) else ''}; "
           f"panels {pw}x{ph}, origin at {origin}, {model.ppt:g} px a tile")
 
 
@@ -310,6 +365,8 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--adopted", nargs="+", default=[], metavar="PNG[@X,Y]",
                     help="the adopted plate(s), one per direction, each with its prototype shift in tiles")
+    ap.add_argument("--night", action="store_true",
+                    help="a night row under each direction's: every panel at night (the module's docstring)")
     ap.add_argument("--gif", metavar="ANIMATION", help="write a GIF of this animation instead of the sheet")
     ap.add_argument("--speed", type=float, metavar="ANIMATION_SPEED",
                     help="the prototype's animation_speed, for --gif")
@@ -318,11 +375,13 @@ def main():
         ap.error("--gif and --speed go together")
     if args.gif and args.adopted:
         ap.error("--adopted is for the sheet, not the GIF")
+    if args.gif and args.night:
+        ap.error("--night is for the sheet, not the GIF")
     model = Model(args.render_dir)
     if args.gif:
         gif(model, args.out, args.gif, args.speed)
     else:
-        review(model, args.out, args.adopted)
+        review(model, args.out, args.adopted, args.night)
 
 
 if __name__ == "__main__":
