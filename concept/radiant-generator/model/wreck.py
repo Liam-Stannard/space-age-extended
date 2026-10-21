@@ -18,7 +18,8 @@ the debris stays on the footprint.
   - the crucible: its lead walls standing to half their height, torn; the roof plates thrown
     off round it; copper collector plates leaning out of the open top; the well's collar on
     the deck, its mouth torn open in the floor with a faint dying blue in it, the only light
-    left (T08c, Liam 2026-10-21: "Faint dying blue");
+    left (T08c, Liam 2026-10-21: "Faint dying blue"), drawn as the corpse's glow layer so it shows
+    at night (T08d: "Make it glow at night");
   - the tubes: their sockets on the east strip, the glass broken to jagged stumps, two caps
     and one whole tube lying on the ground;
   - the converter: the bedplate in place, the AC machine rolled off it to the south, the DC
@@ -443,8 +444,10 @@ for k in range(12):
 # -- the well (T08c, Liam 2026-10-21: "Faint dying blue"): its mouth torn open in the crucible's
 # floor, where the well stood (spec 3.3's served well), and the last of the isotope's light dying
 # in it -- the only light in the wreck, faint, in the radiant blue's own hue (#1F63FF at the core,
-# #0B2A8C at the rim; never #73ADFF's pale top, never white), patchy as it fades. Baked into the
-# remnants picture: a corpse draws no glow layer of the pipeline's (contract.py's remnants pass).
+# #0B2A8C at the rim; never #73ADFF's pale top, never white), patchy as it fades. Its own layer, not
+# baked in (T08d; Liam 2026-10-21, "Make it glow at night"): the remnants pass declares a glow
+# (contract.py), rendered as the wreck again with this light on (dying(), radiant_generator.py), and
+# pack.py packs the difference as the corpse's draw_as_glow layer, so the blue shows at night.
 DYING = "wreck_dying"
 DYING_STRENGTH = K.opt("--dying", 0.4)        # the emission at the core: T08c tried 0.9, 0.5, 0.6, 0.4 at 1x;
                                                # 0.4 peaks at (17, 52, 154), hue 225 (#1F63FF: 222): faint
@@ -497,6 +500,11 @@ def dying_material():
 
 
 K.M[DYING] = dying_material()
+
+
+def dying(strength):
+    """The well's dying blue at `strength` (0: the light out, for the wreck's own render)."""
+    K.M[DYING].node_tree.nodes["Principled BSDF"].inputs["Emission Strength"].default_value = strength
 WELL = (1.25, 0.45)
 # the rubble that fell into the crucible over the well's place is moved off it, so the mouth shows
 for o in [o for o in K.OBJS if K.GROUP.get(o.name) == "wreck" and o.name.startswith("lump")]:

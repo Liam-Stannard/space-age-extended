@@ -2,21 +2,21 @@
  "base": {
   "size": [
    338,
-   360
+   361
   ],
   "shift": [
    -0.04688,
-   -0.21875
+   -0.21094
   ]
  },
  "shadow": {
   "size": [
-   360,
-   330
+   357,
+   329
   ],
   "shift": [
-   0.23438,
-   0.01562
+   0.27344,
+   0.00781
   ]
  },
  "status-lamp": {
@@ -32,11 +32,11 @@
  "carousel": {
   "size": [
    271,
-   242
+   240
   ],
   "shift": [
    -0.30469,
-   -0.64062
+   -0.65625
   ],
   "frames": 32,
   "line_length": 30,
@@ -50,19 +50,6 @@
   "shift": [
    -1.13281,
    -2.35156
-  ],
-  "frames": 32,
-  "line_length": 32,
-  "animation_speed": 0.23809523809523808
- },
- "lid": {
-  "size": [
-   104,
-   97
-  ],
-  "shift": [
-   1.73438,
-   -1.36719
   ],
   "frames": 32,
   "line_length": 32,
@@ -83,11 +70,11 @@
  },
  "commutator": {
   "size": [
-   100,
+   108,
    130
   ],
   "shift": [
-   1.35938,
+   1.42188,
    1.46875
   ],
   "frames": 32,
@@ -96,12 +83,12 @@
  },
  "coupling-converter": {
   "size": [
-   65,
-   81
+   47,
+   62
   ],
   "shift": [
-   0.25781,
-   1.47656
+   0.11719,
+   1.625
   ],
   "frames": 32,
   "line_length": 32,
@@ -148,11 +135,11 @@
  },
  "gauge-transformer": {
   "size": [
-   20,
+   33,
    46
   ],
   "shift": [
-   -1.875,
+   -1.97656,
    2.0
   ],
   "frames": 32,
@@ -175,11 +162,11 @@
  "window-glow": {
   "size": [
    259,
-   251
+   238
   ],
   "shift": [
    0.61719,
-   -0.77344
+   -0.875
   ],
   "frames": 32,
   "line_length": 31,
@@ -203,6 +190,24 @@
   "kind": "remnants",
   "final_render_layer": "remnants"
  },
+ "remnants-glow": {
+  "size": [
+   12,
+   12
+  ],
+  "shift": [
+   1.0625,
+   -0.51562
+  ],
+  "direction_count": 1,
+  "line_length": 1,
+  "rows": [
+   ""
+  ],
+  "kind": "remnants",
+  "draw_as_glow": true,
+  "blend_mode": "additive"
+ },
  "checks": {
   "centre_offset_px": -3.5,
   "edge_alpha_max": 0,
@@ -211,12 +216,12 @@
    "2.5 = footprint width / 2"
   ],
   "footprint_rows_tiles": [
-   2.546875,
+   2.5625,
    "bottom edge below origin; 2.5 = on the footprint"
   ],
   "remnants_shadow_px": [
    {
-    "px": 5466,
+    "px": 5467,
     "share": 0.0751
    },
    "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
@@ -242,15 +247,15 @@
    },
    "how far past each footprint edge, as it stands in this direction, the debris (alpha over 128, not near black) and everything kept (the shadow too) reach, tiles; below 0 short of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"
   ],
+  "remnants-glow_white_px": [
+   0,
+   "pixels the wreck's light clipped to white; 0 = the light keeps its colour"
+  ],
   "carousel_cycle": [
    32,
    "frames of a closed loop; no positional check"
   ],
   "drive_cycle": [
-   32,
-   "frames of a closed loop; no positional check"
-  ],
-  "lid_cycle": [
    32,
    "frames of a closed loop; no positional check"
   ],
@@ -263,7 +268,7 @@
    "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
   ],
   "coupling-converter_drift_px": [
-   0.54,
+   0.5,
    "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
   ],
   "coupling-pump_cycle": [
@@ -317,12 +322,16 @@
   "rolloff_px": [
    {
     "base": {
-     "px": 284,
+     "px": 352,
      "most": 12
     },
     "remnants": {
      "px": 39,
      "most": 12
+    },
+    "remnants-glow": {
+     "px": 0,
+     "most": 0
     },
     "carousel": {
      "px": 2313,
@@ -332,16 +341,12 @@
      "px": 104,
      "most": 12
     },
-    "lid": {
-     "px": 78,
-     "most": 12
-    },
     "crane": {
-     "px": 469,
+     "px": 471,
      "most": 12
     },
     "commutator": {
-     "px": 457,
+     "px": 410,
      "most": 12
     },
     "coupling-converter": {
@@ -353,15 +358,15 @@
      "most": 12
     },
     "gauge-switchgear": {
-     "px": 171,
+     "px": 169,
      "most": 12
     },
     "gauge-converter": {
-     "px": 92,
+     "px": 94,
      "most": 12
     },
     "gauge-transformer": {
-     "px": 102,
+     "px": 96,
      "most": 12
     },
     "window": {
@@ -369,7 +374,7 @@
      "most": 12
     },
     "window-glow": {
-     "px": 11111,
+     "px": 10967,
      "most": 12
     }
    },

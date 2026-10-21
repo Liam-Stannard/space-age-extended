@@ -10,7 +10,8 @@
   --icon     icon.png: the whole machine, working, framed to a 1024 px square
   --collide  no render: every moving part in every frame against every other part, by BVH;
              collide.txt in <out-dir>
-  --wreck    the wreck alone (wreck.png): the quick loop for the remnants [--dying K: its well's dying blue]
+  --wreck    the wreck alone: wreck.png (its light out) and wreck-lit.png (the well's dying blue on, the
+             glow's render): the quick loop for the remnants [--dying K: the dying blue's strength]
   --study F,F,..  [--glowframes F,..]  a study, nothing packed (T08c): at each frame the whole machine working
              (look-NN) and stopped (unlit-NN); the well's light and the other openings' alone (wellglow-NN,
              otherglow-NN); the openings' and the collide fixes' places on the screen (SPOT, REGION lines)
@@ -25,7 +26,7 @@ places, the same finish. What the shipping model changes (task radiant-generator
   - the layers of spec 7, each its own cropped sheet, declared to the packers (DECL): the
     plate (everything that does not move, openings dark); the moving parts, one layer per
     part that moves apart from the others (the carousel table, its drive pinion and coupling,
-    the well's lid, the crane, the commutator, the two other couplings, the three gauges),
+    the crane with the well's lid (T08d: one layer, so their shadows fall on each other), the commutator, the two other couplings, the three gauges),
     each rendered alone with every other part a shadow catcher, so it carries the shadow it
     casts on the rest of the machine and is cut by whatever stands in front of it; the
     working windows (radiant.py's plate light) and their glow, one layer, every opening's
@@ -73,10 +74,16 @@ SUN_E = K.opt("--sun", 8.8)                     # round 7's
 
 NF = 32                                         # one crane cycle (spec 6)
 SPEED = 5 / 21                                  # 70 ms a frame: 4.2 ticks (spec 6, decision 10)
-# the moving layers in the order they are drawn: the crane last, over the table and the lid it
-# shadows
-LAYERS = ("carousel", "drive", "lid", "crane", "commutator", "coupling-converter", "coupling-pump",
+# the moving layers in the order they are drawn: the crane over the table it shadows
+LAYERS = ("carousel", "drive", "crane", "commutator", "coupling-converter", "coupling-pump",
           "gauge-switchgear", "gauge-converter", "gauge-transformer")
+# T08d (Liam 2026-10-21, "Fix: lid in the crane's layer"): the well's lid is rendered in the crane's
+# layer, so their shadows fall on each other in one pass. Rendered apart, each pass saw the other part
+# as a shadow catcher already shading the spot where both their shadows fall, so neither layer carried
+# that shadow and frames 18-24 showed a sunlit hole by the well (idle-lid-shadow.png). The kit still
+# names the lid's pivot "lid": --collide tests the lid against the crane as two layers (RAW_LAYERS)
+RENDER_AS = {"lid": "crane"}
+RAW_LAYERS = LAYERS + tuple(RENDER_AS)
 # about their own axes, held to their centroid; the pump's coupling is half hidden behind its motor and
 # pump, so its visible centroid moves as it turns (7.5 px on the first pack): a cycle, unchecked
 TURNING = ("commutator", "coupling-converter")
@@ -98,7 +105,10 @@ DECL = dict(
         dict(name="still", kind="still"),
         dict(name="shadow", kind="shadow", sheet="shadow"),
         dict(name="lamp", kind="light", sheet="status-lamp"),
-        dict(name="wreck", kind="remnants", sheet="remnants", canvas=WRECK_CANVAS),
+        # its glow (T08d; Liam 2026-10-21, "Make it glow at night"): the well's dying blue as a
+        # draw_as_glow layer over the wreck, so the corpse shows it at night (contract.py's remnants glow)
+        dict(name="wreck", kind="remnants", sheet="remnants", canvas=WRECK_CANVAS,
+             glow=dict(name="wreck-lit", sheet="remnants-glow")),
     ],
     animations=[anim(n) for n in LAYERS] + [window]
     + [K.R.glow_animation(name, "window", NF, shapes) for name, shapes in GLOWS],
@@ -147,23 +157,44 @@ WELL_DROP = 0.17
 crane("x", (-1.0, 1.78), ZR, CY, P[0], W[0], P[2], W[2] + WELL_DROP, -0.55, 1.74, d=0.38, label_n=4,
       rail_posts=(-0.5, 0.4, 1.68), posts_on=lambda u, v: v < 1.5 or u < -0.2)       # FIX 10 (rg_kit)
 
-# the DC bus: the tubes' and plates' bars down a tray to the switchgear, SE
-tray([(2.3, -0.85, 1.2), (2.3, -1.3, 1.05), (2.05, -1.5, 1.05)])
+# the DC bus: the tubes' and plates' bars down a tray to the switchgear, SE. T08d (Liam 2026-10-21, "The
+# cables on the bottom right also clip"): round 7's tray stepped down level while its cables sloped, so they
+# passed through its floor, and they ended in the air over the cabinets. Now the tray runs level from a
+# terminal block on the tubes' copper bar, on a stand at its end, and its cables drop into a gland on the
+# switchgear's top
+box((2.37, -0.86, 1.25), (0.22, 0.08, 0.11), "dark_steel", bevel=0.008)        # the bus terminal block
+tray([(2.3, -0.95, 1.2), (2.3, -1.42, 1.2)], lead_in=[(2.3, -0.9, 1.26), (2.3, -0.93, 1.26)],
+     lead_out=[(2.3, -1.5, 1.27), (2.26, -1.64, 1.25), (2.245, -1.72, 1.19), (2.24, -1.74, 1.15)])
+box((2.3, -1.4, 0.6), (0.05, 0.05, 1.19), "ochre", bevel=0.004)                 # the tray's stand
+box((2.3, -1.4, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
 cabinet(1.8, -1.9, 0.4, 0.6, 1.0, mat="grey")
 cabinet(2.22, -1.9, 0.42, 0.6, 1.15, mat="green")
 gauge((2.22, -2.21, 0.8), (0, -1, 0.15), r=0.06, live=lambda t: 0.2 * math.sin(2 * PI * t), layer="gauge-switchgear")
 id_panel((1.8, -2.21, 0.6), 0.22, 0.12, stripe="red")
 
 # the rotary converter along the south, its commutator at the east (DC) end
-cv = converter(-1.75, 1.2, -1.95, 0.6, R=0.4, dc_east=True)
-bundle([(1.7, -1.62, 0.95), (1.45, -1.45, 1.0), (cv["com"][0] + 0.05, -1.45, 0.95), (cv["com"][0], -1.55, 0.9)],
-       cols=("red", "black", "red"), r=0.025)
+# T08d: the brush leads from the terminal box on the rocker over into a gland on the switchgear's top (round 7's
+# rose from the rocker and stopped in the air over the commutator)
+cv = converter(-1.75, 1.2, -1.95, 0.6, R=0.4, dc_east=True,
+               leads=lambda c: [(c - 0.06, -1.47, 0.78), (c - 0.06, -1.48, 0.9), (c + 0.15, -1.56, 1.08),
+                                (1.45, -1.75, 1.17), (1.66, -1.86, 1.08), (1.68, -1.87, 1.0)])
+# T08d: the switchgear's leads to the brush gear end in glands, on the cabinet's top (the face the camera sees;
+# its north face is hidden, and a lead going in there reads as running into its side) and on a terminal
+# box on the brush rocker (round 7's ran into the cabinet's side with no fitting and stopped in the air over
+# the rocker)
+CXM = cv["com"][0]
+box((CXM + 0.02, -1.47, 0.72), (0.32, 0.12, 0.12), "dark_steel", bevel=0.008)    # the brush gear's terminal box
+bundle([(1.8, -1.7, 1.0), (1.79, -1.67, 1.08), (1.66, -1.5, 1.09), (1.45, -1.42, 1.0), (CXM + 0.14, -1.44, 0.95),
+        (CXM + 0.1, -1.47, 0.88), (CXM + 0.1, -1.47, 0.78)],
+       cols=("red", "black", "red"), r=0.025, glands=(True, True))
 
 # the transformer, SW, and the trunks out
-tf = transformer(-2.15, -1.92, 0.58, 0.8, 0.8, mat="cream")
+# T08d: the two trunks out leave the tank's south face low, each through a gap in its fins with its gland on
+# the face (round 7's ran down through the fins from inside the tank, no gland where they left it)
+tf = transformer(-2.15, -1.92, 0.58, 0.8, 0.8, mat="cream", fin_gaps=(-2.288, -2.012))
 trunk([cv["ac_top"], (-1.2, -1.6, 1.2), (-1.9, -1.75, 1.25), tf], r=0.05)
-trunk([(-2.3, -2.2, 0.9), (-2.42, -2.3, 0.5), (-2.49, -2.32, 0.1)], r=0.065)
-trunk([(-2.0, -2.25, 0.9), (-1.95, -2.4, 0.5), (-1.92, -2.49, 0.1)], r=0.065)
+trunk([(-2.288, -2.32, 0.46), (-2.29, -2.44, 0.38), (-2.31, -2.47, 0.2), (-2.33, -2.47, 0.04)], r=0.065)
+trunk([(-2.012, -2.32, 0.46), (-2.01, -2.44, 0.38), (-1.98, -2.47, 0.2), (-1.95, -2.47, 0.04)], r=0.065)
 
 # coolant for the crucible jacket and the tube caps: pump, hoses to the radiator housing
 pv = motor(-0.6, 2.2, 0.35, d=(1, 0), s=0.8)
@@ -178,10 +209,17 @@ for k, (x, y) in enumerate(((-2.25, 2.25), (-2.0, 2.3), (-2.32, 1.95))):
     cyl((x, y, 0.3), 0.11, 0.6, ("green", "grey", "hazard")[k], verts=24)
     head(x, y, 0.6, 0.11, 0.06, "dark_steel")
 valve(-1.0, 2.3, 0.0, 0.5, wheel="red")
-jbox(0.0, -1.15, w=0.28, mat="grey", z=0.1)
-bundle([(0.0, -1.15, 0.5), (0.3, -1.05, 0.3), (0.5, -0.95, 0.25)], cols=("black", "yellow"))
+# T08d: the junction box stands beside the tray, not across it (round 7's tray ran through it), its lead into a
+# gland on the crucible's south face (round 7's stopped short in the air); the tray 0.12 higher, on stands, over
+# the barrels' lids (round 7's floor cut through them), its cables up from a gland in the deck at the west end
+# and down into another at the east, past the commutator (round 7's ended loose at both ends of the tray)
+jbox(0.0, -0.97, w=0.28, mat="grey", z=0.1)
+bundle([(0.0, -0.97, 0.5), (0.03, -0.96, 0.6), (0.3, -0.92, 0.62), (0.53, -0.86, 0.52), (0.55, -0.8, 0.5)],
+       cols=("black", "yellow"), glands=(True, True))
 ladder(0.42, 0.0, 0.1, 1.05, axis="y", mat="ochre")
-tray([(-0.45, -1.22, 0.32), (0.95, -1.22, 0.32), (1.35, -1.4, 0.32)], w=0.2, cols=("black", "red", "black"))
+tray([(-0.45, -1.22, 0.44), (0.95, -1.22, 0.44), (1.35, -1.4, 0.44)], w=0.2, cols=("black", "red", "black"),
+     lead_in=[(-0.66, -1.28, 0.13), (-0.64, -1.26, 0.3), (-0.55, -1.23, 0.46)],
+     lead_out=[(1.45, -1.45, 0.47), (1.5, -1.5, 0.3), (1.5, -1.5, 0.1)], legs=(-0.2, 0.3, 1.15))
 # FIX 12: the barrels 0.03 and 0.05 west, the second out of the cable tray's bend (round 7's crossed its rail)
 for k, (x, y) in enumerate(((0.59, -1.3), (0.80, -1.36))):
     cyl((x, y, 0.22), 0.1, 0.32, ("oxide", "grey")[k], verts=20)
@@ -207,7 +245,7 @@ def group_of(o):
     names = {m.name for m in o.data.materials if m} if getattr(o.data, "materials", None) else set()
     lay = K.layer_of(o)
     if lay:
-        return lay
+        return RENDER_AS.get(lay, lay)
     if names & WINDOW_MATS:
         return "window"
     return "plate"
@@ -393,7 +431,9 @@ if PORTS:
 # ---------------------------------------------------------------- --collide
 if COLLIDE:
     import collide
-    collide.check(K, MACHINE, PART, LAYERS, pose, NF, SHOW)
+    # the lid apart from the crane here (RENDER_AS), so a contact between them is still a clash
+    raw = {n: (K.layer_of(o) or g) if g in LAYERS else g for n, g, o in ((o.name, PART[o.name], o) for o in K.OBJS)}
+    collide.check(K, MACHINE, raw, RAW_LAYERS, pose, NF, SHOW)
     print("done")
     sys.exit(0)
 
@@ -673,7 +713,13 @@ K.sc.cycles.samples = PLATE_SAMPLES
 K.rig.camera(*WRECK_CANVAS)
 no_border()
 setup(visible=("wreck",), ground=True)
+# the wreck with its light out (the well's mouth dark), then again with the dying blue on, the same
+# camera, catcher and seed: pack.py takes the one from the other for the glow layer (T08d), so by day
+# wreck + glow is T08c's picture, and at night the glow alone shows
+wreck.dying(0.0)
 render("wreck")
+wreck.dying(wreck.DYING_STRENGTH)
+render("wreck-lit")
 
 with open(os.path.join(K.OUT, "model.json"), "w") as f_:
     json.dump(dict(windows=WINDOWS, frames=NF, animation_speed=SPEED, samples=dict(plate=PLATE_SAMPLES,

@@ -28,7 +28,7 @@ import sys
 
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
@@ -402,7 +402,7 @@ def unit(fn):
         try:
             out = fn(*a, **k)
             if fn.__name__ in ("hose", "pipe", "lagged", "trunk", "bundle", "tray"):
-                pts = a[0]
+                pts = list(k.get("lead_in") or ()) + list(a[0]) + list(k.get("lead_out") or ())
                 RUN_ENDS[_UNIT[0]] = (Vector(pts[0]), Vector(pts[-1]))
             return out
         finally:
@@ -636,8 +636,29 @@ def pipe(pts, r=0.06, mat="bare", marks=(), flanges=True):
     return P
 
 
-def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014):
+def gland(p, t, r_b):
+    """A cable gland where a bundle of overall radius r_b enters its host at p, the bundle arriving
+    along t (unit, pointing into the host): a brass hex body standing out of the host's face and a
+    dark lock-nut ring on it (T08d: every cable end visibly fastened)."""
+    rg = r_b * 1.1 + 0.004
+    cyl(tuple(p - t * 0.028), rg, 0.05, "brass", rot=along(t), verts=6, bevel=0.003)
+    cyl(tuple(p - t * 0.004), rg * 1.15, 0.012, "dark_steel", rot=along(t), verts=16, bevel=0.002)
+    cyl(tuple(p - t * 0.058), rg * 0.85, 0.016, "bare", rot=along(t), verts=12, bevel=0.002)
+
+
+def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014, glands=(False, False)):
+    """Cables twisted along pts. glands (start, end): a gland where that end enters its host, the
+    end point on the host's face and the run arriving square to it (T08d); the cables go on 0.02
+    into the host, so no gap shows round the gland."""
     P = catmull(pts)
+    for k_, on in enumerate(glands):
+        if on:
+            a_, b_ = (P[0], P[1]) if k_ == 0 else (P[-1], P[-2])
+            t = (a_ - b_).normalized()
+            if k_ == 0:
+                P.insert(0, a_ + t * 0.02)
+            else:
+                P.append(a_ + t * 0.02)
     T, N, B = frames(P)
     s = [0.0]
     for a_, b_ in zip(P, P[1:]):
@@ -652,6 +673,11 @@ def bundle(pts, cols=("red", "grey", "yellow", "black"), r=0.014):
         if s[i] >= nxt and s[i] < s[-1] - 0.1:
             cyl(tuple(p), r * 2.9, 0.045, "label", rot=along(T[i]), verts=12, bevel=0.002)
             nxt += 0.4
+    rb = r * 1.3 + r
+    for k_, on in enumerate(glands):
+        if on:
+            i, j = (1, 2) if k_ == 0 else (len(P) - 2, len(P) - 3)
+            gland(P[i], (P[i] - P[j]).normalized(), rb)
 
 
 def trunk(pts, r=0.07, mat="cable_black"):
@@ -1112,19 +1138,50 @@ def housing(x0, y0, x1, y1, h, mat="grey", roof="teal", seams=0.45, louvres=Fals
                 rot=(0.5, 0, 0))
 
 
-def tray(pts, w=0.2, cols=("black", "red", "grey")):
-    """A cable tray in straight runs between points, cables laid in it."""
-    for a, b in zip(pts, pts[1:]):
-        a, b = Vector(a), Vector(b)
+def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None, legs=()):
+    """A cable tray in straight runs between points (the floor's centre line), cables laid on its
+    floor. T08d: each run's floor and rails pitched along it, so a sloping run's cables lie in it
+    instead of passing through it (round 7's boxes stayed level); the cables' centre 0.06 over the
+    floor line (the floor's top 0.0125, the bundle 0.046 round its line). lead_in / lead_out: the
+    points the cables come from before the tray and go on to after it, each ending in a gland on
+    its host (bundle()), with a clamp strap over them at that end of the tray. legs: x positions
+    along the tray (the run there) of a stand from the deck to the floor."""
+    def frame_of(a, b):
         d = b - a
-        L = d.length
-        mid = (a + b) / 2
         rz = math.atan2(d.y, d.x)
-        box(tuple(mid), (L + 0.02, w, 0.025), "dark_steel", rz=rz, bevel=0.004)
-        nrm = Vector((-math.sin(rz), math.cos(rz), 0))
+        pitch = math.atan2(d.z, math.hypot(d.x, d.y))
+        R_ = Matrix.Rotation(rz, 3, "Z") @ Matrix.Rotation(-pitch, 3, "Y")
+        return R_, R_.to_euler()
+    P_ = [Vector(p) for p in pts]
+    for a, b in zip(P_, P_[1:]):
+        L = (b - a).length
+        mid = (a + b) / 2
+        R_, eul = frame_of(a, b)
+        X_, Y_, Z_ = R_.col[0], R_.col[1], R_.col[2]
+        box(tuple(mid), (L + 0.02, w, 0.025), "dark_steel", rot=eul, bevel=0.004)
         for s in (-1, 1):
-            box(tuple(mid + nrm * s * w / 2 + Vector((0, 0, 0.035))), (L + 0.02, 0.018, 0.07), "ochre", rz=rz, bevel=0.003)
-    bundle([Vector(p) + Vector((0, 0, 0.04)) for p in pts], cols=cols, r=0.02)
+            box(tuple(mid + Y_ * s * w / 2 + Z_ * 0.035), (L + 0.02, 0.018, 0.07), "ochre", rot=eul, bevel=0.003)
+    for end, lead in ((0, lead_in), (-1, lead_out)):
+        if not lead:
+            continue
+        a, b = (P_[0], P_[1]) if end == 0 else (P_[-1], P_[-2])
+        R_, eul = frame_of(b, a)
+        c = a - R_.col[0] * 0.05
+        box(tuple(c + R_.col[2] * 0.115), (0.03, w + 0.02, 0.015), "dark_steel", rot=eul, bevel=0.003)
+        for s in (-1, 1):
+            box(tuple(c + R_.col[1] * s * (w / 2 + 0.005) + R_.col[2] * 0.09), (0.03, 0.012, 0.05), "dark_steel",
+                rot=eul, bevel=0.002)
+    for xl in legs:
+        for a, b in zip(P_, P_[1:]):
+            if min(a.x, b.x) - 1e-6 <= xl <= max(a.x, b.x) + 1e-6 and abs(b.x - a.x) > 1e-6:
+                q = a + (b - a) * ((xl - a.x) / (b.x - a.x))
+                break
+        else:
+            continue
+        box((q.x, q.y, (q.z - 0.0125) / 2), (0.045, 0.045, q.z - 0.0125), "ochre", bevel=0.004)
+        box((q.x, q.y, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
+    run = list(lead_in or ()) + [p + Vector((0, 0, 0.06)) for p in P_] + list(lead_out or ())
+    bundle(run, cols=cols, r=0.02, glands=(bool(lead_in), bool(lead_out)))
 
 
 def tube(x, y, z0, k, h=0.8, arm=(0, 0), arm_len=0.0):
@@ -1559,7 +1616,7 @@ def crucible(x0, x1, y0, y1, zt, well, slot, hinge="N", plates="x", label_n=5, b
     return (wx, wy, zt + 0.24)
 
 
-def converter(x0, x1, y, zc, R=0.38, dc_east=True, label_n=8, glow_fn=None):
+def converter(x0, x1, y, zc, R=0.38, dc_east=True, label_n=8, glow_fn=None, leads=None):
     """Round 5 #7's rotary converter along X: the DC motor (green) with its commutator open and
     its brush gear, the coupling, the AC machine (grey, ribbed), the exciter (cream), on a heavy
     bedplate. The commutator turns one turn a loop (a hazard key on it so the turn reads)."""
@@ -1615,8 +1672,11 @@ def converter(x0, x1, y, zc, R=0.38, dc_east=True, label_n=8, glow_fn=None):
         by_, bz = y + R * 0.92 * math.cos(a), zc + R * 0.92 * math.sin(a)
         box((cxm, by_, bz), (0.12, 0.07, 0.09), "brass", rot=(a, 0, 0), bevel=0.004)
     box((cxm, y + R * 0.95 + 0.03, zc * 0.55), (0.08, 0.06, zc * 1.1), "dark_steel", bevel=0.005)
-    bundle([(cxm, y + R * 0.98, zc + 0.15), (cxm + sgn * 0.2, y + R + 0.1, zc + 0.35), (cxm + sgn * 0.25, y + 0.1, zc + R + 0.3)],
-           cols=("red", "black"), r=0.022)
+    if leads:          # T08d: the caller's route for the brush leads, a gland at each end
+        bundle(leads(cxm), cols=("red", "black"), r=0.022, glands=(True, True))
+    else:
+        bundle([(cxm, y + R * 0.98, zc + 0.15), (cxm + sgn * 0.2, y + R + 0.1, zc + 0.35),
+                (cxm + sgn * 0.25, y + 0.1, zc + R + 0.3)], cols=("red", "black"), r=0.022)
     # coupling, AC machine, exciter
     cyl((cpl, y, zc), 0.07, 0.3, "bare", rot=(0, PI / 2, 0), verts=16)
     coupling(cpl, y, zc, 0.15, axis=(1, 0, 0), turns=1, layer="coupling-converter")
@@ -1640,13 +1700,16 @@ def converter(x0, x1, y, zc, R=0.38, dc_east=True, label_n=8, glow_fn=None):
     return dict(ac_top=((ac0 + ac1) / 2, y - 0.05, zc + Ra + 0.25), com=(cxm, y, zc), ex=ex)
 
 
-def transformer(x, y, w, d, h, mat="cream", label_n=9):
+def transformer(x, y, w, d, h, mat="cream", label_n=9, fin_gaps=()):
     """A transformer: a ribbed tank, fin radiators on the south and the exposed flank, a
-    conservator drum on top, three bushings."""
+    conservator drum on top, three bushings. fin_gaps: x positions where a south fin is left out
+    for a cable to leave the tank between its neighbours (T08d)."""
     box((x, y, 0.1), (w + 0.1, d + 0.1, 0.2), "dark_steel")
     box((x, y, 0.2 + h / 2), (w, d, h), mat, bevel=0.02)
     nf = int(w / 0.09)
     for k in range(nf):
+        if any(abs(x - w / 2 + 0.06 + (w - 0.12) * k / (nf - 1) - g) < 0.03 for g in fin_gaps):
+            continue
         box((x - w / 2 + 0.06 + (w - 0.12) * k / (nf - 1), y - d / 2 - 0.04, 0.2 + h * 0.48), (0.025, 0.08, h * 0.8),
             mat, bevel=0.004)
     nf = int(d / 0.09)
