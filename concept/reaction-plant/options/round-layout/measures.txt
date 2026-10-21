@@ -1,0 +1,24 @@
+T06e layout options: measure.py (tools/blender/measure.py, factorio-art-measure) on each take's four runs
+(render.sh on the GPU, one run a direction; --vanilla chemical-plant oil-refinery; collide on north with the plant's 13 allow patterns).
+legs / press: the model's --probe (frame 0 of the layer alone, px over half alpha at 4x), not a measure.py figure.
+
+A north cover  92.0  rise 0.80  p50/p95 plate 71/157 still 73/160  black 11.4 ratio 0.66  blue 1.95  white 0  clipped 3  moving 5.09  strobe 2.19  joins PASS/PASS/PASS  legs 33815  press 26181  collide PASS
+A east  cover  94.5  rise 0.62  p50/p95 plate 71/151 still 72/153  black 9.1 ratio 0.62  blue 1.96  white 0  clipped 1  moving 4.28  strobe 1.37  joins PASS/PASS/PASS  legs 36188  press 18915
+A south cover  92.3  rise 0.53  p50/p95 plate 70/157 still 72/160  black 12.8 ratio 0.61  blue 2.82  white 0  clipped 0  moving 5.1  strobe 1.29  joins PASS/PASS/PASS  legs 48949  press 21111
+A west  cover  93.6  rise 0.92  p50/p95 plate 62/151 still 64/154  black 12.6 ratio 0.63  blue 2.35  white 0  clipped 2  moving 5.19  strobe 1.49  joins PASS/PASS/PASS  legs 44588  press 32975
+
+B north cover  93.4  rise 0.86  p50/p95 plate 65/148 still 67/150  black 13.9 ratio 0.63  blue 2.09  white 0  clipped 2  moving 4.93  strobe 1.99  joins PASS/PASS/PASS  legs 37862  press 25844  collide PASS
+B east  cover  94.1  rise 0.88  p50/p95 plate 68/150 still 69/152  black 9.7 ratio 0.63  blue 1.87  white 0  clipped 1  moving 3.92  strobe 1.02  joins PASS/PASS/PASS  legs 35672  press 12801
+B south cover  93.1  rise 0.53  p50/p95 plate 65/151 still 66/153  black 10.8 ratio 0.6  blue 2.01  white 0  clipped 0  moving 3.52  strobe 0.76  joins PASS/PASS/PASS  legs 36606  press 17644
+B west  cover  94.5  rise 0.80  p50/p95 plate 66/149 still 67/151  black 12.2 ratio 0.6  blue 2.35  white 0  clipped 2  moving 4.11  strobe 0.84  joins PASS/PASS/PASS  legs 43423  press 23683
+
+C north cover  92.2  rise 0.53  p50/p95 plate 68/154 still 70/157  black 12.2 ratio 0.64  blue 2.99  white 0  clipped 3  moving 6.02  strobe 2.16  joins PASS/PASS/PASS  legs 51491  press 26184  collide PASS
+C east  cover  94.1  rise 0.86  p50/p95 plate 65/149 still 66/152  black 11.3 ratio 0.62  blue 2.68  white 0  clipped 1  moving 4.83  strobe 1.38  joins PASS/PASS/PASS  legs 47196  press 19022
+C south cover  93.0  rise 0.48  p50/p95 plate 71/155 still 73/158  black 10.7 ratio 0.63  blue 2.72  white 0  clipped 0  moving 5.32  strobe 1.47  joins PASS/PASS/PASS  legs 47482  press 24743
+C west  cover  93.7  rise 0.83  p50/p95 plate 67/149 still 69/152  black 12.8 ratio 0.62  blue 2.44  white 0  clipped 2  moving 5.48  strobe 1.56  joins PASS/PASS/PASS  legs 44660  press 32954
+
+D north cover  92.1  rise 0.86  p50/p95 plate 69/149 still 71/152  black 11.3 ratio 0.64  blue 2.92  white 0  clipped 5  moving 5.93  strobe 2.22  joins PASS/PASS/PASS  legs 50892  press 26181  collide PASS
+D east  cover  95.4  rise 0.86  p50/p95 plate 66/150 still 67/153  black 11.7 ratio 0.62  blue 2.46  white 0  clipped 1  moving 4.73  strobe 1.38  joins PASS/PASS/PASS  legs 44856  press 18915
+D south cover  92.5  rise 0.53  p50/p95 plate 64/148 still 66/150  black 13.1 ratio 0.6  blue 2.2  white 0  clipped 0  moving 4.61  strobe 1.43  joins PASS/PASS/PASS  legs 38324  press 25268
+D west  cover  93.3  rise 0.83  p50/p95 plate 62/147 still 64/150  black 13.1 ratio 0.61  blue 2.47  white 0  clipped 2  moving 5.39  strobe 1.53  joins PASS/PASS/PASS  legs 44512  press 32975
+
