@@ -37,7 +37,20 @@ a pass: everything they act on is declared here.
                         "checks". Its own `canvas`
                         (optional, this kind only): [w, h] in sprite px, when the
                         wreck spreads past the model's canvas; the entity origin is
-                        its centre too
+                        its centre too. Its own `glow` (optional, this kind only):
+                        {name, sheet}, the wreck's glow -- a light left burning in it,
+                        which the corpse draws as a draw_as_glow layer over the wreck so
+                        it shows at night (Liam, 2026-10-21, the Radiant Generator's
+                        dying blue: "Make it glow at night"). `name` is a render of its
+                        own, <name>.png (<name>-<direction>.png), on the wreck's canvas:
+                        the wreck again, from the same camera and catcher, with its light
+                        on. pack.py packs it as a still glow (its docstring): that render
+                        minus the wreck's, kept to the box holding 99.9 % of its light,
+                        rolled off -- into one sheet `sheet` in the wreck's own layout, a
+                        row for each of the wreck's, cropped to one box for them all. Its
+                        name may not be a pass's, and its sheet follows the remnants
+                        sheet's rules (one file for every direction) and may not be the
+                        wreck's own or any other sheet
   animations  [{name, frames, motion, path}], frames <name>-NN.png (and
               <name>-NN-<direction>.png). motion "turn": a part turning about
               its own axis, held to its centroid. motion "slide": a part moving
@@ -403,6 +416,9 @@ def validate(decl, where):
             v = p["canvas"]
             if not (_seq(v, 2) and all(_whole(c) and c > 0 for c in v)):
                 bad(f"{field}.canvas", f"{v!r} is not [w, h], two whole numbers of px above 0")
+        if "glow" in p and p["kind"] != "remnants":
+            bad(f"{field}.glow", f"{p['kind']} pass {p['name']!r} has a glow of its own: only a remnants pass "
+                f"may (a building's glow is a glow pass over its plate)")
     kinds = [p["kind"] for p in decl["passes"]]
     if decl["passes"] and kinds.count("plate") != 1:
         bad("passes", f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
@@ -522,6 +538,26 @@ def validate(decl, where):
                 f"model's directions: a remnants sheet is one file for every direction, and would be written over it")
         if p["sheet"] == "checks":
             bad(f"passes[{i}].sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
+        if "glow" not in p:
+            continue
+        g, field = p["glow"], f"passes[{i}].glow"
+        if not (isinstance(g, dict) and set(g) == {"name", "sheet"}):
+            bad(field, f"{g!r} is not {{name, sheet}}, and nothing else: the wreck's glow render's file stem "
+                f"and the sheet it packs into")
+        for key in ("name", "sheet"):
+            if not _stem(g[key]):
+                bad(f"{field}.{key}", f"{g[key]!r} is not a name (a non-empty string, no path in it)")
+        if g["name"] in names:
+            bad(f"{field}.name", f"{g['name']!r} is a pass's name: the glow's renders would be its renders")
+        if g["sheet"] in sheets:
+            bad(f"{field}.sheet", f"{g['sheet']!r} is already a sheet (the wreck's own, another pass's or an "
+                f"animation's)")
+        if g["sheet"] in taken:
+            bad(f"{field}.sheet", f"{g['sheet']!r} is the name sheet {taken[g['sheet']]!r} takes in one of the "
+                f"model's directions: the wreck's glow sheet is one file for every direction, and would be "
+                f"written over it")
+        if g["sheet"] == "checks":
+            bad(f"{field}.sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds:
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
