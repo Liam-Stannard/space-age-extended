@@ -36,9 +36,16 @@ with `factorio-brief`, and stop at the stage's gate.
 - **Light:** the radiant look (`tools/blender/radiant.py`) wherever the
   isotope is seen; molten metal orange only where melt is seen; nothing
   else glows.
-- **Pipes:** every input and output leads to a device that uses it; its
-  own pipe pictures to assembler 3's outline; vanilla covers; joins
-  checked with `factorio-art-measure`.
+- **Pipes:** each connection leads to the vessel or device that uses it,
+  so the flow reads through the building as on vanilla's chemical plant
+  and oil refinery. A run from a connection keeps the connection's size:
+  no sudden narrowing after the fitting, and a narrowing only where a
+  visible reducer shows why, at a valve, pump or vessel nozzle; thin pipes
+  only for side lines (dosing, instruments). A model that turns reads that
+  way in every direction. Its own pipe pictures to assembler 3's outline;
+  vanilla covers; joins checked with `factorio-art-measure`. Before the
+  options stage, study how the comparable vanilla buildings meet their
+  pipes.
 - **Motion** a player notices at 1x, every moving part with a job; an
   idle state; nothing that strobes at 1x.
 - Measures always taken with `factorio-art-measure`, never ad hoc.
