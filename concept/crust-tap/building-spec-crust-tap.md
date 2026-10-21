@@ -593,8 +593,7 @@ on an even one they are half a tile apart.
 
 The first four plates were drawn to the diagram and were therefore half a tile
 out. They were re-rendered against a corrected diagram — four tiles with their
-centres marked, a cross over the middle of the face — and the riser now rotates
-around the machine the way the connection does:
+centres marked, a cross over the middle of the face.
 
 **On a 3×3 the middle of a face is a tile centre**, so the outlet sits there and the half-tile correction no longer applies:
 
