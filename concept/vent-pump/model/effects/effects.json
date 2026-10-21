@@ -1,0 +1,208 @@
+{
+ "_": "Vent Pump effects (T07c): each a working_visualisation of sae-vent-pump; scale 0.5; drawn only while working; unchecked in a client",
+ "effects": {
+  "wisp-a2": {
+   "what": "A2: the boil-off wisp, a melt-lit fume rising off the head tank's gas offtake, working only",
+   "blend": "normal (alpha)",
+   "constant_speed": true,
+   "fadeout": true,
+   "render_layer": "wires (as the chemical plant's smoke)",
+   "file": "wisp-a2.png",
+   "width": 80,
+   "height": 176,
+   "frame_count": 32,
+   "line_length": 8,
+   "scale": 0.5,
+   "animation_speed": 0.25,
+   "shift": [
+    -0.0,
+    -1.21875
+   ],
+   "source_px": [
+    40,
+    166
+   ],
+   "north_position": [
+    0.2,
+    -1.97
+   ],
+   "east_position": [
+    0.38,
+    -1.79
+   ],
+   "south_position": [
+    0.2,
+    -1.61
+   ],
+   "west_position": [
+    0.02,
+    -1.79
+   ],
+   "checks": {
+    "peak_luminance": 142,
+    "peak_alpha": 136,
+    "white_px": 0
+   }
+  },
+  "embers-e2": {
+   "what": "E2: embers rising off the slag in the skimmings bin, working only",
+   "blend": "additive, draw_as_glow = true",
+   "constant_speed": true,
+   "fadeout": true,
+   "render_layer": "object",
+   "file": "embers-e2.png",
+   "width": 56,
+   "height": 104,
+   "frame_count": 24,
+   "line_length": 12,
+   "scale": 0.5,
+   "animation_speed": 0.5,
+   "shift": [
+    -0.0,
+    -0.625
+   ],
+   "source_px": [
+    28,
+    92
+   ],
+   "north_position": [
+    -0.92,
+    -1.31
+   ],
+   "east_position": [
+    0.95,
+    -1.28
+   ],
+   "south_position": [
+    0.92,
+    0.59
+   ],
+   "west_position": [
+    -0.95,
+    -1.28
+   ],
+   "checks": {
+    "peak_luminance": 169,
+    "peak_alpha": 255,
+    "white_px": 0
+   }
+  },
+  "cold-breath-e4": {
+   "what": "E4: a breath of cold vapour off the stop valve's bonnet at each charge (born frames 1 and 13)",
+   "blend": "normal (alpha)",
+   "constant_speed": false,
+   "fadeout": true,
+   "render_layer": "object",
+   "south": "facing south the stop valve stands behind the tower: draw this direction under the entity (render_layer 'lower-object') or leave it out there; Liam's question",
+   "file": "cold-breath-e4.png",
+   "width": 64,
+   "height": 72,
+   "frame_count": 24,
+   "line_length": 12,
+   "scale": 0.5,
+   "animation_speed": 0.2,
+   "shift": [
+    -0.0,
+    -0.375
+   ],
+   "source_px": [
+    32,
+    60
+   ],
+   "north_position": [
+    0,
+    0.7
+   ],
+   "east_position": [
+    -1.06,
+    -0.36
+   ],
+   "south_position": [
+    0,
+    -1.42
+   ],
+   "west_position": [
+    1.06,
+    -0.36
+   ],
+   "checks": {
+    "peak_luminance": 229,
+    "peak_alpha": 91,
+    "white_px": 0
+   }
+  },
+  "purge-e5": {
+   "what": "E5: a violet-grey purge puff off the float chamber's cap as each charge breaks out (born frames 4 and 16)",
+   "blend": "normal (alpha)",
+   "constant_speed": false,
+   "fadeout": true,
+   "render_layer": "wires",
+   "file": "purge-e5.png",
+   "width": 64,
+   "height": 80,
+   "frame_count": 24,
+   "line_length": 12,
+   "scale": 0.5,
+   "animation_speed": 0.2,
+   "shift": [
+    -0.0,
+    -0.4375
+   ],
+   "source_px": [
+    32,
+    68
+   ],
+   "north_position": [
+    0.62,
+    -1.905
+   ],
+   "east_position": [
+    0.8,
+    -1.725
+   ],
+   "south_position": [
+    0.62,
+    -1.545
+   ],
+   "west_position": [
+    0.44,
+    -1.725
+   ],
+   "checks": {
+    "peak_luminance": 145,
+    "peak_alpha": 107,
+    "white_px": 0
+   }
+  },
+  "ground-light-e3": {
+   "what": "E3: the melt's orange light on the ground round the tower's foot: a light, so the engine shows it only in the dark (the Core's sky is mostly dark: Liam, 2026-10-20)",
+   "light": {
+    "type": "basic",
+    "intensity": 0.55,
+    "size": 7,
+    "color": [
+     1.0,
+     0.48,
+     0.18
+    ]
+   },
+   "note": "a working_visualisation with a `light` and no animation, positioned per direction; or the drill's own light-defining fields if the coder prefers; intensity and size are proposals to judge in a client",
+   "north_position": [
+    0.0,
+    0.18
+   ],
+   "east_position": [
+    0.18,
+    0.36
+   ],
+   "south_position": [
+    0.0,
+    0.54
+   ],
+   "west_position": [
+    -0.18,
+    0.36
+   ]
+  }
+ }
+}

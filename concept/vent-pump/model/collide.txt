@@ -1,3 +1,7 @@
-COLLIDE 630 parts, 51 moving; frames 0-23
-COLLIDE moving: 0 clashes, 1149 meant contacts (collide-model.txt)
-COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 579 fixed parts, 1222 touching pairs, 111 touch at under 0.03 (collide-model.txt)
+COLLIDE north: 630 parts, 51 moving; frames 0-23
+COLLIDE east: 644 parts, 51 moving; frames 0-23
+COLLIDE south: 625 parts, 51 moving; frames 0-23
+COLLIDE west: 636 parts, 51 moving; frames 0-23
+COLLIDE moving: 0 clashes, 4587 meant contacts (collide-model.txt)
+COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 4850 touching pairs over the four directions, 425 touch at under 0.03 (collide-model.txt)
+COLLIDE ends: 56 of 56 runs end in what they serve
