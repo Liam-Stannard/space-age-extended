@@ -1,0 +1,42 @@
+CLASH frame 0/12: Cube.023[dark_steel]@(-0.95,0.00,1.74) x piston rod[nickel]@(-0.95,0.00,1.56)
+CLASH frame 0/12: Cube.027[iron]@(0.15,0.00,2.62) x Cube.026[dark_steel]@(0.00,0.00,0.00)
+CLASH frame 0/12: Cube.035[dark_steel]@(0.15,0.00,2.62) x pitman arm[dark_steel]@(1.07,-0.42,1.99)
+CLASH frame 0/12: Cube.035[dark_steel]@(0.15,0.00,2.62) x pitman arm.001[dark_steel]@(1.07,0.42,1.99)
+CLASH frame 0/12: Cube.039[dark_steel]@(1.06,-0.35,0.74) x Cylinder.136[bare]@(1.06,0.00,0.74)
+CLASH frame 0/12: Cube.040[dark_steel]@(1.06,0.35,0.74) x Cylinder.136[bare]@(1.06,0.00,0.74)
+CLASH frame 0/12: Cube.047[green]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cube.048[green]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cube.049[green]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cube.050[green]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cube.051[green]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cube.059[hazard]@(1.04,-0.67,0.44) x Cylinder.147[bare]@(1.04,-0.72,0.44)
+CLASH frame 0/12: Cube.065[needle]@(-0.92,-1.50,0.77) x Cylinder.158[ceramic]@(-0.92,-1.50,0.77)
+CLASH frame 0/12: Cylinder.135[bare]@(0.14,0.00,2.64) x Cube.026[dark_steel]@(0.00,0.00,0.00)
+CLASH frame 0/12: Cylinder.137[bare]@(1.06,-0.42,1.04) x pitman arm[dark_steel]@(1.07,-0.42,1.99)
+CLASH frame 0/12: Cylinder.138[bare]@(1.06,0.42,1.04) x pitman arm.001[dark_steel]@(1.07,0.42,1.99)
+CLASH frame 0/12: Cylinder.144[bare]@(1.05,-1.63,0.56) x Cylinder.145[bare]@(1.05,-1.52,0.56)
+CLASH frame 0/12: Cylinder.146[dark_steel]@(1.04,-0.67,0.44) x Cylinder.147[bare]@(1.04,-0.72,0.44)
+CLASH frame 0/12: bridle[dark]@(-0.95,-0.08,2.18) x sector[ochre]@(0.15,0.00,2.62)
+CLASH frame 0/12: bridle[dark]@(-0.95,-0.08,2.18) x sector.001[dark_steel]@(0.15,0.00,2.62)
+CLASH frame 0/12: bridle.001[dark]@(-0.95,0.08,2.18) x sector[ochre]@(0.15,0.00,2.62)
+CLASH frame 0/12: bridle.001[dark]@(-0.95,0.08,2.18) x sector.001[dark_steel]@(0.15,0.00,2.62)
+CLASH frame 0/12: piston rod[nickel]@(-0.95,0.00,1.56) x Cube.020[dark_steel]@(0.00,0.00,0.00)
+CLASH frame 0/12: piston rod[nickel]@(-0.95,0.00,1.56) x Cylinder.129[bare]@(-0.95,0.00,1.38)
+RUNCLIP t=0.0: discharge: the cylinder to the receiver x Cylinder.156[dark_steel]@(-0.95,-0.42,1.19) at (-0.92,-0.45,1.25), 20 faces
+RUNCLIP t=0.0: outlet: the receiver north to the sight glass x Cylinder.149[cream]@(-0.98,-1.06,0.64) at (-0.66,-1.19,0.49), 8 faces
+RUNCLIP t=0.0: outlet: the receiver north to the sight glass x Cube.069[dark_steel]@(0.00,0.00,0.00) at (-0.39,-0.53,0.31), 36 faces
+RUNCLIP t=0.0: outlet: the receiver north to the sight glass x Cylinder.200[dark_steel]@(-0.46,-0.35,0.47) at (-0.44,-0.28,0.55), 50 faces
+RUNCLIP t=0.0: outlet: the receiver north to the sight glass x Cylinder.201[bare]@(-0.46,-0.35,0.61) at (-0.44,-0.31,0.55), 28 faces
+RUNCLIP t=0.0: outlet: the sight glass to the reducer x Cone[bare]@(0.00,1.32,0.42) at (-0.13,1.30,0.49), 37 faces
+RUNCLIP t=0.0: outlet: the sight glass to the reducer x Cylinder.198[dark_steel]@(0.00,1.20,0.42) at (-0.06,1.21,0.55), 39 faces
+RUNCLIP t=0.0: outlet: the sight glass to the reducer x Cube.070[dark_steel]@(0.00,0.00,0.00) at (-0.37,0.98,0.31), 55 faces
+RUNCLIP t=0.5: discharge: the cylinder to the receiver x Cylinder.156[dark_steel]@(-0.95,-0.42,1.19) at (-0.92,-0.45,1.25), 20 faces
+RUNCLIP t=0.5: outlet: the receiver north to the sight glass x Cylinder.149[cream]@(-0.98,-1.06,0.64) at (-0.66,-1.19,0.49), 8 faces
+RUNCLIP t=0.5: outlet: the receiver north to the sight glass x Cube.069[dark_steel]@(0.00,0.00,0.00) at (-0.39,-0.53,0.31), 36 faces
+RUNCLIP t=0.5: outlet: the receiver north to the sight glass x Cylinder.200[dark_steel]@(-0.46,-0.35,0.47) at (-0.44,-0.28,0.55), 50 faces
+RUNCLIP t=0.5: outlet: the receiver north to the sight glass x Cylinder.201[bare]@(-0.46,-0.35,0.61) at (-0.44,-0.31,0.55), 28 faces
+RUNCLIP t=0.5: outlet: the sight glass to the reducer x Cone[bare]@(0.00,1.32,0.42) at (-0.13,1.30,0.49), 37 faces
+RUNCLIP t=0.5: outlet: the sight glass to the reducer x Cylinder.198[dark_steel]@(0.00,1.20,0.42) at (-0.06,1.21,0.55), 39 faces
+RUNCLIP t=0.5: outlet: the sight glass to the reducer x Cube.070[dark_steel]@(0.00,0.00,0.00) at (-0.37,0.98,0.31), 55 faces
+RUNCLIP runs checked 9
+CLASH count 24, moving parts 46
