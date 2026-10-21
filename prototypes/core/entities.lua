@@ -3,6 +3,9 @@
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
+-- Defines the `circuit_connector_definitions` and `universal_connector_template`
+-- globals the pump's wire post is built from, as base's own entities file does.
+require("circuit-connector-sprites")
 
 -- The vent pump. A pumpjack with an input fluid box added, because drawing
 -- melt costs helium-3 -- the scarce vent throttling the rich one. The engine
@@ -384,6 +387,32 @@ pump.graphics_set_flipped = nil
 -- The tower and the embers stand up to 1.16 tiles above the north edge (the
 -- smoke is drawn in its own layer); the pumpjack's 1 would cull the top of it.
 pump.drawing_box_vertical_extension = 1.2
+
+-- The wire post, on the control house (Liam, "Move to the control house"). The
+-- pumpjack's sat at the same spot in every direction, and on this building that
+-- is the middle of the riser's glass. The house turns with the plumbing (east
+-- the quarter turn, south the half turn, west east's mirror), and the camera
+-- puts a model point at (x, -y - 0.52 z) on screen, solved from the two lenses'
+-- rendered shifts. The post's sprite (variation 26) covers about -0.2 to +0.36
+-- tile across and 0 to +0.37 down from its offset, measured in a client, so
+-- each offset keeps it off the green lens:
+--   north  on the house's front wall, under the roof and the lens (the strip
+--          of roof beside the grey cabinet is too narrow for it);
+--   east   on the roof, right of the lens;
+--   south  on the roof, below the lens;
+--   west   on the roof, left of the lens.
+local function vp_post(x, y)
+  return { variation = 26, main_offset = { x, y }, shadow_offset = { x, y }, show_shadow = true }
+end
+pump.circuit_connector = circuit_connector_definitions.create_vector(
+  universal_connector_template,
+  {
+    vp_post(1.0, -1.07),
+    vp_post(0.95, 0.70),
+    vp_post(-1.22, 0.43),
+    vp_post(-1.12, 0.62)
+  }
+)
 
 data:extend({ pump })
 
