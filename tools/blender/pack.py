@@ -119,6 +119,15 @@ it). preview.py draws through the same roll-off, so the review is what ships (Li
 shipped"). A model opts out with "rolloff": false in render.json (contract.py); its sheets and
 meta.json are then as before the roll-off, byte for byte, and so is its preview.
 
+The model's night-only lights (render.json's `lights`, contract.py; Liam, 2026-10-21: "Declare
+them"): nothing is rendered or packed for them -- a LightDefinition or a draw_as_light layer of a
+picture the game ships -- but meta.json carries them for the wiring (lights_meta), under "lights",
+after every sheet and before "checks", keyed by each light's name, in the prototype's terms: kind;
+a definition's type "basic", intensity, size and color (when declared), a layer's filename, width,
+height, scale, tint (when declared) and draw_as_light true; its shift, one [x, y] for a model of one
+direction, else {direction: [x, y]} for each of its directions (one shift given for all of them
+written out for each); and working, false when not declared. A model without lights has no such key.
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
@@ -929,8 +938,30 @@ class Packer:
                 if "glow" in p:
                     self.wreck_sheet(p, p["glow"]["name"], p["glow"]["sheet"], self.wreck_glows, draw_as_glow=True,
                                      blend_mode="additive")
+        if "lights" in self.decl:
+            self.meta[contract.LIGHTS_KEY] = lights_meta(self.decl)
         self.meta["checks"] = per[""] if dirs == [""] else per
         return self.meta
+
+
+def lights_meta(decl):
+    """render.json's lights as meta.json carries them (the docstring): {name: entry}."""
+    dirs = [d for d, _ in contract.DIRECTIONS[decl["directions"]]]
+    out = {}
+    for li in decl["lights"]:
+        e = dict(kind=li["kind"])
+        if li["kind"] == "definition":
+            e["type"] = "basic"
+        # the contract takes only a kind's own fields, so each light has those alone
+        e.update((k, li[k]) for k in ("intensity", "size", "color", "filename", "width", "height", "scale", "tint")
+                 if k in li)
+        if li["kind"] == "layer":
+            e["draw_as_light"] = True
+        shift = li["shift"]
+        e["shift"] = shift if dirs == [""] else {d: shift[d] if isinstance(shift, dict) else shift for d in dirs}
+        e["working"] = li.get("working", False)
+        out[li["name"]] = e
+    return out
 
 
 def where(d):
