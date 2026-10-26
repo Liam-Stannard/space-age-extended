@@ -40,6 +40,17 @@ SAE_TEST_ENDS (the case; default fitted), and what the run prints after the box'
                 -0.02 and 0.03: BELOW plunger ... 0.020 deep, frames 2
   into-ground   the fitted hose and a trunk, r 0.025, from its own gland on the wall down into
                 a conduit collar standing on the ground (a ground fitting): no clash
+  host-moves    the fitted hose, its nozzle on a pivot that takes it 0.3 east from frame 1 on (four
+                frames; the hose itself never moves): LOOSE hose end 0 ... no fitting, frames 1-3
+  shown-later   the fitted hose, and a post from z -0.15 that is hidden in frame 0 and shown in
+                frames 1-3: BELOW post ... 0.150 deep, frames 1-3
+  tee           the fitted hose with a stub standing on its body, recorded as a tee on it, and a
+                branch, r 0.015, from a second nozzle through the stub down into a ground collar:
+                the hose is not tested against the stub, the branch is: BODY branch x stub only
+  untestable    the fitted hose, and a run whose one object is a curve with no bevel (no faces):
+                UNTESTED wire x nothing ..., "untested: 1 clashes"
+  unchecked     the nozzle and the hose recorded, runs.check never called: the exit line
+                "runs not checked: 2 clashes"
   untagged      nothing recorded and runs.check not called: collide_box.py's two lines alone
 
 test/test_ends.py runs every case and holds each to these lines and to the verdict
@@ -60,9 +71,11 @@ import runs  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 CASES = ("fitted", "loose", "short", "side", "narrow", "tangent", "axis", "buried", "floating", "body",
-         "ground", "ground-ok", "ground-moving", "into-ground", "untagged")
+         "ground", "ground-ok", "ground-moving", "into-ground", "host-moves", "shown-later", "tee", "untestable",
+         "unchecked", "untagged")
 CASE = os.environ.get("SAE_TEST_ENDS", "fitted")
-R_HOSE, R_TRUNK = 0.03, 0.025
+R_HOSE, R_TRUNK, R_BRANCH = 0.03, 0.025, 0.015
+HOST_SHIFT = 0.3                                   # how far east the host-moves case's pivot takes the nozzle
 PLUNGER_FOOT = (0.05, 0.02, -0.02, 0.03)          # the plunger's foot, frame by frame
 
 
@@ -156,7 +169,13 @@ def collide():
         nozzle = cyl("nozzle", (0.83, -0.3, 0.35), 0.02 if CASE == "narrow" else 0.05, 0.06, "steel", "x")
     else:
         nozzle = cyl("nozzle", (0.93, -0.3, 0.35), 0.05, 0.06, "steel", "x")
-    runs.fitting([nozzle], "nozzle", axis=(-1, 0, 0))
+    pivot = None
+    if CASE == "host-moves":                    # the nozzle on a pivot, at the box's origin in frame 0
+        pivot = bpy.data.objects.new("pivot", None)
+        bpy.context.scene.collection.objects.link(pivot)
+        pivot.parent = B["ROOT"]
+        nozzle.parent = pivot
+    runs.fitting([nozzle], "nozzle", axis=(-1, 0, 0), frame=pivot)
     if CASE == "loose":
         hose([(0.845, -0.3, 0.35), (0.93, -0.3, 0.35), (0.93, 0.0, 0.4), (0.93, 0.3, 0.45)])
     elif CASE == "short":
@@ -179,6 +198,9 @@ def collide():
     else:                                       # the fitted hose: every other case has it
         hose([(0.845, -0.3, 0.35), (0.93, -0.3, 0.35)] + far, ferrule1=ferrule_down)
     frames, pose, moving = None, None, ()
+    # box.py ran to its end with its renders made no-op, so its last setup() hid every part: all
+    # of the machine is drawn here (the wreck is not in PARTS), but where a case says otherwise
+    shown = lambda o: True                       # noqa: E731
     if CASE == "body":
         block("rung", (0.93, -0.15, 0.325), (0.12, 0.008, 0.12), "steel")
     elif CASE in ("ground", "ground-ok"):
@@ -191,6 +213,43 @@ def collide():
         def pose(f):
             plunger.location.z = PLUNGER_FOOT[f] + 0.03
         frames, moving = range(len(PLUNGER_FOOT)), {plunger.name}
+    elif CASE == "host-moves":
+        def pose(f):                            # the pivot takes the nozzle 0.3 east from frame 1 on
+            pivot.location.x = 0.0 if f == 0 else HOST_SHIFT
+        frames = range(4)
+    elif CASE == "shown-later":
+        post = block("post", (1.3, -0.6, -0.025), (0.06, 0.06, 0.25), "steel")
+        now = [0]
+
+        def pose(f):
+            now[0] = f
+        frames = range(4)
+        shown = lambda o: not (o.name == post.name and now[0] == 0)     # noqa: E731
+    elif CASE == "tee":
+        # a stub standing on the hose's body (a tee on it), and a branch through the stub to the ground
+        stub = block("stub", (0.93, -0.15, 0.385), (0.05, 0.05, 0.12), "steel")
+        runs.fitting([stub], "stub", tee="hose")
+        nozzle2 = cyl("nozzle", (0.83, -0.15, 0.42), 0.03, 0.06, "steel", "x")
+        runs.fitting([nozzle2], "nozzle2", axis=(-1, 0, 0))
+        pts = [(0.845, -0.15, 0.42), (1.1, -0.15, 0.42), (1.1, -0.15, 0.04)]
+        branch = add(tube("branch", pts, R_BRANCH), "cap", "branch")
+        runs.run([branch], pts, R_BRANCH, "hose", "branch")
+        collar = cyl("collar", (1.1, -0.15, 0.03), 0.04, 0.06, "steel")
+        runs.fitting([collar], "collar", axis=(0, 0, -1), ground=True)
+    elif CASE == "untestable":
+        cu = bpy.data.curves.new("wire", "CURVE")               # no bevel: a line, no faces to test
+        cu.dimensions = "3D"
+        sp = cu.splines.new("POLY")
+        wire_pts = [(0.81, 0.6, 0.3), (1.2, 0.6, 0.3)]
+        sp.points.add(len(wire_pts) - 1)
+        for pt, co in zip(sp.points, wire_pts):
+            pt.co = (*co, 1)
+        wire = bpy.data.objects.new("wire", cu)
+        bpy.context.scene.collection.objects.link(wire)
+        add(wire, "cap", "wire")
+        runs.run([wire], wire_pts, 0.01, "cables", "wire")
+    elif CASE == "unchecked":
+        return                                  # recorded, never checked: runs.py's exit line fails it
     elif CASE == "into-ground":
         gland = cyl("gland", (0.81, 0.4, 0.3), 0.035, 0.02, "steel", "x")
         trunk = add(tube("trunk", [(0.815, 0.4, 0.3), (1.2, 0.4, 0.3), (1.2, 0.4, 0.04)], R_TRUNK), "cap", "trunk")
@@ -198,10 +257,8 @@ def collide():
                  "trunk", end_fit=([gland], []))
         collar = cyl("collar", (1.2, 0.4, 0.03), 0.05, 0.06, "steel")
         runs.fitting([collar], "collar", axis=(0, 0, -1), ground=True)
-    # box.py ran to its end with its renders made no-op, so its last setup() hid every part: all
-    # of the machine is drawn here (the wreck is not in PARTS)
     machine = [o for g, objs in B["PARTS"].items() for o in objs]
-    runs.check(B["ROOT"], machine, pose=pose, frames=frames, moving=moving, shown=lambda o: True)
+    runs.check(B["ROOT"], machine, pose=pose, frames=frames, moving=moving, shown=shown)
 
 
 if CASE not in CASES:

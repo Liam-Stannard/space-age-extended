@@ -11,9 +11,13 @@ holds the case's collide.log. Exits 0 when every case below comes out as listed,
 that do not, 2 when tools/paths.conf names no Blender.
 
   <case>       each case's lines after the box's own two (collide_box.py's), exactly: its
-               LOOSE, BODY and BELOW lines and below_ok line, and its three counts (ends, body,
-               ground); and the verdict: PASS for fitted, ground-ok, into-ground and untagged,
-               FAIL (exit 1 from render.sh) for every other.
+               LOOSE, UNTESTED, BODY and BELOW lines and below_ok line, its four counts (ends,
+               untested, body, ground), one LOOSE line an end at most; and the verdict: PASS for
+               fitted, ground-ok, into-ground and untagged, FAIL (exit 1 from render.sh) for every
+               other. host-moves and shown-later: a fitting that moves off a fixed run and a part
+               shown only after frame 0 are caught in the frames they happen; tee: a tee is let
+               off only by the run it stands on; untestable: a run with nothing to test fails;
+               unchecked: records never checked fail at exit ("runs not checked").
   untagged     the COLLIDE lines are collide_box.py's own, byte for byte (ends_box.py calls
                nothing in runs.py): an untagged model prints nothing new.
   allowed      the loose case with --collide-allow naming its LOOSE line whole: PASS, one pair
@@ -45,32 +49,40 @@ BLOCK = "Cube.001[body] at (+0.00,+0.00,0.30)"       # the box's block
 PLINTH = "Cube[body] at (+0.00,+0.00,0.04)"
 # case -> (the pair lines, after "COLLIDE "; the counts (ends, body, ground); PASS)
 CASES = {
-    "fitted": ([], (0, 0, 0), True),
+    "fitted": ([], (0, 0, 0, 0), True),
     "loose": (["LOOSE hose end 1 at (+0.93,+0.30,0.45) x nothing: no fitting within 0.02, frames 0"],
-              (1, 0, 0), False),
+              (1, 0, 0, 0), False),
     "short": (["LOOSE hose end 0 at (+0.91,-0.30,0.35) x nothing: no fitting within 0.02, frames 0"],
-              (1, 0, 0), False),
+              (1, 0, 0, 0), False),
     "side": ([f"LOOSE hose end 0 at (+0.80,-0.60,0.35) x {BLOCK}: a bare end on it, no fitting within 0.02, "
-              "frames 0"], (1, 0, 0), False),
+              "frames 0"], (1, 0, 0, 0), False),
     "narrow": (["LOOSE hose end 0 at (+0.85,-0.30,0.35) x nozzle: fitting nozzle narrower than 0.9 of the run's "
-                "0.060 across its end, frames 0"], (1, 0, 0), False),
+                "0.060 across its end, frames 0"], (1, 0, 0, 0), False),
     "tangent": ([f"LOOSE hose end 1 at (+0.93,+0.30,0.12) x {PLINTH}: does not face into what it serves (the point "
-                 "0.030 past its end is in nothing), frames 0"], (1, 0, 0), False),
+                 "0.030 past its end is in nothing), frames 0"], (1, 0, 0, 0), False),
     "axis": ([f"LOOSE hose end 0 at (+0.85,-0.30,0.35) x {BLOCK}: arrives 45 deg off nozzle's axis (at most 30), "
-              "frames 0"], (1, 0, 0), False),
+              "frames 0"], (1, 0, 0, 0), False),
     "buried": ([f"LOOSE hose end 0 at (+0.60,-0.60,0.35) x {BLOCK}: buried in {BLOCK} (the point 0.060 back from "
                 "its end is inside it), frames 0",
-                f"BODY hose x {BLOCK}: 0.138 deep, frames 0"], (1, 1, 0), False),
+                f"BODY hose x {BLOCK}: 0.138 deep, frames 0"], (1, 0, 1, 0), False),
     "floating": (["LOOSE hose end 0 at (+0.92,-0.30,0.35) x nozzle: nozzle on no host (nothing within 0.02, not on "
-                  "the ground), frames 0"], (1, 0, 0), False),
-    "body": (["BODY hose x rung[steel] at (+0.93,-0.15,0.32): 0.028 deep, frames 0"], (0, 1, 0), False),
-    "ground": (["BELOW post[steel] at (+1.30,-0.60,0.08) x ground: 0.050 deep, frames 0"], (0, 0, 1), False),
-    "ground-ok": ([], (0, 0, 0), True),
-    "ground-moving": (["BELOW plunger[steel] at (+1.30,+0.60,0.01) x ground: 0.020 deep, frames 2"], (0, 0, 1),
+                  "the ground), frames 0"], (1, 0, 0, 0), False),
+    "body": (["BODY hose x rung[steel] at (+0.93,-0.15,0.32): 0.028 deep, frames 0"], (0, 0, 1, 0), False),
+    "ground": (["BELOW post[steel] at (+1.30,-0.60,0.08) x ground: 0.050 deep, frames 0"], (0, 0, 0, 1), False),
+    "ground-ok": ([], (0, 0, 0, 0), True),
+    "ground-moving": (["BELOW plunger[steel] at (+1.30,+0.60,0.01) x ground: 0.020 deep, frames 2"], (0, 0, 0, 1),
                       False),
-    "into-ground": ([], (0, 0, 0), True),
+    "into-ground": ([], (0, 0, 0, 0), True),
+    "host-moves": (["LOOSE hose end 0 at (+0.85,-0.30,0.35) x nothing: no fitting within 0.02, frames 1-3"],
+                   (1, 0, 0, 0), False),
+    "shown-later": (["BELOW post[steel] at (+1.30,-0.60,-0.03) x ground: 0.150 deep, frames 1-3"], (0, 0, 0, 1), False),
+    "tee": (["BODY branch x stub[steel] at (+0.93,-0.15,0.38): 0.022 deep, frames 0"], (0, 0, 1, 0), False),
+    "untestable": (["UNTESTED wire x nothing: no part of it shown with polygons in any frame (hidden, a curve with no "
+                    "bevel, or no faces)"], (0, 1, 0, 0), False),
+    "unchecked": ([], None, False),
     "untagged": ([], None, True),
 }
+UNCHECKED = "COLLIDE runs not checked: 2 clashes (2 records made after the last runs.check, or with none called)"
 BELOW_OK = "COLLIDE below_ok post[steel] at (+1.30,-0.60,0.08): 0.050 deep  (a footing poured into the ground)"
 BOX_LINES = ["COLLIDE parts 7, slider frames 4", "COLLIDE clashes 0"]       # collide_box.py's
 
@@ -90,13 +102,13 @@ def collide(out, case, blender, allow=(), model=MODEL):
 
 
 def counts(lines):
-    """ends, body, ground: the three count lines' numbers."""
+    """ends, untested, body, ground: the four count lines' numbers."""
     got = {}
     for ln in lines:
-        for kind in ("ends", "body", "ground"):
+        for kind in ("ends", "untested", "body", "ground"):
             if ln.startswith(f"COLLIDE {kind}: "):
                 got[kind] = int(ln.split()[2])
-    return tuple(got.get(k) for k in ("ends", "body", "ground")) if got else None
+    return tuple(got.get(k) for k in ("ends", "untested", "body", "ground")) if got else None
 
 
 def test_cases(out, blender):
@@ -107,10 +119,15 @@ def test_cases(out, blender):
         check(f"{case}: the box's own two lines first", lines[:2] == BOX_LINES, lines[:2])
         mine = [ln[len("COLLIDE "):] for ln in res["clash_lines"] if ln not in BOX_LINES]
         check(f"{case}: its pair lines", mine == pairs, f"got {mine}")
-        check(f"{case}: its counts (ends, body, ground) {cnt}", counts(lines) == cnt, f"got {counts(lines)}")
+        check(f"{case}: its counts (ends, untested, body, ground) {cnt}", counts(lines) == cnt, f"got {counts(lines)}")
+        ends = [tuple(ln.split()[2:5]) for ln in lines if ln.startswith("COLLIDE LOOSE ")]
+        check(f"{case}: one LOOSE line an end", len(ends) == len(set(ends)), ends)
         check(f"{case}: {'PASS' if ok else 'FAIL'}", res["pass"] is ok, res["why"])
         if case == "ground-ok":
             check("ground-ok: the below_ok line", BELOW_OK in lines, [ln for ln in lines if "below_ok" in ln])
+        if case == "unchecked":
+            check("unchecked: the exit line, and nothing of runs.check's", UNCHECKED in lines
+                  and not any(ln.startswith("COLLIDE runs:") for ln in lines), lines)
         if case == "untagged":
             box = measure.collide(os.path.join(HERE, "collide_box.py"), os.path.join(out, "collide_box"), blender)
             check("untagged: its COLLIDE lines are collide_box.py's, byte for byte", lines == box["lines"],

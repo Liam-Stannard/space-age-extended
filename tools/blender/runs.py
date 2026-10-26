@@ -24,28 +24,42 @@ recorded once and tested where the pivot has taken it):
       a gland, a ferrule and its nut, a flange, a collar -- () where it built none. Records
       only: builds nothing, so a render never changes. A bus bar or a bare rod is not a run:
       do not record it.
-  fitting(objs, name, axis=None, ground=False, tee=False, frame=None)
+  fitting(objs, name, axis=None, ground=False, tee=None, frame=None)
       a fitting a run lands in that the run did not build: a nozzle, a wall fitting, a
       bulkhead nipple, a floor gland, a terminal's lug or stud. axis: the way a run travels
       as it goes into it (a run's outward tangent at its end), checked to AXIS_DEG; ground:
       it stands on the ground, which is then its host (a conduit collar a trunk goes down
-      into); tee: it stands on a recorded run's body (a branch), which is not tested against it.
+      into); tee: the name of the recorded run whose body it stands on (a branch): that run's
+      body is not tested against it, every other run's is.
   below_ok(objs, why)
       parts that go below the ground by design (a footing poured into it, piles, anchors),
       each listed with its depth and why (information), never a clash.
   reset()  forgets everything recorded (a model building twice in one process).
+
+Whatever is recorded must be checked: when the process ends with --collide among its arguments
+and something was recorded after the last check() (or none was called), it prints
+  COLLIDE runs not checked: <n> clashes (<n> records ...)
+a count no pair line answers for, so the run fails rather than passing untested.
 
 check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=None)
   root: the model's root (rig.turntable); every figure is in its space, tiles, z up, and the
   ground is its z = 0 (rig.py: STRETCH and the turntable stand at the origin, and the ground
   catcher is the plane z = 0). parts: every mesh or curve object of the machine (not the wreck:
   its debris lies in the ground by design, and it is not tested here); recorded objects not in
-  it are added. pose(f) sets frame f of `frames` (the model's own poses), moving: the names of
-  the objects that move; with neither, the scene is tested as it stands. A moving part, or a
-  run with a moving part, is tested in every frame, a fixed one in the first. shown(o): whether
-  o is drawn in the frame just posed (default: not o.hide_render); one not shown is not tested
-  and is no host. group_of(o): a key, such as the direction a part is built for (the Vent
-  Pump's four variants): a run is tested only against parts of its own key.
+  it are added. pose(f) sets frame f of `frames` (the model's own poses); with neither, the
+  scene is tested as it stands. Every end, every part against the ground and every body pair is
+  tested in every frame its parts are shown, so a part shown only later, or a host or fitting
+  that moves away from a fixed run, is caught in the frames it happens. A part is measured
+  again whenever its matrix (or the root's) has changed since it was last measured; moving
+  names the objects whose mesh changes in place (a shape key, a modifier) and must be measured
+  again every frame. shown(o): whether o is drawn in the frame just posed, default
+  `not o.hide_render`; one not shown is not tested and is no host. Mind a model that has just
+  run a render pass's setup(): it may have hidden parts the check must see (pass a shown that
+  says what the plate draws). group_of(o): a key, such as the direction a part is built for
+  (the Vent Pump's four variants): a run is tested only against parts of its own key.
+  Call it after the model's own checks have printed their count lines, never between a pair
+  line of theirs and its count: measure.py reads a count as answering for the pair lines since
+  the count before it, so check()'s first count would close the model's block.
 
 An end is fastened when, in every frame it is tested, all four hold (e the end's point, t its
 outward tangent, r the run's radius):
@@ -61,23 +75,28 @@ outward tangent, r the run's radius):
                that fitting declares an axis, t is within AXIS_DEG of it.
   4. not buried  e - t * 2r is inside no host, and some of the fitting is outside every host,
                so it can be seen.
-The first that fails is printed, one line an end, its frames listed:
+One line an end, however many frames fail: the first frame's first failing test (its point,
+host and reason, so an --collide-allow pattern stays put), and every frame that failed:
   COLLIDE LOOSE <run> end <0|1> at (x,y,z) x <host or nothing>: <why>, frames <...>
-  COLLIDE ends: <n> clashes, <runs> runs, <ends> ends
+  COLLIDE ends: <n> clashes, <runs> runs, <ends> ends          (the runs and ends tested)
+A recorded run none of whose parts was ever shown with polygons (hidden in every frame, a curve
+with no bevel, an object with no faces) cannot be tested, and fails:
+  COLLIDE UNTESTED <run> x nothing: <why>
+  COLLIDE untested: <n> clashes, <runs> runs recorded
 
 The body: a recorded run's parts but its end fittings, against every other shown part of its
-key (not its own, not a tee on it). Where their surfaces cross, the points along the crossing
+key (not its own, not a tee recorded as standing on it). Where their surfaces cross, the points along the crossing
 polygons' edges (at most BODY_STEP apart) and each part's vertices within the other's box; where
 one lies wholly inside the other, its vertices. Those inside the other part and more than
 max(2r, END_ZONE) from both of the run's ends are measured to its surface; deeper than BODY_DEEP
 is a clash, one line a pair:
   COLLIDE BODY <run> x <part>: <depth> deep, frames <...>
-  COLLIDE body: <n> clashes, <runs> runs
+  COLLIDE body: <n> clashes, <runs> runs                        (the runs whose body was tested)
 
 The ground: every shown part's lowest point, its evaluated mesh in the root's space:
   COLLIDE BELOW <part> x ground: <depth> deep, frames <...>
   COLLIDE below_ok <part>: <depth> deep  (<why>)                 (information)
-  COLLIDE ground: <n> clashes, <parts> parts, <k> below_ok
+  COLLIDE ground: <n> clashes, <parts> parts, <k> below_ok     (the parts tested)
 
 Last, for information: the swept tubes no run() recorded (smooth-shaded closed meshes at least
 TUBE_RATIO times as long as they are thick), so a forgotten run shows:
@@ -85,12 +104,15 @@ TUBE_RATIO times as long as they are thick), so a forgotten run shows:
 
 A part is described as "<name>[<material>] at (x,y,z)", its centre in the root's space, as the
 models' own checks describe theirs. An information line never names a pair or a count (no
-"x" word, no "clashes"), so it neither fails a run nor answers for one.
+"x" word, and no "clashes" or "overlaps" anywhere in it, not even inside a word, which
+measure.py's count pattern would still read), so it neither fails a run nor answers for one.
 
 Run with no Blender, as a script, it prints the tolerances (for a report).
 """
+import atexit
 import math
 import re
+import sys
 
 try:
     import bpy
@@ -112,6 +134,7 @@ _RAY = (0.5774, 0.5771, 0.5777)   # inside tests cast this way (the models' own:
 RUNS = []
 FITTINGS = []
 BELOW_OK = []
+_COUNT = [0, 0]         # records made, and made before the last check()
 
 
 def reset():
@@ -119,6 +142,19 @@ def reset():
     RUNS.clear()
     FITTINGS.clear()
     BELOW_OK.clear()
+    _COUNT[0] = _COUNT[1] = 0
+
+
+def _unchecked():
+    """At exit: a failing count when records went unchecked under --collide (the module docstring)."""
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
+    n = _COUNT[0] - _COUNT[1]
+    if n > 0 and "--collide" in argv:
+        print(f"COLLIDE runs not checked: {n} clashes ({n} records made after the last runs.check, "
+              "or with none called)", flush=True)
+
+
+atexit.register(_unchecked)
 
 
 def _names(objs):
@@ -141,14 +177,18 @@ def run(objs, centreline, r, kind, name, end_fit=((), ()), frame=None):
         raise ValueError(f"run {name!r}: end fittings not among its objects: {stray}")
     RUNS.append(dict(objs=own, pts=pts, r=float(r), kind=kind, name=name, end_fit=fits,
                      frame=frame.name if frame is not None else None))
+    _COUNT[0] += 1
 
 
-def fitting(objs, name, axis=None, ground=False, tee=False, frame=None):
+def fitting(objs, name, axis=None, ground=False, tee=None, frame=None):
     """Record a fitting a run lands in (the module docstring)."""
     if not objs:
         raise ValueError(f"fitting {name!r}: no objects")
+    if tee is not None and not isinstance(tee, str):
+        raise ValueError(f"fitting {name!r}: tee names the run it stands on, not {tee!r}")
     FITTINGS.append(dict(objs=_names(objs), name=name, axis=tuple(axis) if axis is not None else None,
-                         ground=bool(ground), tee=bool(tee), frame=frame.name if frame is not None else None))
+                         ground=bool(ground), tee=tee, frame=frame.name if frame is not None else None))
+    _COUNT[0] += 1
 
 
 def below_ok(objs, why):
@@ -156,12 +196,14 @@ def below_ok(objs, why):
     if not why:
         raise ValueError("below_ok: say why the parts go below the ground")
     BELOW_OK.append(dict(objs=_names(objs), why=why))
+    _COUNT[0] += 1
 
 
 def _quiet(text):
     """Text for an information line: no "x" word (a pair) and no "clashes" or "overlaps" (a count)."""
     text = re.sub(r"(?<!\S)x(?!\S)", "×", text)
-    return re.sub(r"\b(clashes|overlaps)\b", lambda m: m.group(1)[:-1] + "(" + m.group(1)[-1] + ")", text)
+    # anywhere, not only as a word: measure.py's COLLIDE_COUNT has no boundary before them ("foo_clashes 3")
+    return re.sub(r"(clashe|overlap)(s)", r"\1(\2)", text)
 
 
 def _frames_text(fs):
@@ -192,6 +234,7 @@ class _Part:
             return
         self.tree = BVHTree.FromPolygons(self.vs, self.ps)
         self.lo = Vector([min(v[i] for v in self.vs) for i in range(3)])
+        self.zmin = self.lo.z
         self.hi = Vector([max(v[i] for v in self.vs) for i in range(3)])
         c = (self.lo + self.hi) / 2
         self.desc = f"{o.name}[{self.mat}] at ({c.x:+.2f},{c.y:+.2f},{c.z:.2f})"
@@ -287,9 +330,14 @@ def _edge_points(part, polys, step):
     return out
 
 
+def _mkey(m):
+    return tuple(tuple(row) for row in m)
+
+
 def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=None):
-    """Test every recorded run's ends and body, and every part against the ground (the module
-    docstring); print the COLLIDE lines; return the counts {"ends", "body", "ground"} and the lines."""
+    """Test every recorded run's ends and body, and every part against the ground, in every frame
+    (the module docstring); print the COLLIDE lines; return the counts {"ends", "untested", "body",
+    "ground"} and the lines."""
     shown = shown or (lambda o: not o.hide_render)
     group_of = group_of or (lambda o: None)
     moving = set(moving)
@@ -304,6 +352,10 @@ def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=N
                     missing.append(n)
     if missing:
         raise ValueError(f"runs.check: recorded objects not in the scene: {missing[:5]}")
+    run_names = {rec["name"] for rec in RUNS}
+    bad_tee = [rec["name"] for rec in FITTINGS if rec["tee"] is not None and rec["tee"] not in run_names]
+    if bad_tee:
+        raise ValueError(f"runs.check: tee fittings on no recorded run (their tee names none): {bad_tee}")
     run_of = {}
     for k, rec in enumerate(RUNS):
         for n in rec["objs"]:
@@ -312,10 +364,10 @@ def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=N
     for k, rec in enumerate(FITTINGS):
         for n in rec["objs"]:
             fit_of.setdefault(n, k)
-    tee_of = {n for rec in FITTINGS if rec["tee"] for n in rec["objs"]}
+    tee_on = {n: rec["tee"] for rec in FITTINGS if rec["tee"] is not None for n in rec["objs"]}
     ok_why = {n: rec["why"] for rec in BELOW_OK for n in rec["objs"]}
-    run_moves = [any(n in moving for n in rec["objs"]) or (rec["frame"] in moving) for rec in RUNS]
     frame_list = list(frames) if frames is not None else [None]
+    _COUNT[1] = _COUNT[0]
 
     lines = []
 
@@ -326,20 +378,24 @@ def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=N
         f"{len(objs)} parts; frames {len(frame_list)}")
 
     loose, body, below, below_info = {}, {}, {}, {}
-    cache = {}
-    first = True
+    cache, memo = {}, {}
+    tested_ends, tested_body, grounded = set(), set(), set()
     for fi, f in enumerate(frame_list):
         if pose is not None and f is not None:
             pose(f)
         bpy.context.view_layer.update()
         RI = root.matrix_world.inverted()
-        live = {n: o for n, o in objs.items() if shown(o)}
+        rk = _mkey(root.matrix_world)
         P = {}
-        for n, o in live.items():
-            if n in moving or n not in cache:
-                cache[n] = _Part(o, RI)
-            if cache[n].ok:
-                P[n] = cache[n]
+        for n, o in objs.items():
+            if not shown(o):
+                continue
+            mk = (rk, _mkey(o.matrix_world))
+            c = cache.get(n)
+            if n in moving or c is None or c[0] != mk:      # measured again when it has moved
+                c = cache[n] = (mk, _Part(o, RI))
+            if c[1].ok:
+                P[n] = c[1]
         key = {n: group_of(objs[n]) for n in P}
 
         def m_space(rec, p, RI=RI):
@@ -350,24 +406,22 @@ def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=N
             fr = bpy.data.objects[rec["frame"]] if rec["frame"] else root
             return ((RI @ fr.matrix_world).to_3x3() @ Vector(d)).normalized()
 
-        # ---- the ground
+        # ---- the ground: every part shown this frame
         for n, p in P.items():
-            if not (first or n in moving):
-                continue
-            z = min(v.z for v in p.vs)
+            grounded.add(n)
             if n in ok_why:
-                below_info[n] = max(below_info.get(n, (0.0, ""))[0], -z), p.desc
-            elif z < -GROUND_TOL:
-                d, fs, desc = below.get(n, (0.0, [], p.desc))
-                below[n] = (max(d, -z), fs + [fi], desc)
+                below_info[n] = max(below_info.get(n, (0.0, ""))[0], -p.zmin), p.desc
+            elif p.zmin < -GROUND_TOL:
+                entry = below.setdefault(n, [0.0, [], p.desc])
+                entry[0] = max(entry[0], -p.zmin)
+                entry[1].append(fi)
 
-        # ---- the ends
+        # ---- the ends: every run with a part shown this frame
         for k, rec in enumerate(RUNS):
-            if not (first or run_moves[k]):
-                continue
             own = [n for n in rec["objs"] if n in P]
             if not own:
                 continue
+            tested_ends.add(k)
             g = key[own[0]]
             mine = set(rec["objs"])
             pts = [m_space(rec, p) for p in rec["pts"]]
@@ -376,70 +430,85 @@ def check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=N
             for end in (0, 1):
                 e, t = _tangent(pts, end, r)
                 why, host = _end(rec, end, e, t, r, P, hosts, fit_of, key, g, mine, m_dir)
-                if why:
-                    at, fs, h = loose.get((k, end, why), (e, [], host))
-                    loose[(k, end, why)] = (at, fs + [fi], h)
+                if why:                                     # one line an end: the first frame's reason
+                    loose.setdefault((k, end), [e, why, host, []])[3].append(fi)
 
-        # ---- the body
+        # ---- the body: every pair shown this frame (measured again only when either has moved)
         for k, rec in enumerate(RUNS):
             mine = set(rec["objs"])
             fits = set(rec["end_fit"][0]) | set(rec["end_fit"][1])
             bparts = [P[n] for n in rec["objs"] if n in P and n not in fits]
             if not bparts:
                 continue
+            tested_body.add(k)
             g = key[bparts[0].name]
             pts = [m_space(rec, p) for p in rec["pts"]]
             ends = (pts[0], pts[-1])
             zone = max(2 * rec["r"], END_ZONE)
             for n, other in P.items():
-                if n in mine or key[n] != g or n in tee_of:
+                if n in mine or key[n] != g or tee_on.get(n) == rec["name"]:
                     continue
-                if not (first or run_moves[k] or n in moving):
-                    continue
-                d = 0.0
-                for bp in bparts:
-                    if not bp.boxes_meet(other):
-                        continue
-                    pairs = bp.tree.overlap(other.tree)
-                    if pairs:                               # the crossing edges, and the vertices within reach
-                        samples = ((bp, other, _edge_points(bp, {i for i, _ in pairs}, BODY_STEP)
-                                    + [v for v in bp.vs if other.near(v)]),
-                                   (other, bp, _edge_points(other, {j for _, j in pairs}, BODY_STEP)
-                                    + [v for v in other.vs if bp.near(v)]))
-                    elif other.inside(bp.vs[0]):            # wholly inside it, no surfaces crossing
-                        samples = ((bp, other, bp.vs),)
-                    elif bp.inside(other.vs[0]):            # it wholly inside the run
-                        samples = ((other, bp, other.vs),)
-                    else:
-                        continue
-                    for _, b, qs in samples:
-                        for q in qs:
-                            if min((q - ends[0]).length, (q - ends[1]).length) <= zone:
-                                continue
-                            d = max(d, b.depth(q))
+                was = memo.get((k, n))
+                if was and len(was[0]) == len(bparts) and all(x is y for x, y in zip(was[0], bparts)) \
+                        and was[1] is other and was[2] == ends:
+                    d = was[3]
+                else:
+                    d = _body_depth(bparts, other, ends, zone)
+                    memo[(k, n)] = (list(bparts), other, ends, d)
                 if d > BODY_DEEP:
-                    dd, fs, desc = body.get((k, n), (0.0, [], other.desc))
-                    body[(k, n)] = (max(dd, d), fs + [fi], desc)
-        first = False
+                    entry = body.setdefault((k, n), [0.0, [], other.desc])
+                    entry[0] = max(entry[0], d)
+                    entry[1].append(fi)
 
     # ---- the lines, in blocks: each ends with its count
-    for (k, end, why), (at, fs, host) in sorted(loose.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+    for (k, end), (at, why, host, fs) in sorted(loose.items()):
         out(f"COLLIDE LOOSE {RUNS[k]['name']} end {end} at ({at.x:+.2f},{at.y:+.2f},{at.z:.2f}) x "
             f"{host or 'nothing'}: {why}, frames {_frames_text(fs)}")
-    out(f"COLLIDE ends: {len(loose)} clashes, {len(RUNS)} runs, {2 * len(RUNS)} ends")
+    out(f"COLLIDE ends: {len(loose)} clashes, {len(tested_ends)} runs, {2 * len(tested_ends)} ends")
+    untested = [k for k in range(len(RUNS)) if k not in tested_ends]
+    for k in untested:
+        out(f"COLLIDE UNTESTED {RUNS[k]['name']} x nothing: no part of it shown with polygons in any frame "
+            "(hidden, a curve with no bevel, or no faces)")
+    out(f"COLLIDE untested: {len(untested)} clashes, {len(RUNS)} runs recorded")
     for (k, n), (d, fs, desc) in sorted(body.items()):
         out(f"COLLIDE BODY {RUNS[k]['name']} x {desc}: {d:.3f} deep, frames {_frames_text(fs)}")
-    out(f"COLLIDE body: {len(body)} clashes, {len(RUNS)} runs")
+    out(f"COLLIDE body: {len(body)} clashes, {len(tested_body)} runs")
     for n, (d, fs, desc) in sorted(below.items()):
         out(f"COLLIDE BELOW {desc} x ground: {d:.3f} deep, frames {_frames_text(fs)}")
     for n, (d, desc) in sorted(below_info.items()):
         out(_quiet(f"COLLIDE below_ok {desc}: {max(d, 0.0):.3f} deep  ({ok_why[n]})"))
-    out(f"COLLIDE ground: {len(below)} clashes, {len(cache)} parts, {len(below_info)} below_ok")
+    out(f"COLLIDE ground: {len(below)} clashes, {len(grounded)} parts, {len(below_info)} below_ok")
     recorded = set(run_of) | set(fit_of)
-    tubes = sorted(n for n, p in cache.items() if p.ok and n not in recorded and _tube(p))
+    tubes = sorted(n for n, (_, p) in cache.items() if p.ok and n not in recorded and _tube(p))
     out(_quiet(f"COLLIDE unrecorded tubes: {len(tubes)} (information)" + (": " + ", ".join(tubes[:12]) if tubes else "")
                + (f" and {len(tubes) - 12} more" if len(tubes) > 12 else "")))
-    return dict(ends=len(loose), body=len(body), ground=len(below), lines=lines)
+    return dict(ends=len(loose), untested=len(untested), body=len(body), ground=len(below), lines=lines)
+
+
+def _body_depth(bparts, other, ends, zone):
+    """How deep the run's body parts and `other` reach into each other, away from the run's ends."""
+    d = 0.0
+    for bp in bparts:
+        if not bp.boxes_meet(other):
+            continue
+        pairs = bp.tree.overlap(other.tree)
+        if pairs:                               # the crossing edges, and the vertices within reach
+            samples = ((other, _edge_points(bp, {i for i, _ in pairs}, BODY_STEP)
+                        + [v for v in bp.vs if other.near(v)]),
+                       (bp, _edge_points(other, {j for _, j in pairs}, BODY_STEP)
+                        + [v for v in other.vs if bp.near(v)]))
+        elif other.inside(bp.vs[0]):            # wholly inside it, no surfaces crossing
+            samples = ((other, bp.vs),)
+        elif bp.inside(other.vs[0]):            # it wholly inside the run
+            samples = ((bp, other.vs),)
+        else:
+            continue
+        for into, qs in samples:
+            for q in qs:
+                if min((q - ends[0]).length, (q - ends[1]).length) <= zone:
+                    continue
+                d = max(d, into.depth(q))
+    return d
 
 
 def _end(rec, end, e, t, r, P, hosts, fit_of, key, g, mine, m_dir):

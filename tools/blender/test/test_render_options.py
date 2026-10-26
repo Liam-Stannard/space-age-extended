@@ -547,7 +547,8 @@ def test_collide(out):
     # block ending in its count, so measure.py gates and allows them as any other, unchanged
     loose = "LOOSE hose end 1 at (+0.93,+0.30,0.45) x nothing: no fitting within 0.02, frames 0"
     ends = (f"COLLIDE runs: 1 recorded, 1 fittings, 0 parts below_ok, 9 parts; frames 1\\nCOLLIDE {loose}\\n"
-            "COLLIDE ends: 1 clashes, 1 runs, 2 ends\\nCOLLIDE body: 0 clashes, 1 runs\\n"
+            "COLLIDE ends: 1 clashes, 1 runs, 2 ends\\nCOLLIDE untested: 0 clashes, 1 runs recorded\\n"
+            "COLLIDE body: 0 clashes, 1 runs\\n"
             "COLLIDE ground: 0 clashes, 9 parts, 0 below_ok\\nCOLLIDE unrecorded tubes: 0 (information)\\n")
     o9, code, text, _ = render("loose", ends, "--collide")
     check("a LOOSE end and 'ends: 1 clashes': FAIL, the line printed, nothing rendered",
@@ -575,6 +576,17 @@ def test_collide(out):
                                 "--collide")
     check("a below_ok line and 'ground: 0 clashes': PASS (an information line), the render goes ahead",
           "collide: PASS" in text and os.path.isfile(os.path.join(o13, "blender.log")), text[-400:])
+    untested = "UNTESTED wire x nothing: no part of it shown with polygons in any frame"
+    o14, code, text, _ = render("untested", f"COLLIDE {untested}\\nCOLLIDE untested: 1 clashes, 2 runs recorded\\n",
+                                "--collide")
+    check("an UNTESTED run and 'untested: 1 clashes': FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o14, "blender.log")),
+          f"exit {code}: {text[-400:]}")
+    o15, code, text, _ = render("unchecked", "COLLIDE clashes 0\\nCOLLIDE runs not checked: 2 clashes (2 records)\\n",
+                                "--collide")
+    check("records never checked, 'runs not checked: 2 clashes' at exit: FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o15, "blender.log")),
+          f"exit {code}: {text[-400:]}")
 
 
 def main():
