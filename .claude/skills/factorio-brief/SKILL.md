@@ -18,7 +18,7 @@ Status "signed off" and the next ticket briefed.
 ## 1. What the brief names
 - The task file's absolute path and the section to run, quoted by title.
 - The worktree and branch, as absolute paths
-  (`/home/liam-stannard/git/space-age-extended/.claude/worktrees/<branch>`).
+  (`/home/lstan/data/git/space-age-extended/.claude/worktrees/<branch>`).
 - Where the role may write (a folder, never "anywhere"), and what it must
   not touch: the spec, `graphics/`, `prototypes/`, `tools/`, `design/` and
   any `.md` file unless the task gives it.
@@ -29,8 +29,8 @@ Status "signed off" and the next ticket briefed.
 
 ## 2. The standing rules, in every brief
 - **No commit.** The orchestrator commits, on Liam's word.
-- **Blender:** blender.org's build at
-  `/home/liam-stannard/opt/blender-5.0.1-linux-x64/blender`, on the GPU;
+- **Blender:** blender.org's build, the one `tools/paths.conf` names
+  (BLENDER), on the GPU;
   wait on `render.done` with one bounded wait per job, never a polling
   loop and never two waits on one job.
 - **Game clients** (any role that launches Factorio): one client at a time

@@ -25,7 +25,7 @@ results, and nothing is PASS unless you ran it and saw it pass.
   then run the client headless:
 
       SteamAppId=427520 SteamGameId=427520 xvfb-run -a \
-        "$HOME/.steam/steam/steamapps/common/Factorio/bin/x64/factorio" \
+        "$(sed -n 's/^FACTORIO_ROOT=//p' tools/paths.conf)/bin/x64/factorio" \
         --config <scratch>/config.ini --mod-directory <scratch-mods> \
         > <scratch>/client.log 2>&1
 
