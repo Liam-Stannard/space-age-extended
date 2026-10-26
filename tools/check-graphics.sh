@@ -7,22 +7,19 @@ set -euo pipefail
 # happily pass a mod whose icons all point at nothing -- the failure only shows
 # up when a client loads and refuses the mod outright. This catches it locally.
 #
-# Usage: tools/check-graphics.sh [path-to-factorio-data]
+# Usage: tools/check-graphics.sh
+#
+# The game data is <FACTORIO_ROOT>/data, FACTORIO_ROOT being the one
+# tools/paths.conf names (read through tools/paths.sh).
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-DATA="${1:-}"
-if [ -z "$DATA" ]; then
-  for candidate in \
-    "$HOME/.steam/debian-installation/steamapps/common/Factorio/data" \
-    "$HOME/.steam/steam/steamapps/common/Factorio/data"; do
-    [ -d "$candidate" ] && DATA="$candidate" && break
-  done
+if [ $# -gt 0 ]; then
+  echo "usage: tools/check-graphics.sh (no arguments: the game data is the one tools/paths.conf names)" >&2
+  exit 2
 fi
-if [ -z "$DATA" ] || [ ! -d "$DATA" ]; then
-  echo "Could not find Factorio's data directory. Pass it as the first argument." >&2
-  exit 1
-fi
+. "$REPO_ROOT/tools/paths.sh"
+sae_factorio_data DATA || exit 1
 
 missing=0
 checked=0

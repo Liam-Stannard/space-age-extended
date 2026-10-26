@@ -29,8 +29,9 @@ from PIL import Image, ImageDraw, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 TOOLS = os.path.join(REPO, "tools", "blender")
-VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/steam-turbine")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+VAN = os.path.join(paths.factorio_data(), "base/graphics/entity/steam-turbine")
 MASTER = os.path.join(HERE, "..", "master-v2.png")
 ROUND1 = os.path.join(HERE, "round-1", "sheets")
 GROUND = (74, 66, 58, 255)

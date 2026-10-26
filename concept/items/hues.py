@@ -23,11 +23,15 @@ the mean HSV saturation (0-1) of the same pixels.
 """
 import colorsys
 import math
+import os
 import sys
 
 from PIL import Image
 
-V = "/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+
+V = paths.factorio_data()
 BASE = ["iron-ore", "iron-plate", "copper-ore", "copper-plate", "uranium-ore", "stone", "coal",
         "steel-plate", "stone-brick", "sulfur", "wood", "solid-fuel", "plastic-bar", "uranium-238", "uranium-235"]
 SPACE_AGE = ["tungsten-ore", "tungsten-plate", "tungsten-carbide", "holmium-ore", "holmium-plate", "calcite",

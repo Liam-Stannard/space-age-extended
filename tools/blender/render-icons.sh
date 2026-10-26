@@ -14,6 +14,8 @@
 # Each run empties these first. Ends, pass or fail, by writing
 # <out-dir>/render.done ("exit <code>") and printing it last, as render.sh does:
 # start this in the background and let the harness say when it exits.
+# Blender is the one tools/paths.conf names (BLENDER, read through
+# tools/paths.sh); exit 1, naming the file and the key, when it cannot be used.
 set -euo pipefail
 
 USAGE="usage: render-icons.sh <icons.py> <out-dir> [--only item[,item]]"
@@ -21,13 +23,14 @@ SCRIPT="${1:?$USAGE}"
 OUT="${2:?$USAGE}"
 shift 2
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
+. "$HERE/../paths.sh"
+sae_blender BLENDER_BIN || exit 1
 
 mkdir -p "$OUT"
 rm -f "$OUT/render.done"
 trap 'code=$?; echo "exit $code" > "$OUT/render.done"; echo "exit $code"' EXIT
 rm -rf "${OUT:?}/hi" "${OUT:?}/sizes" "${OUT:?}/downscale" "${OUT:?}/strips" "${OUT:?}/strips-downscale"
-"$BLENDER" -b --python "$SCRIPT" -- "$OUT/hi" "$@" > "$OUT/blender.log" 2>&1 \
+"$BLENDER_BIN" -b --python "$SCRIPT" -- "$OUT/hi" "$@" > "$OUT/blender.log" 2>&1 \
   || { tail -20 "$OUT/blender.log"; exit 1; }
 grep '^icon ' "$OUT/blender.log" || true
 python3 "$HERE/icon_post.py" "$OUT/hi" "$OUT"

@@ -1,7 +1,7 @@
 """Test model: the test box (box.py) with a --collide, for render.sh --collide.
 
-  BLENDER=<blender> tools/blender/render.sh tools/blender/test/collide_box.py <out-dir> --collide [--ports] [--icon]
-  SAE_TEST_CLASH=1 BLENDER=<blender> tools/blender/render.sh tools/blender/test/collide_box.py <out-dir> --collide
+  tools/blender/render.sh tools/blender/test/collide_box.py <out-dir> --collide [--ports] [--icon]
+  SAE_TEST_CLASH=1 tools/blender/render.sh tools/blender/test/collide_box.py <out-dir> --collide
 
 Without --collide it is box.py, run as it stands: the same declaration, the same renders and
 the same numbers (box.py's docstring says what they are).

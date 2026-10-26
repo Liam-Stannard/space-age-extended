@@ -18,7 +18,7 @@ object that fills the square, never a flat sliver.
 Rendered at 256/128/64/32 by tools/blender/tech_rig.py (40 deg camera, the
 buildings' sun and fill, a shadow catcher):
 
-    BLENDER=... tools/blender/render-icons.sh concept/technology/tech_items.py <out-dir>
+    tools/blender/render-icons.sh concept/technology/tech_items.py <out-dir>
 
 With ITEM_ICONS=1 in the environment the same builds go through icon_rig.py
 instead, as 64 px item icons (cold-cryogen, fluorinated-holmium,

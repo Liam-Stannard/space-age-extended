@@ -1,4 +1,4 @@
-# Engine facts (Factorio 2.1.21), verified in this project
+# Engine facts (Factorio 2.1.21-2.1.23), verified in this project
 
 Each line: the fact, then how it was verified and when.
 
@@ -39,6 +39,34 @@ Each line: the fact, then how it was verified and when.
 - Without Alien Biomes, the Core's ground falls back to Vulcanus's
   volcanic tiles, whose expressions step in straight lines on the Core.
   (2026-10-12.)
+
+## Surfaces, lights and placement (2.1.23, 2026-10-21)
+- `day-night-cycle = 0` freezes a surface at noon (always_day, darkness
+  0); above 0 the engine runs the cycle and the value reaches existing
+  saves. Dusk, evening, morning and dawn are runtime settings (control
+  stage). Source: core-sky T01/T05.
+- A LightDefinition and a `draw_as_light` layer show only in the dark;
+  `draw_as_glow` shows by day and night. LightDefinition `size` is a
+  radius in tiles. Source: vent-pump T07b, vents T02, doc-html
+  LightDefinition.
+- Resources sit on tile centres; an even-sized building centres on a
+  tile corner, so a 2x2 pump sits half a tile off its vent. Odd-sized
+  pumps (the pumpjack's 3x3, reach 0.49) sit centred. Source:
+  gas-pump-3x3 T01.
+- A player cannot build any drill over a resource that needs a fluid
+  until the force has `mining_with_fluid`, which only Uranium mining
+  grants. Source: vent-pump-hand-build T01.
+- A mining drill draws `graphics_set` dry and `wet_mining_graphics_set`
+  on a resource that needs a fluid (vanilla's drills show their pipe
+  fittings only wet). Source: big-mining-drill.lua:627-628.
+- A burner generator with no fuel and one fuelled with no demand draw
+  the same: `idle_animation` alone (or the frozen animation if none);
+  an idle with the animation's frame count holds the frame it stopped
+  on; a one-frame idle needs `repeat_count`. Speed follows output, with
+  `perceived_performance.minimum` as the floor. Source:
+  radiant-generator T08b.
+- A corpse may carry a `draw_as_glow` layer (vanilla's demolisher
+  fissure scorch mark). Source: radiant-generator T08e.
 
 ## Running a client on this machine
 - `xvfb-run` alone leaves WAYLAND_DISPLAY set: the client opens

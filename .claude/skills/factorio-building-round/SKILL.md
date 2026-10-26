@@ -14,6 +14,8 @@ with `factorio-brief`, and stop at the stage's gate.
    labelled, motion map, measures), a 1x GIF and a pitch; one contact
    sheet beside the vanilla references and the Core's signed-off
    buildings. Gate: Liam picks or combines.
+   Before drawing, study how the comparable vanilla buildings meet their
+   pipes, run their cables and mount their terminals, on one study sheet.
 2. **refine** — the picked option reworked to Liam's notes; before/after
    crops of what changed. Gate: Liam signs off the concept.
 3. **spec** — the building spec rewritten with `factorio-spec-wording`.
@@ -27,7 +29,10 @@ with `factorio-brief`, and stop at the stage's gate.
 ## Bars at every stage from options on
 - **A building, not a deck:** coverage of the footprint ≥ 92 % (the 3×3
   and 5×5 showpieces' figure), built up in height, no flat base or plinth;
-  the outline broken at the corners by equipment (FFF #350).
+  the outline broken at the corners by equipment (FFF #350). The vessels
+  and machines belong to one structure (a casing, frame or house they are
+  set into or carried by), never units standing on the ground (Liam,
+  Reaction Plant, 2026-10-21).
 - **Rise** above the north edge no more than vanilla's comparable building
   (refinery 0.97, fusion reactor 0.66).
 - **Finish:** the latest signed-off model's (paint per unit, worn paint,
@@ -42,12 +47,23 @@ with `factorio-brief`, and stop at the stage's gate.
   no sudden narrowing after the fitting, and a narrowing only where a
   visible reducer shows why, at a valve, pump or vessel nozzle; thin pipes
   only for side lines (dosing, instruments). A model that turns reads that
-  way in every direction. Its own pipe pictures to assembler 3's outline;
-  vanilla covers; joins checked with `factorio-art-measure`. Before the
+  way in every direction. Each connection enters the building through a
+  fitting set into its wall or casing (a recessed boss with a sleeve and
+  flanges, as on the Reaction Plant's casing, or similar), never a stub
+  standing off the machine; the pipe picture shows it open, and vanilla's
+  cover is drawn when nothing is connected. Its own pipe pictures to
+  assembler 3's outline; joins checked with `factorio-art-measure`. Before the
   options stage, study how the comparable vanilla buildings meet their
   pipes.
+- **Hoses and cables:** sized to the building (bulky where they suit it,
+  thin where a dense building would be buried); every end visibly
+  fastened (a gland, clamp, collar, flange or nozzle), as if structurally
+  connected; no run passes through another part or into the ground.
 - **Motion** a player notices at 1x, every moving part with a job; an
-  idle state; nothing that strobes at 1x.
+  idle state; nothing that strobes at 1x. A building that turns keeps its
+  signature parts facing the camera in every direction, with a
+  per-direction variation where turning would hide them (as vanilla's
+  chemical plant does).
 - Measures always taken with `factorio-art-measure`, never ad hoc.
 
 ## Parallel work
