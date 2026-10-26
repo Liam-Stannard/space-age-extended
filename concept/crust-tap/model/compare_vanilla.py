@@ -18,8 +18,9 @@ import sys
 
 from PIL import Image, ImageDraw
 
-FD = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+FD = os.path.join(paths.factorio_data(), "base/graphics/entity")
 PPT = 64
 GROUND = (74, 66, 58, 255)
 BG = (30, 30, 30, 255)

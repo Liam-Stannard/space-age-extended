@@ -25,12 +25,14 @@
 # and must write <dir>/render.json (contract.declare) and the renders it declares;
 # with --icon, <dir>/icon.png.
 #
-# Blender is not in the repo: point $BLENDER at a binary (the portable Linux
-# tarball needs no install).
+# Blender is not in the repo: tools/paths.conf names the binary (BLENDER; the
+# portable Linux tarball needs no install), read through tools/paths.sh, and
+# nothing else does. A key missing, empty or naming no executable stops the run,
+# exit 1, before anything is written.
 #
 # **Render device:** $SAE_BLENDER_DEVICE, GPU or CPU; unset means GPU (Liam,
 # 2026-10-10). The GPU needs blender.org's build -- a distro package has no GPU
-# kernels -- so point $BLENDER at it; SAE_BLENDER_DEVICE=CPU renders on the CPU.
+# kernels -- so paths.conf's BLENDER is that; SAE_BLENDER_DEVICE=CPU renders on the CPU.
 #   SAE_BLENDER_DEVICE=CPU tools/blender/render.sh <model.py> <out-dir>
 # GPU is Cycles on OptiX, CUDA if Blender finds no OptiX device (rig.use_device
 # enables it in Blender's preferences, which a -b run has none of). The run
@@ -57,7 +59,7 @@
 # run. A run without --ports, --icon or --collide leaves none of those behind either.
 #
 # **--collide** runs the model's own clash check first, before anything renders:
-#   $BLENDER -b --python-exit-code 1 --python-expr <make Python's output line-buffered> \
+#   <BLENDER> -b --python-exit-code 1 --python-expr <make Python's output line-buffered> \
 #            --python <model.py> -- <out-dir>/collide --collide
 # (measure.py's collide(), which runs it: the --python-expr keeps Blender's own output from
 # cutting a COLLIDE line in two)
@@ -103,7 +105,8 @@ if [ ${#ALLOW[@]} -gt 0 ] && [ -z "$COLLIDE" ]; then
   echo "render.sh: --collide-allow goes with --collide" >&2; exit 2
 fi
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BLENDER="${BLENDER:?set BLENDER to a Blender 5 binary}"
+. "$HERE/../paths.sh"
+sae_blender BLENDER_BIN || exit 1
 
 mkdir -p "$OUT"
 rm -f "$OUT/render.done"
@@ -114,7 +117,7 @@ case "$SAE_BLENDER_DEVICE" in
   *) echo "SAE_BLENDER_DEVICE must be CPU or GPU, not $SAE_BLENDER_DEVICE" >&2; exit 2 ;;
 esac
 if [ "$SAE_BLENDER_DEVICE" = GPU ]; then
-  probe="$("$BLENDER" -b --factory-startup --python "$HERE/rig.py" 2>&1 | grep '^render device:' || true)"
+  probe="$("$BLENDER_BIN" -b --factory-startup --python "$HERE/rig.py" 2>&1 | grep '^render device:' || true)"
   echo "${probe:-render device: GPU asked for, and the Blender probe said nothing}"
   case "$probe" in "render device: GPU "*" on "*) ;; *) exit 1 ;; esac
 else
@@ -123,7 +126,7 @@ fi
 rm -rf "${OUT:?}/hi" "${OUT:?}/renders" "${OUT:?}/sheets" \
   "${OUT:?}/ports-hi" "${OUT:?}/ports" "${OUT:?}/icon" "${OUT:?}/collide" "${OUT:?}/collide.log"
 if [ -n "$COLLIDE" ]; then
-  python3 - "$HERE" "$MODEL" "$OUT" "$BLENDER" "${ALLOW[@]}" <<'EOF' || exit $?
+  python3 - "$HERE" "$MODEL" "$OUT" "$BLENDER_BIN" "${ALLOW[@]}" <<'EOF' || exit $?
 import sys
 sys.path.insert(0, sys.argv[1])
 import measure                                  # its collide step: one rule for both tools
@@ -145,7 +148,7 @@ print("collide: " + ("PASS" if res["pass"] else f"FAIL: {res['why']}") + f" ({re
 sys.exit(0 if res["pass"] else 1)
 EOF
 fi
-"$BLENDER" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \
+"$BLENDER_BIN" -b --python "$MODEL" -- "$OUT/hi" > "$OUT/blender.log" 2>&1 \
   || { tail -20 "$OUT/blender.log"; exit 1; }
 python3 "$HERE/downsample.py" "$OUT/hi" "$OUT/renders"
 python3 "$HERE/pack.py" "$OUT/renders" "$OUT/sheets" > /dev/null
@@ -156,7 +159,7 @@ python3 "$HERE/contract.py" plates "$OUT/renders" | while read -r plate; do
 done
 
 if [ -n "$PORTS" ]; then
-  "$BLENDER" -b --python "$MODEL" -- "$OUT/ports-hi" --ports > "$OUT/blender-ports.log" 2>&1 \
+  "$BLENDER_BIN" -b --python "$MODEL" -- "$OUT/ports-hi" --ports > "$OUT/blender-ports.log" 2>&1 \
     || { tail -20 "$OUT/blender-ports.log"; exit 1; }
   python3 "$HERE/downsample.py" "$OUT/ports-hi" "$OUT/ports"
   python3 "$HERE/pack_ports.py" "$OUT/ports" "$OUT/sheets/ports" > /dev/null
@@ -164,7 +167,7 @@ if [ -n "$PORTS" ]; then
 fi
 
 if [ -n "$ICON" ]; then
-  "$BLENDER" -b --python "$MODEL" -- "$OUT/icon" --icon > "$OUT/blender-icon.log" 2>&1 \
+  "$BLENDER_BIN" -b --python "$MODEL" -- "$OUT/icon" --icon > "$OUT/blender-icon.log" 2>&1 \
     || { tail -20 "$OUT/blender-icon.log"; exit 1; }
   [ -f "$OUT/icon/icon.png" ] || { echo "the model rendered no $OUT/icon/icon.png" >&2; exit 1; }
   python3 "$HERE/../key-icons.py" "$OUT/sheets" "$OUT/icon/icon.png:icon"

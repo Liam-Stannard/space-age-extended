@@ -22,6 +22,7 @@ Layers as the engine draws them: the shadows, the north-facing fittings
 animation at frame 0, then the other fittings. The tile grid is drawn over it. The
 machine is stopped: an animation drawn only while working (marked "working", or of
 kind "light" or "glow", contract.py) is left out, as preview.py's idle panel leaves it.
+The vanilla pipes are read from <FACTORIO_ROOT>/data, tools/paths.conf (tools/paths.py).
 """
 import json
 import os
@@ -30,8 +31,9 @@ from PIL import Image, ImageDraw
 
 import contract
 
-FD = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/pipe")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # tools/paths.py
+import paths  # noqa: E402
+
 VANILLA_PPT = 64                        # a high-resolution vanilla sprite's px to a tile
 GROUND = (58, 52, 46, 255)
 GAP = (30, 30, 30, 255)
@@ -80,8 +82,9 @@ class Scene:
         self.size = (round(n * self.ppt),) * 2
         self.centre = (self.size[0] / 2, self.size[1] / 2)
         self.missing = set()
-        if not os.path.isfile(os.path.join(FD, "pipe-straight-vertical.png")):
-            fail(f"no vanilla pipe sprites in {FD}: set FACTORIO_DATA to the game's data directory")
+        self.pipes = os.path.join(paths.factorio_data(), "base/graphics/entity/pipe")
+        if not os.path.isfile(os.path.join(self.pipes, "pipe-straight-vertical.png")):
+            fail(f"no vanilla pipe sprites in {self.pipes} (FACTORIO_ROOT in {paths.CONF})")
 
     def sprite(self, path, scale=1.0):
         im = Image.open(path).convert("RGBA")
@@ -128,7 +131,7 @@ class Scene:
 
     def pipe(self, canvas, port):
         name = "pipe-straight-vertical" if port["face"] in "NS" else "pipe-straight-horizontal"
-        self.put(canvas, self.sprite(os.path.join(FD, name + ".png"), self.ppt / VANILLA_PPT),
+        self.put(canvas, self.sprite(os.path.join(self.pipes, name + ".png"), self.ppt / VANILLA_PPT),
                  *contract.outside(port))
 
     def grid(self, canvas, footprint):

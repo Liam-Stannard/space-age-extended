@@ -6,9 +6,15 @@ A layer: (path, w, h, line_length, frame, shift_x, shift_y [util.by_pixel], mode
   mode "n" paint, "add" additive glow (draw_as_glow), "tintblue" paint tinted #1F63FF
   (the chemical plant's recipe-tinted liquid, shown in the radiant blue)
 """
+import os
+import sys
+
 from PIL import Image, ImageChops
 
-D = "/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data/"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+
+D = paths.factorio_data() + "/"
 B = "base/graphics/entity/"
 S = "space-age/graphics/entity/"
 

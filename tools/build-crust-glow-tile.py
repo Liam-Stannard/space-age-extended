@@ -14,8 +14,10 @@ alone, so a rotation moves the embers and nothing else. The light sheet is
 rotated by the same amount so the glow at night matches the paint by day.
 
 Usage:
-  tools/build-crust-glow-tile.py <space-age data dir> <name> <hue degrees>
-  e.g. tools/build-crust-glow-tile.py "$FACTORIO_DATA/space-age" arc 200
+  tools/build-crust-glow-tile.py <name> <hue degrees>
+  e.g. tools/build-crust-glow-tile.py arc 200
+  Vulcanus's sheets from the game data, <FACTORIO_ROOT>/data/space-age, with
+  FACTORIO_ROOT the one tools/paths.conf names (tools/paths.py).
   tools/build-crust-glow-tile.py --sheet <in.png> <out.png> <hue degrees>
   any one sheet, the same rotation -- the radiant pool's surface is Vulcanus's
   lava-hot sheet turned to blue this way.
@@ -28,6 +30,9 @@ Writes graphics/terrain/crust-glow/<name>.png and <name>-light.png.
 """
 import os, sys
 from PIL import Image
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tools/paths.py
+import paths  # noqa: E402
 
 def rotate_hue(path, out, degrees, min_sat=0.22):
     im = Image.open(path).convert("RGBA")
@@ -71,9 +76,10 @@ def main():
         os.makedirs(os.path.dirname(os.path.abspath(sys.argv[3])), exist_ok=True)
         print(f"  {sys.argv[3]}  {rotate_hue(sys.argv[2], sys.argv[3], float(sys.argv[4]))}")
         return
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         sys.exit(__doc__)
-    src, name, degrees = sys.argv[1], sys.argv[2], float(sys.argv[3])
+    name, degrees = sys.argv[1], float(sys.argv[2])
+    src = os.path.join(paths.factorio_data(), "space-age")
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     outdir = os.path.join(repo, "graphics", "terrain", "crust-glow")
     os.makedirs(outdir, exist_ok=True)

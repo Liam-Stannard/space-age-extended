@@ -5,7 +5,7 @@ A proposal beside the signed-off radiant_icons.py, which stays as it is. Rendere
 same way, by tools/blender/render-icons.sh (icon_rig.py's camera, sun and framing;
 icon_post.py's per-size rules):
 
-    BLENDER=$HOME/opt/blender-5.0.1-linux-x64/blender tools/blender/render-icons.sh \
+    tools/blender/render-icons.sh \
         concept/items/radiant/radiant_icons_b.py <out-dir>
 
 The shared helper (tools/blender, branch radiant-look) was not ready when this was
