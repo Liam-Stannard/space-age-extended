@@ -60,6 +60,8 @@ client.
 Usage:
   tools/build-crane-sheets.py --part arm_central --art path/to/drawing.png
   tools/build-crane-sheets.py --list
+Vanilla's frames are read from <FACTORIO_ROOT>/data, FACTORIO_ROOT being the one
+tools/paths.conf names (tools/paths.py).
 """
 
 import argparse
@@ -67,6 +69,9 @@ import os
 import sys
 
 from PIL import Image
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tools/paths.py
+import paths  # noqa: E402
 
 VANILLA = ("space-age/graphics/entity/agricultural-tower/"
            "agricultural-tower-crane-")
@@ -120,8 +125,6 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--part", choices=sorted(PARTS))
     ap.add_argument("--art", help="one vertical drawing of this part, transparent")
-    ap.add_argument("--data", default=os.path.expanduser(
-        "~/.steam/debian-installation/steamapps/common/Factorio/data"))
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--list", action="store_true")
     args = ap.parse_args()
@@ -139,7 +142,7 @@ def main():
     os.makedirs(out_dir, exist_ok=True)
 
     suffixes, fw, fh, cols, rows = PARTS[args.part]
-    box, n = median_box(os.path.join(args.data), args.part)
+    box, n = median_box(paths.factorio_data(), args.part)
     bw, bh = box[2] - box[0], box[3] - box[1]
     print(f"  {args.part}: vanilla's median content box over {n} frames is "
           f"{box} ({bw}x{bh})")

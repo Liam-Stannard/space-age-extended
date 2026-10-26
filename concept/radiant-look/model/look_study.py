@@ -30,7 +30,9 @@ WTS = os.path.dirname(WT)
 RP = os.path.join(WTS, "reaction-plant-redesign", "concept", "reaction-plant", "model", "sheets")
 GEN = os.path.join(WTS, "radiant-generator-options", "concept", "radiant-generator", "options", "round-6")
 ICONS = os.path.join(WT, "graphics", "icons")
-D = "/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data/"
+sys.path.insert(0, os.path.join(WT, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+D = paths.factorio_data() + "/"
 POOL = ("/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/bc7d463e-8c35-4cbc-ab43-70ae859d9a08/"
         "scratchpad/tester/pool-placed/evidence/shots")
 

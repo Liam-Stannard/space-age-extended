@@ -33,7 +33,10 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
-VANILLA = "/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+
+VANILLA = paths.factorio_data()
 # the task's analogues: iron ore, iron plate, stone, and Space Age's crushed and
 # powdered items -- tungsten ore, carbon; holmium powder is not a vanilla item
 # (Space Age ships holmium ore and holmium plate), so holmium ore stands in

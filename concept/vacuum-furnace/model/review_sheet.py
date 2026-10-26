@@ -39,8 +39,9 @@ REPO = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
 import pack  # noqa: E402
 
-VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+VAN = os.path.join(paths.factorio_data(), "base/graphics/entity")
 ADOPTED = os.path.join(REPO, "concept/vacuum-furnace/adopted/base.png")
 PPT, TILES = 64, 5
 SIZE = PPT * TILES

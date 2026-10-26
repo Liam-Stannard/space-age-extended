@@ -44,8 +44,9 @@ import sys
 
 from PIL import Image, ImageDraw
 
-DATA = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+DATA = os.path.join(paths.factorio_data(), "base/graphics/entity/assembling-machine-3")
 PPT = 64                                                # sprite px to a tile, ours and vanilla's
 MARGIN = 4
 PIPES = os.path.join(os.path.dirname(DATA), "pipe")
