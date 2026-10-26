@@ -1,7 +1,7 @@
 """Ballast drill (sae-ballast-drill), built from its spec, rendered in every pass.
 
   blender -b --python ballast_drill.py -- <out-dir> [--idle | --ports | --icon | --chutes | --blend]
-  BLENDER=/usr/bin/blender tools/blender/render.sh concept/ballast-drill/model/ballast_drill.py <out-dir> --ports --icon
+  tools/blender/render.sh concept/ballast-drill/model/ballast_drill.py <out-dir> --ports --icon
 
   --idle    idle-north.png, still-north.png and top.png (frame 7: seated, the dust out): the quick loop
   --ports   the four pipe pictures and their caps, port-<face>.png and cover-<face>.png
@@ -205,9 +205,11 @@ from mathutils import Matrix, Vector
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
+sys.path.insert(0, os.path.join(REPO, "tools"))      # paths.py: vanilla's pictures, for --ports
 
 import rig  # noqa: E402
 import contract  # noqa: E402
+import paths  # noqa: E402
 from materials import layered, _G  # noqa: E402   _G: the node helper, to extend a layered finish here
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -2677,8 +2679,7 @@ def ore(f):
 # pipe's bolted end ring, kept inside the traced outline so the sheet matches assembler
 # 3's outline (criterion 4). The covers the prototype uses are vanilla's (the task); the
 # cover-<face> renders here are the same fitting with a blind cap, for the shared packer.
-VANILLA = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
+VANILLA = "base/graphics/entity/assembling-machine-3"     # under <FACTORIO_ROOT>/data (tools/paths.conf)
 H_AXIS_V = 1.0 / 64          # horizontal pipe: axis, screen tiles above its tile's centre
 V_AXIS_U = 0.5 / 64          # vertical pipe: axis, screen tiles right of its tile's centre
 H_RING_R = 26 / 64 / 1.118
@@ -2689,7 +2690,7 @@ ZA = 0.42                    # the stubs' axis height
 def vanilla_mask(face, tile):
     """Assembler 3's picture for `face`: its drawn pixels (i, j), and the screen px of
     its top-left from the origin, drawn from the tile the port at `tile` points into."""
-    stem = os.path.join(VANILLA, f"assembling-machine-3-pipe-{face}")
+    stem = os.path.join(paths.factorio_data(), VANILLA, f"assembling-machine-3-pipe-{face}")
     bx, by = (float(v) for v in re.search(r"by_pixel\(\s*([-\d.]+),\s*([-\d.]+)\)",
                                            open(stem + ".lua").read()).groups())
     img = bpy.data.images.load(stem + ".png", check_existing=True)

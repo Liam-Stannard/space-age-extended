@@ -19,7 +19,10 @@ every path already resolved, whatever Lua did to build it. This walks that dump
 and checks the files exist. It is the only check here that cannot be fooled by
 how a path was assembled.
 
-Usage: tools/check-dumped-graphics.py <data-raw-dump.json> [factorio-data-dir]
+Usage: tools/check-dumped-graphics.py <data-raw-dump.json>
+
+Vanilla's files are looked for under <FACTORIO_ROOT>/data, FACTORIO_ROOT being the
+one tools/paths.conf names (tools/paths.py).
 """
 
 import glob
@@ -28,15 +31,18 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tools/paths.py
+import paths  # noqa: E402
+
 REF = re.compile(r'"(__[a-z0-9-]+__/[^"]+\.(?:png|ogg))"')
 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.exit("usage: check-dumped-graphics.py <data-raw-dump.json> [data-dir]")
+    if len(sys.argv) != 2:
+        sys.exit("usage: check-dumped-graphics.py <data-raw-dump.json> "
+                 "(the game data is the one tools/paths.conf names)")
     dump_path = sys.argv[1]
-    data = sys.argv[2] if len(sys.argv) > 2 else os.path.expanduser(
-        "~/.steam/debian-installation/steamapps/common/Factorio/data")
+    data = paths.factorio_data()
     repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     mods = {f"__{os.path.basename(p)}__": p

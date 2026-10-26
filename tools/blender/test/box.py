@@ -1,6 +1,6 @@
 """Test model: a 2x2 box that exercises every path through the render pipeline.
 
-  BLENDER=<blender> tools/blender/render.sh tools/blender/test/box.py <out-dir> --ports --icon
+  tools/blender/render.sh tools/blender/test/box.py <out-dir> --ports --icon
 
 Not a building. Four directions, so every pass is rendered per direction by
 turning the root (<pass>-<direction>.png); a 4-frame part sliding in a straight

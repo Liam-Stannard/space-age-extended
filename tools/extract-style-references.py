@@ -54,16 +54,21 @@ out: the plates we generate must not carry a baked one, and attaching a
 reference with one invites exactly that.
 
   tools/extract-style-references.py [--out DIR]
+
+The install is the one tools/paths.conf names (FACTORIO_ROOT; tools/paths.py), and
+everything below is relative to its data folder.
 """
 
 import argparse
 import os
+import sys
 
 from PIL import Image
 
-# The Steam install. Everything below is relative to <install>/data.
-DATA = os.path.expanduser(
-    "~/.steam/debian-installation/steamapps/common/Factorio/data")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tools/paths.py
+import paths  # noqa: E402
+
+# Everything below is relative to <FACTORIO_ROOT>/data.
 
 # name -> list of (relative path, width, height, shift_x, shift_y, line_length, frame)
 # Widths, heights and shifts are the engine's own, read from a data-raw dump.
@@ -153,11 +158,11 @@ def frame(path, w, h, line_length, index):
     return sheet.crop((col * w, row * h, col * w + w, row * h + h))
 
 
-def build(layers):
-    """Composite layers onto one canvas, each centred at its own shift."""
+def build(layers, data):
+    """Composite layers onto one canvas, each centred at its own shift; data: the game's data folder."""
     placed = []
     for rel, w, h, sx, sy, line, idx in layers:
-        img = frame(os.path.join(DATA, rel), w, h, line, idx)
+        img = frame(os.path.join(data, rel), w, h, line, idx)
         cx, cy = sx * PX_PER_TILE, sy * PX_PER_TILE
         placed.append((img, cx - w / 2, cy - h / 2))   # top-left, relative to origin
 
@@ -187,12 +192,11 @@ def main():
             raise SystemExit("unknown reference(s): %s" % ", ".join(missing))
         wanted = {n: REFERENCES[n] for n in names}
 
-    if not os.path.isdir(DATA):
-        raise SystemExit("Factorio data not found at %s" % DATA)
+    data = paths.factorio_data()
     os.makedirs(args.out, exist_ok=True)
 
     for name, layers in wanted.items():
-        img = build(layers)
+        img = build(layers, data)
         path = os.path.join(args.out, name + ".png")
         img.save(path)
         print("  %-24s %4dx%-4d  %s" % (name, img.width, img.height, path))

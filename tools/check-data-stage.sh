@@ -6,7 +6,10 @@ set -euo pipefail
 # run in CI, since Factorio isn't redistributable to a CI runner -- run it
 # locally before pushing.
 #
-# Usage: tools/check-data-stage.sh [path-to-factorio-binary]
+# Usage: tools/check-data-stage.sh
+#
+# Factorio is the one tools/paths.conf names (FACTORIO_ROOT), read through
+# tools/paths.sh; the graphics checks below read the game data from it too.
 #
 # Waits (at most SAE_DATA_STAGE_LOCK_WAIT seconds, default 600) while a test
 # client's launcher holds its lock, and exits 3 if it is still held then; see
@@ -15,22 +18,12 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOD_NAME="$(grep -o '"name" *: *"[^"]*"' "$REPO_ROOT/info.json" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')"
 
-FACTORIO_BIN="${1:-}"
-if [ -z "$FACTORIO_BIN" ]; then
-  for candidate in \
-    "$HOME/.steam/debian-installation/steamapps/common/Factorio/bin/x64/factorio" \
-    "$HOME/.steam/steam/steamapps/common/Factorio/bin/x64/factorio" \
-    "$(command -v factorio 2>/dev/null || true)"; do
-    if [ -n "$candidate" ] && [ -x "$candidate" ]; then
-      FACTORIO_BIN="$candidate"
-      break
-    fi
-  done
+if [ $# -gt 0 ]; then
+  echo "usage: tools/check-data-stage.sh (no arguments: Factorio is the one tools/paths.conf names)" >&2
+  exit 2
 fi
-if [ -z "$FACTORIO_BIN" ] || [ ! -x "$FACTORIO_BIN" ]; then
-  echo "Could not find a Factorio binary. Pass its path as the first argument." >&2
-  exit 1
-fi
+. "$REPO_ROOT/tools/paths.sh"
+sae_factorio_bin GAME_BIN || exit 1
 
 SCRATCH_MODS="$(mktemp -d)"
 SCRATCH_DATA="$(mktemp -d)"
@@ -91,7 +84,7 @@ if ! flock -n 9; then
 fi
 
 set +e
-"$FACTORIO_BIN" --dump-data --config "$SCRATCH_DATA/config.ini" \
+"$GAME_BIN" --dump-data --config "$SCRATCH_DATA/config.ini" \
     --mod-directory "$SCRATCH_MODS" > "$LOG_FILE" 2>&1
 STATUS=$?
 set -e
@@ -112,8 +105,6 @@ echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
 
 # And that concepts, specs, templates and tasks are where claude.md says they are.
 "$REPO_ROOT/tools/check-layout.sh" || exit 1
-DATA_DIR="$(dirname "$(dirname "$FACTORIO_BIN")")/../data"
-DATA_DIR="$(cd "$DATA_DIR" && pwd)"
 
 # And a recipe can name more fluids than any machine in its category has boxes
 # for. The data stage accepts that, set_recipe accepts it, and the machine then
@@ -128,7 +119,7 @@ if [ -f "$DUMP" ]; then
   # Paths as the engine resolved them, which is the only way to see the ones Lua
   # builds by concatenation -- check-graphics.sh cannot, and most of this mod's
   # sprite paths are built that way. See tools/check-dumped-graphics.py.
-  python3 "$REPO_ROOT/tools/check-dumped-graphics.py" "$DUMP" "$DATA_DIR" || exit 1
+  python3 "$REPO_ROOT/tools/check-dumped-graphics.py" "$DUMP" || exit 1
   "$REPO_ROOT/tools/check-recipes.py" "$DUMP" || exit 1
   # And whether the game can be played, which is a different question from
   # whether it loads. Everything above proves prototypes are well-formed and
