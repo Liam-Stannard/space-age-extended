@@ -13,10 +13,15 @@ and no traceback -- in Blender's Python too. The paths.conf read is the one besi
 each checkout reads its own. It is parsed line by line, never executed or expanded; the format
 is in paths.conf, and tools/paths.sh is the same reader for the shell.
 
-  python3 tools/paths.py   prints all four, exit 1 naming the first that fails
+  python3 tools/paths.py          prints all four, labelled; exit 1 naming the first that fails
+  python3 tools/paths.py <name>   prints that one path alone (for "$(...)" in a shell): <name> is
+                                  factorio-bin, factorio-data, factorio-root or blender. Exit 1,
+                                  the message on stderr and nothing on stdout, when it fails;
+                                  exit 2 with usage for any other name
 """
 import os
 import re
+import sys
 
 CONF = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paths.conf")
 LINE = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)[ \t\n\r\f\v]*=(.*)\Z", re.S)
@@ -89,7 +94,23 @@ def blender():
     return b
 
 
+NAMES = {"factorio-bin": factorio_bin, "factorio-data": factorio_data, "factorio-root": factorio_root,
+         "blender": blender}                # the command line's: one path alone
+USAGE = f"usage: python3 tools/paths.py [{' | '.join(NAMES)}]"
+
+
+def main(argv):
+    if not argv:
+        for label, get in (("FACTORIO_ROOT", factorio_root), ("factorio binary", factorio_bin),
+                           ("factorio data", factorio_data), ("BLENDER", blender)):
+            print(f"{label}: {get()}")
+        return 0
+    if len(argv) != 1 or argv[0] not in NAMES:
+        print(USAGE, file=sys.stderr)
+        return 2
+    print(NAMES[argv[0]]())
+    return 0
+
+
 if __name__ == "__main__":
-    for name, get in (("FACTORIO_ROOT", factorio_root), ("factorio binary", factorio_bin),
-                      ("factorio data", factorio_data), ("BLENDER", blender)):
-        print(f"{name}: {get()}")
+    sys.exit(main(sys.argv[1:]))
