@@ -564,13 +564,29 @@ bpy.context.view_layer.update()
 # tinted in game the gas is a step darker than the concept painted it (siderane mean 144,176,30 against 180,212,60),
 # since a tint can only darken. --tints renders both for the review; --gas-white sets it.
 GAS_WHITE = _opt("--gas-white", 0.65)
+# T08b: the wisps' range in the shipped layer (the concept's 0.42-0.86 of the paint) and its balance against the
+# warm sun (--gas-neutral 1: the white's blue and green raised by the sun's own 1/0.82 and 1/0.94, so the layer the
+# engine multiplies is neutral and the tint keeps its hue; 0: the concept's plain white). The painted review gases
+# (--tints) keep the concept's range: they are what the layer is measured against.
+GAS_LO, GAS_HI = _opt("--gas-lo", 0.42), _opt("--gas-hi", 0.86)
+GAS_NEUTRAL = _opt("--gas-neutral", 0.0)
+GAS_RAMPS = [n for m in bpy.data.materials if m.name.startswith("gas_") and m.node_tree
+             for n in m.node_tree.nodes if n.type == "MAP_RANGE"]
 
 
-def set_tint(hexc, white=None):
+def set_tint(hexc, white=None, lo=None, hi=None, neutral=None):
     """The gas's paint in the glass: a neutral for the shipped layer (the engine tints it), a gas's own for review."""
     w = GAS_WHITE if white is None else white
+    nu = GAS_NEUTRAL if neutral is None else neutral
+    sun = SUN.data.color
+    bal = [1.0 + nu * (sun[0] / sun[c] - 1.0) for c in range(3)]
     for rgb in GP.GAS_TINT:
-        rgb.outputs[0].default_value = (w, w, w, 1.0) if hexc is None else rig.srgb(hexc)
+        rgb.outputs[0].default_value = (w * bal[0], w * bal[1], w * bal[2], 1.0) if hexc is None \
+            else rig.srgb(hexc)
+    painted = hexc is not None
+    for n in GAS_RAMPS:
+        n.inputs["To Min"].default_value = 0.42 if painted else (GAS_LO if lo is None else lo)
+        n.inputs["To Max"].default_value = 0.86 if painted else (GAS_HI if hi is None else hi)
 
 
 set_tint(None)
@@ -1054,6 +1070,25 @@ if TINTS:
             set_pose(f, gas=True)
             setup(visible=GROUPS_ALL)
             rig.render(os.path.join(OUT, f"tint-{name}-{f:02d}.png"))
+    print("done")
+    sys.exit(0)
+
+# ---------------------------------------------------------------- --glass-sweep: the shipped glass layer alone (T08b)
+# --glass-sweep "tag:white:lo:hi:neutral;..." renders, per variant, the glass layer as the pass below does (north,
+# the rest held out, the pane hidden) for --sweep-frames (default every frame) into <OUT>/<tag>/glass-NN-north.png
+SWEEP = _opt("--glass-sweep", "")
+if SWEEP:
+    sc.cycles.samples = ANIM_SAMPLES
+    turn("north")
+    border(window(members("glass")))
+    frames = [int(x) for x in _opt("--sweep-frames", ",".join(str(i) for i in range(NF))).split(",")]
+    for spec_ in SWEEP.split(";"):
+        tag, w, lo, hi, nu = spec_.split(":")
+        set_tint(None, float(w), float(lo), float(hi), float(nu))
+        for f in frames:
+            set_pose(f, gas=True)
+            setup(visible=("glass",), holdouts=("body", "mech"), hide_glassy=True)
+            rig.render(os.path.join(OUT, tag, f"glass-{f:02d}-north.png"))
     print("done")
     sys.exit(0)
 
