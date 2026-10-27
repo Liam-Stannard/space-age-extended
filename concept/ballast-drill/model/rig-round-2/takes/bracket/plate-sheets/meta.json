@@ -1,0 +1,168 @@
+{
+ "base-north": {
+  "size": [
+   326,
+   347
+  ],
+  "shift": [
+   0.0,
+   -0.16406
+  ]
+ },
+ "base-shadow-north": {
+  "size": [
+   370,
+   328
+  ],
+  "shift": [
+   0.375,
+   -0.04688
+  ]
+ },
+ "base-east": {
+  "size": [
+   326,
+   347
+  ],
+  "shift": [
+   0.0,
+   -0.16406
+  ]
+ },
+ "base-shadow-east": {
+  "size": [
+   370,
+   328
+  ],
+  "shift": [
+   0.375,
+   -0.04688
+  ]
+ },
+ "base-south": {
+  "size": [
+   326,
+   347
+  ],
+  "shift": [
+   0.0,
+   -0.16406
+  ]
+ },
+ "base-shadow-south": {
+  "size": [
+   370,
+   328
+  ],
+  "shift": [
+   0.375,
+   -0.04688
+  ]
+ },
+ "base-west": {
+  "size": [
+   326,
+   347
+  ],
+  "shift": [
+   0.0,
+   -0.16406
+  ]
+ },
+ "base-shadow-west": {
+  "size": [
+   370,
+   328
+  ],
+  "shift": [
+   0.375,
+   -0.04688
+  ]
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rolloff_px": [
+    {
+     "base-north": {
+      "px": 433,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "east": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rolloff_px": [
+    {
+     "base-east": {
+      "px": 433,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rolloff_px": [
+    {
+     "base-south": {
+      "px": 433,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.5,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    2.5,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rolloff_px": [
+    {
+     "base-west": {
+      "px": 433,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  }
+ }
+}
