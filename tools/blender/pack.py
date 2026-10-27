@@ -215,11 +215,20 @@ def clean(im):
     return im
 
 
+def brightest(rgb):
+    """An RGB image's brightest channel, per pixel (L): what a light is judged by against a floor,
+    as a deep blue light's luma is a ninth of its blue (PIL's L weighs blue 0.114)."""
+    r, g, b = rgb.split()
+    return ImageChops.lighter(ImageChops.lighter(r, g), b)
+
+
 def glow_layer(lit, under):
     """A glow pass's sheet, on the full canvas: lit minus the plate under it, opaque wherever
     that is above noise inside the box that holds LIGHT_SHARE of its light.
 
-    Drawn additively, so its colour is what the light adds. Isolated specks -- any
+    Drawn additively, so its colour is what the light adds. Above noise is any channel of it over
+    LAYER_FLOOR (brightest), not its luma: deep blue light, its blue up to ~74 at luma 8, keeps
+    its fringe, where judged by luma it went clear (T08h). Isolated specks -- any
     8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
     all, so the crop (and so the sheet's size and shift) is the light's own and does
     not move with render noise; nothing dropped is drawn either. So is every opaque pixel
@@ -231,7 +240,7 @@ def glow_layer(lit, under):
     """
     diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
     luma = diff.convert("L")
-    alpha = luma.point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    alpha = brightest(diff).point(lambda v: 255 if v > LAYER_FLOOR else 0)
     kept = drop_specks(alpha)
     # alpha is 0 or 255, so a pixel's light is its luminance where it is opaque
     bb = light_box(ImageChops.multiply(luma, kept), LIGHT_SHARE)
@@ -352,8 +361,7 @@ def glow_frame(render, bloom=None):
              for radius, gain in bloom or ()]
     for halo in halos:
         light = ImageChops.add(light, halo)
-    most = ImageChops.lighter(ImageChops.lighter(*light.split()[:2]), light.getchannel("B"))
-    alpha = drop_specks(most.point(lambda v: 255 if v > GLOW_FLOOR else 0))
+    alpha = drop_specks(brightest(light).point(lambda v: 255 if v > GLOW_FLOOR else 0))
     return Image.merge("RGBA", (*ImageChops.multiply(light, Image.merge("RGB", (alpha,) * 3)).split(), alpha))
 
 
