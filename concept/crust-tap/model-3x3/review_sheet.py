@@ -417,7 +417,9 @@ blocks.append(captioned(row(gstrip[12:], gap=6), "   GLASS, FRAMES 12-23"))
 # 8. the outlet's fitting (Liam's standing rule, 2026-10-21), 4x, every direction: connected (our pipe picture and a
 # vanilla straight pipe on the next tile) and unconnected (vanilla's cover, the wiring's pipe_covers), beside the
 # concept's stub (the --before run: gas_pump.py --outlet stub)
-FD = os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/data/base/graphics/entity")
+sys.path.insert(1, os.path.join(REPO, "tools"))
+import paths  # noqa: E402  (tools/paths.conf: where this machine's Factorio is)
+FD = os.path.join(paths.factorio_data(), "base", "graphics", "entity")
 FACE = {"north": "N", "east": "E", "south": "S", "west": "W"}
 INTO = {"N": (0, -2), "E": (2, 0), "S": (0, 2), "W": (-2, 0)}
 PM = json.load(open(os.path.join(SHEETS, "ports", "meta.json")))
