@@ -1,0 +1,268 @@
+{
+ "rig-north": {
+  "size": [
+   332,
+   94
+  ],
+  "shift": [
+   0.0,
+   -1.03125
+  ]
+ },
+ "rig-shadow-north": {
+  "size": [
+   355,
+   266
+  ],
+  "shift": [
+   0.22656,
+   0.6875
+  ]
+ },
+ "rig-front-north": {
+  "size": [
+   326,
+   217
+  ],
+  "shift": [
+   0.0,
+   1.03906
+  ],
+  "frames": 2,
+  "line_length": 2
+ },
+ "rig-east": {
+  "size": [
+   262,
+   170
+  ],
+  "shift": [
+   -0.54688,
+   -1.79688
+  ]
+ },
+ "rig-shadow-east": {
+  "size": [
+   282,
+   350
+  ],
+  "shift": [
+   -0.34375,
+   0.03125
+  ]
+ },
+ "rig-front-east": {
+  "size": [
+   257,
+   153
+  ],
+  "shift": [
+   -0.53906,
+   1.53906
+  ],
+  "frames": 2,
+  "line_length": 2
+ },
+ "rig-south": {
+  "size": [
+   330,
+   184
+  ],
+  "shift": [
+   0.0,
+   -1.6875
+  ]
+ },
+ "rig-shadow-south": {
+  "size": [
+   355,
+   277
+  ],
+  "shift": [
+   0.22656,
+   -0.53906
+  ]
+ },
+ "rig-front-south": {
+  "size": [
+   326,
+   137
+  ],
+  "shift": [
+   0.0,
+   0.47656
+  ],
+  "frames": 2,
+  "line_length": 2
+ },
+ "rig-west": {
+  "size": [
+   261,
+   170
+  ],
+  "shift": [
+   0.55469,
+   -1.79688
+  ]
+ },
+ "rig-shadow-west": {
+  "size": [
+   280,
+   350
+  ],
+  "shift": [
+   0.8125,
+   0.03125
+  ]
+ },
+ "rig-front-west": {
+  "size": [
+   256,
+   153
+  ],
+  "shift": [
+   0.54688,
+   1.53906
+  ],
+  "frames": 2,
+  "line_length": 2
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.53125,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.34375,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rig-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0049,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "rig-north": {
+      "px": 18,
+      "most": 12
+     },
+     "rig-front-north": {
+      "px": 104,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "east": {
+   "centre_offset_px": -34.5,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.53125,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.515625,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rig-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0031,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "rig-east": {
+      "px": 58,
+      "most": 12
+     },
+     "rig-front-east": {
+      "px": 214,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.53125,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.296875,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rig-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0045,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "rig-south": {
+      "px": 86,
+      "most": 12
+     },
+     "rig-front-south": {
+      "px": 76,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 35.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    2.53125,
+    "2.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    -0.515625,
+    "bottom edge below origin; 2.5 = on the footprint"
+   ],
+   "rig-front_cycle": [
+    2,
+    "frames of a closed loop; no positional check"
+   ],
+   "frame0_vs_still": [
+    255,
+    0.0028,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "rolloff_px": [
+    {
+     "rig-west": {
+      "px": 35,
+      "most": 12
+     },
+     "rig-front-west": {
+      "px": 198,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  }
+ }
+}
