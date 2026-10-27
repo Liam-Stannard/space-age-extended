@@ -66,9 +66,10 @@ local palette =
   -- of the basin term is a ring about three tiles wide (four gave one).
   -- Level 76 is 6-30% solution over the rig's region by seed, 15% in the middle.
   pool        = { level = 76, shore = 12 },
-  -- Without the pack: Aquilo's snow and ice, placed by the Core's own
-  -- expressions (FALLBACK_GROUND, below).
-  without_pack = { "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy", "ice-rough", "ice-smooth" },
+  -- Without the pack: Aquilo's snow, placed by the Core's own expressions
+  -- (FALLBACK_GROUND, below). Snow only: Space Age marks Aquilo's ice
+  -- meltable, and nothing heated stands on it, the Gas Pump included.
+  without_pack = { "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy" },
   alien_tiles =
   {
     "mineral-white-dirt-1", "mineral-white-dirt-2", "mineral-white-dirt-3",
@@ -78,8 +79,8 @@ local palette =
   }
 }
 
--- The ground without Alien Biomes: Aquilo's snow and ice tiles, chosen per
--- tile by expressions of the Core's own rather than the ones they ship with.
+-- The ground without Alien Biomes: Aquilo's four snow tiles, chosen per tile
+-- by expressions of the Core's own rather than the ones they ship with.
 --
 -- Aquilo's own expressions do not carry over. Each adds the surface elevation
 -- (snow + elevation / 25, ice - elevation / 10) and 100 for any elevation
@@ -90,10 +91,23 @@ local palette =
 -- low, ice high) and `aquilo_tile_variant` (6 tiles), as in
 -- planet-aquilo-map-gen.lua -- and drops the elevation.
 --
+-- **Snow only** (Liam, 2026-10-27: "Change fallback ground", "Snow only").
+-- Aquilo's ice-rough and ice-smooth are gone from it: Space Age marks them
+-- meltable, which refuses every heated building, so a Gas Pump could not
+-- stand on a vent that came up on ice (4 of 15 near one landing). The snow
+-- tiles take the ground the ice held by their own selectors, unchanged, and
+-- where a snow tile already won it still does. The ice held the high end of
+-- the snow-ice axis, where every snow selector falls by one a unit and the
+-- variant alone orders them, so most of it is now snow-crests (variant above
+-- -0.2) and snow-lumpy (below). Measured over 30 seeds (T13c, 2026-10-27):
+-- the ice was a quarter of the ground; 45 % of it went to snow-crests, 52 %
+-- to snow-lumpy, 3 % to snow-patchy, and no vent stands on a meltable tile.
+--
 -- Two of the Core's own terms go in. The dark rims (`dark`, above) push the
--- snow-ice axis up by `rim`, so a joint is ice at its edges and lit down its
--- middle, as it is black dirt with the pack. And whichever tile wins answers at
--- exactly `level`: each is its selector less the best selector at that point.
+-- snow-ice axis up by `rim`, so a joint is the high end's snow at its edges
+-- and lit down its middle, as it is black dirt with the pack. And whichever
+-- tile wins answers at exactly `level`: each is its selector less the best
+-- selector at that point.
 -- The level is what the volcanic tiles this replaces answered at, the highest
 -- of their three expressions, so the pool and the shore, which are drawn
 -- against the ground, stand where they stood on the volcanic ground (30 seeds,
@@ -110,9 +124,7 @@ local FALLBACK_GROUND =
     ["snow-crests"] = "1.2 - abs(s - 0.2) - abs(v - 0.2)",
     ["snow-lumpy"]  = "1.2 - abs(s + 0.1) - abs(v + 0.3)",
     -- Aquilo's is 1 - ...; at 1 it held 4.0 % of the ground on one seed in 30.
-    ["snow-patchy"] = "1.1 - abs(s + 0.4) - abs(v + 0.6)",
-    ["ice-rough"]   = "0.5 + s - abs(v)",
-    ["ice-smooth"]  = "1 + s - abs(v + 1)"
+    ["snow-patchy"] = "1.1 - abs(s + 0.4) - abs(v + 0.6)"
   }
 }
 
@@ -794,10 +806,10 @@ local function core_tiles()
   end
 
   -- Only if the palette somehow contributed nothing at all: vanilla's Aquilo
-  -- ground is the wrong colour for this place, but it is ground.
+  -- ground is the wrong colour for this place, but it is ground. Its snow
+  -- alone, as without the pack: the ice is meltable.
   if found == 0 then
-    add({ "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy",
-          "ice-rough", "ice-smooth" })
+    add({ "snow-flat", "snow-crests", "snow-lumpy", "snow-patchy" })
   end
 
   -- The Core's own: the radiant pool, its shore, and the lit cracks.

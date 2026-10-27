@@ -160,8 +160,9 @@ do
   end
   local terms, extent = {}, 0
   for i, w in ipairs(STARTING_FIELD) do
-    -- The furthest well's centre from the field's, plus the most a vent's
-    -- centre lands off its well: the square below is two tiles across.
+    -- The furthest well's centre from the field's, plus a tile: a vent stands
+    -- on a tile centre inside the square below, which runs a tile either way
+    -- of its well along each axis (up to 1.41 from it on the diagonal).
     extent = math.max(extent, math.sqrt(w[1] ^ 2 + w[2] ^ 2) + 1)
     local wx = string.format("((%d) * cos(b) - (%d) * sin(b) + %d * cos(b))", w[1], w[2], STARTING_REACH)
     local wy = string.format("((%d) * sin(b) + (%d) * cos(b) + %d * sin(b))", w[1], w[2], STARTING_REACH)
