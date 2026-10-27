@@ -9,6 +9,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+sys.path.insert(0, os.path.join(REPO_ROOT, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
 MOD_NAME = "sae-measure-seeds"
 DEFAULT_SETTINGS = os.path.join(HERE, "settings", "core.json")
 # The launcher's lock (tools/client/launch.sh): holding it keeps every client
@@ -21,14 +23,11 @@ class Usage(Exception):
 
 
 def factorio_bin():
-    b = os.environ.get("FACTORIO_BIN")
-    if b:
-        return b
-    for c in (os.path.expanduser("~/.steam/debian-installation/steamapps/common/Factorio/bin/x64/factorio"),
-              os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/bin/x64/factorio")):
-        if os.access(c, os.X_OK):
-            return c
-    raise Usage("no Factorio binary (set FACTORIO_BIN)")
+    """<FACTORIO_ROOT>/bin/x64/factorio, as tools/paths.conf has it; Usage naming the file and the key when not."""
+    try:
+        return paths.factorio_bin()
+    except paths.PathsError as e:
+        raise Usage(str(e)) from None
 
 
 def parse_seed(text, where):

@@ -3,7 +3,7 @@
 Rendered by tools/blender/render-icons.sh (icon_rig.py: 45 deg camera, the
 buildings' sun and fill, framed to 1 px clear of the canvas at every size):
 
-    BLENDER=/usr/bin/blender tools/blender/render-icons.sh \
+    tools/blender/render-icons.sh \
         concept/items/radiant/radiant_icons.py <out-dir>
 
 The family's colour is the radiant solution's blue (Liam, 2026-10-10): the

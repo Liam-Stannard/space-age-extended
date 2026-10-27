@@ -74,6 +74,7 @@ from mathutils import Vector
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
+sys.path.insert(0, os.path.join(REPO, "tools"))      # paths.py: vanilla's pictures, for --ports
 
 
 def swatch(name):
@@ -83,6 +84,7 @@ def swatch(name):
 
 import rig  # noqa: E402
 import contract  # noqa: E402
+import paths  # noqa: E402
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT_DIR = argv[0]
@@ -1744,8 +1746,7 @@ _finish(OIL, "oil", "static", bevel=0)
 # of, in vanilla's outline. The stub and its flanges stand in front of it.
 import re  # noqa: E402
 
-VANILLA = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
+VANILLA = "base/graphics/entity/assembling-machine-3"     # under <FACTORIO_ROOT>/data (tools/paths.conf)
 OUTSIDE = {"N": (0, -2), "E": (2, 0), "S": (0, 2), "W": (-2, 0)}     # the tile each turn points into
 H_AXIS_V = 1.0 / 64          # horizontal pipe: axis, screen tiles above its tile's centre
 V_AXIS_U = 0.5 / 64          # vertical pipe: axis, screen tiles right of its tile's centre
@@ -1757,7 +1758,7 @@ ZA = 0.62                    # the stubs' axis height
 def vanilla_mask(face):
     """Assembler 3's picture for `face`: its drawn pixels (alpha over 127) as (i, j),
     j down from the top, and the screen px of its top-left corner from the origin."""
-    stem = os.path.join(VANILLA, f"assembling-machine-3-pipe-{face}")
+    stem = os.path.join(paths.factorio_data(), VANILLA, f"assembling-machine-3-pipe-{face}")
     bx, by = (float(v) for v in re.search(r"by_pixel\(\s*([-\d.]+),\s*([-\d.]+)\)",
                                            open(stem + ".lua").read()).groups())
     img = bpy.data.images.load(stem + ".png", check_existing=True)

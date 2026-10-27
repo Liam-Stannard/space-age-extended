@@ -22,8 +22,9 @@ import sys
 
 from PIL import Image
 
-VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/steam-turbine")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+VAN = os.path.join(paths.factorio_data(), "base/graphics/entity/steam-turbine")
 PPT = 64
 
 

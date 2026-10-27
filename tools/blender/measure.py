@@ -39,8 +39,8 @@ Options
                        given has no joins measured).
   --vanilla <name>     a vanilla reference for the sheet and for the figures beside ours:
                        one of REFS below. Repeatable, in the order given.
-  --collide <model.py> run the model in Blender with --collide first ($BLENDER, as
-                       render.sh); a clash fails the run.
+  --collide <model.py> run the model in Blender with --collide first (the BLENDER that
+                       tools/paths.conf names, as render.sh); a clash fails the run.
   --collide-allow <pattern>  a clash the model means (a hub on its shaft): a Python regular
                        expression that must match the whole of a pair line's text after
                        "COLLIDE " (re.fullmatch: "a x b" allows "a x b", not "a x b2"); a line
@@ -235,7 +235,7 @@ Information only, never failing the run:
 Offsets are px, across from the pipe's axis and along from the tile edge the connection is
 on (positive into the pipe's tile).
 
-The collide step runs `$BLENDER -b --python-exit-code 1 --python-expr <make Python's output
+The collide step runs `<BLENDER> -b --python-exit-code 1 --python-expr <make Python's output
 line-buffered> --python <model.py> -- <out>/collide --collide` and reads the lines the model
 prints starting "COLLIDE" (every model's --collide does; leading spaces are stripped first;
 Python's output is made line-buffered so Blender's own output cannot cut a line): it fails on a
@@ -284,7 +284,7 @@ measures.json:
 
 REFS (--vanilla): steam-turbine, steam-engine, assembling-machine-3, chemical-plant,
 oil-refinery, pumpjack, fusion-generator, foundry, electromagnetic-plant. Their geometry is
-read from the vanilla data (FACTORIO_DATA, default the Steam install): a sprite's .lua beside
+read from the vanilla data (<FACTORIO_ROOT>/data, tools/paths.conf): a sprite's .lua beside
 it (util.sprite_load) or the prototype table naming it, plus what the prototype adds where the
 .lua alone is wrong (vanilla_sprite's opts): the chemical plant's sprite_load shift
 by_pixel(0, -9), added to its sidecars' as util.sprite_load adds it; the pumpjack base's
@@ -309,12 +309,12 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageMath
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(1, os.path.dirname(HERE))       # tools/: paths.py, after this directory
 import contract  # noqa: E402
 import measure_ports  # noqa: E402
 import pack  # noqa: E402
+import paths  # noqa: E402
 
-FD = os.environ.get("FACTORIO_DATA", os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/data"))
-PIPE = os.path.join(FD, "base", "graphics", "entity", "pipe")
 PPT = 64
 GROUND = (74, 66, 58)               # preview.py's ground, and look_common's
 COVER = 128                         # covered: alpha above this
@@ -1273,13 +1273,19 @@ def pipe_mask(im):
     return both(covered(a), ImageChops.lighter(lit, solid))
 
 
+def pipe_dir():
+    """Vanilla's pipe sprites, under <FACTORIO_ROOT>/data (tools/paths.conf): read only when a join
+    is measured, so nothing else here needs Factorio."""
+    return os.path.join(paths.factorio_data(), "base", "graphics", "entity", "pipe")
+
+
 def join(sc, conn):
     """One connection in one direction: see the docstring's "pipe joins"."""
     src = sc.src
     x, y, face = conn
     dx, dy = FACE[face]
     tx, ty = x + dx, y + dy
-    sprite = load(os.path.join(PIPE, "pipe-straight-vertical.png" if face in "NS" else
+    sprite = load(os.path.join(pipe_dir(), "pipe-straight-vertical.png" if face in "NS" else
                                "pipe-straight-horizontal.png"))
     pipe = src.place(sprite, (0, 0), at=(tx, ty))
     building = sc.still.copy()                       # with the port picture for this face, if any
@@ -1569,7 +1575,7 @@ def collide(model, out, blender, allow=()):
     if not blender:
         res.update(returncode=None, lines=[], clash_lines=[], counts=[], allowed=[], not_allowed=[],
                    allow_unused=[p for p, _ in allow],
-                   why="$BLENDER is not set: no Blender to run the model's --collide with")
+                   why="no Blender given to run the model's --collide with")
         res["pass"] = False
         return res
     try:
@@ -1694,7 +1700,7 @@ def sprite_geometry(rel):
     """(png path, width, height, shift px at 64 a tile, scale) of a vanilla sprite: from the .lua
     beside it (util.sprite_load, scale 0.5) or the prototype table that names it."""
     rel, _, side = rel.partition(":")
-    png = os.path.join(FD, rel)
+    png = os.path.join(paths.factorio_data(), rel)
     lua = os.path.join(os.path.dirname(png), side) if side else png[:-4] + ".lua"
     if os.path.isfile(lua):
         with open(lua) as f:
@@ -1703,7 +1709,8 @@ def sprite_geometry(rel):
         global _PROTOS
         if _PROTOS is None:
             _PROTOS = []
-            for path_ in glob.glob(os.path.join(FD, "*", "prototypes", "**", "*.lua"), recursive=True):
+            for path_ in glob.glob(os.path.join(paths.factorio_data(), "*", "prototypes", "**", "*.lua"),
+                                   recursive=True):
                 with open(path_) as f:
                     _PROTOS.append(f.read())
         mod, path = rel.split("/", 1)
@@ -1742,7 +1749,8 @@ def vanilla_sprite(rel, opts=None):
     option, which util.sprite_load adds to the sidecar's; col, the frame column to take."""
     opts = opts or {}
     if "geom" in opts:
-        (w, h, (sx, sy)), png, scale = opts["geom"], os.path.join(FD, rel.partition(":")[0]), 0.5
+        (w, h, (sx, sy)), png, scale = (opts["geom"], os.path.join(paths.factorio_data(), rel.partition(":")[0]),
+                                        0.5)
     else:
         png, w, h, (sx, sy), scale = sprite_geometry(rel)
     col = opts.get("col", 0)
@@ -2018,12 +2026,12 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
     ims, unsplit = pages(blocks, max_side)
     for old in glob.glob(os.path.join(out, "comparison*.png")):
         os.remove(old)
-    paths = []
+    written = []
     for i, im in enumerate(ims):
         p = os.path.join(out, "comparison.png" if len(ims) == 1 else f"comparison-{i + 1}.png")
         im.save(p, optimize=True)
-        paths.append(dict(path=p, size=list(im.size)))
-    return paths, list(unsplit)
+        written.append(dict(path=p, size=list(im.size)))
+    return written, list(unsplit)
 
 
 # ---------------------------------------------------------------- main
@@ -2077,7 +2085,7 @@ def run(argv):
     result = dict(source=dict(src=src.src, sheets=src.sheets, render_json=src.render_json,
                               directions=src.directions, footprint=src.footprint, px_per_tile=PPT,
                               connections=[list(c) for c in conns], vanilla=a.vanilla))
-    result["collide"] = collide(a.collide, out, os.environ.get("BLENDER"), a.collide_allow) if a.collide else None
+    result["collide"] = collide(a.collide, out, paths.blender(), a.collide_allow) if a.collide else None
 
     result["directions"], scenes, maps, pictures = {}, {}, {}, {}
     for dn in src.dirs:

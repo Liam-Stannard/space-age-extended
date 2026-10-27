@@ -18,7 +18,10 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
-SA = "/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data/space-age/graphics/technology"
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+
+SA = os.path.join(paths.factorio_data(), "space-age/graphics/technology")
 VANILLA = ["foundry", "cryogenic-plant", "big-mining-drill", "electromagnetic-plant", "holmium-processing",
            "lithium-processing", "tungsten-carbide", "carbon-fiber"]
 LEVELS = ((256, 0), (128, 256), (64, 384), (32, 448))

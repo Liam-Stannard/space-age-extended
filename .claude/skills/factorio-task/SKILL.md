@@ -23,7 +23,7 @@ each fact with its source (file and line, or measured):
    `prototypes/`, its graphics in `graphics/`.
 4. Earlier task files in `.claude/tasks/` on the same subject: what was
    decided, by whom, in which amendment.
-5. Vanilla's data (`/home/liam-stannard/.steam/steam/steamapps/common/Factorio/data`)
+5. Vanilla's data (`<FACTORIO_ROOT>/data`, the root `tools/paths.conf` names)
    and the local docs (`doc-html/`) for any engine behaviour the task
    relies on. If the docs do not settle it, it becomes a spike criterion,
    never an assumption.

@@ -93,6 +93,8 @@ data:extend({
 -- Every technology lists only the one before it. The chain already carries
 -- everything further back, and a redundant prerequisite draws a second arrow
 -- across the technology screen for a dependency the first one already states.
+-- The one exception is Vent tapping's Uranium mining, which the chain does not
+-- carry; see there.
 --
 -- The melt line, the farm, the lift and everything geodynamic went with the cut.
 --
@@ -187,7 +189,14 @@ data:extend({
   -- plate before the 50th fine, so the plate trigger was already met and Vent
   -- tapping completed one tick after Vacuum sintering. A furnace can only be
   -- crafted once sintering is researched, so this one cannot fire early.
-  landfall("sae-vent-tapping", { "sae-vacuum-sintering" },
+  --
+  -- **Uranium mining is here for the engine, not the story.** The kamacite vent
+  -- needs helium-3 to mine, and the engine refuses a player's build of any drill
+  -- on a resource that needs a fluid until the force has mining-with-fluid.
+  -- Uranium mining is the only technology that grants it, and nothing else in
+  -- the Core's chain leads to it, so without this the Vent Pump could only be
+  -- placed by script. It costs a second arrow on the technology screen.
+  landfall("sae-vent-tapping", { "sae-vacuum-sintering", "uranium-mining" },
     {
       { type = "unlock-recipe", recipe = "sae-vent-pump" }
     },

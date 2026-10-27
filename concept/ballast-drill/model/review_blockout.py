@@ -42,8 +42,9 @@ REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "tools", "blender"))
 import contract  # noqa: E402
 
-FD = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "space-age/graphics/entity/big-mining-drill")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+FD = os.path.join(paths.factorio_data(), "space-age/graphics/entity/big-mining-drill")
 PPT = 64
 C = 448                                  # panel size; origin at its centre
 O = C / 2
