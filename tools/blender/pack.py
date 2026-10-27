@@ -85,6 +85,50 @@ the corpse's default is "corpse", CorpsePrototype). It goes after every other sh
                 0.64; the chemical plant's debris goes 0.61 past its north edge, its shadow 2.23
                 past its east.
 
+A resource model (contract.py: one resource pass, at most one effect pass, nothing else) packs
+into its prototype's `stages` sheet and, with an effect, its `stages_effect` sheet, and nothing
+per direction: a resource has one. Each sheet is one cell a render, <name>-SS-VV.png, laid out as
+the engine reads a resource's AnimationSheet (ResourceEntityPrototype.stages): a row a stage,
+stage 0 (the richest, the first entry of stage_counts) at the top, a column a variation, so
+frame_count = line_length = variations and variation_count = stages. Every cell is cropped to the
+one box that holds every cell of its sheet (with the 1 px rim), as the sheet has one size and one
+shift; the shift is from the canvas's centre, the entity origin. The resource's cells are cleaned
+of the catcher's haze below NOISE, as a wreck is, and otherwise packed as rendered, what they cast
+and all; every cell must hold something. The effect's cells are each turned to light as an
+animated glow's frame is (glow_frame, with the pass's bloom): the light alone, drawn additively
+(vanilla's uranium-ore-glow.png is the same, light on black), and any cell may be dark but not
+all of them. A sheet wider or taller than MAX_SHEET_W is refused: a resource sheet does not wrap.
+Each sheet's meta.json entry, keyed by its sheet: size (one cell), shift, frame_count,
+variation_count, line_length, kind ("resource" or "effect"); then "checks", flat:
+  <sheet>_edge_px      the most pixels, in any cell, on the canvas's outermost row or column
+                       (alpha above 0; for the effect, the light, bloom and all): above 0 fails,
+                       the canvas cuts the cell off
+  <sheet>_reach_tiles  the resource's: how far its cells' union reaches past each edge of the
+                       footprint (N, E, S, W), tiles, below 0 short of it -- what can show round
+                       a building of the footprint's size on it. Information
+  <effect>_white_px    the most pixels, in any cell, of the light clipped to white: above 0 fails
+  <effect>_clipped_px  the most pixels, in any cell, the light at full strength drives to white over
+                       its resource cell. Information: the engine draws it at min_effect_alpha to
+                       max_effect_alpha, raised by darkness (effect_darkness_multiplier)
+  <effect>_light       cell (0, 0)'s peak luminance and core and halo shares, as a glow animation's
+  rolloff_px           both sheets' roll-off, and the animations', as for any model (below)
+Its animations (contract.py: its stateless_visualisation, motion flow or cycle, kind paint or glow)
+are packed as a building's are (Packer.animation), each a sheet of its own after the effect's, named
+for the animation alone, its meta.json entry size, shift, frames, line_length, and kind, frame_sequence
+and animation_speed as a building's; with no still, so no frame-0 check. Their checks join the flat
+ones, as a building's: <name>_cycle and <name>_sequence, and for a glow animation <name>_white_px,
+_frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (the
+cell as the screen holds it, lit_cell's: drawn over GROUND, snow-flat's p90 colour, where
+it is clear the ground at its brightest, and a partly transparent pixel read both as its colour
+times its alpha over the ground and as its colour, whichever counts more; with its effect's cell
+added at full strength, when it has an effect, whatever the cell's alpha, as the engine adds
+light; then its paint layer over that, so (1 - the paint's alpha) of the
+effect's light shows through it, over a clear cell pixel as over an opaque one; then the light
+added; pixels white before the light is added, the effect's own clipping among them, are not
+counted): the engine plays a stateless_visualisation over whichever cell it drew, with the effect
+drawn under it. A glow animation's failing checks fail the pack as a building's do.
+Exits 1 naming the sheet and the cell when a check fails, meta.json written first.
+
 The wreck's glow (a remnants pass's `glow`, contract.py: Liam, 2026-10-21, "Make it glow at night"):
 packed as a still glow is, per direction -- its render minus the wreck's (glow_layer), specks
 dropped, kept to the box holding LIGHT_SHARE (99.9 %) of its light, never cut, its white pixels
@@ -127,13 +171,14 @@ a definition's type "basic", intensity, size and color (when declared), a layer'
 height, scale, tint (when declared) and draw_as_light true; its shift, one [x, y] for a model of one
 direction, else {direction: [x, y]} for each of its directions (one shift given for all of them
 written out for each); and working, false when not declared. A model without lights has no such key.
+A resource model's are carried the same way, after its sheets and before its "checks".
 
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
 (Packer.slide; naming those frames), or a glow animation clips or
-reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge.
-meta.json is written first.
+reaches the canvas's edge, or a wreck has no shadow or reaches its canvas's edge, or a
+resource model's sheet fails its checks (above). meta.json is written first.
 """
 import functools
 import itertools
@@ -208,6 +253,17 @@ SHADOW_MIN_PX = 64
 # tops out at 243.3, and rounded up 244: under 245.
 KNEE = 236
 TOP = 244
+# The ground under a resource cell's clear pixels (lit_cell), at its brightest: the worst case for
+# a glow clipping over it (vents T02e, Liam, 2026-10-27: "Bright worst case", then "p90"). The Core
+# without Alien Biomes is Aquilo's snow and ice (prototypes/core/map-gen.lua, without_pack); the
+# brightest is snow-flat, and this is the per-channel 90th percentile of the opaque pixels of
+# __space-age__/graphics/terrain/aquilo/snow-flat.png (measured 2026-10-27): brighter than its
+# typical colour (median (204, 210, 234), mean (199.7, 202.1, 222.7)), so it covers the brighter
+# flecks a glow can land on. snow-lumpy's, snow-crests' and snow-patchy-8x's luminance medians are
+# 201, 202 and 153 to snow-flat's 211; ice-rough's and ice-smooth's 86. As the sprite holds it,
+# before the engine's lighting: the Core's darkness only dims it, so this is the brightest the
+# ground is drawn.
+GROUND = (219, 222, 243)
 
 
 def clean(im):
@@ -372,6 +428,39 @@ def add_light(under, glow):
     """under (RGBA) with a glow sheet's frame added, as the engine adds it: RGB only."""
     lit = ImageChops.add(under.convert("RGB"), glow.convert("RGB"))
     return Image.merge("RGBA", (*lit.split(), under.getchannel("A")))
+
+
+def lit_cell(cell, light=None, full=False):
+    """A resource cell as the screen holds it once the engine has drawn it and added its effect's
+    light (RGB, light added): what a stateless_visualisation's layers are drawn over. Opaque, as
+    the screen is: the cell drawn over GROUND (its brightest, the worst case: where the cell is
+    clear the ground shows), and the light added whatever the cell's alpha, as the engine adds
+    it, clipped at 255 as the screen clips. A partly transparent pixel is its colour times its
+    alpha over the ground (exact), or with full, its colour as it is (any alpha above 0, as
+    white() reads every sprite): lit_readings gives both, for the count to take the higher. A
+    layer composited over this keeps the light where it lets the screen through: (1 - its alpha)
+    of it, over a clear cell pixel as over an opaque one. Where the cell is opaque this is
+    add_light(cell, light) itself."""
+    ground = Image.new("RGBA", cell.size, GROUND + (255,))
+    if full:
+        drawn = cell.getchannel("A").point(lambda v: 255 if v else 0)
+        rgb = Image.composite(cell.convert("RGB"), ground.convert("RGB"), drawn)
+    else:
+        rgb = Image.alpha_composite(ground, cell.convert("RGBA")).convert("RGB")
+    if light is not None:
+        rgb = ImageChops.add(rgb, light.convert("RGB"))
+    return Image.merge("RGBA", (*rgb.split(), Image.new("L", cell.size, 255)))
+
+
+def lit_readings(cell, light=None):
+    """lit_cell's readings of a cell: exact, and where any pixel is partly transparent its
+    full-colour one too. Over a bright ground neither is the safe side for every pixel: exact is
+    the brighter where the cell is darker than the ground, full where it is paler, and a pixel
+    already white before the glow is not counted, so brighter is not always more. The clipped
+    count (glow_checks, the most over its plates) takes whichever reading counts more."""
+    a = cell.getchannel("A")
+    partial = a.point(lambda v: 255 if 0 < v < 255 else 0).getbbox() is not None
+    return [lit_cell(cell, light)] + ([lit_cell(cell, light, full=True)] if partial else [])
 
 
 def light_stats(glow, thresh=12):
@@ -584,6 +673,7 @@ class Packer:
         self.rolls = {}     # per direction, {sheet: its pixels the roll-off changed, the most a channel moved}
         self.wrecks = {}    # per direction, the remnants pass's render, cleaned and rolled off: packed into one sheet
         self.wreck_glows = {}   # per direction, the wreck's glow as a still glow's sheet carries it: likewise
+        self.bad_cells = []  # every resource model's check that fails, as a line to exit with
 
     def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false.
@@ -673,47 +763,9 @@ class Packer:
         packed = {}         # every animation's frames, as packed: a glow's checks read its plate layer's
         for a in decl["animations"]:
             name, n = a["name"], int(a["frames"])
-            light = a.get("kind", "paint") == "light"
-            glow = a.get("kind") == "glow"
-            # a light animation keeps what a light pass keeps (alpha above 8); a glow is turned to
-            # light; paint is cleaned of the catchers' haze below NOISE
-            frames = [light_layer(self.open(contract.frame(name, f, d), d)) if light
-                      else glow_frame(self.open(contract.frame(name, f, d), d), a.get("bloom")) if glow
-                      else clean(self.open(contract.frame(name, f, d), d)) for f in range(n)]
-            packed[name] = frames
-            working = a.get("working", False)
-            u = None
-            for f, fr in enumerate(frames):
-                if working and fr.getchannel("A").getbbox() is None:
-                    continue                 # a working layer may draw nothing in a frame (dust between landings)
-                b = self.box_of(fr.getchannel("A"), contract.frame(name, f, d) + ".png", 8 if light else 0)
-                u = b if u is None else (min(u[0], b[0]), min(u[1], b[1]), max(u[2], b[2]), max(u[3], b[3]))
-            if u is None:
-                sys.exit(f"pack.py: every frame of {contract.named(name, d)} is empty")
-            fw, fh = u[2] - u[0], u[3] - u[1]
-            line = max(1, min(n, MAX_SHEET_W // fw))
-            sheet = Image.new("RGBA", (fw * line, fh * math.ceil(n / line)))
-            for i, fr in enumerate(frames):
-                sheet.paste(fr.crop(u), ((i % line) * fw, (i // line) * fh))
-            stem = contract.named(name, d)
-            if not light:
-                sheet = self.rolloff(sheet, stem, d)     # its frames, unrolled, are what the checks read
-            sheet.save(os.path.join(self.out, stem + ".png"))
-            self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
-            if light or glow:
-                self.meta[stem]["kind"] = a["kind"]
-            elif not working:
+            frames = packed[name] = self.animation(a, d, checks)
+            if a.get("kind", "paint") == "paint" and not a.get("working", False):
                 frame0.append(frames[0])     # light and working layers draw only while working: not the still's
-            seq = contract.sequence(decl, a)
-            if seq is not None:
-                self.meta[stem]["frame_sequence"] = seq
-                checks[f"{name}_sequence"] = (
-                    dict(entries=len(seq), unused=[k for k in range(1, n + 1) if k not in seq]),
-                    f"the frame_sequence it plays in (meta.json, 1-based): its entries, the actual length every "
-                    f"layer drawn with it must have ({contract.SEQUENCE_MAX} at most), and the frames it never shows")
-            speed = contract.speed(decl, a)
-            if speed is not None:
-                self.meta[stem]["animation_speed"] = speed
             if a["motion"] == "flow":
                 continue                     # contents moving in place: nothing to hold to a centroid
             if a["motion"] == "cycle":
@@ -801,31 +853,82 @@ class Packer:
                                       f"opts out")
         return appendix
 
-    def glow_checks(self, anim, packed, plate, d, siblings=()):
+    def animation(self, a, d, checks):
+        """One animation's sheet in direction d, written, with its meta.json entry and its
+        <name>_sequence check; returns its frames as packed, before the roll-off, which the
+        checks read."""
+        decl = self.decl
+        name, n = a["name"], int(a["frames"])
+        light = a.get("kind", "paint") == "light"
+        glow = a.get("kind") == "glow"
+        # a light animation keeps what a light pass keeps (alpha above 8); a glow is turned to
+        # light; paint is cleaned of the catchers' haze below NOISE
+        frames = [light_layer(self.open(contract.frame(name, f, d), d)) if light
+                  else glow_frame(self.open(contract.frame(name, f, d), d), a.get("bloom")) if glow
+                  else clean(self.open(contract.frame(name, f, d), d)) for f in range(n)]
+        working = a.get("working", False)
+        u = None
+        for f, fr in enumerate(frames):
+            if working and fr.getchannel("A").getbbox() is None:
+                continue                 # a working layer may draw nothing in a frame (dust between landings)
+            b = self.box_of(fr.getchannel("A"), contract.frame(name, f, d) + ".png", 8 if light else 0)
+            u = b if u is None else (min(u[0], b[0]), min(u[1], b[1]), max(u[2], b[2]), max(u[3], b[3]))
+        if u is None:
+            sys.exit(f"pack.py: every frame of {contract.named(name, d)} is empty")
+        fw, fh = u[2] - u[0], u[3] - u[1]
+        line = max(1, min(n, MAX_SHEET_W // fw))
+        sheet = Image.new("RGBA", (fw * line, fh * math.ceil(n / line)))
+        for i, fr in enumerate(frames):
+            sheet.paste(fr.crop(u), ((i % line) * fw, (i // line) * fh))
+        stem = contract.named(name, d)
+        if not light:
+            sheet = self.rolloff(sheet, stem, d)     # its frames, unrolled, are what the checks read
+        sheet.save(os.path.join(self.out, stem + ".png"))
+        self.meta[stem] = dict(size=(fw, fh), shift=self.shift(u), frames=n, line_length=line)
+        if light or glow:
+            self.meta[stem]["kind"] = a["kind"]
+        seq = contract.sequence(decl, a)
+        if seq is not None:
+            self.meta[stem]["frame_sequence"] = seq
+            checks[f"{name}_sequence"] = (
+                dict(entries=len(seq), unused=[k for k in range(1, n + 1) if k not in seq]),
+                f"the frame_sequence it plays in (meta.json, 1-based): its entries, the actual length every "
+                f"layer drawn with it must have ({contract.SEQUENCE_MAX} at most), and the frames it never shows")
+        speed = contract.speed(decl, a)
+        if speed is not None:
+            self.meta[stem]["animation_speed"] = speed
+        return frames
+
+    def glow_checks(self, anim, packed, plate, d, siblings=(), on="the plate"):
         """An animated glow held to its light: never white, never driving its plate to white,
         one frame for each of its plate layer's. siblings: the other glow animations over the
         same plate layer (a model's windows of different blooms, radiant.py): the engine draws
-        them all, so the clipping is counted with all of them added."""
+        them all, so the clipping is counted with all of them added. plate: the image the layers
+        are drawn over, or a list of them, each counted (a resource's cells as lit_readings gives them,
+        each with its effect's light added, any of which its stateless_visualisation may play over),
+        `on` naming them in the check's note."""
         name, over = anim["name"], anim["over"]
         glows, unders = packed[name], packed[over]
+        plates = plate if isinstance(plate, list) else [plate]
         bare = clipped = edge = 0
         for f, (g, u) in enumerate(zip(glows, unders)):
             # the light, bloom and all, must fade out inside the canvas: at its edge the tail is cut
             edge = max(edge, edge_px(g.getchannel("A")))
-            under = plate.copy()
-            under.alpha_composite(u)
             bare = max(bare, white(g).histogram()[255])
-            lit = add_light(under, g)
-            for sib in siblings:
-                lit = add_light(lit, packed[sib][f % len(packed[sib])])
-            # white once the light is added, and not white without it (a glint already is)
-            clipped = max(clipped, ImageChops.subtract(white(lit), white(under)).histogram()[255])
+            for base in plates:
+                under = base.copy()
+                under.alpha_composite(u)
+                lit = add_light(under, g)
+                for sib in siblings:
+                    lit = add_light(lit, packed[sib][f % len(packed[sib])])
+                # white once the light is added, and not white without it (a glint already is)
+                clipped = max(clipped, ImageChops.subtract(white(lit), white(under)).histogram()[255])
         out = {
             f"{name}_white_px": (bare, "the most pixels of the light, in any frame, clipped to white; 0 = it "
                                  "keeps its colour"),
             f"{name}_clipped_px": (clipped, f"the most pixels, in any frame, the light drives to white added over "
-                                   f"{over!r} on the plate" + (f", with {', '.join(siblings)} added too" if siblings
-                                                               else "") + "; 0 = nothing clips"),
+                                   f"{over!r} on {on}" + (f", with {', '.join(siblings)} added too" if siblings
+                                                          else "") + "; 0 = nothing clips"),
             f"{name}_frames": ([len(glows), len(unders)], f"its frames and its plate layer {over!r}'s: equal"),
             f"{name}_edge_px": (edge, f"the most pixels, in any frame, of the light (bloom and all, above "
                                 f"GLOW_FLOOR {GLOW_FLOOR}) on the canvas's edge; 0 = the tail fades out inside it"),
@@ -940,7 +1043,110 @@ class Packer:
         self.meta[sheet_name] = dict(size=(w, h), shift=self.shift(u, (cw / 2, ch / 2)), direction_count=len(rows),
                                      line_length=1, rows=rows, kind="remnants", **extra)
 
+    # ---------------------------------------------------------------- a resource model
+
+    def grid_sheet(self, p, cells, kind):
+        """One resource model's sheet: cells {(stage, variation): image} laid a row a stage and
+        a column a variation, every cell cropped to the box that holds them all. Its meta.json
+        entry, and the union of its cells' pixels (alpha above 0) for the reach."""
+        res = contract.resource_pass(self.decl)
+        rows, cols = res["stages"], res["variations"]
+        boxes = [self.box_of(im.getchannel("A"), contract.cell(p["name"], *sv) + ".png")
+                 for sv, im in cells.items() if im.getchannel("A").getbbox() is not None]
+        if not boxes:
+            sys.exit(f"pack.py: every cell of {p['kind']} pass {p['name']!r} is empty")
+        u = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
+        w, h = u[2] - u[0], u[3] - u[1]
+        if w * cols > MAX_SHEET_W or h * rows > MAX_SHEET_W:
+            sys.exit(f"pack.py: {p['kind']} pass {p['name']!r} packs into a {w * cols}x{h * rows} sheet ({cols} "
+                     f"variations of {w} px by {rows} stages of {h} px), past {MAX_SHEET_W} px: a resource sheet "
+                     f"does not wrap; fewer variations or stages, or a smaller cell")
+        sheet = Image.new("RGBA", (w * cols, h * rows))
+        for (s, v), im in cells.items():
+            sheet.paste(im.crop(u), (v * w, s * h))
+        sheet = self.rolloff(sheet, p["sheet"], "")         # its cells, unrolled, are what the checks read
+        sheet.save(os.path.join(self.out, p["sheet"] + ".png"))
+        self.meta[p["sheet"]] = dict(size=(w, h), shift=self.shift(u), frame_count=cols, variation_count=rows,
+                                     line_length=cols, kind=kind)
+        return (u[0] + 1, u[1] + 1, u[2] - 1, u[3] - 1)     # less the rim
+
+    def resource(self):
+        """A resource model's sheets and checks (the docstring's): its stages sheet, then its
+        effect's, and meta.json's flat "checks"."""
+        decl = self.decl
+        res = contract.resource_pass(decl)
+        grid = contract.cells(decl)
+        checks = {}
+        cells = {sv: clean(self.open(contract.cell(res["name"], *sv), "")) for sv in grid}
+        lit_cells = {sv: lit_readings(im) for sv, im in cells.items()}   # what an animation plays over (lit_cell)
+        for sv, im in cells.items():         # every cell of a resource holds something
+            self.box_of(im.getchannel("A"), contract.cell(res["name"], *sv) + ".png")
+        reach_box = self.grid_sheet(res, cells, "resource")
+        self.cell_edges(res, {sv: im.getchannel("A").point(lambda v: 255 if v else 0) for sv, im in cells.items()},
+                        checks)
+        checks[f"{res['sheet']}_reach_tiles"] = (
+            reach(reach_box, decl, "", decl["canvas"]),
+            "how far the cells reach past each footprint edge (N, E, S, W), tiles; below 0 short of it: what "
+            "can show round a building of the footprint's size on it")
+        for p in decl["passes"]:
+            if p["kind"] != "effect":
+                continue
+            lights = {sv: glow_frame(self.open(contract.cell(p["name"], *sv), ""), p.get("bloom")) for sv in grid}
+            lit_cells = {sv: lit_readings(cells[sv], lights[sv]) for sv in grid}
+            self.grid_sheet(p, lights, "effect")
+            self.cell_edges(p, {sv: g.getchannel("A") for sv, g in lights.items()}, checks)
+            name = p["sheet"]
+            bare = {sv: white(g).histogram()[255] for sv, g in lights.items()}
+            clipped = max(ImageChops.subtract(white(add_light(cells[sv], g)), white(cells[sv])).histogram()[255]
+                          for sv, g in lights.items())
+            checks[f"{name}_white_px"] = (max(bare.values()), "the most pixels of the light, in any cell, clipped "
+                                          "to white; 0 = it keeps its colour")
+            checks[f"{name}_clipped_px"] = (clipped, f"the most pixels, in any cell, the light at full strength "
+                                            f"drives to white over {res['name']!r}; information: the engine draws it "
+                                            f"at min_effect_alpha to max_effect_alpha, raised by darkness")
+            checks[f"{name}_light"] = (light_stats(lights[(0, 0)]), "cell (0, 0): peak luminance, core % (>= 60 % "
+                                       "of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, "
+                                       "halo 77-88")
+            whitened = [contract.cell(p["name"], *sv) for sv, n in bare.items() if n]
+            if whitened:
+                self.bad_cells.append(f"effect pass {p['name']!r}: light clipped to white in {', '.join(whitened)} "
+                                      f"(at most {max(bare.values())} px); 0 in every cell, or it loses its colour")
+        # its stateless_visualisation: each animation packed as a building's, held to no cell (no still)
+        packed = {a["name"]: self.animation(a, "", checks) for a in decl["animations"]}
+        for a in decl["animations"]:
+            if a["motion"] == "cycle":
+                checks[f"{a['name']}_cycle"] = (int(a["frames"]), "frames of a closed loop; no positional check")
+            if a.get("kind") == "glow":
+                siblings = [b["name"] for b in decl["animations"]
+                            if b.get("kind") == "glow" and b["over"] == a["over"] and b["name"] != a["name"]]
+                fx = [q["name"] for q in decl["passes"] if q["kind"] == "effect"]
+                plates = [r for rs in lit_cells.values() for r in rs]    # every cell, every reading
+                on = f"each cell of {res['name']!r} over the ground at its brightest {GROUND}" + (
+                    f" with {fx[0]!r}'s light added at full strength" if fx else "")
+                checks.update(self.glow_checks(a, packed, plates, "", siblings, on=on))
+        if self.roll_on:
+            checks["rolloff_px"] = (self.rolls.get("", {}), f"per sheet, the px the highlight roll-off changed "
+                                    f"(brightest channel over {KNEE}, eased under {TOP}, hue kept) and the most a "
+                                    f"channel moved; render.json's rolloff false opts out")
+        if "lights" in decl:
+            self.meta[contract.LIGHTS_KEY] = lights_meta(decl)
+        self.meta["checks"] = checks
+        return self.meta
+
+    def cell_edges(self, p, alphas, checks):
+        """<sheet>_edge_px: the most pixels of any cell (alphas, 0 or 255) on the canvas's edge, the
+        cells on it named to fail the pack."""
+        edges = {sv: edge_px(a) for sv, a in alphas.items()}
+        checks[f"{p['sheet']}_edge_px"] = (max(edges.values()), "the most pixels, in any cell, on the canvas's "
+                                           "outermost row or column; 0 = the canvas holds every cell")
+        cut_off = [contract.cell(p["name"], *sv) for sv, n in edges.items() if n]
+        if cut_off:
+            self.bad_cells.append(f"{p['kind']} pass {p['name']!r}: on the canvas's edge in {', '.join(cut_off)} (at "
+                                  f"most {max(edges.values())} px), so the canvas cuts it off: widen the canvas")
+
     def run(self):
+        if contract.is_resource(self.decl):
+            return self.resource()
         dirs = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         per = {d: self.direction(d) for d in dirs}
         for p in self.decl["passes"]:
@@ -981,6 +1187,12 @@ def where(d):
 
 def missing(src, decl):
     """Every render the declaration promises that is not in src."""
+    if contract.is_resource(decl):      # one render a cell, for each of its passes, and its animations' frames
+        want = [(f"{p['kind']} pass {p['name']!r}, stage {s}, variation {v}", contract.cell(p["name"], s, v))
+                for p in decl["passes"] for s, v in contract.cells(decl)]
+        want += [(f"animation {a['name']!r}", contract.frame(a["name"], f)) for a in decl["animations"]
+                 for f in range(int(a["frames"]))]
+        return [(what, stem) for what, stem in want if not os.path.isfile(os.path.join(src, stem + ".png"))]
     want = []
     for d, _ in contract.DIRECTIONS[decl["directions"]]:
         want += [(f"pass {p['name']!r}", contract.named(p["name"], d)) for p in decl["passes"]]
@@ -1021,6 +1233,9 @@ def main(src, out):
     if packer.wrecked:
         failed.append(f"pack.py: {len(packer.wrecked)} remnants check(s) failed "
                       f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.wrecked))
+    if packer.bad_cells:
+        failed.append(f"pack.py: {len(packer.bad_cells)} resource check(s) failed "
+                      f"(numbers in {out}/meta.json):\n" + "\n".join(f"  {o}" for o in packer.bad_cells))
     if failed:
         sys.exit("\n".join(failed))
 

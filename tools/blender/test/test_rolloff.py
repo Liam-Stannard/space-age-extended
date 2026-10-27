@@ -67,7 +67,10 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              and both exit the same; and preview.py's sheet (this tree's with --day-only, its
              default since T08f-2 having night rows), and the fixture's GIF of the hatch, byte for
              byte as the baseline's (its preview.py run with its glow passes' haze cleared, as this
-             tree's draws them since T08f-3: baseline_preview.py).
+             tree's draws them since T08f-3: baseline_preview.py). This tree's pack.py and preview.py
+             run here with their glow floor set aside (floor_aside.py: judged on luma, as before
+             T08h, and nothing else changed), as the baseline's judges it; test_glow_floor.py holds
+             the floor.
 """
 import argparse
 import colorsys
@@ -91,6 +94,7 @@ import contract  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
 import baseline_preview  # noqa: E402
+import floor_aside  # noqa: E402
 
 FAILED = []
 CANVAS = (256, 256)
@@ -124,11 +128,15 @@ def run(cmd):
     return p.returncode, p.stdout + p.stderr
 
 
-def packed(src, out, tools=TOOLS):
-    """pack.py (tools') src -> out: its exit code, output and meta.json (None if it wrote none)."""
+def packed(src, out, tools=TOOLS, aside=False):
+    """pack.py (tools') src -> out: its exit code, output and meta.json (None if it wrote none).
+    With aside, this tree's, its glow floor set aside (floor_aside.py)."""
     if os.path.exists(out):
         shutil.rmtree(out)
-    code, text = run([sys.executable, os.path.join(tools, "pack.py"), src, out])
+    if aside and tools != TOOLS:
+        raise ValueError("packed: aside is for this tree's pack.py")
+    code, text = run(floor_aside.command("pack.py", [src, out]) if aside else
+                     [sys.executable, os.path.join(tools, "pack.py"), src, out])
     meta = os.path.join(out, "meta.json")
     return code, text, (json.load(open(meta)) if os.path.isfile(meta) else None)
 
@@ -590,13 +598,14 @@ def test_opt_out(out, base, fixture, renders):
         if not os.path.isdir(src):
             src = opted_out(rdir, src)
         mine, theirs = os.path.join(out, f"{label}-off"), os.path.join(out, f"{label}-old")
-        code_m, _, _ = packed(src, mine)
+        code_m, _, _ = packed(src, mine, aside=True)          # as the baseline judges the glow floor
         code_b, text_b, _ = packed(src, theirs, base)
         fm, fb = sorted(os.listdir(mine)), sorted(os.listdir(theirs))
         differ = [f for f in fm if f in fb and open(os.path.join(mine, f), "rb").read() !=
                   open(os.path.join(theirs, f), "rb").read()]
-        check(f"{label}: opted out, every file byte for byte as the baseline's, meta.json too ({len(fm)} files; "
-              f"baseline exit {code_b})", fm == fb and not differ and fm and code_b == code_m,
+        check(f"{label}: opted out, this tree's floor set aside, every file byte for byte as the baseline's, "
+              f"meta.json too ({len(fm)} files; baseline exit {code_b})",
+              fm == fb and not differ and fm and code_b == code_m,
               f"files {sorted(set(fm) ^ set(fb))}, differ {differ}, exits {code_m} and {code_b}: {text_b[-300:]}")
         runs = [("preview.png", ["--day-only"])] + ([("hatch.gif", ["--gif", "hatch", "--speed", "0.25"])]
                                                     if label == "fixture" else [])
@@ -606,12 +615,14 @@ def test_opt_out(out, base, fixture, renders):
                 os.makedirs(o, exist_ok=True)
                 flags = [f for f in extra if tools == TOOLS or f != "--day-only"]   # the baseline's has none
                 args = [src, os.path.join(o, name), *flags]
-                # the baseline's glow passes' haze cleared, as this tree's preview.py draws them (T08f-3)
-                code, text = run([sys.executable, os.path.join(tools, "preview.py"), *args] if tools == TOOLS
+                # the baseline's glow passes' haze cleared, as this tree's preview.py draws them (T08f-3);
+                # this tree's glow floor set aside, as the baseline's judges it (T08h)
+                code, text = run(floor_aside.command("preview.py", args) if tools == TOOLS
                                  else baseline_preview.command(tools, args))
                 got.append(open(os.path.join(o, name), "rb").read() if code == 0 else None)
                 why += "" if code == 0 else f"{tools}: exit {code}: {text[-200:]} "
-            check(f"{label}: opted out, preview.py's {name} byte for byte as the baseline's, its haze cleared",
+            check(f"{label}: opted out, preview.py's {name} byte for byte as the baseline's, its haze cleared "
+                  f"(this tree's floor set aside)",
                   got[0] is not None and got[0] == got[1], why)
 
 

@@ -51,6 +51,44 @@ a pass: everything they act on is declared here.
                         name may not be a pass's, and its sheet follows the remnants
                         sheet's rules (one file for every direction) and may not be the
                         wreck's own or any other sheet
+                resource  a ground resource -- an ore, a vent -- as its prototype's
+                        `stages` draws it: one sheet of `stages` rows by `variations`
+                        columns (both whole numbers, 1 or more), rendered one cell at a
+                        time into <name>-SS-VV.png (cell(), below), SS the stage and VV
+                        the variation, both from 0. Stage 0 is the richest, the top row,
+                        drawn for the first entry of the prototype's stage_counts (iron
+                        ore's sheet: its top row covers 5.6 times its bottom's); each
+                        variation is a column. The engine reads it as an AnimationSheet
+                        with variation_count = stages and frame_count = variations
+                        (ResourceEntityPrototype.stages, 2.1: "frame_count is the amount
+                        of frames per row ... variation_count is the amount of rows ...
+                        Each row in the spritesheet is one stage"); crude oil's sheet is 1
+                        stage of 4, iron ore's 8 of 8. Rendered as a wreck is, over the
+                        ground catcher, so what a pile or a rim casts is in the one sprite
+                        (vanilla's resource sheets have no shadow layer). A model that
+                        declares one is a resource model (below)
+                effect  the resource's `stages_effect`: light drawn additively over it,
+                        uranium ore's glow (base resources.lua). `over` names the
+                        resource pass; one cell per cell of it, <name>-SS-VV.png, each the
+                        light alone on transparent film (the sun and sky off), packed as an
+                        animated glow's frame is (pack.glow_frame), with an optional `bloom`
+                        as a glow animation's. At most one, in a resource model only. The
+                        pulse is the engine's (effect_animation_period, min/max_effect_alpha),
+                        not the model's: each cell is one still
+              A resource model declares one resource pass, at most one effect pass and
+              nothing else: no plate, so no Appendix C (contract.py's plate rule does not
+              apply); directions "one" (a resource never turns); no ports, no cut; no light
+              (`lights`, below) declared working, as a resource has no working state. Its
+              footprint is the resource's collision box in tiles (crude oil's
+              +-1.4 is 3 x 3, an ore's 1 x 1), which pack.py measures the sheet's reach
+              past. Its canvas is every cell's, the entity origin at its centre.
+              Its animations (below) are its prototype's stateless_visualisation, motion
+              the engine plays always, over whichever cell it drew (crude oil's 32-frame
+              crude-oil-animation, base resources.lua): each a sheet of its own on the
+              model's canvas, <name>-NN.png as a building's, of motion "flow" or "cycle"
+              and kind "paint" or "glow" only, never `working` (a resource has no working
+              state). No still pass and no frame-0 check: a stateless visualisation is
+              no part of any one cell. No frame of one may take a cell's name
   animations  [{name, frames, motion, path}], frames <name>-NN.png (and
               <name>-NN-<direction>.png). motion "turn": a part turning about
               its own axis, held to its centroid. motion "slide": a part moving
@@ -207,7 +245,8 @@ a pass: everything they act on is declared here.
               in its night rows (each docstring). When there are lights, no sheet may be
               named "lights" in any direction, which is their meta.json key
 
-Run as a script, it lists a render directory's plate renders, one per direction:
+Run as a script, it lists a render directory's plate renders, one per direction (a
+resource model's stage-0 cells, one per variation: its richest look, measured as a plate is):
   python3 contract.py plates <render-dir>
 """
 import json
@@ -220,7 +259,10 @@ DIRECTIONS = {
     "four": [("north", 0), ("east", 90), ("south", 180), ("west", 270)],
     "horizontal-vertical": [("vertical", 0), ("horizontal", 90)],
 }
-KINDS = ("plate", "shadow", "glow", "paint", "light", "still", "remnants")
+KINDS = ("plate", "shadow", "glow", "paint", "light", "still", "remnants", "resource", "effect")
+RESOURCE_KINDS = ("resource", "effect")     # a resource model's passes, and the only ones it may have
+RESOURCE_MOTIONS = ("flow", "cycle")        # a resource model's animations: stateless_visualisation
+RESOURCE_ANIM_KINDS = ("paint", "glow")
 # The engine direction each row of a remnants sheet is drawn for, top to bottom, and the render
 # drawn in it: vanilla's building remnants are one column (line_length 1) of direction_count
 # rows, north, east, south, west -- steam-turbine-remnants a 460x1632 sheet of four 460x408
@@ -268,6 +310,28 @@ def frame(anim, f, direction=""):
 def track_frame(anim, track, f, direction):
     """A slide's tracked part, alone, in frame f: measured, never packed."""
     return frame(f"{anim}-{track}", f, direction)
+
+
+def cell(name, stage, variation):
+    """A resource or effect pass's render of one cell of its sheet: stage (row) and variation
+    (column), both from 0."""
+    return f"{name}-{stage:02d}-{variation:02d}"
+
+
+def is_resource(decl):
+    """Whether a model is a resource model: it declares a resource pass."""
+    return any(p.get("kind") == "resource" for p in decl["passes"])
+
+
+def resource_pass(decl):
+    """A resource model's resource pass, which every effect pass is over and whose grid it shares."""
+    return next(p for p in decl["passes"] if p["kind"] == "resource")
+
+
+def cells(decl):
+    """Every (stage, variation) of a resource model's sheet, row by row from the richest stage."""
+    res = resource_pass(decl)
+    return [(s, v) for s in range(res["stages"]) for v in range(res["variations"])]
 
 
 def _played(anim):
@@ -395,6 +459,87 @@ def _stem(v):
     return isinstance(v, str) and v.strip() != "" and "/" not in v and "\\" not in v
 
 
+def _bloom(v):
+    """A bloom: [[radius px above 0, gain 0 or more], ...], one stage or more."""
+    return _seq(v) and bool(v) and all(_seq(st, 2) and all(_number(c) for c in st) and st[0] > 0 and st[1] >= 0
+                                       for st in v)
+
+
+def _resource(decl, bad):
+    """Hold a resource model (the docstring's, under `passes`) to its rules: one resource pass,
+    at most one effect over it, nothing else; one direction; no ports or cut. Its animations are
+    held after every animation's own checks (_resource_animations)."""
+    passes = decl["passes"]
+    res = [i for i, p in enumerate(passes) if p["kind"] == "resource"]
+    if len(res) != 1:
+        bad("passes", f"declares {len(res)} resource passes: a resource model has exactly one, its stages "
+            f"sheet, and an effect pass (its stages_effect) is a resource model's alone, over it")
+    for i, p in enumerate(passes):
+        if p["kind"] not in RESOURCE_KINDS:
+            bad(f"passes[{i}].kind", f"{p['kind']} pass {p['name']!r} in a resource model: it declares one "
+                f"resource pass and at most one effect pass over it, and nothing else (a resource is no "
+                f"building: no plate, no Appendix C)")
+    r = passes[res[0]]
+    for key, what in (("stages", "rows, the depletion stages, richest first"),
+                      ("variations", "columns, the looks of one stage")):
+        if not (_whole(r.get(key)) and r[key] >= 1):
+            bad(f"passes[{res[0]}].{key}", f"{r.get(key)!r} is not a whole number of 1 or more: the "
+                f"sheet's {what}")
+    effects = [i for i, p in enumerate(passes) if p["kind"] == "effect"]
+    if len(effects) > 1:
+        bad("passes", f"declares {len(effects)} effect passes; a resource has one stages_effect")
+    for i in effects:
+        p = passes[i]
+        if p.get("over") != r["name"]:
+            bad(f"passes[{i}].over", f"effect pass {p['name']!r} is over {p.get('over')!r}, which is not the "
+                f"resource pass {r['name']!r}")
+        for key in ("stages", "variations"):
+            if key in p:
+                bad(f"passes[{i}].{key}", f"effect pass {p['name']!r} declares its own {key}: it has one cell "
+                    f"per cell of its resource pass {r['name']!r}, whose grid it shares")
+        if "bloom" in p and not _bloom(p["bloom"]):
+            bad(f"passes[{i}].bloom", f"{p['bloom']!r} is not [[radius, gain], ...]: one stage or more, each a "
+                f"radius in px above 0 and a gain of 0 or more")
+    for i, p in enumerate(passes):
+        if p["sheet"] == "checks":
+            bad(f"passes[{i}].sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
+    if decl["directions"] != "one":
+        bad("directions", f"{decl['directions']!r}: a resource never turns, so a resource model is \"one\"")
+    if decl["ports"]:
+        bad("ports", "a resource model declares no ports: a resource has no pipe connections of its own")
+    for key in ("cut", "ports_turn"):
+        if key in decl:
+            bad(key, f"a resource model declares no {key}: it has no footprint edge to cut or port to turn")
+    # a lights field that is no list is _lights()'s to refuse, after this
+    for i, li in enumerate(decl["lights"] if _seq(decl.get("lights")) else ()):
+        if isinstance(li, dict) and li.get("working") is True:
+            bad(f"lights[{i}].working", f"light {li.get('name')!r} is working: a resource has no working state, "
+                f"so it would never be drawn")
+
+
+def _resource_animations(decl, bad):
+    """Hold a resource model's animations, each already held to every animation's rules, to a
+    resource's: its stateless_visualisation, played always and over any cell -- motion flow or
+    cycle, kind paint or glow, never working -- and no frame named as one of its cells is."""
+    stems = {cell(p["name"], s, v) for p in decl["passes"] for s, v in cells(decl)}
+    for i, a in enumerate(decl["animations"]):
+        field = f"animations[{i}]"
+        if a["motion"] not in RESOURCE_MOTIONS:
+            bad(f"{field}.motion", f"{a['motion']!r} in a resource model: its animations are its "
+                f"stateless_visualisation, motion {' or '.join(RESOURCE_MOTIONS)}, with no part held to a "
+                f"centroid or a curve")
+        if a.get("kind", "paint") not in RESOURCE_ANIM_KINDS:
+            bad(f"{field}.kind", f"{a.get('kind')!r} in a resource model: its animations are of kind "
+                f"{' or '.join(RESOURCE_ANIM_KINDS)} (a light is a building's status lamp, tinted while working)")
+        if a.get("working"):
+            bad(f"{field}.working", f"animation {a['name']!r} is working: a resource has no working state, and "
+                f"the engine plays its stateless_visualisation always")
+        taken = sorted(stems & {frame(a["name"], f) for f in range(a["frames"])})
+        if taken:
+            bad(f"{field}.name", f"animation {a['name']!r}'s frame(s) {', '.join(taken)} take the name of a cell "
+                f"of the model's passes: name it so that none does")
+
+
 def validate(decl, where):
     """Hold a declaration to the contract, naming the field that breaks it.
 
@@ -458,7 +603,10 @@ def validate(decl, where):
             bad(f"{field}.glow", f"{p['kind']} pass {p['name']!r} has a glow of its own: only a remnants pass "
                 f"may (a building's glow is a glow pass over its plate)")
     kinds = [p["kind"] for p in decl["passes"]]
-    if decl["passes"] and kinds.count("plate") != 1:
+    resource = any(k in RESOURCE_KINDS for k in kinds)
+    if resource:
+        _resource(decl, bad)            # a resource model has no plate: its own rules instead
+    elif decl["passes"] and kinds.count("plate") != 1:
         bad("passes", f"declares {kinds.count('plate')} plate passes; Appendix C needs exactly one")
     if kinds.count("remnants") > 1:
         bad("passes", f"declares {kinds.count('remnants')} remnants passes; a corpse draws one wreck")
@@ -494,8 +642,7 @@ def validate(decl, where):
                 bad(f"{field}.motion", f"glow animation {a['name']!r} is {a['motion']!r}: a glow is light "
                     f"moving in place, motion \"flow\"")
             bloom = a.get("bloom")
-            if bloom is not None and not (_seq(bloom) and bloom and all(
-                    _seq(st, 2) and all(_number(c) for c in st) and st[0] > 0 and st[1] >= 0 for st in bloom)):
+            if bloom is not None and not _bloom(bloom):
                 bad(f"{field}.bloom", f"{bloom!r} is not [[radius, gain], ...]: one stage or more, each a "
                     f"radius in px above 0 and a gain of 0 or more")
         if a["motion"] == "slide":
@@ -562,6 +709,8 @@ def validate(decl, where):
         if under["frames"] != a["frames"]:
             bad(f"animations[{i}].frames", f"glow animation {a['name']!r} has {a['frames']} frames and "
                 f"its plate layer {under['name']!r} {under['frames']}: one glow frame per plate frame")
+    if resource:
+        _resource_animations(decl, bad)
     # A remnants sheet is one file for every direction, named for its sheet alone, where every
     # other sheet is named per direction: it must not be the name another sheet takes in some
     # direction (pack.py would write one over the other), nor meta.json's "checks".
@@ -597,7 +746,7 @@ def validate(decl, where):
         if g["sheet"] == "checks":
             bad(f"{field}.sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
-            and "still" not in kinds:
+            and "still" not in kinds and not resource:     # a resource's motion is held to no cell
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
 
     if "cut" in decl:
@@ -743,6 +892,11 @@ if __name__ == "__main__":
         d = load(sys.argv[2])
     except ContractError as e:
         sys.exit(str(e))
+    if is_resource(d):
+        res = resource_pass(d)
+        for v in range(res["variations"]):
+            print(os.path.join(sys.argv[2], cell(res["name"], 0, v) + ".png"))
+        sys.exit(0)
     plate = next(p["name"] for p in d["passes"] if p["kind"] == "plate")
     for direction, _ in DIRECTIONS[d["directions"]]:
         print(os.path.join(sys.argv[2], named(plate, direction) + ".png"))

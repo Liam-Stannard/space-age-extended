@@ -13,13 +13,18 @@
 #   downsample.py renders are 4x; this brings them to sprite size
 #   pack.py       plate/glow/shadow/light/animation sheets, shifts, geometry checks;
 #                 a remnants pass (the wreck, its shadow baked in) into one sheet in
-#                 vanilla's remnants layout, a row a direction (pack.py's docstring)
+#                 vanilla's remnants layout, a row a direction (pack.py's docstring);
+#                 a resource model (an ore, a vent) into its stages sheet, its
+#                 stages_effect sheet and its stateless_visualisation animations
 #   pack_ports.py pipe_picture / pipe_covers sheets
-#   finish.py, tonal.py, preview.py, port_preview.py   measures and review sheets:
+#   finish.py, tonal.py, preview.py, port_preview.py   measures and review sheets
+#                 (finish.py and tonal.py run here on `contract.py plates`: each
+#                 direction's plate, a resource model's stage-0 cells):
 #                 preview.py <out-dir>/renders <sheet.png> [--adopted <png> ...]
 #                 port_preview.py <out-dir> <sheet.png>   (after --ports)
 #   test/box.py   a 2x2 test model that exercises every path through the packers,
 #                 its wreck (a remnants pass) too
+#   test/resource_box.py  a ground resource: stages, effect and animations
 #
 # The model is run as: blender -b --python <model.py> -- <dir> [--ports | --icon]
 # and must write <dir>/render.json (contract.declare) and the renders it declares;

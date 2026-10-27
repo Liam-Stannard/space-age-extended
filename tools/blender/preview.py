@@ -63,6 +63,25 @@ add), whether it caps them at the day as here, the picture it draws a definition
 (light-medium.png is this preview's stand-in), a definition's minimum_darkness and flicker. Judge a
 light's look in a client: the preview shows where it falls and roughly how strong it is.
 
+A resource model (contract.py: a resource pass, perhaps an effect over it, perhaps animations)
+draws a row a stage, richest first, and in it a panel a variation -- its cell as pack.py packs it,
+on the ground with the footprint's grid, its animations at frame 0 over it (paint drawn, a glow
+added) -- then, with an effect, the same panels again with the effect's cell added at full
+strength (the engine pulses it between min_effect_alpha and max_effect_alpha, by darkness: its
+pulse is not drawn here). The effect and a glow animation's frame are added as every glow is
+(add_glow, T08f-3): their colour only where their alpha is above 0. Under each stage's row is its
+night row, every panel under its day one: the same panel at night, by the building's model of
+night above (vents, Liam 2026-10-27: "Follow radiant's"): the ground, the resource's cell and each
+paint animation's frame darkened to NIGHT, or lit by the model's declared lights as a building's
+idle panel is (a resource has no working state, so a light declared working is never drawn), and
+every glow as by day: a glow animation's frame added, and the effect's cell added at full
+strength, as a draw_as_glow layer shows day and night (the kamacite vent's glow, vents Q9: "Glow,
+day and night"; an effect drawn as vanilla's uranium ore's is, flags {"light"} on the light map,
+is not modelled). The grid is drawn as by day; the adopted picture's night panel is left empty
+(its glows are not known here). --day-only leaves the night rows out, a row a stage. --adopted
+takes one picture for it, first in the top row. --gif plays an animation over the stage-0 cells
+side by side, by day, without the effect.
+
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
 px_per_tile px to a tile, as the engine draws a high-resolution sprite) with the
@@ -217,6 +236,7 @@ class Model:
         self.ppt = float(self.decl["rig"]["px_per_tile"])
         self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
         self.roll_on = self.decl.get("rolloff", True)
+        self.resource = contract.is_resource(self.decl)
         self.pictures = {}                  # a declared light's picture by filename: its size, premultiplied
 
     def picture(self, li):
@@ -314,6 +334,36 @@ class Model:
         for p in self.kind("light"):
             lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
+        return im
+
+    def cell(self, s, v, effect=False, frames=None, night=False, light=None):
+        """A resource model's cell, stage s and variation v, on the ground at canvas size, as pack.py
+        packs it: the resource; with effect, its effect's cell added at full strength; its animations
+        over it, each at frame 0 or its frame in frames {animation: frame}, paint drawn, glow added --
+        the effect and a glow as add_glow adds them, only where their alpha is above 0 (T08f-3).
+        night: at night (the module's docstring), the ground, the cell and the paint darkened, under
+        the model's declared lights; light: those lights (Lights) at canvas size, when the caller has
+        them."""
+        frames = frames or {}
+        canvas = tuple(self.decl["canvas"])
+        k = NIGHT if night else 1
+        if night:
+            k = light or self.light_map("", False, canvas, (canvas[0] / 2, canvas[1] / 2)) or k
+        res = contract.resource_pass(self.decl)
+        im = ground_im(canvas, k)
+        im.alpha_composite(dim(self.shipped(pack.clean(self.open(contract.cell(res["name"], s, v), ""))), k))
+        for p in self.kind("effect") if effect else ():
+            im = add_glow(im, self.shipped(pack.glow_frame(self.open(contract.cell(p["name"], s, v), ""),
+                                                           p.get("bloom"))))
+        glows = []
+        for a in self.decl["animations"]:
+            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0)), "")
+            if a.get("kind") == "glow":
+                glows.append(self.shipped(pack.glow_frame(fr, a.get("bloom"))))
+            else:
+                im.alpha_composite(dim(self.shipped(pack.clean(fr)), k))
+        for g in glows:
+            im = add_glow(im, g)
         return im
 
     def remnants(self):
@@ -419,6 +469,9 @@ def review(model, out, adopted, night=True):
     origin = (pw / 2, ph / 2)
     rows = []
     for i, d in enumerate(model.directions):
+        if model.resource:              # one direction: a row a stage instead
+            rows += resource_rows(model, plates, adopted, (pw, ph), origin, night)
+            continue
         name = d or decl["directions"]
         fp = contract.footprint_in(decl, d)
         panels, dark = [], []           # the day row, and the night row under it (None: left empty)
@@ -449,9 +502,49 @@ def review(model, out, adopted, night=True):
         if any(dark):
             rows.append([label(*p) if p is not None else None for p in dark])
     sheet(rows).save(out)
-    print(f"{out}: {len(rows)} row(s), {', '.join(d or decl['directions'] for d in model.directions)}"
-          f"{', each with a night row under it' if len(rows) > len(model.directions) else ''}; "
+    if model.resource:
+        shown = "a stage each" + (", each with a night row under it" if night else "")
+    else:
+        shown = (", ".join(d or decl["directions"] for d in model.directions)
+                 + (", each with a night row under it" if len(rows) > len(model.directions) else ""))
+    print(f"{out}: {len(rows)} row(s), {shown}; "
           f"panels {pw}x{ph}, origin at {origin}, {model.ppt:g} px a tile")
+
+
+def resource_rows(model, plates, adopted, size, origin, night=True):
+    """A resource model's rows: a stage each, its variations' panels, then, with an effect, theirs
+    with the effect added; the adopted picture, if one, first in the top row; under each stage's
+    row, unless not night (--day-only), its night row under the declared lights, the adopted
+    picture's place in it left empty."""
+    decl = model.decl
+    res = contract.resource_pass(decl)
+    effects = [False, True] if model.kind("effect") else [False]
+    # the declared lights over the whole panel, so they reach the ground past the canvas too, as a
+    # building's (a resource has no working state: its lights are those drawn while idle)
+    lit = model.light_map("", False, size, origin) if night else None
+    x, y = corner(decl["canvas"], origin)
+    lit_cell = lit and lit.crop((x, y, x + decl["canvas"][0], y + decl["canvas"][1]))
+    rows = []
+    for s in range(res["stages"]):
+        panels, dark = [], []           # the day row, and the night row under it (None: left empty)
+        if plates and s == 0:
+            plate, shift = plates[0]
+            panels.append((place(plate, size, origin, shift),
+                           "adopted" + (f" @{adopted[0][1][0]:g},{adopted[0][1][1]:g}" if any(shift) else "")))
+            dark.append(None)           # its glows are not known here
+        for effect in effects:
+            for v in range(res["variations"]):
+                what = f"stage {s}, variation {v}" + (": effect" if effect else "")
+                panels.append((place(model.cell(s, v, effect), size, origin), what))
+                if night:
+                    dark.append((place(model.cell(s, v, effect, night=True, light=lit_cell), size, origin,
+                                       by=lit or NIGHT), f"{what}{',' if effect else ':'} at night"))
+        for im, _ in panels + [p for p in dark if p is not None]:
+            grid(im, origin, decl["footprint"], model.ppt)
+        rows.append([label(im, text) for im, text in panels])
+        if night:
+            rows.append([label(*p) if p is not None else None for p in dark])
+    return rows
 
 
 def gif(model, out, name, speed):
@@ -473,7 +566,9 @@ def gif(model, out, name, speed):
     shown = sorted(set(order))
     frames = {}
     for f in shown:
-        row = [model.panel(d, True, {a: f for a in together}) for d in model.directions]
+        row = ([model.cell(0, v, False, {a: f for a in together})
+                for v in range(contract.resource_pass(model.decl)["variations"])] if model.resource
+               else [model.panel(d, True, {a: f for a in together}) for d in model.directions])
         im = Image.new("RGBA", (sum(p.width for p in row), row[0].height), GROUND)
         for i, p in enumerate(row):
             im.alpha_composite(p, (i * p.width, 0))

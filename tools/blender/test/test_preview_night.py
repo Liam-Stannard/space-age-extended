@@ -63,7 +63,11 @@ colour times preview.NIGHT (0.15), each channel rounded.
             both exiting the same; the sheet nowhere brighter than the baseline's as it is, in any
             channel (information: how many pixels are darker, and by how much at most); and
             preview.py with no flag, exit 0 and twice the --day-only sheet's rows (night-<label>.png
-            kept for review).
+            kept for review). Against the baseline, this tree's preview.py runs with its glow floor set
+            aside (floor_aside.py: judged on luma, as before T08h, and nothing else changed), as the
+            baseline's judges it: since T08h a blue speck the old floor left clear is dropped and a
+            faint fringe kept (test_glow_floor.py holds the floor). The haze, (4, 6, 8), is under
+            the floor either way.
 """
 import argparse
 import os
@@ -83,6 +87,7 @@ import pack  # noqa: E402
 import preview  # noqa: E402
 import test_remnants_glow as rg  # noqa: E402
 import baseline_preview  # noqa: E402
+import floor_aside  # noqa: E402
 
 FAILED = []
 ROWS = {}                               # a --renders label: its --day-only sheet's height (compare)
@@ -476,10 +481,11 @@ def darker(mine, theirs):
 
 
 def compare(label, rdir, out, base, gif_of=None, plain="same"):
-    """This tree's preview.py and the baseline's on rdir: the sheet (this tree's with --day-only), and a
-    GIF of gif_of (no flag in either), byte for byte as the baseline's with its haze cleared
-    (baseline_preview). The baseline's as it is: plain "same", byte for byte as well; "haze", the
-    sheet not (the fixture's haze, which it draws); "render", the sheet nowhere brighter (listed)."""
+    """This tree's preview.py (its glow floor set aside: floor_aside.py) and the baseline's on rdir: the
+    sheet (this tree's with --day-only), and a GIF of gif_of (no flag in either), byte for byte as the
+    baseline's with its haze cleared (baseline_preview). The baseline's as it is: plain "same", byte for
+    byte as well; "haze", the sheet not (the fixture's haze, which it draws); "render", the sheet
+    nowhere brighter (listed)."""
     jobs = [("preview.png", ["--day-only"])]
     if gif_of:
         jobs.append(("anim.gif", ["--gif", gif_of, "--speed", "1"]))
@@ -489,8 +495,8 @@ def compare(label, rdir, out, base, gif_of=None, plain="same"):
             o = os.path.join(out, f"{label}-{who}")
             os.makedirs(o, exist_ok=True)
             args = [rdir, os.path.join(o, name), *[f for f in extra if who == "mine" or f != "--day-only"]]
-            if who == "mine":
-                cmd = [sys.executable, os.path.join(TOOLS, "preview.py"), *args]
+            if who == "mine":                   # as the baseline judges the glow floor (T08h)
+                cmd = floor_aside.command("preview.py", args)
             elif who == "base":
                 cmd = baseline_preview.command(base, args)
             else:
