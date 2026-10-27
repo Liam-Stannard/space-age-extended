@@ -26,6 +26,14 @@ all, on the same ground and grid, so the debris past the footprint shows against
 panels grow to the wreck's own canvas when it is larger. A model without one draws as it
 always did.
 
+A resource model (contract.py: a resource pass, perhaps an effect over it, perhaps animations)
+draws a row a stage, richest first, and in it a panel a variation -- its cell as pack.py packs it,
+on the ground with the footprint's grid, its animations at frame 0 over it (paint drawn, a glow
+added) -- then, with an effect, the same panels again with the effect's cell added at full
+strength (the engine pulses it between min_effect_alpha and max_effect_alpha, by darkness: its
+pulse is not drawn here). --adopted takes one picture for it, first in the top row. --gif plays
+an animation over the stage-0 cells side by side, without the effect.
+
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
 px_per_tile px to a tile, as the engine draws a high-resolution sprite) with the
@@ -92,6 +100,7 @@ class Model:
         self.ppt = float(self.decl["rig"]["px_per_tile"])
         self.masks = {d: pack.cut_mask(self.decl, d) for d in self.directions}
         self.roll_on = self.decl.get("rolloff", True)
+        self.resource = contract.is_resource(self.decl)
 
     def shipped(self, im):
         """A layer as its sheet carries it: rolled off (pack.roll), unless the model opts out."""
@@ -149,6 +158,28 @@ class Model:
         for p in self.kind("light"):
             lamp = pack.light_layer(self.open(contract.named(p["name"], d), d))
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
+        return im
+
+    def cell(self, s, v, effect=False, frames=None):
+        """A resource model's cell, stage s and variation v, on the ground at canvas size, as pack.py
+        packs it: the resource; with effect, its effect's cell added at full strength; its animations
+        over it, each at frame 0 or its frame in frames {animation: frame}, paint drawn, glow added."""
+        frames = frames or {}
+        res = contract.resource_pass(self.decl)
+        im = Image.new("RGBA", tuple(self.decl["canvas"]), GROUND)
+        im.alpha_composite(self.shipped(pack.clean(self.open(contract.cell(res["name"], s, v), ""))))
+        for p in self.kind("effect") if effect else ():
+            im = pack.add_light(im, self.shipped(pack.glow_frame(self.open(contract.cell(p["name"], s, v), ""),
+                                                                 p.get("bloom"))))
+        glows = []
+        for a in self.decl["animations"]:
+            fr = self.open(contract.frame(a["name"], frames.get(a["name"], 0)), "")
+            if a.get("kind") == "glow":
+                glows.append(self.shipped(pack.glow_frame(fr, a.get("bloom"))))
+            else:
+                im.alpha_composite(self.shipped(pack.clean(fr)))
+        for g in glows:
+            im = pack.add_light(im, g)
         return im
 
     def wreck(self, d):
@@ -239,6 +270,9 @@ def review(model, out, adopted):
     origin = (pw / 2, ph / 2)
     rows = []
     for i, d in enumerate(model.directions):
+        if model.resource:              # one direction: a row a stage instead
+            rows += resource_rows(model, plates, adopted, (pw, ph), origin)
+            continue
         name = d or decl["directions"]
         fp = contract.footprint_in(decl, d)
         panels = []
@@ -255,8 +289,31 @@ def review(model, out, adopted):
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])
     sheet(rows).save(out)
-    print(f"{out}: {len(rows)} row(s), {', '.join(d or decl['directions'] for d in model.directions)}; "
+    shown = "a stage each" if model.resource else ", ".join(d or decl["directions"] for d in model.directions)
+    print(f"{out}: {len(rows)} row(s), {shown}; "
           f"panels {pw}x{ph}, origin at {origin}, {model.ppt:g} px a tile")
+
+
+def resource_rows(model, plates, adopted, size, origin):
+    """A resource model's rows: a stage each, its variations' panels, then, with an effect, theirs
+    with the effect added; the adopted picture, if one, first in the top row."""
+    res = contract.resource_pass(model.decl)
+    effects = [False, True] if model.kind("effect") else [False]
+    rows = []
+    for s in range(res["stages"]):
+        panels = []
+        if plates and s == 0:
+            plate, shift = plates[0]
+            panels.append((place(plate, size, origin, shift),
+                           "adopted" + (f" @{adopted[0][1][0]:g},{adopted[0][1][1]:g}" if any(shift) else "")))
+        for effect in effects:
+            for v in range(res["variations"]):
+                panels.append((place(model.cell(s, v, effect), size, origin),
+                               f"stage {s}, variation {v}" + (": effect" if effect else "")))
+        for im, _ in panels:
+            grid(im, origin, model.decl["footprint"], model.ppt)
+        rows.append([label(im, text) for im, text in panels])
+    return rows
 
 
 def gif(model, out, name, speed):
@@ -278,7 +335,9 @@ def gif(model, out, name, speed):
     shown = sorted(set(order))
     frames = {}
     for f in shown:
-        row = [model.panel(d, True, {a: f for a in together}) for d in model.directions]
+        row = ([model.cell(0, v, False, {a: f for a in together})
+                for v in range(contract.resource_pass(model.decl)["variations"])] if model.resource
+               else [model.panel(d, True, {a: f for a in together}) for d in model.directions])
         im = Image.new("RGBA", (sum(p.width for p in row), row[0].height), GROUND)
         for i, p in enumerate(row):
             im.alpha_composite(p, (i * p.width, 0))

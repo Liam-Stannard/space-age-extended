@@ -22,6 +22,19 @@
   A remnants sheet (the wreck, pack.py: render.json's remnants pass, or meta.json's kind
   "remnants") is the corpse's, not the building's: never drawn or measured here, and listed
   as ignored in every direction.
+  A resource model (render.json's resource pass, or meta.json's kind "resource" with the
+  sheets alone, --footprint then its collision box in tiles) is measured a cell at a time: its
+  cells stand where a building's directions do, every one of them, keyed "SS-VV" (stage and
+  variation from 0, as contract.cell names its renders: "00-00" the richest stage's first look),
+  in measures.json's "directions" and on the sheet. In each the cell is the plate; the still is
+  it with every paint animation's frame 0 over it (its stateless_visualisation, which plays over
+  whichever cell the engine drew); the effect's cell (meta.json's kind "effect", its
+  stages_effect) is a glow layer, added at full strength in working frame 0 and its glow
+  figures (the engine pulses it between min_effect_alpha and max_effect_alpha: not modelled);
+  the animations are layers as a building's. A resource has no pipe connections, so
+  --connection is refused and no joins are measured; --plate does not apply, and --directions
+  other than "one" is refused.
+  pack_checks are meta.json's flat checks, the same in every cell.
 
 Everything is measured as the engine draws it: each sheet placed at its shift on one canvas,
 the entity origin at the canvas's centre, 64 px a tile (the vanilla pipe and the references
@@ -870,8 +883,9 @@ class Layer:
     pack.py copies from render.json; declared, render.json's own (contract.sequence and speed),
     for a meta.json packed before they were copied."""
 
-    def __init__(self, stem, kind, meta, working=False, declared=(None, None)):
+    def __init__(self, stem, kind, meta, working=False, declared=(None, None), at=0):
         self.stem, self.kind, self.meta, self.working = stem, kind, meta, working
+        self.at = at        # its frame 0's place in the sheet: a resource's cell, stage x line_length + variation
         self.frames = int(meta.get("frames", 1))
         seq = meta.get("frame_sequence", declared[0])
         speed = meta.get("animation_speed", declared[1])
@@ -923,6 +937,10 @@ class Source:
                 raise Usage(str(e)) from None
             self.render_json = os.path.join(renders, contract.FILE)
         d = self.decl or {}
+        self.resource = contract.is_resource(self.decl) if self.decl else any(
+            isinstance(m, dict) and m.get("kind") == "resource" for m in self.meta.values())
+        if self.resource and directions not in (None, "one"):
+            raise Usage(f"--directions {directions!r}: a resource model has one, its cells measured each")
         self.directions = directions or d.get("directions") or self.infer_directions()
         if self.directions not in contract.DIRECTIONS:
             raise Usage(f"--directions {self.directions!r} is not one of {', '.join(contract.DIRECTIONS)}")
@@ -940,6 +958,10 @@ class Source:
             with open(os.path.join(self.ports, "meta.json")) as f:
                 self.port_meta = json.load(f)
         self.dirs = [n for n, _ in contract.DIRECTIONS[self.directions]]
+        if self.resource:               # its cells stand in for directions, "SS-VV"
+            res = next(m for m in self.meta.values() if isinstance(m, dict) and m.get("kind") == "resource")
+            self.dirs = [f"{s:02d}-{v:02d}" for s in range(int(res["variation_count"]))
+                         for v in range(int(res["frame_count"]))]
         self.layers, self.ignored, self.lights = {}, {}, {}
         for dn in self.dirs:
             self.layers[dn], self.ignored[dn] = self.classify(dn)
@@ -959,6 +981,8 @@ class Source:
         return "one"
 
     def classify(self, dn):
+        if self.resource:
+            return self.classify_cell(dn)
         layers, ignored = [], []
         if self.decl:
             for p in self.decl["passes"]:
@@ -1017,6 +1041,29 @@ class Source:
         self.lights[dn] = [lay for lay in layers if lay.kind == "light"]       # not drawn; measured alone
         return [lay for lay in layers if lay.kind != "light"], ignored
 
+    def classify_cell(self, dn):
+        """A resource model's cell dn ("SS-VV"): its resource sheet's cell the plate, its effect's a
+        glow, every animation (an entry with frames) a layer as a building's; from meta.json, with
+        render.json's timing for an entry packed without it (as classify)."""
+        s, v = (int(x) for x in dn.split("-"))
+        anims = {a["name"]: a for a in (self.decl or {}).get("animations", [])}
+        layers, ignored = [], []
+        for k, m in self.meta.items():
+            if k == "checks" or not isinstance(m, dict):
+                continue
+            if m.get("kind") in ("resource", "effect"):
+                layers.append(Layer(k, "plate" if m["kind"] == "resource" else "glow", m,
+                                    at=s * int(m["line_length"]) + v))
+            elif "frames" in m and m.get("kind", "paint") in ("paint", "glow"):
+                a = anims.get(k)
+                layers.append(Layer(k, "glow-anim" if m.get("kind") == "glow" else "anim", m, declared=(
+                    contract.sequence(self.decl, a), contract.speed(self.decl, a)) if a else (None, None)))
+            else:
+                ignored.append(k)
+        layers.sort(key=lambda lay: lay.kind != "plate")
+        self.lights[dn] = []
+        return layers, ignored
+
     def canvas_size(self):
         half = (max(self.footprint) / 2 + 2.5) * PPT
         for dn in self.dirs:
@@ -1036,7 +1083,7 @@ class Source:
         im = self.sheet(lay.stem)
         w, h = lay.meta["size"]
         line = int(lay.meta.get("line_length", 1))
-        f %= lay.frames
+        f = lay.at + f % lay.frames
         return im.crop(((f % line) * w, (f // line) * h, (f % line) * w + w, (f // line) * h + h))
 
     def place(self, im, shift_tiles, at=(0.0, 0.0)):
@@ -1165,7 +1212,8 @@ def strobe_own_loop(sc, acc, need=3):
 
 def measure_direction(src, dn, conns):
     sc = Scene(src, dn)
-    foot = contract.footprint_in(dict(footprint=src.footprint, directions=src.directions), dn)
+    foot = tuple(src.footprint) if src.resource else contract.footprint_in(
+        dict(footprint=src.footprint, directions=src.directions), dn)
     out = dict(layers={lay.stem: lay.kind + (" (working)" if lay.working else "") + (
         f", {lay.frames} frames" if lay.frames > 1 else "") for lay in src.layers[dn]},
         ignored=src.ignored[dn])
@@ -1240,10 +1288,10 @@ def measure_direction(src, dn, conns):
                                                  cut=lay.alone.note() if lay.timed else None) for lay in alone}
     out["light"] = {lay.stem: light_figures([src.frame(lay, f) for f in range(lay.frames)])
                     for lay in src.lights[dn]}
-    out["pack_checks"] = pack_checks(src.meta, dn)
+    out["pack_checks"] = pack_checks(src.meta, "" if src.resource else dn)     # a resource's are flat
     out["joins"] = []
     pictures = []
-    deg = dict(contract.DIRECTIONS[src.directions])[dn]
+    deg = dict(contract.DIRECTIONS[src.directions]).get(dn, 0)      # a resource's cell: one direction
     for c in conns:
         res, pics = join(sc, turn(c, deg))
         out["joins"].append(res)
@@ -1766,7 +1814,7 @@ def vanilla(name, dn):
     """A reference in one of our directions: (label, footprint as it stands, still, shadow, light)
     on a canvas of its own, the origin at its centre."""
     ref = REFS[name]
-    key = REF_DIR[dn]
+    key = REF_DIR.get(dn, "north")      # a resource model's cell ("SS-VV"): as it faces north
     lays = ref["layers"].get(key) or ref["layers"].get("*") or ref["layers"].get(
         {"south": "north", "west": "east"}.get(key, "north")) or ref["layers"]["north"]
     fw, fh = ref["footprint"]
@@ -1962,7 +2010,8 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
         if sc.glows or sc.loop > 1:
             ims.append(seen(sc.paint(0), sc.shadow, foot, sc.src.origin, sc.light(0)))
         box = crop_to([sc.still, sc.shadow] + ([sc.light(0)] if sc.glows else []))
-        panels = [captioned(ims[0].crop(box), [f"OURS {dn or '(one direction)'}, as seen (the still), 1x"]
+        seen_as = f"cell {dn} (stage-variation)" if sc.src.resource else dn or "(one direction)"
+        panels = [captioned(ims[0].crop(box), [f"OURS {seen_as}, as seen (the still), 1x"]
                             + fig_line(m))]
         if len(ims) > 1:
             col = m["colour"]
@@ -2075,6 +2124,8 @@ def run(argv):
         raise Usage("--collide-allow without --collide: nothing to allow")
     allow_patterns(a.collide_allow)
     src = Source(a.src, parse_footprint(a.footprint) if a.footprint else None, a.directions, a.plate)
+    if src.resource and a.connection:
+        raise Usage("--connection: a resource model has no pipe connections to join")
     conns = src.connections([parse_connection(c) for c in a.connection])
     out = os.path.abspath(a.out or os.path.join(src.src, "measures"))
     if not a.out and "concept" in out.split(os.sep):

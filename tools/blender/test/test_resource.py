@@ -15,7 +15,8 @@ byte the same; so must `contract.py plates`. Everything is written under --out (
 
 Exits 0 when every case below comes out as listed, 1 naming those that do not.
 
-  contract   the fixture's declaration accepted; cell("vent", 2, 3) is "vent-02-03"; cells() runs
+  contract   the fixture's declaration accepted, its animations (a cycle and a glow over it) and no
+             still pass with them; cell("vent", 2, 3) is "vent-02-03"; cells() runs
              row by row from stage 0. Refused, each naming its field: stages 0, stages missing,
              variations "4" (passes[0].stages / .variations); two resource passes, two effect
              passes, an effect pass alone (passes); a plate beside the resource (passes[k].kind);
@@ -23,30 +24,66 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              added (passes); an effect over a name not the
              resource's, an effect with stages of its own, an effect with a bloom of [[0, 1]]
              (passes[1].over / .stages / .bloom); a sheet "checks" (passes[0].sheet); directions
-             "four", an animation, a port, a cut, ports_turn (each its own key).
-  sheet      the fixture packed, exit 0: meta.json's keys resource, resource-effect, checks in that
-             order; each sheet's entry frame_count 4, variation_count 3, line_length 4, its kind;
+             "four", a port, a cut, ports_turn (each its own key). A flow paint animation alone,
+             no still: accepted. Refused, naming animations[0]'s field: a turn and a slide
+             (.motion), a light (.kind), a working one (.working), one named "resource-00", whose
+             frames are the resource's cells' (.name). A building's paint animation with no still
+             pass: still refused (passes).
+  sheet      the fixture packed, exit 0: meta.json's keys resource, resource-effect, bubble,
+             bubble-light, checks in that order; each sheet's entry frame_count 4, variation_count 3, line_length 4, its kind;
              each png 4 x 3 of its size; each cell, pixel for pixel, its render as pack.py takes
              it (cleaned below NOISE; the effect's turned to light with its bloom), rolled off and
              cropped to the box its size and shift give on the canvas; that box holds every cell,
              each side within 1 px (the rim) of one of them; stage 0's row holds more pixels than
-             stage 1's and stage 1's than stage 2's (the fixture shrinks as it depletes).
+             stage 1's and stage 1's than stage 2's (the fixture shrinks as it depletes). Each
+             animation's entry frames 4, line_length 4, animation_speed 0.2 (the glow its paint
+             layer's), kind "glow" for bubble-light and none for bubble; its png 4 frames of its
+             size; each frame, pixel for pixel, its render as packed (cleaned; the glow turned to
+             light with its bloom), rolled off and cropped to its box.
   checks     resource_edge_px 0, resource-effect_edge_px 0, resource-effect_white_px 0,
              resource_reach_tiles within 0.05 of 0.9 past every edge (the cyan ring, 2.4 tiles, less
-             the 3 x 3 footprint's 1.5), rolloff_px naming both sheets; contract.py plates lists the
-             four stage-0 cells.
+             the 3 x 3 footprint's 1.5), rolloff_px naming all four sheets; bubble_cycle 4;
+             bubble-light_white_px, _clipped_px and _edge_px 0, _frames [4, 4]; contract.py plates
+             lists the four stage-0 cells. glow_checks over a list of plates takes the most of
+             them: a light that whitens nothing over a dark plate and one pixel over a pale one
+             counts 1 over both, 0 over the dark alone.
   one stage  the renders with stages 1 (the other stages' renders gone): variation_count 1, and the
              sheet the full sheet's top row, size and shift the same (stage 0 is the widest); with
-             stages 1 and variations 1 and no effect: a 1 x 1 sheet.
-  rolloff    rolloff false: no rolloff_px, and each sheet as the renders cropped, unrolled.
+             stages 1 and variations 1 and no effect or animations: a 1 x 1 sheet.
+  rolloff    rolloff false: no rolloff_px, and each sheet, the animations' too, as the renders
+             cropped, unrolled.
   refused    each exits non-zero naming what it names: a resource cell gone (resource-01-02.png);
              an effect cell gone (resource-effect-02-03.png); a cell on the wrong canvas (the
              canvas); a resource cell emptied (resource-02-01.png, "is empty"); every effect cell
              dark ("every cell"); a block on the canvas's edge of resource-00-03 ("canvas's edge",
              that cell, meta.json written); a white square in resource-effect-01-02 ("clipped to
-             white", that cell); variations 30 ("does not wrap"). One effect cell dark: accepted.
-  identity   with --baseline: on every --renders, pack.py's every output file (sheets and
-             meta.json) and `contract.py plates`' output byte for byte as the baseline's.
+             white", that cell); variations 30 ("does not wrap"); an animation frame gone
+             (bubble-02.png); a white square in a glow animation's frame ("bubble-light", "white",
+             meta.json written). One effect cell dark: accepted.
+  preview    preview.py on the renders, exit 0: a sheet of a row a stage, each of the four
+             variations' panels and then the four with the effect, the panel size the canvas and
+             its pads; every effect panel at least its plain panel's every channel (the light is
+             added) and brighter somewhere; --adopted with one picture adds a panel to the top row
+             alone, with two is refused; --gif bubble --speed 0.2: 4 frames, the four stage-0 cells
+             side by side.
+  measure    measure.py on the fixture (its packed sheets and its render.json), exit 0: every cell
+             "SS-VV" in order, each with the cell as the plate, the effect as a glow, bubble an
+             anim and bubble-light a glow-anim; motion over 4 frames; glow figures for the effect
+             and bubble-light; pack_checks meta.json's flat checks; no joins; cell 00-00's coverage
+             past every edge of the footprint within 0.05 of pack.py's reach, and stage 2's extent
+             less than stage 0's. --connection refused (exit 2). The sheets alone, --footprint 3x3:
+             exit 0 and every cell's figures the same.
+  finish     finish.py on the four stage-0 cells: exit 0, each measured; on a 6 px square: exit 0,
+             "too thin"; on a flat square: exit 0, ratio "n/a".
+  identity   with --baseline: on every --renders, on the fixture with its animations dropped
+             (a resource model as T02 packed it) and on it declared four ways (refused by both,
+             before either writes a file), pack.py's every output file (sheets and meta.json)
+             and `contract.py plates`' output byte for byte as the baseline's, or both refusing
+             alike: the same exit and message, the same files (none) written. Where both pack, the
+             same of finish.py's output on the plates and, for a building (the baseline's preview.py
+             and measure.py had no resource model), of preview.py's sheet (the --gif of its first
+             paint animation too) and measure.py's every file (measures.json and its sheets; exit
+             as the baseline's).
 """
 import argparse
 import copy
@@ -56,7 +93,7 @@ import shutil
 import subprocess
 import sys
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageChops, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOLS = os.path.dirname(HERE)
@@ -66,6 +103,7 @@ import pack  # noqa: E402
 
 FAILED = []
 RES, FX = "resource", "resource-effect"         # resource_box.py's passes, and their sheets
+BUBBLE, LIGHT = "bubble", "bubble-light"        # its animations: a cycle and the glow over it
 
 
 def check(case, ok, detail=""):
@@ -111,6 +149,9 @@ def packed(src, out, tools=TOOLS):
 
 
 def files(d):
+    """The files in d, by name; none when d is not there (a pack refused before it made it)."""
+    if not os.path.isdir(d):
+        return []
     return sorted(f for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)))
 
 
@@ -193,8 +234,21 @@ def test_contract(decl0):
     case("an effect bloom of [[0, 1]] refused", on(1, bloom=[[0, 1]]), "passes[1].bloom")
     case('a sheet "checks" refused', on(0, sheet="checks"), "passes[0].sheet")
     case('directions "four" refused', lambda d: d.update(directions="four"), "directions")
-    case("an animation refused",
-         lambda d: d["animations"].append(dict(name="bubble", frames=4, motion="flow")), "animations")
+
+    def anims(*a):
+        return lambda d: d.update(animations=list(a))
+    case("a flow paint animation alone, no still pass, accepted", anims(dict(name="wisp", frames=4, motion="flow")))
+    case("a turn animation refused", anims(dict(name="spin", frames=4, motion="turn")), "animations[0].motion")
+    case("a slide animation refused", anims(dict(name="s", frames=2, motion="slide", path=[[0, 0, 0], [1, 0, 0]])),
+         "animations[0].motion")
+    case("a light animation refused", anims(dict(name="lamp", frames=2, motion="flow", kind="light")),
+         "animations[0].kind")
+    case("a working animation refused", anims(dict(name="dust", frames=2, motion="flow", working=True)),
+         "animations[0].working")
+    case("an animation whose frame takes a cell's name refused", anims(dict(name=f"{RES}-00", frames=2, motion="flow")),
+         "animations[0].name")
+    case("a building's paint animation with no still pass still refused",
+         lambda d: d["animations"].append(dict(name="wisp", frames=4, motion="flow")), "passes", decl=BUILDING)
     case("a port refused", lambda d: d["ports"].append(dict(tile=[0, -1], face="N")), "ports")
     case("a cut refused", lambda d: d.update(cut=["S"]), "cut")
     case("ports_turn refused", lambda d: d.update(ports_turn=False), "ports_turn")
@@ -231,6 +285,30 @@ def held_sheet(rdir, out_dir, meta, decl, p, rolled=True):
     return im, e
 
 
+def held_anim(rdir, out_dir, meta, decl, a, rolled=True):
+    """One animation's sheet held to its docs: its entry, its size, each frame pixel for pixel."""
+    name, n = a["name"], a["frames"]
+    e = meta[name]
+    glow = a.get("kind") == "glow"
+    speed = contract.speed(decl, a)
+    check(f"{name}: frames {n}, line_length {n}, animation_speed {speed}, kind {a.get('kind')}",
+          (e["frames"], e["line_length"], e.get("animation_speed"), e.get("kind")) ==
+          (n, n, speed, "glow" if glow else None), f"{e}")
+    im = Image.open(os.path.join(out_dir, name + ".png"))
+    w, h = e["size"]
+    check(f"{name}.png is {n} frames of its size", im.size == (w * n, h), f"{im.size}, size {w}x{h}")
+    bb = cell_box(meta, name, decl)
+    bad = []
+    for f in range(n):
+        src = Image.open(os.path.join(rdir, contract.frame(name, f) + ".png")).convert("RGBA")
+        src = pack.glow_frame(src, a.get("bloom")) if glow else pack.clean(src)
+        want = pack.roll(src)[0] if rolled else src
+        if not same_pixels(im.crop((f * w, 0, (f + 1) * w, h)), want.crop(bb)):
+            bad.append(contract.frame(name, f))
+    check(f"{name}: every frame is its render as packed{', rolled off,' if rolled else ''} cropped to its box",
+          not bad, f"differ: {bad}")
+
+
 def test_sheet(rdir, out):
     print("sheet")
     decl = load_decl(rdir)
@@ -239,10 +317,12 @@ def test_sheet(rdir, out):
     check("the fixture packs, exit 0", code == 0, text[-600:])
     if meta is None:
         return None
-    check("meta.json: resource, resource-effect, checks, in that order", list(meta) == [RES, FX, "checks"],
-          f"{list(meta)}")
+    check("meta.json: resource, resource-effect, bubble, bubble-light, checks, in that order",
+          list(meta) == [RES, FX, BUBBLE, LIGHT, "checks"], f"{list(meta)}")
     im, e = held_sheet(rdir, sheets, meta, decl, decl["passes"][0])
     held_sheet(rdir, sheets, meta, decl, decl["passes"][1])
+    for a in decl["animations"]:
+        held_anim(rdir, sheets, meta, decl, a)
     h = e["size"][1]
     rows = [opaque(im.crop((0, s * h, im.width, (s + 1) * h))) for s in range(3)]
     check("stage 0's row holds more than stage 1's, and 1's more than 2's", rows[0] > rows[1] > rows[2], f"{rows}")
@@ -254,16 +334,34 @@ def test_sheet(rdir, out):
     reach = c.get(f"{RES}_reach_tiles", [{}])[0]
     check("resource_reach_tiles within 0.05 of 0.9 past every edge",
           sorted(reach) == ["E", "N", "S", "W"] and all(abs(t - 0.9) <= 0.05 for t in reach.values()), f"{reach}")
-    check("rolloff_px names both sheets", sorted(c.get("rolloff_px", [{}])[0]) == sorted([RES, FX]), f"{c.get('rolloff_px')}")
+    check("rolloff_px names all four sheets", sorted(c.get("rolloff_px", [{}])[0]) == sorted([RES, FX, BUBBLE, LIGHT]),
+          f"{c.get('rolloff_px')}")
+    check("bubble_cycle 4", c.get(f"{BUBBLE}_cycle", [None])[0] == 4, f"{c.get(f'{BUBBLE}_cycle')}")
+    for k in (f"{LIGHT}_white_px", f"{LIGHT}_clipped_px", f"{LIGHT}_edge_px"):
+        check(f"{k} 0", c.get(k, [None])[0] == 0, f"{c.get(k)}")
+    check("bubble-light_frames [4, 4]", c.get(f"{LIGHT}_frames", [None])[0] == [4, 4], f"{c.get(f'{LIGHT}_frames')}")
+    # glow_checks over several plates (a resource's cells): the most clipping over any of them
+    tiny = dict(footprint=[1, 1], canvas=[4, 4], directions="one", rig=dict(elevation=60.0, px_per_tile=64))
+    packer = pack.Packer(rdir, out, tiny)
+    light = Image.new("RGBA", (4, 4))
+    light.putpixel((1, 1), (20, 20, 20, 255))
+    frames = {"g": [light], "p": [Image.new("RGBA", (4, 4))]}
+    dark, pale = Image.new("RGBA", (4, 4), (40, 40, 40, 255)), Image.new("RGBA", (4, 4), (240, 240, 240, 255))
+    anim = dict(name="g", over="p")
+    both = packer.glow_checks(anim, frames, [dark, pale], "")["g_clipped_px"][0]
+    alone = packer.glow_checks(anim, frames, [dark], "")["g_clipped_px"][0]
+    check("glow_checks over a list of plates: the most of them (1 over dark and pale, 0 over dark alone)",
+          (both, alone) == (1, 0), f"{both}, {alone}")
     code, text = run([sys.executable, os.path.join(TOOLS, "contract.py"), "plates", rdir])
     want = [os.path.join(rdir, contract.cell(RES, 0, v) + ".png") for v in range(4)]
     check("contract.py plates lists the four stage-0 cells", code == 0 and text.split() == want, text)
     return im, meta
 
 
-def one_stage(variations=None, effect=True):
+def one_stage(variations=None, effect=True, anims=True):
     """An edit for renders_copy: the renders as a model of stage 0 alone (the other stages'
-    renders gone), of its first `variations` (all, None), with its effect or without."""
+    renders gone), of its first `variations` (all, None), with its effect or without, and its
+    animations or without."""
     def edit(d, dst):
         for p in d["passes"]:
             for s, v in contract.cells(d):
@@ -274,6 +372,8 @@ def one_stage(variations=None, effect=True):
             d["passes"][0]["variations"] = variations
         if not effect:
             d["passes"] = d["passes"][:1]
+        if not anims:
+            d["animations"] = []
     return edit
 
 
@@ -292,12 +392,12 @@ def test_one_stage(rdir, out, full):
     h = meta_full[RES]["size"][1]
     check("stages 1: the sheet is the full sheet's top row", same_pixels(im, im_full.crop((0, 0, im_full.width, h))),
           f"{im.size}")
-    single = renders_copy(rdir, os.path.join(out, "one-cell-renders"), one_stage(1, effect=False))
+    single = renders_copy(rdir, os.path.join(out, "one-cell-renders"), one_stage(1, effect=False, anims=False))
     code, text, meta = packed(single, os.path.join(out, "one-cell-sheets"))
     ok = code == 0 and meta is not None and list(meta) == [RES, "checks"] and \
         (meta[RES]["frame_count"], meta[RES]["variation_count"]) == (1, 1) and \
         Image.open(os.path.join(out, "one-cell-sheets", RES + ".png")).size == tuple(meta[RES]["size"])
-    check("stages 1, variations 1, no effect: a 1 x 1 sheet", ok, text[-600:])
+    check("stages 1, variations 1, no effect or animations: a 1 x 1 sheet", ok, text[-600:])
 
 
 def test_rolloff(rdir, out):
@@ -312,6 +412,8 @@ def test_rolloff(rdir, out):
     decl = load_decl(src)
     for p in decl["passes"]:
         held_sheet(src, sheets, meta, decl, p, rolled=False)
+    for a in decl["animations"]:
+        held_anim(src, sheets, meta, decl, a, rolled=False)
 
 
 # ---------------------------------------------------------------- refused
@@ -366,37 +468,188 @@ def test_refused(rdir, out):
                                                                                     + ".png"))
         d["passes"][0]["variations"] = 30
     refused("variations 30", wide, "does not wrap")
+    refused("an animation frame gone", gone(contract.frame(BUBBLE, 2)), contract.frame(BUBBLE, 2) + ".png")
+    refused("a white square in a glow animation's frame", painted(contract.frame(LIGHT, 1), lambda im: ImageDraw.Draw(
+        im).rectangle((150, 150, 157, 157), fill=(255, 255, 255, 255))), LIGHT, "white", want_meta=True)
     one_dark = renders_copy(rdir, os.path.join(out, "one-effect-cell-dark-renders"), painted(
         "resource-effect-02-02", lambda im: im.putalpha(0)))
     code, text, _ = packed(one_dark, os.path.join(out, "one-effect-cell-dark-sheets"))
     check("one effect cell dark: accepted", code == 0, text[-600:])
 
 
+# ---------------------------------------------------------------- preview, measure, finish
+
+def test_preview(rdir, out):
+    print("preview")
+    import preview
+    decl = load_decl(rdir)
+    png = os.path.join(out, "preview.png")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, png])
+    check("preview.py: exit 0", code == 0 and os.path.isfile(png), text[-600:])
+    if code != 0:
+        return
+    im = Image.open(png).convert("RGB")
+    pw = decl["canvas"][0] + 2 * preview.PAD
+    ph = decl["canvas"][1] + 2 * preview.PAD + preview.LABEL
+    want = (preview.PAD + 8 * (pw + preview.PAD), preview.PAD + 3 * (ph + preview.PAD))
+    check("preview.py: a row a stage, four variations then the four with the effect", im.size == want,
+          f"{im.size} vs {want}")
+    lit, below = [], []
+
+    def panel(r, c):
+        x, y = preview.PAD + c * (pw + preview.PAD), preview.PAD + r * (ph + preview.PAD) + preview.LABEL
+        return im.crop((x, y, x + pw, y + ph - preview.LABEL))
+    for r in range(3):
+        for c in range(4):
+            plain, fx = panel(r, c), panel(r, c + 4)
+            if ImageChops.subtract(plain, fx).getbbox() is not None:
+                below.append((r, c))
+            if ImageChops.subtract(fx, plain).getbbox() is None:
+                lit.append((r, c))
+    check("preview.py: every effect panel at least its plain one, and brighter somewhere", not below and not lit,
+          f"darker in {below}, no brighter in {lit}")
+    one = os.path.join(out, "preview-adopted.png")
+    ref = os.path.join(rdir, contract.cell(RES, 0, 0) + ".png")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, one, "--adopted", ref])
+    got = Image.open(one).size if code == 0 else None
+    check("preview.py --adopted <one picture>: a panel more in the top row alone",
+          got == (want[0] + pw + preview.PAD, want[1]), f"exit {code}, {got}: {text[-300:]}")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, one, "--adopted", ref, ref])
+    check("preview.py --adopted <two pictures>: refused", code != 0 and "one plate per direction" in text, text[-300:])
+    gif = os.path.join(out, "preview.gif")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, gif, "--gif", BUBBLE, "--speed", "0.2"])
+    ok = code == 0 and os.path.isfile(gif)
+    g = Image.open(gif) if ok else None
+    check("preview.py --gif bubble: 4 frames, the four stage-0 cells side by side",
+          ok and g.n_frames == 4 and g.size == (4 * decl["canvas"][0], decl["canvas"][1]),
+          f"exit {code}, {(g.n_frames, g.size) if g else None}: {text[-300:]}")
+
+
+def test_measure(rdir, out, sheets_meta):
+    print("measure")
+    if sheets_meta is None:
+        check("measure.py: the fixture's sheets", False, "the fixture did not pack")
+        return
+    sheets, meta = sheets_meta
+    src = os.path.join(out, "measure-src")
+    if os.path.exists(src):
+        shutil.rmtree(src)
+    os.makedirs(src)
+    os.symlink(os.path.abspath(sheets), os.path.join(src, "sheets"))
+    os.symlink(os.path.abspath(rdir), os.path.join(src, "renders"))
+    mout = os.path.join(out, "measure")
+    code, text = run([sys.executable, os.path.join(TOOLS, "measure.py"), src, "--out", mout])
+    check("measure.py: exit 0", code == 0, text[-600:])
+    if code != 0:
+        return
+    m = json.load(open(os.path.join(mout, "measures.json")))
+    want = [f"{s:02d}-{v:02d}" for s in range(3) for v in range(4)]
+    dirs = m["directions"]
+    check("measure.py: every cell, SS-VV, in order", list(dirs) == want, f"{list(dirs)}")
+    kinds = dict(resource="plate", **{FX: "glow", BUBBLE: "anim, 4 frames", LIGHT: "glow-anim, 4 frames"})
+    bad = [k for k, d in dirs.items() if d["layers"] != kinds or d["motion"] is None or d["motion"]["loop_frames"] != 4
+           or sorted(d["glow"]) != sorted([FX, LIGHT]) or d["pack_checks"] != meta["checks"] or d["joins"]]
+    check("measure.py: each cell its plate, effect, animations, motion over 4 frames, glow, pack_checks, no joins",
+          not bad, f"{bad}: {dirs[bad[0]]['layers'] if bad else ''}")
+    past = dirs["00-00"]["coverage"].get("past_edges_tiles", {})
+    reach = meta["checks"][f"{RES}_reach_tiles"][0]
+    check("measure.py: cell 00-00's coverage past the footprint within 0.05 of pack.py's reach",
+          past and all(abs(past[k] - reach[e]) <= 0.05 for k, e in (("west", "W"), ("east", "E"), ("south", "S"))),
+          f"{past} vs {reach}")
+    e0, e2 = dirs["00-00"]["coverage"]["extent_tiles"], dirs["02-00"]["coverage"]["extent_tiles"]
+    check("measure.py: stage 2's extent less than stage 0's", e2[0] < e0[0] and e2[1] < e0[1], f"{e2} vs {e0}")
+    code, text = run([sys.executable, os.path.join(TOOLS, "measure.py"), src, "--out", mout + "-conn",
+                      "--connection", "0,1,S"])
+    check("measure.py --connection on a resource: refused, exit 2", code == 2 and "pipe connections" in text, text[-300:])
+    alone = os.path.join(out, "measure-alone")
+    code, text = run([sys.executable, os.path.join(TOOLS, "measure.py"), sheets, "--out", alone, "--footprint", "3x3"])
+    same = code == 0 and json.load(open(os.path.join(alone, "measures.json")))["directions"] == dirs
+    check("measure.py on the sheets alone, --footprint 3x3: exit 0, every cell's figures the same", same,
+          text[-400:])
+
+
+def test_finish(rdir, out):
+    print("finish")
+    plates = [os.path.join(rdir, contract.cell(RES, 0, v) + ".png") for v in range(4)]
+    code, text = run([sys.executable, os.path.join(TOOLS, "finish.py")] + plates)
+    lines = text.strip().splitlines()
+    check("finish.py on the four stage-0 cells: exit 0, each measured",
+          code == 0 and len(lines) == 4 and all("black" in ln and "ratio" in ln for ln in lines), text[-400:])
+    thin, flat = os.path.join(out, "finish-thin.png"), os.path.join(out, "finish-flat.png")
+    im = Image.new("RGBA", (64, 64))
+    ImageDraw.Draw(im).rectangle((10, 10, 15, 15), fill=(120, 100, 80, 255))
+    im.save(thin)
+    im = Image.new("RGBA", (64, 64))
+    ImageDraw.Draw(im).rectangle((10, 10, 40, 40), fill=(120, 100, 80, 255))
+    im.save(flat)
+    code, text = run([sys.executable, os.path.join(TOOLS, "finish.py"), thin])
+    check("finish.py on a 6 px square: exit 0, too thin", code == 0 and "too thin" in text, text[-300:])
+    code, text = run([sys.executable, os.path.join(TOOLS, "finish.py"), flat])
+    check("finish.py on a flat square: exit 0, ratio n/a", code == 0 and "ratio  n/a" in text, text[-300:])
+
+
 # ---------------------------------------------------------------- identity
 
+BASELINE_FILES = ("contract.py", "pack.py", "preview.py", "measure.py", "measure_ports.py", "finish.py")
+
+
 def baseline_tools(rev, out):
-    """contract.py and pack.py as they stood at rev, in a directory of their own."""
-    d = os.path.join(out, f"baseline-{rev}")
+    """The tools as they stood at rev (BASELINE_FILES), in a directory of their own, blender/, beside
+    this tree's paths.py and paths.conf, which measure.py reads from the directory above its own."""
+    top_dir = os.path.join(out, f"baseline-{rev}")
+    d = os.path.join(top_dir, "blender")
     os.makedirs(d, exist_ok=True)
     top = subprocess.run(["git", "-C", TOOLS, "rev-parse", "--show-toplevel"], capture_output=True, text=True,
                          check=True).stdout.strip()
     rel = os.path.relpath(TOOLS, top)
-    for f in ("contract.py", "pack.py"):
+    for f in BASELINE_FILES:
         body = subprocess.run(["git", "-C", top, "show", f"{rev}:{rel}/{f}"], capture_output=True, check=True).stdout
         with open(os.path.join(d, f), "wb") as fh:
             fh.write(body)
+    for f in ("paths.py", "paths.conf"):
+        shutil.copy(os.path.join(os.path.dirname(TOOLS), f), os.path.join(top_dir, f))
     return d
 
 
-def test_identity(out, rev, renders):
+def same_runs(label, base, out, what, args):
+    """A tool (what, a file in the tools dirs) run by the baseline and by this tree on one input:
+    args(out) its arguments, writing what it writes under one path, `out`, moved aside after each
+    run so the two runs see the same paths. Checks its exit, its output and every file it wrote."""
+    got = {}
+    for who, tools in (("baseline", base), ("tree", TOOLS)):
+        if os.path.exists(out):
+            shutil.rmtree(out)
+        os.makedirs(out)
+        code, text = run([sys.executable, os.path.join(tools, what)] + args(out))
+        kept = f"{out}-{who}"
+        if os.path.exists(kept):
+            shutil.rmtree(kept)
+        os.rename(out, kept)
+        got[who] = (code, text, kept)
+    (bc, bt, bd), (tc, tt, td) = got["baseline"], got["tree"]
+    ok, why = same_dirs(bd, td)
+    flags = "".join(f" {a}" for a in args("<out>") if a.startswith("--"))
+    check(f"{label}: {what}{flags} as the baseline's: exit {bc}, its output, its {len(files(bd))} file(s) byte for byte",
+          bc == tc and bt == tt and ok, f"exit {bc} vs {tc}; {why}; output {'same' if bt == tt else 'differs'}: "
+          f"{tt[-300:]}")
+
+
+def test_identity(rdir0, out, rev, renders):
     print("identity")
     if not rev:
         print("  (no --baseline: skipped)")
         return
     base = baseline_tools(rev, out)
-    for i, r in enumerate(renders):
-        rdir = os.path.join(r, "renders")
-        label = f"{i + 1} {os.path.basename(os.path.normpath(r))}"
+    # the fixture as T02 packed it: a resource model with no animations
+    still = renders_copy(rdir0, os.path.join(out, "identity-fixture-renders"),
+                         lambda d, _: d.update(animations=[]))
+    # and one both refuse before they write anything (a resource never turns): refused alike, no crash
+    turned = renders_copy(rdir0, os.path.join(out, "identity-turned-renders"),
+                          lambda d, _: d.update(animations=[], directions="four"))
+    dirs = [(os.path.basename(os.path.normpath(r)), os.path.join(r, "renders")) for r in renders]
+    for i, (name, rdir) in enumerate(dirs + [("the fixture, no animations", still),
+                                             ("the fixture declared four ways", turned)]):
+        label = f"{i + 1} {name}"
         results = {}
         for who, tools in (("baseline", base), ("this tree", TOOLS)):
             dst = os.path.join(out, f"identity-{i + 1}-{'baseline' if tools == base else 'tree'}")
@@ -406,8 +659,34 @@ def test_identity(out, rev, renders):
         (bc, bt, bd, bp), (tc, tt, td, tp) = results["baseline"], results["this tree"]
         check(f"{label}: pack.py exits as the baseline's ({bc})", bc == tc, f"baseline {bc}, this tree {tc}: {tt[-400:]}")
         ok, why = same_dirs(bd, td)
-        check(f"{label}: pack.py's every file byte for byte as the baseline's ({len(files(bd))} files)", ok, why)
+        if bc != 0 and tc != 0:
+            # both refused: alike when they say the same, their own output paths aside, and wrote the same
+            alike = bt.replace(bd, "<out>") == tt.replace(td, "<out>")
+            check(f"{label}: both refused alike, the same message and the same {len(files(bd))} file(s)",
+                  alike and ok, f"{why}; baseline: {bt[-300:]}; this tree: {tt[-300:]}")
+        else:
+            check(f"{label}: pack.py's every file byte for byte as the baseline's ({len(files(bd))} files)", ok, why)
         check(f"{label}: contract.py plates as the baseline's", bp == tp, f"{bp} vs {tp}")
+        if bc != 0 or tc != 0:
+            continue
+        tag = os.path.join(out, f"identity-{i + 1}")
+        plates = tp[1].split()
+        same_runs(label, base, f"{tag}-finish", "finish.py", lambda _: plates)
+        if contract.is_resource(load_decl(rdir)):
+            continue                    # the baseline's preview.py and measure.py had no resource model
+        # the review and measure tools, on the same sheets (this tree's, the same as the baseline's)
+        same_runs(label, base, f"{tag}-preview", "preview.py", lambda o: [rdir, os.path.join(o, "preview.png")])
+        anims = [a for a in load_decl(rdir)["animations"] if a.get("kind", "paint") == "paint"]
+        if anims:
+            same_runs(label, base, f"{tag}-gif", "preview.py",
+                      lambda o: [rdir, os.path.join(o, "preview.gif"), "--gif", anims[0]["name"], "--speed", "1"])
+        msrc = f"{tag}-msrc"
+        if os.path.exists(msrc):
+            shutil.rmtree(msrc)
+        os.makedirs(msrc)
+        os.symlink(os.path.abspath(td), os.path.join(msrc, "sheets"))
+        os.symlink(os.path.abspath(rdir), os.path.join(msrc, "renders"))
+        same_runs(label, base, f"{tag}-measure", "measure.py", lambda o: [msrc, "--out", o])
 
 
 def main():
@@ -427,7 +706,10 @@ def main():
     test_one_stage(rdir, out, full)
     test_rolloff(rdir, out)
     test_refused(rdir, out)
-    test_identity(out, a.baseline, a.renders)
+    test_preview(rdir, out)
+    test_measure(rdir, out, None if full is None else (os.path.join(out, "sheets"), full[1]))
+    test_finish(rdir, out)
+    test_identity(rdir, out, a.baseline, a.renders)
     print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))
     sys.exit(1 if FAILED else 0)
 
