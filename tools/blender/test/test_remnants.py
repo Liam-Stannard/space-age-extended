@@ -78,7 +78,9 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              is run with its glow floor set aside (floor_aside.py: judged on luma, as before T08h),
              as the baseline's judges it, and nothing else changed: since T08h a blue speck the old
              floor left clear is dropped and a faint fringe kept (test_glow_floor.py holds the
-             floor; pack.py's glow sheets are set aside already, as above). A glow animation's
+             floor). This tree's pack.py runs with its real floor: the floor moves only what
+             glow_layer makes, a glow pass's sheet, set aside already as above, and a wreck's glow,
+             which no model here declares (test_remnants_glow.py holds that). A glow animation's
              sheets are never set aside. Both trees pack and preview a copy of the renders whose
              render.json says rolloff false (every other file a link to the original's):
              pack.py rolls the highlights of every sheet but a shadow's or a light's off by
