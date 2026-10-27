@@ -1,0 +1,266 @@
+{
+ "08": {
+  "cover_pct": 94.3,
+  "rise_tiles": 0.77,
+  "glow_pct": 1.0,
+  "moving_pct": 2.7,
+  "cold_px": 2,
+  "p5": 4,
+  "p50": 74,
+  "p95": 163,
+  "pipes": 14,
+  "pipes_loose": 0,
+  "glass": {
+   "glass_px_1x": 149,
+   "glass_box_1x": [
+    171,
+    243,
+    189,
+    256
+   ],
+   "white": {
+    "lit_1x": 1488,
+    "lit_2x": 6200,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 6572,
+    "lit_2x": 31235,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 3876,
+    "lit_2x": 17664
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 29,
+    "glow": 24,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 114,
+   "he_peak_2x": 116,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 331.1,
+   "he_hue_p5_p95": [
+    266.7,
+    10.4
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 6.74,
+   "full_frame": 0,
+   "draw_frame": 3
+  },
+  "gif_1x_mb": 0.69,
+  "gif_2x_mb": 2.41
+ },
+ "09": {
+  "cover_pct": 93.9,
+  "rise_tiles": 0.7,
+  "glow_pct": 0.1,
+  "moving_pct": 1.5,
+  "cold_px": 9,
+  "p5": 6,
+  "p50": 80,
+  "p95": 162,
+  "pipes": 12,
+  "pipes_loose": 0,
+  "glass": {
+   "glass_px_1x": 214,
+   "glass_box_1x": [
+    187,
+    233,
+    205,
+    251
+   ],
+   "white": {
+    "lit_1x": 1405,
+    "lit_2x": 7786,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 5687,
+    "lit_2x": 31714,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 2884,
+    "lit_2x": 16139
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 29,
+    "glow": 24,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 119,
+   "he_peak_2x": 115,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 331.4,
+   "he_hue_p5_p95": [
+    266.7,
+    10.4
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 6.57,
+   "full_frame": 2,
+   "draw_frame": 5
+  },
+  "gif_1x_mb": 0.76,
+  "gif_2x_mb": 2.35
+ },
+ "10": {
+  "cover_pct": 92.6,
+  "rise_tiles": 0.86,
+  "glow_pct": 0.8,
+  "moving_pct": 4.6,
+  "cold_px": 25,
+  "p5": 5,
+  "p50": 78,
+  "p95": 177,
+  "pipes": 21,
+  "pipes_loose": 0,
+  "glass": {
+   "glass_px_1x": 474,
+   "glass_box_1x": [
+    136,
+    192,
+    184,
+    212
+   ],
+   "white": {
+    "lit_1x": 1740,
+    "lit_2x": 9967,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 11381,
+    "lit_2x": 59355,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 4245,
+    "lit_2x": 24857
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 29,
+    "glow": 24,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 113,
+   "he_peak_2x": 113,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 301.3,
+   "he_hue_p5_p95": [
+    265.7,
+    8.2
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 4.45,
+   "full_frame": 22,
+   "draw_frame": 2
+  },
+  "gif_1x_mb": 0.87,
+  "gif_2x_mb": 3.24
+ },
+ "19": {
+  "cover_pct": 93.0,
+  "rise_tiles": 0.39,
+  "glow_pct": 0.3,
+  "moving_pct": 15.6,
+  "cold_px": 0,
+  "p5": 5,
+  "p50": 76,
+  "p95": 156,
+  "pipes": 11,
+  "pipes_loose": 0,
+  "glass": {
+   "glass_px_1x": 160,
+   "glass_box_1x": [
+    151,
+    158,
+    169,
+    172
+   ],
+   "white": {
+    "lit_1x": 420,
+    "lit_2x": 3207,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 3233,
+    "lit_2x": 16947,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 1820,
+    "lit_2x": 9583
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 29,
+    "glow": 24,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 115,
+   "he_peak_2x": 116,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 331.9,
+   "he_hue_p5_p95": [
+    265.7,
+    11.0
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 3.69,
+   "full_frame": 17,
+   "draw_frame": 4
+  },
+  "gif_1x_mb": 0.6,
+  "gif_2x_mb": 1.97
+ }
+}
