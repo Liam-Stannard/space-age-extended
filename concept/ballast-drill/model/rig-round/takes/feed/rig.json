@@ -1,0 +1,174 @@
+{
+ "take": "feed",
+ "units": "outer diameter, tiles (64 px a tile)",
+ "directions": {
+  "north": [
+   {
+    "pair": [
+     [
+      -2,
+      -1,
+      "W"
+     ],
+     [
+      -1,
+      2,
+      "S"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 3.94,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   },
+   {
+    "pair": [
+     [
+      2,
+      -1,
+      "E"
+     ],
+     [
+      1,
+      2,
+      "S"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 3.92,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   }
+  ],
+  "east": [
+   {
+    "pair": [
+     [
+      1,
+      -2,
+      "N"
+     ],
+     [
+      -2,
+      -1,
+      "W"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 4.33,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   },
+   {
+    "pair": [
+     [
+      1,
+      2,
+      "S"
+     ],
+     [
+      -2,
+      1,
+      "W"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 3.94,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   }
+  ],
+  "south": [
+   {
+    "pair": [
+     [
+      2,
+      1,
+      "E"
+     ],
+     [
+      1,
+      -2,
+      "N"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 4.31,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   },
+   {
+    "pair": [
+     [
+      -2,
+      1,
+      "W"
+     ],
+     [
+      -1,
+      -2,
+      "N"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 4.33,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   }
+  ],
+  "west": [
+   {
+    "pair": [
+     [
+      -1,
+      2,
+      "S"
+     ],
+     [
+      2,
+      1,
+      "E"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 3.92,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   },
+   {
+    "pair": [
+     [
+      -1,
+      -2,
+      "N"
+     ],
+     [
+      2,
+      -1,
+      "E"
+     ]
+    ],
+    "fitting": 0.56,
+    "body": 0.58,
+    "run": 0.56,
+    "head": 0.56,
+    "length": 4.31,
+    "feed": "reducer 0.56 -> 0.30, line 0.30"
+   }
+  ]
+ }
+}
