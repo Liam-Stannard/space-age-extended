@@ -259,8 +259,30 @@ whole (`radiant.py`). Measured with `factorio-art-measure`.
 
 # 13. Sprite Dimensions
 
-64 source px a tile, scale 0.5. Footprint 5×5. The canvas, frame size and
-shift are read off the packed sheets at the model stage and written here then.
+**Measured off the shipped sheets (T08k render, wired at T11), not targeted.**
+
+64 source px a tile, scale 0.5. Footprint 5×5. One set of sheets for all four directions. Moving layers run 32 frames at 5/21 (70 ms a frame).
+
+| Sheet | Frame (px) | Frames | Line length | Shift (tiles) | Notes |
+| ----- | ---------- | ------ | ----------- | ------------- | ----- |
+| `base.png` | 338 × 361 | 1 | 1 | `{ −0.04688, −0.21094 }` |  |
+| `shadow.png` | 358 × 329 | 1 | 1 | `{ 0.28125, 0.00781 }` | shadow |
+| `status-lamp.png` | 281 × 170 | 1 | 1 | `{ 0.17969, 0.21875 }` | glow, working only |
+| `carousel.png` | 271 × 240 | 32 | 30 | `{ −0.30469, −0.65625 }` |  |
+| `drive.png` | 105 × 47 | 32 | 32 | `{ −1.13281, −2.35156 }` |  |
+| `crane.png` | 213 × 222 | 32 | 32 | `{ 0.88281, −1.23438 }` |  |
+| `commutator.png` | 100 × 130 | 32 | 32 | `{ 1.35938, 1.46875 }` |  |
+| `coupling-converter.png` | 47 × 62 | 32 | 32 | `{ 0.11719, 1.625 }` |  |
+| `coupling-pump.png` | 14 × 25 | 32 | 32 | `{ −0.34375, −2.30469 }` |  |
+| `gauge-switchgear.png` | 20 × 15 | 32 | 32 | `{ 2.125, 1.74219 }` |  |
+| `gauge-converter.png` | 6 × 5 | 32 | 32 | `{ −0.51562, 2.07031 }` |  |
+| `gauge-transformer.png` | 33 × 46 | 32 | 32 | `{ −1.97656, 2 }` |  |
+| `window.png` | 227 × 148 | 32 | 32 | `{ 0.61719, −0.82812 }` |  |
+| `window-glow.png` | 260 × 238 | 32 | 31 | `{ 0.625, −0.875 }` | glow, additive |
+| `remnants.png` | 306 × 297 | 1 | 1 | `{ 0.14062, 0.02344 }` | wreck |
+| `remnants-glow.png` | 15 × 15 | 1 | 1 | `{ 1.07031, −0.50781 }` | wreck glow, additive |
+
+Four night lights use vanilla's `light-medium.png` (port, well, slot, tubes), as listed in `model/sheets/meta.json`.
 
 ---
 
@@ -282,8 +304,7 @@ gen.idle_animation = -- chosen after the spike (§6); same frame count
 
 Changes at wiring: the 5×5 boxes, `idle_animation`, its own remnants for
 `corpse`, and a death explosion like the Siderane turbine's: fireball and
-sparks, no smoke. **Working sound:** its own, designed in the model task; the
-steam engine's goes.
+sparks, no smoke. **Working sound:** the fusion generator's for now (Liam 2026-10-27, "Vanilla sound for now"); its own later. The steam engine's goes.
 
 ---
 
@@ -304,7 +325,7 @@ steam engine's goes.
 
 - [ ] Model signed off by Liam
 - [ ] Sheets packed by `render.sh --ports --icon`; §13 filled in from them
-- [ ] Its own working sound, from the model task
+- [ ] Working sound: the fusion generator's for now; its own later
 - [ ] Prototype: 5×5 boxes, `animation` and `idle_animation`, remnants, death explosion
 - [ ] `./tools/check-data-stage.sh` passes
 - [ ] Client test, fuelled and unfuelled; Liam signs off in game
@@ -323,6 +344,7 @@ steam engine's goes.
 | Options 6 | three combinations | Liam: "use one but the blue textures look out of place and could be improved." | the Carousel Foundry, 2026-10-12 | the blue |
 | Options 7 | the Carousel Foundry refined | cover 94 %, rise 0.47, blue 0.7 %, strobe 5.6 % | Liam: "Sign off", 2026-10-19 | none |
 | Spec | rewrite | the Carousel Foundry described for the model | Liam: "Agreed to all the drafts", 2026-10-20 | none |
+| Wiring | T11 | wired in game: 5×5, idle frozen, wreck glow, sparks-only explosion, fusion generator sound, 600 health | Review PASS 2026-10-27 | none |
 
 # 20. Decisions
 
