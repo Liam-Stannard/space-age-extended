@@ -199,9 +199,11 @@ data:extend({
 -- hidden developer entity with half a machine's fields -- no impact category,
 -- no hit effect, no door sounds -- so the copy needed `hidden = false` to be
 -- seen and still fell short of what every visible vanilla machine carries.
--- The field set below is the steam engine's. The footprint is not: it is a
+-- The field set below follows the steam engine's: its resistances, impact
+-- category, door sounds and alert shift. The rest is the building's own: a
 -- 5x5 with the nuclear reactor's boxes (spec 2, Liam 2026-10-20: "5x5, reactor
--- boxes"), and its wreck and explosion are its own (below).
+-- boxes"), 600 health (Liam, 2026-10-27), the fusion generator's working sound
+-- and performance curve (below), and its own wreck and explosion (further down).
 local gen =
 {
   type = "burner-generator",
@@ -209,7 +211,7 @@ local gen =
   icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
   flags = { "placeable-neutral", "player-creation" },
   minable = { mining_time = 1, result = "sae-radiant-generator" },
-  max_health = 400,
+  max_health = 600,
   alert_icon_shift = util.by_pixel(0, -12),
   resistances =
   {
