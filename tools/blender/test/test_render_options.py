@@ -8,7 +8,9 @@ is box.py with a --collide); <radiant-out> the same for test/radiant_box.py, for
 its plate layer's sequence (skipped without it). Nothing is rendered here: copies of their
 renders, with render.json edited, are packed by pack.py and drawn by preview.py, and
 render.sh's collide step is run with a stand-in Blender, a shell script that prints the
-COLLIDE lines it is given. The collide step on the box itself takes Blender: collide_box.py's
+COLLIDE lines it is given, through a copy of tools/blender (and the path readers) whose own
+tools/paths.conf names it as BLENDER: render.sh takes Blender from the paths.conf of the tree
+it is in, and from nothing else. The collide step on the box itself takes Blender: collide_box.py's
 docstring has the two runs. Everything is written under --out (default <box-out>/options-test)
 and kept.
 
@@ -456,6 +458,19 @@ exit 3
 """
 
 
+def stand_in_tree(d, blender):
+    """d/tools: tools/blender's scripts (not its tests or textures) and the two path readers,
+    with a paths.conf naming blender as BLENDER; its render.sh."""
+    root = os.path.join(d, "tools")
+    shutil.copytree(TOOLS, os.path.join(root, "blender"),
+                    ignore=shutil.ignore_patterns("test", "textures", "__pycache__"))
+    for name in ("paths.sh", "paths.py"):
+        shutil.copy2(os.path.join(os.path.dirname(TOOLS), name), root)
+    with open(os.path.join(root, "paths.conf"), "w") as f:
+        f.write(f"# the stand-in, for test_render_options.py's collide cases\nBLENDER={blender}\n")
+    return os.path.join(root, "blender", "render.sh")
+
+
 def test_collide(out):
     print("collide (render.sh, a stand-in Blender)")
     d = os.path.join(out, "collide")
@@ -466,12 +481,13 @@ def test_collide(out):
     with open(blender, "w") as f:
         f.write(STAND_IN)
     os.chmod(blender, 0o755)
+    render_sh = stand_in_tree(d, blender)
     model = os.path.join(HERE, "box.py")
 
     def render(name, printed, *flags):
         o = os.path.join(d, name)
-        env = dict(os.environ, BLENDER=blender, SAE_BLENDER_DEVICE="CPU", FAKE_COLLIDE=printed)
-        code, text = run(["bash", os.path.join(TOOLS, "render.sh"), model, o, *flags], env)
+        env = dict(os.environ, SAE_BLENDER_DEVICE="CPU", FAKE_COLLIDE=printed)
+        code, text = run(["bash", render_sh, model, o, *flags], env)
         done = open(os.path.join(o, "render.done")).read().strip() if os.path.isfile(os.path.join(o, "render.done")) \
             else None
         return o, code, text, done

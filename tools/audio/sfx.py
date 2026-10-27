@@ -46,18 +46,23 @@ count from 0, as derive.working_sound's accent frames do. A crafting machine's
 animation also runs at its crafting speed (machines.lua says how each of ours
 plays); pass the speed it actually plays at.
 
-**The Factorio data directory** is $FACTORIO_DATA if set, else the first of
-the usual Steam install paths that exists. A game path, "__base__/sound/x.ogg",
-resolves under it; "__space-age-extended__/..." resolves to this repo.
+**The Factorio data directory** is <FACTORIO_ROOT>/data, FACTORIO_ROOT being
+the one tools/paths.conf names (tools/paths.py). A game path,
+"__base__/sound/x.ogg", resolves under it; "__space-age-extended__/..."
+resolves to this repo. `sfx.py` run alone prints this and that directory.
 """
 
 import os
+import sys
 from fractions import Fraction
 from pathlib import Path
 
-import numpy as np
-import soundfile as sf
-from scipy import signal
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # tools/
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+
+import numpy as np  # noqa: E402
+import soundfile as sf  # noqa: E402
+from scipy import signal  # noqa: E402
 
 SR = 44100          # vanilla's sample rate, measured: see the header
 CHANNELS = 2        # and its channel layout
@@ -67,29 +72,13 @@ TICKS_PER_SECOND = 60
 VORBIS_COMPRESSION = 0.5
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-_DATA_CANDIDATES = [
-    "~/.steam/steam/steamapps/common/Factorio/data",
-    "~/.steam/debian-installation/steamapps/common/Factorio/data",
-    "~/.local/share/Steam/steamapps/common/Factorio/data",
-    "~/factorio/data",
-]
 
 
 # --- finding and reading files -------------------------------------------
 
 def data_dir():
-    """Factorio's data directory: $FACTORIO_DATA, else the first one found."""
-    env = os.environ.get("FACTORIO_DATA")
-    if env:
-        p = Path(env).expanduser()
-        if not (p / "base").is_dir():
-            raise FileNotFoundError(f"$FACTORIO_DATA={env} has no base/ in it")
-        return p
-    for c in _DATA_CANDIDATES:
-        p = Path(c).expanduser()
-        if (p / "base").is_dir():
-            return p
-    raise FileNotFoundError("no Factorio data directory found; set $FACTORIO_DATA")
+    """Factorio's data directory: <FACTORIO_ROOT>/data, from tools/paths.conf (paths.PathsError when not)."""
+    return Path(paths.factorio_data())
 
 
 def resolve(path):
@@ -460,3 +449,4 @@ class Mix:
 
 if __name__ == "__main__":
     print(__doc__)
+    print(f"Factorio data: {data_dir()}")

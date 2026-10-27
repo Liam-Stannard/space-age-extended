@@ -5,8 +5,8 @@ a joint with a gap cut into it fails.
   python3 tools/blender/test/test_joins_vanilla.py [--sheet <out.png>]
 
 Exits 0 when all 128 vanilla joins pass, the gap fixture fails and every probe below comes out
-as pinned; 1 otherwise, naming them. Reads the vanilla data (FACTORIO_DATA, default the Steam
-install) and nothing else; no Blender, no client. --sheet writes every join at 4x (plain and
+as pinned; 1 otherwise, naming them. Reads the vanilla data (<FACTORIO_ROOT>/data, tools/paths.conf)
+and nothing else; no Blender, no client. --sheet writes every join at 4x (plain and
 marked) to one image, split past 8000 px as measure.py splits its sheets (<out>-2.png and on).
 
 Each building is put together as the engine draws it, from its prototype: frame 0 of every
@@ -172,7 +172,7 @@ def block(half_w=80, half_h=120):
 def lip(t):
     """The flat body ending at y 120 and a t px lip hugging the south pipe's rounded end."""
     im = block()
-    pipe = Canvas().place(measure.load(os.path.join(measure.PIPE, "pipe-straight-vertical.png")), (0, 0),
+    pipe = Canvas().place(measure.load(os.path.join(measure.pipe_dir(), "pipe-straight-vertical.png")), (0, 0),
                           at=(0, 3))
     P, px, o = measure.pipe_mask(pipe).load(), im.load(), C // 2
     for c in range(o - 40, o + 40):

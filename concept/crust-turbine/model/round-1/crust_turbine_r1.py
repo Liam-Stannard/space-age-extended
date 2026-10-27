@@ -1,7 +1,7 @@
 """Siderane turbine (sae-crust-turbine), built from its spec, rendered in every pass and direction.
 
   blender -b --python crust_turbine.py -- <out-dir> [--idle | --collide]
-  BLENDER=... tools/blender/render.sh concept/crust-turbine/model/crust_turbine.py <out-dir>
+  tools/blender/render.sh concept/crust-turbine/model/crust_turbine.py <out-dir>
 
   --idle     idle- and still-<direction>.png only: the quick loop
   --collide  no render: every part against every other assembly it is not fastened to,

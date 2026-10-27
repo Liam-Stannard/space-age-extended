@@ -24,6 +24,11 @@ on". Two are measure.py's own:
 - joins: no gap of 2 px or more in more than 2 of the pipe body's columns
   (beside the pipe is information only; clipping is Liam's eye);
 - collide: 0 clashes not allowed.
+- clipping, by eye as well as `--collide`: at 2x in every direction, no
+  cable, hose, pipe or effect passes through another part or into the
+  ground, and every end is visibly fastened (gland, clamp, collar, flange
+  or nozzle). `--collide` misses these when the contact is listed as meant
+  or is with the ground.
 - white and clipped: since 2026-10-20 pack.py rolls highlights off every
   drawn sheet but light passes (render.json `rolloff`, on by default):
   new sheets have no pixel at 245 or over, so white_px is the shipped

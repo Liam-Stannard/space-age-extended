@@ -4,8 +4,8 @@
   `~/.factorio/mods/space-age-extended` links to it. Every task has its own
   branch and worktree under `.claude/worktrees/`; nothing is committed on
   master directly (claude.md rule 7).
-- **Blender:** blender.org 5.0.1 at
-  `/home/liam-stannard/opt/blender-5.0.1-linux-x64/blender`, GPU (OptiX,
+- **Blender:** blender.org 5.0.1, at the path `tools/paths.conf` names
+  (BLENDER), GPU (OptiX,
   RTX 5080) by default via `SAE_BLENDER_DEVICE`; `/usr/bin/blender` has no
   GPU. `tools/blender/render.sh` writes `<out>/render.done`.
 - **Packing:** `tools/blender/pack.py` crops per declared layer, checks
