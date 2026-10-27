@@ -16,7 +16,9 @@ pump.icon = "__space-age-extended__/graphics/icons/vent-pump.png"
 pump.minable = { mining_time = 0.5, result = "sae-vent-pump" }
 
 -- Art: rendered in Blender from concept/vent-pump/model/vent_pump.py, the Gas
--- Lift Tower signed off by Liam on 2026-10-21 (T07, T07c, T07d), through
+-- Lift Tower signed off by Liam on 2026-10-21 (T07, T07c, T07d), with its
+-- connections through wall fittings and a mount for the wire post (T07e,
+-- signed off 2026-10-27), through
 --
 --   BLENDER=<blender> tools/blender/render.sh \
 --       concept/vent-pump/model/vent_pump.py <scratch> --ports --icon
@@ -46,11 +48,11 @@ local VP_SHEETS =
   north =
   {
     base               = { 194, 247, { 0, -0.38281 } },
-    shadow             = { 255, 200, { 0.46094, -0.04688 } },
+    shadow             = { 255, 201, { 0.46094, -0.05469 } },
     riser              = { 25, 96, { -0.05469, -0.76562 } },
     riser_light        = { 16, 69, { -0.01562, -0.67969 } },
-    glass              = { 26, 38, { 0.3125, 0.53125 } },
-    glass_light        = { 17, 15, { 0.30469, 0.66406 } },
+    glass              = { 26, 37, { 0.3125, 0.52344 } },
+    glass_light        = { 17, 14, { 0.30469, 0.65625 } },
     mech               = { 135, 186, { 0.08594, -0.35938 } },
     embers             = { 46, 104, { -0.875, -1.82812 } },
     embers_light       = { 49, 105, { -0.88281, -1.83594 } },
@@ -73,8 +75,8 @@ local VP_SHEETS =
   },
   south =
   {
-    base               = { 194, 234, { 0, -0.29688 } },
-    shadow             = { 256, 199, { 0.46875, -0.05469 } },
+    base               = { 194, 235, { 0, -0.28906 } },
+    shadow             = { 256, 201, { 0.46875, -0.05469 } },
     riser              = { 25, 96, { -0.05469, -0.40625 } },
     riser_light        = { 16, 76, { -0.01562, -0.26562 } },
     glass              = { 24, 38, { 0.67188, -0.35938 } },
@@ -88,7 +90,7 @@ local VP_SHEETS =
   west =
   {
     base               = { 194, 250, { 0, -0.39062 } },
-    shadow             = { 242, 197, { 0.39062, -0.00781 } },
+    shadow             = { 243, 197, { 0.38281, -0.00781 } },
     riser              = { 24, 96, { -0.23438, -0.57812 } },
     riser_light        = { 15, 76, { -0.17969, -0.4375 } },
     glass              = { 26, 35, { 0.84375, -0.02344 } },
@@ -277,11 +279,15 @@ local vp_ground_light =
   west_position = { -0.18, 0.36 }
 }
 
--- The pipe pictures are the model's own, rendered on the middle tile of each
--- face in assembler 3's outline (sheets/ports/meta.json, each shift taken from
--- the tile outside the port); the covers are vanilla's, as assembler 3's are
--- (spec 8). A north stub is drawn behind the building, as vanilla's assemblers
--- draw it.
+-- Each connection is a fitting set into the building's wall, as the Reaction
+-- Plant casing's are (Liam, 2026-10-21: "how it has been done for the
+-- casing"): the casing, its bolted boss and the flanged sleeve are part of the
+-- plate, so the pipe pictures are only the sleeve's open mouth past the
+-- footprint's edge (sheets/ports/meta.json, each shift taken from the tile
+-- outside the port), drawn whether or not a pipe is joined. Unconnected, the
+-- engine adds vanilla's cover over the mouth ("Fitting open + vanilla cover");
+-- the model's own blind plates (sheets/ports/cover-*.png) are not used. A north
+-- mouth is drawn behind the building, as vanilla's assemblers draw it.
 local function vp_port(face, w, h, shift)
   return
   {
@@ -294,10 +300,10 @@ local function vp_port(face, w, h, shift)
 end
 local VP_PORTS =
 {
-  north = vp_port("N", 53, 22, { 0.00781, 0.34375 }),
-  east = vp_port("E", 31, 71, { -0.72656, 0.05469 }),
-  south = vp_port("S", 63, 69, { -0.00781, -0.77344 }),
-  west = vp_port("W", 31, 72, { 0.72656, 0.01562 })
+  north = vp_port("N", 42, 24, { 0, 0.26562 }),
+  east = vp_port("E", 5, 46, { -0.47656, -0.01562 }),
+  south = vp_port("S", 42, 24, { 0, -0.6875 }),
+  west = vp_port("W", 5, 46, { 0.47656, -0.01562 })
 }
 local covers = derive.pipe_covers()
 
@@ -388,29 +394,25 @@ pump.graphics_set_flipped = nil
 -- smoke is drawn in its own layer); the pumpjack's 1 would cull the top of it.
 pump.drawing_box_vertical_extension = 1.2
 
--- The wire post, on the control house (Liam, "Move to the control house"). The
--- pumpjack's sat at the same spot in every direction, and on this building that
--- is the middle of the riser's glass. The house turns with the plumbing (east
--- the quarter turn, south the half turn, west east's mirror), and the camera
--- puts a model point at (x, -y - 0.52 z) on screen, solved from the two lenses'
--- rendered shifts. The post's sprite (variation 26) covers about -0.2 to +0.36
--- tile across and 0 to +0.37 down from its offset, measured in a client, so
--- each offset keeps it off the green lens:
---   north  on the house's front wall, under the roof and the lens (the strip
---          of roof beside the grey cabinet is too narrow for it);
---   east   on the roof, right of the lens;
---   south  on the roof, below the lens;
---   west   on the roof, left of the lens.
+-- The wire post, on the control house (Liam, "Move to the control house"),
+-- standing on the mount the model gives it (Liam, "Add a point to mount it
+-- to"): facing north a bolted pad on the house's roof at its front edge, the
+-- other three a shelf on the house's wall that faces the camera. The pumpjack's
+-- post sat at the same spot in every direction, and on this building that is
+-- the middle of the riser's glass. Each offset is the model's own
+-- (vent_pump.py's post_offset(), the render's model.json "post_offsets"): x the
+-- mount's middle, y its top back edge on the screen less the 0.25 tile from the
+-- offset to the foot of the post's sprite (variation 26).
 local function vp_post(x, y)
   return { variation = 26, main_offset = { x, y }, shadow_offset = { x, y }, show_shadow = true }
 end
 pump.circuit_connector = circuit_connector_definitions.create_vector(
   universal_connector_template,
   {
-    vp_post(1.0, -1.07),
-    vp_post(0.95, 0.70),
-    vp_post(-1.22, 0.43),
-    vp_post(-1.12, 0.62)
+    vp_post(0.7, -1.58),
+    vp_post(0.95, 0.81),
+    vp_post(-0.95, 0.805),
+    vp_post(-1.1, 0.81)
   }
 )
 
