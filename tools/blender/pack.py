@@ -117,9 +117,12 @@ are packed as a building's are (Packer.animation), each a sheet of its own after
 for the animation alone, its meta.json entry size, shift, frames, line_length, and kind, frame_sequence
 and animation_speed as a building's; with no still, so no frame-0 check. Their checks join the flat
 ones, as a building's: <name>_cycle and <name>_sequence, and for a glow animation <name>_white_px,
-_frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (its
-paint layer over the cell, the light added): the engine plays a stateless_visualisation over
-whichever cell it drew. A glow animation's failing checks fail the pack as a building's do.
+_frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (the
+cell with its effect's cell added at full strength under it, when it has an effect, as the
+effect's own _clipped_px reads it; then its paint layer over that, the light added; pixels white
+before the light is added, the effect's own clipping among them, are not counted): the engine plays
+a stateless_visualisation over whichever cell it drew, with the effect drawn under it. A glow
+animation's failing checks fail the pack as a building's do.
 Exits 1 naming the sheet and the cell when a check fails, meta.json written first.
 
 The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
@@ -813,8 +816,9 @@ class Packer:
         one frame for each of its plate layer's. siblings: the other glow animations over the
         same plate layer (a model's windows of different blooms, radiant.py): the engine draws
         them all, so the clipping is counted with all of them added. plate: the image the layers
-        are drawn over, or a list of them, each counted (a resource's cells, any of which its
-        stateless_visualisation may play over), `on` naming them in the check's note."""
+        are drawn over, or a list of them, each counted (a resource's cells, each with its effect's
+        light added, any of which its stateless_visualisation may play over), `on` naming them in the
+        check's note."""
         name, over = anim["name"], anim["over"]
         glows, unders = packed[name], packed[over]
         plates = plate if isinstance(plate, list) else [plate]
@@ -975,6 +979,7 @@ class Packer:
         grid = contract.cells(decl)
         checks = {}
         cells = {sv: clean(self.open(contract.cell(res["name"], *sv), "")) for sv in grid}
+        lit_cells = dict(cells)              # each cell with its effect's light added: what an animation plays over
         for sv, im in cells.items():         # every cell of a resource holds something
             self.box_of(im.getchannel("A"), contract.cell(res["name"], *sv) + ".png")
         reach_box = self.grid_sheet(res, cells, "resource")
@@ -988,6 +993,7 @@ class Packer:
             if p["kind"] != "effect":
                 continue
             lights = {sv: glow_frame(self.open(contract.cell(p["name"], *sv), ""), p.get("bloom")) for sv in grid}
+            lit_cells = {sv: add_light(cells[sv], lights[sv]) for sv in grid}
             self.grid_sheet(p, lights, "effect")
             self.cell_edges(p, {sv: g.getchannel("A") for sv, g in lights.items()}, checks)
             name = p["sheet"]
@@ -1014,8 +1020,10 @@ class Packer:
             if a.get("kind") == "glow":
                 siblings = [b["name"] for b in decl["animations"]
                             if b.get("kind") == "glow" and b["over"] == a["over"] and b["name"] != a["name"]]
-                checks.update(self.glow_checks(a, packed, list(cells.values()), "", siblings,
-                                               on=f"each cell of {res['name']!r}"))
+                fx = [q["name"] for q in decl["passes"] if q["kind"] == "effect"]
+                checks.update(self.glow_checks(a, packed, list(lit_cells.values()), "", siblings,
+                                               on=f"each cell of {res['name']!r}" + (
+                                                   f" with {fx[0]!r}'s light added at full strength" if fx else "")))
         if self.roll_on:
             checks["rolloff_px"] = (self.rolls.get("", {}), f"per sheet, the px the highlight roll-off changed "
                                     f"(brightest channel over {KNEE}, eased under {TOP}, hue kept) and the most a "

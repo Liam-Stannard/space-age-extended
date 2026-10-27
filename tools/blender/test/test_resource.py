@@ -6,8 +6,10 @@
 
 <resource-out> is render.sh's <out-dir> for test/resource_box.py: a target disc in three stages of
 four variations, with an effect over it. Nothing is rendered here: copies of its renders, with
-render.json edited, are packed by pack.py. --baseline names a commit from before the resource
-model (vents cd10283): its contract.py and pack.py, taken out with `git show`, are run beside
+render.json edited, are packed by pack.py. --baseline names a commit with T02's resource model,
+from before its animations (vents 15d2ab7; one before the resource model, cd10283, cannot pack the
+fixture without animations, so its identity cases fail), or a later one a change is held to: its
+tools (BASELINE_FILES), taken out with `git show`, are run beside
 this tree's on every --renders <render-out> (any render.sh output of a building, test/box.py's
 and test/radiant_box.py's say, or a real model's), and every file they write must be byte for
 byte the same; so must `contract.py plates`. Everything is written under --out (default
@@ -60,21 +62,36 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              white", that cell); variations 30 ("does not wrap"); an animation frame gone
              (bubble-02.png); a white square in a glow animation's frame ("bubble-light", "white",
              meta.json written). One effect cell dark: accepted.
-  preview    preview.py on the renders, exit 0: a sheet of a row a stage, each of the four
-             variations' panels and then the four with the effect, the panel size the canvas and
-             its pads; every effect panel at least its plain panel's every channel (the light is
-             added) and brighter somewhere; --adopted with one picture adds a panel to the top row
-             alone, with two is refused; --gif bubble --speed 0.2: 4 frames, the four stage-0 cells
-             side by side.
+  effect under  every effect cell made a light (no bloom) that lifts its resource cell to 240 in
+             every channel wherever the cell is opaque: bubble-light's light, added over bubble on
+             each cell alone, whitens nothing, and with the effect's light under it some pixels;
+             bubble-light_clipped_px is that count (pack.py: the effect's light added under a glow
+             animation), the pack refused naming bubble-light, meta.json written; the effect's own
+             white_px 0.
+  preview    preview.py on the renders, exit 0: a sheet of a row a stage, each with its night row
+             under it, each of the four variations' panels and then the four with the effect, the
+             panel size the canvas and its pads; every effect panel at least its plain panel's every
+             channel (the light is added) and brighter somewhere, by day and at night; every night
+             panel's ground preview.NIGHT times the day's, the panel nowhere brighter than its day
+             one and nowhere under the day times NIGHT (less a level), and over that by 20 or more
+             somewhere (a glow added at full strength); --adopted with one picture adds a panel to
+             the top row alone, its place in the night row under it empty, with two is refused;
+             --gif bubble --speed 0.2: 4 frames, the four stage-0 cells side by side.
   measure    measure.py on the fixture (its packed sheets and its render.json), exit 0: every cell
              "SS-VV" in order, each with the cell as the plate, the effect as a glow, bubble an
              anim and bubble-light a glow-anim; motion over 4 frames; glow figures for the effect
              and bubble-light; pack_checks meta.json's flat checks; no joins; cell 00-00's coverage
              past every edge of the footprint within 0.05 of pack.py's reach, and stage 2's extent
              less than stage 0's. --connection refused (exit 2). The sheets alone, --footprint 3x3:
-             exit 0 and every cell's figures the same.
+             exit 0 and every cell's figures the same. --vanilla crude-oil --vanilla fluorine-vent:
+             exit 0, both references' figures in every cell and ours as without them; crude oil's
+             in cell 00-00 its variation 0, in 02-01 its variation 1 (another picture), a 3 x 3
+             footprint; each reference's figures the same in 00-00 and 02-00, others in 01-01.
   finish     finish.py on the four stage-0 cells: exit 0, each measured; on a 6 px square: exit 0,
              "too thin"; on a flat square: exit 0, ratio "n/a".
+  tonal      tonal.py on the four stage-0 cells: exit 0, each measured; on an empty cell, one all at
+             alpha 200, and a stage-0 cell in one run: exit 0, "no opaque pixel" for the first two,
+             the third measured.
   identity   with --baseline: on every --renders, on the fixture with its animations dropped
              (a resource model as T02 packed it) and on it declared four ways (refused by both,
              before either writes a file), pack.py's every output file (sheets and meta.json)
@@ -477,6 +494,52 @@ def test_refused(rdir, out):
     check("one effect cell dark: accepted", code == 0, text[-600:])
 
 
+def test_effect_under(rdir, out):
+    """A glow animation's clipping counted with the effect's light added under it (vents T02c)."""
+    print("effect under")
+
+    def open_(d, stem):
+        return Image.open(os.path.join(d, stem + ".png")).convert("RGBA")
+
+    def lift(d, dst):
+        # each effect cell a light that lifts its resource cell to 240 in every channel wherever the
+        # cell is opaque (no bloom): white nowhere alone, and anything more in every channel whitens
+        d["passes"][1].pop("bloom", None)
+        for s, v in contract.cells(d):
+            cell = pack.clean(open_(dst, contract.cell(RES, s, v)))
+            r, g, b, a = cell.split()
+            full = a.point(lambda x: 255 if x == 255 else 0)
+            light = [ImageChops.multiply(ch.point(lambda x: max(0, 240 - x)), full) for ch in (r, g, b)]
+            Image.merge("RGBA", (*light, full)).save(os.path.join(dst, contract.cell(FX, s, v) + ".png"))
+    src = renders_copy(rdir, os.path.join(out, "effect-under-renders"), lift)
+    code, text, meta = packed(src, os.path.join(out, "effect-under-sheets"))
+    decl = load_decl(src)
+    a = next(x for x in decl["animations"] if x["name"] == LIGHT)
+    bubble = [pack.clean(open_(src, contract.frame(BUBBLE, f))) for f in range(4)]
+    glow = [pack.glow_frame(open_(src, contract.frame(LIGHT, f)), a.get("bloom")) for f in range(4)]
+    with_fx = without = 0
+    for s, v in contract.cells(decl):
+        cell = pack.clean(open_(src, contract.cell(RES, s, v)))
+        lit_cell = pack.add_light(cell, pack.glow_frame(open_(src, contract.cell(FX, s, v))))
+        for base, which in ((lit_cell, "with"), (cell, "without")):
+            for b, g in zip(bubble, glow):
+                under = base.copy()
+                under.alpha_composite(b)
+                n = ImageChops.subtract(pack.white(pack.add_light(under, g)), pack.white(under)).histogram()[255]
+                if which == "with":
+                    with_fx = max(with_fx, n)
+                else:
+                    without = max(without, n)
+    got = (meta or {}).get("checks", {}).get(f"{LIGHT}_clipped_px", [None])[0]
+    check("the effect lifting every cell to 240: bubble-light's light whitens nothing over a cell alone, and some "
+          "pixels with the effect under it", without == 0 and with_fx > 0, f"without {without}, with {with_fx}")
+    check("bubble-light_clipped_px counts with the effect's light added under it; the pack refuses it, naming "
+          "bubble-light, meta.json written",
+          code != 0 and LIGHT in text and got == with_fx, f"exit {code}, clipped_px {got} vs {with_fx}: {text[-400:]}")
+    fx = (meta or {}).get("checks", {}).get(f"{FX}_white_px", [None])[0]
+    check("the lifting effect: its own white_px 0", fx == 0, f"{fx}")
+
+
 # ---------------------------------------------------------------- preview, measure, finish
 
 def test_preview(rdir, out):
@@ -491,15 +554,15 @@ def test_preview(rdir, out):
     im = Image.open(png).convert("RGB")
     pw = decl["canvas"][0] + 2 * preview.PAD
     ph = decl["canvas"][1] + 2 * preview.PAD + preview.LABEL
-    want = (preview.PAD + 8 * (pw + preview.PAD), preview.PAD + 3 * (ph + preview.PAD))
-    check("preview.py: a row a stage, four variations then the four with the effect", im.size == want,
-          f"{im.size} vs {want}")
+    want = (preview.PAD + 8 * (pw + preview.PAD), preview.PAD + 6 * (ph + preview.PAD))
+    check("preview.py: a row a stage and its night row under it, four variations then the four with the effect",
+          im.size == want, f"{im.size} vs {want}")
     lit, below = [], []
 
-    def panel(r, c):
+    def panel(r, c, sheet=im):
         x, y = preview.PAD + c * (pw + preview.PAD), preview.PAD + r * (ph + preview.PAD) + preview.LABEL
-        return im.crop((x, y, x + pw, y + ph - preview.LABEL))
-    for r in range(3):
+        return sheet.crop((x, y, x + pw, y + ph - preview.LABEL))
+    for r in range(0, 6, 2):
         for c in range(4):
             plain, fx = panel(r, c), panel(r, c + 4)
             if ImageChops.subtract(plain, fx).getbbox() is not None:
@@ -508,12 +571,42 @@ def test_preview(rdir, out):
                 lit.append((r, c))
     check("preview.py: every effect panel at least its plain one, and brighter somewhere", not below and not lit,
           f"darker in {below}, no brighter in {lit}")
+    # the night rows: the ground at NIGHT; never brighter than by day; at least the day times NIGHT
+    # (less a level for rounding), and well over it where a glow is added (the bubble's light); the
+    # effect panels at night at least their plain ones, and brighter somewhere (the effect added)
+    night_ground = tuple(round(c * preview.NIGHT) for c in preview.GROUND[:3])
+    bright, dull, unlit, fx_bad = [], [], [], []
+    for r in range(1, 6, 2):
+        for c in range(8):
+            day, night = panel(r - 1, c), panel(r, c)
+            if night.getpixel((1, 1)) != night_ground:
+                fx_bad.append((r, c, "ground", night.getpixel((1, 1))))
+            if ImageChops.subtract(night, day).getbbox() is not None:
+                bright.append((r, c))
+            dimmed = day.point(lambda v: max(0, round(v * preview.NIGHT) - 1))
+            if ImageChops.subtract(dimmed, night).getbbox() is not None:
+                dull.append((r, c))
+            if max(ImageChops.subtract(night, day.point(lambda v: round(v * preview.NIGHT))).convert("L")
+                   .getextrema()) < 20:
+                unlit.append((r, c))
+        for c in range(4):
+            plain, fx = panel(r, c), panel(r, c + 4)
+            if ImageChops.subtract(plain, fx).getbbox() is not None or ImageChops.subtract(fx, plain).getbbox() is None:
+                fx_bad.append((r, c))
+    check("preview.py: every night panel on the ground at NIGHT, the effect's at least its plain one and "
+          "brighter somewhere", not fx_bad, f"{fx_bad}")
+    check("preview.py: every night panel no brighter than its day one anywhere, and at least the day times NIGHT",
+          not bright and not dull, f"brighter in {bright}, darker in {dull}")
+    check("preview.py: every night panel lit over the dimmed day where a glow is added", not unlit, f"{unlit}")
     one = os.path.join(out, "preview-adopted.png")
     ref = os.path.join(rdir, contract.cell(RES, 0, 0) + ".png")
     code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, one, "--adopted", ref])
-    got = Image.open(one).size if code == 0 else None
-    check("preview.py --adopted <one picture>: a panel more in the top row alone",
-          got == (want[0] + pw + preview.PAD, want[1]), f"exit {code}, {got}: {text[-300:]}")
+    got = Image.open(one) if code == 0 else None
+    empty = got is not None and panel(1, 0, got.convert("RGB")).getcolors() == [(pw * (ph - preview.LABEL),
+                                                                                preview.GAP[:3])]
+    check("preview.py --adopted <one picture>: a panel more in the top row alone, its place in the night row "
+          "under it empty", got is not None and got.size == (want[0] + pw + preview.PAD, want[1]) and empty,
+          f"exit {code}, {got and got.size}, empty {empty}: {text[-300:]}")
     code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, one, "--adopted", ref, ref])
     check("preview.py --adopted <two pictures>: refused", code != 0 and "one plate per direction" in text, text[-300:])
     gif = os.path.join(out, "preview.gif")
@@ -566,6 +659,44 @@ def test_measure(rdir, out, sheets_meta):
     same = code == 0 and json.load(open(os.path.join(alone, "measures.json")))["directions"] == dirs
     check("measure.py on the sheets alone, --footprint 3x3: exit 0, every cell's figures the same", same,
           text[-400:])
+    vout = os.path.join(out, "measure-vanilla")
+    code, text = run([sys.executable, os.path.join(TOOLS, "measure.py"), src, "--out", vout,
+                      "--vanilla", "crude-oil", "--vanilla", "fluorine-vent"])
+    check("measure.py --vanilla crude-oil --vanilla fluorine-vent: exit 0", code == 0, text[-600:])
+    if code != 0:
+        return
+    v = json.load(open(os.path.join(vout, "measures.json")))
+    van = v["vanilla"]
+    check("measure.py: both references' figures in every cell, our cells' as without them",
+          sorted(van) == ["crude-oil", "fluorine-vent"] and all(list(van[n]) == want for n in van)
+          and v["directions"] == dirs, f"{ {n: list(c) for n, c in van.items()} }")
+    import measure
+    label0, foot, still0, _, _ = measure.vanilla("crude-oil", "00-00")
+    label1, _, still1, _, _ = measure.vanilla("crude-oil", "02-01")
+    check("measure.py: crude oil's cell 00-00 its variation 0, 02-01 its variation 1, a 3 x 3 footprint",
+          ("variation 0" in label0 and "variation 1" in label1 and foot == (3, 3)
+           and not same_pixels(still0, still1)), f"{label0}, {label1}, {foot}")
+    for n in van:
+        c0, c1, c4 = (van[n][k]["coverage"] for k in ("00-00", "02-00", "01-01"))
+        check(f"measure.py: {n}'s figures the same in cells of one variation (00-00, 02-00), another in 01-01",
+              c0 == c1 and c0 != c4, f"{c0} / {c1} / {c4}")
+
+
+def test_tonal(rdir, out):
+    print("tonal")
+    plates = [os.path.join(rdir, contract.cell(RES, 0, v) + ".png") for v in range(4)]
+    code, text = run([sys.executable, os.path.join(TOOLS, "tonal.py")] + plates)
+    lines = text.strip().splitlines()
+    check("tonal.py on the four stage-0 cells: exit 0, each measured",
+          code == 0 and len(lines) == 4 and all("p50" in ln and "spread" in ln for ln in lines), text[-400:])
+    empty, faint = os.path.join(out, "tonal-empty.png"), os.path.join(out, "tonal-faint.png")
+    Image.new("RGBA", (64, 64)).save(empty)
+    Image.new("RGBA", (64, 64), (120, 100, 80, 200)).save(faint)
+    code, text = run([sys.executable, os.path.join(TOOLS, "tonal.py"), empty, faint, plates[0]])
+    lines = text.strip().splitlines()
+    check("tonal.py on an empty cell, one at alpha 200, then a cell: exit 0, the first two \"no opaque pixel\", "
+          "the third measured", code == 0 and len(lines) == 3 and all("no opaque pixel" in ln for ln in lines[:2])
+          and "p50" in lines[2], text[-400:])
 
 
 def test_finish(rdir, out):
@@ -706,9 +837,11 @@ def main():
     test_one_stage(rdir, out, full)
     test_rolloff(rdir, out)
     test_refused(rdir, out)
+    test_effect_under(rdir, out)
     test_preview(rdir, out)
     test_measure(rdir, out, None if full is None else (os.path.join(out, "sheets"), full[1]))
     test_finish(rdir, out)
+    test_tonal(rdir, out)
     test_identity(rdir, out, a.baseline, a.renders)
     print(f"{'FAIL' if FAILED else 'PASS'}: {len(FAILED)} case(s) failed" + "".join(f"\n  {f}" for f in FAILED))
     sys.exit(1 if FAILED else 0)

@@ -17,6 +17,7 @@ measure.py cannot give, and says why.
 - --vanilla: the comparable building(s), named in the spec or the task.
 - --collide on every model round; an allow pattern names one meant contact
   as its whole line, never a wildcard.
+- A resource model (an ore, a vent) is measured a cell at a time, its cells keyed "SS-VV" where a building's directions go; it has no joins, and --connection is refused. Its stateless_visualisation is measured as a building's animations are.
 
 ## 2. The bars it checks against
 The bars are factorio-building-round's "Bars at every stage from options

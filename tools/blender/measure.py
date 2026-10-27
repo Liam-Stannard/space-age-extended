@@ -33,7 +33,8 @@
   figures (the engine pulses it between min_effect_alpha and max_effect_alpha: not modelled);
   the animations are layers as a building's. A resource has no pipe connections, so
   --connection is refused and no joins are measured; --plate does not apply, and --directions
-  other than "one" is refused.
+  other than "one" is refused. Its references are --vanilla crude-oil and fluorine-vent (REFS):
+  each cell beside their variation of its own number (mod 4), with their figures.
   pack_checks are meta.json's flat checks, the same in every cell.
 
 Everything is measured as the engine draws it: each sheet placed at its shift on one canvas,
@@ -307,7 +308,12 @@ measures.json:
    "gates": {"joins": bool | null, "collide": bool | null}, "pass": bool}
 
 REFS (--vanilla): steam-turbine, steam-engine, assembling-machine-3, chemical-plant,
-oil-refinery, pumpjack, fusion-generator, foundry, electromagnetic-plant. Their geometry is
+oil-refinery, pumpjack, fusion-generator, foundry, electromagnetic-plant; and the resources
+crude-oil and fluorine-vent, a 3 x 3 footprint each (their collision box +-1.4, as contract.py
+counts a resource's), each a stage of four variations: in a resource model's cell "SS-VV" the
+variation VV mod 4, in any other direction variation 0; crude oil with its stateless_visualisation
+crude-oil-animation's frame 0 over it, and neither with its smoke (render_layer smoke, tinted to a
+tenth or a fifth). Their geometry is
 read from the vanilla data (<FACTORIO_ROOT>/data, tools/paths.conf): a sprite's .lua beside
 it (util.sprite_load) or the prototype table naming it, plus what the prototype adds where the
 .lua alone is wrong (vanilla_sprite's opts): the chemical plant's sprite_load shift
@@ -1740,6 +1746,16 @@ REFS = {
               ("space-age/graphics/entity/electromagnetic-plant/electromagnetic-plant-main-rotate-1.png:"
                "electromagnetic-plant-main-rotate.lua", "base"),
               ("space-age/graphics/entity/electromagnetic-plant/electromagnetic-plant-base-shadow.png", "shadow")]}),
+    # the resources (base and space-age prototypes/entity/resources.lua): stage_counts {0}, so one
+    # stage of four variations in a row; a cell's variation takes the frame of its number, mod
+    # `variations` (opts cell). Crude oil's stateless_visualisation crude-oil-animation (render_layer
+    # decorative, over the resource) is drawn at frame 0 over it; neither's smoke layers are
+    # (render_layer smoke, tinted to a tenth or a fifth: not the ground's look)
+    "crude-oil": dict(label="crude oil", footprint=(3, 3), variations=4, layers={
+        "*": [("base/graphics/entity/crude-oil/crude-oil.png", "base", dict(cell=True)),
+              ("base/graphics/entity/crude-oil/crude-oil-animation.png", "base")]}),
+    "fluorine-vent": dict(label="fluorine vent", footprint=(3, 3), variations=4, layers={
+        "*": [("space-age/graphics/entity/fluorine-vent/fluorine-vent.png", "base", dict(cell=True))]}),
 }
 REF_DIR = {"": "north", "north": "north", "vertical": "north", "east": "east", "horizontal": "east",
            "south": "south", "west": "west"}
@@ -1823,16 +1839,25 @@ def vanilla_sprite(rel, opts=None):
 
 def vanilla(name, dn):
     """A reference in one of our directions: (label, footprint as it stands, still, shadow, light)
-    on a canvas of its own, the origin at its centre."""
+    on a canvas of its own, the origin at its centre. A resource reference (REFS' variations) in a
+    resource model's cell "SS-VV" is its variation VV mod its own count, in any other direction its
+    variation 0."""
     ref = REFS[name]
     key = REF_DIR.get(dn, "north")      # a resource model's cell ("SS-VV"): as it faces north
     lays = ref["layers"].get(key) or ref["layers"].get("*") or ref["layers"].get(
         {"south": "north", "west": "east"}.get(key, "north")) or ref["layers"]["north"]
     fw, fh = ref["footprint"]
     foot = (fh, fw) if key in ("east", "west") else (fw, fh)
+    if "variations" in ref:
+        m = re.fullmatch(r"\d+-(\d+)", dn)
+        variation = int(m.group(1)) % ref["variations"] if m else 0
+        key = f"variation {variation}"
     parts = []
     for rel, role, *opts in lays:
-        im, sx, sy = vanilla_sprite(rel, opts[0] if opts else None)
+        opt = dict(opts[0]) if opts else None
+        if opt and opt.pop("cell", False):
+            opt["col"] = variation
+        im, sx, sy = vanilla_sprite(rel, opt)
         parts.append((im, sx, sy, role))
     half = max([(max(foot) / 2 + 1) * PPT] + [max(abs(sx) + im.width / 2, abs(sy) + im.height / 2)
                                              for im, sx, sy, _ in parts])

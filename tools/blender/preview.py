@@ -31,8 +31,18 @@ draws a row a stage, richest first, and in it a panel a variation -- its cell as
 on the ground with the footprint's grid, its animations at frame 0 over it (paint drawn, a glow
 added) -- then, with an effect, the same panels again with the effect's cell added at full
 strength (the engine pulses it between min_effect_alpha and max_effect_alpha, by darkness: its
-pulse is not drawn here). --adopted takes one picture for it, first in the top row. --gif plays
-an animation over the stage-0 cells side by side, without the effect.
+pulse is not drawn here). Under each stage's row is its night row, every panel under its day one:
+the same panel at night. The model of night is the simplest the engine's rules allow (the
+radiant-generator-options branch's, T08f, for buildings): every layer drawn as by day, in the same
+order, but each layer the engine darkens -- the ground, the resource's cell, each paint
+animation's frame -- with its colour times NIGHT (0.15: the Core's darkest, darkness 0.85, its
+min_brightness), and every glow as by day: a glow animation's frame added, and the effect's cell
+added at full strength, as a draw_as_glow layer shows day and night (the kamacite vent's glow,
+vents Q9: "Glow, day and night"; an effect drawn as vanilla's uranium ore's is, flags {"light"}
+on the light map, is not modelled). So a glow is the scene times 0.15 with the glow added. The
+grid is drawn as by day; the adopted picture's night panel is left empty (its glows are not
+known here). --adopted takes one picture for it, first in the top row. --gif plays an animation
+over the stage-0 cells side by side, by day, without the effect.
 
 --adopted puts the adopted plate(s) first in each row, one per direction in the
 order render.json lists them, on the same ground at the same scale (a sheet's
@@ -81,6 +91,8 @@ FOOTPRINT = (255, 255, 255, 110)
 LAMP = {False: (255, 0, 0, 255), True: (0, 255, 0, 255)}
 LABEL = 14                              # px of label strip over each panel
 PAD = 8
+# the scene's brightness at night: the Core's darkness 0.85 at its darkest (min_brightness 0.15)
+NIGHT = 0.15
 
 
 class Model:
@@ -160,14 +172,16 @@ class Model:
             im.alpha_composite(ImageChops.multiply(lamp, Image.new("RGBA", lamp.size, LAMP[working])))
         return im
 
-    def cell(self, s, v, effect=False, frames=None):
+    def cell(self, s, v, effect=False, frames=None, night=False):
         """A resource model's cell, stage s and variation v, on the ground at canvas size, as pack.py
         packs it: the resource; with effect, its effect's cell added at full strength; its animations
-        over it, each at frame 0 or its frame in frames {animation: frame}, paint drawn, glow added."""
+        over it, each at frame 0 or its frame in frames {animation: frame}, paint drawn, glow added.
+        night: at night (the module's docstring), the ground, the cell and the paint darkened."""
         frames = frames or {}
+        k = NIGHT if night else 1
         res = contract.resource_pass(self.decl)
-        im = Image.new("RGBA", tuple(self.decl["canvas"]), GROUND)
-        im.alpha_composite(self.shipped(pack.clean(self.open(contract.cell(res["name"], s, v), ""))))
+        im = Image.new("RGBA", tuple(self.decl["canvas"]), ground(k))
+        im.alpha_composite(dim(self.shipped(pack.clean(self.open(contract.cell(res["name"], s, v), ""))), k))
         for p in self.kind("effect") if effect else ():
             im = pack.add_light(im, self.shipped(pack.glow_frame(self.open(contract.cell(p["name"], s, v), ""),
                                                                  p.get("bloom"))))
@@ -177,7 +191,7 @@ class Model:
             if a.get("kind") == "glow":
                 glows.append(self.shipped(pack.glow_frame(fr, a.get("bloom"))))
             else:
-                im.alpha_composite(self.shipped(pack.clean(fr)))
+                im.alpha_composite(dim(self.shipped(pack.clean(fr)), k))
         for g in glows:
             im = pack.add_light(im, g)
         return im
@@ -193,6 +207,19 @@ class Model:
         im.alpha_composite(self.shipped(pack.clean(self.open(contract.named(p["name"], d), d, cut_it=False,
                                                              canvas=canvas))))
         return im
+
+
+def dim(im, by):
+    """im (RGBA) with its colour times by, its alpha kept; im itself when by is 1 (the day)."""
+    if by == 1:
+        return im
+    r, g, b, a = im.split()
+    return Image.merge("RGBA", [c.point(lambda v: round(v * by)) for c in (r, g, b)] + [a])
+
+
+def ground(by=1):
+    """The ground's colour, by day (by 1) or at night (NIGHT)."""
+    return GROUND if by == 1 else tuple(round(c * by) for c in GROUND[:3]) + (255,)
 
 
 def grid(im, origin, footprint, ppt):
@@ -215,9 +242,9 @@ def grid(im, origin, footprint, ppt):
                    outline=FOOTPRINT)
 
 
-def place(art, size, origin, shift=(0, 0)):
-    """art centred on the panel's origin, moved by shift (px), on the ground."""
-    im = Image.new("RGBA", size, GROUND)
+def place(art, size, origin, shift=(0, 0), by=1):
+    """art centred on the panel's origin, moved by shift (px), on the ground (at night when by is NIGHT)."""
+    im = Image.new("RGBA", size, ground(by))
     im.alpha_composite(art, (round(origin[0] + shift[0] - art.width / 2),
                              round(origin[1] + shift[1] - art.height / 2)))
     return im
@@ -243,13 +270,14 @@ def label(im, text):
 
 
 def sheet(rows):
-    """rows: [[panel, ...], ...], every panel the same size."""
+    """rows: [[panel, ...], ...], every panel the same size; a None leaves its place empty."""
     pw, ph = rows[0][0].size
     cols = max(len(r) for r in rows)
     out = Image.new("RGBA", (PAD + cols * (pw + PAD), PAD + len(rows) * (ph + PAD)), GAP)
     for r, row in enumerate(rows):
         for c, im in enumerate(row):
-            out.alpha_composite(im, (PAD + c * (pw + PAD), PAD + r * (ph + PAD)))
+            if im is not None:
+                out.alpha_composite(im, (PAD + c * (pw + PAD), PAD + r * (ph + PAD)))
     return out
 
 
@@ -289,30 +317,36 @@ def review(model, out, adopted):
             grid(im, origin, fp, model.ppt)
         rows.append([label(im, text) for im, text in panels])
     sheet(rows).save(out)
-    shown = "a stage each" if model.resource else ", ".join(d or decl["directions"] for d in model.directions)
+    shown = ("a stage each, each with a night row under it" if model.resource
+             else ", ".join(d or decl["directions"] for d in model.directions))
     print(f"{out}: {len(rows)} row(s), {shown}; "
           f"panels {pw}x{ph}, origin at {origin}, {model.ppt:g} px a tile")
 
 
 def resource_rows(model, plates, adopted, size, origin):
     """A resource model's rows: a stage each, its variations' panels, then, with an effect, theirs
-    with the effect added; the adopted picture, if one, first in the top row."""
+    with the effect added; the adopted picture, if one, first in the top row; under each stage's
+    row its night row, the adopted picture's place in it left empty."""
     res = contract.resource_pass(model.decl)
     effects = [False, True] if model.kind("effect") else [False]
     rows = []
     for s in range(res["stages"]):
-        panels = []
+        panels, dark = [], []           # the day row, and the night row under it (None: left empty)
         if plates and s == 0:
             plate, shift = plates[0]
             panels.append((place(plate, size, origin, shift),
                            "adopted" + (f" @{adopted[0][1][0]:g},{adopted[0][1][1]:g}" if any(shift) else "")))
+            dark.append(None)           # its glows are not known here
         for effect in effects:
             for v in range(res["variations"]):
-                panels.append((place(model.cell(s, v, effect), size, origin),
-                               f"stage {s}, variation {v}" + (": effect" if effect else "")))
-        for im, _ in panels:
+                what = f"stage {s}, variation {v}" + (": effect" if effect else "")
+                panels.append((place(model.cell(s, v, effect), size, origin), what))
+                dark.append((place(model.cell(s, v, effect, night=True), size, origin, by=NIGHT),
+                             f"{what}{',' if effect else ':'} at night"))
+        for im, _ in panels + [p for p in dark if p is not None]:
             grid(im, origin, model.decl["footprint"], model.ppt)
         rows.append([label(im, text) for im, text in panels])
+        rows.append([label(*p) if p is not None else None for p in dark])
     return rows
 
 
