@@ -268,6 +268,17 @@ counts clashes without naming each as "<a> x <b>" (ballast_drill.py's "COLLIDE <
 <material>" lines) cannot have them allowed. A pattern that matched nothing is listed under
 "allow_unused" (information).
 
+A model that records its runs with tools/blender/runs.py prints four more kinds of line. Each
+check's block is closed by its own count line ("ends:", "body:", "ground:", "untested: N
+clashes"):
+  - COLLIDE LOOSE <run> end <k> at (...) x <host>: <why> -- an end with no fitting;
+  - COLLIDE BODY <run> x <part>: <d> deep -- a run through a part;
+  - COLLIDE BELOW <part> x ground: <d> deep -- a part in the ground;
+  - COLLIDE UNTESTED <run> x nothing -- a recorded run with nothing to test.
+At exit, if runs were recorded but never checked, it also prints "COLLIDE runs not checked: N
+clashes". These are pair lines and count lines like any other: they are gated the same way, and
+allowed only by a pattern that names the whole line.
+
 The comparison sheet (<out>/comparison.png, or comparison-1.png, -2.png ... when one image
 would reach --max-side on either side): per direction ours as seen at 1x (the still, its
 shadow at half strength, on ground), working frame 0 and the motion map (moving pixels

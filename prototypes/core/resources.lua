@@ -143,7 +143,9 @@ data:extend({
       mining_time = 1,
       -- Drawing melt costs helium-3, so the rarer vent throttles the richer one.
       required_fluid = "sae-helium-3",
-      fluid_amount = 10,
+      -- Per 10 operations, as vanilla's uranium: the drill takes 100 at once and
+      -- runs ten operations on it, so 10 helium-3 per operation.
+      fluid_amount = 100,
       results =
       {
         { type = "fluid", name = "sae-molten-kamacite", amount = 10 }

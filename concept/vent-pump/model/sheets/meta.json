@@ -1,0 +1,1276 @@
+{
+ "base-north": {
+  "size": [
+   194,
+   247
+  ],
+  "shift": [
+   0.0,
+   -0.38281
+  ]
+ },
+ "shadow-north": {
+  "size": [
+   255,
+   201
+  ],
+  "shift": [
+   0.46094,
+   -0.05469
+  ]
+ },
+ "lens-working-glow-north": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   1.25781,
+   -1.1875
+  ]
+ },
+ "lens-no-fluid-glow-north": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   1.33594,
+   -0.05469
+  ]
+ },
+ "lens-working-halo-north": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   1.25781,
+   -1.1875
+  ]
+ },
+ "lens-no-fluid-halo-north": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   1.33594,
+   -0.05469
+  ]
+ },
+ "riser-north": {
+  "size": [
+   25,
+   96
+  ],
+  "shift": [
+   -0.05469,
+   -0.76562
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "riser-light-north": {
+  "size": [
+   16,
+   69
+  ],
+  "shift": [
+   -0.01562,
+   -0.67969
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "glass-north": {
+  "size": [
+   26,
+   37
+  ],
+  "shift": [
+   0.3125,
+   0.52344
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "glass-light-north": {
+  "size": [
+   17,
+   14
+  ],
+  "shift": [
+   0.30469,
+   0.65625
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "mech-north": {
+  "size": [
+   135,
+   186
+  ],
+  "shift": [
+   0.08594,
+   -0.35938
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "embers-north": {
+  "size": [
+   46,
+   104
+  ],
+  "shift": [
+   -0.875,
+   -1.82812
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-north": {
+  "size": [
+   49,
+   105
+  ],
+  "shift": [
+   -0.88281,
+   -1.83594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
+ "base-east": {
+  "size": [
+   194,
+   252
+  ],
+  "shift": [
+   0.0,
+   -0.40625
+  ]
+ },
+ "shadow-east": {
+  "size": [
+   266,
+   197
+  ],
+  "shift": [
+   0.5625,
+   -0.00781
+  ]
+ },
+ "lens-working-glow-east": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   0.66406,
+   0.73438
+  ]
+ },
+ "lens-no-fluid-glow-east": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -0.32031,
+   0.96094
+  ]
+ },
+ "lens-working-halo-east": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   0.66406,
+   0.73438
+  ]
+ },
+ "lens-no-fluid-halo-east": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -0.32031,
+   0.96094
+  ]
+ },
+ "riser-east": {
+  "size": [
+   24,
+   96
+  ],
+  "shift": [
+   0.125,
+   -0.57812
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "riser-light-east": {
+  "size": [
+   15,
+   76
+  ],
+  "shift": [
+   0.17969,
+   -0.4375
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "glass-east": {
+  "size": [
+   26,
+   35
+  ],
+  "shift": [
+   -0.84375,
+   -0.02344
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "glass-light-east": {
+  "size": [
+   17,
+   14
+  ],
+  "shift": [
+   -0.83594,
+   0.125
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "mech-east": {
+  "size": [
+   146,
+   157
+  ],
+  "shift": [
+   0.09375,
+   -0.39844
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "embers-east": {
+  "size": [
+   45,
+   97
+  ],
+  "shift": [
+   1.11719,
+   -1.83594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-east": {
+  "size": [
+   46,
+   98
+  ],
+  "shift": [
+   1.10938,
+   -1.82812
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
+ "base-south": {
+  "size": [
+   194,
+   235
+  ],
+  "shift": [
+   0.0,
+   -0.28906
+  ]
+ },
+ "shadow-south": {
+  "size": [
+   256,
+   201
+  ],
+  "shift": [
+   0.46875,
+   -0.05469
+  ]
+ },
+ "lens-working-glow-south": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -1.25781,
+   0.13281
+  ]
+ },
+ "lens-no-fluid-glow-south": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -1.33594,
+   -0.69531
+  ]
+ },
+ "lens-working-halo-south": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -1.25781,
+   0.13281
+  ]
+ },
+ "lens-no-fluid-halo-south": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   -1.33594,
+   -0.69531
+  ]
+ },
+ "riser-south": {
+  "size": [
+   25,
+   96
+  ],
+  "shift": [
+   -0.05469,
+   -0.40625
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "riser-light-south": {
+  "size": [
+   16,
+   76
+  ],
+  "shift": [
+   -0.01562,
+   -0.26562
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "glass-south": {
+  "size": [
+   24,
+   38
+  ],
+  "shift": [
+   0.67188,
+   -0.35938
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "glass-light-south": {
+  "size": [
+   17,
+   14
+  ],
+  "shift": [
+   0.66406,
+   -0.23438
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "mech-south": {
+  "size": [
+   140,
+   22
+  ],
+  "shift": [
+   -0.04688,
+   -1.26562
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "embers-south": {
+  "size": [
+   54,
+   87
+  ],
+  "shift": [
+   1.0,
+   0.08594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-south": {
+  "size": [
+   55,
+   87
+  ],
+  "shift": [
+   0.99219,
+   0.08594
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
+ "base-west": {
+  "size": [
+   194,
+   250
+  ],
+  "shift": [
+   0.0,
+   -0.39062
+  ]
+ },
+ "shadow-west": {
+  "size": [
+   243,
+   197
+  ],
+  "shift": [
+   0.38281,
+   -0.00781
+  ]
+ },
+ "lens-working-glow-west": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   -0.66406,
+   0.73438
+  ]
+ },
+ "lens-no-fluid-glow-west": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   0.32031,
+   0.96094
+  ]
+ },
+ "lens-working-halo-west": {
+  "size": [
+   7,
+   8
+  ],
+  "shift": [
+   -0.66406,
+   0.73438
+  ]
+ },
+ "lens-no-fluid-halo-west": {
+  "size": [
+   7,
+   7
+  ],
+  "shift": [
+   0.32031,
+   0.96094
+  ]
+ },
+ "riser-west": {
+  "size": [
+   24,
+   96
+  ],
+  "shift": [
+   -0.23438,
+   -0.57812
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "riser-light-west": {
+  "size": [
+   15,
+   76
+  ],
+  "shift": [
+   -0.17969,
+   -0.4375
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "glass-west": {
+  "size": [
+   26,
+   35
+  ],
+  "shift": [
+   0.84375,
+   -0.02344
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "glass-light-west": {
+  "size": [
+   17,
+   14
+  ],
+  "shift": [
+   0.83594,
+   0.125
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "kind": "glow",
+  "animation_speed": 0.2
+ },
+ "mech-west": {
+  "size": [
+   45,
+   157
+  ],
+  "shift": [
+   0.69531,
+   -0.39844
+  ],
+  "frames": 24,
+  "line_length": 24,
+  "animation_speed": 0.2
+ },
+ "embers-west": {
+  "size": [
+   40,
+   103
+  ],
+  "shift": [
+   -0.9375,
+   -1.78906
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "animation_speed": 0.4
+ },
+ "embers-light-west": {
+  "size": [
+   42,
+   103
+  ],
+  "shift": [
+   -0.9375,
+   -1.78906
+  ],
+  "frames": 48,
+  "line_length": 48,
+  "kind": "glow",
+  "animation_speed": 0.4
+ },
+ "checks": {
+  "north": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.5,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "lens-working-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "lens-no-fluid-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "mech_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "riser-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "riser-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+   ],
+   "riser-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'riser''s: equal"
+   ],
+   "riser-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "riser-light_light": [
+    {
+     "peak": 159,
+     "core": 39.8,
+     "halo": 18.4
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "glass-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "glass-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+   ],
+   "glass-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'glass''s: equal"
+   ],
+   "glass-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "glass-light_light": [
+    {
+     "peak": 59,
+     "core": 87.0,
+     "halo": 2.4
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 188,
+     "core": 6.8,
+     "halo": 49.2
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "frame0_vs_still": [
+    167,
+    0.0008,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "cut_px": [
+    {
+     "idle-north": 534,
+     "still-north": 534,
+     "lens-green-lit-north": 534,
+     "lens-amber-lit-north": 534
+    },
+    "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+   ],
+   "rolloff_px": [
+    {
+     "base-north": {
+      "px": 977,
+      "most": 12
+     },
+     "lens-working-glow-north": {
+      "px": 0,
+      "most": 0
+     },
+     "lens-no-fluid-glow-north": {
+      "px": 0,
+      "most": 0
+     },
+     "riser-north": {
+      "px": 37,
+      "most": 12
+     },
+     "riser-light-north": {
+      "px": 1195,
+      "most": 12
+     },
+     "glass-north": {
+      "px": 120,
+      "most": 12
+     },
+     "glass-light-north": {
+      "px": 0,
+      "most": 0
+     },
+     "mech-north": {
+      "px": 3556,
+      "most": 12
+     },
+     "embers-north": {
+      "px": 133,
+      "most": 12
+     },
+     "embers-light-north": {
+      "px": 69,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "east": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.515625,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "lens-working-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "lens-no-fluid-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "mech_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "riser-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "riser-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+   ],
+   "riser-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'riser''s: equal"
+   ],
+   "riser-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "riser-light_light": [
+    {
+     "peak": 161,
+     "core": 38.7,
+     "halo": 18.4
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "glass-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "glass-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+   ],
+   "glass-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'glass''s: equal"
+   ],
+   "glass-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "glass-light_light": [
+    {
+     "peak": 59,
+     "core": 80.2,
+     "halo": 8.4
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 149,
+     "core": 10.3,
+     "halo": 43.6
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "frame0_vs_still": [
+    130,
+    0.0007,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "cut_px": [
+    {
+     "idle-east": 344,
+     "still-east": 344,
+     "lens-green-lit-east": 344,
+     "lens-amber-lit-east": 344
+    },
+    "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+   ],
+   "rolloff_px": [
+    {
+     "base-east": {
+      "px": 920,
+      "most": 12
+     },
+     "lens-working-glow-east": {
+      "px": 0,
+      "most": 0
+     },
+     "lens-no-fluid-glow-east": {
+      "px": 0,
+      "most": 0
+     },
+     "riser-east": {
+      "px": 27,
+      "most": 12
+     },
+     "riser-light-east": {
+      "px": 1191,
+      "most": 12
+     },
+     "glass-east": {
+      "px": 240,
+      "most": 12
+     },
+     "glass-light-east": {
+      "px": 0,
+      "most": 0
+     },
+     "mech-east": {
+      "px": 1384,
+      "most": 12
+     },
+     "embers-east": {
+      "px": 105,
+      "most": 12
+     },
+     "embers-light-east": {
+      "px": 59,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "south": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.5,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "lens-working-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "lens-no-fluid-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "mech_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "riser-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "riser-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+   ],
+   "riser-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'riser''s: equal"
+   ],
+   "riser-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "riser-light_light": [
+    {
+     "peak": 159,
+     "core": 38.1,
+     "halo": 18.5
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "glass-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "glass-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+   ],
+   "glass-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'glass''s: equal"
+   ],
+   "glass-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "glass-light_light": [
+    {
+     "peak": 58,
+     "core": 81.5,
+     "halo": 8.5
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 186,
+     "core": 16.1,
+     "halo": 33.9
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "frame0_vs_still": [
+    27,
+    0.0002,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "cut_px": [
+    {
+     "idle-south": 522,
+     "still-south": 522,
+     "lens-green-lit-south": 522,
+     "lens-amber-lit-south": 522
+    },
+    "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+   ],
+   "rolloff_px": [
+    {
+     "base-south": {
+      "px": 1051,
+      "most": 12
+     },
+     "lens-working-glow-south": {
+      "px": 0,
+      "most": 0
+     },
+     "lens-no-fluid-glow-south": {
+      "px": 0,
+      "most": 0
+     },
+     "riser-south": {
+      "px": 207,
+      "most": 12
+     },
+     "riser-light-south": {
+      "px": 1348,
+      "most": 12
+     },
+     "glass-south": {
+      "px": 0,
+      "most": 0
+     },
+     "glass-light-south": {
+      "px": 0,
+      "most": 0
+     },
+     "mech-south": {
+      "px": 652,
+      "most": 12
+     },
+     "embers-south": {
+      "px": 139,
+      "most": 12
+     },
+     "embers-light-south": {
+      "px": 74,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  },
+  "west": {
+   "centre_offset_px": 0.0,
+   "edge_alpha_max": 0,
+   "half_width_tiles": [
+    1.5,
+    "1.5 = footprint width / 2"
+   ],
+   "footprint_rows_tiles": [
+    1.515625,
+    "bottom edge below origin; 1.5 = on the footprint"
+   ],
+   "lens-working-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "lens-no-fluid-glow_white_px": [
+    0,
+    "pixels the working light clipped to white; 0 = the light keeps its colour"
+   ],
+   "mech_cycle": [
+    24,
+    "frames of a closed loop; no positional check"
+   ],
+   "riser-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "riser-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+   ],
+   "riser-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'riser''s: equal"
+   ],
+   "riser-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "riser-light_light": [
+    {
+     "peak": 162,
+     "core": 38.6,
+     "halo": 17.6
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "glass-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "glass-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+   ],
+   "glass-light_frames": [
+    [
+     24,
+     24
+    ],
+    "its frames and its plate layer 'glass''s: equal"
+   ],
+   "glass-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "glass-light_light": [
+    {
+     "peak": 59,
+     "core": 80.2,
+     "halo": 8.4
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "embers-light_white_px": [
+    0,
+    "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+   ],
+   "embers-light_clipped_px": [
+    0,
+    "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+   ],
+   "embers-light_frames": [
+    [
+     48,
+     48
+    ],
+    "its frames and its plate layer 'embers''s: equal"
+   ],
+   "embers-light_edge_px": [
+    0,
+    "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+   ],
+   "embers-light_light": [
+    {
+     "peak": 174,
+     "core": 8.8,
+     "halo": 44.1
+    },
+    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+   ],
+   "frame0_vs_still": [
+    132,
+    0.001,
+    "max channel difference, and share of pixels over 8 (sampling noise)"
+   ],
+   "cut_px": [
+    {
+     "idle-west": 344,
+     "still-west": 344,
+     "lens-green-lit-west": 344,
+     "lens-amber-lit-west": 344
+    },
+    "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+   ],
+   "rolloff_px": [
+    {
+     "base-west": {
+      "px": 748,
+      "most": 12
+     },
+     "lens-working-glow-west": {
+      "px": 0,
+      "most": 0
+     },
+     "lens-no-fluid-glow-west": {
+      "px": 0,
+      "most": 0
+     },
+     "riser-west": {
+      "px": 10,
+      "most": 12
+     },
+     "riser-light-west": {
+      "px": 1181,
+      "most": 12
+     },
+     "glass-west": {
+      "px": 240,
+      "most": 12
+     },
+     "glass-light-west": {
+      "px": 0,
+      "most": 0
+     },
+     "mech-west": {
+      "px": 606,
+      "most": 12
+     },
+     "embers-west": {
+      "px": 116,
+      "most": 12
+     },
+     "embers-light-west": {
+      "px": 45,
+      "most": 12
+     }
+    },
+    "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+   ]
+  }
+ }
+}

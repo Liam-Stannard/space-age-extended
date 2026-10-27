@@ -1,0 +1,6855 @@
+{
+ "source": {
+  "src": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3",
+  "sheets": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3/sheets",
+  "render_json": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3/renders/render.json",
+  "directions": "four",
+  "footprint": [
+   3,
+   3
+  ],
+  "px_per_tile": 64,
+  "connections": [
+   [
+    0,
+    -1,
+    "N"
+   ],
+   [
+    1,
+    0,
+    "E"
+   ],
+   [
+    0,
+    1,
+    "S"
+   ],
+   [
+    -1,
+    0,
+    "W"
+   ]
+  ],
+  "vanilla": [
+   "pumpjack",
+   "chemical-plant",
+   "foundry"
+  ]
+ },
+ "collide": {
+  "model": "/home/lstan/data/git/space-age-extended/.claude/worktrees/vent-pump-model/concept/vent-pump/model/vent_pump.py",
+  "log": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/m-run3/collide.log",
+  "allow": [],
+  "returncode": 0,
+  "lines": [
+   "COLLIDE north: 671 parts, 51 moving; frames 0-23",
+   "COLLIDE east: 688 parts, 51 moving; frames 0-23",
+   "COLLIDE south: 669 parts, 51 moving; frames 0-23",
+   "COLLIDE west: 680 parts, 51 moving; frames 0-23",
+   "COLLIDE moving: 0 clashes, 4587 meant contacts (collide-model.txt)",
+   "COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 5099 touching pairs over the four directions, 440 touch at under 0.03 (collide-model.txt)",
+   "COLLIDE ends: 56 of 56 runs end in what they serve"
+  ],
+  "clash_lines": [],
+  "counts": [
+   0,
+   0
+  ],
+  "allowed": [],
+  "not_allowed": [],
+  "allow_unused": [],
+  "why": null,
+  "pass": true
+ },
+ "directions": {
+  "north": {
+   "layers": {
+    "base-north": "plate",
+    "shadow-north": "shadow",
+    "lens-working-glow-north": "glow (working)",
+    "lens-no-fluid-glow-north": "glow (working)",
+    "riser-north": "anim (working), 24 frames",
+    "riser-light-north": "glow-anim, 24 frames",
+    "glass-north": "anim (working), 24 frames",
+    "glass-light-north": "glow-anim, 24 frames",
+    "mech-north": "anim, 24 frames",
+    "embers-north": "anim (working), 48 frames",
+    "embers-light-north": "glow-anim, 48 frames"
+   },
+   "ignored": [
+    "lens-working-halo-north (a white cut the engine tints: not drawn here)",
+    "lens-no-fluid-halo-north (a white cut the engine tints: not drawn here)"
+   ],
+   "coverage": {
+    "footprint": [
+     3,
+     3
+    ],
+    "footprint_pct": 96.5,
+    "mass_pct": 112.3,
+    "corners_pct": {
+     "NW": 96.9,
+     "NE": 94.8,
+     "SW": 83.6,
+     "SE": 97.3
+    },
+    "outer_band_pct": 89.4,
+    "rise_tiles": 0.77,
+    "rise_by_column_tiles": [
+     0.58,
+     0.77,
+     0.58
+    ],
+    "extent_tiles": [
+     3.0,
+     3.77
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 6,
+     "p50": 78,
+     "p95": 165,
+     "spread": 159
+    },
+    "still": {
+     "p5": 6,
+     "p50": 79,
+     "p95": 166,
+     "spread": 160
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 9.2,
+     "fine": 7.67,
+     "mid": 13.12,
+     "ratio": 0.58,
+     "darkchr": 13.5
+    },
+    "still": {
+     "black_pct": 9.1,
+     "fine": 7.73,
+     "mid": 13.22,
+     "ratio": 0.58,
+     "darkchr": 13.5
+    }
+   },
+   "colour": {
+    "opaque_px": 41386,
+    "blue_px": 2,
+    "blue_pct": 0.0,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 1514,
+    "orange_pct": 3.66,
+    "white_px": 0,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.0,
+    "idle_orange_pct": 2.78
+   },
+   "glow": {
+    "lens-working-glow-north": {
+     "area": 26,
+     "peak": 170,
+     "core": 53.8,
+     "halo": 26.9,
+     "sat_core": 0.67,
+     "sat_halo": 0.88,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "lens-no-fluid-glow-north": {
+     "area": 22,
+     "peak": 136,
+     "core": 40.9,
+     "halo": 22.7,
+     "sat_core": 1.0,
+     "sat_halo": 1.0,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "riser-light-north": {
+     "area": 615,
+     "peak": 158,
+     "core": 40.0,
+     "halo": 18.2,
+     "sat_core": 0.79,
+     "sat_halo": 0.9,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 7.4,
+     "range_pct": 11.2,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "glass-light-north": {
+     "area": 123,
+     "peak": 59,
+     "core": 87.0,
+     "halo": 2.4,
+     "sat_core": 0.39,
+     "sat_halo": 0.44,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 44.0,
+     "range_pct": 78.8,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "embers-light-north": {
+     "area": 59,
+     "peak": 187,
+     "core": 6.8,
+     "halo": 49.2,
+     "sat_core": 0.68,
+     "sat_halo": 0.76,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 61.9,
+     "range_pct": 185.2,
+     "played_frames": 48,
+     "loop_ticks": 120
+    }
+   },
+   "motion": {
+    "loop_frames": 48,
+    "moving_pct": 5.12,
+    "strobe_pct": 0.4,
+    "strobe_px": 167,
+    "step_px": [
+     101,
+     815,
+     65,
+     972,
+     94,
+     954,
+     72,
+     828,
+     58,
+     833,
+     43,
+     918,
+     91,
+     1000,
+     161,
+     1040,
+     166,
+     967,
+     205,
+     801,
+     153,
+     731,
+     215,
+     822,
+     199,
+     899,
+     157,
+     1048,
+     152,
+     998,
+     122,
+     896,
+     108,
+     862,
+     97,
+     950,
+     95,
+     940,
+     116,
+     972,
+     116,
+     859,
+     123,
+     769,
+     125,
+     699,
+     136
+    ],
+    "wrap_px": 843,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "riser-north": 0.89,
+     "glass-north": 0.11,
+     "mech-north": 0.74,
+     "embers-north": 0.94,
+     "riser-light-north": 1.62,
+     "glass-light-north": 0.28,
+     "embers-light-north": 2.57
+    },
+    "strobe_own_loop_pct": 0.4,
+    "strobe_own_loop_px": 167,
+    "timing": {
+     "loop_ticks": 120,
+     "loop_seconds": 2.0,
+     "complete": true,
+     "measured_ticks": 120,
+     "frame_ticks": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13,
+      15,
+      18,
+      20,
+      23,
+      25,
+      28,
+      30,
+      33,
+      35,
+      38,
+      40,
+      43,
+      45,
+      48,
+      50,
+      53,
+      55,
+      58,
+      60,
+      63,
+      65,
+      68,
+      70,
+      73,
+      75,
+      78,
+      80,
+      83,
+      85,
+      88,
+      90,
+      93,
+      95,
+      98,
+      100,
+      103,
+      105,
+      108,
+      110,
+      113,
+      115,
+      118
+     ],
+     "layers": {
+      "riser-north": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-north": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "mech-north": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-north": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
+      "riser-light-north": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-light-north": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-light-north": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      }
+     }
+    }
+   },
+   "layers_alone": {
+    "riser-north": {
+     "frames": 24,
+     "frame_px": [
+      25,
+      96
+     ],
+     "step_px": [
+      152,
+      229,
+      250,
+      286,
+      275,
+      287,
+      273,
+      254,
+      117,
+      66,
+      68,
+      64,
+      173,
+      280,
+      289,
+      287,
+      254,
+      273,
+      276,
+      236,
+      95,
+      62,
+      56
+     ],
+     "wrap_px": 232,
+     "step_range": [
+      56,
+      289
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 300,
+     "between_frames": [
+      5,
+      14
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-north": {
+     "frames": 24,
+     "frame_px": [
+      26,
+      37
+     ],
+     "step_px": [
+      22,
+      35,
+      49,
+      20,
+      27,
+      33,
+      29,
+      34,
+      28,
+      29,
+      25,
+      29,
+      20,
+      45,
+      48,
+      31,
+      33,
+      36,
+      37,
+      34,
+      32,
+      29,
+      29
+     ],
+     "wrap_px": 21,
+     "step_range": [
+      20,
+      49
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 50,
+     "between_frames": [
+      11,
+      16
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "mech-north": {
+     "frames": 24,
+     "frame_px": [
+      135,
+      186
+     ],
+     "step_px": [
+      407,
+      412,
+      364,
+      355,
+      307,
+      388,
+      374,
+      443,
+      390,
+      293,
+      227,
+      337,
+      405,
+      419,
+      370,
+      357,
+      309,
+      381,
+      368,
+      440,
+      388,
+      300,
+      233
+     ],
+     "wrap_px": 340,
+     "step_range": [
+      227,
+      443
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 594,
+     "between_frames": [
+      4,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-north": {
+     "frames": 48,
+     "frame_px": [
+      46,
+      104
+     ],
+     "step_px": [
+      97,
+      78,
+      77,
+      89,
+      99,
+      92,
+      74,
+      69,
+      62,
+      58,
+      53,
+      58,
+      88,
+      126,
+      151,
+      161,
+      169,
+      195,
+      196,
+      158,
+      139,
+      168,
+      208,
+      225,
+      216,
+      170,
+      170,
+      174,
+      167,
+      134,
+      127,
+      130,
+      110,
+      100,
+      98,
+      95,
+      89,
+      100,
+      114,
+      116,
+      122,
+      122,
+      126,
+      128,
+      123,
+      134,
+      136
+     ],
+     "wrap_px": 109,
+     "step_range": [
+      53,
+      225
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 236,
+     "between_frames": [
+      18,
+      24
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    },
+    "riser-light-north": {
+     "frames": 24,
+     "frame_px": [
+      16,
+      69
+     ],
+     "step_px": [
+      521,
+      529,
+      533,
+      545,
+      517,
+      544,
+      549,
+      562,
+      467,
+      422,
+      434,
+      432,
+      518,
+      549,
+      533,
+      538,
+      543,
+      539,
+      509,
+      547,
+      460,
+      444,
+      449
+     ],
+     "wrap_px": 528,
+     "step_range": [
+      422,
+      562
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 651,
+     "between_frames": [
+      2,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-light-north": {
+     "frames": 24,
+     "frame_px": [
+      17,
+      14
+     ],
+     "step_px": [
+      0,
+      124,
+      129,
+      14,
+      89,
+      113,
+      113,
+      113,
+      110,
+      80,
+      6,
+      0,
+      0,
+      122,
+      129,
+      13,
+      77,
+      90,
+      106,
+      102,
+      107,
+      86,
+      2
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      129
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 124,
+     "between_frames": [
+      3,
+      13
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-light-north": {
+     "frames": 48,
+     "frame_px": [
+      49,
+      105
+     ],
+     "step_px": [
+      107,
+      89,
+      73,
+      90,
+      102,
+      93,
+      80,
+      70,
+      67,
+      63,
+      50,
+      57,
+      95,
+      145,
+      179,
+      173,
+      178,
+      219,
+      221,
+      183,
+      165,
+      198,
+      229,
+      237,
+      223,
+      186,
+      182,
+      181,
+      166,
+      144,
+      141,
+      140,
+      124,
+      108,
+      106,
+      121,
+      109,
+      115,
+      129,
+      124,
+      125,
+      123,
+      133,
+      143,
+      138,
+      140,
+      147
+     ],
+     "wrap_px": 127,
+     "step_range": [
+      50,
+      237
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 258,
+     "between_frames": [
+      18,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    }
+   },
+   "light": {
+    "lens-working-halo-north": {
+     "frames": 1,
+     "px_range": [
+      22,
+      22
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 22,
+      "mean_rgb": [
+       253.0,
+       253.0,
+       253.0
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       243,
+       255
+      ]
+     }
+    },
+    "lens-no-fluid-halo-north": {
+     "frames": 1,
+     "px_range": [
+      22,
+      22
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 22,
+      "mean_rgb": [
+       253.1,
+       253.1,
+       253.1
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       242,
+       255
+      ]
+     }
+    }
+   },
+   "pack_checks": {
+    "centre_offset_px": 0.0,
+    "edge_alpha_max": 0,
+    "half_width_tiles": [
+     1.5,
+     "1.5 = footprint width / 2"
+    ],
+    "footprint_rows_tiles": [
+     1.5,
+     "bottom edge below origin; 1.5 = on the footprint"
+    ],
+    "lens-working-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "lens-no-fluid-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "mech_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "riser-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "riser-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+    ],
+    "riser-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'riser''s: equal"
+    ],
+    "riser-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "riser-light_light": [
+     {
+      "peak": 159,
+      "core": 39.8,
+      "halo": 18.4
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "glass-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "glass-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+    ],
+    "glass-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'glass''s: equal"
+    ],
+    "glass-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "glass-light_light": [
+     {
+      "peak": 59,
+      "core": 87.0,
+      "halo": 2.4
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 188,
+      "core": 6.8,
+      "halo": 49.2
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "frame0_vs_still": [
+     167,
+     0.0008,
+     "max channel difference, and share of pixels over 8 (sampling noise)"
+    ],
+    "cut_px": [
+     {
+      "idle-north": 534,
+      "still-north": 534,
+      "lens-green-lit-north": 534,
+      "lens-amber-lit-north": 534
+     },
+     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+    ],
+    "rolloff_px": [
+     {
+      "base-north": {
+       "px": 977,
+       "most": 12
+      },
+      "lens-working-glow-north": {
+       "px": 0,
+       "most": 0
+      },
+      "lens-no-fluid-glow-north": {
+       "px": 0,
+       "most": 0
+      },
+      "riser-north": {
+       "px": 37,
+       "most": 12
+      },
+      "riser-light-north": {
+       "px": 1195,
+       "most": 12
+      },
+      "glass-north": {
+       "px": 120,
+       "most": 12
+      },
+      "glass-light-north": {
+       "px": 0,
+       "most": 0
+      },
+      "mech-north": {
+       "px": 3556,
+       "most": 12
+      },
+      "embers-north": {
+       "px": 133,
+       "most": 12
+      },
+      "embers-light-north": {
+       "px": 69,
+       "most": 12
+      }
+     },
+     "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+    ]
+   },
+   "joins": [
+    {
+     "connection": [
+      0,
+      -1,
+      "N"
+     ],
+     "pipe_tile": [
+      0,
+      -2
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 39
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 33,
+      "where": {
+       "across_px": [
+        -31.5,
+        31.5
+       ],
+       "along_px": [
+        40,
+        48
+       ]
+      },
+      "rows_px": [
+       40,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 25,
+      "where": {
+       "across_px": [
+        -31.5,
+        31.5
+       ],
+       "along_px": [
+        40,
+        48
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1,
+      0,
+      "E"
+     ],
+     "pipe_tile": [
+      2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      0,
+      1,
+      "S"
+     ],
+     "pipe_tile": [
+      0,
+      2
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -2
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 1,
+      "where": {
+       "across_px": [
+        -27.5,
+        -27.5
+       ],
+       "along_px": [
+        -1,
+        -1
+       ]
+      },
+      "rows_px": [
+       -1,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 5,
+      "where": {
+       "across_px": [
+        -27.5,
+        27.5
+       ],
+       "along_px": [
+        -1,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -1,
+      0,
+      "W"
+     ],
+     "pipe_tile": [
+      -2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    }
+   ]
+  },
+  "east": {
+   "layers": {
+    "base-east": "plate",
+    "shadow-east": "shadow",
+    "lens-working-glow-east": "glow (working)",
+    "lens-no-fluid-glow-east": "glow (working)",
+    "riser-east": "anim (working), 24 frames",
+    "riser-light-east": "glow-anim, 24 frames",
+    "glass-east": "anim (working), 24 frames",
+    "glass-light-east": "glow-anim, 24 frames",
+    "mech-east": "anim, 24 frames",
+    "embers-east": "anim (working), 48 frames",
+    "embers-light-east": "glow-anim, 48 frames"
+   },
+   "ignored": [
+    "lens-working-halo-east (a white cut the engine tints: not drawn here)",
+    "lens-no-fluid-halo-east (a white cut the engine tints: not drawn here)"
+   ],
+   "coverage": {
+    "footprint": [
+     3,
+     3
+    ],
+    "footprint_pct": 95.0,
+    "mass_pct": 108.9,
+    "corners_pct": {
+     "NW": 91.6,
+     "NE": 96.8,
+     "SW": 96.9,
+     "SE": 88.2
+    },
+    "outer_band_pct": 89.0,
+    "rise_tiles": 0.81,
+    "rise_by_column_tiles": [
+     0.45,
+     0.81,
+     0.75
+    ],
+    "extent_tiles": [
+     3.0,
+     3.83
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.02
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 5,
+     "p50": 82,
+     "p95": 187,
+     "spread": 182
+    },
+    "still": {
+     "p5": 5,
+     "p50": 82,
+     "p95": 187,
+     "spread": 182
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 9.6,
+     "fine": 8.28,
+     "mid": 13.96,
+     "ratio": 0.59,
+     "darkchr": 14.5
+    },
+    "still": {
+     "black_pct": 9.6,
+     "fine": 8.37,
+     "mid": 14.02,
+     "ratio": 0.6,
+     "darkchr": 14.5
+    }
+   },
+   "colour": {
+    "opaque_px": 40151,
+    "blue_px": 0,
+    "blue_pct": 0.0,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 3356,
+    "orange_pct": 8.36,
+    "white_px": 0,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.0,
+    "idle_orange_pct": 7.4
+   },
+   "glow": {
+    "lens-working-glow-east": {
+     "area": 23,
+     "peak": 107,
+     "core": 26.1,
+     "halo": 26.1,
+     "sat_core": 0.72,
+     "sat_halo": 0.92,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "lens-no-fluid-glow-east": {
+     "area": 21,
+     "peak": 135,
+     "core": 33.3,
+     "halo": 9.5,
+     "sat_core": 0.99,
+     "sat_halo": 1.0,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "riser-light-east": {
+     "area": 643,
+     "peak": 160,
+     "core": 39.0,
+     "halo": 18.4,
+     "sat_core": 0.79,
+     "sat_halo": 0.88,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 8.0,
+     "range_pct": 12.0,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "glass-light-east": {
+     "area": 131,
+     "peak": 59,
+     "core": 80.2,
+     "halo": 8.4,
+     "sat_core": 0.39,
+     "sat_halo": 0.41,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 43.9,
+     "range_pct": 78.7,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "embers-light-east": {
+     "area": 39,
+     "peak": 149,
+     "core": 10.3,
+     "halo": 43.6,
+     "sat_core": 0.7,
+     "sat_halo": 0.81,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 76.7,
+     "range_pct": 213.4,
+     "played_frames": 48,
+     "loop_ticks": 120
+    }
+   },
+   "motion": {
+    "loop_frames": 48,
+    "moving_pct": 4.06,
+    "strobe_pct": 0.4,
+    "strobe_px": 159,
+    "step_px": [
+     73,
+     834,
+     62,
+     958,
+     96,
+     960,
+     68,
+     827,
+     63,
+     846,
+     41,
+     907,
+     95,
+     1012,
+     154,
+     1028,
+     149,
+     933,
+     220,
+     897,
+     195,
+     745,
+     190,
+     782,
+     161,
+     914,
+     136,
+     1022,
+     114,
+     976,
+     88,
+     847,
+     84,
+     848,
+     84,
+     900,
+     78,
+     956,
+     133,
+     987,
+     128,
+     891,
+     129,
+     821,
+     106,
+     669,
+     71
+    ],
+    "wrap_px": 810,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "riser-east": 1.04,
+     "glass-east": 0.1,
+     "mech-east": 0.52,
+     "embers-east": 0.86,
+     "riser-light-east": 1.73,
+     "glass-light-east": 0.28,
+     "embers-light-east": 1.72
+    },
+    "strobe_own_loop_pct": 0.4,
+    "strobe_own_loop_px": 159,
+    "timing": {
+     "loop_ticks": 120,
+     "loop_seconds": 2.0,
+     "complete": true,
+     "measured_ticks": 120,
+     "frame_ticks": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13,
+      15,
+      18,
+      20,
+      23,
+      25,
+      28,
+      30,
+      33,
+      35,
+      38,
+      40,
+      43,
+      45,
+      48,
+      50,
+      53,
+      55,
+      58,
+      60,
+      63,
+      65,
+      68,
+      70,
+      73,
+      75,
+      78,
+      80,
+      83,
+      85,
+      88,
+      90,
+      93,
+      95,
+      98,
+      100,
+      103,
+      105,
+      108,
+      110,
+      113,
+      115,
+      118
+     ],
+     "layers": {
+      "riser-east": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-east": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "mech-east": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-east": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
+      "riser-light-east": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-light-east": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-light-east": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      }
+     }
+    }
+   },
+   "layers_alone": {
+    "riser-east": {
+     "frames": 24,
+     "frame_px": [
+      24,
+      96
+     ],
+     "step_px": [
+      185,
+      275,
+      286,
+      300,
+      307,
+      301,
+      291,
+      260,
+      127,
+      67,
+      62,
+      58,
+      183,
+      285,
+      275,
+      288,
+      297,
+      302,
+      300,
+      263,
+      113,
+      67,
+      52
+     ],
+     "wrap_px": 290,
+     "step_range": [
+      52,
+      307
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 294,
+     "between_frames": [
+      5,
+      14
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-east": {
+     "frames": 24,
+     "frame_px": [
+      26,
+      35
+     ],
+     "step_px": [
+      13,
+      30,
+      47,
+      15,
+      26,
+      29,
+      19,
+      24,
+      19,
+      20,
+      15,
+      14,
+      16,
+      36,
+      44,
+      22,
+      30,
+      32,
+      28,
+      26,
+      23,
+      22,
+      16
+     ],
+     "wrap_px": 16,
+     "step_range": [
+      13,
+      47
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 37,
+     "between_frames": [
+      11,
+      16
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "mech-east": {
+     "frames": 24,
+     "frame_px": [
+      146,
+      157
+     ],
+     "step_px": [
+      336,
+      331,
+      303,
+      241,
+      203,
+      275,
+      304,
+      324,
+      327,
+      245,
+      204,
+      267,
+      336,
+      331,
+      303,
+      240,
+      203,
+      275,
+      304,
+      325,
+      327,
+      245,
+      204
+     ],
+     "wrap_px": 266,
+     "step_range": [
+      203,
+      336
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 390,
+     "between_frames": [
+      16,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-east": {
+     "frames": 48,
+     "frame_px": [
+      45,
+      97
+     ],
+     "step_px": [
+      79,
+      76,
+      74,
+      90,
+      104,
+      90,
+      71,
+      67,
+      61,
+      52,
+      44,
+      59,
+      84,
+      97,
+      128,
+      146,
+      129,
+      143,
+      191,
+      185,
+      164,
+      174,
+      168,
+      161,
+      154,
+      143,
+      144,
+      134,
+      128,
+      106,
+      93,
+      79,
+      77,
+      85,
+      82,
+      61,
+      59,
+      78,
+      109,
+      116,
+      109,
+      113,
+      128,
+      126,
+      101,
+      82,
+      72
+     ],
+     "wrap_px": 79,
+     "step_range": [
+      44,
+      191
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 196,
+     "between_frames": [
+      19,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    },
+    "riser-light-east": {
+     "frames": 24,
+     "frame_px": [
+      15,
+      76
+     ],
+     "step_px": [
+      575,
+      564,
+      587,
+      592,
+      601,
+      585,
+      598,
+      591,
+      514,
+      487,
+      462,
+      472,
+      585,
+      588,
+      588,
+      589,
+      586,
+      589,
+      585,
+      586,
+      524,
+      502,
+      489
+     ],
+     "wrap_px": 586,
+     "step_range": [
+      462,
+      601
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 710,
+     "between_frames": [
+      13,
+      18
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-light-east": {
+     "frames": 24,
+     "frame_px": [
+      17,
+      14
+     ],
+     "step_px": [
+      0,
+      129,
+      133,
+      12,
+      91,
+      111,
+      118,
+      115,
+      105,
+      83,
+      4,
+      0,
+      0,
+      127,
+      129,
+      16,
+      71,
+      91,
+      108,
+      104,
+      108,
+      85,
+      3
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      133
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 125,
+     "between_frames": [
+      3,
+      13
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-light-east": {
+     "frames": 48,
+     "frame_px": [
+      46,
+      98
+     ],
+     "step_px": [
+      77,
+      75,
+      72,
+      96,
+      111,
+      96,
+      80,
+      72,
+      71,
+      64,
+      54,
+      61,
+      103,
+      138,
+      175,
+      189,
+      165,
+      202,
+      246,
+      239,
+      218,
+      211,
+      209,
+      205,
+      181,
+      157,
+      158,
+      146,
+      130,
+      111,
+      101,
+      98,
+      95,
+      95,
+      99,
+      92,
+      89,
+      106,
+      143,
+      152,
+      146,
+      138,
+      140,
+      141,
+      109,
+      87,
+      79
+     ],
+     "wrap_px": 81,
+     "step_range": [
+      54,
+      246
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 244,
+     "between_frames": [
+      18,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    }
+   },
+   "light": {
+    "lens-working-halo-east": {
+     "frames": 1,
+     "px_range": [
+      21,
+      21
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 21,
+      "mean_rgb": [
+       252.8,
+       252.8,
+       252.8
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       241,
+       255
+      ]
+     }
+    },
+    "lens-no-fluid-halo-east": {
+     "frames": 1,
+     "px_range": [
+      21,
+      21
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 21,
+      "mean_rgb": [
+       253.3,
+       253.3,
+       253.3
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       250,
+       255
+      ]
+     }
+    }
+   },
+   "pack_checks": {
+    "centre_offset_px": 0.0,
+    "edge_alpha_max": 0,
+    "half_width_tiles": [
+     1.5,
+     "1.5 = footprint width / 2"
+    ],
+    "footprint_rows_tiles": [
+     1.515625,
+     "bottom edge below origin; 1.5 = on the footprint"
+    ],
+    "lens-working-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "lens-no-fluid-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "mech_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "riser-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "riser-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+    ],
+    "riser-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'riser''s: equal"
+    ],
+    "riser-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "riser-light_light": [
+     {
+      "peak": 161,
+      "core": 38.7,
+      "halo": 18.4
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "glass-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "glass-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+    ],
+    "glass-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'glass''s: equal"
+    ],
+    "glass-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "glass-light_light": [
+     {
+      "peak": 59,
+      "core": 80.2,
+      "halo": 8.4
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 149,
+      "core": 10.3,
+      "halo": 43.6
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "frame0_vs_still": [
+     130,
+     0.0007,
+     "max channel difference, and share of pixels over 8 (sampling noise)"
+    ],
+    "cut_px": [
+     {
+      "idle-east": 344,
+      "still-east": 344,
+      "lens-green-lit-east": 344,
+      "lens-amber-lit-east": 344
+     },
+     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+    ],
+    "rolloff_px": [
+     {
+      "base-east": {
+       "px": 920,
+       "most": 12
+      },
+      "lens-working-glow-east": {
+       "px": 0,
+       "most": 0
+      },
+      "lens-no-fluid-glow-east": {
+       "px": 0,
+       "most": 0
+      },
+      "riser-east": {
+       "px": 27,
+       "most": 12
+      },
+      "riser-light-east": {
+       "px": 1191,
+       "most": 12
+      },
+      "glass-east": {
+       "px": 240,
+       "most": 12
+      },
+      "glass-light-east": {
+       "px": 0,
+       "most": 0
+      },
+      "mech-east": {
+       "px": 1384,
+       "most": 12
+      },
+      "embers-east": {
+       "px": 105,
+       "most": 12
+      },
+      "embers-light-east": {
+       "px": 59,
+       "most": 12
+      }
+     },
+     "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+    ]
+   },
+   "joins": [
+    {
+     "connection": [
+      1,
+      0,
+      "E"
+     ],
+     "pipe_tile": [
+      2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 2,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 5,
+      "where": {
+       "across_px": [
+        17.5,
+        18.5
+       ],
+       "along_px": [
+        -8,
+        -4
+       ]
+      }
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -13,
+      "last_row_px": -5
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 164,
+      "ground_px": 3,
+      "where": {
+       "across_px": [
+        17.5,
+        19.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 204,
+      "ground_px": 22,
+      "where": {
+       "across_px": [
+        17.5,
+        26.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 97,
+      "where": {
+       "across_px": [
+        -29.5,
+        63.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      0,
+      1,
+      "S"
+     ],
+     "pipe_tile": [
+      0,
+      2
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -2
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 14,
+      "where": {
+       "across_px": [
+        28.5,
+        34.5
+       ],
+       "along_px": [
+        -1,
+        0
+       ]
+      },
+      "rows_px": [
+       -1,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 21,
+      "where": {
+       "across_px": [
+        -26.5,
+        34.5
+       ],
+       "along_px": [
+        -1,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -1,
+      0,
+      "W"
+     ],
+     "pipe_tile": [
+      -2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      0,
+      -1,
+      "N"
+     ],
+     "pipe_tile": [
+      0,
+      -2
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 29
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 410,
+      "where": {
+       "across_px": [
+        -45.5,
+        27.5
+       ],
+       "along_px": [
+        30,
+        48
+       ]
+      },
+      "rows_px": [
+       30,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 304,
+      "where": {
+       "across_px": [
+        -45.5,
+        27.5
+       ],
+       "along_px": [
+        30,
+        48
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "south": {
+   "layers": {
+    "base-south": "plate",
+    "shadow-south": "shadow",
+    "lens-working-glow-south": "glow (working)",
+    "lens-no-fluid-glow-south": "glow (working)",
+    "riser-south": "anim (working), 24 frames",
+    "riser-light-south": "glow-anim, 24 frames",
+    "glass-south": "anim (working), 24 frames",
+    "glass-light-south": "glow-anim, 24 frames",
+    "mech-south": "anim, 24 frames",
+    "embers-south": "anim (working), 48 frames",
+    "embers-light-south": "glow-anim, 48 frames"
+   },
+   "ignored": [
+    "lens-working-halo-south (a white cut the engine tints: not drawn here)",
+    "lens-no-fluid-halo-south (a white cut the engine tints: not drawn here)"
+   ],
+   "coverage": {
+    "footprint": [
+     3,
+     3
+    ],
+    "footprint_pct": 96.4,
+    "mass_pct": 105.3,
+    "corners_pct": {
+     "NW": 98.8,
+     "NE": 91.7,
+     "SW": 88.2,
+     "SE": 93.9
+    },
+    "outer_band_pct": 89.4,
+    "rise_tiles": 0.58,
+    "rise_by_column_tiles": [
+     0.23,
+     0.58,
+     0.45
+    ],
+    "extent_tiles": [
+     3.0,
+     3.58
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 5,
+     "p50": 79,
+     "p95": 174,
+     "spread": 169
+    },
+    "still": {
+     "p5": 5,
+     "p50": 79,
+     "p95": 174,
+     "spread": 169
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 9.7,
+     "fine": 7.51,
+     "mid": 11.83,
+     "ratio": 0.63,
+     "darkchr": 12.3
+    },
+    "still": {
+     "black_pct": 9.7,
+     "fine": 7.61,
+     "mid": 11.9,
+     "ratio": 0.64,
+     "darkchr": 12.4
+    }
+   },
+   "colour": {
+    "opaque_px": 38831,
+    "blue_px": 0,
+    "blue_pct": 0.0,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 2207,
+    "orange_pct": 5.68,
+    "white_px": 0,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.0,
+    "idle_orange_pct": 4.71
+   },
+   "glow": {
+    "lens-working-glow-south": {
+     "area": 21,
+     "peak": 121,
+     "core": 23.8,
+     "halo": 19.0,
+     "sat_core": 0.71,
+     "sat_halo": 0.92,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "lens-no-fluid-glow-south": {
+     "area": 22,
+     "peak": 144,
+     "core": 27.3,
+     "halo": 18.2,
+     "sat_core": 0.99,
+     "sat_halo": 0.99,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "riser-light-south": {
+     "area": 659,
+     "peak": 158,
+     "core": 38.1,
+     "halo": 18.2,
+     "sat_core": 0.79,
+     "sat_halo": 0.89,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 8.1,
+     "range_pct": 11.9,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "glass-light-south": {
+     "area": 130,
+     "peak": 58,
+     "core": 81.5,
+     "halo": 8.5,
+     "sat_core": 0.39,
+     "sat_halo": 0.4,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 43.9,
+     "range_pct": 78.7,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "embers-light-south": {
+     "area": 62,
+     "peak": 183,
+     "core": 16.1,
+     "halo": 33.9,
+     "sat_core": 0.66,
+     "sat_halo": 0.77,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 58.6,
+     "range_pct": 176.1,
+     "played_frames": 48,
+     "loop_ticks": 120
+    }
+   },
+   "motion": {
+    "loop_frames": 48,
+    "moving_pct": 6.96,
+    "strobe_pct": 0.57,
+    "strobe_px": 220,
+    "step_px": [
+     120,
+     856,
+     115,
+     1007,
+     118,
+     998,
+     118,
+     866,
+     102,
+     880,
+     64,
+     931,
+     101,
+     1045,
+     191,
+     1085,
+     204,
+     1024,
+     245,
+     909,
+     196,
+     785,
+     250,
+     850,
+     211,
+     938,
+     199,
+     1110,
+     169,
+     1046,
+     139,
+     887,
+     126,
+     874,
+     103,
+     945,
+     93,
+     958,
+     97,
+     962,
+     94,
+     899,
+     123,
+     823,
+     118,
+     727,
+     148
+    ],
+    "wrap_px": 872,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "riser-south": 1.08,
+     "glass-south": 0.0,
+     "mech-south": 0.49,
+     "embers-south": 1.75,
+     "riser-light-south": 1.91,
+     "glass-light-south": 0.29,
+     "embers-light-south": 4.41
+    },
+    "strobe_own_loop_pct": 0.57,
+    "strobe_own_loop_px": 220,
+    "timing": {
+     "loop_ticks": 120,
+     "loop_seconds": 2.0,
+     "complete": true,
+     "measured_ticks": 120,
+     "frame_ticks": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13,
+      15,
+      18,
+      20,
+      23,
+      25,
+      28,
+      30,
+      33,
+      35,
+      38,
+      40,
+      43,
+      45,
+      48,
+      50,
+      53,
+      55,
+      58,
+      60,
+      63,
+      65,
+      68,
+      70,
+      73,
+      75,
+      78,
+      80,
+      83,
+      85,
+      88,
+      90,
+      93,
+      95,
+      98,
+      100,
+      103,
+      105,
+      108,
+      110,
+      113,
+      115,
+      118
+     ],
+     "layers": {
+      "riser-south": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-south": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "mech-south": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-south": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
+      "riser-light-south": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-light-south": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-light-south": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      }
+     }
+    }
+   },
+   "layers_alone": {
+    "riser-south": {
+     "frames": 24,
+     "frame_px": [
+      25,
+      96
+     ],
+     "step_px": [
+      198,
+      292,
+      287,
+      302,
+      305,
+      300,
+      277,
+      272,
+      125,
+      69,
+      67,
+      73,
+      178,
+      306,
+      291,
+      286,
+      286,
+      287,
+      306,
+      264,
+      130,
+      75,
+      62
+     ],
+     "wrap_px": 310,
+     "step_range": [
+      62,
+      306
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 295,
+     "between_frames": [
+      5,
+      14
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-south": {
+     "frames": 24,
+     "frame_px": [
+      24,
+      38
+     ],
+     "step_px": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      0
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 0,
+     "between_frames": [
+      22,
+      23
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "mech-south": {
+     "frames": 24,
+     "frame_px": [
+      140,
+      22
+     ],
+     "step_px": [
+      302,
+      279,
+      305,
+      256,
+      223,
+      272,
+      300,
+      308,
+      297,
+      247,
+      217,
+      283,
+      302,
+      276,
+      305,
+      257,
+      223,
+      275,
+      300,
+      307,
+      297,
+      244,
+      217
+     ],
+     "wrap_px": 284,
+     "step_range": [
+      217,
+      308
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 361,
+     "between_frames": [
+      16,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-south": {
+     "frames": 48,
+     "frame_px": [
+      54,
+      87
+     ],
+     "step_px": [
+      108,
+      112,
+      116,
+      123,
+      141,
+      147,
+      127,
+      124,
+      112,
+      109,
+      96,
+      80,
+      106,
+      146,
+      171,
+      190,
+      185,
+      216,
+      233,
+      214,
+      197,
+      210,
+      249,
+      246,
+      228,
+      199,
+      218,
+      217,
+      190,
+      156,
+      147,
+      150,
+      143,
+      119,
+      106,
+      96,
+      90,
+      94,
+      105,
+      97,
+      103,
+      110,
+      124,
+      128,
+      119,
+      138,
+      140
+     ],
+     "wrap_px": 121,
+     "step_range": [
+      80,
+      249
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 273,
+     "between_frames": [
+      18,
+      23
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    },
+    "riser-light-south": {
+     "frames": 24,
+     "frame_px": [
+      16,
+      76
+     ],
+     "step_px": [
+      578,
+      595,
+      583,
+      597,
+      584,
+      593,
+      597,
+      620,
+      513,
+      472,
+      480,
+      474,
+      571,
+      609,
+      583,
+      570,
+      587,
+      588,
+      569,
+      599,
+      512,
+      485,
+      486
+     ],
+     "wrap_px": 585,
+     "step_range": [
+      472,
+      620
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 717,
+     "between_frames": [
+      2,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-light-south": {
+     "frames": 24,
+     "frame_px": [
+      17,
+      14
+     ],
+     "step_px": [
+      0,
+      127,
+      133,
+      11,
+      90,
+      109,
+      116,
+      114,
+      106,
+      84,
+      6,
+      0,
+      0,
+      124,
+      129,
+      16,
+      71,
+      93,
+      109,
+      104,
+      105,
+      86,
+      3
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      133
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 124,
+     "between_frames": [
+      3,
+      23
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-light-south": {
+     "frames": 48,
+     "frame_px": [
+      55,
+      87
+     ],
+     "step_px": [
+      133,
+      129,
+      128,
+      121,
+      131,
+      139,
+      128,
+      126,
+      118,
+      105,
+      84,
+      80,
+      116,
+      177,
+      202,
+      219,
+      214,
+      253,
+      270,
+      242,
+      211,
+      238,
+      272,
+      260,
+      238,
+      207,
+      220,
+      232,
+      190,
+      167,
+      157,
+      154,
+      133,
+      117,
+      120,
+      109,
+      97,
+      104,
+      109,
+      109,
+      108,
+      119,
+      132,
+      135,
+      134,
+      156,
+      156
+     ],
+     "wrap_px": 139,
+     "step_range": [
+      80,
+      272
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 294,
+     "between_frames": [
+      18,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    }
+   },
+   "light": {
+    "lens-working-halo-south": {
+     "frames": 1,
+     "px_range": [
+      21,
+      21
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 21,
+      "mean_rgb": [
+       253.3,
+       253.3,
+       253.3
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       248,
+       255
+      ]
+     }
+    },
+    "lens-no-fluid-halo-south": {
+     "frames": 1,
+     "px_range": [
+      22,
+      22
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 22,
+      "mean_rgb": [
+       253.0,
+       253.0,
+       253.0
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       246,
+       255
+      ]
+     }
+    }
+   },
+   "pack_checks": {
+    "centre_offset_px": 0.0,
+    "edge_alpha_max": 0,
+    "half_width_tiles": [
+     1.5,
+     "1.5 = footprint width / 2"
+    ],
+    "footprint_rows_tiles": [
+     1.5,
+     "bottom edge below origin; 1.5 = on the footprint"
+    ],
+    "lens-working-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "lens-no-fluid-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "mech_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "riser-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "riser-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+    ],
+    "riser-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'riser''s: equal"
+    ],
+    "riser-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "riser-light_light": [
+     {
+      "peak": 159,
+      "core": 38.1,
+      "halo": 18.5
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "glass-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "glass-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+    ],
+    "glass-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'glass''s: equal"
+    ],
+    "glass-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "glass-light_light": [
+     {
+      "peak": 58,
+      "core": 81.5,
+      "halo": 8.5
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 186,
+      "core": 16.1,
+      "halo": 33.9
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "frame0_vs_still": [
+     27,
+     0.0002,
+     "max channel difference, and share of pixels over 8 (sampling noise)"
+    ],
+    "cut_px": [
+     {
+      "idle-south": 522,
+      "still-south": 522,
+      "lens-green-lit-south": 522,
+      "lens-amber-lit-south": 522
+     },
+     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+    ],
+    "rolloff_px": [
+     {
+      "base-south": {
+       "px": 1051,
+       "most": 12
+      },
+      "lens-working-glow-south": {
+       "px": 0,
+       "most": 0
+      },
+      "lens-no-fluid-glow-south": {
+       "px": 0,
+       "most": 0
+      },
+      "riser-south": {
+       "px": 207,
+       "most": 12
+      },
+      "riser-light-south": {
+       "px": 1348,
+       "most": 12
+      },
+      "glass-south": {
+       "px": 0,
+       "most": 0
+      },
+      "glass-light-south": {
+       "px": 0,
+       "most": 0
+      },
+      "mech-south": {
+       "px": 652,
+       "most": 12
+      },
+      "embers-south": {
+       "px": 139,
+       "most": 12
+      },
+      "embers-light-south": {
+       "px": 74,
+       "most": 12
+      }
+     },
+     "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+    ]
+   },
+   "joins": [
+    {
+     "connection": [
+      0,
+      1,
+      "S"
+     ],
+     "pipe_tile": [
+      0,
+      2
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -3
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 4,
+      "where": {
+       "across_px": [
+        -28.5,
+        28.5
+       ],
+       "along_px": [
+        -2,
+        -1
+       ]
+      },
+      "rows_px": [
+       -2,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 12,
+      "where": {
+       "across_px": [
+        -28.5,
+        28.5
+       ],
+       "along_px": [
+        -2,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -1,
+      0,
+      "W"
+     ],
+     "pipe_tile": [
+      -2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      0,
+      -1,
+      "N"
+     ],
+     "pipe_tile": [
+      0,
+      -2
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 16
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 297,
+      "where": {
+       "across_px": [
+        -63.5,
+        31.5
+       ],
+       "along_px": [
+        17,
+        29
+       ]
+      },
+      "rows_px": [
+       17,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 252,
+      "where": {
+       "across_px": [
+        -63.5,
+        31.5
+       ],
+       "along_px": [
+        17,
+        28
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1,
+      0,
+      "E"
+     ],
+     "pipe_tile": [
+      2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    }
+   ]
+  },
+  "west": {
+   "layers": {
+    "base-west": "plate",
+    "shadow-west": "shadow",
+    "lens-working-glow-west": "glow (working)",
+    "lens-no-fluid-glow-west": "glow (working)",
+    "riser-west": "anim (working), 24 frames",
+    "riser-light-west": "glow-anim, 24 frames",
+    "glass-west": "anim (working), 24 frames",
+    "glass-light-west": "glow-anim, 24 frames",
+    "mech-west": "anim, 24 frames",
+    "embers-west": "anim (working), 48 frames",
+    "embers-light-west": "glow-anim, 48 frames"
+   },
+   "ignored": [
+    "lens-working-halo-west (a white cut the engine tints: not drawn here)",
+    "lens-no-fluid-halo-west (a white cut the engine tints: not drawn here)"
+   ],
+   "coverage": {
+    "footprint": [
+     3,
+     3
+    ],
+    "footprint_pct": 94.9,
+    "mass_pct": 107.4,
+    "corners_pct": {
+     "NW": 96.8,
+     "NE": 91.7,
+     "SW": 88.2,
+     "SE": 96.9
+    },
+    "outer_band_pct": 89.2,
+    "rise_tiles": 0.78,
+    "rise_by_column_tiles": [
+     0.58,
+     0.78,
+     0.45
+    ],
+    "extent_tiles": [
+     3.0,
+     3.8
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.02
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 5,
+     "p50": 79,
+     "p95": 182,
+     "spread": 177
+    },
+    "still": {
+     "p5": 5,
+     "p50": 79,
+     "p95": 182,
+     "spread": 177
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 10.7,
+     "fine": 8.29,
+     "mid": 14.62,
+     "ratio": 0.57,
+     "darkchr": 12.5
+    },
+    "still": {
+     "black_pct": 10.6,
+     "fine": 8.38,
+     "mid": 14.68,
+     "ratio": 0.57,
+     "darkchr": 12.5
+    }
+   },
+   "colour": {
+    "opaque_px": 39613,
+    "blue_px": 0,
+    "blue_pct": 0.0,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 2983,
+    "orange_pct": 7.53,
+    "white_px": 0,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.0,
+    "idle_orange_pct": 6.55
+   },
+   "glow": {
+    "lens-working-glow-west": {
+     "area": 22,
+     "peak": 109,
+     "core": 27.3,
+     "halo": 27.3,
+     "sat_core": 0.71,
+     "sat_halo": 0.88,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "lens-no-fluid-glow-west": {
+     "area": 21,
+     "peak": 137,
+     "core": 28.6,
+     "halo": 4.8,
+     "sat_core": 0.99,
+     "sat_halo": 1.0,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 1
+    },
+    "riser-light-west": {
+     "area": 635,
+     "peak": 161,
+     "core": 38.9,
+     "halo": 17.6,
+     "sat_core": 0.79,
+     "sat_halo": 0.87,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 8.0,
+     "range_pct": 12.1,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "glass-light-west": {
+     "area": 131,
+     "peak": 59,
+     "core": 80.2,
+     "halo": 8.4,
+     "sat_core": 0.39,
+     "sat_halo": 0.41,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 24,
+     "flicker_step_pct": 43.7,
+     "range_pct": 78.5,
+     "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "embers-light-west": {
+     "area": 34,
+     "peak": 173,
+     "core": 8.8,
+     "halo": 44.1,
+     "sat_core": 0.7,
+     "sat_halo": 0.78,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 101.8,
+     "range_pct": 200.5,
+     "played_frames": 48,
+     "loop_ticks": 120
+    }
+   },
+   "motion": {
+    "loop_frames": 48,
+    "moving_pct": 3.55,
+    "strobe_pct": 0.46,
+    "strobe_px": 182,
+    "step_px": [
+     64,
+     805,
+     63,
+     937,
+     91,
+     952,
+     71,
+     826,
+     64,
+     858,
+     42,
+     882,
+     42,
+     953,
+     103,
+     983,
+     114,
+     907,
+     184,
+     846,
+     143,
+     739,
+     163,
+     741,
+     124,
+     859,
+     104,
+     972,
+     81,
+     938,
+     76,
+     849,
+     72,
+     842,
+     85,
+     921,
+     83,
+     952,
+     118,
+     975,
+     120,
+     870,
+     102,
+     769,
+     85,
+     692,
+     88
+    ],
+    "wrap_px": 797,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "riser-west": 0.97,
+     "glass-west": 0.09,
+     "mech-west": 0.48,
+     "embers-west": 0.4,
+     "riser-light-west": 1.75,
+     "glass-light-west": 0.29,
+     "embers-light-west": 0.99
+    },
+    "strobe_own_loop_pct": 0.46,
+    "strobe_own_loop_px": 182,
+    "timing": {
+     "loop_ticks": 120,
+     "loop_seconds": 2.0,
+     "complete": true,
+     "measured_ticks": 120,
+     "frame_ticks": [
+      0,
+      3,
+      5,
+      8,
+      10,
+      13,
+      15,
+      18,
+      20,
+      23,
+      25,
+      28,
+      30,
+      33,
+      35,
+      38,
+      40,
+      43,
+      45,
+      48,
+      50,
+      53,
+      55,
+      58,
+      60,
+      63,
+      65,
+      68,
+      70,
+      73,
+      75,
+      78,
+      80,
+      83,
+      85,
+      88,
+      90,
+      93,
+      95,
+      98,
+      100,
+      103,
+      105,
+      108,
+      110,
+      113,
+      115,
+      118
+     ],
+     "layers": {
+      "riser-west": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-west": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "mech-west": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-west": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
+      "riser-light-west": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "glass-light-west": {
+       "entries": 24,
+       "frame_sequence": false,
+       "animation_speed": 0.2,
+       "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-light-west": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      }
+     }
+    }
+   },
+   "layers_alone": {
+    "riser-west": {
+     "frames": 24,
+     "frame_px": [
+      24,
+      96
+     ],
+     "step_px": [
+      168,
+      261,
+      274,
+      277,
+      294,
+      294,
+      275,
+      258,
+      117,
+      59,
+      63,
+      54,
+      164,
+      284,
+      275,
+      285,
+      281,
+      271,
+      283,
+      241,
+      93,
+      52,
+      47
+     ],
+     "wrap_px": 275,
+     "step_range": [
+      47,
+      294
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 266,
+     "between_frames": [
+      5,
+      14
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-west": {
+     "frames": 24,
+     "frame_px": [
+      26,
+      35
+     ],
+     "step_px": [
+      15,
+      27,
+      39,
+      18,
+      29,
+      28,
+      22,
+      22,
+      21,
+      21,
+      17,
+      19,
+      11,
+      32,
+      40,
+      28,
+      31,
+      29,
+      29,
+      27,
+      22,
+      24,
+      17
+     ],
+     "wrap_px": 14,
+     "step_range": [
+      11,
+      40
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 37,
+     "between_frames": [
+      11,
+      16
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "mech-west": {
+     "frames": 24,
+     "frame_px": [
+      45,
+      157
+     ],
+     "step_px": [
+      327,
+      326,
+      295,
+      258,
+      212,
+      276,
+      293,
+      330,
+      318,
+      252,
+      201,
+      272,
+      327,
+      326,
+      294,
+      257,
+      212,
+      276,
+      294,
+      331,
+      318,
+      252,
+      200
+     ],
+     "wrap_px": 271,
+     "step_range": [
+      200,
+      331
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 394,
+     "between_frames": [
+      16,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-west": {
+     "frames": 48,
+     "frame_px": [
+      40,
+      103
+     ],
+     "step_px": [
+      68,
+      69,
+      66,
+      91,
+      102,
+      91,
+      72,
+      67,
+      64,
+      61,
+      49,
+      40,
+      44,
+      59,
+      99,
+      116,
+      125,
+      156,
+      186,
+      169,
+      141,
+      161,
+      162,
+      136,
+      132,
+      121,
+      112,
+      112,
+      116,
+      87,
+      82,
+      94,
+      83,
+      71,
+      79,
+      86,
+      78,
+      94,
+      109,
+      120,
+      114,
+      118,
+      121,
+      111,
+      96,
+      96,
+      100
+     ],
+     "wrap_px": 74,
+     "step_range": [
+      40,
+      186
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 191,
+     "between_frames": [
+      19,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    },
+    "riser-light-west": {
+     "frames": 24,
+     "frame_px": [
+      15,
+      76
+     ],
+     "step_px": [
+      562,
+      562,
+      578,
+      592,
+      606,
+      591,
+      609,
+      593,
+      520,
+      491,
+      465,
+      478,
+      587,
+      584,
+      573,
+      601,
+      588,
+      594,
+      581,
+      576,
+      524,
+      495,
+      495
+     ],
+     "wrap_px": 579,
+     "step_range": [
+      465,
+      609
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 710,
+     "between_frames": [
+      0,
+      6
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "glass-light-west": {
+     "frames": 24,
+     "frame_px": [
+      17,
+      14
+     ],
+     "step_px": [
+      0,
+      129,
+      134,
+      13,
+      91,
+      113,
+      114,
+      114,
+      109,
+      82,
+      6,
+      0,
+      0,
+      125,
+      133,
+      16,
+      73,
+      91,
+      99,
+      101,
+      107,
+      86,
+      3
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      134
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 123,
+     "between_frames": [
+      5,
+      13
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+     ]
+    },
+    "embers-light-west": {
+     "frames": 48,
+     "frame_px": [
+      42,
+      103
+     ],
+     "step_px": [
+      71,
+      71,
+      69,
+      94,
+      109,
+      94,
+      80,
+      73,
+      69,
+      63,
+      54,
+      42,
+      50,
+      74,
+      122,
+      138,
+      127,
+      161,
+      200,
+      189,
+      157,
+      174,
+      179,
+      145,
+      139,
+      125,
+      124,
+      115,
+      98,
+      81,
+      87,
+      95,
+      83,
+      81,
+      99,
+      100,
+      93,
+      100,
+      126,
+      136,
+      125,
+      123,
+      116,
+      101,
+      96,
+      102,
+      106
+     ],
+     "wrap_px": 80,
+     "step_range": [
+      42,
+      200
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 200,
+     "between_frames": [
+      18,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
+    }
+   },
+   "light": {
+    "lens-working-halo-west": {
+     "frames": 1,
+     "px_range": [
+      21,
+      21
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 21,
+      "mean_rgb": [
+       253.2,
+       253.2,
+       253.2
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       250,
+       255
+      ]
+     }
+    },
+    "lens-no-fluid-halo-west": {
+     "frames": 1,
+     "px_range": [
+      21,
+      21
+     ],
+     "channel_spread_max": 0.0,
+     "frame0": {
+      "px": 21,
+      "mean_rgb": [
+       253.3,
+       253.3,
+       253.3
+      ],
+      "channel_spread": 0.0,
+      "luminance_range": [
+       250,
+       255
+      ]
+     }
+    }
+   },
+   "pack_checks": {
+    "centre_offset_px": 0.0,
+    "edge_alpha_max": 0,
+    "half_width_tiles": [
+     1.5,
+     "1.5 = footprint width / 2"
+    ],
+    "footprint_rows_tiles": [
+     1.515625,
+     "bottom edge below origin; 1.5 = on the footprint"
+    ],
+    "lens-working-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "lens-no-fluid-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "mech_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "riser-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "riser-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'riser' on the plate; 0 = nothing clips"
+    ],
+    "riser-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'riser''s: equal"
+    ],
+    "riser-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "riser-light_light": [
+     {
+      "peak": 162,
+      "core": 38.6,
+      "halo": 17.6
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "glass-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "glass-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'glass' on the plate; 0 = nothing clips"
+    ],
+    "glass-light_frames": [
+     [
+      24,
+      24
+     ],
+     "its frames and its plate layer 'glass''s: equal"
+    ],
+    "glass-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "glass-light_light": [
+     {
+      "peak": 59,
+      "core": 80.2,
+      "halo": 8.4
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 174,
+      "core": 8.8,
+      "halo": 44.1
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
+    "frame0_vs_still": [
+     132,
+     0.001,
+     "max channel difference, and share of pixels over 8 (sampling noise)"
+    ],
+    "cut_px": [
+     {
+      "idle-west": 344,
+      "still-west": 344,
+      "lens-green-lit-west": 344,
+      "lens-amber-lit-west": 344
+     },
+     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
+    ],
+    "rolloff_px": [
+     {
+      "base-west": {
+       "px": 748,
+       "most": 12
+      },
+      "lens-working-glow-west": {
+       "px": 0,
+       "most": 0
+      },
+      "lens-no-fluid-glow-west": {
+       "px": 0,
+       "most": 0
+      },
+      "riser-west": {
+       "px": 10,
+       "most": 12
+      },
+      "riser-light-west": {
+       "px": 1181,
+       "most": 12
+      },
+      "glass-west": {
+       "px": 240,
+       "most": 12
+      },
+      "glass-light-west": {
+       "px": 0,
+       "most": 0
+      },
+      "mech-west": {
+       "px": 606,
+       "most": 12
+      },
+      "embers-west": {
+       "px": 116,
+       "most": 12
+      },
+      "embers-light-west": {
+       "px": 45,
+       "most": 12
+      }
+     },
+     "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+    ]
+   },
+   "joins": [
+    {
+     "connection": [
+      -1,
+      0,
+      "W"
+     ],
+     "pipe_tile": [
+      -2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 2,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 5,
+      "where": {
+       "across_px": [
+        -18.5,
+        -17.5
+       ],
+       "along_px": [
+        -8,
+        -4
+       ]
+      }
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -13,
+      "last_row_px": -5
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 164,
+      "ground_px": 3,
+      "where": {
+       "across_px": [
+        -19.5,
+        -17.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 204,
+      "ground_px": 22,
+      "where": {
+       "across_px": [
+        -26.5,
+        -17.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 97,
+      "where": {
+       "across_px": [
+        -63.5,
+        29.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      0,
+      -1,
+      "N"
+     ],
+     "pipe_tile": [
+      0,
+      -2
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 27
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 123,
+      "where": {
+       "across_px": [
+        -60.5,
+        43.5
+       ],
+       "along_px": [
+        28,
+        44
+       ]
+      },
+      "rows_px": [
+       28,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 60,
+      "where": {
+       "across_px": [
+        -60.5,
+        43.5
+       ],
+       "along_px": [
+        28,
+        36
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1,
+      0,
+      "E"
+     ],
+     "pipe_tile": [
+      2,
+      0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      0,
+      1,
+      "S"
+     ],
+     "pipe_tile": [
+      0,
+      2
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -2
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 16,
+      "where": {
+       "across_px": [
+        -34.5,
+        -27.5
+       ],
+       "along_px": [
+        -1,
+        0
+       ]
+      },
+      "rows_px": [
+       -1,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 21,
+      "where": {
+       "across_px": [
+        -34.5,
+        26.5
+       ],
+       "along_px": [
+        -1,
+        0
+       ]
+      }
+     }
+    }
+   ]
+  }
+ },
+ "ports": {
+  "N": {
+   "missed": 347,
+   "extra": 209,
+   "far_px": 12.73,
+   "vanilla": [
+    52,
+    20,
+    0.01562,
+    0.34375
+   ],
+   "ours": [
+    42,
+    24,
+    0.0,
+    0.26562
+   ]
+  },
+  "E": {
+   "missed": 1325,
+   "extra": 107,
+   "far_px": 29.0,
+   "vanilla": [
+    32,
+    74,
+    -0.71875,
+    0.0625
+   ],
+   "ours": [
+    5,
+    46,
+    -0.47656,
+    -0.01562
+   ]
+  },
+  "S": {
+   "missed": 2893,
+   "extra": 0,
+   "far_px": 31.38,
+   "vanilla": [
+    64,
+    70,
+    0.0,
+    -0.76562
+   ],
+   "ours": [
+    42,
+    24,
+    0.0,
+    -0.6875
+   ]
+  },
+  "W": {
+   "missed": 1204,
+   "extra": 106,
+   "far_px": 28.0,
+   "vanilla": [
+    32,
+    72,
+    0.73438,
+    0.01562
+   ],
+   "ours": [
+    5,
+    46,
+    0.47656,
+    -0.01562
+   ]
+  }
+ },
+ "vanilla": {
+  "pumpjack": {
+   "north": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 73.0,
+     "mass_pct": 85.4,
+     "corners_pct": {
+      "NW": 63.9,
+      "NE": 97.0,
+      "SW": 50.7,
+      "SE": 45.6
+     },
+     "outer_band_pct": 64.0,
+     "rise_tiles": 0.47,
+     "rise_by_column_tiles": [
+      0.47,
+      0.28,
+      0.31
+     ],
+     "extent_tiles": [
+      3.45,
+      3.47
+     ],
+     "centre_offset_px": -1.5,
+     "past_edges_tiles": {
+      "west": 0.25,
+      "east": 0.2,
+      "south": 0.0
+     }
+    },
+    "tonal": {
+     "p5": 1,
+     "p50": 38,
+     "p95": 138,
+     "spread": 137
+    },
+    "finish": {
+     "black_pct": 18.2,
+     "fine": 6.45,
+     "mid": 11.8,
+     "ratio": 0.55,
+     "darkchr": 9.3
+    },
+    "colour": {
+     "opaque_px": 31494,
+     "blue_px": 1,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 42,
+     "orange_pct": 0.13,
+     "white_px": 0,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 0.13
+    }
+   },
+   "east": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 72.9,
+     "mass_pct": 83.9,
+     "corners_pct": {
+      "NW": 68.6,
+      "NE": 65.2,
+      "SW": 57.4,
+      "SE": 80.4
+     },
+     "outer_band_pct": 63.4,
+     "rise_tiles": 0.47,
+     "rise_by_column_tiles": [
+      0.47,
+      0.28,
+      0.14
+     ],
+     "extent_tiles": [
+      3.25,
+      3.58
+     ],
+     "centre_offset_px": -8.0,
+     "past_edges_tiles": {
+      "west": 0.25,
+      "east": 0.0,
+      "south": 0.11
+     }
+    },
+    "tonal": {
+     "p5": 2,
+     "p50": 38,
+     "p95": 137,
+     "spread": 135
+    },
+    "finish": {
+     "black_pct": 18.6,
+     "fine": 5.71,
+     "mid": 11.14,
+     "ratio": 0.51,
+     "darkchr": 8.7
+    },
+    "colour": {
+     "opaque_px": 30926,
+     "blue_px": 1,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 4,
+     "orange_pct": 0.01,
+     "white_px": 0,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 0.01
+    }
+   },
+   "south": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 76.5,
+     "mass_pct": 88.8,
+     "corners_pct": {
+      "NW": 71.6,
+      "NE": 74.4,
+      "SW": 96.6,
+      "SE": 55.4
+     },
+     "outer_band_pct": 73.6,
+     "rise_tiles": 0.47,
+     "rise_by_column_tiles": [
+      0.47,
+      0.28,
+      0.14
+     ],
+     "extent_tiles": [
+      3.39,
+      3.47
+     ],
+     "centre_offset_px": -3.5,
+     "past_edges_tiles": {
+      "west": 0.25,
+      "east": 0.14,
+      "south": 0.0
+     }
+    },
+    "tonal": {
+     "p5": 2,
+     "p50": 38,
+     "p95": 146,
+     "spread": 144
+    },
+    "finish": {
+     "black_pct": 17.1,
+     "fine": 5.89,
+     "mid": 11.44,
+     "ratio": 0.52,
+     "darkchr": 10.0
+    },
+    "colour": {
+     "opaque_px": 32752,
+     "blue_px": 1,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 44,
+     "orange_pct": 0.13,
+     "white_px": 0,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 0.13
+    }
+   },
+   "west": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 74.4,
+     "mass_pct": 84.2,
+     "corners_pct": {
+      "NW": 90.1,
+      "NE": 73.0,
+      "SW": 52.9,
+      "SE": 59.4
+     },
+     "outer_band_pct": 63.1,
+     "rise_tiles": 0.47,
+     "rise_by_column_tiles": [
+      0.47,
+      0.28,
+      0.14
+     ],
+     "extent_tiles": [
+      3.23,
+      3.52
+     ],
+     "centre_offset_px": -8.5,
+     "past_edges_tiles": {
+      "west": 0.25,
+      "east": -0.02,
+      "south": 0.05
+     }
+    },
+    "tonal": {
+     "p5": 2,
+     "p50": 38,
+     "p95": 137,
+     "spread": 135
+    },
+    "finish": {
+     "black_pct": 17.5,
+     "fine": 5.73,
+     "mid": 11.12,
+     "ratio": 0.51,
+     "darkchr": 9.6
+    },
+    "colour": {
+     "opaque_px": 31029,
+     "blue_px": 1,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 16,
+     "orange_pct": 0.05,
+     "white_px": 0,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 0.05
+    }
+   }
+  },
+  "chemical-plant": {
+   "north": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 92.4,
+     "mass_pct": 110.9,
+     "corners_pct": {
+      "NW": 95.3,
+      "NE": 84.2,
+      "SW": 89.5,
+      "SE": 83.9
+     },
+     "outer_band_pct": 76.0,
+     "rise_tiles": 1.05,
+     "rise_by_column_tiles": [
+      1.05,
+      1.05,
+      0.31
+     ],
+     "extent_tiles": [
+      2.97,
+      4.34
+     ],
+     "centre_offset_px": -4.0,
+     "past_edges_tiles": {
+      "west": 0.05,
+      "east": -0.08,
+      "south": 0.3
+     }
+    },
+    "tonal": {
+     "p5": 12,
+     "p50": 48,
+     "p95": 175,
+     "spread": 163
+    },
+    "finish": {
+     "black_pct": 4.7,
+     "fine": 5.7,
+     "mid": 11.6,
+     "ratio": 0.49,
+     "darkchr": 15.3
+    },
+    "colour": {
+     "opaque_px": 40889,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 1430,
+     "orange_pct": 3.5,
+     "white_px": 93,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 3.5
+    }
+   },
+   "east": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 95.7,
+     "mass_pct": 106.0,
+     "corners_pct": {
+      "NW": 97.1,
+      "NE": 94.3,
+      "SW": 96.2,
+      "SE": 89.9
+     },
+     "outer_band_pct": 86.0,
+     "rise_tiles": 0.88,
+     "rise_by_column_tiles": [
+      0.5,
+      0.88,
+      0.88
+     ],
+     "extent_tiles": [
+      3.02,
+      3.92
+     ],
+     "centre_offset_px": -1.5,
+     "past_edges_tiles": {
+      "west": 0.03,
+      "east": -0.02,
+      "south": 0.05
+     }
+    },
+    "tonal": {
+     "p5": 10,
+     "p50": 47,
+     "p95": 165,
+     "spread": 155
+    },
+    "finish": {
+     "black_pct": 5.8,
+     "fine": 5.05,
+     "mid": 11.29,
+     "ratio": 0.45,
+     "darkchr": 13.5
+    },
+    "colour": {
+     "opaque_px": 39080,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 1281,
+     "orange_pct": 3.28,
+     "white_px": 3,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 3.28
+    }
+   },
+   "south": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 92.6,
+     "mass_pct": 106.1,
+     "corners_pct": {
+      "NW": 94.7,
+      "NE": 94.6,
+      "SW": 90.5,
+      "SE": 84.3
+     },
+     "outer_band_pct": 76.4,
+     "rise_tiles": 0.64,
+     "rise_by_column_tiles": [
+      0.31,
+      0.64,
+      0.39
+     ],
+     "extent_tiles": [
+      3.03,
+      3.94
+     ],
+     "centre_offset_px": -1.0,
+     "past_edges_tiles": {
+      "west": 0.03,
+      "east": 0.0,
+      "south": 0.3
+     }
+    },
+    "tonal": {
+     "p5": 14,
+     "p50": 48,
+     "p95": 168,
+     "spread": 154
+    },
+    "finish": {
+     "black_pct": 2.8,
+     "fine": 5.74,
+     "mid": 11.4,
+     "ratio": 0.5,
+     "darkchr": 17.1
+    },
+    "colour": {
+     "opaque_px": 39109,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 1007,
+     "orange_pct": 2.57,
+     "white_px": 97,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 2.57
+    }
+   },
+   "west": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 89.7,
+     "mass_pct": 96.0,
+     "corners_pct": {
+      "NW": 95.5,
+      "NE": 93.0,
+      "SW": 81.3,
+      "SE": 82.3
+     },
+     "outer_band_pct": 69.8,
+     "rise_tiles": 0.56,
+     "rise_by_column_tiles": [
+      0.56,
+      0.56,
+      0.25
+     ],
+     "extent_tiles": [
+      3.03,
+      3.45
+     ],
+     "centre_offset_px": -1.0,
+     "past_edges_tiles": {
+      "west": 0.03,
+      "east": 0.0,
+      "south": -0.11
+     }
+    },
+    "tonal": {
+     "p5": 13,
+     "p50": 52,
+     "p95": 159,
+     "spread": 146
+    },
+    "finish": {
+     "black_pct": 3.0,
+     "fine": 5.28,
+     "mid": 11.18,
+     "ratio": 0.47,
+     "darkchr": 17.4
+    },
+    "colour": {
+     "opaque_px": 35380,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 1399,
+     "orange_pct": 3.95,
+     "white_px": 7,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 3.95
+    }
+   }
+  },
+  "foundry": {
+   "north": {
+    "coverage": {
+     "footprint": [
+      5,
+      5
+     ],
+     "footprint_pct": 94.4,
+     "mass_pct": 100.3,
+     "corners_pct": {
+      "NW": 67.3,
+      "NE": 68.0,
+      "SW": 85.4,
+      "SE": 82.7
+     },
+     "outer_band_pct": 73.7,
+     "rise_tiles": 0.78,
+     "rise_by_column_tiles": [
+      0.14,
+      0.25,
+      0.77,
+      0.78,
+      0.59
+     ],
+     "extent_tiles": [
+      5.3,
+      5.84
+     ],
+     "centre_offset_px": -5.5,
+     "past_edges_tiles": {
+      "west": 0.23,
+      "east": 0.06,
+      "south": 0.06
+     }
+    },
+    "tonal": {
+     "p5": 4,
+     "p50": 44,
+     "p95": 143,
+     "spread": 139
+    },
+    "finish": {
+     "black_pct": 14.4,
+     "fine": 5.97,
+     "mid": 10.99,
+     "ratio": 0.54,
+     "darkchr": 8.6
+    },
+    "colour": {
+     "opaque_px": 102681,
+     "blue_px": 101,
+     "blue_pct": 0.1,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 808,
+     "orange_pct": 0.79,
+     "white_px": 32,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.1,
+     "idle_orange_pct": 0.79
+    }
+   },
+   "east": {
+    "coverage": {
+     "footprint": [
+      5,
+      5
+     ],
+     "footprint_pct": 94.4,
+     "mass_pct": 100.3,
+     "corners_pct": {
+      "NW": 67.3,
+      "NE": 68.0,
+      "SW": 85.4,
+      "SE": 82.7
+     },
+     "outer_band_pct": 73.7,
+     "rise_tiles": 0.78,
+     "rise_by_column_tiles": [
+      0.14,
+      0.25,
+      0.77,
+      0.78,
+      0.59
+     ],
+     "extent_tiles": [
+      5.3,
+      5.84
+     ],
+     "centre_offset_px": -5.5,
+     "past_edges_tiles": {
+      "west": 0.23,
+      "east": 0.06,
+      "south": 0.06
+     }
+    },
+    "tonal": {
+     "p5": 4,
+     "p50": 44,
+     "p95": 143,
+     "spread": 139
+    },
+    "finish": {
+     "black_pct": 14.4,
+     "fine": 5.97,
+     "mid": 10.99,
+     "ratio": 0.54,
+     "darkchr": 8.6
+    },
+    "colour": {
+     "opaque_px": 102681,
+     "blue_px": 101,
+     "blue_pct": 0.1,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 808,
+     "orange_pct": 0.79,
+     "white_px": 32,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.1,
+     "idle_orange_pct": 0.79
+    }
+   },
+   "south": {
+    "coverage": {
+     "footprint": [
+      5,
+      5
+     ],
+     "footprint_pct": 94.4,
+     "mass_pct": 100.3,
+     "corners_pct": {
+      "NW": 67.3,
+      "NE": 68.0,
+      "SW": 85.4,
+      "SE": 82.7
+     },
+     "outer_band_pct": 73.7,
+     "rise_tiles": 0.78,
+     "rise_by_column_tiles": [
+      0.14,
+      0.25,
+      0.77,
+      0.78,
+      0.59
+     ],
+     "extent_tiles": [
+      5.3,
+      5.84
+     ],
+     "centre_offset_px": -5.5,
+     "past_edges_tiles": {
+      "west": 0.23,
+      "east": 0.06,
+      "south": 0.06
+     }
+    },
+    "tonal": {
+     "p5": 4,
+     "p50": 44,
+     "p95": 143,
+     "spread": 139
+    },
+    "finish": {
+     "black_pct": 14.4,
+     "fine": 5.97,
+     "mid": 10.99,
+     "ratio": 0.54,
+     "darkchr": 8.6
+    },
+    "colour": {
+     "opaque_px": 102681,
+     "blue_px": 101,
+     "blue_pct": 0.1,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 808,
+     "orange_pct": 0.79,
+     "white_px": 32,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.1,
+     "idle_orange_pct": 0.79
+    }
+   },
+   "west": {
+    "coverage": {
+     "footprint": [
+      5,
+      5
+     ],
+     "footprint_pct": 94.4,
+     "mass_pct": 100.3,
+     "corners_pct": {
+      "NW": 67.3,
+      "NE": 68.0,
+      "SW": 85.4,
+      "SE": 82.7
+     },
+     "outer_band_pct": 73.7,
+     "rise_tiles": 0.78,
+     "rise_by_column_tiles": [
+      0.14,
+      0.25,
+      0.77,
+      0.78,
+      0.59
+     ],
+     "extent_tiles": [
+      5.3,
+      5.84
+     ],
+     "centre_offset_px": -5.5,
+     "past_edges_tiles": {
+      "west": 0.23,
+      "east": 0.06,
+      "south": 0.06
+     }
+    },
+    "tonal": {
+     "p5": 4,
+     "p50": 44,
+     "p95": 143,
+     "spread": 139
+    },
+    "finish": {
+     "black_pct": 14.4,
+     "fine": 5.97,
+     "mid": 10.99,
+     "ratio": 0.54,
+     "darkchr": 8.6
+    },
+    "colour": {
+     "opaque_px": 102681,
+     "blue_px": 101,
+     "blue_pct": 0.1,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 808,
+     "orange_pct": 0.79,
+     "white_px": 32,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.1,
+     "idle_orange_pct": 0.79
+    }
+   }
+  }
+ },
+ "gates": {
+  "joins": true,
+  "collide": true
+ },
+ "pass": true,
+ "sheets": [
+  {
+   "path": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/m-run3/comparison.png",
+   "size": [
+    5268,
+    6723
+   ]
+  }
+ ],
+ "sheet_unsplit_px": [
+  5268,
+  6723
+ ]
+}
