@@ -38,6 +38,9 @@ below. Changed from the concept, each from Liam:
     the north edge, the bore open; per direction, so facing east or west it lines up with the engine's pipe
     (OUTLET_FITTING below), the bottle's nearest band and saddle moved off the pad; the pipe pictures are a mating
     flange and a short spool (fitting()), and the wiring draws vanilla's covers.
+  - T13b (Liam, 2026-10-27, Q20.2/3 "Accept"): facing north the fitting is not drawn past the north edge line, so
+    vanilla's north cover shows (NORTH_CUT; port-N is rendered for pack_ports but the north picture ships empty), and
+    the west picture carries the plate's outer flange and sleeve over the flange's shadow band (west_seam()).
 
 And three changes not from Liam, put to him with the T08 report: the footings' seams closed (--seams; the note at
 CLOSED below), for the coverage bar; the sun a step down, 10 -> 9.85 (--sun), for the tonal bar facing south; the
@@ -67,7 +70,7 @@ import re
 import sys
 
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -189,10 +192,15 @@ class variant:
             VAR[o.name] = self.dirs
 
 
+FIT_OBJS = {}                                 # T13b: each variant's fitting parts, by its directions
+
+
 def outlet_fitting(rn=0.17):
     for dirs, x, _, _ in VARIANTS:
         with variant(dirs):
+            n0 = len(K.OBJS)
             _outlet_fitting(x, rn)
+            FIT_OBJS[dirs] = list(K.OBJS[n0:])
 
 
 def _outlet_fitting(x0, rn):
@@ -659,12 +667,62 @@ def set_pose(f, gas=False):
     bpy.context.view_layer.update()
 
 
+# ---------------------------------------------------------------- T13b: the north drawing's fitting trimmed at the edge line
+# Liam (2026-10-27, Q20.2, "Accept"): facing north, unconnected, vanilla's north cover must show. In game (T13b probe,
+# evidence/gas-pump-t13b/) the engine draws a north cover behind the building whatever secondary_draw_orders says, and
+# the pipe picture over it: so the open bell (port-N) hid it, and with the bell gone the plate's own sleeve end and
+# outer flange still did, standing up the screen past the north edge (at ZA, ZA/2 = 0.21 tile up) where the cover
+# draws (its sprite: -1.86 to -1.50 tile, up to 0.41 either side). So, as vanilla draws a north fitting, nothing of the
+# outlet's fitting is drawn past the north edge line on the screen: in the north drawing only, every part of the
+# fitting is cut by the plane y + z cos(elevation) = EDGE (the camera's own view through the edge line, so the cut
+# faces are edge-on and unseen); the cover caps the sleeve there while nothing is joined, the vanilla pipe meets it
+# once one is, and the north pipe picture is empty (port-N is rendered for pack_ports, not shipped). The south drawing,
+# the icon (the whole machine, as signed off) and --collide (the model as built) keep the fitting whole.
+NORTH_CUT = []
+
+
+def _north_cut():
+    k = math.cos(rig.ELEVATION)
+    n = Vector((0.0, 1.0, k)).normalized()                  # out of the plane, into what is cut
+    t = Vector((0.0, -k, 1.0)).normalized()                 # in the plane, across the edge line
+    p0 = Vector((0.0, EDGE, 0.0))                           # on the plane: the edge on the ground
+    import bmesh
+    # a unit cube to a slab 2 wide (x), 4 across the edge line, 2 deep on the cut side of the plane
+    m4 = Matrix((
+        (2.0, 0.0, 0.0, p0.x + n.x),
+        (0.0, 4.0 * t.y, 2.0 * n.y, p0.y + n.y),
+        (0.0, 4.0 * t.z, 2.0 * n.z, p0.z + n.z),
+        (0.0, 0.0, 0.0, 1.0)))
+    me = bpy.data.meshes.new("t13b north cut")
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0, matrix=m4)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    cutter = bpy.data.objects.new("t13b north cut", me)
+    bpy.context.scene.collection.objects.link(cutter)
+    cutter.parent = ROOT_
+    cutter.hide_render = True
+    cutter.display_type = "WIRE"
+    for o in FIT_OBJS.get(frozenset(("north", "south")), []):
+        if o.type != "MESH":
+            continue
+        m = o.modifiers.new("t13b north cut", "BOOLEAN")
+        m.operation, m.object, m.solver = "DIFFERENCE", cutter, "EXACT"
+        NORTH_CUT.append(m)
+
+
+if OUTLET == "fitting" and not (ICON or COLLIDE):
+    _north_cut()
+
 CUR_D = ["north"]
 
 
 def turn(d):
     CUR_D[0] = d
     ROOT.rotation_euler = (0, 0, TURN[d])
+    for m in NORTH_CUT:
+        m.show_render = m.show_viewport = d == "north"
     bpy.context.view_layer.update()
 
 
@@ -748,7 +806,42 @@ def fitting(p, cap):
         K._finish(bpy.context.active_object, "bare", 0.004, smooth=True)
         cyl(tuple(c + u * (x0 + 0.1 + 0.07)), R, 0.14, "bare", rot=rot, verts=48, bevel=0.004)            # the spool
         cyl(tuple(c + u * (x0 + 0.24 - 0.015)), 0.35, 0.03, "bare", rot=rot, verts=48, bevel=0.006)       # its end ring
+        if face == "W":
+            west_seam(first)
     FITTINGS[g] = OBJS[first:]
+
+
+# T13b: the west seam (Liam, 2026-10-27, Q20.3, "Accept"). Facing west the sun is behind the sleeve's outer flange, which
+# throws a band of shadow 2 px wide (at 2x) across the sleeve just inside it: between the cover (or the joined pipe's
+# flange) and the lit sleeve it read as a seam. The plate keeps it; the west picture, drawn over the plate, now carries
+# the plate's own outer flange, its nuts and the sleeve to X_SEAM inside the edge -- copies of the west variant's parts,
+# turned as the west drawing turns them, so their surfacing is the plate's -- with no flange casting a shadow on them.
+X_SEAM = 0.085                                # tiles inside the edge: the band (0.047-0.062) and a pixel each side
+
+
+def west_seam(first):
+    src = FIT_OBJS[frozenset(("west",))]
+    turn_w = Matrix.Rotation(TURN["west"], 4, "Z")
+    slab = box((-EDGE - 0.25 + X_SEAM / 2, 0.0, 0.6), (0.5 + X_SEAM, 2.0, 1.2), "bare", bevel=0)
+    OBJS.remove(slab)
+    slab.hide_render = True
+    slab.display_type = "WIRE"
+    for o in src:
+        if o.type != "MESH" or o.name.startswith("outlet pad"):
+            continue
+        d = o.copy()
+        d.data = o.data.copy()
+        bpy.context.scene.collection.objects.link(d)
+        d.parent = o.parent
+        d.matrix_basis = turn_w @ o.matrix_basis
+        m = d.modifiers.new("t13b west seam", "BOOLEAN")
+        m.operation, m.object, m.solver = "INTERSECT", slab, "EXACT"
+        if K.M["dark_steel"] in d.data.materials[:] or d.dimensions.length < 0.06:
+            d.visible_shadow = False                # the flange and its nuts: their band is what is closed
+        OBJS.append(d)
+    for o in OBJS[first:]:
+        if o.type == "MESH" and K.M["dark_steel"] in o.data.materials[:]:
+            o.visible_shadow = False                # the picture's mating flange: no band from it either
 
 
 # ---------------------------------------------------------------- the runs' ends, on the sprite (for the ends' crops)
