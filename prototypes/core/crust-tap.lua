@@ -490,6 +490,11 @@ pump.migrate_horizontal_mirroring = nil
 -- cap away once a pipe arrives (the model's own blind caps are not shipped:
 -- the rule draws vanilla's). `secondary_draw_orders = { north = -1 }` puts a
 -- north fitting behind the building, as vanilla's assemblers set it.
+--
+-- Facing north the open bell hides vanilla's cover: an agreed exception to the
+-- cover rule (Liam, 2026-10-27, T13b judged: "Revert to before, it looks much
+-- cleaner"). port-W is T13b's (trim-t13b/sheets/ports/, its meta.json), which
+-- carries the plate's flange and sleeve over the 1-2 px seam facing west.
 local function gp_port(filename, width, height, shift)
   return { filename = filename, priority = "extra-high", width = width, height = height, shift = shift, scale = 0.5 }
 end
@@ -500,7 +505,7 @@ pump.output_fluid_box = {
     north = gp_port(GP .. "port-N.png", 48, 41, { 0.0, 0.13281 }),
     east = gp_port(GP .. "port-E.png", 20, 52, { -0.35938, -0.01562 }),
     south = gp_port(GP .. "port-S.png", 48, 41, { 0.0, -0.55469 }),
-    west = gp_port(GP .. "port-W.png", 20, 52, { 0.35938, -0.01562 })
+    west = gp_port(GP .. "port-W.png", 26, 52, { 0.40625, -0.01562 })
   },
   pipe_covers = derive.pipe_covers(),
   always_draw_covers = false,
