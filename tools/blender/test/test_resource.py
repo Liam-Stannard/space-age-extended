@@ -28,7 +28,7 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              resource's, an effect with stages of its own, an effect with a bloom of [[0, 1]]
              (passes[1].over / .stages / .bloom); a sheet "checks" (passes[0].sheet); directions
              "four", a port, a cut, ports_turn (each its own key); a declared light accepted, one
-             declared working refused (lights[0].working). A flow paint animation alone,
+             declared working refused (lights[0].working), lights 5 and null refused (lights). A flow paint animation alone,
              no still: accepted. Refused, naming animations[0]'s field: a turn and a slide
              (.motion), a light (.kind), a working one (.working), one named "resource-00", whose
              frames are the resource's cells' (.name). A building's paint animation with no still
@@ -300,6 +300,8 @@ def test_contract(decl0):
     case("ports_turn refused", lambda d: d.update(ports_turn=False), "ports_turn")
     case("a declared light accepted", lambda d: d.update(lights=[dict(LAMP)]))
     case("a working light refused", lambda d: d.update(lights=[dict(LAMP, working=True)]), "lights[0].working")
+    case("lights 5 refused", lambda d: d.update(lights=5), "lights")
+    case("lights null refused", lambda d: d.update(lights=None), "lights")
 
 
 # ---------------------------------------------------------------- the sheets

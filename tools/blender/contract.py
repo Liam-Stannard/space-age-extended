@@ -510,7 +510,8 @@ def _resource(decl, bad):
     for key in ("cut", "ports_turn"):
         if key in decl:
             bad(key, f"a resource model declares no {key}: it has no footprint edge to cut or port to turn")
-    for i, li in enumerate(decl.get("lights", ())):
+    # a lights field that is no list is _lights()'s to refuse, after this
+    for i, li in enumerate(decl["lights"] if _seq(decl.get("lights")) else ()):
         if isinstance(li, dict) and li.get("working") is True:
             bad(f"lights[{i}].working", f"light {li.get('name')!r} is working: a resource has no working state, "
                 f"so it would never be drawn")
