@@ -51,9 +51,6 @@ local tile_sounds = require("__base__.prototypes.tile.tile-sounds")
 local resource_autoplace = require("resource-autoplace")
 
 local derive = require("prototypes.derive")
--- Defines the `circuit_connector_definitions` and `universal_connector_template`
--- globals the pump's wire post is built from, as base's own entities file does.
-require("circuit-connector-sprites")
 
 --------------------------------------------------------------------------------
 -- The gas.
@@ -106,11 +103,15 @@ data:extend({
 -- there are crude oil's scattered patches, thinned by `random_probability`.
 -- The first build, at the other vents' density, put 13 in one starting patch.
 --
--- 2x2, under the pump that draws it.
+-- **Crude oil's boxes, small under a 3x3 pump** (Liam, 2026-10-21: "Crude oil's
+-- real boxes"): collision +-1.4 and selection +-0.5, base resources.lua's own,
+-- so the 3x3 Gas Pump stands centred on it as the pumpjack stands on oil. A
+-- 2x2 pump on a 2x2 vent sat half a tile off it: the engine puts a resource on
+-- a tile centre and a 2x2 machine's centre on a tile corner.
 --
 -- **The sprite is the helium-3 vent's**, crude oil's sheet, tinted toward the
--- gas's own chartreuse, and the map colour is the helium vent's turned the same way.
--- Both are the gas vent's stand-ins until a vent of the Core's own is drawn.
+-- gas's own chartreuse, and the map colour is that chartreuse. Both are
+-- stand-ins until a vent of the Core's own is drawn.
 --------------------------------------------------------------------------------
 
 data:extend({
@@ -122,7 +123,8 @@ vent_sheet.tint = { r = 0.85, g = 1.0, b = 0.45 }
 
 -- STARTING_FIELD: the landing's own wells, by offset from the field's centre in
 -- tiles. Each is one vent: wells are at least five tiles apart, so two never
--- touch, and a vent is 2x2, so a well never holds two.
+-- touch, and a well offers at most the four tile centres of a two-tile square,
+-- of which a vent's +-1.4 collision lets only one be taken: a well never holds two.
 local STARTING_FIELD = { { 0, 0 }, { 5, -3 }, { -2, 5 }, { 6, 4 } }
 -- How far out the field's centre sits. The wells spread up to eight tiles round
 -- it, so every one lands between 40 and 56 tiles from spawn: clear of the
@@ -158,7 +160,8 @@ do
   end
   local terms, extent = {}, 0
   for i, w in ipairs(STARTING_FIELD) do
-    -- The furthest well's centre from the field's, plus the 2x2 vent's half.
+    -- The furthest well's centre from the field's, plus the most a vent's
+    -- centre lands off its well: the square below is two tiles across.
     extent = math.max(extent, math.sqrt(w[1] ^ 2 + w[2] ^ 2) + 1)
     local wx = string.format("((%d) * cos(b) - (%d) * sin(b) + %d * cos(b))", w[1], w[2], STARTING_REACH)
     local wy = string.format("((%d) * sin(b) + (%d) * cos(b) + %d * sin(b))", w[1], w[2], STARTING_REACH)
@@ -246,8 +249,8 @@ local crust_vent =
   },
   walking_sound = tile_sounds.walking.oil({}),
   driving_sound = tile_sounds.driving.oil,
-  collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
-  selection_box = { { -1, -1 }, { 1, 1 } },
+  collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
+  selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
   autoplace = vent_autoplace,
   stage_counts = { 0 },
   stages = { sheet = vent_sheet },
@@ -280,18 +283,17 @@ pump.icon = "__space-age-extended__/graphics/icons/gas-pump.png"
 pump.icon_size = 64
 pump.minable = { mining_time = 0.3, result = "sae-gas-pump" }
 pump.resource_categories = { "sae-gas" }
-pump.collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
-pump.selection_box = { { -1, -1 }, { 1, 1 } }
+-- **3x3 over a small vent, vanilla's way** (Liam, 2026-10-21: "Gas Pump to 3x3
+-- (vanilla's way)"): the pumpjack's boxes and the pumpjack's 0.49 reach. The
+-- engine puts a resource on a tile centre and a 3x3 machine's centre on one
+-- too, so a reach under half a tile finds a vent only when the pump stands
+-- exactly on it. Measured (T01): centred every time, by hand and by script.
+-- The 2x2 pump this replaces centred on a tile corner and needed a 0.99 reach,
+-- so it stood half a tile off its vent in any of four quadrants.
+pump.collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } }
+pump.selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } }
+pump.resource_searching_radius = 0.49
 pump.mining_speed = 1
--- The burner drill's reach, the four tiles under the pump, and not the
--- pumpjack's 0.49. **Measured, not assumed:** the engine places every resource
--- at a tile centre, a 2x2 vent included, while a 2x2 machine's centre is a tile
--- corner -- so the pumpjack's half-tile reach from that corner contains no tile
--- centre at all, and a pump built over a vent found nothing to mine. A drill
--- finds a resource by its position, so this reach takes the vent under any one
--- of the pump's four tiles. Vents are 2x2 and never overlap, so it never takes
--- two.
-pump.resource_searching_radius = 0.99
 -- Nothing it makes is an item, so nothing is placed; but the field is
 -- mandatory on a mining drill (the data stage refuses the pump without it), so
 -- it stays at the pumpjack's own inert { 0, 0 }.
@@ -302,21 +304,9 @@ pump.module_slots = 0
 pump.effect_receiver = { uses_module_effects = false, uses_beacon_effects = false }
 pump.energy_source = { type = "void" }
 pump.surface_conditions = { { property = "gravity", min = 45 } }
-pump.max_health = 150
--- The pumpjack is 3x3 and its rubble, explosion and wire post are placed for
--- that. A 2x2's rubble, vanilla's 2x2 drill's explosion, and a connector on the
--- near corner as the accumulator's is.
-pump.corpse = "medium-small-remnants"
-pump.dying_explosion = "burner-mining-drill-explosion"
-pump.circuit_connector = circuit_connector_definitions.create_vector(
-  universal_connector_template,
-  {
-    { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
-    { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
-    { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true },
-    { variation = 26, main_offset = util.by_pixel(18.5, 19), shadow_offset = util.by_pixel(20.5, 25.5), show_shadow = true }
-  }
-)
+-- Its health, wreck, explosion and wire post are the pumpjack's, inherited
+-- (spec A.5, Liam: "The pumpjack's"): the pumpjack is 3x3, and so is this.
+--
 -- A gas pump hisses rather than nods: the offshore pump's sounds, which this
 -- building wore when it was one, in place of the nodding donkey's.
 do
@@ -325,183 +315,199 @@ do
   pump.open_sound = table.deepcopy(offshore.open_sound)
   pump.close_sound = table.deepcopy(offshore.close_sound)
 end
--- One connection, on a tile centre. On a 2x2 the middle of a face is the seam
--- between two tiles and a pipe connects to nothing there, so the outlet sits at
--- { 0.5, -0.5 } and rotates with the building round the four tile centres, as
--- §24's table gives: east { 0.5, 0.5 }, south { -0.5, 0.5 }, west
--- { -0.5, -0.5 }. The pumpjack's corner-walking `positions` list goes.
-pump.input_fluid_box = nil
-pump.output_fluid_box = {
-  volume = 1000,
-  pipe_covers = pump.output_fluid_box.pipe_covers,
-  pipe_connections = {
-    { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
-  }
-}
--- Art: the Gas Pump's Blender model (concept/crust-tap/model/crust_tap.py,
--- signed off by Liam 2026-10-09 after its "bulkier" round, and its pumping
--- animation 2026-10-10, round a2): a square pump casing in faded green with its
--- corners cut, on a plinth held by corner anchors; a flat riveted lid carrying
--- the wellhead and a compressor housing; orthogonal pipework, hoses and cables
--- over it; the burst disc; a sight glass inline in the lid's header; and the
--- riser. Ours, so no `derive.placeholder_art`.
+
+-- Art: the Gas Pump's Blender model, the Flywheel Compressor
+-- (concept/crust-tap/model-3x3/gas_pump.py, take 2 of the 3x3 round; the model
+-- signed off by Liam 2026-10-27 with the v3 sight glass): a flywheel with its
+-- yellow weight, two compressor cylinders and their crossheads on a crankcase,
+-- the gauge board, the sight glass run, the lube tank, the lubricator off the
+-- flywheel hub, and the discharge bottle whose fitting is the outlet. Ours, so
+-- no `derive.placeholder_art`.
 --
--- FOUR DIRECTIONS, RENDERED FROM ONE MODEL, because on this building the riser
--- is the fluid box and a riser pointing the wrong way is the fluid box in the
--- wrong place. Only the riser turns; everything else is the same in all four,
--- and the riser's mouth sits on the connection above by construction.
+-- **Four drawings, the whole machine turned** (Liam: "Whole machine turns"):
+-- the outlet is the fluid box, and it turns with the machine.
 --
--- **The riser sits on a TILE CENTRE, half a tile off the middle of its face.**
--- That is the correction §24 records, and the model agrees with the connection
--- above in all four rotations.
+-- Each direction is three layers and a glass, as the model's contract names
+-- them:
 --
--- Each direction is three layers and a glass:
---
---   - the plate, the casing less its moving parts, one frame repeated to the
---     stroke's 24 -- vanilla's biochamber arrangement, as the Ballast Drill's;
---   - the pump layer, the crank wheel, the piston rod it drives and the gauge
---     needle that swings with each stroke, 24 frames of one stroke;
---   - the shadow, one frame repeated. The parts that move are small against
---     the shadow and it is not split to follow them;
---   - the sight glass's contents, below, 24 frames of gas moving in the glass.
+--   - base, the machine stopped, no moving part drawn and the glass empty; one
+--     frame repeated to the loop's 24, so every layer has the same frame count,
+--     as the engine requires;
+--   - mech, every moving part -- the flywheel, the crossheads and their rods,
+--     the rockers, the gauge needles, the lubricator -- 24 frames of one turn,
+--     the rest held out;
+--   - shadow, the shadow catcher alone, one frame repeated. The moving parts
+--     stand at frame 0 for it, as they do in the still;
+--   - glass, below: the gas drifting in the sight glass, 24 frames.
 --
 -- Every size, shift, frame count and line length below is copied from the
--- model's sheets/meta.json; none was measured off a sheet or typed from
--- memory. Each file is named whole so tools/collect-graphics-refs.py can see it.
+-- model's sheets/meta.json and sheets/ports/meta.json; none was measured off a
+-- sheet or typed from memory. Each file is named whole so
+-- tools/collect-graphics-refs.py can see it. To regenerate, with any Blender 5
+-- binary:
+--
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/crust-tap/model-3x3/gas_pump.py <scratch> --ports --icon
+--
+-- then copy <scratch>/sheets/icon.png to graphics/icons/gas-pump.png, the
+-- base, shadow, mech and glass sheets and ports/port-*.png into
+-- graphics/entity/gas-pump/, and the numbers out of the two meta.json files
+-- into the tables below.
 --
 -- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
--- ticks, one stroke a second. A drill is not a crafting machine:
--- `MiningDrillGraphicsSet::animation_progress` defaults to 1 (prototype docs,
--- doc-html/types/MiningDrillGraphicsSet.html), and the declared rate is not
--- multiplied by `mining_speed` -- the Ballast Drill's measurement, in
--- machines.lua. Measured on this pump in a client on the Core, 2026-10-10,
--- one screenshot a tick matched against the strip: 144 frames over 360 ticks
--- on a siderane vent and on a helium vent, 0.400 frames a tick, a 60-tick
--- stroke, with the glass on the pump layer's frame in every one of the 720.
+-- ticks, one turn a second (Liam: "One turn a second"). A drill is not a
+-- crafting machine: `MiningDrillGraphicsSet::animation_progress` defaults to 1
+-- (prototype docs, doc-html/types/MiningDrillGraphicsSet.html), and the
+-- declared rate is not multiplied by `mining_speed` -- the Ballast Drill's
+-- measurement, in machines.lua, and the 2x2 Gas Pump's, 0.400 frames a tick
+-- over 720 ticks in a client on the Core, 2026-10-10.
 --
--- **Idle, the crank stops where it is**, as the pumpjack's horsehead does. The
--- pumpjack draws its nodding head in `graphics_set.animation` with no
--- `idle_animation` (base/prototypes/entity/mining-drill.lua,
+-- **Idle, everything stops where it is**, as the pumpjack's horsehead does
+-- (spec A.7). The pumpjack draws its nodding head in `graphics_set.animation`
+-- with no `idle_animation` (base/prototypes/entity/mining-drill.lua,
 -- `pumpjack_animation`), and so does this: the engine draws `animation` every
 -- tick at the frame its own progress counter has reached, and advances that
--- counter only on ticks the drill works. Stopped, the counter stops, and the
--- frame holds. The prototype docs do not spell this out; the pumpjack is the
--- reference, and it was measured here too: a pump whose outlet was shut mid
--- stroke stopped on frame 20 of 24 and held it, and its glass faded out over
--- some fifteen ticks. `reset_animation_when_frozen` (default false) sits
--- beside `frozen_patch`, the frost a drill wears on Aquilo; it is about
--- freezing, not idling, and is left alone.
+-- counter only on ticks the drill works. Measured on the 2x2 pump: shut mid
+-- stroke, it held frame 20 of 24, and its glass faded out over some fifteen
+-- ticks.
 local GP = "__space-age-extended__/graphics/entity/gas-pump/"
 local GP_FRAMES = 24
-local GP_SPEED = 0.4           -- 0.4 in game: drill progress is 1, one stroke a second
+local GP_SPEED = 0.4           -- 0.4 in game: drill progress is 1, one turn a second
 
--- One frame, repeated to the stroke's length, so every layer of the animation
--- has the same frame count, as the engine requires.
-local function gp_still(filename, width, height, shift)
+-- Per direction: each sheet's file, its size in px, and its shift in tiles,
+-- from sheets/meta.json.
+local GP_SHEETS =
+{
+  north =
+  {
+    base   = { GP .. "base-north.png",   205, 221, { 0.00781, -0.19531 } },
+    shadow = { GP .. "shadow-north.png", 211, 200, { 0.14844, -0.0625 } },
+    mech   = { GP .. "mech-north.png",   131, 149, { -0.19531, 0.08594 } },
+    glass  = { GP .. "glass-north.png",  14, 31,   { 1.15625, -0.49219 } }
+  },
+  east =
+  {
+    base   = { GP .. "base-east.png",   199, 217, { 0.00781, -0.16406 } },
+    shadow = { GP .. "shadow-east.png", 213, 202, { 0.16406, -0.0625 } },
+    mech   = { GP .. "mech-east.png",   144, 127, { -0.375, -0.50781 } },
+    glass  = { GP .. "glass-east.png",  31, 15,   { 0.13281, 0.85156 } }
+  },
+  south =
+  {
+    base   = { GP .. "base-south.png",   205, 219, { -0.00781, -0.19531 } },
+    shadow = { GP .. "shadow-south.png", 210, 199, { 0.14062, -0.03906 } },
+    mech   = { GP .. "mech-south.png",   106, 151, { 0.04688, -0.74219 } },
+    glass  = { GP .. "glass-south.png",  14, 31,   { -1.15625, -0.22656 } }
+  },
+  west =
+  {
+    base   = { GP .. "base-west.png",   199, 219, { -0.00781, -0.17969 } },
+    shadow = { GP .. "shadow-west.png", 213, 201, { 0.17969, -0.07031 } },
+    mech   = { GP .. "mech-west.png",   144, 136, { 0.375, -0.10938 } },
+    glass  = { GP .. "glass-west.png",  31, 16,   { -0.13281, -1.46875 } }
+  }
+}
+
+-- One layer of direction `dir`: a 24-frame strip in one row, or with `still`
+-- one frame repeated to the loop's length.
+local function gp_layer(dir, name, still)
+  local s = GP_SHEETS[dir][name]
   return
   {
-    filename = filename,
+    filename = s[1],
     priority = "high",
-    width = width, height = height,
-    frame_count = 1,
-    repeat_count = GP_FRAMES,
+    width = s[2], height = s[3],
+    frame_count = still and 1 or GP_FRAMES,
+    line_length = still and 1 or GP_FRAMES,
+    repeat_count = still and GP_FRAMES or nil,
     animation_speed = GP_SPEED,
-    shift = shift,
-    scale = 0.5
+    shift = s[4],
+    scale = 0.5,
+    draw_as_shadow = name == "shadow" or nil
   }
 end
 
--- A 24-frame strip, one row.
-local function gp_strip(filename, width, height, shift)
-  return
-  {
-    filename = filename,
-    priority = "high",
-    width = width, height = height,
-    frame_count = GP_FRAMES,
-    line_length = GP_FRAMES,
-    animation_speed = GP_SPEED,
-    shift = shift,
-    scale = 0.5
-  }
-end
-
--- The plate, the moving parts over it, and the plate's shadow.
-local function gp_direction(base, pump_layer, shadow)
-  shadow.draw_as_shadow = true
-  return { layers = { base, pump_layer, shadow } }
-end
-
--- The sight glass's contents: neutral white, so the engine's tint decides its
--- colour. meta.json gives all four directions the same 21 x 18 and the same
--- shift, since the glass is on the part of the model that does not turn.
-local function gp_glass(filename)
-  return gp_strip(filename, 21, 18, { -0.13281, -0.75 })
+local function gp_direction(dir)
+  return { layers = { gp_layer(dir, "base", true), gp_layer(dir, "mech"), gp_layer(dir, "shadow", true) } }
 end
 
 -- The pumpjack's set is replaced whole: its nodding head and its working
 -- visualisations, and the mirrored copy of both, describe a machine this is not.
 derive.own_graphics(pump, {
   animation = {
-    north = gp_direction(gp_still(GP .. "base-north.png", 134, 152, { 0.0, -0.15625 }),
-                         gp_strip(GP .. "pump-north.png", 69, 50, { 0.47656, -0.21875 }),
-                         gp_still(GP .. "base-shadow-north.png", 174, 134, { 0.35938, -0.03125 })),
-    east = gp_direction(gp_still(GP .. "base-east.png", 135, 138, { 0.00781, -0.04688 }),
-                        gp_strip(GP .. "pump-east.png", 69, 48, { 0.47656, -0.23438 }),
-                        gp_still(GP .. "base-shadow-east.png", 174, 131, { 0.35938, -0.00781 })),
-    south = gp_direction(gp_still(GP .. "base-south.png", 134, 139, { 0.0, -0.03906 }),
-                         gp_strip(GP .. "pump-south.png", 69, 50, { 0.47656, -0.21875 }),
-                         gp_still(GP .. "base-shadow-south.png", 174, 137, { 0.35938, 0.03906 })),
-    west = gp_direction(gp_still(GP .. "base-west.png", 135, 138, { -0.00781, -0.04688 }),
-                        gp_strip(GP .. "pump-west.png", 69, 50, { 0.47656, -0.21875 }),
-                        gp_still(GP .. "base-shadow-west.png", 174, 131, { 0.35938, -0.00781 }))
+    north = gp_direction("north"),
+    east = gp_direction("east"),
+    south = gp_direction("south"),
+    west = gp_direction("west")
   },
   working_visualisations = {
-    -- **The sight glass shows the gas.** In the plate it is dark, empty glass;
+    -- **The sight glass shows the gas.** In the base it is dark, empty glass;
     -- while the pump is drawing, this fills it with the colour of what is
-    -- drawn, moving over the stroke's 24 frames at the stroke's rate, in step
-    -- with the crank. `apply_tint = "resource-color"` takes
-    -- the colour from the vent under the pump -- its `mining_visualisation_tint`
-    -- -- so one layer shows siderane chartreuse on a siderane vent and
-    -- helium-3 blue on a helium vent, and a future gas needs only its vent's
-    -- tint.
+    -- drawn, drifting over the loop's 24 frames in step with the flywheel.
+    -- The sheet is white, and `apply_tint = "resource-color"` takes the
+    -- colour from the vent under the pump -- its `mining_visualisation_tint`:
+    -- siderane #A8D929, helium-3 #B6A6C8 (spec 3.3) -- so one layer serves
+    -- every gas, and a future gas needs only its vent's tint.
     --
-    -- Ordinary paint, not glow and no light: it is gas seen through glass, not
-    -- a lamp, and it should go dark at night with the rest of the machine.
-    -- (meta.json's `kind = "light"` is the render pipeline's name for a white
-    -- layer the engine tints, not a request for `draw_as_glow`.)
+    -- Ordinary paint, not glow and no light: the gas is paint, never light,
+    -- and nothing on this building glows (spec 3.3). (meta.json's
+    -- `kind = "light"` is the render pipeline's name for a white layer the
+    -- engine tints, not a request for `draw_as_glow`.)
     --
     -- No `always_draw`, so it is drawn only while the pump is working; idle,
-    -- blocked, unconnected or with no vent under it, the plate's empty glass
+    -- blocked, unconnected or with no vent under it, the base's empty glass
     -- shows.
     --
     -- **`synced_fadeout`, not `fadeout`**, because that is what vanilla's big
-    -- mining drill sets on both of its `resource-color` layers, its tinted dust
-    -- and its output particles (space-age/prototypes/entity/big-mining-drill.lua),
-    -- and the glass is drawn as the big drill draws its tinted layers. The
-    -- prototype docs describe neither flag; the electric drill uses plain
-    -- `fadeout` on its own tinted dust.
+    -- mining drill sets on both of its `resource-color` layers
+    -- (space-age/prototypes/entity/big-mining-drill.lua), and the glass is
+    -- drawn as the big drill draws its tinted layers.
     {
       synced_fadeout = true,
       apply_tint = "resource-color",
-      north_animation = gp_glass(GP .. "sight-glass-north.png"),
-      east_animation = gp_glass(GP .. "sight-glass-east.png"),
-      south_animation = gp_glass(GP .. "sight-glass-south.png"),
-      west_animation = gp_glass(GP .. "sight-glass-west.png")
+      north_animation = gp_layer("north", "glass"),
+      east_animation = gp_layer("east", "glass"),
+      south_animation = gp_layer("south", "glass"),
+      west_animation = gp_layer("west", "glass")
     }
   }
 })
 pump.graphics_set_flipped = nil
 pump.use_mirroring = nil
 pump.migrate_horizontal_mirroring = nil
--- **The covers stay.** The plate draws its own mouth, which says what the
--- fitting looks like; the cover says what an *unused* one looks like, and
--- `always_draw_covers` being false means it is gone the moment a pipe is
--- actually joined. Every vanilla machine carries both, the foundry included,
--- and a pump on a vent with nothing plumbed to it is exactly the case the cover
--- exists for.
-pump.output_fluid_box.always_draw_covers = false
-pump.output_fluid_box.pipe_picture = util.empty_sprite()
+
+-- One connection, the middle of the north face, at { 0, -1 } (spec 8), and it
+-- turns with the machine; the pumpjack's corner-walking `positions` list goes.
+--
+-- **The outlet enters through a fitting in the casing** (Liam's rule,
+-- 2026-10-21): the model draws a pad on the discharge bottle and a flanged
+-- sleeve to the north edge, the bore open, into its base. The pipe pictures
+-- are the model's own, a mating flange and a short spool per face
+-- (sheets/ports/meta.json, each shift from the tile the connection points
+-- into, as the engine draws them); the covers are vanilla's, capping the
+-- outlet while nothing is joined, and `always_draw_covers = false` takes the
+-- cap away once a pipe arrives (the model's own blind caps are not shipped:
+-- the rule draws vanilla's). `secondary_draw_orders = { north = -1 }` puts a
+-- north fitting behind the building, as vanilla's assemblers set it.
+local function gp_port(filename, width, height, shift)
+  return { filename = filename, priority = "extra-high", width = width, height = height, shift = shift, scale = 0.5 }
+end
+pump.input_fluid_box = nil
+pump.output_fluid_box = {
+  volume = 1000,
+  pipe_picture = {
+    north = gp_port(GP .. "port-N.png", 48, 41, { 0.0, 0.13281 }),
+    east = gp_port(GP .. "port-E.png", 20, 52, { -0.35938, -0.01562 }),
+    south = gp_port(GP .. "port-S.png", 48, 41, { 0.0, -0.55469 }),
+    west = gp_port(GP .. "port-W.png", 20, 52, { 0.35938, -0.01562 })
+  },
+  pipe_covers = derive.pipe_covers(),
+  always_draw_covers = false,
+  secondary_draw_orders = { north = -1 },
+  pipe_connections = {
+    { flow_direction = "output", direction = defines.direction.north, position = { 0, -1 } }
+  }
+}
 data:extend({ pump })
 
 
@@ -869,7 +875,8 @@ data:extend({ turbine, turbine_remnants, turbine_sparks, turbine_explosion })
 -- rather than the Survey, "because it needs nothing the survey teaches" -- but
 -- the recipes needed 10 and 20 plate, and plate came only after the survey.
 -- A player who took the landing-day technology first got two recipes they could
--- not craft. Steel, gears and pipe come out of the cargo pod, so now they can.
+-- not craft. Steel, gears, circuits and pipe come out of the cargo pod, so now
+-- they can.
 --------------------------------------------------------------------------------
 
 data:extend({
@@ -891,11 +898,13 @@ data:extend({
     type = "recipe",
     name = "sae-gas-pump",
     categories = { "crafting" },
-    energy_required = 4,
+    -- The pumpjack's recipe, whole (Liam, 2026-10-27: "Pumpjack's recipe").
+    energy_required = 5,
     ingredients = {
-      { type = "item", name = "steel-plate", amount = 10 },
-      { type = "item", name = "pipe", amount = 10 },
-      { type = "item", name = "iron-gear-wheel", amount = 10 }
+      { type = "item", name = "steel-plate", amount = 5 },
+      { type = "item", name = "iron-gear-wheel", amount = 10 },
+      { type = "item", name = "electronic-circuit", amount = 5 },
+      { type = "item", name = "pipe", amount = 10 }
     },
     results = { { type = "item", name = "sae-gas-pump", amount = 1 } },
     enabled = false

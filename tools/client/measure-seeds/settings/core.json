@@ -12,7 +12,7 @@
     { "key": "siderane_field", "entity": "sae-crust-vent", "reach": "sae_crust_vent_reach",
       "bearing": "sae_crust_vent_bearing", "radius": "sae_crust_vent_extent", "turn": 0, "expect": 4 },
     { "key": "gas", "entity": "sae-gas-vent", "reach": "sae_core_start_gas_reach",
-      "bearing": "sae_core_start_gas_bearing", "radius": 3.5, "turn": 0.5 },
+      "bearing": "sae_core_start_gas_bearing", "radius": 5.1, "turn": 0.5 },
     { "key": "kamacite", "entity": "sae-kamacite-ore", "reach": "sae_core_start_kamacite_reach",
       "bearing": "sae_core_start_kamacite_bearing", "radius": 9, "turn": 0.25 },
     { "key": "kamacite_vent", "entity": "sae-kamacite-vent", "reach": "sae_core_start_kamacite_vent_reach",

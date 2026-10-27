@@ -10,34 +10,43 @@
 # pool / shore: nearest sae-radiant-pool / -shore tile centre from (0, 0), tiles. <patch>_reach: the patch centre's
 # distance (its _reach expression); _off_deg: its bearing off the preferred one; _n: entities of the patch within
 # radius * 1.4 + 2 of that centre; _wet: those touching pool or shore tiles.
+# Re-recorded 2026-10-27 (gas-pump-3x3 T11; Liam 2026-10-21, Q12: "Retune to about 11"): both gas vents took crude
+# oil's boxes (collision +-1.4, selection +-0.5) for the 3x3 Gas Pump, which left the helium-3 starting patch 4 to 7
+# vents at map-gen.lua's radius 3.5 (T01); the radius became 5.1 (settings/core.json's gas radius with it), measured
+# over these 30 seeds against 5, 5.2 and 5.25: gas_n mean 10.77, median 11, 9 to 13 (was 11.96, 12, 9 to 14 here).
+# Only the cells that run measured differently were changed, each named in its row's source: every gas_n that moved;
+# and the larger patch keeps a larger berth, so on 2563011894 helium-3 and kamacite each moved one bearing (15
+# degrees) and on 3964193037 the kamacite vent did (its bearing not recorded here; n 14 -> 11). A run at radius 3.5
+# with the new boxes matched both seeds but for gas_n, so the radius moved them, not the boxes. The three blank rows
+# stay blank.
 seed,pool,shore,pool_tiles_within_24,gas_reach,gas_off_deg,gas_n,gas_wet,kamacite_reach,kamacite_off_deg,kamacite_n,kamacite_wet,kamacite_vent_reach,kamacite_vent_off_deg,kamacite_vent_n,kamacite_vent_wet,source
 2654435761,46.2,37.0,0,56,+0,9,0,64,-15,230,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1013904226,41.7,36.5,0,56,+30,12,0,64,+0,245,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-3668339987,46.0,35.5,0,56,+0,12,0,64,+0,281,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-2027808452,44.7,35.7,0,56,+0,12,0,64,+0,279,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1013904226,41.7,36.5,0,56,+30,10,0,64,+0,245,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 10
+3668339987,46.0,35.5,0,56,+0,11,0,64,+0,281,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 11
+2027808452,44.7,35.7,0,56,+0,9,0,64,+0,279,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 9
 387276917,45.5,37.6,0,56,-90,11,0,64,-30,269,0,72,+15,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
 3041712678,42.3,33.5,0,56,+0,13,0,64,+0,263,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1401181143,44.6,37.5,0,56,+60,10,0,64,-15,265,0,72,+105,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-4055616904,46.0,34.9,0,56,+0,13,0,64,-60,261,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-2415085369,44.0,37.3,0,56,+0,12,0,64,+0,281,0,72,+45,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-774553834,43.4,36.4,0,56,+0,9,0,64,+0,239,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-3428989595,45.4,37.8,0,56,+0,13,0,64,+0,257,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1788458060,47.9,38.3,0,56,+0,13,0,64,+0,248,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-147926525,44.8,36.8,0,56,+0,13,0,64,+0,293,0,72,+0,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; shore re-recorded 2026-10-20 (was 36.9; measured 36.831): the glow fix of map-gen-fallback T03 put sae_core_glow back on the lit cracks and handed the shore tile at (-25 -28) back from them (Liam 2026-10-20: accept and re-record)
-2802362286,48.3,37.3,0,56,+0,12,0,64,+0,279,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1161830751,43.1,35.2,0,56,+30,11,0,64,-45,278,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1401181143,44.6,37.5,0,56,+60,11,0,64,-15,265,0,72,+105,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 10 -> 11
+4055616904,46.0,34.9,0,56,+0,10,0,64,-60,261,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 10
+2415085369,44.0,37.3,0,56,+0,10,0,64,+0,281,0,72,+45,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 10
+774553834,43.4,36.4,0,56,+0,10,0,64,+0,239,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 9 -> 10
+3428989595,45.4,37.8,0,56,+0,12,0,64,+0,257,0,72,+0,9,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 12
+1788458060,47.9,38.3,0,56,+0,11,0,64,+0,248,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 11
+147926525,44.8,36.8,0,56,+0,12,0,64,+0,293,0,72,+0,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; shore re-recorded 2026-10-20 (was 36.9; measured 36.831): the glow fix of map-gen-fallback T03 put sae_core_glow back on the lit cracks and handed the shore tile at (-25 -28) back from them (Liam 2026-10-20: accept and re-record); re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 12
+2802362286,48.3,37.3,0,56,+0,13,0,64,+0,279,0,72,+0,10,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 13
+1161830751,43.1,35.2,0,56,+30,10,0,64,-45,278,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 11 -> 10
 3816266512,44.6,33.7,0,56,+0,11,0,64,-45,221,0,72,+0,14,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-2175734977,42.1,35.8,0,56,+0,11,0,64,+0,245,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-535203442,41.7,33.9,0,56,+0,13,0,64,+0,261,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+2175734977,42.1,35.8,0,56,+0,9,0,64,+0,245,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 11 -> 9
+535203442,41.7,33.9,0,56,+0,11,0,64,+0,261,0,72,+0,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 11
 3189639203,46.5,37.5,0,56,-90,13,0,64,-30,267,0,72,+45,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1549107668,42.3,35.6,0,56,+0,14,0,64,+0,250,0,72,+0,12,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-4203543429,43.2,35.8,0,56,+0,12,0,64,+0,267,0,72,+30,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-2563011894,45.4,39.1,0,56,-75,13,0,64,-15,283,0,72,+15,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-922480359,41.9,36.7,0,56,+0,14,0,64,+0,258,0,72,-15,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-3576916120,47.1,33.9,0,56,+0,12,0,64,+0,264,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
-1936384585,43.7,34.6,0,56,+60,11,0,64,-120,288,0,72,+0,8,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary
+1549107668,42.3,35.6,0,56,+0,12,0,64,+0,250,0,72,+0,12,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 14 -> 12
+4203543429,43.2,35.8,0,56,+0,9,0,64,+0,267,0,72,+30,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 9
+2563011894,45.4,39.1,0,56,-90,11,0,64,-30,251,0,72,+15,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 11; gas_off_deg -75 -> -90; kamacite_off_deg -15 -> -30; kamacite_n 283 -> 251
+922480359,41.9,36.7,0,56,+0,11,0,64,+0,258,0,72,-15,11,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 14 -> 11
+3576916120,47.1,33.9,0,56,+0,10,0,64,+0,264,0,72,+0,13,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 12 -> 10
+1936384585,43.7,34.6,0,56,+60,9,0,64,-120,288,0,72,+0,8,0,arc-fix table 2026-10-12 (placed side); the 2026-10-14 recheck on ef63ab2 gave the same 30-seed summary; re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 11 -> 9
 295853050,,,,,,,,,,,,,,,,not recorded after the arc fix
 2950288811,,,,,,,,,,,,,,,,not recorded after the arc fix
 1309757276,,,,,,,,,,,,,,,,not recorded after the arc fix
-3964193037,45.9,38.3,0,56,,11,0,64,,296,0,72,,14,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt)
-123456789,45.6,35.7,0,56,,13,0,64,,250,0,72,,14,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt)
+3964193037,45.9,38.3,0,56,,10,0,64,,296,0,72,,11,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt); re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 11 -> 10; kamacite_vent_n 14 -> 11
+123456789,45.6,35.7,0,56,,11,0,64,,250,0,72,,14,0,recheck 2026-10-14 on ef63ab2 (pool-table-recheck.txt); re-recorded 2026-10-27 (gas-pump-3x3 T11: crude oil's vent boxes; gas radius 5.1): gas_n 13 -> 11

@@ -199,9 +199,12 @@ data:extend({
     },
     walking_sound = tile_sounds.walking.oil({}),
     driving_sound = tile_sounds.driving.oil,
-    -- 2x2, the Gas Pump's own footprint, since a vent sits under its machine.
-    collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } },
-    selection_box = { { -1, -1 }, { 1, 1 } },
+    -- Crude oil's boxes (Liam, 2026-10-21: "Crude oil's real boxes"), small
+    -- under the 3x3 Gas Pump, which stands centred on it as the pumpjack stands
+    -- on oil; see crust-tap.lua. At this size the starting patch's radius is
+    -- map-gen.lua's to keep it about eleven vents.
+    collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },
+    selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } },
     autoplace = with_starting_spot("gas",
     {
       name = "sae-gas-vent",
@@ -216,11 +219,14 @@ data:extend({
     {
       sheet = table.deepcopy(data.raw.resource["crude-oil"].stages.sheet)
     },
-    map_color = { r = 0.55, g = 0.80, b = 0.92 },
-    -- The colour the Gas Pump's sight glass shows while it draws from this
-    -- vent: helium-3's own `base_color` (fluids.lua), so it reads apart from
-    -- siderane's chartreuse.
-    mining_visualisation_tint = { r = 0.55, g = 0.78, b = 0.90 }
+    -- Violet, #B6A6C8, the Vent Pump's paler bubble and band violet (Liam,
+    -- 2026-10-21: "Violet, like the Vent Pump", then "#B6A6C8", and "Also the
+    -- vent's map colour"): the colour the Gas Pump's sight glass shows while
+    -- it draws from this vent, and the vent's colour on the map, so it reads
+    -- apart from siderane's chartreuse in both. Helium-3's own fluid colours
+    -- (fluids.lua) do not change.
+    map_color = { r = 0.714, g = 0.651, b = 0.784 },
+    mining_visualisation_tint = { r = 0.714, g = 0.651, b = 0.784 }
   }
 })
 

@@ -615,8 +615,14 @@ end
 --   * helium-3 and kamacite vents: about eleven each (measured: 7 to 16), each
 --     holding its `additional_richness` (60 000 and 150 000), as vanilla's
 --     did. A vent's footprint, not the cone, is what limits how many fit, so
---     the radius is the one that gives that count: 3.5 for the 2x2 gas vent,
---     5.5 for the 3x3 kamacite vent.
+--     the radius is the one that gives that count: 5.5 for the kamacite vent,
+--     and 5.1 for the helium-3 vent since it took crude oil's +-1.4 collision
+--     for the 3x3 Gas Pump (Liam, 2026-10-21: "Retune to about 11"). Measured
+--     over the seed harness's 30 seeds: 9 to 13, mean 10.8, against 4 to 7 at
+--     the 3.5 the 2x2 vent had; 5.2 gave a mean of 11.3. A larger patch needs a
+--     wider dry rim and keeps a larger berth, so on two of the 30 a starting
+--     patch stands one bearing further round (the harness reference,
+--     re-recorded, names them).
 -- Their distances, 56 to 72 tiles (44 to 104 if they have to move) plus the
 -- radius, keep them inside 112: well within the engine's 150-tile starting
 -- area, and mostly on lifted ground.
@@ -624,7 +630,7 @@ end
 -- `turn` is the bearing each prefers, in turns round from the field's.
 local STARTING_PATCHES =
 {
-  { key = "gas",           control = "sae-gas-vent",      turn = 2 / 4, reach = 56, radius = 3.5, per_vent = 60000 },
+  { key = "gas",           control = "sae-gas-vent",      turn = 2 / 4, reach = 56, radius = 5.1, per_vent = 60000 },
   { key = "kamacite",      control = "sae-kamacite-ore",  turn = 1 / 4, reach = 64, radius = 9,   amount = 120000 },
   { key = "kamacite_vent", control = "sae-kamacite-vent", turn = 3 / 4, reach = 72, radius = 5.5, per_vent = 150000 }
 }
