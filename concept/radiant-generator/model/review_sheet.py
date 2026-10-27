@@ -43,11 +43,15 @@ BG, TXT, HEAD = (30, 30, 30, 255), (230, 222, 205), (240, 200, 120)
 LAMP = (0, 255, 0)
 PPT = 64
 R7 = os.path.join(HERE, "..", "options", "round-7")
-FD = measure.FD
+FD = measure.paths.factorio_data()          # tools/paths.conf (measure.py imports tools/paths.py)
 
 
 def font(size, bold=False):
-    return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans" + ("-Bold" if bold else "") + ".ttf", size)
+    for d_ in ("/usr/share/fonts/truetype/dejavu", "/usr/share/fonts/TTF"):    # Debian's, Arch's
+        f_ = os.path.join(d_, "DejaVuSans" + ("-Bold" if bold else "") + ".ttf")
+        if os.path.exists(f_):
+            return ImageFont.truetype(f_, size)
+    return ImageFont.load_default()
 
 
 def ground(size, origin, ppt, foot):

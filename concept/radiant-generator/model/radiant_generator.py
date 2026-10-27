@@ -158,6 +158,7 @@ TY = [-0.62 + 0.46 * i for i in range(5)]
 box((2.25, 0.3, 0.06), (0.42, 2.3, 0.12), "dark_steel")
 for i, y in enumerate(TY):
     tube(2.25, y, 0.1, i, h=0.9, arm=(-1, 0), arm_len=0.2)
+# the copper bus along the caps (T08k: its end bent up into the terminal box's clamp, below)
 pipe([(2.44, TY[0] - 0.2, 1.2), (2.44, TY[-1] + 0.1, 1.2)], r=0.03, mat="copper", flanges=False)
 
 # the crane: rails on the north shield housing and on posts along the crucible's south face
@@ -180,46 +181,62 @@ crane("x", (-1.0, 1.78), ZR, CY, P[0], W[0], P[2], W[2] + WELL_DROP, -0.55, 1.74
 # terminal block on the tubes' copper bar, on a stand at its end, and its cables drop into a gland on the
 # switchgear's top
 # T08i: the tray open, its cables held by cleats over them, none under a bar (rg_kit.tray)
-# T08j (Liam 2026-10-21, "The terminal is floating snd doesnt look like a terminal"): T08d's block was a
-# plain steel box hung off the copper bar's end over open ground, its cables out of a gland in its face.
-# As vanilla's terminals read (the accumulator's pale bridge with the leads landing on its posts, the
-# substation's leads out of white insulators): an insulated block, cream ceramic, on an ochre bracket plate
-# on a steel pedestal standing on the ground beside the tubes' plinth, its foot bolted down; three studs
-# with barrier ribs between, each cable ending in a crimped copper lug under a nut, the three fanning into
-# the tray's bundle by its first cleat (rg_kit.tray's fan_in); the copper bar bent up at its end and bolted
-# onto a fourth stud. The block sits inside the tray's width, so the cables leave over its open end
-TERM_Y, TERM_Z = -0.875, 1.255                                                  # the studs' row, the block's top
-# a study aid for Liam's questions (not a decision): --terminal-mount post stands the bracket on a slim ochre
-# post like the tray's own stand; --terminal-body white draws the block in the white of the label sleeves
-if K.opt("--terminal-mount", "pedestal") == "post":
-    box((2.44, -0.8925, 0.59), (0.05, 0.05, 1.18), "ochre", bevel=0.004)        # the terminal's post
-    box((2.44, -0.9125, 0.015), (0.13, 0.115, 0.03), "dark_steel", bevel=0.004)
-else:
-    box((2.365, -0.8925, 0.59), (0.23, 0.075, 1.18), "dark_steel", bevel=0.008)  # the terminal's pedestal
-    box((2.365, -0.9125, 0.015), (0.26, 0.115, 0.03), "dark_steel", bevel=0.004)  # its foot
-    for bx in (2.26, 2.47):
-        cyl((bx, -0.94, 0.034), 0.012, 0.01, "bolt", verts=6, bevel=0)
-TERM_BODY = "label" if K.opt("--terminal-body", "ceramic") == "white" else "ceramic"
-box((2.345, -0.8925, 1.1875), (0.29, 0.085, 0.015), "ochre", bevel=0.003)       # the bracket plate
-box((2.3425, -0.89, 1.225), (0.255, 0.07, 0.06), TERM_BODY, bevel=0.006)        # the insulated block
-for rx in (2.275, 2.325, 2.3925):                                               # barrier ribs between the studs
-    box((rx, -0.89, TERM_Z + 0.0175), (0.006, 0.065, 0.035), TERM_BODY, bevel=0.002)
-for sx in (2.25, 2.30, 2.35, 2.435):                                            # the studs and their nuts
-    cyl((sx, TERM_Y, TERM_Z + 0.0175), 0.006, 0.035, "brass", verts=8, bevel=0)
-    cyl((sx, TERM_Y, TERM_Z + (0.018 if sx > 2.4 else 0.012)), 0.012, 0.012, "brass", verts=6, bevel=0.002)
-LUGS = []
-for sx in (2.25, 2.35, 2.30):                   # black, red, grey (the tray's cols): each cable's lug on its stud
-    cyl((sx, TERM_Y, TERM_Z + 0.003), 0.017, 0.006, "copper", verts=16, bevel=0)
-    box((sx, TERM_Y - 0.0175, TERM_Z + 0.004), (0.022, 0.03, 0.006), "copper", bevel=0)
-    cyl((sx, -0.91, TERM_Z + 0.02), 0.02, 0.03, "copper", rot=(PI / 2, 0, 0), verts=12, bevel=0.002)
-    LUGS.append(((sx, -0.925, TERM_Z + 0.02), (0, -1, 0)))
-# the copper bar's end bent up past the block's north face and over onto the fourth stud
-box((2.44, -0.843, 1.2185), (0.05, 0.014, 0.0975), "copper", bevel=0.002)
-box((2.44, -0.8705, TERM_Z + 0.006), (0.05, 0.041, 0.012), "copper", bevel=0.002)
-tray([(2.3, -0.95, 1.2), (2.3, -1.42, 1.2)], fan_in=LUGS,
-     lead_out=[(2.3, -1.5, 1.27), (2.26, -1.64, 1.25), (2.245, -1.72, 1.19), (2.24, -1.74, 1.15)])
-box((2.3, -1.4, 0.6), (0.05, 0.05, 1.19), "ochre", bevel=0.004)                 # the tray's stand
-box((2.3, -1.4, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
+# T08j's terminal (an insulated block on a pedestal beside the plinth, 347bccc) is replaced by T08k's box.
+# T08k (Liam 2026-10-21 on T08j: "Where do the wires actually connect to? They just look like they're connected
+# to a floating terminal"; then "A box on the tube column's base"): a terminal box standing on the tubes' plinth,
+# the plinth run on 0.4 south to carry it, its foot flange bolted down. The copper bus along the caps bends up
+# over its lid's edge into it, clamped onto a ceramic bushing on the lid; the three cables leave its south face through a gland
+# each, one by one as the substation's leads leave its box (terminal-vanilla-study.png), straight into the tray's
+# open north end, so the power reads tubes -> bus -> box -> glands -> tray -> switchgear
+# The camera's 60 degrees set the heights (the screen's v is y + z/2): a cable climbing southward points almost at
+# the viewer and its twist reads as a coil, and one rising out of a lid gland and turning south crosses back over the
+# gland. So the tray runs level at the switchgear's height, as T08i's did, the glands sit high on the box's south
+# face on the tray's line, and the box stands as tall as that needs (its lid at 1.30, the tubes' caps 1.22-1.42)
+TB_X, TB_Y, TB_W, TB_D, TB_TOP = 2.29, -1.09, 0.32, 0.26, 1.30            # the box: centre, size, its lid's top
+box((2.25, -1.05, 0.06), (0.42, 0.4, 0.12), "dark_steel")                 # the plinth run on 0.4 under the box
+box((TB_X - 0.005, TB_Y, 0.135), (TB_W + 0.03, TB_D + 0.03, 0.03), "dark_steel", bevel=0.004)  # its foot flange
+for bx in (-1, 1):
+    for by in (-1, 1):
+        cyl((TB_X - 0.005 + bx * (TB_W / 2 + 0.002), TB_Y + by * (TB_D / 2 + 0.002), 0.154), 0.011, 0.01, "bolt",
+            verts=6, bevel=0)
+box((TB_X, TB_Y, (0.12 + TB_TOP - 0.02) / 2), (TB_W, TB_D, TB_TOP - 0.02 - 0.12), "grey", bevel=0.01)  # the box
+box((TB_X, TB_Y, TB_TOP - 0.01), (TB_W + 0.02, TB_D + 0.02, 0.02), "grey", bevel=0.004)  # its bolted lid, the box's paint
+for bx in (-1, 1):
+    for by in (-1, 1):
+        cyl((TB_X + bx * (TB_W / 2 - 0.02), TB_Y + by * (TB_D / 2 - 0.02), TB_TOP + 0.004), 0.011, 0.01, "bolt",
+            verts=6, bevel=0)
+flat_plate((TB_X, TB_Y - TB_D / 2, 0.66), 0.24, 0.62, mat="dark_steel")       # the cover on its south face, under the glands
+hazard_tag((TB_X - 0.07, TB_Y + 0.0, TB_TOP), 0.11, 0.08, face="T")          # the live-terminal tag, on the lid
+# the bushing: two cream ceramic discs on the lid, wider than the brass clamp on them that grips the copper bar's
+# end, so their pale rings show round it from the camera (the substation's insulators: pale says live terminal)
+BU_X, BU_Y, BU_Z = 2.405, -1.02, 1.375                                   # the clamp's centre: the bar's end in it
+for k_, (rd, hd) in enumerate(((0.058, 0.024), (0.05, 0.022))):
+    cyl((BU_X, BU_Y, TB_TOP + 0.024 * k_ + hd / 2), rd, hd, "ceramic", verts=20, bevel=0.005)
+box((BU_X + 0.015, BU_Y, BU_Z), (0.065, 0.06, 0.07), "brass", bevel=0.005)  # the clamp, the bar into it
+cyl((BU_X + 0.015, BU_Y, BU_Z + 0.04), 0.012, 0.012, "bolt", verts=6, bevel=0)
+# the bus's end: off the caps' line at 1.2, bent up just north of the box (clear of tube 0's fins, 0.075 north) and
+# over its lid's edge into the clamp, two quarter bends of radius 0.06 (a pipe run through evenly spaced points)
+BEND = [(2.44, -0.81, 1.2)]
+BEND += [(2.44, -0.86 - 0.06 * math.sin(a), 1.26 - 0.06 * math.cos(a)) for a in (PI / 2 * k / 6 for k in range(7))]
+BEND += [(2.44, -0.92, 1.29)]
+BEND += [(2.44, -0.98 + 0.06 * math.cos(b), 1.315 + 0.06 * math.sin(b)) for b in (PI / 2 * k / 6 for k in range(7))]
+BEND += [(2.44, BU_Y - 0.01, BU_Z)]
+pipe(BEND, r=0.03, mat="copper", flanges=False)
+# the glands high on the box's south face, on the tray's line, west to east black, grey, red (each cable's place in
+# the bundle where it starts in the tray), each cable straight out of its gland south into the tray
+GL_Z, GL_FACE = 1.24, TB_Y - TB_D / 2
+FAN = []
+for gx, c_ in ((2.21, "black"), (2.37, "red"), (2.29, "grey")):          # in the tray's cols order
+    gland(Vector((gx, GL_FACE, GL_Z)), Vector((0, 1, 0)), 0.026)        # a size up, so the brass shows round the cable
+    FAN.append(((gx, GL_FACE, GL_Z), (0, -1, 0), 0.075))                # out clear of the gland's cap, then into the tray
+TRAY_Z = GL_Z - 0.07                                                    # the cables drop 0.01 off the glands into it
+# 0.26 wide (T08i's trays 0.2), so the three glands' spread lies inside its rails and the outer cables never cross
+# one (collide: the black one from the west gland crossed a 0.2 tray's rail); the bundle starts 0.02 in, short of
+# the first cleat; off its open south end over the switchgear's north edge into T08d's gland on its top
+tray([(2.3, -1.30, TRAY_Z), (2.3, -1.56, TRAY_Z)], w=0.26, fan_in=FAN, fan_len=0.02,
+     lead_out=[(2.29, -1.62, 1.235), (2.265, -1.68, 1.22), (2.245, -1.72, 1.19), (2.24, -1.74, 1.15)])
+box((2.3, -1.43, (TRAY_Z - 0.0125) / 2), (0.05, 0.05, TRAY_Z - 0.0125), "ochre", bevel=0.004)  # the tray's stand
+box((2.3, -1.43, 0.015), (0.13, 0.13, 0.03), "dark_steel", bevel=0.004)
 cabinet(1.8, -1.9, 0.4, 0.6, 1.0, mat="grey")
 cabinet(2.22, -1.9, 0.42, 0.6, 1.15, mat="green")
 gauge((2.22, -2.21, 0.8), (0, -1, 0.15), r=0.06, live=lambda t: 0.2 * math.sin(2 * PI * t), layer="gauge-switchgear")

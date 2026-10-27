@@ -11,11 +11,11 @@
  },
  "shadow": {
   "size": [
-   356,
+   358,
    329
   ],
   "shift": [
-   0.26562,
+   0.28125,
    0.00781
   ]
  },
@@ -70,11 +70,11 @@
  },
  "commutator": {
   "size": [
-   108,
+   100,
    130
   ],
   "shift": [
-   1.42188,
+   1.35938,
    1.46875
   ],
   "frames": 32,
@@ -149,11 +149,11 @@
  "window": {
   "size": [
    227,
-   164
+   148
   ],
   "shift": [
    0.61719,
-   -0.70312
+   -0.82812
   ],
   "frames": 32,
   "line_length": 32,
@@ -161,11 +161,11 @@
  },
  "window-glow": {
   "size": [
-   259,
+   260,
    238
   ],
   "shift": [
-   0.61719,
+   0.625,
    -0.875
   ],
   "frames": 32,
@@ -192,12 +192,12 @@
  },
  "remnants-glow": {
   "size": [
-   12,
-   12
+   15,
+   15
   ],
   "shift": [
-   1.0625,
-   -0.51562
+   1.07031,
+   -0.50781
   ],
   "direction_count": 1,
   "line_length": 1,
@@ -295,7 +295,7 @@
   ],
   "remnants_shadow_px": [
    {
-    "px": 5466,
+    "px": 5467,
     "share": 0.0751
    },
    "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
@@ -342,7 +342,7 @@
    "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
   ],
   "coupling-converter_drift_px": [
-   0.48,
+   0.47,
    "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
   ],
   "coupling-pump_cycle": [
@@ -383,8 +383,8 @@
   "window-glow_light": [
    {
     "peak": 166,
-    "core": 4.4,
-    "halo": 81.0
+    "core": 4.3,
+    "halo": 80.9
    },
    "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
   ],
@@ -396,7 +396,7 @@
   "rolloff_px": [
    {
     "base": {
-     "px": 311,
+     "px": 305,
      "most": 12
     },
     "remnants": {
@@ -408,7 +408,7 @@
      "most": 0
     },
     "carousel": {
-     "px": 2313,
+     "px": 2317,
      "most": 12
     },
     "drive": {
@@ -416,11 +416,11 @@
      "most": 12
     },
     "crane": {
-     "px": 473,
+     "px": 474,
      "most": 12
     },
     "commutator": {
-     "px": 382,
+     "px": 430,
      "most": 12
     },
     "coupling-converter": {
@@ -428,27 +428,27 @@
      "most": 0
     },
     "coupling-pump": {
-     "px": 41,
+     "px": 42,
      "most": 12
     },
     "gauge-switchgear": {
-     "px": 175,
+     "px": 169,
      "most": 12
     },
     "gauge-converter": {
-     "px": 109,
+     "px": 90,
      "most": 12
     },
     "gauge-transformer": {
-     "px": 104,
+     "px": 96,
      "most": 12
     },
     "window": {
-     "px": 193,
+     "px": 161,
      "most": 12
     },
     "window-glow": {
-     "px": 11113,
+     "px": 11177,
      "most": 12
     }
    },

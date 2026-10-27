@@ -1254,7 +1254,7 @@ def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None,
             if (p - (a + d * t)).length < w / 2 + 0.06:
                 return False
         return True
-    # T08j: fan_in, one (point, direction) per cable in cols' order: each cable comes on its own from a
+    # T08j: fan_in, one (point, direction[, rise]) per cable in cols' order: each cable comes on its own from a
     # terminal's lug (the point, leaving along the direction) and joins the twisted bundle fan_len into
     # the tray, where the bundle starts, each at its own place in the twist (bundle()'s offsets at s 0)
     if fan_in:
@@ -1266,11 +1266,20 @@ def tray(pts, w=0.2, cols=("black", "red", "grey"), lead_in=None, lead_out=None,
         P0 = catmull(line + list(lead_out or ()))
         T0, N0, B0 = (v[0] for v in frames(P0))
         r_, n_c = 0.02, len(cols)
-        for k, (c_, (lp, ld)) in enumerate(zip(cols, fan_in)):
+        for k, (c_, f_) in enumerate(zip(cols, fan_in)):
+            lp, ld = f_[0], f_[1]
             S = P0[0] + r_ * 1.3 * (math.cos(2 * PI * k / n_c) * N0 + math.sin(2 * PI * k / n_c) * B0)
             lp, ld = Vector(lp), Vector(ld).normalized()
-            sweep(catmull([lp, lp + ld * 0.02 + Vector((0, 0, -0.003)), S - T0 * 0.03, S, S + T0 * 0.012]),
-                  r_, "cable_" + c_, seg=8)
+            if len(f_) > 2:
+                # T08k: a third value, rise: the cable leaves straight along ld for rise (out of its gland, clear of
+                # its cap) before it bends over into the tray, in an arch bulging along ld
+                rise = f_[2]
+                q = lp + ld * rise
+                ctrl = [lp, lp + ld * rise * 0.5, q, (q + S - T0 * 0.03) / 2 + ld * 0.02, S - T0 * 0.03, S,
+                        S + T0 * 0.012]
+            else:
+                ctrl = [lp, lp + ld * 0.02 + Vector((0, 0, -0.003)), S - T0 * 0.03, S, S + T0 * 0.012]
+            sweep(catmull(ctrl), r_, "cable_" + c_, seg=8)
     run = list(lead_in or ()) + line + list(lead_out or ())
     # T08j: a fanned run starts fan_len later, which moves its sleeve rhythm on; the tube-column run, the
     # one fanned, showed none (each fell in its tray), so a fanned run keeps none, not one new on its drop
