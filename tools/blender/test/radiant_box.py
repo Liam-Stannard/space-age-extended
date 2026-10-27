@@ -1,6 +1,6 @@
 """Test model: a 2x2 box with a radiant window, for the animated glow layer.
 
-  BLENDER=<blender> tools/blender/render.sh tools/blender/test/radiant_box.py <out-dir>
+  tools/blender/render.sh tools/blender/test/radiant_box.py <out-dir>
 
 Not a building. The radiant solution drawn by the shared helper (tools/blender/radiant.py,
 its default tuning): a glazed slot in the roof, smoked pane over the liquid with three

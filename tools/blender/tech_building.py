@@ -1,6 +1,6 @@
 """A building's technology icon, rendered from its signed-off model: nothing remodelled.
 
-    BLENDER=/usr/bin/blender tools/blender/render-icons.sh tools/blender/tech_building.py \\
+    tools/blender/render-icons.sh tools/blender/tech_building.py \\
         <out-dir> <tech-name> [<config.json>]
 
 <config.json> (default concept/technology/tech_buildings.json) maps tech names
