@@ -27,8 +27,10 @@ on". Two are measure.py's own:
 - clipping, by eye as well as `--collide`: at 2x in every direction, no
   cable, hose, pipe or effect passes through another part or into the
   ground, and every end is visibly fastened (gland, clamp, collar, flange
-  or nozzle). `--collide` misses these when the contact is listed as meant
-  or is with the ground.
+  or nozzle). `--collide` catches loose ends, runs through parts and parts in the
+  ground only for runs the model records with `tools/blender/runs.py`.
+  For everything else, and for any contact listed as meant, this by-eye
+  check is the only one.
 - white and clipped: since 2026-10-20 pack.py rolls highlights off every
   drawn sheet but light passes (render.json `rolloff`, on by default):
   new sheets have no pixel at 245 or over, so white_px is the shipped
