@@ -2791,8 +2791,9 @@ for _k, _w in TK.get("walls", {}).items():
 # west one), and the vessel owns it through a welded nozzle collar (collar()). Each direction gets its own
 # three fittings, on the vanilla pipe's centreline for the face each lands on as turned, and its own
 # collars where those necks meet the vessels.
-VANILLA = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+VANILLA = os.path.join(paths.factorio_data(), "base/graphics/entity/assembling-machine-3")
 H_AXIS_V = 1.0 / 64          # horizontal pipe: axis, screen tiles above its tile's centre
 V_AXIS_U = 0.5 / 64          # vertical pipe: axis, screen tiles right of its tile's centre
 H_RING_R = 26 / 64 / 1.118

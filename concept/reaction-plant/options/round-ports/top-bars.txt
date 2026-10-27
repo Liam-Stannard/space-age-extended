@@ -1,0 +1,7 @@
+Ends on a port: 42 of 42 (22 runs; not the compressor stack)
+Joins 12/12 PASS (no gap); collide 0 PASS; --clash 0
+Tonal p50 N81 E78 S81 W74 (T06h 81/78/80/74)
+Black % N9.1 E6.4 S8.1 W9.9 (T06h 8.9/5.9/7.8/9.2)
+Cover 95.4/94.3/95.2/94.0; rise 0.64/0.81/0.52/0.73
+Legs px -5 to -12 % (saddles on the glass)
+Not judged: clipping by eye (yours), engine look
