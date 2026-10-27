@@ -48,7 +48,11 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
             its picture's: refused, naming them.
   identity  with --baseline. On every --renders directory (render.sh output: its renders/), none
             declaring lights: pack.py's outputs, every file, and preview.py's sheet (no flag,
-            and --day-only) and a GIF of its first animation, byte for byte as the baseline's.
+            and --day-only) and a GIF of its first animation, byte for byte as the baseline's,
+            this tree's pack.py and preview.py run with their glow floor set aside (floor_aside.py:
+            judged on luma, as before T08h, and nothing else changed), as the baseline's judges it:
+            since T08h a blue speck the old floor left clear is dropped and a faint fringe kept
+            (test_glow_floor.py holds the floor).
 """
 import argparse
 import copy
@@ -70,6 +74,7 @@ import preview  # noqa: E402
 import paths  # noqa: E402 (tools/, on the path preview put it on)
 import test_preview_night as pn  # noqa: E402
 import test_remnants_glow as rg  # noqa: E402
+import floor_aside  # noqa: E402
 
 FAILED = []
 K = preview.NIGHT
@@ -427,13 +432,18 @@ def test_identity(out, base, renders):
             if os.path.exists(o):
                 shutil.rmtree(o)
             os.makedirs(o)
-            code, text = run([sys.executable, os.path.join(tools, "pack.py"), rdir, os.path.join(o, "pack")])
+            # this tree's glow floor set aside, as the baseline's judges it (T08h)
+            mine = who == "mine"
+            code, text = run(floor_aside.command("pack.py", [rdir, os.path.join(o, "pack")]) if mine else
+                             [sys.executable, os.path.join(tools, "pack.py"), rdir, os.path.join(o, "pack")])
             jobs = [("sheet.png", []), ("day-only.png", ["--day-only"])]
             if decl["animations"]:
                 jobs.append(("anim.gif", ["--gif", decl["animations"][0]["name"], "--speed", "1"]))
             codes = [code]
             for name, extra in jobs:
-                c, t = run([sys.executable, os.path.join(tools, "preview.py"), rdir, os.path.join(o, name), *extra])
+                args = [rdir, os.path.join(o, name), *extra]
+                c, t = run(floor_aside.command("preview.py", args) if mine else
+                           [sys.executable, os.path.join(tools, "preview.py"), *args])
                 codes.append(c)
                 text += t
             res[who] = (o, codes, text, [n for n, _ in jobs])
@@ -441,10 +451,11 @@ def test_identity(out, base, renders):
         check(f"{label}: pack.py and preview.py exit as the baseline's ({cm}, baseline {cb})", cm == cb,
               (tm + tb)[-300:])
         same, n = same_dirs(os.path.join(om, "pack"), os.path.join(ob, "pack"))
-        check(f"{label}: pack.py's outputs ({n} files) byte for byte as the baseline's", same)
+        check(f"{label}: pack.py's outputs ({n} files), this tree's floor set aside, byte for byte as the baseline's",
+              same)
         for name in jobs:
             a, b = os.path.join(om, name), os.path.join(ob, name)
-            check(f"{label}: preview.py's {name} byte for byte as the baseline's",
+            check(f"{label}: preview.py's {name}, this tree's floor set aside, byte for byte as the baseline's",
                   os.path.exists(a) and os.path.exists(b) and same_bytes(a, b))
 
 

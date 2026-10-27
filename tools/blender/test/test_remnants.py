@@ -74,7 +74,11 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              pack.LIGHT_SHARE set to 1 (the whole light, as before the crop: glow_layer's
              docstring), so the crop is set aside and nothing else is; and the baseline's is run
              with its glow passes' haze cleared, as this tree's draws them since T08f-3
-             (baseline_preview.py), so that is set aside and nothing else is. A glow animation's
+             (baseline_preview.py), so that is set aside and nothing else is. This tree's preview.py
+             is run with its glow floor set aside (floor_aside.py: judged on luma, as before T08h),
+             as the baseline's judges it, and nothing else changed: since T08h a blue speck the old
+             floor left clear is dropped and a faint fringe kept (test_glow_floor.py holds the
+             floor; pack.py's glow sheets are set aside already, as above). A glow animation's
              sheets are never set aside. Both trees pack and preview a copy of the renders whose
              render.json says rolloff false (every other file a link to the original's):
              pack.py rolls the highlights of every sheet but a shadow's or a light's off by
@@ -100,6 +104,7 @@ import measure  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
 import baseline_preview  # noqa: E402
+import floor_aside  # noqa: E402
 
 FAILED = []
 NO_CATCHER = []         # --no-catcher directories
@@ -500,24 +505,22 @@ def opted_out(src, dst):
 
 
 def preview_run(tools, args, whole_light):
-    """preview.py of tools with args; with whole_light, pack.LIGHT_SHARE set to 1 first, so a glow
+    """preview.py of tools with args. This tree's is run with its glow floor set aside, judged on luma
+    as before T08h (floor_aside.py); with whole_light, pack.LIGHT_SHARE set to 1 first too, so a glow
     pass is drawn with the whole of its light, as before T06's crop. A baseline's (tools not this
     tree's) is run with its glow passes' haze cleared, as this tree's draws them (T08f-3)."""
     if tools != TOOLS:
         return run(baseline_preview.command(tools, args))
-    if not whole_light:
-        return run([sys.executable, os.path.join(tools, "preview.py"), *args])
-    boot = ("import runpy, sys; sys.path.insert(0, sys.argv[1]); import pack; pack.LIGHT_SHARE = 1.0; "
-            "sys.argv = sys.argv[2:]; runpy.run_path(sys.argv[0], run_name='__main__')")
-    return run([sys.executable, "-c", boot, tools, os.path.join(tools, "preview.py"), *args])
+    return run(floor_aside.command("preview.py", args, 1.0 if whole_light else None))
 
 
 def against_baseline(label, rdir, out, base):
     """pack.py and preview.py (its sheet and a GIF of each paint animation) of this tree and of the
     baseline on one render directory: byte for byte, but meta.json's slide checks and glow passes'
     crops (same_meta) and the glow passes' sheets. Both draw a copy that opts out of the
-    roll-off (opted_out); on a model with a glow pass this tree's preview.py runs at LIGHT_SHARE 1
-    (preview_run), the crop set aside and nothing else."""
+    roll-off (opted_out); this tree's preview.py runs with its glow floor set aside, and on a model
+    with a glow pass at LIGHT_SHARE 1 too (preview_run), the floor and the crop set aside and nothing
+    else."""
     mine, theirs = os.path.join(out, f"{label}-mine"), os.path.join(out, f"{label}-base")
     decl = load_decl(rdir)
     glows = [g + ".png" for g in glow_sheets(decl)]
@@ -553,6 +556,7 @@ def against_baseline(label, rdir, out, base):
     check(f"{label}: pack.py's meta.json as the baseline's, its slides' <name>_path_px{also} set aside", ok, why)
     ok, why = same_dirs(mine, theirs)
     at = ", this tree's at LIGHT_SHARE 1 (its glow pass with the whole light)" if glows else ""
+    at += ", this tree's glow floor set aside"
     check(f"{label}: preview.py's sheet and GIFs byte for byte as the baseline's ({', '.join(files(mine))}{at})",
           ok, why)
 

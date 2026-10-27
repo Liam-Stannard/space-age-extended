@@ -50,6 +50,10 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              pack.py's pack a copy of the renders whose render.json says rolloff false: this
              tree's rolls the highlights of every sheet but a shadow's or a light's off by
              default since T07 and the baseline's does not (test_rolloff.py holds the roll-off).
+             This tree's packs, and its glow_layer at LIGHT_SHARE 1, with its glow floor set aside
+             (floor_aside.py: judged on luma, as before T08h, and nothing else changed): since T08h
+             a blue speck the old floor left clear is over it and dropped, and a faint fringe kept,
+             which the baseline does not; test_glow_floor.py holds the floor itself.
 """
 import argparse
 import importlib.util
@@ -70,6 +74,7 @@ TOOLS = os.path.dirname(HERE)
 sys.path.insert(0, TOOLS)
 import contract  # noqa: E402
 import pack  # noqa: E402
+import floor_aside  # noqa: E402
 
 FAILED = []
 CANVAS = (256, 256)
@@ -95,11 +100,15 @@ def run(cmd):
     return p.returncode, p.stdout + p.stderr
 
 
-def packed(src, out, tools=TOOLS):
-    """pack.py (tools') src -> out: its exit code, output and meta.json (None if it wrote none)."""
+def packed(src, out, tools=TOOLS, aside=False):
+    """pack.py (tools') src -> out: its exit code, output and meta.json (None if it wrote none).
+    With aside, this tree's, its glow floor set aside (floor_aside.py)."""
     if os.path.exists(out):
         shutil.rmtree(out)
-    code, text = run([sys.executable, os.path.join(tools, "pack.py"), src, out])
+    if aside and tools != TOOLS:
+        raise ValueError("packed: aside is for this tree's pack.py")
+    code, text = run(floor_aside.command("pack.py", [src, out]) if aside else
+                     [sys.executable, os.path.join(tools, "pack.py"), src, out])
     meta = os.path.join(out, "meta.json")
     return code, text, (json.load(open(meta)) if os.path.isfile(meta) else None)
 
@@ -308,9 +317,9 @@ def glow_sheets(decl):
 
 
 def compare(label, rdir, out, base):
-    """This tree's pack.py and the baseline's on one render directory: every sheet but a glow pass's
-    byte for byte, meta.json the same but for the glow passes' size and shift, and for each glow
-    pass the numbers the ticket asks for. Returns those numbers."""
+    """This tree's pack.py (its glow floor set aside: floor_aside.py) and the baseline's on one render
+    directory: every sheet but a glow pass's byte for byte, meta.json the same but for the glow passes'
+    size and shift, and for each glow pass the numbers the ticket asks for. Returns those numbers."""
     print(f"baseline: {label}")
     with open(os.path.join(rdir, contract.FILE)) as f:
         decl = json.load(f)
@@ -326,7 +335,7 @@ def compare(label, rdir, out, base):
         json.dump(dict(decl, rolloff=False), f, indent=1)
     runs = {}
     for who, tools, o in (("this tree", TOOLS, mine), ("baseline", base, theirs)):
-        code, text, meta = packed(off, o, tools)
+        code, text, meta = packed(off, o, tools, aside=tools == TOOLS)
         runs[who] = (code, meta)
         if meta is None:
             check(f"{label}: pack.py ({who}) writes meta.json", False, f"exit {code}: {text[-300:]}")
@@ -389,11 +398,13 @@ def compare(label, rdir, out, base):
 
 
 def whole_light(label, rdir, decl, out, base):
-    """glow_layer with LIGHT_SHARE 1 on every glow pass of rdir: byte for byte as the baseline's."""
+    """glow_layer with LIGHT_SHARE 1 and its glow floor set aside (floor_aside.py) on every glow pass of
+    rdir: byte for byte as the baseline's."""
     old = load_module(os.path.join(base, "pack.py"), "pack_baseline")
     packer = pack.Packer(rdir, os.path.join(out, f"{label}-whole"), decl)
     differ = []
-    keep, pack.LIGHT_SHARE = pack.LIGHT_SHARE, 1.0
+    keep, keep_floor, pack.LIGHT_SHARE = pack.LIGHT_SHARE, pack.brightest, 1.0
+    floor_aside.set_aside(pack)
     try:
         for d, _ in contract.DIRECTIONS[decl["directions"]]:
             for p in (q for q in decl["passes"] if q["kind"] == "glow"):
@@ -401,8 +412,9 @@ def whole_light(label, rdir, decl, out, base):
                 if pack.glow_layer(lit_, under).tobytes() != old.glow_layer(lit_, under).tobytes():
                     differ.append(contract.named(p["sheet"], d))
     finally:
-        pack.LIGHT_SHARE = keep
-    check(f"{label}: at LIGHT_SHARE 1, glow_layer byte for byte as the baseline's on every glow pass",
+        pack.LIGHT_SHARE, pack.brightest = keep, keep_floor
+    check(f"{label}: at LIGHT_SHARE 1, its floor set aside, glow_layer byte for byte as the baseline's on "
+          f"every glow pass",
           not differ, str(differ))
 
 
