@@ -29,8 +29,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 MAIN = os.path.expanduser("~/git/space-age-extended")         # the main checkout
 TOOLS = os.path.join(REPO, "tools", "blender")
-VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "space-age/graphics/entity/big-mining-drill")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+VAN = os.path.join(paths.factorio_data(), "space-age/graphics/entity/big-mining-drill")
 GROUND = (74, 66, 58, 255)
 PPT = 64
 S = 440                                    # each 1x panel; the origin at its centre

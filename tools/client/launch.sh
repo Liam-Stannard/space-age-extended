@@ -9,6 +9,10 @@
 #   tools/client/launch.sh --task NAME [options] [-- factorio-args...]
 #   tools/client/launch.sh --recover RUN_DIR
 #
+# The client is <FACTORIO_ROOT>/bin/x64/factorio, FACTORIO_ROOT being the one
+# tools/paths.conf names in the repo this script is in (tools/paths.sh); exit 1,
+# naming the file and the key, when that cannot be read or does not exist.
+#
 # Options:
 #   --task NAME        Required. Evidence goes to <repo>/evidence/NAME/client-<stamp>-<pid>/
 #                      (git-ignored), <repo> being the repo this script is in.
@@ -407,14 +411,8 @@ if [ "$AUDIO" = 1 ]; then
   for cmd in pactl pw-metadata; do command -v "$cmd" >/dev/null || die "$cmd is not installed"; done
 fi
 
-FACTORIO_BIN="${FACTORIO_BIN:-}"
-if [ -z "$FACTORIO_BIN" ]; then
-  for c in "$HOME/.steam/debian-installation/steamapps/common/Factorio/bin/x64/factorio" \
-           "$HOME/.steam/steam/steamapps/common/Factorio/bin/x64/factorio"; do
-    [ -x "$c" ] && { FACTORIO_BIN="$c"; break; }
-  done
-fi
-[ -n "$FACTORIO_BIN" ] && [ -x "$FACTORIO_BIN" ] || die "no Factorio binary (set FACTORIO_BIN)"
+. "$REPO_ROOT/tools/paths.sh"
+sae_factorio_bin GAME_BIN || exit 1
 
 mod_name_of() {  # PATH -> mod name
   local p="$1" b
@@ -481,7 +479,7 @@ write_state() {
   streams_json="$(for s in "${!STREAMS[@]}"; do printf '%s\n' "${STREAMS[$s]}"; done | jq -R -s 'split("\n") | map(select(length > 0))')"
   jq -n \
     --arg task "$TASK" --arg run "$RUN" --arg worktree "$WORKTREE" --arg mod "$MOD_NAME" --arg mods_dir "$MODS_DIR" \
-    --arg bin "$FACTORIO_BIN" --arg mode "$([ "$AUDIO" = 1 ] && echo audio || echo disable-audio)" \
+    --arg bin "$GAME_BIN" --arg mode "$([ "$AUDIO" = 1 ] && echo audio || echo disable-audio)" \
     --arg lpid "$$" --arg lstart "$MY_START" \
     --arg leader "$LEADER" --arg sid "$SID_RECORDED" --arg sstart "$SID_START" --arg fpid "$FPID" --arg xvfb "$XVFB_PID" \
     --arg fstart "$FPID_START" --arg xstart "$XVFB_START" \
@@ -754,7 +752,7 @@ done
   || setup_fail "mod-list.json does not list the mods"
 log "checked config.ini (write-data $RUN/data), mod links and mod-list.json"
 log "worktree: $WORKTREE (mod $MOD_NAME)${EXTRA_NAMES[*]:+; extra mods: ${EXTRA_NAMES[*]}}"
-log "factorio: $FACTORIO_BIN"
+log "factorio: $GAME_BIN"
 
 # ---------------------------------------------------------------- audio
 
@@ -816,7 +814,7 @@ setsid --fork --wait sh -c 'echo $$ > "$0" || exit 1; kill -STOP $$; exec "$@"' 
   -u SAE_LAUNCH_SIGINT_RESET -u SAE_LAUNCH_TEST_HOLD \
   SDL_VIDEO_DRIVER=x11 SDL_VIDEODRIVER=x11 SteamAppId=427520 SteamGameId=427520 "${AUDIO_ENV[@]}" \
   xvfb-run -a -s "-screen 0 $SCREEN" \
-  "$FACTORIO_BIN" --config "$RUN/config.ini" --mod-directory "$MODS_DIR" \
+  "$GAME_BIN" --config "$RUN/config.ini" --mod-directory "$MODS_DIR" \
   "${AUDIO_ARGS[@]}" "${PASS[@]}" > "$FLOG" 2>&1 < /dev/null &
 LEADER=$!
 find_gate 50 || setup_fail "the gate never became its own stopped session"

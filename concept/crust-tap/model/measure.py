@@ -50,8 +50,9 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 BL = os.path.join(REPO, "tools", "blender")
-FD = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/pipe")
+sys.path.insert(0, os.path.join(REPO, "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+FD = os.path.join(paths.factorio_data(), "base/graphics/entity/pipe")
 ADOPTED = os.path.join(REPO, "graphics", "entity", "crust-tap")
 DIRS = ("north", "east", "south", "west")
 PPT = 64
@@ -293,9 +294,9 @@ def criterion_glass(r, frames=None):
     return out
 
 
-def measures(paths):
+def measures(plates):
     rows = []
-    for p in paths:
+    for p in plates:
         f = subprocess.run([sys.executable, os.path.join(BL, "finish.py"), p], capture_output=True, text=True).stdout
         t = subprocess.run([sys.executable, os.path.join(BL, "tonal.py"), p], capture_output=True, text=True).stdout
         rows.append((p, f.strip(), t.strip()))

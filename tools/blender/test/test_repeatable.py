@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A render repeated on the GPU passes the repeatability bar, and the bar fails a real change.
 
-  BLENDER=<blender> python3 tools/blender/test/test_repeatable.py [--out <dir>] [--reuse]
+  python3 tools/blender/test/test_repeatable.py [--out <dir>] [--reuse]
 
 The bar is Liam's (blender-pipeline-fixes T02, 2026-10-20, "GPU tolerance"), applied by
 same_render.py (its docstring has it): sheets compared by their pixels in premultiplied colour,
@@ -18,8 +18,8 @@ runs already made). Everything is written under --out (default: a new directory 
 system's temporary one, named when it starts) and kept: <out>/<model>-pair.txt and .json, the
 comparator's report on each pair, and <out>/fixtures/<case>/{a,b}, each case's two sides.
 
-Exits 0 when every case below comes out as listed, 1 naming those that do not (2 with no
-$BLENDER).
+Exits 0 when every case below comes out as listed, 1 naming those that do not (2 when
+tools/paths.conf names no Blender that render.sh can run: its BLENDER key).
 
   render     each of the four runs: render.sh exits 0, render.done "exit 0", and it printed
              "render device: GPU ... on ..." (no CPU fallback).
@@ -77,6 +77,8 @@ from PIL import Image, PngImagePlugin
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOLS = os.path.dirname(HERE)
 sys.path.insert(0, TOOLS)
+sys.path.insert(1, os.path.dirname(TOOLS))      # tools/: paths.py
+import paths  # noqa: E402
 import same_render  # noqa: E402
 
 FAILED = []
@@ -342,9 +344,10 @@ def main():
     ap.add_argument("--out", help="where everything is written (default: a new temporary directory)")
     ap.add_argument("--reuse", action="store_true", help="keep a run whose render.done says exit 0")
     args = ap.parse_args()
-    if not os.environ.get("BLENDER"):
-        print("test_repeatable.py: set BLENDER to a Blender 5 binary (blender.org's, for the GPU)",
-              file=sys.stderr)
+    try:
+        paths.blender()                     # render.sh's Blender: tools/paths.conf, nothing else
+    except paths.PathsError as e:
+        print(f"test_repeatable.py: {e}", file=sys.stderr)
         return 2
     out = os.path.abspath(args.out) if args.out else tempfile.mkdtemp(prefix="sae-repeatable-")
     os.makedirs(out, exist_ok=True)

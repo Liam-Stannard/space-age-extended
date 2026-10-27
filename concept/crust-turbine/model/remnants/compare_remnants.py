@@ -36,9 +36,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", "..", "..", ".."))
 TOOLS = os.path.join(REPO, "tools", "blender")
 sys.path.insert(0, TOOLS)
+sys.path.insert(0, os.path.join(REPO, "tools"))
 import pack  # noqa: E402
+import paths  # noqa: E402   tools/paths.py: where Factorio is
 
-FD = os.environ.get("FACTORIO_DATA", os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/data"))
+FD = paths.factorio_data()
 VAN = os.path.join(FD, "base/graphics/entity/steam-turbine/remnants/steam-turbine-remnants.png")
 VAN_ROW = {"vertical": 0, "horizontal": 1}                 # north, east
 VAN_FRAME = (460, 408)

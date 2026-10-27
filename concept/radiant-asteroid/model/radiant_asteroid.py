@@ -2,8 +2,10 @@
 asteroid shader, in the radiant family's look B (the signed-off chunk icon,
 concept/items/radiant/radiant_icons_b.py; graphics/icons/radiant-chunk.png).
 
-    $HOME/opt/blender-5.0.1-linux-x64/blender -b --python \
+    <BLENDER> -b --python \
         concept/radiant-asteroid/model/radiant_asteroid.py -- <out-dir> [--only small|chunk]
+
+(<BLENDER>: the binary tools/paths.conf names; `python3 tools/paths.py` prints it)
 
 writes <out-dir>/maps/{small,chunk}/asteroid-radiant-<size>-{colour,normal,roughness}-NN.png,
 <out-dir>/raw/ (the 4x renders) and <out-dir>/render.done ("exit 0").

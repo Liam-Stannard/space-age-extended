@@ -18,6 +18,7 @@ compared at alpha over 127:
            worst miss. Criterion 4 asks for 1 or less.
 
 <out.png>: per face at 6x, assembler 3's silhouette in blue, ours in orange, both in white.
+Assembler 3's pictures are read from <FACTORIO_ROOT>/data, tools/paths.conf (tools/paths.py).
 """
 import json
 import math
@@ -27,8 +28,8 @@ import sys
 
 from PIL import Image
 
-VAN = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # tools/paths.py
+import paths  # noqa: E402
 
 
 def silhouette(im, cx, cy, size=160):
@@ -49,12 +50,13 @@ def far(points, other):
 def main(src, out=None, quiet=False):
     meta = json.load(open(os.path.join(src, "meta.json")))
     panels, result = [], {}
+    van_dir = os.path.join(paths.factorio_data(), "base/graphics/entity/assembling-machine-3")
     for face in "NESW":
-        lua = open(os.path.join(VAN, f"assembling-machine-3-pipe-{face}.lua")).read()
+        lua = open(os.path.join(van_dir, f"assembling-machine-3-pipe-{face}.lua")).read()
         w = int(re.search(r"width = (\d+)", lua).group(1))
         h = int(re.search(r"height = (\d+)", lua).group(1))
         bx, by = (float(v) * 2 for v in re.search(r"by_pixel\(\s*([-\d.]+),\s*([-\d.]+)\)", lua).groups())
-        van = Image.open(os.path.join(VAN, f"assembling-machine-3-pipe-{face}.png")).convert("RGBA").crop((0, 0, w, h))
+        van = Image.open(os.path.join(van_dir, f"assembling-machine-3-pipe-{face}.png")).convert("RGBA").crop((0, 0, w, h))
         ours = Image.open(os.path.join(src, f"port-{face}.png")).convert("RGBA")
         sx, sy = (v * 64 for v in meta[f"port-{face}"]["shift"])
         A, B = silhouette(van, bx, by), silhouette(ours, sx, sy)
