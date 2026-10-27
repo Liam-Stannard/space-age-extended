@@ -61,6 +61,11 @@ west_animation), its smoke an animation placed per direction (north_position ...
   glass-light: the light alone, the sun and sky off, everything else held out, so no light falls
   anywhere but on the melt and the glass); the turning and rocking parts one layer, "mech".
 
+T07e (2026-10-21): each connection a fitting set into a header casing at the edge (wall_fitting: a bolted boss,
+a flanged sleeve, the bore open), not the kit's nozzle on its saddle; the pipe pictures the mating flange, open
+(vanilla's covers drawn when unconnected, the wiring's); and a bracket on the control house for the wire post in
+every direction (build_mount), the post's main_offset per direction in model.json ("post_offsets").
+
 Units are tiles; north is +Y. Nothing here is adopted: the sheets move to graphics/ only on Liam's sign-off.
 """
 import json
@@ -157,7 +162,7 @@ DECL = dict(
     # one picture per face, on the middle tile of each; facing north the melt leaves by the north
     # face and the helium comes in by the south (spec 8), and turned, the same pictures serve
     ports=[dict(tile=(0, -1), face="N"), dict(tile=(1, 0), face="E"),
-           dict(tile=(0, 1), face="S"), dict(tile=(-1, 0), face="W", neck=True)],
+           dict(tile=(0, 1), face="S"), dict(tile=(-1, 0), face="W")],
     cut=["E", "W"],                 # nothing of the machine drawn past its east and west edges
 )
 
@@ -478,21 +483,140 @@ def build_core(d):
             torus((TX - HW - 0.18, TY - 0.1, z), 0.14, 0.012, "ochre", rot=(0, 0, 0), seg=24)
 
 
+# ================================================================ T07e: the connections' wall fittings
+# Liam's rule (2026-10-21): "Each connection enters the building through a fitting set into its wall or casing (a
+# recessed boss with a sleeve and flanges, as on the Reaction Plant's casing, or similar), never a stub standing off
+# the machine; the pipe picture shows it open, and vanilla's cover is drawn when nothing is connected."
+# T07 had the kit's nozzle() at each: a barrel on its own saddle out to the edge. Here each connection is a header
+# casing on a footing at the edge (the line inside runs into its back), its face set back FIT_SET from the footprint's
+# edge: on that face a bolted square boss, a welded sleeve 1.22 x the bore out of it with a bolted flange at each
+# end (the Reaction Plant's sleeve()), the outer flange at the edge as wide as the vanilla pipe's body (FIT_FLANGE:
+# the Gas Pump's 0.3, so a pipe joined east or west meets it on screen), the bore open. The melt's sleeve is in
+# heat-tinted steel, the helium's bare with its violet band. The pipe picture (fitting() below) is the mating flange,
+# open; the wiring draws vanilla's cover when nothing is joined.
+#
+# Per direction, as the Gas Pump's: a fitting at height ZA shows ZA/2 up the screen, which facing north or south is
+# along the pipe, but facing east or west put it 13 px above the engine's pipe. So east and west carry the sleeve
+# OUT_DX south of the face's middle (as modelled, +x: the periphery's turn takes it south, and west's mirror too).
+OUT_DX = round(ZA / 2 - 1 / 64, 4)             # 0.1944
+RNF = 0.17                                      # the bore (the kit's RN)
+FIT_FLANGE = 0.3                                # the outer flange and the picture's mating flange
+FIT_SET = 0.2                                   # the casing's face, back from the footprint's edge
+FIT_TOP = 0.74                                  # the casing's top
+FIT_BACK = {"N": 1.08, "S": 1.13}               # its back, from the centre (S: clear of the stop valve at 1.06)
+_FIT_RND = random.Random(7)                     # the nuts' turn: the same every run
+
+
+def rivet(loc, r=0.015):
+    return sphere(loc, r, "bolt", scale=(1, 1, 0.7), seg=8)
+
+
+def nut(loc, r, h, rot, rnd=None):
+    o = cyl(loc, r, h, "bare", rot=rot, verts=6, bevel=0)
+    o.rotation_euler.rotate_axis("Z", (rnd or random).uniform(0, PI / 3))
+    return o
+
+
+def wall_fitting(d, face, smat):
+    """The fitting at the middle of `face` ("N" output, "S" input) as modelled, in direction d's variation.
+    Returns the point inside the casing's back where the line inside ends."""
+    s = 1 if face == "N" else -1
+    ew = d in ("east", "west")
+    sx = OUT_DX if ew else 0.0
+    x0, x1 = (sx - 0.3, 0.42) if ew else (-0.38, 0.38)     # east and west: short of the compressor's footing
+    xc, w = (x0 + x1) / 2, x1 - x0
+    # facing south the tool chest stands where the sight glass was (CHEST_AT, its end at 1.18): the inlet's casing
+    # there begins behind it (--collide: 0.05 into it). Facing south the inlet is the north face's, behind the tower
+    back = 1.19 if (d == "south" and face == "S") else FIT_BACK[face]
+    y_in, y_face, y_edge = s * back, s * (EDGE - FIT_SET), s * (EDGE - 0.004)
+    zb = 0.1
+    ax = (PI / 2, 0, 0)
+    rn = RNF
+    if face == "N":                             # the input's stands on the inlet's footing, carried to the edge
+        foundation(x0 - 0.05, FIT_BACK["N"] - 0.05, x1 + 0.05 if not ew else 0.45, EDGE - 0.015, 0.1, anchors=False)
+    with asm():
+        # the casing: a cast box, a lip round its top, a seam down its face
+        box((xc, (y_in + y_face) / 2, (zb + FIT_TOP) / 2), (w, abs(y_face - y_in), FIT_TOP - zb), "grey", bevel=0.02)
+        box((xc, (y_in + y_face) / 2, FIT_TOP + 0.012), (w + 0.03, abs(y_face - y_in) + 0.03, 0.025), "dark_steel",
+            bevel=0.006)
+        for xx in (x0 + 0.03, x1 - 0.03):
+            for zz in (zb + 0.06, FIT_TOP - 0.06):
+                rivet((xx, y_face + s * 0.004, zz), 0.016)
+        # the boss on its face, bolted
+        box((sx, y_face + s * 0.022, ZA), (rn * 2.6, 0.044, rn * 2.6), "dark_steel", bevel=0.012)
+        for i in range(8):
+            a = 2 * PI * i / 8
+            k = rn * 1.12 / max(abs(math.cos(a)), abs(math.sin(a)))
+            nut((sx + k * math.cos(a), y_face + s * 0.05, ZA + k * math.sin(a)), 0.022, 0.014, ax, _FIT_RND)
+        # the sleeve, welded to the boss, out to the edge; a flange at each end
+        ys0, ys1 = y_face + s * 0.044, y_edge - s * 0.036
+        cyl((sx, (ys0 + ys1) / 2, ZA), rn * 1.22, abs(ys1 - ys0), smat, rot=ax, verts=48, bevel=0.006)
+        torus((sx, y_face + s * 0.05, ZA), rn * 1.22 + 0.004, 0.012, "seam", rot=ax, seg=40)
+        if smat != "heat":
+            cyl((sx, (ys0 + ys1) / 2 + s * 0.012, ZA), rn * 1.22 + 0.006, 0.03, "he_band", rot=ax, verts=48, bevel=0.003)
+        cyl((sx, y_face + s * 0.062, ZA), rn * 1.45, 0.036, "dark_steel", rot=ax, verts=40, bevel=0.004)
+        cyl((sx, y_edge - s * 0.018, ZA), FIT_FLANGE, 0.036, "dark_steel", rot=ax, verts=48, bevel=0.004)
+        for i in range(8):
+            a = 2 * PI * (i + 0.25) / 8
+            nut((sx + (FIT_FLANGE - 0.03) * math.cos(a), y_edge - s * 0.045, ZA + (FIT_FLANGE - 0.03) * math.sin(a)),
+                0.018, 0.012, ax, _FIT_RND)
+        cyl((sx, y_edge - s * 0.0015, ZA), rn * 0.96, 0.003, "dark", rot=ax, verts=40, bevel=0)      # the bore, open
+    return (0.0, y_in, ZA)
+
+
+# ================================================================ T07e: the wire post's mount
+# Liam (2026-10-21), on T09b's post facing north, which stood on the control house's vent slats: "Add a point to
+# mount it to". A bolted bracket on the control house's wall that faces the camera, in every direction: a back
+# plate on the wall, a shelf out from it on two gussets, the post (the universal connector, variation 26) standing
+# on the shelf. Built in ROOT's frame per direction (the house as the periphery puts it). Facing north the house's
+# front wall stands 0.065 behind the switchgear, so the bracket is under the eave, over the vent slats' tops; the
+# other three on the house's plain wall at mid height. (wall y, shelf top z, the post's x, the shelf's depth)
+MOUNT = {"north": (0.555, 0.90, 0.70, 0.11), "east": (-1.36, 0.60, 0.95, 0.11),
+         "south": (-1.355, 0.60, -0.95, 0.11), "west": (-1.36, 0.60, -1.10, 0.11)}
+# The post's sprite stands on the shelf: its box's foot spans 0.25 to 0.345 tile below main_offset on the screen
+# (ccm-universal-04a frame 26, rows 39-45 of 50, the template's 1 px shift), so main_offset's y is the shelf's top
+# back edge on the screen less 0.25, and its x the shelf's middle.
+POST_FOOT = 0.25
+
+
+def post_offset(d):
+    yw, zs, x, dep = MOUNT[d]
+    return round(x, 3), round(-(yw + zs * math.cos(rig.ELEVATION)) - POST_FOOT, 3)
+
+
+def build_mount(d):
+    yw, zs, x, dep = MOUNT[d]
+    s = -1                                       # the wall faces south (toward the camera) in every direction
+    hw = 0.22
+    with asm():
+        zb0 = zs - (0.06 if d == "north" else 0.16)
+        box((x, yw + s * 0.006, (zb0 + zs) / 2), (2 * hw, 0.012, zs - zb0 + 0.02), "dark_steel", bevel=0.003)
+        box((x, yw + s * (0.012 + dep / 2), zs - 0.0125), (2 * hw, dep, 0.025), "dark_steel", bevel=0.004)
+        box((x, yw + s * (0.012 + dep - 0.01), zs - 0.035), (2 * hw, 0.02, 0.03), "dark_steel", bevel=0.003)  # its lip
+        if d != "north":
+            for gx in (x - hw + 0.04, x + hw - 0.04):
+                box((gx, yw + s * 0.05, zs - 0.07), (0.018, 0.08, 0.08), "dark_steel", rot=(PI / 4, 0, 0), bevel=0.002)
+            for gx in (x - hw + 0.05, x + hw - 0.05):
+                rivet((gx, yw + s * 0.013, zb0 + 0.03), 0.014)
+        for gx in (x - 0.12, x + 0.12):
+            rivet((gx, yw + s * (0.012 + dep / 2), zs + 0.002), 0.012)
+
+
 # ================================================================ the periphery: turns with the fluid boxes
 def build_periphery(d):
     var = "south" if d == "south" else "fixed"
     G0_, G1_ = GLASS_AT[var]
     ga, gb = axis_pts(G0_, G1_, 0.1)
     GLASS_PTS[d] = (G0_, G1_, ga, gb)
-    out_in = nozzle("N", length=0.36, mat="heat")
+    out_in = wall_fitting(d, "N", "heat")        # T07e: was nozzle("N", length=0.36, mat="heat")
     OUT_IN[d] = pp(d, out_in)
     # ---------------------------------------------------------------- the helium in: the grey-violet line
-    in_in = nozzle("S", length=0.3, mat="bare")
+    in_in = wall_fitting(d, "S", "bare")         # T07e: was nozzle("S", length=0.3, mat="bare")
     # T07, the south join (Liam: "Fix in the model"): the inlet's footing carried out under the nozzle to the
     # south edge (round 5's stopped at y -1.18, 0.32 tile short). Its grout ring ends at the edge.
     foundation(-0.42, -1.18 if SOUTH == "round5" else -1.485, 0.42, -0.4, 0.1, anchors=False)
     valve(0, -1.06, z=ZA - 0.1, h=0.36, r=0.06)
-    he_line([in_in, (0, -1.06, ZA), (0, -0.9, ZA)], name="helium in: nozzle to the flow meter")
+    he_line([in_in, (0, -1.06, ZA), (0, -0.9, ZA)], name="helium in: the inlet fitting to the flow meter")
     with asm():
         cyl(TEE, 0.1, 0.16, "bare", rot=(PI / 2, 0, 0), verts=20)                   # the tee where the recovered gas joins
         cyl((0, -0.56, ZA + 0.14), 0.035, 0.2, "bare", verts=12)
@@ -688,6 +812,7 @@ for _d in DIRS:
     with variant(_d, "root"):
         build_instruments(_d)
         build_routes(_d)
+        build_mount(_d)
 bpy.context.view_layer.update()
 
 # ================================================================ run5's finish, as round 5 rendered it
@@ -768,121 +893,37 @@ def members(*groups, d=None):
     return [o for o in OBJS if PART[o.name] in groups and (d is None or VAR.get(o.name) == d)]
 
 
-# ---------------------------------------------------------------- the pipe pictures (round 1's model, in assembler 3's outline)
-VANILLA = os.path.join(os.environ.get("FACTORIO_DATA", os.path.expanduser(
-    "~/.steam/steam/steamapps/common/Factorio/data")), "base/graphics/entity/assembling-machine-3")
-E3 = EDGE - 0.005
-H_AXIS_V = 1.0 / 64
-V_AXIS_U = 0.5 / 64
-H_RING_R = 26 / 64 / 1.118
-V_RING_R = 25.5 / 64
-HC = 0.66                    # the south picture's plate stands to the nozzle's top (round 1's: its rim, 0.56)
+# ---------------------------------------------------------------- the pipe pictures (T07e: the mating flange, open)
 FITTINGS = {}
 
 
-def rivet(loc, r=0.015):
-    return sphere(loc, r, "bolt", scale=(1, 1, 0.7), seg=8)
-
-
-def nut(loc, r, h, rot):
-    o = cyl(loc, r, h, "bare", rot=rot, verts=6, bevel=0)
-    o.rotation_euler.rotate_axis("Z", random.uniform(0, PI / 3))
-    return o
-
-
-def vanilla_mask(face, tile):
-    stem = os.path.join(VANILLA, f"assembling-machine-3-pipe-{face}")
-    bx, by = (float(v) for v in re.search(r"by_pixel\(\s*([-\d.]+),\s*([-\d.]+)\)",
-                                           open(stem + ".lua").read()).groups())
-    img = bpy.data.images.load(stem + ".png", check_existing=True)
-    w, h = img.size
-    px = list(img.pixels)
-    drawn = {(i, j) for j in range(h) for i in range(w) if px[((h - 1 - j) * w + i) * 4 + 3] > 127 / 255}
-    n8 = [(a, b) for a in (-1, 0, 1) for b in (-1, 0, 1)]
-    grown = {(i + a, j + b) for i, j in drawn for a, b in n8}
-    drawn = {(i, j) for i, j in grown if all((i + a, j + b) in grown for a, b in n8)} | drawn
-    dx, dy = contract.FACES[face]
-    tx, ty = tile[0] + dx, tile[1] + dy
-    return drawn, (tx + bx / 32) * 64 - w / 2, (ty + by / 32) * 64 - h / 2
-
-
-def slab(face, tile, lift, mat="dark_steel"):
-    drawn, x0, y0 = vanilla_mask(face, tile)
-    me = bpy.data.meshes.new(f"slab-{face}")
-    bm = bmesh.new()
-    corners = {}
-
-    def corner(i, j):
-        if (i, j) not in corners:
-            corners[(i, j)] = bm.verts.new(lift((x0 + i) / 64, -(y0 + j) / 64))
-        return corners[(i, j)]
-    for i, j in drawn:
-        bm.faces.new((corner(i, j + 1), corner(i + 1, j + 1), corner(i + 1, j), corner(i, j)))
-    bm.normal_update()
-    bm.to_mesh(me)
-    bm.free()
-    o = bpy.data.objects.new(f"slab-{face}", me)
-    sc.collection.objects.link(o)
-    return _finish(o, mat, 0)
-
-
 def fitting(p, cap):
-    face, tile = p["face"], p["tile"]
+    """T07e: the pipe picture for one face, under Liam's rule (2026-10-21). The building's own fitting (the casing,
+    boss, sleeve and outer flange, wall_fitting) already stands at the edge, so the picture is what a joined pipe
+    bolts on with: a mating flange as wide as the outer one (the vanilla pipe's body), its nuts, the bore open. It
+    lies within 0.04 tile of the edge, so vanilla's cover (its cap 0.2 tile deep from the edge) and the vanilla
+    pipe (its body from the edge, east and west) cover what they would on any building. Built where the turned
+    machine's fitting stands: north and south on the face's middle, east and west OUT_DX south of it. `cap` is a
+    blind flange, rendered because pack_ports packs both; the wiring draws vanilla's cover (the rule)."""
+    face = p["face"]
     g = f"{'cover' if cap else 'port'}-{face}"
     first = len(OBJS)
-    cx, cy = tile[0], -tile[1]
-    if face == "S":
-        yw = -(E3 + 0.035)
-
-        def lift(u, v):
-            z = 2 * (v - yw)
-            return Vector((u, yw, z)) if z <= HC else Vector((u, yw + (v - yw - HC / 2), HC + 0.004))
-        slab(face, tile, lift, "dark_steel")
-        ax = (PI / 2, 0, 0)
-        x = cx + V_AXIS_U
-        for k in range(11):
-            rivet((x - 0.36 + 0.072 * k, yw - 0.012, HC - 0.06), 0.017)
-        for z in (0.12, 0.36):
-            for sx_ in (-0.39, 0.39):
-                rivet((x + sx_, yw - 0.012, z), 0.017)
-        ye = -(EDGE + 0.03) - ZA / 2
-        annulus((x, yw - 0.03, ZA), 0.3, 0.42, 0.05, "bare", rot=ax)
-        for k in range(14):
-            t = TAU * k / 14
-            rivet((x + 0.37 * math.cos(t), yw - 0.06, ZA + 0.37 * math.sin(t)), 0.016)
-        cyl((x, (yw + ye) / 2, ZA), 0.28, abs(ye - yw), "bare", rot=ax, verts=48, bevel=0.0)
-        cyl((x, ye + 0.03, ZA), V_RING_R - 0.02, 0.06, "bare", rot=ax, verts=48, bevel=0.01)
-        for k in range(8):
-            t = TAU * (k + 0.5) / 8
-            nut((x + 0.33 * math.cos(t), ye - 0.002, ZA + 0.33 * math.sin(t)), 0.02, 0.014, ax)
-        cyl((x, ye - 0.003, ZA), 0.2 if not cap else V_RING_R - 0.06, 0.006, "dark" if not cap else "bare",
-            rot=ax, verts=32, bevel=0.0)
-    elif face == "N":
-        yw = E3 + 0.035
-
-        def lift(u, v):
-            return Vector((u, yw, 2 * (v - yw)))
-        slab(face, tile, lift, "dark_steel")
-        for k in range(7):
-            t = 0.35 + (PI - 0.7) * k / 6
-            u, v = cx + V_AXIS_U + 0.3 * math.cos(t), EDGE + 0.2 * math.sin(t)
-            rivet((u, yw - 0.015, 2 * (v - yw)), 0.016)
+    u = Vector({"N": (0, 1, 0), "S": (0, -1, 0), "E": (1, 0, 0), "W": (-1, 0, 0)}[face])
+    c = Vector((0.0, 0.0, ZA)) if face in "NS" else Vector((0.0, -OUT_DX, ZA))
+    c += u * EDGE
+    rot = along(u)
+    up = Vector((0, 0, 1))
+    side = u.cross(up).normalized()
+    rnd = random.Random(11)
+    annulus(tuple(c + u * 0.018), RNF * 0.96, FIT_FLANGE, 0.036, "dark_steel", rot=tuple(rot))      # mating flange
+    cyl(tuple(c + u * 0.004), RNF * 1.06, 0.008, "bare", rot=rot, verts=40, bevel=0)              # its gasket face
+    for i in range(8):
+        a = 2 * PI * (i + 0.25) / 8
+        nut(tuple(c + u * 0.04 + (side * math.cos(a) + up * math.sin(a)) * (FIT_FLANGE - 0.03)), 0.018, 0.012, rot, rnd)
+    if cap:
+        cyl(tuple(c + u * 0.03), RNF * 1.0, 0.02, "dark_steel", rot=rot, verts=40, bevel=0.004)       # blind
     else:
-        sgn = 1 if face == "E" else -1
-        x0 = sgn * (EDGE - 0.28)
-
-        def lift(u, v):
-            z = ZA - sgn * 1.6 * (u - x0)
-            return Vector((u, v - z / 2, z))
-        slab(face, tile, lift, "dark_steel")
-        ya = cy + H_AXIS_V - ZA / 2
-        ax = (0, PI / 2, 0)
-        xf = sgn * (EDGE - 0.03)
-        cyl(((x0 + xf) / 2, ya, ZA), 0.24, abs(xf - x0), "bare", rot=ax, verts=48, bevel=0.0)
-        cyl((xf, ya, ZA), H_RING_R - 0.02, 0.045, "bare", rot=ax, verts=48, bevel=0.006)
-        for k in range(8):
-            t = TAU * (k + 0.5) / 8
-            nut((xf - sgn * 0.025, ya + 0.27 * math.cos(t), ZA + 0.27 * math.sin(t)), 0.018, 0.012, ax)
+        cyl(tuple(c + u * 0.02), RNF * 0.96, 0.03, "dark", rot=rot, verts=40, bevel=0)                 # the bore, open
     FITTINGS[g] = OBJS[first:]
 
 
@@ -1727,5 +1768,6 @@ with open(os.path.join(OUT, "..", "model.json"), "w") as f_:
     json.dump(dict(frames=NF, speed=SPEED, south=SOUTH, sun=K.SUN_E, world=K.WORLD,
                    samples=dict(plate=PLATE_SAMPLES, anim=ANIM_SAMPLES),
                    groups={g: len(members(g)) for g in GROUPS_ALL}, moving=len(MOVING),
-                   effects=effect_anchors(), pipes=check_ends()), f_, indent=1)
+                   effects=effect_anchors(), post_offsets={d: post_offset(d) for d in DIRS},
+                   pipes=check_ends()), f_, indent=1)
 print("done")
