@@ -569,9 +569,11 @@ def wall_fitting(d, face, smat):
 # mount it to". A bolted bracket on the control house's wall that faces the camera, in every direction: a back
 # plate on the wall, a shelf out from it on two gussets, the post (the universal connector, variation 26) standing
 # on the shelf. Built in ROOT's frame per direction (the house as the periphery puts it). Facing north the house's
-# front wall stands 0.065 behind the switchgear, so the bracket is under the eave, over the vent slats' tops; the
-# other three on the house's plain wall at mid height. (wall y, shelf top z, the post's x, the shelf's depth)
-MOUNT = {"north": (0.555, 0.90, 0.70, 0.11), "east": (-1.36, 0.60, 0.95, 0.11),
+# front wall stands 0.065 behind the switchgear, in its shadow and hidden by it (T07e's first render: a bracket there
+# under the eave could not be seen, the post seemed to float), so facing north the mount is a bolted pad on the
+# house's roof at its front edge, west of the green lens and in front of the instrument box; the other three a
+# shelf on the house's plain wall at mid height. (back edge y, pad or shelf top z, the post's x, its depth)
+MOUNT = {"north": (0.80, 1.06, 0.70, 0.23), "east": (-1.36, 0.60, 0.95, 0.11),
          "south": (-1.355, 0.60, -0.95, 0.11), "west": (-1.36, 0.60, -1.10, 0.11)}
 # The post's sprite stands on the shelf: its box's foot spans 0.25 to 0.345 tile below main_offset on the screen
 # (ccm-universal-04a frame 26, rows 39-45 of 50, the template's 1 px shift), so main_offset's y is the shelf's top
@@ -588,16 +590,26 @@ def build_mount(d):
     yw, zs, x, dep = MOUNT[d]
     s = -1                                       # the wall faces south (toward the camera) in every direction
     hw = 0.22
+    if d == "north":                             # the roof pad: a base plate wider than the post's foot on the roof's
+        #                                          dark-steel cap, a raised block in the switchgear's grey on it, bolts
+        z0 = 1.005                               # the roof cap's top (the house's box 0.98 + half its 0.05)
+        yc = yw - dep / 2
+        with asm():
+            box((x, yc, z0 + 0.0125), (0.44, dep, 0.025), "dark_steel", bevel=0.004)
+            box((x, yc, (z0 + 0.025 + zs) / 2), (0.3, dep - 0.06, zs - z0 - 0.025), "grey", bevel=0.006)
+            for gx in (x - 0.185, x + 0.185):
+                for gy in (yc - dep / 2 + 0.035, yc + dep / 2 - 0.035):
+                    rivet((gx, gy, z0 + 0.027), 0.014)
+        return
     with asm():
-        zb0 = zs - (0.06 if d == "north" else 0.16)
+        zb0 = zs - 0.16
         box((x, yw + s * 0.006, (zb0 + zs) / 2), (2 * hw, 0.012, zs - zb0 + 0.02), "dark_steel", bevel=0.003)
         box((x, yw + s * (0.012 + dep / 2), zs - 0.0125), (2 * hw, dep, 0.025), "dark_steel", bevel=0.004)
         box((x, yw + s * (0.012 + dep - 0.01), zs - 0.035), (2 * hw, 0.02, 0.03), "dark_steel", bevel=0.003)  # its lip
-        if d != "north":
-            for gx in (x - hw + 0.04, x + hw - 0.04):
-                box((gx, yw + s * 0.05, zs - 0.07), (0.018, 0.08, 0.08), "dark_steel", rot=(PI / 4, 0, 0), bevel=0.002)
-            for gx in (x - hw + 0.05, x + hw - 0.05):
-                rivet((gx, yw + s * 0.013, zb0 + 0.03), 0.014)
+        for gx in (x - hw + 0.04, x + hw - 0.04):
+            box((gx, yw + s * 0.05, zs - 0.07), (0.018, 0.08, 0.08), "dark_steel", rot=(PI / 4, 0, 0), bevel=0.002)
+        for gx in (x - hw + 0.05, x + hw - 0.05):
+            rivet((gx, yw + s * 0.013, zb0 + 0.03), 0.014)
         for gx in (x - 0.12, x + 0.12):
             rivet((gx, yw + s * (0.012 + dep / 2), zs + 0.002), 0.012)
 

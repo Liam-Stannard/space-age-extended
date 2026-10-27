@@ -1,8 +1,8 @@
 {
  "source": {
-  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t07c/run2",
-  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t07c/run2/sheets",
-  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t07c/run2/renders/render.json",
+  "src": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3",
+  "sheets": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3/sheets",
+  "render_json": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/run3/renders/render.json",
   "directions": "four",
   "footprint": [
    3,
@@ -38,17 +38,17 @@
   ]
  },
  "collide": {
-  "model": "/home/liam-stannard/git/space-age-extended/.claude/worktrees/vent-pump-model/concept/vent-pump/model/vent_pump.py",
-  "log": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t07c/measure2/collide.log",
+  "model": "/home/lstan/data/git/space-age-extended/.claude/worktrees/vent-pump-model/concept/vent-pump/model/vent_pump.py",
+  "log": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/m-run3/collide.log",
   "allow": [],
   "returncode": 0,
   "lines": [
-   "COLLIDE north: 630 parts, 51 moving; frames 0-23",
-   "COLLIDE east: 644 parts, 51 moving; frames 0-23",
-   "COLLIDE south: 625 parts, 51 moving; frames 0-23",
-   "COLLIDE west: 636 parts, 51 moving; frames 0-23",
+   "COLLIDE north: 671 parts, 51 moving; frames 0-23",
+   "COLLIDE east: 688 parts, 51 moving; frames 0-23",
+   "COLLIDE south: 669 parts, 51 moving; frames 0-23",
+   "COLLIDE west: 680 parts, 51 moving; frames 0-23",
    "COLLIDE moving: 0 clashes, 4587 meant contacts (collide-model.txt)",
-   "COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 4850 touching pairs over the four directions, 425 touch at under 0.03 (collide-model.txt)",
+   "COLLIDE model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 5099 touching pairs over the four directions, 440 touch at under 0.03 (collide-model.txt)",
    "COLLIDE ends: 56 of 56 runs end in what they serve"
   ],
   "clash_lines": [],
@@ -73,7 +73,9 @@
     "riser-light-north": "glow-anim, 24 frames",
     "glass-north": "anim (working), 24 frames",
     "glass-light-north": "glow-anim, 24 frames",
-    "mech-north": "anim, 24 frames"
+    "mech-north": "anim, 24 frames",
+    "embers-north": "anim (working), 48 frames",
+    "embers-light-north": "glow-anim, 48 frames"
    },
    "ignored": [
     "lens-working-halo-north (a white cut the engine tints: not drawn here)",
@@ -84,8 +86,8 @@
      3,
      3
     ],
-    "footprint_pct": 96.4,
-    "mass_pct": 112.2,
+    "footprint_pct": 96.5,
+    "mass_pct": 112.3,
     "corners_pct": {
      "NW": 96.9,
      "NE": 94.8,
@@ -113,45 +115,45 @@
    "tonal": {
     "plate": {
      "p5": 6,
-     "p50": 80,
-     "p95": 169,
-     "spread": 163
+     "p50": 78,
+     "p95": 165,
+     "spread": 159
     },
     "still": {
      "p5": 6,
-     "p50": 80,
-     "p95": 170,
-     "spread": 164
+     "p50": 79,
+     "p95": 166,
+     "spread": 160
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 9.5,
-     "fine": 7.72,
-     "mid": 13.34,
+     "black_pct": 9.2,
+     "fine": 7.67,
+     "mid": 13.12,
      "ratio": 0.58,
-     "darkchr": 13.1
+     "darkchr": 13.5
     },
     "still": {
-     "black_pct": 9.5,
-     "fine": 7.78,
-     "mid": 13.43,
+     "black_pct": 9.1,
+     "fine": 7.73,
+     "mid": 13.22,
      "ratio": 0.58,
-     "darkchr": 13.1
+     "darkchr": 13.5
     }
    },
    "colour": {
-    "opaque_px": 41367,
+    "opaque_px": 41386,
     "blue_px": 2,
     "blue_pct": 0.0,
     "pale_px": 0,
     "pale_pct_of_blue": 0.0,
-    "orange_px": 1559,
-    "orange_pct": 3.77,
+    "orange_px": 1514,
+    "orange_pct": 3.66,
     "white_px": 0,
     "clipped_px": 0,
     "idle_blue_pct": 0.0,
-    "idle_orange_pct": 2.95
+    "idle_orange_pct": 2.78
    },
    "glow": {
     "lens-working-glow-north": {
@@ -160,7 +162,7 @@
      "core": 53.8,
      "halo": 26.9,
      "sat_core": 0.67,
-     "sat_halo": 0.86,
+     "sat_halo": 0.88,
      "white": 0,
      "blue_pct": 0.0,
      "frames": 1
@@ -171,7 +173,7 @@
      "core": 40.9,
      "halo": 22.7,
      "sat_core": 1.0,
-     "sat_halo": 0.99,
+     "sat_halo": 1.0,
      "white": 0,
      "blue_pct": 0.0,
      "frames": 1
@@ -201,53 +203,94 @@
      "white": 0,
      "blue_pct": 0.0,
      "frames": 24,
-     "flicker_step_pct": 43.8,
-     "range_pct": 78.6,
+     "flicker_step_pct": 44.0,
+     "range_pct": 78.8,
      "played_frames": 24,
+     "loop_ticks": 120
+    },
+    "embers-light-north": {
+     "area": 59,
+     "peak": 187,
+     "core": 6.8,
+     "halo": 49.2,
+     "sat_core": 0.68,
+     "sat_halo": 0.76,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 61.9,
+     "range_pct": 185.2,
+     "played_frames": 48,
      "loop_ticks": 120
     }
    },
    "motion": {
-    "loop_frames": 24,
-    "moving_pct": 2.71,
-    "strobe_pct": 0.24,
-    "strobe_px": 99,
+    "loop_frames": 48,
+    "moving_pct": 5.12,
+    "strobe_pct": 0.4,
+    "strobe_px": 167,
     "step_px": [
+     101,
+     815,
+     65,
+     972,
+     94,
+     954,
+     72,
+     828,
+     58,
+     833,
+     43,
+     918,
+     91,
+     1000,
+     161,
+     1040,
+     166,
+     967,
+     205,
+     801,
+     153,
      731,
-     889,
-     873,
-     765,
-     777,
-     860,
-     868,
-     873,
-     755,
-     633,
-     553,
-     608,
-     734,
-     888,
-     873,
-     767,
-     773,
-     842,
-     840,
-     857,
-     746,
-     640,
-     569
+     215,
+     822,
+     199,
+     899,
+     157,
+     1048,
+     152,
+     998,
+     122,
+     896,
+     108,
+     862,
+     97,
+     950,
+     95,
+     940,
+     116,
+     972,
+     116,
+     859,
+     123,
+     769,
+     125,
+     699,
+     136
     ],
-    "wrap_px": 724,
+    "wrap_px": 843,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
      "riser-north": 0.89,
-     "glass-north": 0.1,
+     "glass-north": 0.11,
      "mech-north": 0.74,
+     "embers-north": 0.94,
      "riser-light-north": 1.62,
-     "glass-light-north": 0.28
+     "glass-light-north": 0.28,
+     "embers-light-north": 2.57
     },
-    "strobe_own_loop_pct": 0.24,
-    "strobe_own_loop_px": 99,
+    "strobe_own_loop_pct": 0.4,
+    "strobe_own_loop_px": 167,
     "timing": {
      "loop_ticks": 120,
      "loop_seconds": 2.0,
@@ -255,29 +298,53 @@
      "measured_ticks": 120,
      "frame_ticks": [
       0,
+      3,
       5,
+      8,
       10,
+      13,
       15,
+      18,
       20,
+      23,
       25,
+      28,
       30,
+      33,
       35,
+      38,
       40,
+      43,
       45,
+      48,
       50,
+      53,
       55,
+      58,
       60,
+      63,
       65,
+      68,
       70,
+      73,
       75,
+      78,
       80,
+      83,
       85,
+      88,
       90,
+      93,
       95,
+      98,
       100,
+      103,
       105,
+      108,
       110,
-      115
+      113,
+      115,
+      118
      ],
      "layers": {
       "riser-north": {
@@ -301,6 +368,13 @@
        "as_fraction": "1/5",
        "loop_ticks": 120
       },
+      "embers-north": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
       "riser-light-north": {
        "entries": 24,
        "frame_sequence": false,
@@ -314,6 +388,13 @@
        "animation_speed": 0.2,
        "as_fraction": "1/5",
        "loop_ticks": 120
+      },
+      "embers-light-north": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
       }
      }
     }
@@ -326,37 +407,37 @@
       96
      ],
      "step_px": [
-      154,
-      232,
+      152,
+      229,
       250,
-      288,
-      276,
-      288,
-      270,
-      253,
-      117,
-      67,
-      62,
-      64,
-      171,
-      278,
-      284,
       286,
-      258,
-      271,
-      272,
-      235,
-      97,
-      60,
-      58
+      275,
+      287,
+      273,
+      254,
+      117,
+      66,
+      68,
+      64,
+      173,
+      280,
+      289,
+      287,
+      254,
+      273,
+      276,
+      236,
+      95,
+      62,
+      56
      ],
-     "wrap_px": 238,
+     "wrap_px": 232,
      "step_range": [
-      58,
-      288
+      56,
+      289
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 299,
+     "most_changed_px": 300,
      "between_frames": [
       5,
       14
@@ -392,40 +473,40 @@
      "frames": 24,
      "frame_px": [
       26,
-      38
+      37
      ],
      "step_px": [
-      21,
-      35,
-      50,
       22,
-      29,
+      35,
+      49,
+      20,
+      27,
       33,
+      29,
+      34,
       28,
-      30,
-      23,
-      23,
-      21,
-      24,
-      19,
-      38,
+      29,
+      25,
+      29,
+      20,
       45,
-      30,
+      48,
       31,
       33,
+      36,
+      37,
+      34,
       32,
-      30,
-      26,
-      24,
-      26
+      29,
+      29
      ],
-     "wrap_px": 18,
+     "wrap_px": 21,
      "step_range": [
-      19,
-      50
+      20,
+      49
      ],
-     "wrap_within_steps": false,
-     "most_changed_px": 47,
+     "wrap_within_steps": true,
+     "most_changed_px": 50,
      "between_frames": [
       11,
       16
@@ -464,39 +545,39 @@
       186
      ],
      "step_px": [
-      403,
-      411,
-      365,
-      357,
-      308,
-      387,
-      376,
-      442,
-      389,
-      293,
-      228,
-      341,
-      403,
-      417,
-      369,
-      357,
+      407,
+      412,
+      364,
+      355,
       307,
+      388,
+      374,
+      443,
+      390,
+      293,
+      227,
+      337,
+      405,
+      419,
+      370,
+      357,
+      309,
       381,
-      372,
-      442,
-      389,
-      299,
-      232
+      368,
+      440,
+      388,
+      300,
+      233
      ],
-     "wrap_px": 341,
+     "wrap_px": 340,
      "step_range": [
-      228,
-      442
+      227,
+      443
      ],
      "wrap_within_steps": true,
      "most_changed_px": 594,
      "between_frames": [
-      16,
+      4,
       22
      ],
      "played": [
@@ -524,6 +605,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-north": {
+     "frames": 48,
+     "frame_px": [
+      46,
+      104
+     ],
+     "step_px": [
+      97,
+      78,
+      77,
+      89,
+      99,
+      92,
+      74,
+      69,
+      62,
+      58,
+      53,
+      58,
+      88,
+      126,
+      151,
+      161,
+      169,
+      195,
+      196,
+      158,
+      139,
+      168,
+      208,
+      225,
+      216,
+      170,
+      170,
+      174,
+      167,
+      134,
+      127,
+      130,
+      110,
+      100,
+      98,
+      95,
+      89,
+      100,
+      114,
+      116,
+      122,
+      122,
+      126,
+      128,
+      123,
+      134,
+      136
+     ],
+     "wrap_px": 109,
+     "step_range": [
+      53,
+      225
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 236,
+     "between_frames": [
+      18,
+      24
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     },
     "riser-light-north": {
@@ -599,40 +797,40 @@
      "frames": 24,
      "frame_px": [
       17,
-      15
+      14
      ],
      "step_px": [
       0,
       124,
-      130,
+      129,
       14,
-      91,
+      89,
       113,
       113,
-      114,
+      113,
       110,
       80,
       6,
       0,
       0,
-      123,
+      122,
       129,
-      14,
-      78,
+      13,
+      77,
       90,
       106,
       102,
-      106,
+      107,
       86,
       2
      ],
      "wrap_px": 0,
      "step_range": [
       0,
-      130
+      129
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 125,
+     "most_changed_px": 124,
      "between_frames": [
       3,
       13
@@ -662,6 +860,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-light-north": {
+     "frames": 48,
+     "frame_px": [
+      49,
+      105
+     ],
+     "step_px": [
+      107,
+      89,
+      73,
+      90,
+      102,
+      93,
+      80,
+      70,
+      67,
+      63,
+      50,
+      57,
+      95,
+      145,
+      179,
+      173,
+      178,
+      219,
+      221,
+      183,
+      165,
+      198,
+      229,
+      237,
+      223,
+      186,
+      182,
+      181,
+      166,
+      144,
+      141,
+      140,
+      124,
+      108,
+      106,
+      121,
+      109,
+      115,
+      129,
+      124,
+      125,
+      123,
+      133,
+      143,
+      138,
+      140,
+      147
+     ],
+     "wrap_px": 127,
+     "step_range": [
+      50,
+      237
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 258,
+     "between_frames": [
+      18,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     }
    },
@@ -786,8 +1101,35 @@
      },
      "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
     ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 188,
+      "core": 6.8,
+      "halo": 49.2
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
     "frame0_vs_still": [
-     166,
+     167,
      0.0008,
      "max channel difference, and share of pixels over 8 (sampling noise)"
     ],
@@ -803,7 +1145,7 @@
     "rolloff_px": [
      {
       "base-north": {
-       "px": 1032,
+       "px": 977,
        "most": 12
       },
       "lens-working-glow-north": {
@@ -815,7 +1157,7 @@
        "most": 0
       },
       "riser-north": {
-       "px": 31,
+       "px": 37,
        "most": 12
       },
       "riser-light-north": {
@@ -823,7 +1165,7 @@
        "most": 12
       },
       "glass-north": {
-       "px": 144,
+       "px": 120,
        "most": 12
       },
       "glass-light-north": {
@@ -831,7 +1173,15 @@
        "most": 0
       },
       "mech-north": {
-       "px": 3474,
+       "px": 3556,
+       "most": 12
+      },
+      "embers-north": {
+       "px": 133,
+       "most": 12
+      },
+      "embers-light-north": {
+       "px": 69,
        "most": 12
       }
      },
@@ -1096,7 +1446,7 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 6,
+      "px": 5,
       "where": {
        "across_px": [
         -27.5,
@@ -1104,7 +1454,7 @@
        ],
        "along_px": [
         -1,
-        0
+        -1
        ]
       }
      }
@@ -1199,7 +1549,9 @@
     "riser-light-east": "glow-anim, 24 frames",
     "glass-east": "anim (working), 24 frames",
     "glass-light-east": "glow-anim, 24 frames",
-    "mech-east": "anim, 24 frames"
+    "mech-east": "anim, 24 frames",
+    "embers-east": "anim (working), 48 frames",
+    "embers-light-east": "glow-anim, 48 frames"
    },
    "ignored": [
     "lens-working-halo-east (a white cut the engine tints: not drawn here)",
@@ -1210,15 +1562,15 @@
      3,
      3
     ],
-    "footprint_pct": 94.7,
-    "mass_pct": 108.6,
+    "footprint_pct": 95.0,
+    "mass_pct": 108.9,
     "corners_pct": {
      "NW": 91.6,
      "NE": 96.8,
      "SW": 96.9,
      "SE": 88.2
     },
-    "outer_band_pct": 88.0,
+    "outer_band_pct": 89.0,
     "rise_tiles": 0.81,
     "rise_by_column_tiles": [
      0.45,
@@ -1238,46 +1590,46 @@
    },
    "tonal": {
     "plate": {
-     "p5": 6,
-     "p50": 85,
-     "p95": 185,
-     "spread": 179
+     "p5": 5,
+     "p50": 82,
+     "p95": 187,
+     "spread": 182
     },
     "still": {
-     "p5": 6,
-     "p50": 85,
-     "p95": 185,
-     "spread": 179
+     "p5": 5,
+     "p50": 82,
+     "p95": 187,
+     "spread": 182
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 9.0,
-     "fine": 8.27,
-     "mid": 14.01,
+     "black_pct": 9.6,
+     "fine": 8.28,
+     "mid": 13.96,
      "ratio": 0.59,
-     "darkchr": 15.8
+     "darkchr": 14.5
     },
     "still": {
-     "black_pct": 9.0,
-     "fine": 8.36,
-     "mid": 14.07,
-     "ratio": 0.59,
-     "darkchr": 15.8
+     "black_pct": 9.6,
+     "fine": 8.37,
+     "mid": 14.02,
+     "ratio": 0.6,
+     "darkchr": 14.5
     }
    },
    "colour": {
-    "opaque_px": 40018,
+    "opaque_px": 40151,
     "blue_px": 0,
     "blue_pct": 0.0,
     "pale_px": 0,
     "pale_pct_of_blue": 0.0,
-    "orange_px": 3281,
-    "orange_pct": 8.2,
+    "orange_px": 3356,
+    "orange_pct": 8.36,
     "white_px": 0,
     "clipped_px": 0,
     "idle_blue_pct": 0.0,
-    "idle_orange_pct": 7.27
+    "idle_orange_pct": 7.4
    },
    "glow": {
     "lens-working-glow-east": {
@@ -1286,7 +1638,7 @@
      "core": 26.1,
      "halo": 26.1,
      "sat_core": 0.72,
-     "sat_halo": 0.91,
+     "sat_halo": 0.92,
      "white": 0,
      "blue_pct": 0.0,
      "frames": 1
@@ -1331,49 +1683,90 @@
      "range_pct": 78.7,
      "played_frames": 24,
      "loop_ticks": 120
+    },
+    "embers-light-east": {
+     "area": 39,
+     "peak": 149,
+     "core": 10.3,
+     "halo": 43.6,
+     "sat_core": 0.7,
+     "sat_halo": 0.81,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 76.7,
+     "range_pct": 213.4,
+     "played_frames": 48,
+     "loop_ticks": 120
     }
    },
    "motion": {
-    "loop_frames": 24,
-    "moving_pct": 2.61,
-    "strobe_pct": 0.32,
-    "strobe_px": 128,
+    "loop_frames": 48,
+    "moving_pct": 4.06,
+    "strobe_pct": 0.4,
+    "strobe_px": 159,
     "step_px": [
-     760,
-     880,
-     877,
-     766,
-     792,
-     856,
-     885,
-     868,
-     760,
-     685,
-     561,
-     609,
-     776,
-     898,
-     875,
-     760,
-     762,
+     73,
+     834,
+     62,
+     958,
+     96,
+     960,
+     68,
      827,
-     867,
-     852,
-     776,
-     697,
-     588
+     63,
+     846,
+     41,
+     907,
+     95,
+     1012,
+     154,
+     1028,
+     149,
+     933,
+     220,
+     897,
+     195,
+     745,
+     190,
+     782,
+     161,
+     914,
+     136,
+     1022,
+     114,
+     976,
+     88,
+     847,
+     84,
+     848,
+     84,
+     900,
+     78,
+     956,
+     133,
+     987,
+     128,
+     891,
+     129,
+     821,
+     106,
+     669,
+     71
     ],
-    "wrap_px": 737,
+    "wrap_px": 810,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
-     "riser-east": 1.05,
-     "glass-east": 0.09,
+     "riser-east": 1.04,
+     "glass-east": 0.1,
      "mech-east": 0.52,
+     "embers-east": 0.86,
      "riser-light-east": 1.73,
-     "glass-light-east": 0.28
+     "glass-light-east": 0.28,
+     "embers-light-east": 1.72
     },
-    "strobe_own_loop_pct": 0.32,
-    "strobe_own_loop_px": 128,
+    "strobe_own_loop_pct": 0.4,
+    "strobe_own_loop_px": 159,
     "timing": {
      "loop_ticks": 120,
      "loop_seconds": 2.0,
@@ -1381,29 +1774,53 @@
      "measured_ticks": 120,
      "frame_ticks": [
       0,
+      3,
       5,
+      8,
       10,
+      13,
       15,
+      18,
       20,
+      23,
       25,
+      28,
       30,
+      33,
       35,
+      38,
       40,
+      43,
       45,
+      48,
       50,
+      53,
       55,
+      58,
       60,
+      63,
       65,
+      68,
       70,
+      73,
       75,
+      78,
       80,
+      83,
       85,
+      88,
       90,
+      93,
       95,
+      98,
       100,
+      103,
       105,
+      108,
       110,
-      115
+      113,
+      115,
+      118
      ],
      "layers": {
       "riser-east": {
@@ -1427,6 +1844,13 @@
        "as_fraction": "1/5",
        "loop_ticks": 120
       },
+      "embers-east": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
       "riser-light-east": {
        "entries": 24,
        "frame_sequence": false,
@@ -1439,6 +1863,13 @@
        "frame_sequence": false,
        "animation_speed": 0.2,
        "as_fraction": "1/5",
+       "loop_ticks": 120
+      },
+      "embers-light-east": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
        "loop_ticks": 120
       }
      }
@@ -1453,36 +1884,36 @@
      ],
      "step_px": [
       185,
-      273,
+      275,
       286,
-      303,
+      300,
       307,
-      304,
-      285,
+      301,
+      291,
       260,
-      122,
-      68,
-      60,
-      59,
-      182,
-      286,
-      276,
-      289,
-      303,
-      298,
-      303,
-      264,
-      112,
-      70,
-      46
+      127,
+      67,
+      62,
+      58,
+      183,
+      285,
+      275,
+      288,
+      297,
+      302,
+      300,
+      263,
+      113,
+      67,
+      52
      ],
-     "wrap_px": 285,
+     "wrap_px": 290,
      "step_range": [
-      46,
+      52,
       307
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 289,
+     "most_changed_px": 294,
      "between_frames": [
       5,
       14
@@ -1522,30 +1953,30 @@
      ],
      "step_px": [
       13,
-      32,
-      47,
-      14,
-      27,
-      27,
-      20,
-      26,
-      18,
-      20,
-      15,
-      15,
-      15,
-      36,
-      45,
-      20,
       30,
-      31,
-      29,
+      47,
+      15,
       26,
+      29,
+      19,
+      24,
+      19,
+      20,
+      15,
+      14,
+      16,
+      36,
+      44,
       22,
+      30,
+      32,
+      28,
+      26,
+      23,
       22,
-      15
+      16
      ],
-     "wrap_px": 17,
+     "wrap_px": 16,
      "step_range": [
       13,
       47
@@ -1590,34 +2021,34 @@
       157
      ],
      "step_px": [
-      334,
+      336,
       331,
-      302,
+      303,
       241,
       203,
-      272,
-      302,
-      325,
+      275,
+      304,
+      324,
       327,
-      243,
-      203,
-      266,
-      334,
+      245,
+      204,
+      267,
+      336,
       331,
-      302,
+      303,
       240,
       203,
-      272,
-      302,
-      326,
+      275,
+      304,
+      325,
       327,
-      243,
-      203
+      245,
+      204
      ],
-     "wrap_px": 265,
+     "wrap_px": 266,
      "step_range": [
       203,
-      334
+      336
      ],
      "wrap_within_steps": true,
      "most_changed_px": 390,
@@ -1650,6 +2081,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-east": {
+     "frames": 48,
+     "frame_px": [
+      45,
+      97
+     ],
+     "step_px": [
+      79,
+      76,
+      74,
+      90,
+      104,
+      90,
+      71,
+      67,
+      61,
+      52,
+      44,
+      59,
+      84,
+      97,
+      128,
+      146,
+      129,
+      143,
+      191,
+      185,
+      164,
+      174,
+      168,
+      161,
+      154,
+      143,
+      144,
+      134,
+      128,
+      106,
+      93,
+      79,
+      77,
+      85,
+      82,
+      61,
+      59,
+      78,
+      109,
+      116,
+      109,
+      113,
+      128,
+      126,
+      101,
+      82,
+      72
+     ],
+     "wrap_px": 79,
+     "step_range": [
+      44,
+      191
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 196,
+     "between_frames": [
+      19,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     },
     "riser-light-east": {
@@ -1749,7 +2297,7 @@
       108,
       104,
       108,
-      84,
+      85,
       3
      ],
      "wrap_px": 0,
@@ -1788,6 +2336,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-light-east": {
+     "frames": 48,
+     "frame_px": [
+      46,
+      98
+     ],
+     "step_px": [
+      77,
+      75,
+      72,
+      96,
+      111,
+      96,
+      80,
+      72,
+      71,
+      64,
+      54,
+      61,
+      103,
+      138,
+      175,
+      189,
+      165,
+      202,
+      246,
+      239,
+      218,
+      211,
+      209,
+      205,
+      181,
+      157,
+      158,
+      146,
+      130,
+      111,
+      101,
+      98,
+      95,
+      95,
+      99,
+      92,
+      89,
+      106,
+      143,
+      152,
+      146,
+      138,
+      140,
+      141,
+      109,
+      87,
+      79
+     ],
+     "wrap_px": 81,
+     "step_range": [
+      54,
+      246
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 244,
+     "between_frames": [
+      18,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     }
    },
@@ -1912,6 +2577,33 @@
      },
      "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
     ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 149,
+      "core": 10.3,
+      "halo": 43.6
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
     "frame0_vs_still": [
      130,
      0.0007,
@@ -1919,17 +2611,17 @@
     ],
     "cut_px": [
      {
-      "idle-east": 311,
-      "still-east": 311,
-      "lens-green-lit-east": 311,
-      "lens-amber-lit-east": 311
+      "idle-east": 344,
+      "still-east": 344,
+      "lens-green-lit-east": 344,
+      "lens-amber-lit-east": 344
      },
      "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
     ],
     "rolloff_px": [
      {
       "base-east": {
-       "px": 882,
+       "px": 920,
        "most": 12
       },
       "lens-working-glow-east": {
@@ -1941,7 +2633,7 @@
        "most": 0
       },
       "riser-east": {
-       "px": 25,
+       "px": 27,
        "most": 12
       },
       "riser-light-east": {
@@ -1949,7 +2641,7 @@
        "most": 12
       },
       "glass-east": {
-       "px": 264,
+       "px": 240,
        "most": 12
       },
       "glass-light-east": {
@@ -1957,7 +2649,15 @@
        "most": 0
       },
       "mech-east": {
-       "px": 1290,
+       "px": 1384,
+       "most": 12
+      },
+      "embers-east": {
+       "px": 105,
+       "most": 12
+      },
+      "embers-light-east": {
+       "px": 59,
        "most": 12
       }
      },
@@ -1998,33 +2698,60 @@
      },
      "gap": {
       "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
-      "columns": 0,
+      "columns": 2,
       "columns_allowed": 2,
       "ground_px_counted_from": 2,
       "of_columns": 41,
-      "max_ground_px": 0,
-      "where": null
+      "max_ground_px": 5,
+      "where": {
+       "across_px": [
+        17.5,
+        18.5
+       ],
+       "along_px": [
+        -8,
+        -4
+       ]
+      }
      },
      "pass": true,
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -1,
-      "last_row_px": -1
+      "found_row_px": -13,
+      "last_row_px": -5
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 0,
-      "ground_px": 0,
-      "where": null
+      "px": 164,
+      "ground_px": 3,
+      "where": {
+       "across_px": [
+        17.5,
+        19.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 0,
-      "ground_px": 0,
-      "where": null
+      "px": 204,
+      "ground_px": 22,
+      "where": {
+       "across_px": [
+        17.5,
+        26.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
@@ -2039,8 +2766,17 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 0,
-      "where": null
+      "px": 97,
+      "where": {
+       "across_px": [
+        -29.5,
+        63.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
      }
     },
     {
@@ -2280,7 +3016,7 @@
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
-      "px": 411,
+      "px": 410,
       "where": {
        "across_px": [
         -45.5,
@@ -2325,7 +3061,9 @@
     "riser-light-south": "glow-anim, 24 frames",
     "glass-south": "anim (working), 24 frames",
     "glass-light-south": "glow-anim, 24 frames",
-    "mech-south": "anim, 24 frames"
+    "mech-south": "anim, 24 frames",
+    "embers-south": "anim (working), 48 frames",
+    "embers-light-south": "glow-anim, 48 frames"
    },
    "ignored": [
     "lens-working-halo-south (a white cut the engine tints: not drawn here)",
@@ -2336,15 +3074,15 @@
      3,
      3
     ],
-    "footprint_pct": 92.1,
-    "mass_pct": 100.9,
+    "footprint_pct": 96.4,
+    "mass_pct": 105.3,
     "corners_pct": {
      "NW": 98.8,
      "NE": 91.7,
      "SW": 88.2,
      "SE": 93.9
     },
-    "outer_band_pct": 83.5,
+    "outer_band_pct": 89.4,
     "rise_tiles": 0.58,
     "rise_by_column_tiles": [
      0.23,
@@ -2353,57 +3091,57 @@
     ],
     "extent_tiles": [
      3.0,
-     3.55
+     3.58
     ],
     "centre_offset_px": 0.0,
     "past_edges_tiles": {
      "west": 0.0,
      "east": 0.0,
-     "south": -0.03
+     "south": 0.0
     }
    },
    "tonal": {
     "plate": {
-     "p5": 6,
-     "p50": 84,
+     "p5": 5,
+     "p50": 79,
      "p95": 174,
-     "spread": 168
+     "spread": 169
     },
     "still": {
-     "p5": 6,
-     "p50": 84,
-     "p95": 175,
+     "p5": 5,
+     "p50": 79,
+     "p95": 174,
      "spread": 169
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 9.2,
-     "fine": 7.56,
-     "mid": 11.77,
-     "ratio": 0.64,
-     "darkchr": 12.7
+     "black_pct": 9.7,
+     "fine": 7.51,
+     "mid": 11.83,
+     "ratio": 0.63,
+     "darkchr": 12.3
     },
     "still": {
-     "black_pct": 9.2,
-     "fine": 7.67,
-     "mid": 11.85,
-     "ratio": 0.65,
-     "darkchr": 12.8
+     "black_pct": 9.7,
+     "fine": 7.61,
+     "mid": 11.9,
+     "ratio": 0.64,
+     "darkchr": 12.4
     }
    },
    "colour": {
-    "opaque_px": 37206,
+    "opaque_px": 38831,
     "blue_px": 0,
     "blue_pct": 0.0,
     "pale_px": 0,
     "pale_pct_of_blue": 0.0,
-    "orange_px": 2197,
-    "orange_pct": 5.9,
+    "orange_px": 2207,
+    "orange_pct": 5.68,
     "white_px": 0,
     "clipped_px": 0,
     "idle_blue_pct": 0.0,
-    "idle_orange_pct": 4.98
+    "idle_orange_pct": 4.71
    },
    "glow": {
     "lens-working-glow-south": {
@@ -2411,7 +3149,7 @@
      "peak": 121,
      "core": 23.8,
      "halo": 19.0,
-     "sat_core": 0.7,
+     "sat_core": 0.71,
      "sat_halo": 0.92,
      "white": 0,
      "blue_pct": 0.0,
@@ -2419,11 +3157,11 @@
     },
     "lens-no-fluid-glow-south": {
      "area": 22,
-     "peak": 143,
+     "peak": 144,
      "core": 27.3,
      "halo": 18.2,
      "sat_core": 0.99,
-     "sat_halo": 0.98,
+     "sat_halo": 0.99,
      "white": 0,
      "blue_pct": 0.0,
      "frames": 1
@@ -2457,49 +3195,90 @@
      "range_pct": 78.7,
      "played_frames": 24,
      "loop_ticks": 120
+    },
+    "embers-light-south": {
+     "area": 62,
+     "peak": 183,
+     "core": 16.1,
+     "halo": 33.9,
+     "sat_core": 0.66,
+     "sat_halo": 0.77,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 58.6,
+     "range_pct": 176.1,
+     "played_frames": 48,
+     "loop_ticks": 120
     }
    },
    "motion": {
-    "loop_frames": 24,
-    "moving_pct": 2.92,
-    "strobe_pct": 0.39,
-    "strobe_px": 145,
+    "loop_frames": 48,
+    "moving_pct": 6.96,
+    "strobe_pct": 0.57,
+    "strobe_px": 220,
     "step_px": [
-     741,
-     894,
-     895,
-     757,
-     810,
-     872,
-     895,
-     879,
-     800,
-     685,
-     556,
-     617,
-     750,
-     907,
-     903,
-     750,
-     783,
-     852,
-     870,
-     870,
-     789,
-     703,
-     583
+     120,
+     856,
+     115,
+     1007,
+     118,
+     998,
+     118,
+     866,
+     102,
+     880,
+     64,
+     931,
+     101,
+     1045,
+     191,
+     1085,
+     204,
+     1024,
+     245,
+     909,
+     196,
+     785,
+     250,
+     850,
+     211,
+     938,
+     199,
+     1110,
+     169,
+     1046,
+     139,
+     887,
+     126,
+     874,
+     103,
+     945,
+     93,
+     958,
+     97,
+     962,
+     94,
+     899,
+     123,
+     823,
+     118,
+     727,
+     148
     ],
-    "wrap_px": 744,
+    "wrap_px": 872,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
-     "riser-south": 1.13,
+     "riser-south": 1.08,
      "glass-south": 0.0,
-     "mech-south": 0.54,
-     "riser-light-south": 1.99,
-     "glass-light-south": 0.31
+     "mech-south": 0.49,
+     "embers-south": 1.75,
+     "riser-light-south": 1.91,
+     "glass-light-south": 0.29,
+     "embers-light-south": 4.41
     },
-    "strobe_own_loop_pct": 0.39,
-    "strobe_own_loop_px": 145,
+    "strobe_own_loop_pct": 0.57,
+    "strobe_own_loop_px": 220,
     "timing": {
      "loop_ticks": 120,
      "loop_seconds": 2.0,
@@ -2507,29 +3286,53 @@
      "measured_ticks": 120,
      "frame_ticks": [
       0,
+      3,
       5,
+      8,
       10,
+      13,
       15,
+      18,
       20,
+      23,
       25,
+      28,
       30,
+      33,
       35,
+      38,
       40,
+      43,
       45,
+      48,
       50,
+      53,
       55,
+      58,
       60,
+      63,
       65,
+      68,
       70,
+      73,
       75,
+      78,
       80,
+      83,
       85,
+      88,
       90,
+      93,
       95,
+      98,
       100,
+      103,
       105,
+      108,
       110,
-      115
+      113,
+      115,
+      118
      ],
      "layers": {
       "riser-south": {
@@ -2553,6 +3356,13 @@
        "as_fraction": "1/5",
        "loop_ticks": 120
       },
+      "embers-south": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
       "riser-light-south": {
        "entries": 24,
        "frame_sequence": false,
@@ -2566,6 +3376,13 @@
        "animation_speed": 0.2,
        "as_fraction": "1/5",
        "loop_ticks": 120
+      },
+      "embers-light-south": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
       }
      }
     }
@@ -2578,37 +3395,37 @@
       96
      ],
      "step_px": [
-      194,
+      198,
       292,
-      281,
-      304,
-      307,
-      299,
-      284,
-      274,
-      122,
-      69,
-      72,
-      72,
-      179,
-      306,
-      288,
-      284,
       287,
-      290,
-      306,
-      269,
+      302,
+      305,
+      300,
+      277,
+      272,
       125,
+      69,
+      67,
       73,
-      63
+      178,
+      306,
+      291,
+      286,
+      286,
+      287,
+      306,
+      264,
+      130,
+      75,
+      62
      ],
-     "wrap_px": 307,
+     "wrap_px": 310,
      "step_range": [
-      63,
-      307
+      62,
+      306
      ],
-     "wrap_within_steps": true,
-     "most_changed_px": 296,
+     "wrap_within_steps": false,
+     "most_changed_px": 295,
      "between_frames": [
       5,
       14
@@ -2654,7 +3471,7 @@
       0,
       0,
       0,
-      1,
+      0,
       0,
       0,
       0,
@@ -2674,7 +3491,7 @@
      "wrap_px": 0,
      "step_range": [
       0,
-      1
+      0
      ],
      "wrap_within_steps": true,
      "most_changed_px": 0,
@@ -2716,37 +3533,37 @@
       22
      ],
      "step_px": [
-      301,
-      276,
-      306,
-      254,
-      223,
-      276,
-      303,
-      309,
-      295,
-      248,
-      218,
-      284,
       302,
-      277,
-      307,
+      279,
+      305,
       256,
-      222,
-      275,
+      223,
+      272,
+      300,
+      308,
+      297,
+      247,
+      217,
+      283,
       302,
+      276,
+      305,
+      257,
+      223,
+      275,
+      300,
       307,
-      296,
-      249,
-      219
+      297,
+      244,
+      217
      ],
-     "wrap_px": 286,
+     "wrap_px": 284,
      "step_range": [
-      218,
-      309
+      217,
+      308
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 363,
+     "most_changed_px": 361,
      "between_frames": [
       16,
       22
@@ -2776,6 +3593,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-south": {
+     "frames": 48,
+     "frame_px": [
+      54,
+      87
+     ],
+     "step_px": [
+      108,
+      112,
+      116,
+      123,
+      141,
+      147,
+      127,
+      124,
+      112,
+      109,
+      96,
+      80,
+      106,
+      146,
+      171,
+      190,
+      185,
+      216,
+      233,
+      214,
+      197,
+      210,
+      249,
+      246,
+      228,
+      199,
+      218,
+      217,
+      190,
+      156,
+      147,
+      150,
+      143,
+      119,
+      106,
+      96,
+      90,
+      94,
+      105,
+      97,
+      103,
+      110,
+      124,
+      128,
+      119,
+      138,
+      140
+     ],
+     "wrap_px": 121,
+     "step_range": [
+      80,
+      249
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 273,
+     "between_frames": [
+      18,
+      23
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     },
     "riser-light-south": {
@@ -2915,6 +3849,123 @@
       22,
       23
      ]
+    },
+    "embers-light-south": {
+     "frames": 48,
+     "frame_px": [
+      55,
+      87
+     ],
+     "step_px": [
+      133,
+      129,
+      128,
+      121,
+      131,
+      139,
+      128,
+      126,
+      118,
+      105,
+      84,
+      80,
+      116,
+      177,
+      202,
+      219,
+      214,
+      253,
+      270,
+      242,
+      211,
+      238,
+      272,
+      260,
+      238,
+      207,
+      220,
+      232,
+      190,
+      167,
+      157,
+      154,
+      133,
+      117,
+      120,
+      109,
+      97,
+      104,
+      109,
+      109,
+      108,
+      119,
+      132,
+      135,
+      134,
+      156,
+      156
+     ],
+     "wrap_px": 139,
+     "step_range": [
+      80,
+      272
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 294,
+     "between_frames": [
+      18,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
     }
    },
    "light": {
@@ -2969,7 +4020,7 @@
      "1.5 = footprint width / 2"
     ],
     "footprint_rows_tiles": [
-     1.484375,
+     1.5,
      "bottom edge below origin; 1.5 = on the footprint"
     ],
     "lens-working-glow_white_px": [
@@ -3038,8 +4089,35 @@
      },
      "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
     ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 186,
+      "core": 16.1,
+      "halo": 33.9
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
     "frame0_vs_still": [
-     26,
+     27,
      0.0002,
      "max channel difference, and share of pixels over 8 (sampling noise)"
     ],
@@ -3055,7 +4133,7 @@
     "rolloff_px": [
      {
       "base-south": {
-       "px": 781,
+       "px": 1051,
        "most": 12
       },
       "lens-working-glow-south": {
@@ -3083,7 +4161,15 @@
        "most": 0
       },
       "mech-south": {
-       "px": 720,
+       "px": 652,
+       "most": 12
+      },
+      "embers-south": {
+       "px": 139,
+       "most": 12
+      },
+      "embers-light-south": {
+       "px": 74,
        "most": 12
       }
      },
@@ -3154,8 +4240,17 @@
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
-      "px": 0,
-      "where": null,
+      "px": 4,
+      "where": {
+       "across_px": [
+        -28.5,
+        28.5
+       ],
+       "along_px": [
+        -2,
+        -1
+       ]
+      },
       "rows_px": [
        -2,
        63
@@ -3165,15 +4260,15 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 3,
+      "px": 12,
       "where": {
        "across_px": [
-        -25.5,
-        -25.5
+        -28.5,
+        28.5
        ],
        "along_px": [
         -2,
-        0
+        -1
        ]
       }
      }
@@ -3442,7 +4537,9 @@
     "riser-light-west": "glow-anim, 24 frames",
     "glass-west": "anim (working), 24 frames",
     "glass-light-west": "glow-anim, 24 frames",
-    "mech-west": "anim, 24 frames"
+    "mech-west": "anim, 24 frames",
+    "embers-west": "anim (working), 48 frames",
+    "embers-light-west": "glow-anim, 48 frames"
    },
    "ignored": [
     "lens-working-halo-west (a white cut the engine tints: not drawn here)",
@@ -3453,15 +4550,15 @@
      3,
      3
     ],
-    "footprint_pct": 94.4,
-    "mass_pct": 107.0,
+    "footprint_pct": 94.9,
+    "mass_pct": 107.4,
     "corners_pct": {
      "NW": 96.8,
      "NE": 91.7,
      "SW": 88.2,
      "SE": 96.9
     },
-    "outer_band_pct": 88.2,
+    "outer_band_pct": 89.2,
     "rise_tiles": 0.78,
     "rise_by_column_tiles": [
      0.58,
@@ -3482,45 +4579,45 @@
    "tonal": {
     "plate": {
      "p5": 5,
-     "p50": 81,
-     "p95": 184,
-     "spread": 179
+     "p50": 79,
+     "p95": 182,
+     "spread": 177
     },
     "still": {
      "p5": 5,
-     "p50": 81,
-     "p95": 184,
-     "spread": 179
+     "p50": 79,
+     "p95": 182,
+     "spread": 177
     }
    },
    "finish": {
     "plate": {
-     "black_pct": 10.2,
-     "fine": 8.31,
-     "mid": 14.7,
+     "black_pct": 10.7,
+     "fine": 8.29,
+     "mid": 14.62,
      "ratio": 0.57,
-     "darkchr": 12.9
+     "darkchr": 12.5
     },
     "still": {
-     "black_pct": 10.1,
-     "fine": 8.41,
-     "mid": 14.77,
+     "black_pct": 10.6,
+     "fine": 8.38,
+     "mid": 14.68,
      "ratio": 0.57,
-     "darkchr": 13.0
+     "darkchr": 12.5
     }
    },
    "colour": {
-    "opaque_px": 39442,
+    "opaque_px": 39613,
     "blue_px": 0,
     "blue_pct": 0.0,
     "pale_px": 0,
     "pale_pct_of_blue": 0.0,
-    "orange_px": 3136,
-    "orange_pct": 7.95,
+    "orange_px": 2983,
+    "orange_pct": 7.53,
     "white_px": 0,
     "clipped_px": 0,
     "idle_blue_pct": 0.0,
-    "idle_orange_pct": 7.0
+    "idle_orange_pct": 6.55
    },
    "glow": {
     "lens-working-glow-west": {
@@ -3528,7 +4625,7 @@
      "peak": 109,
      "core": 27.3,
      "halo": 27.3,
-     "sat_core": 0.72,
+     "sat_core": 0.71,
      "sat_halo": 0.88,
      "white": 0,
      "blue_pct": 0.0,
@@ -3539,7 +4636,7 @@
      "peak": 137,
      "core": 28.6,
      "halo": 4.8,
-     "sat_core": 1.0,
+     "sat_core": 0.99,
      "sat_halo": 1.0,
      "white": 0,
      "blue_pct": 0.0,
@@ -3574,49 +4671,90 @@
      "range_pct": 78.5,
      "played_frames": 24,
      "loop_ticks": 120
+    },
+    "embers-light-west": {
+     "area": 34,
+     "peak": 173,
+     "core": 8.8,
+     "halo": 44.1,
+     "sat_core": 0.7,
+     "sat_halo": 0.78,
+     "white": 0,
+     "blue_pct": 0.0,
+     "frames": 48,
+     "flicker_step_pct": 101.8,
+     "range_pct": 200.5,
+     "played_frames": 48,
+     "loop_ticks": 120
     }
    },
    "motion": {
-    "loop_frames": 24,
-    "moving_pct": 2.62,
-    "strobe_pct": 0.33,
-    "strobe_px": 132,
+    "loop_frames": 48,
+    "moving_pct": 3.55,
+    "strobe_pct": 0.46,
+    "strobe_px": 182,
     "step_px": [
-     745,
-     859,
-     868,
-     764,
-     810,
-     847,
-     893,
-     863,
-     761,
-     670,
-     582,
-     609,
-     747,
-     880,
-     869,
-     766,
-     784,
-     827,
+     64,
+     805,
+     63,
+     937,
+     91,
+     952,
+     71,
+     826,
+     64,
      858,
+     42,
+     882,
+     42,
+     953,
+     103,
+     983,
+     114,
+     907,
+     184,
      846,
-     760,
-     676,
-     602
+     143,
+     739,
+     163,
+     741,
+     124,
+     859,
+     104,
+     972,
+     81,
+     938,
+     76,
+     849,
+     72,
+     842,
+     85,
+     921,
+     83,
+     952,
+     118,
+     975,
+     120,
+     870,
+     102,
+     769,
+     85,
+     692,
+     88
     ],
-    "wrap_px": 733,
+    "wrap_px": 797,
     "wrap_within_steps": true,
     "per_layer_moving_pct": {
-     "riser-west": 0.96,
+     "riser-west": 0.97,
      "glass-west": 0.09,
-     "mech-west": 0.5,
-     "riser-light-west": 1.76,
-     "glass-light-west": 0.29
+     "mech-west": 0.48,
+     "embers-west": 0.4,
+     "riser-light-west": 1.75,
+     "glass-light-west": 0.29,
+     "embers-light-west": 0.99
     },
-    "strobe_own_loop_pct": 0.33,
-    "strobe_own_loop_px": 132,
+    "strobe_own_loop_pct": 0.46,
+    "strobe_own_loop_px": 182,
     "timing": {
      "loop_ticks": 120,
      "loop_seconds": 2.0,
@@ -3624,29 +4762,53 @@
      "measured_ticks": 120,
      "frame_ticks": [
       0,
+      3,
       5,
+      8,
       10,
+      13,
       15,
+      18,
       20,
+      23,
       25,
+      28,
       30,
+      33,
       35,
+      38,
       40,
+      43,
       45,
+      48,
       50,
+      53,
       55,
+      58,
       60,
+      63,
       65,
+      68,
       70,
+      73,
       75,
+      78,
       80,
+      83,
       85,
+      88,
       90,
+      93,
       95,
+      98,
       100,
+      103,
       105,
+      108,
       110,
-      115
+      113,
+      115,
+      118
      ],
      "layers": {
       "riser-west": {
@@ -3670,6 +4832,13 @@
        "as_fraction": "1/5",
        "loop_ticks": 120
       },
+      "embers-west": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
+      },
       "riser-light-west": {
        "entries": 24,
        "frame_sequence": false,
@@ -3683,6 +4852,13 @@
        "animation_speed": 0.2,
        "as_fraction": "1/5",
        "loop_ticks": 120
+      },
+      "embers-light-west": {
+       "entries": 48,
+       "frame_sequence": false,
+       "animation_speed": 0.4,
+       "as_fraction": "2/5",
+       "loop_ticks": 120
       }
      }
     }
@@ -3695,37 +4871,37 @@
       96
      ],
      "step_px": [
-      167,
-      263,
+      168,
+      261,
       274,
-      279,
-      288,
-      289,
-      274,
-      257,
-      115,
+      277,
+      294,
+      294,
+      275,
+      258,
+      117,
       59,
-      66,
-      50,
-      164,
-      280,
-      272,
-      281,
-      284,
-      273,
-      286,
-      241,
-      92,
+      63,
       54,
+      164,
+      284,
+      275,
+      285,
+      281,
+      271,
+      283,
+      241,
+      93,
+      52,
       47
      ],
-     "wrap_px": 278,
+     "wrap_px": 275,
      "step_range": [
       47,
-      289
+      294
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 264,
+     "most_changed_px": 266,
      "between_frames": [
       5,
       14
@@ -3769,34 +4945,34 @@
       39,
       18,
       29,
-      30,
+      28,
       22,
-      23,
+      22,
       21,
       21,
       17,
       19,
-      12,
+      11,
       32,
       40,
       28,
       31,
       29,
-      30,
+      29,
       27,
-      20,
+      22,
       24,
-      18
+      17
      ],
      "wrap_px": 14,
      "step_range": [
-      12,
+      11,
       40
      ],
      "wrap_within_steps": true,
      "most_changed_px": 37,
      "between_frames": [
-      12,
+      11,
       16
      ],
      "played": [
@@ -3833,37 +5009,37 @@
       157
      ],
      "step_px": [
-      324,
+      327,
       326,
-      297,
-      261,
-      211,
-      277,
-      294,
+      295,
+      258,
+      212,
+      276,
+      293,
       330,
-      315,
-      253,
-      203,
+      318,
+      252,
+      201,
       272,
-      324,
+      327,
       326,
-      297,
-      260,
-      211,
-      277,
+      294,
+      257,
+      212,
+      276,
       294,
       331,
-      315,
-      253,
-      203
+      318,
+      252,
+      200
      ],
      "wrap_px": 271,
      "step_range": [
-      203,
+      200,
       331
      ],
      "wrap_within_steps": true,
-     "most_changed_px": 393,
+     "most_changed_px": 394,
      "between_frames": [
       16,
       22
@@ -3893,6 +5069,123 @@
       21,
       22,
       23
+     ]
+    },
+    "embers-west": {
+     "frames": 48,
+     "frame_px": [
+      40,
+      103
+     ],
+     "step_px": [
+      68,
+      69,
+      66,
+      91,
+      102,
+      91,
+      72,
+      67,
+      64,
+      61,
+      49,
+      40,
+      44,
+      59,
+      99,
+      116,
+      125,
+      156,
+      186,
+      169,
+      141,
+      161,
+      162,
+      136,
+      132,
+      121,
+      112,
+      112,
+      116,
+      87,
+      82,
+      94,
+      83,
+      71,
+      79,
+      86,
+      78,
+      94,
+      109,
+      120,
+      114,
+      118,
+      121,
+      111,
+      96,
+      96,
+      100
+     ],
+     "wrap_px": 74,
+     "step_range": [
+      40,
+      186
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 191,
+     "between_frames": [
+      19,
+      22
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
      ]
     },
     "riser-light-west": {
@@ -4032,6 +5325,123 @@
       22,
       23
      ]
+    },
+    "embers-light-west": {
+     "frames": 48,
+     "frame_px": [
+      42,
+      103
+     ],
+     "step_px": [
+      71,
+      71,
+      69,
+      94,
+      109,
+      94,
+      80,
+      73,
+      69,
+      63,
+      54,
+      42,
+      50,
+      74,
+      122,
+      138,
+      127,
+      161,
+      200,
+      189,
+      157,
+      174,
+      179,
+      145,
+      139,
+      125,
+      124,
+      115,
+      98,
+      81,
+      87,
+      95,
+      83,
+      81,
+      99,
+      100,
+      93,
+      100,
+      126,
+      136,
+      125,
+      123,
+      116,
+      101,
+      96,
+      102,
+      106
+     ],
+     "wrap_px": 80,
+     "step_range": [
+      42,
+      200
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 200,
+     "between_frames": [
+      18,
+      19
+     ],
+     "played": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47
+     ]
     }
    },
    "light": {
@@ -4155,6 +5565,33 @@
      },
      "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
     ],
+    "embers-light_white_px": [
+     0,
+     "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+    ],
+    "embers-light_clipped_px": [
+     0,
+     "the most pixels, in any frame, the light drives to white added over 'embers' on the plate; 0 = nothing clips"
+    ],
+    "embers-light_frames": [
+     [
+      48,
+      48
+     ],
+     "its frames and its plate layer 'embers''s: equal"
+    ],
+    "embers-light_edge_px": [
+     0,
+     "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+    ],
+    "embers-light_light": [
+     {
+      "peak": 174,
+      "core": 8.8,
+      "halo": 44.1
+     },
+     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+    ],
     "frame0_vs_still": [
      132,
      0.001,
@@ -4162,17 +5599,17 @@
     ],
     "cut_px": [
      {
-      "idle-west": 310,
-      "still-west": 310,
-      "lens-green-lit-west": 310,
-      "lens-amber-lit-west": 310
+      "idle-west": 344,
+      "still-west": 344,
+      "lens-green-lit-west": 344,
+      "lens-amber-lit-west": 344
      },
      "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
     ],
     "rolloff_px": [
      {
       "base-west": {
-       "px": 917,
+       "px": 748,
        "most": 12
       },
       "lens-working-glow-west": {
@@ -4184,7 +5621,7 @@
        "most": 0
       },
       "riser-west": {
-       "px": 11,
+       "px": 10,
        "most": 12
       },
       "riser-light-west": {
@@ -4192,7 +5629,7 @@
        "most": 12
       },
       "glass-west": {
-       "px": 216,
+       "px": 240,
        "most": 12
       },
       "glass-light-west": {
@@ -4200,7 +5637,15 @@
        "most": 0
       },
       "mech-west": {
-       "px": 662,
+       "px": 606,
+       "most": 12
+      },
+      "embers-west": {
+       "px": 116,
+       "most": 12
+      },
+      "embers-light-west": {
+       "px": 45,
        "most": 12
       }
      },
@@ -4241,33 +5686,60 @@
      },
      "gap": {
       "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
-      "columns": 0,
+      "columns": 2,
       "columns_allowed": 2,
       "ground_px_counted_from": 2,
       "of_columns": 41,
-      "max_ground_px": 0,
-      "where": null
+      "max_ground_px": 5,
+      "where": {
+       "across_px": [
+        -18.5,
+        -17.5
+       ],
+       "along_px": [
+        -8,
+        -4
+       ]
+      }
      },
      "pass": true,
      "why": null,
      "body": {
       "rule": "ring",
-      "found_row_px": -1,
-      "last_row_px": -1
+      "found_row_px": -13,
+      "last_row_px": -5
      },
      "band": {
       "note": "information only",
       "width": "pipe body",
-      "px": 0,
-      "ground_px": 0,
-      "where": null
+      "px": 164,
+      "ground_px": 3,
+      "where": {
+       "across_px": [
+        -19.5,
+        -17.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
      },
      "ring_band": {
       "note": "information only",
       "width": "ring",
-      "px": 0,
-      "ground_px": 0,
-      "where": null
+      "px": 204,
+      "ground_px": 22,
+      "where": {
+       "across_px": [
+        -26.5,
+        -17.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
      },
      "beside": {
       "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
@@ -4282,8 +5754,17 @@
      },
      "beside_strict": {
       "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
-      "px": 0,
-      "where": null
+      "px": 97,
+      "where": {
+       "across_px": [
+        -63.5,
+        29.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
      }
     },
     {
@@ -4561,9 +6042,9 @@
  },
  "ports": {
   "N": {
-   "missed": 0,
-   "extra": 0,
-   "far_px": 0.0,
+   "missed": 347,
+   "extra": 209,
+   "far_px": 12.73,
    "vanilla": [
     52,
     20,
@@ -4571,16 +6052,16 @@
     0.34375
    ],
    "ours": [
-    53,
-    22,
-    0.00781,
-    0.34375
+    42,
+    24,
+    0.0,
+    0.26562
    ]
   },
   "E": {
-   "missed": 0,
-   "extra": 6,
-   "far_px": 1.0,
+   "missed": 1325,
+   "extra": 107,
+   "far_px": 29.0,
    "vanilla": [
     32,
     74,
@@ -4588,16 +6069,16 @@
     0.0625
    ],
    "ours": [
-    31,
-    71,
-    -0.72656,
-    0.05469
+    5,
+    46,
+    -0.47656,
+    -0.01562
    ]
   },
   "S": {
-   "missed": 0,
+   "missed": 2893,
    "extra": 0,
-   "far_px": 0.0,
+   "far_px": 31.38,
    "vanilla": [
     64,
     70,
@@ -4605,16 +6086,16 @@
     -0.76562
    ],
    "ours": [
-    63,
-    69,
-    -0.00781,
-    -0.77344
+    42,
+    24,
+    0.0,
+    -0.6875
    ]
   },
   "W": {
-   "missed": 0,
-   "extra": 7,
-   "far_px": 1.0,
+   "missed": 1204,
+   "extra": 106,
+   "far_px": 28.0,
    "vanilla": [
     32,
     72,
@@ -4622,10 +6103,10 @@
     0.01562
    ],
    "ours": [
-    31,
-    72,
-    0.72656,
-    0.01562
+    5,
+    46,
+    0.47656,
+    -0.01562
    ]
   }
  },
@@ -5360,15 +6841,15 @@
  "pass": true,
  "sheets": [
   {
-   "path": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t07c/measure2/comparison.png",
+   "path": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/vent-pump-model/m-run3/comparison.png",
    "size": [
     5268,
-    6859
+    6723
    ]
   }
  ],
  "sheet_unsplit_px": [
   5268,
-  6859
+  6723
  ]
 }

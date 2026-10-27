@@ -12,11 +12,11 @@
  "shadow-north": {
   "size": [
    255,
-   200
+   201
   ],
   "shift": [
    0.46094,
-   -0.04688
+   -0.05469
   ]
  },
  "lens-working-glow-north": {
@@ -89,11 +89,11 @@
  "glass-north": {
   "size": [
    26,
-   38
+   37
   ],
   "shift": [
    0.3125,
-   0.53125
+   0.52344
   ],
   "frames": 24,
   "line_length": 24,
@@ -102,11 +102,11 @@
  "glass-light-north": {
   "size": [
    17,
-   15
+   14
   ],
   "shift": [
    0.30469,
-   0.66406
+   0.65625
   ],
   "frames": 24,
   "line_length": 24,
@@ -310,17 +310,17 @@
  "base-south": {
   "size": [
    194,
-   234
+   235
   ],
   "shift": [
    0.0,
-   -0.29688
+   -0.28906
   ]
  },
  "shadow-south": {
   "size": [
    256,
-   199
+   201
   ],
   "shift": [
    0.46875,
@@ -473,11 +473,11 @@
  },
  "shadow-west": {
   "size": [
-   242,
+   243,
    197
   ],
   "shift": [
-   0.39062,
+   0.38281,
    -0.00781
   ]
  },
@@ -721,7 +721,7 @@
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
    "frame0_vs_still": [
-    166,
+    167,
     0.0008,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ],
@@ -737,7 +737,7 @@
    "rolloff_px": [
     {
      "base-north": {
-      "px": 1032,
+      "px": 977,
       "most": 12
      },
      "lens-working-glow-north": {
@@ -749,7 +749,7 @@
       "most": 0
      },
      "riser-north": {
-      "px": 31,
+      "px": 37,
       "most": 12
      },
      "riser-light-north": {
@@ -757,7 +757,7 @@
       "most": 12
      },
      "glass-north": {
-      "px": 144,
+      "px": 120,
       "most": 12
      },
      "glass-light-north": {
@@ -765,11 +765,11 @@
       "most": 0
      },
      "mech-north": {
-      "px": 3474,
+      "px": 3556,
       "most": 12
      },
      "embers-north": {
-      "px": 135,
+      "px": 133,
       "most": 12
      },
      "embers-light-north": {
@@ -891,17 +891,17 @@
    ],
    "cut_px": [
     {
-     "idle-east": 311,
-     "still-east": 311,
-     "lens-green-lit-east": 311,
-     "lens-amber-lit-east": 311
+     "idle-east": 344,
+     "still-east": 344,
+     "lens-green-lit-east": 344,
+     "lens-amber-lit-east": 344
     },
     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
    ],
    "rolloff_px": [
     {
      "base-east": {
-      "px": 882,
+      "px": 920,
       "most": 12
      },
      "lens-working-glow-east": {
@@ -913,7 +913,7 @@
       "most": 0
      },
      "riser-east": {
-      "px": 25,
+      "px": 27,
       "most": 12
      },
      "riser-light-east": {
@@ -921,7 +921,7 @@
       "most": 12
      },
      "glass-east": {
-      "px": 264,
+      "px": 240,
       "most": 12
      },
      "glass-light-east": {
@@ -929,11 +929,11 @@
       "most": 0
      },
      "mech-east": {
-      "px": 1290,
+      "px": 1384,
       "most": 12
      },
      "embers-east": {
-      "px": 107,
+      "px": 105,
       "most": 12
      },
      "embers-light-east": {
@@ -952,7 +952,7 @@
     "1.5 = footprint width / 2"
    ],
    "footprint_rows_tiles": [
-    1.484375,
+    1.5,
     "bottom edge below origin; 1.5 = on the footprint"
    ],
    "lens-working-glow_white_px": [
@@ -1049,7 +1049,7 @@
     "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
    ],
    "frame0_vs_still": [
-    26,
+    27,
     0.0002,
     "max channel difference, and share of pixels over 8 (sampling noise)"
    ],
@@ -1065,7 +1065,7 @@
    "rolloff_px": [
     {
      "base-south": {
-      "px": 781,
+      "px": 1051,
       "most": 12
      },
      "lens-working-glow-south": {
@@ -1093,11 +1093,11 @@
       "most": 0
      },
      "mech-south": {
-      "px": 720,
+      "px": 652,
       "most": 12
      },
      "embers-south": {
-      "px": 141,
+      "px": 139,
       "most": 12
      },
      "embers-light-south": {
@@ -1219,17 +1219,17 @@
    ],
    "cut_px": [
     {
-     "idle-west": 310,
-     "still-west": 310,
-     "lens-green-lit-west": 310,
-     "lens-amber-lit-west": 310
+     "idle-west": 344,
+     "still-west": 344,
+     "lens-green-lit-west": 344,
+     "lens-amber-lit-west": 344
     },
     "per render, the px with alpha the footprint cut (E, W) cleared or thinned; the shadow is never cut"
    ],
    "rolloff_px": [
     {
      "base-west": {
-      "px": 917,
+      "px": 748,
       "most": 12
      },
      "lens-working-glow-west": {
@@ -1241,7 +1241,7 @@
       "most": 0
      },
      "riser-west": {
-      "px": 11,
+      "px": 10,
       "most": 12
      },
      "riser-light-west": {
@@ -1249,7 +1249,7 @@
       "most": 12
      },
      "glass-west": {
-      "px": 216,
+      "px": 240,
       "most": 12
      },
      "glass-light-west": {
@@ -1257,11 +1257,11 @@
       "most": 0
      },
      "mech-west": {
-      "px": 662,
+      "px": 606,
       "most": 12
      },
      "embers-west": {
-      "px": 115,
+      "px": 116,
       "most": 12
      },
      "embers-light-west": {

@@ -26,6 +26,7 @@ and the pipe are vanilla's hr sheets at their own size (64 px a tile, as ours). 
 import argparse
 import json
 import os
+import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -42,7 +43,10 @@ CANVAS = 416
 GROUND = (74, 66, 58, 255)
 BG = (30, 29, 28, 255)
 HEAD, TXT = (240, 200, 120), (220, 214, 204)
-FD = os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/data/base/graphics/entity")
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "tools"))
+import paths  # noqa: E402   tools/paths.py: where Factorio is
+FD = os.path.join(paths.factorio_data(), "base/graphics/entity")
 # the connections as each direction turns them: (output face, input face)
 CONN = {"north": ("N", "S"), "east": ("E", "W"), "south": ("S", "N"), "west": ("W", "E")}
 INTO = {"N": (0, -2), "E": (2, 0), "S": (0, 2), "W": (-2, 0)}
@@ -133,9 +137,9 @@ def scene(run, d, joined):
                                                                                  "horizontal") + ".png")).convert("RGBA"),
                         INTO[face])
             (front if INTO[face][1] > 0 else behind).append(p)
-        else:
-            front.append(at_tile(Image.open(os.path.join(FD, "pipe-covers", f"pipe-cover-{COVER[face]}.png"))
-                                 .convert("RGBA"), INTO[face]))
+        else:      # a north cover behind the building, as the north picture (secondary_draw_orders north = -1)
+            (behind if face == "N" else front).append(at_tile(Image.open(os.path.join(
+                FD, "pipe-covers", f"pipe-cover-{COVER[face]}.png")).convert("RGBA"), INTO[face]))
     for p in behind:
         out.alpha_composite(p)
     out.alpha_composite(building)
@@ -254,4 +258,48 @@ for d in DIRS:
     dpanels.append(row(pr))
 stack(dpanels, "T07e: the four directions, 2x, both connections joined").convert("RGB") \
     .save(os.path.join(A.out, "review-t07e-directions.png"))
+
+# ---------------------------------------------------------------- the runs into the fittings: their ends, 4x
+# the clipping check by eye: where the helium line and the downcomer meet the casings' backs (model.json "pipes",
+# each end's screen point; "ok": the end lies in what it serves)
+if os.path.exists(os.path.join(A.new, "model.json")):
+    pipes = json.load(open(os.path.join(A.new, "model.json")))["pipes"]
+    eblocks = []
+    for d in DIRS:
+        im = scene(NEW, d, {f: "pipe" for f in CONN[d]})
+        pr = []
+        for p in pipes:
+            if p["direction"] != d or not ("inlet fitting" in p["name"] or "downcomer" in p["name"]):
+                continue
+            e = p["ends"][0] if "inlet fitting" in p["name"] else p["ends"][-1]
+            sx, sy = e["screen"]
+            pr.append(captioned(crop_at(im, (CANVAS / 2 + sx * 64, CANVAS / 2 + sy * 64), 32, 4),
+                                f"{p['name'].split(':')[0]}: into the {e['to']} casing"
+                                f"{'' if e['ok'] else ' (NOT in it)'}"))
+        eblocks.append(headed(row(pr), f"{d.upper()}: the runs' ends at the fittings, 4x"))
+    stack(eblocks, "T07e: clipping, the runs into the casings").convert("RGB") \
+        .save(os.path.join(A.out, "review-t07e-ends.png"))
+
+# ---------------------------------------------------------------- the phone-sized top section (1080 px wide)
+F_T = font(14)
+tops = []
+for d in DIRS:
+    out_f, in_f = CONN[d]
+    joined = scene(NEW, d, {out_f: "pipe", in_f: "pipe"})
+    capped = scene(NEW, d, {out_f: "pipe", in_f: "cover"})
+    off = NEW_POST[d]
+    c = (CANVAS / 2 + off[0] * 64 + 5, CANVAS / 2 + off[1] * 64 + 8)
+    cells = [(crop_at(joined, conn_centre(out_f), 40, 3), "out, joined"),
+             (crop_at(joined, conn_centre(in_f), 40, 3), "in, joined"),
+             (crop_at(capped, conn_centre(in_f), 40, 3), "in, vanilla cover"),
+             (crop_at(with_post(joined, off), c, 40, 3), "wire post on its bracket")]
+    pr = []
+    for im, t in cells:
+        cap = Image.new("RGBA", (im.width, im.height + 22), BG)
+        ImageDraw.Draw(cap).text((3, 3), t, font=F_T, fill=TXT)
+        cap.alpha_composite(im, (0, 22))
+        pr.append(cap)
+    tops.append(headed(row(pr, gap=8), f"{d}"))
+top = stack(tops, "Vent Pump T07e: wall fittings + post bracket, 3x", gap=10, pad=12)
+top.convert("RGB").save(os.path.join(A.out, "review-t07e-top.png"))
 print("done")
