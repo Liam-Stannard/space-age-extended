@@ -1,0 +1,67 @@
+{
+ "A": {
+  "name": "THE GYRE",
+  "footprint": "4x4",
+  "frames": 48,
+  "animation_speed": 0.25,
+  "loop_seconds": 3.2,
+  "height_above_footprint_tiles": 0.23,
+  "top_above_origin_tiles": 2.23,
+  "blue_lit_mean_pct": 13.1,
+  "blue_lit_max_pct": 14.5,
+  "blue_lit_min_pct": 11.9,
+  "gif_frame_ms": 67
+ },
+ "B": {
+  "name": "THE LOTUS",
+  "footprint": "4x4",
+  "frames": 32,
+  "animation_speed": 0.2,
+  "loop_seconds": 2.67,
+  "height_above_footprint_tiles": 0.42,
+  "top_above_origin_tiles": 2.42,
+  "blue_lit_mean_pct": 32.4,
+  "blue_lit_max_pct": 38.3,
+  "blue_lit_min_pct": 25.6,
+  "gif_frame_ms": 83
+ },
+ "C": {
+  "name": "THE ARC SPIRE",
+  "footprint": "3x3",
+  "frames": 24,
+  "animation_speed": 0.5,
+  "loop_seconds": 0.8,
+  "height_above_footprint_tiles": 0.43,
+  "top_above_origin_tiles": 1.93,
+  "blue_lit_mean_pct": 11.9,
+  "blue_lit_max_pct": 12.7,
+  "blue_lit_min_pct": 11.2,
+  "gif_frame_ms": 33
+ },
+ "D": {
+  "name": "THE CONDUIT",
+  "footprint": "3x5",
+  "frames": 32,
+  "animation_speed": 0.4,
+  "loop_seconds": 1.33,
+  "height_above_footprint_tiles": 0.31,
+  "top_above_origin_tiles": 2.81,
+  "blue_lit_mean_pct": 7.6,
+  "blue_lit_max_pct": 7.7,
+  "blue_lit_min_pct": 7.4,
+  "gif_frame_ms": 42
+ },
+ "E": {
+  "name": "THE FEEDER",
+  "footprint": "3x5",
+  "frames": 64,
+  "animation_speed": 0.25,
+  "loop_seconds": 4.27,
+  "height_above_footprint_tiles": 0.56,
+  "top_above_origin_tiles": 3.06,
+  "blue_lit_mean_pct": 8.4,
+  "blue_lit_max_pct": 14.4,
+  "blue_lit_min_pct": 2.9,
+  "gif_frame_ms": 67
+ }
+}

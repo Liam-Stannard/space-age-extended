@@ -1888,9 +1888,45 @@ def vanilla_figures(still, light, foot):
 
 # ---------------------------------------------------------------- the sheet
 
+FONT_DIRS = ("/usr/share/fonts/truetype/dejavu",     # Debian, Ubuntu
+             "/usr/share/fonts/TTF",                 # Arch, CachyOS
+             "/usr/share/fonts/dejavu-sans-fonts",   # Fedora
+             "/usr/share/fonts/dejavu")              # older Fedora, openSUSE
+_FONT_FILES = {}
+
+
+def font_file(bold=False):
+    """The DejaVu Sans file the sheet's text is set in (Bold for titles), or None.
+
+    Looked for in FONT_DIRS, then asked of fontconfig (fc-match), whose answer counts only
+    if it is that same file: fc-match names some other font when DejaVu is not installed.
+    Found once a run; with none, says so on stderr once rather than shrink the text unasked."""
+    name = "DejaVuSans" + ("-Bold" if bold else "") + ".ttf"
+    if name not in _FONT_FILES:
+        found = next((os.path.join(d, name) for d in FONT_DIRS if os.path.isfile(os.path.join(d, name))), None)
+        if found is None:
+            try:
+                ask = subprocess.run(["fc-match", "-f", "%{file}", "DejaVu Sans" + (":bold" if bold else "")],
+                                     capture_output=True, text=True, timeout=10).stdout.strip()
+            except (OSError, subprocess.SubprocessError):
+                ask = ""
+            found = ask if os.path.basename(ask) == name and os.path.isfile(ask) else None
+        if found is None:
+            print(f"measure.py: no {name} in {', '.join(FONT_DIRS)} or from fc-match: the sheet's text "
+                  "is in Pillow's default font instead (install DejaVu Sans for the usual sheet)",
+                  file=sys.stderr)
+        _FONT_FILES[name] = found
+    return _FONT_FILES[name]
+
+
 def font(size, bold=False):
-    f = "/usr/share/fonts/truetype/dejavu/DejaVuSans" + ("-Bold" if bold else "") + ".ttf"
-    return ImageFont.truetype(f, size) if os.path.exists(f) else ImageFont.load_default()
+    f = font_file(bold)
+    if f:
+        return ImageFont.truetype(f, size)
+    try:
+        return ImageFont.load_default(size)         # Pillow 10.1 and later: at the size asked
+    except TypeError:
+        return ImageFont.load_default()
 
 
 def captioned(im, lines, colour_=TXT):

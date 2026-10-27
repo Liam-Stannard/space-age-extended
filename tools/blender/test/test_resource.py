@@ -7,8 +7,9 @@
 <resource-out> is render.sh's <out-dir> for test/resource_box.py: a target disc in three stages of
 four variations, with an effect over it. Nothing is rendered here: copies of its renders, with
 render.json edited, are packed by pack.py. --baseline names a commit with T02's resource model,
-from before its animations (vents 15d2ab7; one before the resource model, cd10283, cannot pack the
-fixture without animations, so its identity cases fail), or a later one a change is held to: its
+from before its animations (vents 15d2ab7), or a later one a change is held to; one with no resource
+model (cd10283, or master before vents was merged into it, 0df0203) has the fixture's identity cases
+skipped and its --renders alone held to it. Its
 tools (BASELINE_FILES), taken out with `git show`, are run beside
 this tree's on every --renders <render-out> (any render.sh output of a building, test/box.py's
 and test/radiant_box.py's say, or a real model's), and every file they write must be byte for
@@ -26,7 +27,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              added (passes); an effect over a name not the
              resource's, an effect with stages of its own, an effect with a bloom of [[0, 1]]
              (passes[1].over / .stages / .bloom); a sheet "checks" (passes[0].sheet); directions
-             "four", a port, a cut, ports_turn (each its own key). A flow paint animation alone,
+             "four", a port, a cut, ports_turn (each its own key); a declared light accepted, one
+             declared working refused (lights[0].working). A flow paint animation alone,
              no still: accepted. Refused, naming animations[0]'s field: a turn and a slide
              (.motion), a light (.kind), a working one (.working), one named "resource-00", whose
              frames are the resource's cells' (.name). A building's paint animation with no still
@@ -91,7 +93,15 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              one and nowhere under the day times NIGHT (less a level), and over that by 20 or more
              somewhere (a glow added at full strength); --adopted with one picture adds a panel to
              the top row alone, its place in the night row under it empty, with two is refused;
-             --gif bubble --speed 0.2: 4 frames, the four stage-0 cells side by side.
+             --day-only: a row a stage and no night rows, each row the default sheet's day row,
+             pixel for pixel; --gif bubble --speed 0.2: 4 frames, the four stage-0 cells side by side.
+             (The effect and the glow are added as preview.add_glow adds every glow since master was
+             merged, colour only where their alpha is above 0: the fixture's sheet is pixel for
+             pixel as before, pack.glow_frame leaving no colour where it is clear.)
+  lights     the fixture with a light declared (LAMP, a definition at its centre): packed, meta.json's
+             "lights" as pack.lights_meta gives them, just before "checks", and every sheet and the
+             rest of meta.json as without it; preview.py's day rows as without it, every night panel
+             brighter somewhere, nowhere darker, and nowhere over its day panel.
   measure    measure.py on the fixture (its packed sheets and its render.json), exit 0: every cell
              "SS-VV" in order, each with the cell as the plate, the effect as a glow, bubble an
              anim and bubble-light a glow-anim; motion over 4 frames; glow figures for the effect
@@ -107,8 +117,9 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
   tonal      tonal.py on the four stage-0 cells: exit 0, each measured; on an empty cell, one all at
              alpha 200, and a stage-0 cell in one run: exit 0, "no opaque pixel" for the first two,
              the third measured.
-  identity   with --baseline: on every --renders, on the fixture with its animations dropped
-             (a resource model as T02 packed it) and on it declared four ways (refused by both,
+  identity   with --baseline: on every --renders, and (a baseline with a resource model) on the
+             fixture with its animations dropped (a resource model as T02 packed it) and on it
+             declared four ways (refused by both,
              before either writes a file), pack.py's every output file (sheets and meta.json)
              and `contract.py plates`' output byte for byte as the baseline's, or both refusing
              alike: the same exit and message, the same files (none) written. Where both pack, the
@@ -119,6 +130,7 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
 """
 import argparse
 import copy
+import importlib.util
 import json
 import os
 import shutil
@@ -223,6 +235,8 @@ def opaque(im):
 # ---------------------------------------------------------------- contract
 
 # a building's declaration, as small as the contract takes: a plate, four directions
+# a declared night-only light (contract.py's `lights`), over the fixture's centre
+LAMP = dict(name="lamp", kind="definition", intensity=1, size=1, shift=[0, 0])
 BUILDING = dict(footprint=[2, 2], canvas=[192, 192], directions="four", animations=[], ports=[],
                 passes=[dict(name="idle", kind="plate", sheet="base")], rig=dict(elevation=60.0, px_per_tile=64))
 
@@ -284,6 +298,8 @@ def test_contract(decl0):
     case("a port refused", lambda d: d["ports"].append(dict(tile=[0, -1], face="N")), "ports")
     case("a cut refused", lambda d: d.update(cut=["S"]), "cut")
     case("ports_turn refused", lambda d: d.update(ports_turn=False), "ports_turn")
+    case("a declared light accepted", lambda d: d.update(lights=[dict(LAMP)]))
+    case("a working light refused", lambda d: d.update(lights=[dict(LAMP, working=True)]), "lights[0].working")
 
 
 # ---------------------------------------------------------------- the sheets
@@ -720,6 +736,13 @@ def test_preview(rdir, out):
           f"exit {code}, {got and got.size}, empty {empty}: {text[-300:]}")
     code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, one, "--adopted", ref, ref])
     check("preview.py --adopted <two pictures>: refused", code != 0 and "one plate per direction" in text, text[-300:])
+    day = os.path.join(out, "preview-day.png")
+    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, day, "--day-only"])
+    got = Image.open(day).convert("RGB") if code == 0 else None
+    rows_same = got is not None and got.size == (want[0], preview.PAD + 3 * (ph + preview.PAD)) and all(
+        same_pixels(panel(r, c, got), panel(2 * r, c)) for r in range(3) for c in range(8))
+    check("preview.py --day-only: a row a stage and no night rows, each the default sheet's day row",
+          rows_same, f"exit {code}, {got and got.size}: {text[-300:]}")
     gif = os.path.join(out, "preview.gif")
     code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, gif, "--gif", BUBBLE, "--speed", "0.2"])
     ok = code == 0 and os.path.isfile(gif)
@@ -727,6 +750,58 @@ def test_preview(rdir, out):
     check("preview.py --gif bubble: 4 frames, the four stage-0 cells side by side",
           ok and g.n_frames == 4 and g.size == (4 * decl["canvas"][0], decl["canvas"][1]),
           f"exit {code}, {(g.n_frames, g.size) if g else None}: {text[-300:]}")
+
+
+def test_lights(rdir, out):
+    """A resource model's declared lights: meta.json carries them as a building's, the sheets as
+    without them; the preview's night rows lit by them, its day rows as without them."""
+    print("lights")
+    import preview
+    lit = renders_copy(rdir, os.path.join(out, "lights-renders"), lambda d, _: d.update(lights=[dict(LAMP)]))
+    code0, text0, meta0 = packed(rdir, os.path.join(out, "lights-without"))
+    code, text, meta = packed(lit, os.path.join(out, "lights-sheets"))
+    keys = list(meta or {})
+    check("lights: packed, meta.json's lights as pack.lights_meta gives them, just before checks",
+          code == 0 and keys[-2:] == [contract.LIGHTS_KEY, "checks"]
+          and meta[contract.LIGHTS_KEY] == json.loads(json.dumps(pack.lights_meta(load_decl(lit)))),
+          f"exit {code}, keys {keys}: {text[-300:]}")
+    sheets = [f for f in files(os.path.join(out, "lights-sheets")) if f != "meta.json"]
+    same = code0 == 0 and sheets == [f for f in files(os.path.join(out, "lights-without")) if f != "meta.json"] and all(
+        open(os.path.join(out, "lights-sheets", f), "rb").read() == open(os.path.join(out, "lights-without", f),
+                                                                         "rb").read() for f in sheets)
+    check("lights: every sheet byte for byte as without them, and meta.json but for its lights",
+          same and meta0 == {k: v for k, v in meta.items() if k != contract.LIGHTS_KEY}, text0[-300:])
+    pngs = []
+    for src, name in ((rdir, "lights-preview-without.png"), (lit, "lights-preview.png")):
+        png = os.path.join(out, name)
+        c, t = run([sys.executable, os.path.join(TOOLS, "preview.py"), src, png])
+        pngs.append(Image.open(png).convert("RGB") if c == 0 else None)
+        check(f"lights: preview.py {name} exit 0", c == 0, t[-300:])
+    if None in pngs:
+        return
+    decl = load_decl(rdir)
+    pw = decl["canvas"][0] + 2 * preview.PAD
+    ph = decl["canvas"][1] + 2 * preview.PAD + preview.LABEL
+
+    def panel(sheet, r, c):
+        x, y = preview.PAD + c * (pw + preview.PAD), preview.PAD + r * (ph + preview.PAD) + preview.LABEL
+        return sheet.crop((x, y, x + pw, y + ph - preview.LABEL))
+    without, with_ = pngs
+    day_same = [(r, c) for r in range(0, 6, 2) for c in range(8)
+                if not same_pixels(panel(with_, r, c), panel(without, r, c))]
+    darker, unlit, over = [], [], []
+    for r in range(1, 6, 2):
+        for c in range(8):
+            a, b, day = panel(without, r, c), panel(with_, r, c), panel(with_, r - 1, c)
+            if ImageChops.subtract(a, b).getbbox() is not None:
+                darker.append((r, c))
+            if ImageChops.subtract(b, a).getbbox() is None:
+                unlit.append((r, c))
+            if ImageChops.subtract(b, day).getbbox() is not None:
+                over.append((r, c))
+    check("lights: the day rows as without them", not day_same, f"differ: {day_same}")
+    check("lights: every night panel brighter somewhere, nowhere darker, and nowhere over its day one",
+          not darker and not unlit and not over, f"darker {darker}, unlit {unlit}, over the day {over}")
 
 
 def test_measure(rdir, out, sheets_meta):
@@ -882,6 +957,14 @@ def test_identity(rdir0, out, rev, renders):
         print("  (no --baseline: skipped)")
         return
     base = baseline_tools(rev, out)
+    # a baseline with no resource model (master before vents was merged, say) packs no fixture: its
+    # --renders alone are held to it
+    spec = importlib.util.spec_from_file_location("baseline_contract", os.path.join(base, "contract.py"))
+    their = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(their)
+    resource_base = "resource" in their.KINDS
+    if not resource_base:
+        print(f"  ({rev} has no resource model: the fixture's cases skipped, its --renders held to it)")
     # the fixture as T02 packed it: a resource model with no animations
     still = renders_copy(rdir0, os.path.join(out, "identity-fixture-renders"),
                          lambda d, _: d.update(animations=[]))
@@ -889,8 +972,8 @@ def test_identity(rdir0, out, rev, renders):
     turned = renders_copy(rdir0, os.path.join(out, "identity-turned-renders"),
                           lambda d, _: d.update(animations=[], directions="four"))
     dirs = [(os.path.basename(os.path.normpath(r)), os.path.join(r, "renders")) for r in renders]
-    for i, (name, rdir) in enumerate(dirs + [("the fixture, no animations", still),
-                                             ("the fixture declared four ways", turned)]):
+    fixture = [("the fixture, no animations", still), ("the fixture declared four ways", turned)]
+    for i, (name, rdir) in enumerate(dirs + (fixture if resource_base else [])):
         label = f"{i + 1} {name}"
         results = {}
         for who, tools in (("baseline", base), ("this tree", TOOLS)):
@@ -951,6 +1034,7 @@ def main():
     test_effect_under(rdir, out)
     test_effect_exact(rdir, out)
     test_preview(rdir, out)
+    test_lights(rdir, out)
     test_measure(rdir, out, None if full is None else (os.path.join(out, "sheets"), full[1]))
     test_finish(rdir, out)
     test_tonal(rdir, out)

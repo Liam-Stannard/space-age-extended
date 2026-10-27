@@ -1,0 +1,32 @@
+{
+ "1": {
+  "cover_pct": 98.0,
+  "rise_tiles": 0.44,
+  "blue_pct": 1.7,
+  "changing_pct": 30.9,
+  "footprint": "5 x 5",
+  "mw_per_tile": 0.4,
+  "gif_1x_mb": 0.84,
+  "gif_2x_mb": 3.37
+ },
+ "2": {
+  "cover_pct": 97.2,
+  "rise_tiles": 0.22,
+  "blue_pct": 3.5,
+  "changing_pct": 35.1,
+  "footprint": "5 x 5",
+  "mw_per_tile": 0.4,
+  "gif_1x_mb": 0.84,
+  "gif_2x_mb": 3.27
+ },
+ "3": {
+  "cover_pct": 96.8,
+  "rise_tiles": 0.58,
+  "blue_pct": 2.3,
+  "changing_pct": 25.5,
+  "footprint": "5 x 5",
+  "mw_per_tile": 0.4,
+  "gif_1x_mb": 0.77,
+  "gif_2x_mb": 3.01
+ }
+}

@@ -56,8 +56,8 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              alone (no render.json, four directions): listed as ignored in every direction.
   identity   the box with its remnants pass taken out (and its wreck renders gone): every sheet
              and meta.json as the box's own packed with it, less remnants.png, its meta.json
-             entry, its remnants_* checks and its entry in rolloff_px. preview.py with
-             remnants: three panels a row
+             entry, its remnants_* checks and its entry in rolloff_px. preview.py --day-only
+             (one row per direction; T08f-2) with remnants: three panels a row
              (idle, working, wreck), 256 + 2 x 8 px square; without: two, of the 192 canvas;
              Model.wreck None without it. With --baseline: pack.py's sheets, preview.py's
              sheet and its --gif of each paint animation (every run exiting 0), byte for byte
@@ -68,11 +68,14 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              pass's sheets, and their size and shift in meta.json, are set aside the same way
              (each in both, or it fails): T06 crops a still glow to the box holding
              pack.LIGHT_SHARE of its light, which the baseline does not. preview.py's sheet and
-             GIFs are byte for byte as the baseline's on every model; on one with a glow pass,
+             GIFs are byte for byte as the baseline's on every model (this tree's sheet with
+             --day-only, its default since T08f-2 having night rows); on one with a glow pass,
              which preview.py draws through pack.glow_layer, this tree's are drawn with
              pack.LIGHT_SHARE set to 1 (the whole light, as before the crop: glow_layer's
-             docstring), so the crop is set aside and nothing else is. A glow animation's sheets
-             are never set aside. Both trees pack and preview a copy of the renders whose
+             docstring), so the crop is set aside and nothing else is; and the baseline's is run
+             with its glow passes' haze cleared, as this tree's draws them since T08f-3
+             (baseline_preview.py), so that is set aside and nothing else is. A glow animation's
+             sheets are never set aside. Both trees pack and preview a copy of the renders whose
              render.json says rolloff false (every other file a link to the original's):
              pack.py rolls the highlights of every sheet but a shadow's or a light's off by
              default since T07, and preview.py draws the same, which the baseline does not;
@@ -96,6 +99,7 @@ import contract  # noqa: E402
 import measure  # noqa: E402
 import pack  # noqa: E402
 import preview  # noqa: E402
+import baseline_preview  # noqa: E402
 
 FAILED = []
 NO_CATCHER = []         # --no-catcher directories
@@ -497,7 +501,10 @@ def opted_out(src, dst):
 
 def preview_run(tools, args, whole_light):
     """preview.py of tools with args; with whole_light, pack.LIGHT_SHARE set to 1 first, so a glow
-    pass is drawn with the whole of its light, as before T06's crop."""
+    pass is drawn with the whole of its light, as before T06's crop. A baseline's (tools not this
+    tree's) is run with its glow passes' haze cleared, as this tree's draws them (T08f-3)."""
+    if tools != TOOLS:
+        return run(baseline_preview.command(tools, args))
     if not whole_light:
         return run([sys.executable, os.path.join(tools, "preview.py"), *args])
     boot = ("import runpy, sys; sys.path.insert(0, sys.argv[1]); import pack; pack.LIGHT_SHARE = 1.0; "
@@ -525,7 +532,8 @@ def against_baseline(label, rdir, out, base):
         whole = bool(glows) and tools == TOOLS
         if whole:
             who += ", at LIGHT_SHARE 1"
-        code, text = preview_run(tools, [src, os.path.join(o, "preview.png")], whole)
+        day = ["--day-only"] if tools == TOOLS else []     # night rows by default since T08f-2
+        code, text = preview_run(tools, [src, os.path.join(o, "preview.png"), *day], whole)
         check(f"{label}: preview.py ({who}) exits 0", code == 0, text[-300:])
         for a in decl["animations"]:
             if a.get("kind", "paint") == "paint":
@@ -576,7 +584,7 @@ def test_identity(box, out, meta_with, rev, also):
     cw = contract.canvas_of(decl, p)[0]
     for label, rdir, n, side in (("with", src, 3, cw), ("without", bare, 2, decl["canvas"][0])):
         o = os.path.join(out, f"preview-{label}.png")
-        code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, o])
+        code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, o, "--day-only"])
         pw = side + 2 * preview.PAD
         want = (preview.PAD + n * (pw + preview.PAD), preview.PAD + 4 * (pw + preview.LABEL + preview.PAD))
         got = Image.open(o).size if code == 0 else None

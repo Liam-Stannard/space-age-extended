@@ -37,7 +37,20 @@ a pass: everything they act on is declared here.
                         "checks". Its own `canvas`
                         (optional, this kind only): [w, h] in sprite px, when the
                         wreck spreads past the model's canvas; the entity origin is
-                        its centre too
+                        its centre too. Its own `glow` (optional, this kind only):
+                        {name, sheet}, the wreck's glow -- a light left burning in it,
+                        which the corpse draws as a draw_as_glow layer over the wreck so
+                        it shows at night (Liam, 2026-10-21, the Radiant Generator's
+                        dying blue: "Make it glow at night"). `name` is a render of its
+                        own, <name>.png (<name>-<direction>.png), on the wreck's canvas:
+                        the wreck again, from the same camera and catcher, with its light
+                        on. pack.py packs it as a still glow (its docstring): that render
+                        minus the wreck's, kept to the box holding 99.9 % of its light,
+                        rolled off -- into one sheet `sheet` in the wreck's own layout, a
+                        row for each of the wreck's, cropped to one box for them all. Its
+                        name may not be a pass's, and its sheet follows the remnants
+                        sheet's rules (one file for every direction) and may not be the
+                        wreck's own or any other sheet
                 resource  a ground resource -- an ore, a vent -- as its prototype's
                         `stages` draws it: one sheet of `stages` rows by `variations`
                         columns (both whole numbers, 1 or more), rendered one cell at a
@@ -64,7 +77,8 @@ a pass: everything they act on is declared here.
                         not the model's: each cell is one still
               A resource model declares one resource pass, at most one effect pass and
               nothing else: no plate, so no Appendix C (contract.py's plate rule does not
-              apply); directions "one" (a resource never turns); no ports, no cut. Its
+              apply); directions "one" (a resource never turns); no ports, no cut; no light
+              (`lights`, below) declared working, as a resource has no working state. Its
               footprint is the resource's collision box in tiles (crude oil's
               +-1.4 is 3 x 3, an ore's 1 x 1), which pack.py measures the sheet's reach
               past. Its canvas is every cell's, the entity origin at its centre.
@@ -201,6 +215,35 @@ a pass: everything they act on is declared here.
               preview.py draws them the same way (pack.py's docstring; Liam,
               2026-10-20: "On by default, new renders only"). Left out of render.json
               when not given, so a model without it declares what it always did
+  lights      (optional; none when left out, and then left out of render.json) the
+              model's night-only lights (Liam, 2026-10-21: "Declare them"): what its
+              prototype draws only in the dark, which no render carries -- a
+              LightDefinition, or a draw_as_light layer of a picture the game ships.
+              [{name, kind, shift, working, ...}], each in the prototype's own terms, so
+              the wiring copies its numbers:
+                name     a name, once among the lights (meta.json's key for it)
+                kind     "definition": a LightDefinition of type "basic", with
+                           intensity  (0, 1], its brightness
+                           size       tiles above 0; the docs (LightDefinition, 2.1):
+                                      "The radius of the light in tiles"
+                           color      (optional) [r, g, b], each 0 to 1; white left out
+                         "layer": a draw_as_light layer of a single picture, with
+                           filename   the picture as the prototype names it, in a
+                                      game mod ("__core__/graphics/light-medium.png")
+                           width, height  the picture's px, whole (one frame: the file)
+                           scale      above 0, the layer's scale (32 px of it a tile at 1)
+                           tint       (optional) [r, g, b] or [r, g, b, a], each 0 to 1;
+                                      white left out
+                         and nothing else: a field another kind takes is refused
+                shift    [x, y] tiles from the entity origin on the screen (x right, y
+                         down), as the prototype's shift: one for every direction, or
+                         {direction: [x, y]} naming each of the model's directions
+                working  (optional, off by default) true: drawn only while the machine
+                         works (a working_visualisation's light, a layer of the
+                         `animation` and not the idle one)
+              pack.py copies them into meta.json, under "lights"; preview.py draws them
+              in its night rows (each docstring). When there are lights, no sheet may be
+              named "lights" in any direction, which is their meta.json key
 
 Run as a script, it lists a render directory's plate renders, one per direction (a
 resource model's stage-0 cells, one per variation: its richest look, measured as a plate is):
@@ -241,6 +284,13 @@ FACE_ORDER = "NESW"                     # clockwise seen from above: a quarter t
 CUT_FACES = ("E", "W", "S")             # the footprint edges `cut` may name: not N
 HOLD_KEYS = ("frame", "entries", "each")
 SEQUENCE_MAX = 255                      # the engine's limit on an animation's actual length
+# a night-only light's fields, by its kind: every one takes LIGHT_KEYS, then its own (required, optional)
+LIGHT_KEYS = ({"name", "kind", "shift"}, {"working"})
+LIGHT_KINDS = {
+    "definition": ({"intensity", "size"}, {"color"}),                   # a LightDefinition, type "basic"
+    "layer": ({"filename", "width", "height", "scale"}, {"tint"}),      # a draw_as_light layer
+}
+LIGHTS_KEY = "lights"                   # meta.json's key for them
 FILE = "render.json"
 
 
@@ -341,7 +391,7 @@ def each_direction(root, directions):
 
 
 def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None,
-            ports_turn=None, rolloff=None):
+            ports_turn=None, rolloff=None, lights=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
@@ -353,6 +403,8 @@ def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(),
         decl["ports_turn"] = ports_turn     # likewise
     if rolloff is not None:
         decl["rolloff"] = rolloff           # likewise
+    if lights is not None:
+        decl["lights"] = lights             # likewise
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -458,6 +510,10 @@ def _resource(decl, bad):
     for key in ("cut", "ports_turn"):
         if key in decl:
             bad(key, f"a resource model declares no {key}: it has no footprint edge to cut or port to turn")
+    for i, li in enumerate(decl.get("lights", ())):
+        if isinstance(li, dict) and li.get("working") is True:
+            bad(f"lights[{i}].working", f"light {li.get('name')!r} is working: a resource has no working state, "
+                f"so it would never be drawn")
 
 
 def _resource_animations(decl, bad):
@@ -542,6 +598,9 @@ def validate(decl, where):
             v = p["canvas"]
             if not (_seq(v, 2) and all(_whole(c) and c > 0 for c in v)):
                 bad(f"{field}.canvas", f"{v!r} is not [w, h], two whole numbers of px above 0")
+        if "glow" in p and p["kind"] != "remnants":
+            bad(f"{field}.glow", f"{p['kind']} pass {p['name']!r} has a glow of its own: only a remnants pass "
+                f"may (a building's glow is a glow pass over its plate)")
     kinds = [p["kind"] for p in decl["passes"]]
     resource = any(k in RESOURCE_KINDS for k in kinds)
     if resource:
@@ -665,6 +724,26 @@ def validate(decl, where):
                 f"model's directions: a remnants sheet is one file for every direction, and would be written over it")
         if p["sheet"] == "checks":
             bad(f"passes[{i}].sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
+        if "glow" not in p:
+            continue
+        g, field = p["glow"], f"passes[{i}].glow"
+        if not (isinstance(g, dict) and set(g) == {"name", "sheet"}):
+            bad(field, f"{g!r} is not {{name, sheet}}, and nothing else: the wreck's glow render's file stem "
+                f"and the sheet it packs into")
+        for key in ("name", "sheet"):
+            if not _stem(g[key]):
+                bad(f"{field}.{key}", f"{g[key]!r} is not a name (a non-empty string, no path in it)")
+        if g["name"] in names:
+            bad(f"{field}.name", f"{g['name']!r} is a pass's name: the glow's renders would be its renders")
+        if g["sheet"] in sheets:
+            bad(f"{field}.sheet", f"{g['sheet']!r} is already a sheet (the wreck's own, another pass's or an "
+                f"animation's)")
+        if g["sheet"] in taken:
+            bad(f"{field}.sheet", f"{g['sheet']!r} is the name sheet {taken[g['sheet']]!r} takes in one of the "
+                f"model's directions: the wreck's glow sheet is one file for every direction, and would be "
+                f"written over it")
+        if g["sheet"] == "checks":
+            bad(f"{field}.sheet", "'checks' is meta.json's key for the checks, not a name a sheet can take")
     if any(a.get("kind", "paint") == "paint" for a in decl["animations"]) and decl["passes"] \
             and "still" not in kinds and not resource:     # a resource's motion is held to no cell
         bad("passes", "declares animations but no still pass to hold their frame 0 to")
@@ -700,6 +779,8 @@ def validate(decl, where):
         bad("ports_turn", f"{decl['ports_turn']!r} is not true or false")
     if "rolloff" in decl and not isinstance(decl["rolloff"], bool):
         bad("rolloff", f"{decl['rolloff']!r} is not true or false: false opts out of pack.py's highlight roll-off")
+    if "lights" in decl:
+        _lights(decl, bad)
     missing = [f for f in reached_faces(decl) if f not in faces]
     if missing:
         how = ("ports_turn turns them through all four directions" if decl.get("ports_turn")
@@ -708,6 +789,79 @@ def validate(decl, where):
         bad("ports", f"the ports reach face(s) {', '.join(missing)}, which no port is declared on: {how} "
             f"(declared: {', '.join(sorted(faces, key=FACE_ORDER.index))}), and the engine draws a "
             f"connection with the picture of the face it points to; declare a port on each")
+
+
+def _unit(v, n):
+    """A colour as the prototype takes it here: n numbers (or one of the lengths in n), each 0 to 1."""
+    return _seq(v) and len(v) in n and all(_number(c) and 0 <= c <= 1 for c in v)
+
+
+def _lights(decl, bad):
+    """Hold render.json's `lights` to the contract (the docstring), naming the field that breaks it."""
+    lights = decl["lights"]
+    if not _seq(lights):
+        bad("lights", f"{lights!r} is not a list")
+    dirs = [d for d, _ in DIRECTIONS[decl["directions"]]]
+    seen = set()
+    for i, li in enumerate(lights):
+        field = f"lights[{i}]"
+        if not isinstance(li, dict):
+            bad(field, f"{li!r} is not an object")
+        if li.get("kind") not in LIGHT_KINDS:
+            bad(f"{field}.kind", f"{li.get('kind')!r} is not one of {', '.join(LIGHT_KINDS)} (a LightDefinition of "
+                f"type \"basic\", or a draw_as_light layer)")
+        need, may = LIGHT_KINDS[li["kind"]]
+        need, may = need | LIGHT_KEYS[0], may | LIGHT_KEYS[1]
+        for key in sorted(need - set(li)):
+            bad(f"{field}.{key}", f"is missing: a {li['kind']} light needs {', '.join(sorted(need))}")
+        for key in sorted(set(li) - need - may):
+            bad(f"{field}.{key}", f"is not a field of a {li['kind']} light (it takes {', '.join(sorted(need))}, "
+                f"and {', '.join(sorted(may))} if wanted)")
+        if not _stem(li["name"]):
+            bad(f"{field}.name", f"{li['name']!r} is not a name (a non-empty string, no path in it)")
+        if li["name"] in seen:
+            bad(f"{field}.name", f"{li['name']!r} is declared twice")
+        seen.add(li["name"])
+        shift = li["shift"]
+        if isinstance(shift, dict) and dirs != [""]:
+            if set(shift) != set(dirs):
+                bad(f"{field}.shift", f"names {', '.join(map(repr, shift)) or 'no direction'}: a shift per direction "
+                    f"names each of the model's, {', '.join(dirs)}, and nothing else")
+            each = [(f"{field}.shift.{d}", shift[d]) for d in dirs]
+        else:
+            each = [(f"{field}.shift", shift)]
+        for where, v in each:
+            if not (_seq(v, 2) and all(_number(c) for c in v)):
+                bad(where, f"{v!r} is not [x, y] in tiles" + ("" if dirs == [""] else
+                                                               ", or {direction: [x, y]} for each direction"))
+        if "working" in li and not isinstance(li["working"], bool):
+            bad(f"{field}.working", f"{li['working']!r} is not true or false")
+        if li["kind"] == "definition":
+            if not (_number(li["intensity"]) and 0 < li["intensity"] <= 1):
+                bad(f"{field}.intensity", f"{li['intensity']!r} is not a brightness above 0, at most 1")
+            if not (_number(li["size"]) and li["size"] > 0):
+                bad(f"{field}.size", f"{li['size']!r} is not a radius in tiles above 0")
+            if "color" in li and not _unit(li["color"], (3,)):
+                bad(f"{field}.color", f"{li['color']!r} is not [r, g, b], each 0 to 1")
+        else:
+            f = li["filename"]
+            mod, _, rest = f[2:].partition("__/") if isinstance(f, str) and f.startswith("__") else ("", "", "")
+            if not (mod and "/" not in mod and rest.endswith(".png") and "\\" not in rest
+                    and ".." not in rest.split("/")):
+                bad(f"{field}.filename", f"{f!r} is not a picture as a prototype names it, __<mod>__/<path>.png")
+            for key in ("width", "height"):
+                if not (_whole(li[key]) and li[key] > 0):
+                    bad(f"{field}.{key}", f"{li[key]!r} is not a whole number of px above 0")
+            if not (_number(li["scale"]) and li["scale"] > 0):
+                bad(f"{field}.scale", f"{li['scale']!r} is not a number above 0")
+            if "tint" in li and not _unit(li["tint"], (3, 4)):
+                bad(f"{field}.tint", f"{li['tint']!r} is not [r, g, b] or [r, g, b, a], each 0 to 1")
+    sheets = [p["sheet"] for p in decl["passes"] if p["kind"] != "still"] + [a["name"] for a in decl["animations"]] \
+        + [p["glow"]["sheet"] for p in decl["passes"] if "glow" in p]
+    for s in sheets:
+        if any(named(s, d) == LIGHTS_KEY for d in dirs) or s == LIGHTS_KEY:
+            bad("lights", f"sheet {s!r} is named {LIGHTS_KEY!r} in one of the model's directions: with lights "
+                f"declared, that is meta.json's key for them")
 
 
 def screen(decl, offset, direction):

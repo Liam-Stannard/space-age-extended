@@ -21,7 +21,13 @@ import json
 import os
 import sys
 
-from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageStat
+from PIL import Image, ImageChops, ImageDraw, ImageStat
+
+# The sheet's font is measure.py's: DejaVu Sans Bold wherever the system keeps it (Debian,
+# Arch, Fedora, openSUSE, or as fc-match names it), else Pillow's default at the size asked.
+# measure.py needs only Pillow and its own tools/blender modules, not Blender.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "blender"))
+import measure  # noqa: E402
 
 LIMIT = 7900          # under 8000 px on the longer side, with room to spare
 PAD = 16
@@ -30,14 +36,10 @@ CAP_H = 30            # a row's captions above its images
 # The tallest image a row may hold: one block title and one row on an
 # otherwise empty page still fit within LIMIT.
 MAX_IMAGE_H = LIMIT - 2 * PAD - TITLE_H - CAP_H - PAD
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
 
 def font(size):
-    try:
-        return ImageFont.truetype(FONT_PATH, size)
-    except OSError:
-        return ImageFont.load_default()
+    return measure.font(size, bold=True)
 
 
 def state_title(shot_dir, state):
