@@ -1,0 +1,205 @@
+{
+ "rule": "a pixel fails when the embers draw it (alpha >= 16) and none of its 4x4 rays meets a spark before the machine while one meets a spark behind a part; excess_px: pixels drawn more than 0.25 above the share of rays that see a spark, where some ray meets a spark behind a part; fails: each failing pixel, and px_from_seen its distance (px, the larger axis) from the nearest pixel where a ray sees a spark first",
+ "directions": {
+  "north": {
+   "frames": 96,
+   "px": 12626,
+   "fail_px": 4,
+   "fail_alpha_max": 20,
+   "behind_rays": 1202,
+   "excess_px": 0,
+   "fails": [
+    {
+     "layer": "embers-light",
+     "frame": 17,
+     "x": 165,
+     "y": 116,
+     "alpha": 17,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 18,
+     "x": 164,
+     "y": 114,
+     "alpha": 19,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 18,
+     "x": 164,
+     "y": 115,
+     "alpha": 16,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 18,
+     "x": 164,
+     "y": 115,
+     "alpha": 20,
+     "px_from_seen": 1
+    }
+   ]
+  },
+  "east": {
+   "frames": 96,
+   "px": 11748,
+   "fail_px": 8,
+   "fail_alpha_max": 34,
+   "behind_rays": 2292,
+   "excess_px": 0,
+   "fails": [
+    {
+     "layer": "embers-light",
+     "frame": 15,
+     "x": 262,
+     "y": 131,
+     "alpha": 16,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 15,
+     "x": 262,
+     "y": 132,
+     "alpha": 26,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 15,
+     "x": 262,
+     "y": 135,
+     "alpha": 17,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 18,
+     "x": 266,
+     "y": 95,
+     "alpha": 34,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 20,
+     "x": 260,
+     "y": 126,
+     "alpha": 25,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 23,
+     "x": 262,
+     "y": 117,
+     "alpha": 20,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 34,
+     "x": 266,
+     "y": 95,
+     "alpha": 24,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 36,
+     "x": 284,
+     "y": 114,
+     "alpha": 32,
+     "px_from_seen": 1
+    }
+   ]
+  },
+  "south": {
+   "frames": 96,
+   "px": 14592,
+   "fail_px": 1,
+   "fail_alpha_max": 17,
+   "behind_rays": 354,
+   "excess_px": 0,
+   "fails": [
+    {
+     "layer": "embers-light",
+     "frame": 43,
+     "x": 273,
+     "y": 254,
+     "alpha": 17,
+     "px_from_seen": 1
+    }
+   ]
+  },
+  "west": {
+   "frames": 96,
+   "px": 10151,
+   "fail_px": 7,
+   "fail_alpha_max": 28,
+   "behind_rays": 2758,
+   "excess_px": 0,
+   "fails": [
+    {
+     "layer": "embers-light",
+     "frame": 13,
+     "x": 137,
+     "y": 135,
+     "alpha": 28,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 14,
+     "x": 153,
+     "y": 140,
+     "alpha": 24,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 15,
+     "x": 139,
+     "y": 120,
+     "alpha": 19,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 16,
+     "x": 153,
+     "y": 129,
+     "alpha": 26,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 22,
+     "x": 164,
+     "y": 122,
+     "alpha": 18,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers-light",
+     "frame": 22,
+     "x": 155,
+     "y": 118,
+     "alpha": 17,
+     "px_from_seen": 1
+    },
+    {
+     "layer": "embers",
+     "frame": 46,
+     "x": 142,
+     "y": 108,
+     "alpha": 23,
+     "px_from_seen": 1
+    }
+   ]
+  }
+ }
+}

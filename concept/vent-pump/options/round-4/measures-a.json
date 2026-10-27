@@ -1,0 +1,286 @@
+{
+ "1": {
+  "cover_north": 95.5,
+  "rise_north": 0.72,
+  "cover_east": 95.8,
+  "rise_east": 0.47,
+  "cover_south": 96.2,
+  "rise_south": 0.36,
+  "cover_west": 95.3,
+  "rise_west": 0.73,
+  "glow_pct": 0.6,
+  "moving_pct": 3.0,
+  "moving_metal_pct": 1.9,
+  "moving_light_pct": 1.2,
+  "helium_pct": 1.8,
+  "finish": "black 12.4% fine 9.77 mid 15.76 ratio 0.62 darkchr 12.0",
+  "tonal": "p5 5 p50 73 p95 162 spread 157",
+  "gif_1x_mb": 0.18,
+  "gif_2x_mb": 3.49,
+  "glass": {
+   "glass_px_1x": 551,
+   "glass_box_1x": [
+    191,
+    211,
+    213,
+    245
+   ],
+   "white": {
+    "lit_1x": 4038,
+    "lit_2x": 22028,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 11655,
+    "lit_2x": 71846,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 2124,
+    "lit_2x": 20341
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 40,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 115,
+   "he_peak_2x": 109,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 330.3,
+   "he_hue_p5_p95": [
+    266.7,
+    10.1
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 5.4,
+   "full_frame": 22,
+   "draw_frame": 29
+  }
+ },
+ "2": {
+  "cover_north": 96.1,
+  "rise_north": 0.47,
+  "cover_east": 93.8,
+  "rise_east": 0.34,
+  "cover_south": 95.7,
+  "rise_south": 0.5,
+  "cover_west": 94.1,
+  "rise_west": 0.58,
+  "glow_pct": 3.8,
+  "moving_pct": 9.1,
+  "moving_metal_pct": 2.2,
+  "moving_light_pct": 7.0,
+  "helium_pct": 1.0,
+  "finish": "black 12.3% fine 9.01 mid 15.33 ratio 0.59 darkchr 12.2",
+  "tonal": "p5 5 p50 71 p95 185 spread 180",
+  "gif_1x_mb": 0.74,
+  "gif_2x_mb": 4.22,
+  "glass": {
+   "glass_px_1x": 204,
+   "glass_box_1x": [
+    207,
+    256,
+    225,
+    274
+   ],
+   "white": {
+    "lit_1x": 926,
+    "lit_2x": 8405,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 13273,
+    "lit_2x": 96473,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 5042,
+    "lit_2x": 49966
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 40,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 121,
+   "he_peak_2x": 115,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 331.7,
+   "he_hue_p5_p95": [
+    266.7,
+    10.4
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 6.21,
+   "full_frame": 2,
+   "draw_frame": 5
+  }
+ },
+ "5": {
+  "cover_north": 98.0,
+  "rise_north": 0.64,
+  "cover_east": 97.6,
+  "rise_east": 0.48,
+  "cover_south": 97.6,
+  "rise_south": 0.45,
+  "cover_west": 96.9,
+  "rise_west": 0.56,
+  "glow_pct": 0.8,
+  "moving_pct": 2.5,
+  "moving_metal_pct": 1.2,
+  "moving_light_pct": 1.3,
+  "helium_pct": 0.9,
+  "finish": "black 13.1% fine 9.08 mid 15.58 ratio 0.58 darkchr 12.1",
+  "tonal": "p5 6 p50 71 p95 154 spread 148",
+  "gif_1x_mb": 1.09,
+  "gif_2x_mb": 4.49,
+  "glass": {
+   "glass_px_1x": 175,
+   "glass_box_1x": [
+    221,
+    270,
+    240,
+    285
+   ],
+   "white": {
+    "lit_1x": 4479,
+    "lit_2x": 26079,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 9840,
+    "lit_2x": 56900,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 1862,
+    "lit_2x": 12360
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 40,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 119,
+   "he_peak_2x": 112,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 330.2,
+   "he_hue_p5_p95": [
+    266.7,
+    10.1
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 4.08,
+   "full_frame": 25,
+   "draw_frame": 30
+  }
+ },
+ "7": {
+  "cover_north": 96.6,
+  "rise_north": 0.52,
+  "cover_east": 95.6,
+  "rise_east": 0.53,
+  "cover_south": 96.3,
+  "rise_south": 0.36,
+  "cover_west": 95.5,
+  "rise_west": 0.39,
+  "glow_pct": 0.0,
+  "moving_pct": 1.2,
+  "moving_metal_pct": 1.1,
+  "moving_light_pct": 0.2,
+  "helium_pct": 0.4,
+  "finish": "black 15.1% fine 9.55 mid 15.20 ratio 0.63 darkchr 9.5",
+  "tonal": "p5 3 p50 79 p95 174 spread 171",
+  "gif_1x_mb": 0.16,
+  "gif_2x_mb": 0.57,
+  "glass": {
+   "glass_px_1x": 244,
+   "glass_box_1x": [
+    225,
+    249,
+    243,
+    269
+   ],
+   "white": {
+    "lit_1x": 178,
+    "lit_2x": 6601,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped": {
+    "lit_1x": 2110,
+    "lit_2x": 15643,
+    "glow_1x": 0,
+    "glow_2x": 0
+   },
+   "clipped_melt_orange": {
+    "lit_1x": 707,
+    "lit_2x": 5482
+   },
+   "in_glass": {
+    "white_1x": 0,
+    "white_2x": 0,
+    "clipped_1x": 0,
+    "clipped_2x": 0
+   },
+   "frames_checked": {
+    "lit": 40,
+    "glow": 32,
+    "scales": [
+     "1x",
+     "2x"
+    ]
+   },
+   "he_peak_1x": 121,
+   "he_peak_2x": 117,
+   "he_peak_in_87_171": true,
+   "he_hue_deg": 331.2,
+   "he_hue_p5_p95": [
+    266.7,
+    10.3
+   ],
+   "pale_cyan_px": 0,
+   "frost_px": 0,
+   "level_dL_1x": 6.04,
+   "full_frame": 29,
+   "draw_frame": 2
+  }
+ }
+}
