@@ -48,7 +48,8 @@
 #   <out-dir>/sheets   packed sheets + meta.json (shifts, sizes, checks)
 #                      (a remnants pass's wreck is one sheet for every direction,
 #                      named for its sheet alone: contract.py, pack.py)
-#   <out-dir>/sheets/ports     with --ports
+#   <out-dir>/sheets/ports     with --ports; a model whose render.json declares no ports
+#                              has none to render: the run says "no ports" and goes on
 #   <out-dir>/sheets/icon.png  with --icon: the 64 px mipmap strip
 #                              (tools/key-icons.py; its keyed master in sheets/masters/)
 #   <out-dir>/collide.log      with --collide: all the model's --collide run printed
@@ -160,6 +161,16 @@ python3 "$HERE/contract.py" plates "$OUT/renders" | while read -r plate; do
 done
 
 if [ -n "$PORTS" ]; then
+  # the main run's declaration (pack.py has read it already): how many ports the model has
+  PORT_COUNT="$(python3 -c 'import sys; sys.path.insert(0, sys.argv[1]); import contract
+try:
+    print(len(contract.load(sys.argv[2])["ports"]))
+except contract.ContractError as e:
+    sys.exit(f"render.sh: {e}")' "$HERE" "$OUT/renders")"
+fi
+if [ -n "$PORTS" ] && [ "$PORT_COUNT" = 0 ]; then
+  echo "no ports: $OUT/renders/render.json declares none, so --ports renders nothing"
+elif [ -n "$PORTS" ]; then
   "$BLENDER_BIN" -b --python "$MODEL" -- "$OUT/ports-hi" --ports > "$OUT/blender-ports.log" 2>&1 \
     || { tail -20 "$OUT/blender-ports.log"; exit 1; }
   python3 "$HERE/downsample.py" "$OUT/ports-hi" "$OUT/ports"
