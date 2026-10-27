@@ -173,7 +173,7 @@ def test_haze(out):
     check("its 1 px rim is clear (the fixture adds nothing under the floor)", sheet.tobytes() == inner.tobytes())
     # the light before the box: glow_layer without light_box, from its own pieces
     diff = ImageChops.subtract(lit().convert("RGB"), plate().convert("RGB"))
-    alpha = pack.drop_specks(diff.convert("L").point(lambda v: 255 if v > pack.LAYER_FLOOR else 0))
+    alpha = pack.drop_specks(pack.brightest(diff).point(lambda v: 255 if v > pack.LAYER_FLOOR else 0))
     before = luma_light(Image.merge("RGBA", (*diff.split(), alpha)))
     kept = luma_light(sheet)
     check(f"keeps {100 * kept / before:.3f} % of the light, at least {100 * SHARE:g} %", kept >= SHARE * before)

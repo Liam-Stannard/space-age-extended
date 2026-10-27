@@ -276,7 +276,7 @@ def test_contract():
 def glow_before_box(d):
     """glow_layer's light before the light box: lit minus the wreck over the floor, specks dropped."""
     diff = ImageChops.subtract(lit(d).convert("RGB"), wreck(d).convert("RGB"))
-    alpha = pack.drop_specks(diff.convert("L").point(lambda v: 255 if v > pack.LAYER_FLOOR else 0))
+    alpha = pack.drop_specks(pack.brightest(diff).point(lambda v: 255 if v > pack.LAYER_FLOOR else 0))
     return Image.merge("RGBA", (*diff.split(), alpha))
 
 

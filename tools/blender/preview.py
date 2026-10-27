@@ -48,7 +48,7 @@ them"), and the building's night panels draw it -- never a day panel, nor the wr
 building's lights do not reach; a light declared working, in the working panel alone. An
 approximation of the engine's light, kept as simple as the night itself: a light raises the
 brightness the scene is drawn at, from 0.15 towards the day's. Each light is a picture of light --
-a layer's own picture, read from the game's data (FACTORIO_DATA, default the Steam install), or
+a layer's own picture, read from the game's data (<FACTORIO_ROOT>/data, tools/paths.conf), or
 for a definition __core__/graphics/light-medium.png -- each channel times its alpha (the engine
 premultiplies a sprite as it loads it: BlendMode, 2.1), sized and centred where the prototype puts
 it (a layer's picture at its scale, 32 px of it a tile at 1; a definition's 2 x size tiles across,
@@ -108,8 +108,10 @@ import os
 import sys
 from PIL import Image, ImageChops, ImageDraw, ImageMath
 
-import contract
-import pack
+sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # tools/paths.py
+import contract  # noqa: E402
+import pack  # noqa: E402
+import paths  # noqa: E402
 
 GROUND = (74, 66, 58, 255)
 GAP = (30, 30, 30, 255)                 # between panels
@@ -122,8 +124,6 @@ LABEL = 14                              # px of label strip over each panel
 PAD = 8
 # the scene's brightness at night: the Core's darkness 0.85 at its darkest (min_brightness 0.15)
 NIGHT = 0.15
-# the game's data, where a declared light's picture is read from (the module's docstring)
-FACTORIO_DATA = os.environ.get("FACTORIO_DATA", os.path.expanduser("~/.steam/steam/steamapps/common/Factorio/data"))
 DEFINITION_PICTURE = "__core__/graphics/light-medium.png"     # this preview's stand-in for a LightDefinition's
 SPRITE_PX_PER_TILE = 32                 # a sprite's px to a tile at scale 1
 
@@ -184,12 +184,12 @@ def ground_im(size, by=1):
 
 
 def game_picture(filename):
-    """A picture as a prototype names it (__<mod>__/<path>), read from FACTORIO_DATA."""
+    """A picture as a prototype names it (__<mod>__/<path>), read from the game's data (tools/paths.conf)."""
     mod, _, rest = filename[2:].partition("__/")
-    path = os.path.join(FACTORIO_DATA, mod, rest)
+    path = os.path.join(paths.factorio_data(), mod, rest)
     if not os.path.isfile(path):
-        sys.exit(f"preview.py: a declared light's picture {filename} is not at {path}: set FACTORIO_DATA to the "
-                 f"game's data directory")
+        sys.exit(f"preview.py: a declared light's picture {filename} is not at {path}: FACTORIO_ROOT in "
+                 f"{paths.CONF} names no install with it")
     return Image.open(path).convert("RGBA")
 
 

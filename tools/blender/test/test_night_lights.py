@@ -12,7 +12,8 @@ __core__/graphics/light-medium.png at scale 0.3 tinted blue, working only, east 
 the plate, reaching past the canvas's top; "foot", a definition (intensity 0.55, size 0.5,
 orange) on the glow pass, drawn idle too. The turning one is test_remnants_glow.py's (four
 directions, a wreck with its glow), its light "lamp", a layer at a shift of its own in each
-direction. The pictures are read from the game's data (FACTORIO_DATA, as preview.py).
+direction. The pictures are read from the game's data (<FACTORIO_ROOT>/data, tools/paths.conf, as
+preview.py).
 Everything is written under --out (default: a new directory under the system's temporary one,
 named when it starts) and kept: night-lights.png is the sheet to look at.
 
@@ -41,8 +42,9 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
             the sheet's night row lighting the ground past the canvas (the lens over the top), its
             day row not, and its working night place the panel under lights the size of the
             panel, placed and gridded as the sheet places it; the turning fixture lit at each
-            direction's own shift and as without lights at the others'. FACTORIO_DATA wrong: the
-            sheet refused naming FACTORIO_DATA, --day-only drawn; a layer's width and height not
+            direction's own shift and as without lights at the others'. FACTORIO_ROOT wrong (a copy
+            of tools/blender whose paths.conf names no install): the sheet refused naming
+            FACTORIO_ROOT, --day-only drawn; a layer's width and height not
             its picture's: refused, naming them.
   identity  with --baseline. On every --renders directory (render.sh output: its renders/), none
             declaring lights: pack.py's outputs, every file, and preview.py's sheet (no flag,
@@ -65,6 +67,7 @@ sys.path.insert(0, TOOLS)
 sys.path.insert(0, HERE)
 import contract  # noqa: E402
 import preview  # noqa: E402
+import paths  # noqa: E402 (tools/, on the path preview put it on)
 import test_preview_night as pn  # noqa: E402
 import test_remnants_glow as rg  # noqa: E402
 
@@ -136,7 +139,7 @@ def differ(a, b):
 def centre_value(f=0.0):
     """light-medium's px a share f of its radius east of its centre, as the engine loads it
     (premultiplied), 0 to 1: at its centre when f is 0."""
-    im = Image.open(os.path.join(preview.FACTORIO_DATA, "core", "graphics", "light-medium.png")).convert("RGBA")
+    im = Image.open(os.path.join(paths.factorio_data(), "core", "graphics", "light-medium.png")).convert("RGBA")
     r, _, _, a = im.getpixel((im.width // 2 + round(f * im.width / 2), im.height // 2))
     return r * a / 65025
 
@@ -254,9 +257,24 @@ def want_meta():
 
 # ---------------------------------------------------------------- preview
 
-def sheet_of(rdir, png, *extra, env=None):
-    code, text = run([sys.executable, os.path.join(TOOLS, "preview.py"), rdir, png, *extra], env=env)
+def sheet_of(rdir, png, *extra, tools=TOOLS):
+    code, text = run([sys.executable, os.path.join(tools, "preview.py"), rdir, png, *extra])
     return code, text, (Image.open(png).convert("RGBA") if code == 0 else None)
+
+
+def stand_in_tree(d):
+    """d/tools/blender: tools/blender's scripts (not its tests or textures) and tools/paths.py, with a
+    paths.conf naming an install that is not there (FACTORIO_ROOT); returned, for sheet_of's tools."""
+    if os.path.exists(d):
+        shutil.rmtree(d)
+    root = os.path.join(d, "tools")
+    shutil.copytree(TOOLS, os.path.join(root, "blender"),
+                    ignore=shutil.ignore_patterns("test", "textures", "__pycache__"))
+    shutil.copy2(os.path.join(os.path.dirname(TOOLS), "paths.py"), root)
+    with open(os.path.join(root, "paths.conf"), "w") as f:
+        f.write("# the stand-in, for test_night_lights.py: no install here\n"
+                f"FACTORIO_ROOT={os.path.join(d, 'no-such-factorio')}\n")
+    return os.path.join(root, "blender")
 
 
 def test_preview(out, bplain, blit, tplain, tlit):
@@ -347,12 +365,12 @@ def test_preview(out, bplain, blit, tplain, tlit):
         check(f"the {label}: byte for byte as without lights", c1 == c2 == 0 and same_bytes(a, b),
               (t1 + t2)[-300:])
 
-    env = dict(os.environ, FACTORIO_DATA=os.path.join(out, "no-such-data"))
-    code, text, _ = sheet_of(blit, os.path.join(out, "x.png"), env=env)
-    check("FACTORIO_DATA wrong: the sheet refused, naming FACTORIO_DATA", code != 0 and "FACTORIO_DATA" in text,
+    wrong_root = stand_in_tree(os.path.join(out, "no-install"))
+    code, text, _ = sheet_of(blit, os.path.join(out, "x.png"), tools=wrong_root)
+    check("FACTORIO_ROOT wrong: the sheet refused, naming FACTORIO_ROOT", code != 0 and "FACTORIO_ROOT" in text,
           f"exit {code}: {text[-200:]}")
-    code, text, _ = sheet_of(blit, os.path.join(out, "x.png"), "--day-only", env=env)
-    check("FACTORIO_DATA wrong: --day-only drawn (no light drawn)", code == 0, text[-200:])
+    code, text, _ = sheet_of(blit, os.path.join(out, "x.png"), "--day-only", tools=wrong_root)
+    check("FACTORIO_ROOT wrong: --day-only drawn (no light drawn)", code == 0, text[-200:])
     wrong = with_lights(bplain, os.path.join(out, "building-wrong-size"), [dict(LENS, width=200)])
     code, text, _ = sheet_of(wrong, os.path.join(out, "x.png"))
     check("a layer's width and height not its picture's: refused, naming them",

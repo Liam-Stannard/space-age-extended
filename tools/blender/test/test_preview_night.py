@@ -14,7 +14,8 @@ plate), a paint pass (frost), a light pass (the lamp), a paint animation (a red 
 animation over it (cyan) and a light animation (a white beacon). Each fixture is drawn again with
 haze: its glow's render a little brighter than the plate (the building's glow pass) or the wreck (the
 wreck's glow) over a band of its own -- the plate's or the debris's foot, the shadow, bare film -- by
-(4, 6, 9), luma 6, under pack.LAYER_FLOOR, so pack.glow_layer leaves the band clear but coloured.
+(4, 6, 8), luma 6, every channel at or under pack.LAYER_FLOOR, so pack.glow_layer leaves the band
+clear but coloured.
 --baseline names a commit from before T08f (fbe533d): its contract.py, pack.py and preview.py, taken
 out with `git show`, are run beside this tree's, its preview.py both as it is and with its glow
 passes' haze cleared (baseline_preview.py: the colour pack.glow_layer leaves where its alpha is 0,
@@ -102,7 +103,7 @@ FAN_GLOW_RGB = (20, 140, 150)
 BEACON = (60, 130, 64, 134)             # the light animation: white
 HAZE = (10, 150, 182, 175)              # the building's haze band: the plate's foot and the ground under it
 WRECK_HAZE = (20, 152, 236, 215)        # the wreck's: the debris's foot, its shadow and the bare film
-HAZE_ADDS = (4, 6, 9)                   # luma 6, under pack.LAYER_FLOOR (8)
+HAZE_ADDS = (4, 6, 8)                   # luma 6, no channel over pack.LAYER_FLOOR (8)
 K = preview.NIGHT
 
 

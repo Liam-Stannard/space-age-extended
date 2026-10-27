@@ -152,7 +152,7 @@ import contract
 # centroid 1.06 px off, past LIMIT_PX.
 NOISE = 24
 LIMIT_PX = 1.0      # a turning part's drift, a sliding part's miss off its curve or its line
-LAYER_FLOOR = 8     # a working layer's difference from its plate at or under this is sampling noise
+LAYER_FLOOR = 8     # a working layer's difference from its plate with no channel over this is sampling noise
 # A glow's opaque pixels in a group of fewer than this (8-connected) are noise, not light:
 # dropped from its crop and its sheet (glow_layer). Measured 2026-10-10 on box.py's four
 # directions from three builds (blender.org's on the GPU and on the CPU, Ubuntu's on the
@@ -169,11 +169,12 @@ LAYER_FLOOR = 8     # a working layer's difference from its plate at or under th
 # any light.
 SPECK_PX = 4
 # A glow pass (a still glow: one frame, glow_layer) keeps the smallest box that holds this
-# share of its light, its light being each pixel's alpha times its luminance (PIL's "L", the
-# luma the LAYER_FLOOR cut is made on), and nothing outside it: a faint wide haze over the
-# floor, in groups too big to drop as specks, no longer stretches its crop (Liam, 2026-10-20:
-# "99.5% of light, stills"; then, shown that 99.5 % also trimmed lit edges -- up to 55 % of the
-# peak on the Reaction Plant's legs, 28 % on test/box.py's window -- "Accept, raise to 99.9%").
+# share of its light, its light being each pixel's alpha times its luminance (PIL's "L"; the
+# LAYER_FLOOR cut that sets the alpha is made on the brightest channel), and nothing outside
+# it: a faint wide haze over the floor, in groups too big to drop as specks, no longer
+# stretches its crop (Liam, 2026-10-20: "99.5% of light, stills"; then, shown that 99.5 %
+# also trimmed lit edges -- up to 55 % of the peak on the Reaction Plant's legs, 28 % on
+# test/box.py's window -- "Accept, raise to 99.9%").
 # Light passes keep their own crop (Liam: "No, glows only"). Glow animations keep every lit
 # pixel (GLOW_FLOOR, below).
 LIGHT_SHARE = 0.999
@@ -216,8 +217,8 @@ def clean(im):
 
 
 def brightest(rgb):
-    """An RGB image's brightest channel, per pixel (L): what a light is judged by against a floor,
-    as a deep blue light's luma is a ninth of its blue (PIL's L weighs blue 0.114)."""
+    """An RGB image's brightest channel, per pixel (L): what glow_layer judges a light by against
+    LAYER_FLOOR, as a deep blue light's luma is a ninth of its blue (PIL's L weighs blue 0.114)."""
     r, g, b = rgb.split()
     return ImageChops.lighter(ImageChops.lighter(r, g), b)
 
@@ -226,9 +227,10 @@ def glow_layer(lit, under):
     """A glow pass's sheet, on the full canvas: lit minus the plate under it, opaque wherever
     that is above noise inside the box that holds LIGHT_SHARE of its light.
 
-    Drawn additively, so its colour is what the light adds. Above noise is any channel of it over
-    LAYER_FLOOR (brightest), not its luma: deep blue light, its blue up to ~74 at luma 8, keeps
-    its fringe, where judged by luma it went clear (T08h). Isolated specks -- any
+    Drawn additively, so its colour is what the light adds. Above noise is any channel over
+    LAYER_FLOOR (brightest), as a paint pass and an animated glow are judged, not its luma: so a
+    deep blue light keeps its faint fringe (pure blue up to 74 is luma 8 or under, and went clear
+    when judged by luma; red up to 28, green up to 14: T08h). Isolated specks -- any
     8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
     all, so the crop (and so the sheet's size and shift) is the light's own and does
     not move with render noise; nothing dropped is drawn either. So is every opaque pixel
@@ -361,7 +363,8 @@ def glow_frame(render, bloom=None):
              for radius, gain in bloom or ()]
     for halo in halos:
         light = ImageChops.add(light, halo)
-    alpha = drop_specks(brightest(light).point(lambda v: 255 if v > GLOW_FLOOR else 0))
+    most = ImageChops.lighter(ImageChops.lighter(*light.split()[:2]), light.getchannel("B"))
+    alpha = drop_specks(most.point(lambda v: 255 if v > GLOW_FLOOR else 0))
     return Image.merge("RGBA", (*ImageChops.multiply(light, Image.merge("RGB", (alpha,) * 3)).split(), alpha))
 
 
