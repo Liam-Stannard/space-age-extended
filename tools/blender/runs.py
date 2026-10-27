@@ -19,7 +19,8 @@ recorded once and tested where the pivot has taken it):
   run(objs, centreline, r, kind, name, end_fit=((), ()), frame=None)
       objs: every object the run's call built (its swept body, ties, sleeves, end fittings);
       centreline: its points in order, from end 0 to end 1; r: its outer radius (a bundle's
-      overall radius); kind: "hose", "cables", "pipe", ...; name: a short label, printed;
+      overall radius); kind: "hose", "cables", "pipe", ...; name: a short label, printed, unique
+      among the runs (a second run of one name raises ValueError: a tee names its run by it);
       end_fit: the objects of objs that are the run's own end fitting at end 0 and at end 1 --
       a gland, a ferrule and its nut, a flange, a collar -- () where it built none. Records
       only: builds nothing, so a render never changes. A bus bar or a bare rod is not a run:
@@ -38,8 +39,12 @@ recorded once and tested where the pivot has taken it):
 
 Whatever is recorded must be checked: when the process ends with --collide among its arguments
 and something was recorded after the last check() (or none was called), it prints
+  COLLIDE runs not checked follow: 0 clashes
   COLLIDE runs not checked: <n> clashes (<n> records ...)
-a count no pair line answers for, so the run fails rather than passing untested.
+The first line is a count of its own: it closes the block before it, so pair lines a model
+printed after its last count and that --collide-allow lets through answer for that 0 and
+cannot answer for the second, which no pair line answers for: the run fails rather than
+passing untested.
 
 check(root, parts, pose=None, frames=None, moving=(), shown=None, group_of=None)
   root: the model's root (rig.turntable); every figure is in its space, tiles, z up, and the
@@ -150,6 +155,7 @@ def _unchecked():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
     n = _COUNT[0] - _COUNT[1]
     if n > 0 and "--collide" in argv:
+        print("COLLIDE runs not checked follow: 0 clashes", flush=True)       # its own block (the docstring)
         print(f"COLLIDE runs not checked: {n} clashes ({n} records made after the last runs.check, "
               "or with none called)", flush=True)
 
@@ -170,6 +176,9 @@ def run(objs, centreline, r, kind, name, end_fit=((), ()), frame=None):
         raise ValueError(f"run {name!r}: its radius must be above 0, not {r}")
     if len(end_fit) != 2:
         raise ValueError(f"run {name!r}: end_fit is (end 0's objects, end 1's), not {end_fit!r}")
+    if any(rec["name"] == name for rec in RUNS):
+        raise ValueError(f"run {name!r}: a run of that name is already recorded; run names must be unique "
+                         "(a tee fitting names the run it stands on)")
     own = _names(objs)
     fits = (_names(end_fit[0]), _names(end_fit[1]))
     stray = [n for f in fits for n in f if n not in own]

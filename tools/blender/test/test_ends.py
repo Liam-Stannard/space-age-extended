@@ -17,7 +17,9 @@ that do not, 2 when tools/paths.conf names no Blender.
                other. host-moves and shown-later: a fitting that moves off a fixed run and a part
                shown only after frame 0 are caught in the frames they happen; tee: a tee is let
                off only by the run it stands on; untestable: a run with nothing to test fails;
-               unchecked: records never checked fail at exit ("runs not checked").
+               unchecked: records never checked fail at exit ("runs not checked"), in a block of
+               their own (unchecked-absorbed: an allowed pair line printed after the model's last
+               count cannot answer for it); duplicate: a second run of one name raises.
   untagged     the COLLIDE lines are collide_box.py's own, byte for byte (ends_box.py calls
                nothing in runs.py): an untagged model prints nothing new.
   allowed      the loose case with --collide-allow naming its LOOSE line whole: PASS, one pair
@@ -80,9 +82,13 @@ CASES = {
     "untestable": (["UNTESTED wire x nothing: no part of it shown with polygons in any frame (hidden, a curve with no "
                     "bevel, or no faces)"], (0, 1, 0, 0), False),
     "unchecked": ([], None, False),
+    "unchecked-absorbed": (["meant slider x roof: frames [0]"], None, False),
+    "duplicate": ([], None, False),
     "untagged": ([], None, True),
 }
 UNCHECKED = "COLLIDE runs not checked: 2 clashes (2 records made after the last runs.check, or with none called)"
+FOLLOW = "COLLIDE runs not checked follow: 0 clashes"           # the line closing the block before it
+DUPLICATE = "run 'hose': a run of that name is already recorded; run names must be unique"
 BELOW_OK = "COLLIDE below_ok post[steel] at (+1.30,-0.60,0.08): 0.050 deep  (a footing poured into the ground)"
 BOX_LINES = ["COLLIDE parts 7, slider frames 4", "COLLIDE clashes 0"]       # collide_box.py's
 
@@ -126,8 +132,18 @@ def test_cases(out, blender):
         if case == "ground-ok":
             check("ground-ok: the below_ok line", BELOW_OK in lines, [ln for ln in lines if "below_ok" in ln])
         if case == "unchecked":
-            check("unchecked: the exit line, and nothing of runs.check's", UNCHECKED in lines
+            check("unchecked: the exit lines, a 0 count closing the block and then the clash count, and nothing "
+                  "of runs.check's", lines[-2:] == [FOLLOW, UNCHECKED]
                   and not any(ln.startswith("COLLIDE runs:") for ln in lines), lines)
+        if case == "unchecked-absorbed":
+            allowed = collide(out, case, blender, allow=[r"meant slider x roof: frames \[0\]"])
+            check("unchecked-absorbed, its pair line allowed: still FAIL (runs not checked: 1 clashes, its block 0 "
+                  "allowed)", not allowed["pass"] and len(allowed["allowed"]) == 1
+                  and "'COLLIDE runs not checked: 1 clashes" in (allowed["why"] or ""), allowed["why"])
+        if case == "duplicate":
+            text = open(res["log"]).read()
+            check("duplicate: runs.run raises naming the run (a Traceback in the log)",
+                  DUPLICATE in text and "Traceback" in (res["why"] or ""), res["why"])
         if case == "untagged":
             box = measure.collide(os.path.join(HERE, "collide_box.py"), os.path.join(out, "collide_box"), blender)
             check("untagged: its COLLIDE lines are collide_box.py's, byte for byte", lines == box["lines"],

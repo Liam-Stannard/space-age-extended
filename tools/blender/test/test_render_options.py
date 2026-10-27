@@ -582,10 +582,21 @@ def test_collide(out):
     check("an UNTESTED run and 'untested: 1 clashes': FAIL, nothing rendered",
           code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o14, "blender.log")),
           f"exit {code}: {text[-400:]}")
-    o15, code, text, _ = render("unchecked", "COLLIDE clashes 0\\nCOLLIDE runs not checked: 2 clashes (2 records)\\n",
-                                "--collide")
-    check("records never checked, 'runs not checked: 2 clashes' at exit: FAIL, nothing rendered",
+    unchecked = "COLLIDE runs not checked follow: 0 clashes\\nCOLLIDE runs not checked: 1 clashes (1 records)\\n"
+    o15, code, text, _ = render("unchecked", "COLLIDE clashes 0\\n" + unchecked, "--collide")
+    check("records never checked, 'runs not checked: 1 clashes' at exit: FAIL, nothing rendered",
           code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o15, "blender.log")),
+          f"exit {code}: {text[-400:]}")
+    # an allowed pair line after the model's last count would answer for the exit's count if it shared
+    # its block (the bare count, PASS); the 0 count runs.py prints first closes that block (FAIL)
+    meant_after = "COLLIDE clashes 0\\nCOLLIDE meant slider x roof: frames [0]\\n"
+    _, code, text, _ = render("unchecked-bare", meant_after + "COLLIDE runs not checked: 1 clashes (1 records)\\n",
+                              "--collide", "--collide-allow", whole)
+    check("an allowed pair line, then a bare 'runs not checked: 1 clashes': PASS (absorbed: why runs.py closes "
+          "the block)", "collide: PASS" in text, text[-400:])
+    o16, code, text, _ = render("unchecked-absorbed", meant_after + unchecked, "--collide", "--collide-allow", whole)
+    check("an allowed pair line, then runs.py's two exit lines: FAIL (its block 0 allowed), nothing rendered",
+          code == 1 and "its block 0 allowed" in text and not os.path.exists(os.path.join(o16, "blender.log")),
           f"exit {code}: {text[-400:]}")
 
 

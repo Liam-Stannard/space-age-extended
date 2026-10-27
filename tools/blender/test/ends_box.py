@@ -51,6 +51,10 @@ SAE_TEST_ENDS (the case; default fitted), and what the run prints after the box'
                 UNTESTED wire x nothing ..., "untested: 1 clashes"
   unchecked     the nozzle and the hose recorded, runs.check never called: the exit line
                 "runs not checked: 2 clashes"
+  unchecked-absorbed  the nozzle recorded, then a pair line "meant slider x roof: frames [0]"
+                printed, runs.check never called: with that pair allowed (--collide-allow), the
+                exit's "runs not checked: 1 clashes" still fails (its own block)
+  duplicate     a second run named "hose": runs.run raises ValueError naming it (a Traceback)
   untagged      nothing recorded and runs.check not called: collide_box.py's two lines alone
 
 test/test_ends.py runs every case and holds each to these lines and to the verdict
@@ -72,7 +76,7 @@ import runs  # noqa: E402
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 CASES = ("fitted", "loose", "short", "side", "narrow", "tangent", "axis", "buried", "floating", "body",
          "ground", "ground-ok", "ground-moving", "into-ground", "host-moves", "shown-later", "tee", "untestable",
-         "unchecked", "untagged")
+         "unchecked", "unchecked-absorbed", "duplicate", "untagged")
 CASE = os.environ.get("SAE_TEST_ENDS", "fitted")
 R_HOSE, R_TRUNK, R_BRANCH = 0.03, 0.025, 0.015
 HOST_SHIFT = 0.3                                   # how far east the host-moves case's pivot takes the nozzle
@@ -176,6 +180,11 @@ def collide():
         pivot.parent = B["ROOT"]
         nozzle.parent = pivot
     runs.fitting([nozzle], "nozzle", axis=(-1, 0, 0), frame=pivot)
+    if CASE == "unchecked-absorbed":
+        # a pair line after the box's count, which --collide-allow lets through, then one record
+        # left unchecked: the allowed line must not answer for "runs not checked: 1 clashes"
+        print("COLLIDE meant slider x roof: frames [0]", flush=True)
+        return
     if CASE == "loose":
         hose([(0.845, -0.3, 0.35), (0.93, -0.3, 0.35), (0.93, 0.0, 0.4), (0.93, 0.3, 0.45)])
     elif CASE == "short":
@@ -197,6 +206,8 @@ def collide():
              ferrule1=ferrule_down)
     else:                                       # the fitted hose: every other case has it
         hose([(0.845, -0.3, 0.35), (0.93, -0.3, 0.35)] + far, ferrule1=ferrule_down)
+    if CASE == "duplicate":                     # a second run named "hose": runs.run raises
+        hose([(0.845, -0.3, 0.35), (0.95, -0.3, 0.45)])
     frames, pose, moving = None, None, ()
     # box.py ran to its end with its renders made no-op, so its last setup() hid every part: all
     # of the machine is drawn here (the wreck is not in PARTS), but where a case says otherwise
