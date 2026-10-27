@@ -118,9 +118,11 @@ for the animation alone, its meta.json entry size, shift, frames, line_length, a
 and animation_speed as a building's; with no still, so no frame-0 check. Their checks join the flat
 ones, as a building's: <name>_cycle and <name>_sequence, and for a glow animation <name>_white_px,
 _frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (the
-cell as the screen holds it, lit_cell's: its colour where it is drawn, black where it is
-not, with its effect's cell added at full strength, when it has an effect, whatever the cell's
-alpha, as the engine adds light; then its paint layer over that, so (1 - the paint's alpha) of the
+cell as the screen holds it, lit_cell's: drawn over GROUND, snow-flat's typical colour, where
+it is clear the ground at its brightest, and a partly transparent pixel read both as its colour
+times its alpha over the ground and as its colour, whichever counts more; with its effect's cell
+added at full strength, when it has an effect, whatever the cell's alpha, as the engine adds
+light; then its paint layer over that, so (1 - the paint's alpha) of the
 effect's light shows through it, over a clear cell pixel as over an opaque one; then the light
 added; pixels white before the light is added, the effect's own clipping among them, are not
 counted): the engine plays a stateless_visualisation over whichever cell it drew, with the effect
@@ -225,6 +227,16 @@ SHADOW_MIN_PX = 64
 # tops out at 243.3, and rounded up 244: under 245.
 KNEE = 236
 TOP = 244
+# The ground under a resource cell's clear pixels (lit_cell), at its brightest: the worst case for
+# a glow clipping over it (vents T02e, Liam, 2026-10-27: "Bright worst case"). The Core without
+# Alien Biomes is Aquilo's snow and ice (prototypes/core/map-gen.lua, without_pack); the
+# brightest is snow-flat, and this is its typical colour: the per-channel median of the opaque
+# pixels of __space-age__/graphics/terrain/aquilo/snow-flat.png (measured 2026-10-27; its mean
+# (199.7, 202.1, 222.7), luminance median 211; snow-lumpy's, snow-crests' and snow-patchy-8x's
+# luminance medians 201, 202 and 153; ice-rough's and ice-smooth's 86). As the sprite holds it,
+# before the engine's lighting: the Core's darkness only dims it, so this is the brightest the
+# ground is drawn.
+GROUND = (204, 210, 234)
 
 
 def clean(im):
@@ -381,20 +393,37 @@ def add_light(under, glow):
     return Image.merge("RGBA", (*lit.split(), under.getchannel("A")))
 
 
-def lit_cell(cell, light=None):
+def lit_cell(cell, light=None, full=False):
     """A resource cell as the screen holds it once the engine has drawn it and added its effect's
     light (RGB, light added): what a stateless_visualisation's layers are drawn over. Opaque, as
-    the screen is: the cell's own colour where it is drawn (alpha above 0, as white() reads every
-    sprite), black where it is not (the ground, the darkest it can be), and the light added to
-    either whatever the cell's alpha, as the engine adds it, clipped at 255 as the screen clips.
-    A layer composited over this keeps the light where it lets the screen through: (1 - its
-    alpha) of it, over a clear cell pixel as over an opaque one. Where the cell is opaque this is
+    the screen is: the cell drawn over GROUND (its brightest, the worst case: where the cell is
+    clear the ground shows), and the light added whatever the cell's alpha, as the engine adds
+    it, clipped at 255 as the screen clips. A partly transparent pixel is its colour times its
+    alpha over the ground (exact), or with full, its colour as it is (any alpha above 0, as
+    white() reads every sprite): lit_readings gives both, for the count to take the higher. A
+    layer composited over this keeps the light where it lets the screen through: (1 - its alpha)
+    of it, over a clear cell pixel as over an opaque one. Where the cell is opaque this is
     add_light(cell, light) itself."""
-    drawn = cell.getchannel("A").point(lambda v: 255 if v else 0)
-    rgb = ImageChops.multiply(cell.convert("RGB"), Image.merge("RGB", (drawn,) * 3))
+    ground = Image.new("RGBA", cell.size, GROUND + (255,))
+    if full:
+        drawn = cell.getchannel("A").point(lambda v: 255 if v else 0)
+        rgb = Image.composite(cell.convert("RGB"), ground.convert("RGB"), drawn)
+    else:
+        rgb = Image.alpha_composite(ground, cell.convert("RGBA")).convert("RGB")
     if light is not None:
         rgb = ImageChops.add(rgb, light.convert("RGB"))
     return Image.merge("RGBA", (*rgb.split(), Image.new("L", cell.size, 255)))
+
+
+def lit_readings(cell, light=None):
+    """lit_cell's readings of a cell: exact, and where any pixel is partly transparent its
+    full-colour one too. Over a bright ground neither is the safe side for every pixel: exact is
+    the brighter where the cell is darker than the ground, full where it is paler, and a pixel
+    already white before the glow is not counted, so brighter is not always more. The clipped
+    count (glow_checks, the most over its plates) takes whichever reading counts more."""
+    a = cell.getchannel("A")
+    partial = a.point(lambda v: 255 if 0 < v < 255 else 0).getbbox() is not None
+    return [lit_cell(cell, light)] + ([lit_cell(cell, light, full=True)] if partial else [])
 
 
 def light_stats(glow, thresh=12):
@@ -834,7 +863,7 @@ class Packer:
         one frame for each of its plate layer's. siblings: the other glow animations over the
         same plate layer (a model's windows of different blooms, radiant.py): the engine draws
         them all, so the clipping is counted with all of them added. plate: the image the layers
-        are drawn over, or a list of them, each counted (a resource's cells as lit_cell gives them,
+        are drawn over, or a list of them, each counted (a resource's cells as lit_readings gives them,
         each with its effect's light added, any of which its stateless_visualisation may play over),
         `on` naming them in the check's note."""
         name, over = anim["name"], anim["over"]
@@ -997,7 +1026,7 @@ class Packer:
         grid = contract.cells(decl)
         checks = {}
         cells = {sv: clean(self.open(contract.cell(res["name"], *sv), "")) for sv in grid}
-        lit_cells = {sv: lit_cell(im) for sv, im in cells.items()}   # what an animation plays over (lit_cell)
+        lit_cells = {sv: lit_readings(im) for sv, im in cells.items()}   # what an animation plays over (lit_cell)
         for sv, im in cells.items():         # every cell of a resource holds something
             self.box_of(im.getchannel("A"), contract.cell(res["name"], *sv) + ".png")
         reach_box = self.grid_sheet(res, cells, "resource")
@@ -1011,7 +1040,7 @@ class Packer:
             if p["kind"] != "effect":
                 continue
             lights = {sv: glow_frame(self.open(contract.cell(p["name"], *sv), ""), p.get("bloom")) for sv in grid}
-            lit_cells = {sv: lit_cell(cells[sv], lights[sv]) for sv in grid}
+            lit_cells = {sv: lit_readings(cells[sv], lights[sv]) for sv in grid}
             self.grid_sheet(p, lights, "effect")
             self.cell_edges(p, {sv: g.getchannel("A") for sv, g in lights.items()}, checks)
             name = p["sheet"]
@@ -1039,9 +1068,10 @@ class Packer:
                 siblings = [b["name"] for b in decl["animations"]
                             if b.get("kind") == "glow" and b["over"] == a["over"] and b["name"] != a["name"]]
                 fx = [q["name"] for q in decl["passes"] if q["kind"] == "effect"]
-                checks.update(self.glow_checks(a, packed, list(lit_cells.values()), "", siblings,
-                                               on=f"each cell of {res['name']!r}" + (
-                                                   f" with {fx[0]!r}'s light added at full strength" if fx else "")))
+                plates = [r for rs in lit_cells.values() for r in rs]    # every cell, every reading
+                on = f"each cell of {res['name']!r} over the ground at its brightest {GROUND}" + (
+                    f" with {fx[0]!r}'s light added at full strength" if fx else "")
+                checks.update(self.glow_checks(a, packed, plates, "", siblings, on=on))
         if self.roll_on:
             checks["rolloff_px"] = (self.rolls.get("", {}), f"per sheet, the px the highlight roll-off changed "
                                     f"(brightest channel over {KNEE}, eased under {TOP}, hue kept) and the most a "
