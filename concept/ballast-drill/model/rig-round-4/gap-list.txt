@@ -1,0 +1,64 @@
+Ballast drill, cast take: the gaps the cut-back left (T03g)
+================================================================
+
+How found: rig_parts.py's survey and voids passes (a 0.025-tile grid over the cut-back band:
+the rounded square 1.94 out, corner arcs 0.44). A gap is a cell with something over the band's
+roof (Z1 1.25) and open air under it at the ledge (Z0 + 0.06), the band's middle or its roof
+(Z1 - 0.04). Counted on the signed-off model (no cut-back), T03f's cast plate (before) and
+T03g's (after); a cell open before or after but not in the signed-off model is one the
+cut-back made.
+
+                         open cells  of them made by the cut-back
+  signed-off model         1222        -
+  T03f cast (before)       2883        1746
+  T03g cast (after)         942          14   (all slivers under 0.05 tile: below)
+
+The plate is one picture for all four directions (the drill does not turn), so each gap shows
+in the dry view of every direction at the same place. Plan coordinates in tiles from the
+centre, x east, y north (the body's, before the screen's y stretch); z up from the ground.
+
+ #  where                               plan x            plan y            void z          size (x * y * z)   cells
+ G1 under the SE cabinet ("50" panel)   0.79 .. 1.61      -2.44 .. -1.94    0.53 .. 1.30    0.82 * 0.50 * 0.77   520
+    (Liam's marked crop)
+ G2 under the SW housing               -1.61 .. -0.81     -2.49 .. -1.94    0.53 .. 1.25    0.80 * 0.55 * 0.72   526
+ G3 under the NE drive cabinet          1.96 .. 2.26       0.76 .. 1.46     0.53 .. 1.25    0.30 * 0.70 * 0.72   346
+ G4 under the NW drive cabinet         -2.26 .. -1.96      0.76 .. 1.46     0.53 .. 1.25    0.30 * 0.70 * 0.72   346
+ G5 the SE and SW wings' inner corners  +-1.96 .. +-1.99   -1.49 .. -1.46   0.53 .. 1.25    0.05 * 0.05            4 + 4
+
+Filled ("Cast infill to the wall"): G1-G4, each by a cast block (rig_parts.INFILL) from the
+ledge up 0.004 into the overhang and out to the footprint's face (2.496), in the plinth's own
+cast iron (the chassis's "iron"), a bolted cast lip along its top; the ends that meet the corner
+girders stop 0.0005 short of the girders' ends at 1.5.
+  G1  x 0.775 .. 1.4995,   y -2.496 .. -1.93, z 0.53 .. 1.304
+  G2  x -1.4995 .. -0.775, y -2.496 .. -1.93, z 0.53 .. 1.254
+  G3  x 1.93 .. 2.496,     y 0.765 .. 1.4995, z 0.53 .. 1.254
+  G4  x -2.496 .. -1.93,   y 0.765 .. 1.4995, z 0.53 .. 1.254
+
+Left after (the 14 cells): G5 (8 cells, 0.05 * 0.05 tile, about 3 px, at the arcs' start on the
+east and west faces, under the south wings' inner corner: behind the wing and the corner girder
+from the game's camera; the corner girder bears there); the strip y 0.75 .. 0.765 under the NE
+and NW drive cabinets' south edges (4 cells, 0.015 tile, under 1 px); one cell each at
+(+-1.61, -1.94) (2 cells, 0.025 tile, at the corner notch's edge).
+
+Wet (the direction's layers meet the infills):
+  north  G1-G4 each hold a junction (S(1,2), S(-1,2), E(2,-1), W(-2,-1)): each shows only its
+         connection's wall fitting at the face (slot, niche, sleeve, end ring); the runs leave
+         G3/G4 at their south faces and go into G1/G2 at their corner faces, through collars
+  east   G1 (S(1,2)) and G4 (W(-2,-1)) hold junctions; the runs cross G2 and leave G4 north
+  south  runs pass through G3 and G4
+  west   G2 (S(-1,2)) and G3 (E(2,-1)) hold junctions; the runs cross G1 and leave G3 north
+  (rig.json, "niches" and "collars", per direction.)
+
+Not gaps (looked at, left as they are; open in the signed-off model too):
+  - the corner notches under the south wings (SE/SW x |1.64 .. 2.04|, y -2.31 .. -1.44): the
+    cast leg runs down to its pad and the T03f frame carries the corner;
+  - the bay over the east and west doors (x |1.96 .. 2.2|, y 0.44 .. 0.75), under the
+    gear-house at 2.84: the signed-off model's own;
+  - the open gallery (the ledge at 0.53 with nothing over it): the cut-back's floor, where the
+    runs pass in the open, as T03d-T03f.
+
+The two small gaps (T03f's orphans pass; rig_parts.fix_gaps moves each onto its host):
+  S1 junction box (jbox, Cube.581) 0.0151 off the NW gear-house roof (Cube.576): moved
+     (+0.0108, +0.0108, -0.0049); orphans after: 0
+  S2 brass port (Cylinder.978) 0.0115 off its outlet block (Cube.190): moved (0, +0.0125, 0);
+     orphans after: 0
