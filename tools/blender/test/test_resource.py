@@ -66,8 +66,19 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              every channel wherever the cell is opaque: bubble-light's light, added over bubble on
              each cell alone, whitens nothing, and with the effect's light under it some pixels;
              bubble-light_clipped_px is that count (pack.py: the effect's light added under a glow
-             animation), the pack refused naming bubble-light, meta.json written; the effect's own
+             animation, the cell opaque in its colour where drawn, black where not, the light added
+             to it, then the paint over that), the pack refused naming bubble-light, meta.json written; the effect's own
              white_px 0.
+  effect exact  pack.lit_cell and glow_checks on a 4 x 4 cell, pixel by pixel (vents T02d): the
+             reviewer's case, a clear cell pixel lit (200, 200, 200) under a paint pixel (50, 0, 0,
+             128), is the paint over the light, within a level of (125, 100, 100), not (50, 0, 0,
+             128), and a glow of (125, 150, 150) there whitens it; a glow of (60, 60, 60) under the
+             same does not; an opaque (100, 100, 100) pixel lit 100 and a glow of 50 whitens it (as
+             add_light reads it); a clear pixel lit 200, no paint, a glow of 50 whitens it; a clear
+             pixel unlit, a glow of 200, does not; a pixel cleaned clear with its colour (240, 240,
+             240) kept, unlit, a glow of 10, does not (not drawn: the ground). g_clipped_px 3; the
+             T02c rule (add_light, then the paint composited) gave (50, 0, 0, 128) there and whitened
+             (3, 1), (2, 2) and (1, 3): the reviewer's pixel missed, the undrawn one counted.
   preview    preview.py on the renders, exit 0: a sheet of a row a stage, each with its night row
              under it, each of the four variations' panels and then the four with the effect, the
              panel size the canvas and its pads; every effect panel at least its plain panel's every
@@ -518,10 +529,19 @@ def test_effect_under(rdir, out):
     bubble = [pack.clean(open_(src, contract.frame(BUBBLE, f))) for f in range(4)]
     glow = [pack.glow_frame(open_(src, contract.frame(LIGHT, f)), a.get("bloom")) for f in range(4)]
     with_fx = without = 0
+
+    def screen(cell, light=None):
+        # the cell as drawn (its colour where alpha > 0, black where not), the light added, opaque
+        drawn = cell.getchannel("A").point(lambda x: 255 if x else 0)
+        rgb = ImageChops.multiply(cell.convert("RGB"), Image.merge("RGB", (drawn,) * 3))
+        if light is not None:
+            rgb = ImageChops.add(rgb, light.convert("RGB"))
+        rgb.putalpha(255)
+        return rgb
     for s, v in contract.cells(decl):
         cell = pack.clean(open_(src, contract.cell(RES, s, v)))
-        lit_cell = pack.add_light(cell, pack.glow_frame(open_(src, contract.cell(FX, s, v))))
-        for base, which in ((lit_cell, "with"), (cell, "without")):
+        lit_cell = screen(cell, pack.glow_frame(open_(src, contract.cell(FX, s, v))))
+        for base, which in ((lit_cell, "with"), (screen(cell), "without")):
             for b, g in zip(bubble, glow):
                 under = base.copy()
                 under.alpha_composite(b)
@@ -538,6 +558,56 @@ def test_effect_under(rdir, out):
           code != 0 and LIGHT in text and got == with_fx, f"exit {code}, clipped_px {got} vs {with_fx}: {text[-400:]}")
     fx = (meta or {}).get("checks", {}).get(f"{FX}_white_px", [None])[0]
     check("the lifting effect: its own white_px 0", fx == 0, f"{fx}")
+
+
+def test_effect_exact(rdir, out):
+    """The effect's light under a glow animation, pixel by pixel (vents T02d): light is added on the
+    screen whatever the cell's alpha, and a paint layer over it lets (1 - its alpha) of it through."""
+    print("effect exact")
+    size = (4, 4)
+    cell, light, paint, glow = (Image.new("RGBA", size) for _ in range(4))
+    # (pixel, cell, the effect's light, paint, the glow, whitened)
+    cases = [((1, 1), (0, 0, 0, 0), (200, 200, 200), (50, 0, 0, 128), (125, 150, 150), True),
+             ((2, 1), (0, 0, 0, 0), (200, 200, 200), (50, 0, 0, 128), (60, 60, 60), False),
+             ((3, 1), (100, 100, 100, 255), (100, 100, 100), None, (50, 50, 50), True),
+             ((2, 2), (0, 0, 0, 0), (200, 200, 200), None, (50, 50, 50), True),
+             ((0, 3), (0, 0, 0, 0), None, None, (200, 200, 200), False),
+             ((1, 3), (240, 240, 240, 0), None, None, (10, 10, 10), False)]
+    for xy, c, li, pa, gl, _ in cases:
+        cell.putpixel(xy, c)
+        if li:
+            light.putpixel(xy, li + (255,))
+        if pa:
+            paint.putpixel(xy, pa)
+        glow.putpixel(xy, gl + (255,))
+    tiny = dict(footprint=[1, 1], canvas=list(size), directions="one", rig=dict(elevation=60.0, px_per_tile=64))
+    packer = pack.Packer(rdir, out, tiny)
+    anim = dict(name="g", over="p")
+    frames = {"g": [glow], "p": [paint]}
+    base = pack.lit_cell(cell, light)
+    under = base.copy()
+    under.alpha_composite(paint)
+    got = under.getpixel((1, 1))
+    check("the reviewer's case: a clear cell pixel lit (200, 200, 200) under paint (50, 0, 0, 128) is the paint "
+          "over the light, within a level of (125, 100, 100), not (50, 0, 0, 128)",
+          got[:3] != (50, 0, 0) and all(abs(g - w) <= 1 for g, w in zip(got[:3], (125, 100, 100))), f"{got}")
+    lit = pack.add_light(under, glow)
+    whitened = {xy for xy, *_ in cases if pack.white(lit).getpixel(xy) and not pack.white(under).getpixel(xy)}
+    want = {xy for xy, *_, w in cases if w}
+    check("each pixel whitened as listed (the paint over the light; the opaque cell as add_light reads it; a clear "
+          "lit pixel with no paint; nothing on a clear pixel drawn)", whitened == want,
+          f"whitened {sorted(whitened)}, want {sorted(want)}")
+    n = packer.glow_checks(anim, frames, [base], "")["g_clipped_px"][0]
+    check("glow_checks over lit_cell: g_clipped_px 3", n == 3, f"{n}")
+    old = pack.add_light(cell, light)
+    old_under = old.copy()
+    old_under.alpha_composite(paint)
+    old_lit = pack.add_light(old_under, glow)
+    old_set = {xy for xy, *_ in cases if pack.white(old_lit).getpixel(xy) and not pack.white(old_under).getpixel(xy)}
+    check("the T02c rule (add_light, then the paint composited) gave (50, 0, 0, 128) there and whitened (3, 1), "
+          "(2, 2) and (1, 3): the reviewer's pixel missed, the undrawn one counted; the case tells them apart",
+          old_under.getpixel((1, 1)) == (50, 0, 0, 128) and old_set == {(3, 1), (2, 2), (1, 3)},
+          f"{old_under.getpixel((1, 1))}, {sorted(old_set)}")
 
 
 # ---------------------------------------------------------------- preview, measure, finish
@@ -838,6 +908,7 @@ def main():
     test_rolloff(rdir, out)
     test_refused(rdir, out)
     test_effect_under(rdir, out)
+    test_effect_exact(rdir, out)
     test_preview(rdir, out)
     test_measure(rdir, out, None if full is None else (os.path.join(out, "sheets"), full[1]))
     test_finish(rdir, out)

@@ -118,11 +118,13 @@ for the animation alone, its meta.json entry size, shift, frames, line_length, a
 and animation_speed as a building's; with no still, so no frame-0 check. Their checks join the flat
 ones, as a building's: <name>_cycle and <name>_sequence, and for a glow animation <name>_white_px,
 _frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (the
-cell with its effect's cell added at full strength under it, when it has an effect, as the
-effect's own _clipped_px reads it; then its paint layer over that, the light added; pixels white
-before the light is added, the effect's own clipping among them, are not counted): the engine plays
-a stateless_visualisation over whichever cell it drew, with the effect drawn under it. A glow
-animation's failing checks fail the pack as a building's do.
+cell as the screen holds it, lit_cell's: its colour where it is drawn, black where it is
+not, with its effect's cell added at full strength, when it has an effect, whatever the cell's
+alpha, as the engine adds light; then its paint layer over that, so (1 - the paint's alpha) of the
+effect's light shows through it, over a clear cell pixel as over an opaque one; then the light
+added; pixels white before the light is added, the effect's own clipping among them, are not
+counted): the engine plays a stateless_visualisation over whichever cell it drew, with the effect
+drawn under it. A glow animation's failing checks fail the pack as a building's do.
 Exits 1 naming the sheet and the cell when a check fails, meta.json written first.
 
 The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
@@ -377,6 +379,22 @@ def add_light(under, glow):
     """under (RGBA) with a glow sheet's frame added, as the engine adds it: RGB only."""
     lit = ImageChops.add(under.convert("RGB"), glow.convert("RGB"))
     return Image.merge("RGBA", (*lit.split(), under.getchannel("A")))
+
+
+def lit_cell(cell, light=None):
+    """A resource cell as the screen holds it once the engine has drawn it and added its effect's
+    light (RGB, light added): what a stateless_visualisation's layers are drawn over. Opaque, as
+    the screen is: the cell's own colour where it is drawn (alpha above 0, as white() reads every
+    sprite), black where it is not (the ground, the darkest it can be), and the light added to
+    either whatever the cell's alpha, as the engine adds it, clipped at 255 as the screen clips.
+    A layer composited over this keeps the light where it lets the screen through: (1 - its
+    alpha) of it, over a clear cell pixel as over an opaque one. Where the cell is opaque this is
+    add_light(cell, light) itself."""
+    drawn = cell.getchannel("A").point(lambda v: 255 if v else 0)
+    rgb = ImageChops.multiply(cell.convert("RGB"), Image.merge("RGB", (drawn,) * 3))
+    if light is not None:
+        rgb = ImageChops.add(rgb, light.convert("RGB"))
+    return Image.merge("RGBA", (*rgb.split(), Image.new("L", cell.size, 255)))
 
 
 def light_stats(glow, thresh=12):
@@ -816,9 +834,9 @@ class Packer:
         one frame for each of its plate layer's. siblings: the other glow animations over the
         same plate layer (a model's windows of different blooms, radiant.py): the engine draws
         them all, so the clipping is counted with all of them added. plate: the image the layers
-        are drawn over, or a list of them, each counted (a resource's cells, each with its effect's
-        light added, any of which its stateless_visualisation may play over), `on` naming them in the
-        check's note."""
+        are drawn over, or a list of them, each counted (a resource's cells as lit_cell gives them,
+        each with its effect's light added, any of which its stateless_visualisation may play over),
+        `on` naming them in the check's note."""
         name, over = anim["name"], anim["over"]
         glows, unders = packed[name], packed[over]
         plates = plate if isinstance(plate, list) else [plate]
@@ -979,7 +997,7 @@ class Packer:
         grid = contract.cells(decl)
         checks = {}
         cells = {sv: clean(self.open(contract.cell(res["name"], *sv), "")) for sv in grid}
-        lit_cells = dict(cells)              # each cell with its effect's light added: what an animation plays over
+        lit_cells = {sv: lit_cell(im) for sv, im in cells.items()}   # what an animation plays over (lit_cell)
         for sv, im in cells.items():         # every cell of a resource holds something
             self.box_of(im.getchannel("A"), contract.cell(res["name"], *sv) + ".png")
         reach_box = self.grid_sheet(res, cells, "resource")
@@ -993,7 +1011,7 @@ class Packer:
             if p["kind"] != "effect":
                 continue
             lights = {sv: glow_frame(self.open(contract.cell(p["name"], *sv), ""), p.get("bloom")) for sv in grid}
-            lit_cells = {sv: add_light(cells[sv], lights[sv]) for sv in grid}
+            lit_cells = {sv: lit_cell(cells[sv], lights[sv]) for sv in grid}
             self.grid_sheet(p, lights, "effect")
             self.cell_edges(p, {sv: g.getchannel("A") for sv, g in lights.items()}, checks)
             name = p["sheet"]
