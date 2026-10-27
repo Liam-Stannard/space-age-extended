@@ -1,0 +1,72 @@
+{
+ "6": {
+  "cover": 81.2,
+  "rise": 0.48,
+  "blue": 0.8,
+  "moving": 9.1,
+  "bbox": [
+   2.98,
+   5.48
+  ],
+  "frames": 24,
+  "gif_1x_MB": 1.1,
+  "gif_2x_MB": 3.16,
+  "sheet": "6-the-alternator-hall.png"
+ },
+ "7": {
+  "cover": 73.6,
+  "rise": 0.38,
+  "blue": 3.7,
+  "moving": 18.6,
+  "bbox": [
+   4.06,
+   4.47
+  ],
+  "frames": 24,
+  "gif_1x_MB": 0.98,
+  "gif_2x_MB": 3.34,
+  "sheet": "7-the-plate-rack.png"
+ },
+ "8": {
+  "cover": 61.4,
+  "rise": 0.39,
+  "blue": 0.1,
+  "moving": 20.7,
+  "bbox": [
+   3.84,
+   4.52
+  ],
+  "frames": 24,
+  "gif_1x_MB": 1.15,
+  "gif_2x_MB": 4.67,
+  "sheet": "8-the-charge-and-dump-bank.png"
+ },
+ "9": {
+  "cover": 57.0,
+  "rise": 0.77,
+  "blue": 1.0,
+  "moving": 4.9,
+  "bbox": [
+   2.86,
+   3.78
+  ],
+  "frames": 24,
+  "gif_1x_MB": 0.64,
+  "gif_2x_MB": 2.27,
+  "sheet": "9-the-pebble-column.png"
+ },
+ "10": {
+  "cover": 74.7,
+  "rise": 0.42,
+  "blue": 1.1,
+  "moving": 9.1,
+  "bbox": [
+   4.05,
+   4.48
+  ],
+  "frames": 24,
+  "gif_1x_MB": 0.97,
+  "gif_2x_MB": 3.47,
+  "sheet": "10-the-governed-gyre.png"
+ }
+}

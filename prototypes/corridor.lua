@@ -199,8 +199,11 @@ data:extend({
 -- hidden developer entity with half a machine's fields -- no impact category,
 -- no hit effect, no door sounds -- so the copy needed `hidden = false` to be
 -- seen and still fell short of what every visible vanilla machine carries.
--- The field set below is the steam engine's, the same 3x5 footprint, which is
--- also why its remnants fit.
+-- The field set below follows the steam engine's: its resistances, impact
+-- category, door sounds and alert shift. The rest is the building's own: a
+-- 5x5 with the nuclear reactor's boxes (spec 2, Liam 2026-10-20: "5x5, reactor
+-- boxes"), 600 health (Liam, 2026-10-27), the fusion generator's working sound
+-- and performance curve (below), and its own wreck and explosion (further down).
 local gen =
 {
   type = "burner-generator",
@@ -208,22 +211,24 @@ local gen =
   icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
   flags = { "placeable-neutral", "player-creation" },
   minable = { mining_time = 1, result = "sae-radiant-generator" },
-  max_health = 400,
-  corpse = "steam-engine-remnants",
-  dying_explosion = "medium-explosion",
+  max_health = 600,
   alert_icon_shift = util.by_pixel(0, -12),
   resistances =
   {
     { type = "fire", percent = 70 },
     { type = "impact", percent = 30 }
   },
-  collision_box = { { -1.35, -2.35 }, { 1.35, 2.35 } },
-  selection_box = { { -1.5, -2.5 }, { 1.5, 2.5 } },
+  collision_box = { { -2.2, -2.2 }, { 2.2, 2.2 } },
+  selection_box = { { -2.5, -2.5 }, { 2.5, 2.5 } },
   damaged_trigger_effect = hit_effects.entity(),
   impact_category = "metal-large",
   open_sound = sounds.machine_open,
   close_sound = sounds.machine_close,
-  working_sound = table.deepcopy(data.raw.generator["steam-engine"].working_sound),
+  -- Vanilla's fusion generator's hum, for now (Liam, 2026-10-27: "Vanilla
+  -- sound for now", then "Fusion generator"); its own comes later. Its loop
+  -- follows activity in speed and volume, and `perceived_performance` below is
+  -- the fusion generator's too, so it slows and quietens with output as there.
+  working_sound = table.deepcopy(data.raw["fusion-generator"]["fusion-generator"].working_sound),
   perceived_performance = { minimum = 0.25, performance_to_activity_rate = 2.0 },
   heating_energy = "50kW",
   max_power_output = "10MW",
@@ -244,61 +249,345 @@ local gen =
   surface_conditions = { { property = "pressure", max = 9 } }
 }
 
--- Art. Two plates, because `burner-generator` maps north/south onto one
--- animation and east/west onto the other -- see
--- concept/radiant-generator/building-spec-radiant-generator.md sections 5 and 13. They are the
--- same machine rotated on the ground, drawn twice rather than rotated in
--- software: the camera looks down at an angle, so turning the building shows
--- different faces of it.
+-- Art: rendered in Blender from concept/radiant-generator/model/
+-- radiant_generator.py, the Carousel Foundry signed off by Liam on 2026-10-27
+-- (T09: the T08 model with the T08k terminal box, its glows packed with T08h's
+-- per-channel floor), through
 --
--- The load-bearing numbers, measured off the cut plates rather than guessed:
--- north/south is 192 px (3.000 tiles) wide, east/west is 320 px (5.000 tiles)
--- wide. Section 13 is blunt about why -- get these wrong and a row of
--- generators will not tile.
+--   BLENDER=<blender> tools/blender/render.sh \
+--       concept/radiant-generator/model/radiant_generator.py <scratch> --ports --icon
 --
--- The glow is not a second render. Each plate was generated with the throat
--- already lit and then split by hue with tools/split-glow.py: the green-white
--- slots come out as the additive layer and the base keeps a dark recess where
--- each slot was. One generation per direction instead of two, and the two
--- layers register by construction because they are cut from one image.
+-- then <scratch>/sheets/icon.png copied to graphics/icons/radiant-generator.png
+-- and every other <scratch>/sheets/*.png into graphics/entity/radiant-generator/.
+-- Every size, shift, frame count and line length below is copied from that
+-- sheets/meta.json; none was measured off a sheet. Rendered at 2x, drawn at
+-- scale 0.5.
+--
+-- **One picture for all four directions** (spec 5). There is no fluid box and
+-- no facing port, so `animation` and `idle_animation` are each one Animation,
+-- which an Animation4Way applies to every direction.
+--
+-- **Working, `animation`:** the plate, the nine moving layers over it (the
+-- crane carries the well's lid, T08d), the lit glass in the four openings, the
+-- isotope's light over that, the status lamps, the shadow, and four steady blue
+-- lights for the dark. One crane cycle of 32 frames at 5/21 of a frame a tick,
+-- 70 ms a frame, the signed-off GIF's pace (spec decision 10). That is the pace
+-- at full output: `perceived_performance` slows it with output (decision 12).
+--
+-- **Idle, `idle_animation`** (Liam 2026-10-21: "Freeze where it stopped, glow
+-- off"): the plate, the same nine moving layers and the shadow, and nothing
+-- lit -- no glass, no light, no lamps, no blue lights. It has the working
+-- loop's 32 frames, so the engine holds it on the frame the loop stopped on
+-- (T08b): the machine stands where it stopped, dark. Unfuelled and fuelled with
+-- no demand draw the same (T08b). The moving layers are already unlit, so idle
+-- needs no sheets of its own (T08c).
 local RG = "__space-age-extended__/graphics/entity/radiant-generator/"
-local function rg_layers(dir, w, h, sw, sh, shift, sshift)
-  return
+local RG_FRAMES = 32
+local RG_SPEED = 5 / 21
+
+-- Each sheet: { width, height, shift } from sheets/meta.json, and the line
+-- length of the animated ones; a sheet without one is a single frame.
+local RG_SHEETS =
+{
+  ["base"]               = { 338, 361, { -0.04688, -0.21094 } },
+  ["shadow"]             = { 358, 329, { 0.28125, 0.00781 } },
+  ["status-lamp"]        = { 281, 170, { 0.17969, 0.21875 } },
+  ["carousel"]           = { 271, 240, { -0.30469, -0.65625 }, 30 },
+  ["drive"]              = { 105, 47, { -1.13281, -2.35156 }, 32 },
+  ["crane"]              = { 213, 222, { 0.88281, -1.23438 }, 32 },
+  ["commutator"]         = { 100, 130, { 1.35938, 1.46875 }, 32 },
+  ["coupling-converter"] = { 47, 62, { 0.11719, 1.625 }, 32 },
+  ["coupling-pump"]      = { 14, 25, { -0.34375, -2.30469 }, 32 },
+  ["gauge-switchgear"]   = { 20, 15, { 2.125, 1.74219 }, 32 },
+  ["gauge-converter"]    = { 6, 5, { -0.51562, 2.07031 }, 32 },
+  ["gauge-transformer"]  = { 33, 46, { -1.97656, 2.0 }, 32 },
+  ["window"]             = { 227, 148, { 0.61719, -0.82812 }, 32 },
+  ["window-glow"]        = { 260, 238, { 0.625, -0.875 }, 31 },
+  ["remnants"]           = { 306, 297, { 0.14062, 0.02344 } },
+  ["remnants-glow"]      = { 15, 15, { 1.07031, -0.50781 } }
+}
+
+-- The moving layers, in the order the model draws them: the crane over the
+-- table it shadows.
+local RG_MOVING = { "carousel", "drive", "crane", "commutator", "coupling-converter", "coupling-pump",
+                    "gauge-switchgear", "gauge-converter", "gauge-transformer" }
+
+-- One layer of the 32-frame loop: an animated sheet plays it, a single frame
+-- is repeated to its length, as the engine requires of every layer.
+local function rg_layer(name, extra)
+  local s = RG_SHEETS[name]
+  local layer =
+  {
+    filename = RG .. name .. ".png",
+    priority = "high",
+    width = s[1], height = s[2],
+    shift = s[3],
+    animation_speed = RG_SPEED,
+    scale = 0.5
+  }
+  if s[4] then
+    layer.frame_count = RG_FRAMES
+    layer.line_length = s[4]
+  else
+    layer.frame_count = 1
+    layer.repeat_count = RG_FRAMES
+  end
+  for k, v in pairs(extra or {}) do layer[k] = v end
+  return layer
+end
+
+-- The status lamps, cut white. A burner generator has no status colours and no
+-- working visualisations to tint them with (BurnerGeneratorPrototype draws
+-- `animation` and `idle_animation`, nothing else), so the tint is set here: the
+-- working green the review sheets drew (vanilla's electric mining drill's), in
+-- `animation` only, so the lamps are dark at idle (T08c's idle, signed off).
+local RG_LAMP_GREEN = { 0, 1, 0, 1 }
+
+-- The four steady blue lights at the openings (Liam 2026-10-21, Q11 "Add
+-- steady blue lights"; T08c's places, sizes and strengths, "Accept"), as
+-- meta.json's `lights` declares them: the game's own light-medium.png drawn
+-- into the light map, so each shows in the dark and never on the ground by
+-- day. In `animation` only (T08c: "four draw_as_light layers in animation
+-- only"). Each: its shift, its scale (its size in tiles x 32 / 300 px), and its
+-- tint (the model's light colour x its strength).
+local RG_LIGHTS =
+{
+  { { -1.05, -0.05 }, 0.21333, { 0.145, 0.265, 0.5 } },     -- the collector head's bullseye port
+  { { 1.25, -1.02 }, 0.26667, { 0.1305, 0.2385, 0.45 } },   -- the well's mouth
+  { { 1.25, -1.7 }, 0.37333, { 0.174, 0.318, 0.6 } },       -- the plate-rack slot
+  { { 2.25, -0.6 }, 0.42667, { 0.145, 0.265, 0.5 } }        -- the thermionic tubes
+}
+
+-- The machine stopped: the plate, the moving parts on the frame the loop is
+-- on, and the shadow. Both looks start from it.
+local function rg_machine()
+  local layers = { rg_layer("base") }
+  for _, name in ipairs(RG_MOVING) do layers[#layers + 1] = rg_layer(name) end
+  return layers
+end
+
+local rg_working = rg_machine()
+rg_working[#rg_working + 1] = rg_layer("window")
+rg_working[#rg_working + 1] = rg_layer("window-glow", { draw_as_glow = true, blend_mode = "additive" })
+rg_working[#rg_working + 1] = rg_layer("status-lamp", { draw_as_glow = true, tint = RG_LAMP_GREEN })
+rg_working[#rg_working + 1] = rg_layer("shadow", { draw_as_shadow = true })
+for _, light in ipairs(RG_LIGHTS) do
+  rg_working[#rg_working + 1] =
+  {
+    filename = "__core__/graphics/light-medium.png",
+    priority = "extra-high",
+    width = 300, height = 300,
+    frame_count = 1,
+    repeat_count = RG_FRAMES,
+    animation_speed = RG_SPEED,
+    draw_as_light = true,
+    shift = light[1],
+    scale = light[2],
+    tint = light[3]
+  }
+end
+
+local rg_idle = rg_machine()
+rg_idle[#rg_idle + 1] = rg_layer("shadow", { draw_as_shadow = true })
+
+gen.animation = { layers = rg_working }
+gen.idle_animation = { layers = rg_idle }
+
+-- **Its wreck** (spec decision 6, "Own wreck, like turbine"): the model's
+-- remnants pass, one picture for every direction as the building has, its
+-- shadow baked in as vanilla's is. Over it the well's dying blue (Liam
+-- 2026-10-21: "Faint dying blue", then "Make it glow at night", "Keep 0.4"), a
+-- glow layer, so the corpse shows it in the dark. Everything else is vanilla's
+-- 5x5 nuclear-reactor-remnants (base/prototypes/entity/remnants.lua): fifteen
+-- minutes on the ground, left in place under a tile. Named as vanilla names
+-- its own, "<the building> (remnant)", from core's locale.
+local rg_remnants =
+{
+  type = "corpse",
+  name = "sae-radiant-generator-remnants",
+  localised_name = { "remnant-name", { "entity-name.sae-radiant-generator" } },
+  icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
+  icon_size = 64,
+  flags = { "placeable-neutral", "not-on-map" },
+  hidden_in_factoriopedia = true,
+  subgroup = "energy-remnants",
+  order = "a-e-a-z[sae-radiant-generator]",
+  selection_box = { { -2.5, -2.5 }, { 2.5, 2.5 } },
+  tile_width = 5,
+  tile_height = 5,
+  selectable_in_game = false,
+  time_before_removed = 60 * 60 * 15, -- 15 minutes
+  expires = false,
+  final_render_layer = "remnants",
+  remove_on_tile_placement = false,
+  animation =
   {
     layers =
     {
       {
-        filename = RG .. "base-" .. dir .. ".png",
-        priority = "high",
-        width = w, height = h, shift = shift, scale = 0.5
+        filename = RG .. "remnants.png",
+        line_length = 1,
+        width = RG_SHEETS["remnants"][1],
+        height = RG_SHEETS["remnants"][2],
+        direction_count = 1,
+        shift = RG_SHEETS["remnants"][3],
+        scale = 0.5
       },
       {
-        filename = RG .. "base-" .. dir .. "-shadow.png",
-        priority = "high", draw_as_shadow = true,
-        width = sw, height = sh, shift = sshift, scale = 0.5
-      },
-      {
-        filename = RG .. "glow-" .. dir .. ".png",
-        priority = "high",
-        blend_mode = "additive", draw_as_glow = true,
-        width = w, height = h, shift = shift, scale = 0.5
+        filename = RG .. "remnants-glow.png",
+        line_length = 1,
+        width = RG_SHEETS["remnants-glow"][1],
+        height = RG_SHEETS["remnants-glow"][2],
+        direction_count = 1,
+        shift = RG_SHEETS["remnants-glow"][3],
+        draw_as_glow = true,
+        blend_mode = "additive",
+        scale = 0.5
       }
     }
   }
+}
+
+-- **How it goes: fireball and sparks, no smoke** (spec decision 6, as the
+-- Siderane turbine's; crust-tap.lua has the reasoning and Liam's words). Its
+-- vanilla counterpart's explosion -- the 5x5 nuclear reactor's, whose boxes it
+-- has: its sound and its shower of metal, glass, cable and machine parts --
+-- with every wisp of smoke taken out, the turbine's fireball, and sparks.
+--
+--   * **No smoke.** The explosion's own puffs go, and any debris that trails
+--     smoke as it flies flies as a copy of ours with the trail struck off.
+--     Smoke is struck by field and by effect type, so one vanilla adds later
+--     goes too.
+--   * **The fireball is the turbine's**, vanilla's medium explosion: the Core
+--     has a thin atmosphere wherever its pressure is above 0, so a flash of
+--     fire is fair where smoke is not. Not the reactor's own: vanilla's massive
+--     explosion (and the big one) burns out into a black cloud drawn into the
+--     fireball itself, which no field strikes. Measured on the sheets (opaque
+--     px under 70 in every channel against px with red over 150, at the peak
+--     frame of each): massive 2.38 dark to fire, big 1.20, medium 0.31-0.46;
+--     and in game (T11) the massive one covered the 5x5 in black from about
+--     the 28th tick.
+--   * **Sparks**: the construction robot's repair sparks as a small explosion
+--     of their own the big one sets off where it stands, and vanilla's hit
+--     sparks (what a bullet strikes off metal) thrown over the 5x5 with the
+--     debris.
+local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
+local TRAILS = { "regular_trigger_effect", "ended_on_ground_trigger_effect", "ended_in_water_trigger_effect" }
+
+-- A trigger, a delivery or an effect may each be one table or a list of them.
+local function each(x)
+  if x == nil then return {} end
+  if x.type then return { x } end
+  return x
 end
 
-local rg_vertical = rg_layers("vertical", 224, 414, 541, 414,
-                              { 0, 0 }, { 1.23828, 0 })
-local rg_horizontal = rg_layers("horizontal", 352, 233, 526, 233,
-                                { 0, 0 }, { 1.35938, 0 })
-gen.animation =
+-- A list of trigger effects less any that make smoke, or nil if none is left.
+local function without_smoke(effects)
+  local kept = {}
+  for _, effect in ipairs(each(effects)) do
+    if not SMOKE_EFFECTS[effect.type] then kept[#kept + 1] = effect end
+  end
+  return #kept > 0 and kept or nil
+end
+
+-- The name to throw for a piece of vanilla debris: its own if it trails no
+-- smoke, otherwise our copy of it without the trail (made once).
+local smokeless = {}
+local function smokeless_particle(name)
+  if smokeless[name] then return smokeless[name] end
+  local particle = data.raw["optimized-particle"][name]
+  assert(particle, "optimized-particle/" .. name .. " does not exist")
+  local smokes = false
+  for _, key in ipairs(TRAILS) do
+    for _, effect in ipairs(each(particle[key])) do
+      if SMOKE_EFFECTS[effect.type] then smokes = true end
+    end
+  end
+  smokeless[name] = name
+  if smokes then
+    local copy = table.deepcopy(particle)
+    copy.name = "sae-radiant-generator-" .. name
+    for _, key in ipairs(TRAILS) do copy[key] = without_smoke(copy[key]) end
+    if copy.regular_trigger_effect == nil then copy.regular_trigger_effect_frequency = nil end
+    data:extend({ copy })
+    smokeless[name] = copy.name
+  end
+  return smokeless[name]
+end
+
+-- Vanilla's hit sparks, thrown from about head height over the 5x5. An
+-- explosion's offsets do not turn with the building; here they need not.
+local function spark_burst(particle_name, count)
+  return
+  {
+    type = "create-particle",
+    repeat_count = count,
+    particle_name = particle_name,
+    offset_deviation = { { -2, -2 }, { 2, 2 } },
+    initial_height = 1,
+    initial_height_deviation = 0.5,
+    initial_vertical_speed = 0.04,
+    initial_vertical_speed_deviation = 0.04,
+    speed_from_center = 0.03,
+    speed_from_center_deviation = 0.03,
+    frame_speed = 0.5
+  }
+end
+
+-- The robot's sparks, as an explosion of their own: drawn once where it is set
+-- off, silent, and with nothing else in it.
+local robot_sparks = data.raw["construction-robot"]["construction-robot"].sparks
+assert(robot_sparks, "construction-robot/construction-robot has no sparks")
+local rg_sparks =
 {
-  north = rg_vertical,
-  south = table.deepcopy(rg_vertical),
-  east = rg_horizontal,
-  west = table.deepcopy(rg_horizontal)
+  type = "explosion",
+  name = "sae-radiant-generator-sparks",
+  icon = "__space-age-extended__/graphics/icons/radiant-generator.png",
+  icon_size = 64,
+  flags = { "not-on-map" },
+  hidden = true,
+  subgroup = "energy-explosions",
+  order = "a-d-a-z[sae-radiant-generator]-b[sparks]",
+  height = 0,
+  animations = table.deepcopy(robot_sparks)
 }
-data:extend({ gen })
+
+local rg_explosion = table.deepcopy(data.raw.explosion["nuclear-reactor-explosion"])
+assert(rg_explosion, "explosion/nuclear-reactor-explosion does not exist")
+rg_explosion.name = "sae-radiant-generator-explosion"
+rg_explosion.icon = "__space-age-extended__/graphics/icons/radiant-generator.png"
+rg_explosion.icon_size = 64
+rg_explosion.order = "a-d-a-z[sae-radiant-generator]"
+rg_explosion.localised_name = { "dying-explosion-name", { "entity-name.sae-radiant-generator" } }
+local turbine_fireball = data.raw.explosion["steam-turbine-explosion"]
+assert(turbine_fireball, "explosion/steam-turbine-explosion does not exist")
+rg_explosion.animations = table.deepcopy(turbine_fireball.animations)
+rg_explosion.smoke = nil
+rg_explosion.smoke_count = nil
+rg_explosion.smoke_slow_down_factor = nil
+for _, trigger in ipairs(each(rg_explosion.created_effect)) do
+  for _, delivery in ipairs(each(trigger.action_delivery)) do
+    for _, key in ipairs({ "target_effects", "source_effects" }) do
+      local effects = without_smoke(delivery[key])
+      for _, effect in ipairs(effects or {}) do
+        if effect.type == "create-particle" then
+          effect.particle_name = smokeless_particle(effect.particle_name)
+        end
+      end
+      delivery[key] = effects
+    end
+    if delivery.type == "instant" then
+      delivery.target_effects = delivery.target_effects or {}
+      table.insert(delivery.target_effects, spark_burst("spark-particle", 60))
+      table.insert(delivery.target_effects, spark_burst("spark-particle-debris", 30))
+      table.insert(delivery.target_effects, { type = "create-explosion", entity_name = rg_sparks.name })
+    end
+  end
+end
+
+gen.corpse = rg_remnants.name
+gen.dying_explosion = rg_explosion.name
+data:extend({ gen, rg_remnants, rg_sparks, rg_explosion })
 
 -- The pool's solution, precipitated. Crust gas is the reagent: an offshore pump
 -- on the shore draws the solution, a Gas Pump on a siderane vent the gas. The

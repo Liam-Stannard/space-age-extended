@@ -1,0 +1,47 @@
+{
+ "round-7": {
+  "cover_pct": 94.0,
+  "rise_tiles": 0.47,
+  "blue_pct": 0.7,
+  "changing_pct": 31.6,
+  "footprint": "5 x 5",
+  "mw_per_tile": 0.4,
+  "corners_pct": {
+   "NW": 71.9,
+   "NE": 96.1,
+   "SW": 88.1,
+   "SE": 63.7
+  },
+  "strobe_pct": 5.59,
+  "strobe_px_by_region": {
+   "commutator": 222,
+   "carousel": 2046,
+   "crane and crucible": 3081,
+   "tubes": 0
+  },
+  "glow_px_1x_f0": 900,
+  "gif_1x_mb": 0.73,
+  "gif_2x_mb": 2.81
+ },
+ "round-6 (re-rendered, unchanged)": {
+  "cover_pct": 98.0,
+  "rise_tiles": 0.44,
+  "blue_pct": 1.7,
+  "changing_pct": 30.9,
+  "footprint": "5 x 5",
+  "mw_per_tile": 0.4,
+  "corners_pct": {
+   "NW": 96.1,
+   "NE": 97.3,
+   "SW": 91.7,
+   "SE": 91.9
+  },
+  "strobe_pct": 5.41,
+  "strobe_px_by_region": {
+   "commutator": 464,
+   "carousel": 1966,
+   "crane and crucible": 3013,
+   "tubes": 0
+  }
+ }
+}

@@ -1,0 +1,458 @@
+{
+ "base": {
+  "size": [
+   338,
+   361
+  ],
+  "shift": [
+   -0.04688,
+   -0.21094
+  ]
+ },
+ "shadow": {
+  "size": [
+   358,
+   329
+  ],
+  "shift": [
+   0.28125,
+   0.00781
+  ]
+ },
+ "status-lamp": {
+  "size": [
+   281,
+   170
+  ],
+  "shift": [
+   0.17969,
+   0.21875
+  ]
+ },
+ "carousel": {
+  "size": [
+   271,
+   240
+  ],
+  "shift": [
+   -0.30469,
+   -0.65625
+  ],
+  "frames": 32,
+  "line_length": 30,
+  "animation_speed": 0.23809523809523808
+ },
+ "drive": {
+  "size": [
+   105,
+   47
+  ],
+  "shift": [
+   -1.13281,
+   -2.35156
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "crane": {
+  "size": [
+   213,
+   222
+  ],
+  "shift": [
+   0.88281,
+   -1.23438
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "commutator": {
+  "size": [
+   100,
+   130
+  ],
+  "shift": [
+   1.35938,
+   1.46875
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "coupling-converter": {
+  "size": [
+   47,
+   62
+  ],
+  "shift": [
+   0.11719,
+   1.625
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "coupling-pump": {
+  "size": [
+   14,
+   25
+  ],
+  "shift": [
+   -0.34375,
+   -2.30469
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-switchgear": {
+  "size": [
+   20,
+   15
+  ],
+  "shift": [
+   2.125,
+   1.74219
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-converter": {
+  "size": [
+   6,
+   5
+  ],
+  "shift": [
+   -0.51562,
+   2.07031
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "gauge-transformer": {
+  "size": [
+   33,
+   46
+  ],
+  "shift": [
+   -1.97656,
+   2.0
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "window": {
+  "size": [
+   227,
+   148
+  ],
+  "shift": [
+   0.61719,
+   -0.82812
+  ],
+  "frames": 32,
+  "line_length": 32,
+  "animation_speed": 0.23809523809523808
+ },
+ "window-glow": {
+  "size": [
+   260,
+   238
+  ],
+  "shift": [
+   0.625,
+   -0.875
+  ],
+  "frames": 32,
+  "line_length": 31,
+  "kind": "glow",
+  "animation_speed": 0.23809523809523808
+ },
+ "remnants": {
+  "size": [
+   306,
+   297
+  ],
+  "shift": [
+   0.14062,
+   0.02344
+  ],
+  "direction_count": 1,
+  "line_length": 1,
+  "rows": [
+   ""
+  ],
+  "kind": "remnants",
+  "final_render_layer": "remnants"
+ },
+ "remnants-glow": {
+  "size": [
+   15,
+   15
+  ],
+  "shift": [
+   1.07031,
+   -0.50781
+  ],
+  "direction_count": 1,
+  "line_length": 1,
+  "rows": [
+   ""
+  ],
+  "kind": "remnants",
+  "draw_as_glow": true,
+  "blend_mode": "additive"
+ },
+ "lights": {
+  "port-light": {
+   "kind": "layer",
+   "filename": "__core__/graphics/light-medium.png",
+   "width": 300,
+   "height": 300,
+   "scale": 0.21333,
+   "tint": [
+    0.145,
+    0.265,
+    0.5
+   ],
+   "draw_as_light": true,
+   "shift": [
+    -1.05,
+    -0.05
+   ],
+   "working": true
+  },
+  "well-light": {
+   "kind": "layer",
+   "filename": "__core__/graphics/light-medium.png",
+   "width": 300,
+   "height": 300,
+   "scale": 0.26667,
+   "tint": [
+    0.1305,
+    0.2385,
+    0.45
+   ],
+   "draw_as_light": true,
+   "shift": [
+    1.25,
+    -1.02
+   ],
+   "working": true
+  },
+  "slot-light": {
+   "kind": "layer",
+   "filename": "__core__/graphics/light-medium.png",
+   "width": 300,
+   "height": 300,
+   "scale": 0.37333,
+   "tint": [
+    0.174,
+    0.318,
+    0.6
+   ],
+   "draw_as_light": true,
+   "shift": [
+    1.25,
+    -1.7
+   ],
+   "working": true
+  },
+  "tubes-light": {
+   "kind": "layer",
+   "filename": "__core__/graphics/light-medium.png",
+   "width": 300,
+   "height": 300,
+   "scale": 0.42667,
+   "tint": [
+    0.145,
+    0.265,
+    0.5
+   ],
+   "draw_as_light": true,
+   "shift": [
+    2.25,
+    -0.6
+   ],
+   "working": true
+  }
+ },
+ "checks": {
+  "centre_offset_px": -3.5,
+  "edge_alpha_max": 0,
+  "half_width_tiles": [
+   2.640625,
+   "2.5 = footprint width / 2"
+  ],
+  "footprint_rows_tiles": [
+   2.5625,
+   "bottom edge below origin; 2.5 = on the footprint"
+  ],
+  "remnants_shadow_px": [
+   {
+    "px": 5467,
+    "share": 0.0751
+   },
+   "pixels of shadow baked into the wreck (part transparent, every channel at most 8) and their share of its area; under 64 px or 0.01 fails (no catcher); vanilla's remnants 0.24-0.52"
+  ],
+  "remnants_edge_px": [
+   0,
+   "pixels of the wreck or its shadow on its canvas's edge; 0 = the canvas holds it"
+  ],
+  "remnants_reach_tiles": [
+   {
+    "debris": {
+     "N": -0.25,
+     "E": -0.25,
+     "S": -0.19,
+     "W": -0.27
+    },
+    "all": {
+     "N": -0.22,
+     "E": 0.02,
+     "S": -0.17,
+     "W": -0.27
+    }
+   },
+   "how far past each footprint edge, as it stands in this direction, the debris (alpha over 128, not near black) and everything kept (the shadow too) reach, tiles; below 0 short of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"
+  ],
+  "remnants-glow_white_px": [
+   0,
+   "pixels the wreck's light clipped to white; 0 = the light keeps its colour"
+  ],
+  "carousel_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "drive_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "crane_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "commutator_drift_px": [
+   0.3,
+   "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
+  ],
+  "coupling-converter_drift_px": [
+   0.47,
+   "centroid travel across the 32 frames; ~0 = turning in place, must stay within 1"
+  ],
+  "coupling-pump_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-switchgear_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-converter_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "gauge-transformer_cycle": [
+   32,
+   "frames of a closed loop; no positional check"
+  ],
+  "window-glow_white_px": [
+   0,
+   "the most pixels of the light, in any frame, clipped to white; 0 = it keeps its colour"
+  ],
+  "window-glow_clipped_px": [
+   0,
+   "the most pixels, in any frame, the light drives to white added over 'window' on the plate; 0 = nothing clips"
+  ],
+  "window-glow_frames": [
+   [
+    32,
+    32
+   ],
+   "its frames and its plate layer 'window''s: equal"
+  ],
+  "window-glow_edge_px": [
+   0,
+   "the most pixels, in any frame, of the light (bloom and all, above GLOW_FLOOR 2) on the canvas's edge; 0 = the tail fades out inside it"
+  ],
+  "window-glow_light": [
+   {
+    "peak": 166,
+    "core": 4.3,
+    "halo": 80.9
+   },
+   "frame 0: peak luminance, core % (>= 60 % of the peak), halo % (<= 25 %); vanilla's glows: peak 87-171, core 2-8, halo 77-88"
+  ],
+  "frame0_vs_still": [
+   255,
+   0.0152,
+   "max channel difference, and share of pixels over 8 (sampling noise)"
+  ],
+  "rolloff_px": [
+   {
+    "base": {
+     "px": 305,
+     "most": 12
+    },
+    "remnants": {
+     "px": 40,
+     "most": 12
+    },
+    "remnants-glow": {
+     "px": 0,
+     "most": 0
+    },
+    "carousel": {
+     "px": 2317,
+     "most": 12
+    },
+    "drive": {
+     "px": 104,
+     "most": 12
+    },
+    "crane": {
+     "px": 474,
+     "most": 12
+    },
+    "commutator": {
+     "px": 430,
+     "most": 12
+    },
+    "coupling-converter": {
+     "px": 0,
+     "most": 0
+    },
+    "coupling-pump": {
+     "px": 42,
+     "most": 12
+    },
+    "gauge-switchgear": {
+     "px": 169,
+     "most": 12
+    },
+    "gauge-converter": {
+     "px": 90,
+     "most": 12
+    },
+    "gauge-transformer": {
+     "px": 96,
+     "most": 12
+    },
+    "window": {
+     "px": 161,
+     "most": 12
+    },
+    "window-glow": {
+     "px": 11177,
+     "most": 12
+    }
+   },
+   "per sheet but a shadow's or a light's, the px the highlight roll-off changed (brightest channel over 236, eased under 244, hue kept) and the most a channel moved; render.json's rolloff false opts out"
+  ]
+ }
+}

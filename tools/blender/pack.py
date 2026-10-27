@@ -85,6 +85,21 @@ the corpse's default is "corpse", CorpsePrototype). It goes after every other sh
                 0.64; the chemical plant's debris goes 0.61 past its north edge, its shadow 2.23
                 past its east.
 
+The wreck's glow (a remnants pass's `glow`, contract.py: Liam, 2026-10-21, "Make it glow at night"):
+packed as a still glow is, per direction -- its render minus the wreck's (glow_layer), specks
+dropped, kept to the box holding LIGHT_SHARE (99.9 %) of its light, never cut, its white pixels
+counted as a glow pass's are (<glow sheet>_white_px among that direction's checks, after the wreck's;
+information, as a glow pass's) and an empty one refused -- and rolled off as a glow pass is. Then into
+one sheet named for its `sheet`, laid out as the wreck's: a row per entry of contract.remnant_rows,
+every row cropped to the one box (with the 1 px rim) that holds every direction's light, the shift
+from the centre of the wreck's canvas. A corpse's RotatedAnimation has one size and shift for every
+direction, layer by layer, so the glow is a layer of its own, of the wreck's direction_count. Its
+meta.json entry, after the wreck's: size, shift, direction_count, line_length 1, rows, kind
+"remnants" (the corpse's: measure.py leaves it out of the building, as the wreck), and draw_as_glow
+true and blend_mode "additive", what the corpse's layer sets: drawn added over the wreck, and again
+in the light layer, so it shows at night (RotatedAnimation's draw_as_glow: "Draws first as a normal
+sprite, then again as a light layer"). The wreck's own sheet, entry and checks are as without it.
+
 The highlight roll-off (Liam, 2026-10-20, the Vent Pump's: "Accept, add to the shared rig", then
 "On by default, new renders only"; then "Yes, animations and wrecks too"): every sheet the engine
 draws as it is -- plate, glow and paint passes, every animation but a light one, and the remnants
@@ -103,6 +118,15 @@ pixels changed and the most any channel moved (the remnants sheet's, that direct
 it). preview.py draws through the same roll-off, so the review is what ships (Liam: "Match
 shipped"). A model opts out with "rolloff": false in render.json (contract.py); its sheets and
 meta.json are then as before the roll-off, byte for byte, and so is its preview.
+
+The model's night-only lights (render.json's `lights`, contract.py; Liam, 2026-10-21: "Declare
+them"): nothing is rendered or packed for them -- a LightDefinition or a draw_as_light layer of a
+picture the game ships -- but meta.json carries them for the wiring (lights_meta), under "lights",
+after every sheet and before "checks", keyed by each light's name, in the prototype's terms: kind;
+a definition's type "basic", intensity, size and color (when declared), a layer's filename, width,
+height, scale, tint (when declared) and draw_as_light true; its shift, one [x, y] for a model of one
+direction, else {direction: [x, y]} for each of its directions (one shift given for all of them
+written out for each); and working, false when not declared. A model without lights has no such key.
 
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
@@ -128,7 +152,7 @@ import contract
 # centroid 1.06 px off, past LIMIT_PX.
 NOISE = 24
 LIMIT_PX = 1.0      # a turning part's drift, a sliding part's miss off its curve or its line
-LAYER_FLOOR = 8     # a working layer's difference from its plate at or under this is sampling noise
+LAYER_FLOOR = 8     # a working layer's difference from its plate with no channel over this is sampling noise
 # A glow's opaque pixels in a group of fewer than this (8-connected) are noise, not light:
 # dropped from its crop and its sheet (glow_layer). Measured 2026-10-10 on box.py's four
 # directions from three builds (blender.org's on the GPU and on the CPU, Ubuntu's on the
@@ -145,11 +169,12 @@ LAYER_FLOOR = 8     # a working layer's difference from its plate at or under th
 # any light.
 SPECK_PX = 4
 # A glow pass (a still glow: one frame, glow_layer) keeps the smallest box that holds this
-# share of its light, its light being each pixel's alpha times its luminance (PIL's "L", the
-# luma the LAYER_FLOOR cut is made on), and nothing outside it: a faint wide haze over the
-# floor, in groups too big to drop as specks, no longer stretches its crop (Liam, 2026-10-20:
-# "99.5% of light, stills"; then, shown that 99.5 % also trimmed lit edges -- up to 55 % of the
-# peak on the Reaction Plant's legs, 28 % on test/box.py's window -- "Accept, raise to 99.9%").
+# share of its light, its light being each pixel's alpha times its luminance (PIL's "L"; the
+# LAYER_FLOOR cut that sets the alpha is made on the brightest channel), and nothing outside
+# it: a faint wide haze over the floor, in groups too big to drop as specks, no longer
+# stretches its crop (Liam, 2026-10-20: "99.5% of light, stills"; then, shown that 99.5 %
+# also trimmed lit edges -- up to 55 % of the peak on the Reaction Plant's legs, 28 % on
+# test/box.py's window -- "Accept, raise to 99.9%").
 # Light passes keep their own crop (Liam: "No, glows only"). Glow animations keep every lit
 # pixel (GLOW_FLOOR, below).
 LIGHT_SHARE = 0.999
@@ -191,11 +216,21 @@ def clean(im):
     return im
 
 
+def brightest(rgb):
+    """An RGB image's brightest channel, per pixel (L): what glow_layer judges a light by against
+    LAYER_FLOOR, as a deep blue light's luma is a ninth of its blue (PIL's L weighs blue 0.114)."""
+    r, g, b = rgb.split()
+    return ImageChops.lighter(ImageChops.lighter(r, g), b)
+
+
 def glow_layer(lit, under):
     """A glow pass's sheet, on the full canvas: lit minus the plate under it, opaque wherever
     that is above noise inside the box that holds LIGHT_SHARE of its light.
 
-    Drawn additively, so its colour is what the light adds. Isolated specks -- any
+    Drawn additively, so its colour is what the light adds. Above noise is any channel over
+    LAYER_FLOOR (brightest), as a paint pass and an animated glow are judged, not its luma: so a
+    deep blue light keeps its faint fringe (pure blue up to 74 is luma 8 or under, and went clear
+    when judged by luma; red up to 28, green up to 14: T08h). Isolated specks -- any
     8-connected group of fewer than SPECK_PX opaque pixels -- are dropped, colour and
     all, so the crop (and so the sheet's size and shift) is the light's own and does
     not move with render noise; nothing dropped is drawn either. So is every opaque pixel
@@ -207,7 +242,7 @@ def glow_layer(lit, under):
     """
     diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
     luma = diff.convert("L")
-    alpha = luma.point(lambda v: 255 if v > LAYER_FLOOR else 0)
+    alpha = brightest(diff).point(lambda v: 255 if v > LAYER_FLOOR else 0)
     kept = drop_specks(alpha)
     # alpha is 0 or 255, so a pixel's light is its luminance where it is opaque
     bb = light_box(ImageChops.multiply(luma, kept), LIGHT_SHARE)
@@ -362,6 +397,14 @@ def white(im):
     """Where every channel is 245 or over: 255, else 0."""
     r, g, b = im.convert("RGB").split()
     return ImageChops.darker(ImageChops.darker(r, g), b).point(lambda v: 255 if v >= 245 else 0)
+
+
+def white_px(lit, under):
+    """Light a glow drove to white: pixels white in the lit render and not already white under it
+    (a glint on bare steel is). Over-driven emission clips there, and the glow layer, being lit
+    minus unlit, comes out grey instead of the light's colour."""
+    return sum(1 for w, i in zip(lit.convert("RGB").get_flattened_data(), under.convert("RGB").get_flattened_data())
+               if min(w) >= 245 and min(i) < 245)
 
 
 def shoulder(m):
@@ -540,6 +583,7 @@ class Packer:
         self.roll_on = decl.get("rolloff", True)    # render.json's opt-out (contract.py)
         self.rolls = {}     # per direction, {sheet: its pixels the roll-off changed, the most a channel moved}
         self.wrecks = {}    # per direction, the remnants pass's render, cleaned and rolled off: packed into one sheet
+        self.wreck_glows = {}   # per direction, the wreck's glow as a still glow's sheet carries it: likewise
 
     def open(self, stem, d, cut_it=True, canvas=None):
         """A render of direction d, cut to the footprint (render.json's `cut`) unless cut_it is false.
@@ -612,15 +656,8 @@ class Packer:
                 layer = glow_layer(im, under)
                 self.save(self.rolloff(layer, sheet, d), self.box_of(layer.getchannel("A"), what + " minus its plate"),
                           sheet)
-                # Light the glow drove to white: white in the lit pass and not already
-                # white under it (a glint on bare steel is). Over-driven emission clips
-                # there, and the glow layer, being lit minus unlit, comes out grey
-                # instead of the light's colour.
-                white = sum(1 for w, i in zip(im.convert("RGB").get_flattened_data(),
-                                              under.convert("RGB").get_flattened_data())
-                            if min(w) >= 245 and min(i) < 245)
                 checks[f"{p['sheet']}_white_px"] = (
-                    white, "pixels the working light clipped to white; 0 = the light keeps its colour")
+                    white_px(im, under), "pixels the working light clipped to white; 0 = the light keeps its colour")
             elif p["kind"] == "paint":
                 layer = paint_layer(im, renders[p["over"]])
                 self.save(self.rolloff(layer, sheet, d),
@@ -629,6 +666,8 @@ class Packer:
                 self.save(im, self.box_of(im.getchannel("A"), what, 8), sheet)
             elif p["kind"] == "remnants":
                 checks.update(self.wreck(p, clean(im), d, what))
+                if "glow" in p:
+                    checks.update(self.wreck_glow(p, im, d))
 
         frame0 = []
         packed = {}         # every animation's frames, as packed: a glow's checks read its plate layer's
@@ -874,30 +913,66 @@ class Packer:
                 "of it. Vanilla's turbine: debris -0.45 to -0.03, all 0.11 to 0.64"),
         }
 
-    def wreck_sheet(self, p):
-        """The remnants sheet: every direction's wreck, one row each in vanilla's order
-        (contract.remnant_rows), all cropped to the one box that holds them all."""
+    def wreck_glow(self, p, wreck, d):
+        """The wreck's glow (the remnants pass's `glow`) in direction d, packed as a still glow is: its
+        render minus the wreck's (glow_layer), kept for its sheet (wreck_sheet), and its white pixels."""
+        g = p["glow"]
+        stem = contract.named(g["name"], d)
+        lit = self.open(stem, d, cut_it=False, canvas=contract.canvas_of(self.decl, p))
+        layer = glow_layer(lit, wreck)
+        self.box_of(layer.getchannel("A"), stem + ".png minus its wreck")      # an empty glow is refused
+        self.wreck_glows[d] = self.rolloff(layer, g["sheet"], d)
+        return {f"{g['sheet']}_white_px": (white_px(lit, wreck), "pixels the wreck's light clipped to white; 0 = "
+                                           "the light keeps its colour")}
+
+    def wreck_sheet(self, p, stem, sheet_name, images, **extra):
+        """A sheet of the corpse's: every direction's image (the wreck, or its glow), one row each in
+        vanilla's order (contract.remnant_rows), all cropped to the one box that holds them all."""
         rows = contract.remnant_rows(self.decl)
         cw, ch = contract.canvas_of(self.decl, p)
-        boxes = [self.box_of(im.getchannel("A"), contract.named(p["name"], d) + ".png")
-                 for d, im in self.wrecks.items()]
+        boxes = [self.box_of(im.getchannel("A"), contract.named(stem, d) + ".png") for d, im in images.items()]
         u = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
         w, h = u[2] - u[0], u[3] - u[1]
         sheet = Image.new("RGBA", (w, h * len(rows)))
         for i, d in enumerate(rows):
-            sheet.paste(self.wrecks[d].crop(u), (0, i * h))
-        sheet.save(os.path.join(self.out, p["sheet"] + ".png"))
-        self.meta[p["sheet"]] = dict(size=(w, h), shift=self.shift(u, (cw / 2, ch / 2)), direction_count=len(rows),
-                                     line_length=1, rows=rows, kind="remnants", final_render_layer="remnants")
+            sheet.paste(images[d].crop(u), (0, i * h))
+        sheet.save(os.path.join(self.out, sheet_name + ".png"))
+        self.meta[sheet_name] = dict(size=(w, h), shift=self.shift(u, (cw / 2, ch / 2)), direction_count=len(rows),
+                                     line_length=1, rows=rows, kind="remnants", **extra)
 
     def run(self):
         dirs = [d for d, _ in contract.DIRECTIONS[self.decl["directions"]]]
         per = {d: self.direction(d) for d in dirs}
         for p in self.decl["passes"]:
             if p["kind"] == "remnants":
-                self.wreck_sheet(p)
+                self.wreck_sheet(p, p["name"], p["sheet"], self.wrecks, final_render_layer="remnants")
+                if "glow" in p:
+                    self.wreck_sheet(p, p["glow"]["name"], p["glow"]["sheet"], self.wreck_glows, draw_as_glow=True,
+                                     blend_mode="additive")
+        if "lights" in self.decl:
+            self.meta[contract.LIGHTS_KEY] = lights_meta(self.decl)
         self.meta["checks"] = per[""] if dirs == [""] else per
         return self.meta
+
+
+def lights_meta(decl):
+    """render.json's lights as meta.json carries them (the docstring): {name: entry}."""
+    dirs = [d for d, _ in contract.DIRECTIONS[decl["directions"]]]
+    out = {}
+    for li in decl["lights"]:
+        e = dict(kind=li["kind"])
+        if li["kind"] == "definition":
+            e["type"] = "basic"
+        # the contract takes only a kind's own fields, so each light has those alone
+        e.update((k, li[k]) for k in ("intensity", "size", "color", "filename", "width", "height", "scale", "tint")
+                 if k in li)
+        if li["kind"] == "layer":
+            e["draw_as_light"] = True
+        shift = li["shift"]
+        e["shift"] = shift if dirs == [""] else {d: shift[d] if isinstance(shift, dict) else shift for d in dirs}
+        e["working"] = li.get("working", False)
+        out[li["name"]] = e
+    return out
 
 
 def where(d):
@@ -909,6 +984,8 @@ def missing(src, decl):
     want = []
     for d, _ in contract.DIRECTIONS[decl["directions"]]:
         want += [(f"pass {p['name']!r}", contract.named(p["name"], d)) for p in decl["passes"]]
+        want += [(f"pass {p['name']!r}, its glow {p['glow']['name']!r}", contract.named(p["glow"]["name"], d))
+                 for p in decl["passes"] if "glow" in p]
         want += [(f"animation {a['name']!r}", contract.frame(a["name"], f, d))
                  for a in decl["animations"] for f in range(int(a["frames"]))]
         want += [(f"animation {a['name']!r}, tracked part {a['track']!r}",
