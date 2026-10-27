@@ -53,7 +53,12 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              This tree's packs, and its glow_layer at LIGHT_SHARE 1, with its glow floor set aside
              (floor_aside.py: judged on luma, as before T08h, and nothing else changed): since T08h
              a blue speck the old floor left clear is over it and dropped, and a faint fringe kept,
-             which the baseline does not; test_glow_floor.py holds the floor itself.
+             which the baseline does not; test_glow_floor.py holds the floor itself. So the crop's
+             checks above (the share kept, no core pixel lost, the uncropped sheet's pixels where it
+             lies) are run again on this tree's sheets packed with its real floor (one more pack of
+             the same copy), against each glow pass's sheet as glow_layer makes it but for its box,
+             built from its floor and speck pieces and none of its crop (before_box); before_box with
+             the floor set aside is first held byte for byte to the baseline's glow_layer.
 """
 import argparse
 import importlib.util
@@ -362,39 +367,95 @@ def compare(label, rdir, out, base):
     for row in rows:
         new = Image.open(os.path.join(mine, row["sheet"] + ".png")).convert("RGBA")
         old = Image.open(os.path.join(theirs, row["sheet"] + ".png")).convert("RGBA")
-        nb, ob = box_on(row["new"], decl["canvas"]), box_on(row["old"], decl["canvas"])
-        at = (nb[0] - ob[0], nb[1] - ob[1])
-        inside = ob[0] <= nb[0] and ob[1] <= nb[1] and nb[2] <= ob[2] and nb[3] <= ob[3]
-
-        def kept(x, y):
-            return at[0] + 1 <= x < at[0] + new.width - 1 and at[1] + 1 <= y < at[1] + new.height - 1
-        # what the new sheet should be: the old one's pixels where it lies, every opaque one
-        # outside the box (its rim) cleared, colour and all, and every other left as it was
-        want = old.crop((at[0], at[1], at[0] + new.width, at[1] + new.height))
-        wpx = want.load()
-        for y in range(want.height):
-            for x in range(want.width):
-                if wpx[x, y][3] and not kept(at[0] + x, at[1] + y):
-                    wpx[x, y] = (0, 0, 0, 0)
-        same = inside and new.tobytes() == want.tobytes()
-        lum = old.convert("RGB").convert("L")
-        lit_px = [(i % old.width, i // old.width, v) for i, (v, a) in
-                  enumerate(zip(lum.get_flattened_data(), old.getchannel("A").get_flattened_data())) if a]
-        peak = max(v for _, _, v in lit_px)
-        out_px = [v for x, y, v in lit_px if not kept(x, y)]
-        core_lost = sum(1 for x, y, v in lit_px if v >= 0.6 * peak and not kept(x, y))
-        share = luma_light(new) / luma_light(old)
-        row.update(share=round(100 * share, 3), dropped_px=len(out_px),
-                   brightest_dropped_pct=round(100 * max(out_px, default=0) / peak, 1), peak=peak,
-                   core_lost=core_lost, unchanged_inside=same)
-        print(f"    {row['sheet']}: old {row['old']}, new {row['new']}, keeps {row['share']} % of the light, "
-              f"{row['dropped_px']} lit px left out (brightest {row['brightest_dropped_pct']} % of peak "
-              f"{peak}), core px lost {core_lost}, new = old inside it: {same}")
-        check(f"{label} {row['sheet']}: keeps at least {100 * SHARE:g} % of the light", share >= SHARE, str(row))
-        check(f"{label} {row['sheet']}: no core pixel (>= 60 % of the peak) lost", core_lost == 0, str(row))
-        check(f"{label} {row['sheet']}: the old sheet's pixels where it lies, but the opaque ones outside its box",
-              same, str(row))
+        print(f"    {row['sheet']}: old {row['old']}, new {row['new']}")
+        row.update(crop_checks(f"{label} {row['sheet']}", new, box_on(row["new"], decl["canvas"]),
+                               old, box_on(row["old"], decl["canvas"])))
+    floored(label, off, decl, out, base)
     return rows
+
+
+def crop_checks(label, new, nb, old, ob):
+    """The crop's checks on one glow sheet, new (its box on the canvas nb), against the same light
+    uncropped, old (its box ob): the share of old's light new keeps, the lit pixels left out, whether
+    a core pixel is lost, and whether new is old's pixels where it lies, its opaque pixels outside the
+    box (in its rim) cleared. Checks them and returns the numbers."""
+    at = (nb[0] - ob[0], nb[1] - ob[1])
+    inside = ob[0] <= nb[0] and ob[1] <= nb[1] and nb[2] <= ob[2] and nb[3] <= ob[3]
+
+    def kept(x, y):
+        return at[0] + 1 <= x < at[0] + new.width - 1 and at[1] + 1 <= y < at[1] + new.height - 1
+    # what the new sheet should be: the old one's pixels where it lies, every opaque one
+    # outside the box (its rim) cleared, colour and all, and every other left as it was
+    want = old.crop((at[0], at[1], at[0] + new.width, at[1] + new.height))
+    wpx = want.load()
+    for y in range(want.height):
+        for x in range(want.width):
+            if wpx[x, y][3] and not kept(at[0] + x, at[1] + y):
+                wpx[x, y] = (0, 0, 0, 0)
+    same = inside and new.tobytes() == want.tobytes()
+    lum = old.convert("RGB").convert("L")
+    lit_px = [(i % old.width, i // old.width, v) for i, (v, a) in
+              enumerate(zip(lum.get_flattened_data(), old.getchannel("A").get_flattened_data())) if a]
+    peak = max(v for _, _, v in lit_px)
+    out_px = [v for x, y, v in lit_px if not kept(x, y)]
+    core_lost = sum(1 for x, y, v in lit_px if v >= 0.6 * peak and not kept(x, y))
+    share = luma_light(new) / luma_light(old)
+    row = dict(share=round(100 * share, 3), dropped_px=len(out_px),
+               brightest_dropped_pct=round(100 * max(out_px, default=0) / peak, 1), peak=peak,
+               core_lost=core_lost, unchanged_inside=same)
+    print(f"    {label}: keeps {row['share']} % of the light, {row['dropped_px']} lit px left out (brightest "
+          f"{row['brightest_dropped_pct']} % of peak {peak}), core px lost {core_lost}, new = old inside it: {same}")
+    check(f"{label}: keeps at least {100 * SHARE:g} % of the light", share >= SHARE, str(row))
+    check(f"{label}: no core pixel (>= 60 % of the peak) lost", core_lost == 0, str(row))
+    check(f"{label}: the old sheet's pixels where it lies, but the opaque ones outside its box", same, str(row))
+    return row
+
+
+def before_box(lit, under):
+    """A glow pass's sheet as glow_layer makes it but for its light box, on the full canvas: built
+    from glow_layer's own floor and speck pieces (pack.brightest, LAYER_FLOOR, drop_specks), none of
+    its crop, so a fault in the crop does not move it."""
+    diff = ImageChops.subtract(lit.convert("RGB"), under.convert("RGB"))
+    alpha = pack.brightest(diff).point(lambda v: 255 if v > pack.LAYER_FLOOR else 0)
+    kept = pack.drop_specks(alpha)
+    keep = ImageChops.invert(ImageChops.subtract(alpha, kept)).convert("RGB")
+    return Image.merge("RGBA", (*ImageChops.multiply(diff, keep).split(), kept))
+
+
+def floored(label, off, decl, out, base):
+    """The crop's checks (crop_checks) on this tree's sheets as packed with its real glow floor, from
+    the roll-off-opted-out copy off, against before_box on the same renders: the crop holds under the
+    T08h floor too. before_box, the floor set aside, is first held byte for byte to the baseline's
+    glow_layer, from before the crop: it is the sheet uncropped. A model with no glow pass has no crop
+    to check: said so, and not packed."""
+    glows = [(p, d) for d, _ in contract.DIRECTIONS[decl["directions"]]
+             for p in decl["passes"] if p["kind"] == "glow"]
+    if not glows:
+        print(f"    {label}: no glow pass, so no crop to check with the real floor")
+        return
+    code, text, meta = packed(off, os.path.join(out, f"{label}-floored"))
+    check(f"{label}: pack.py (this tree, its real glow floor) exits 0", code == 0 and meta is not None,
+          f"exit {code}: {text[-300:]}")
+    if meta is None:
+        return
+    old = load_module(os.path.join(base, "pack.py"), "pack_baseline")
+    packer = pack.Packer(off, os.path.join(out, f"{label}-floored"), decl)     # opens renders; writes nothing
+    renders = {(p["name"], d): [packer.open(contract.named(n, d), d) for n in (p["name"], p["over"])]
+               for p, d in glows}
+    keep_floor = pack.brightest
+    floor_aside.set_aside(pack)
+    try:
+        differ = [contract.named(p["sheet"], d) for p, d in glows
+                  if before_box(*renders[p["name"], d]).tobytes() != old.glow_layer(*renders[p["name"], d]).tobytes()]
+    finally:
+        pack.brightest = keep_floor
+    check(f"{label}: before_box, its floor set aside, byte for byte as the baseline's glow_layer (uncropped)",
+          not differ, str(differ))
+    for p, d in glows:
+        g = contract.named(p["sheet"], d)
+        new = Image.open(os.path.join(out, f"{label}-floored", g + ".png")).convert("RGBA")
+        ref = before_box(*renders[p["name"], d])
+        crop_checks(f"{label} {g} (real floor)", new, box_on(meta[g], decl["canvas"]), ref, (0, 0, *ref.size))
 
 
 def whole_light(label, rdir, decl, out, base):
