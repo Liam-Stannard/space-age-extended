@@ -41,7 +41,8 @@ below. Changed from the concept, each from Liam:
 
 And three changes not from Liam, put to him with the T08 report: the footings' seams closed (--seams; the note at
 CLOSED below), for the coverage bar; the sun a step down, 10 -> 9.85 (--sun), for the tonal bar facing south; the
-glass layer's neutral at 0.65 (--gas-white), so the drift is not driven flat white. Nothing else of the concept moved.
+glass layer's neutral at 0.65 (--gas-white), so the drift is not driven flat white (T08b replaced it: the note at
+GAS_WHITE). Nothing else of the concept moved.
 
 The layers (contract.py):
   idle (plate, "base")   the machine stopped, no moving part drawn, the glass empty (dark). The moving parts
@@ -558,23 +559,75 @@ BG.default_value = K.WORLD
 bpy.context.view_layer.update()
 
 
-# The shipped glass layer's paint, a neutral grey (linear albedo): the engine multiplies it by the vent's tint. At 1.0
-# the sun drives 61 % of the gas to 250 and over, and the wisps' drift goes flat white; at 0.65 a quarter of it, and
-# the wisps keep the painted gas's spread (luminance p10/p90 0.61 of each other; painted siderane 0.59). The cost:
-# tinted in game the gas is a step darker than the concept painted it (siderane mean 144,176,30 against 180,212,60),
-# since a tint can only darken. --tints renders both for the review; --gas-white sets it.
-GAS_WHITE = _opt("--gas-white", 0.65)
-# T08b: the wisps' range in the shipped layer (the concept's 0.42-0.86 of the paint) and its balance against the
-# warm sun (--gas-neutral 1: the white's blue and green raised by the sun's own 1/0.82 and 1/0.94, so the layer the
-# engine multiplies is neutral and the tint keeps its hue; 0: the concept's plain white). The painted review gases
-# (--tints) keep the concept's range: they are what the layer is measured against.
-GAS_LO, GAS_HI = _opt("--gas-lo", 0.42), _opt("--gas-hi", 0.86)
-GAS_NEUTRAL = _opt("--gas-neutral", 0.0)
+# The shipped glass layer (T08b, Liam on the T08 model: glass "Brighter", less drift, more colour, helium-3 not grey
+# at 1x). The engine multiplies the layer by the vent's tint, so the gas can never be brighter than the tint itself;
+# T08's layer (white 0.65, wisps 0.42-0.86, the warm sun as it falls, the gas's own sheen) put a quarter of the gas
+# at 245 and over (flat tint) and its shaded side and dark wisps near black, and the sun's warmth took blue out of
+# helium-3's violet (drawn mean R = B: grey). Now: the layer is mostly the gas lit through the glass (--gas-emit),
+# little of it the sun (--gas-white), so the column is even from its lit side to its shaded one; its wisps narrowed
+# (--gas-lo/--gas-hi) so it stays under 245 everywhere; the sun's warmth partly balanced out (--gas-neutral); the
+# gas's own sheen off (--gas-spec 0), whose sun glint went white whatever the paint. The cost: the drift, from
+# 81-151 px changed a frame to 0-7 (measure.py layers_alone): the gas reads as an even body of colour, its wisps
+# only faintly. The T08b sweep (concept/crust-tap/model-3x3/glass-sweep.png) has the T08 layer and two between it
+# and this one, keeping more drift for less brightness; --glass-sweep renders any of them.
+# --gas-white: the paint's albedo, a neutral grey (linear); the painted review gases (--tints) keep the concept's.
+GAS_WHITE = _opt("--gas-white", 0.025)
+# the wisps' range (the concept's 0.42-0.86 of the paint) and the balance against the warm sun (--gas-neutral 1: the
+# white's blue and green raised by the sun's own 1/0.82 and 1/0.94; 0: plain white; mostly lit through the glass,
+# a third of that keeps the layer grey). The painted review gases keep the concept's range.
+GAS_LO, GAS_HI = _opt("--gas-lo", 0.84), _opt("--gas-hi", 0.90)
+GAS_NEUTRAL = _opt("--gas-neutral", 0.3)
 GAS_RAMPS = [n for m in bpy.data.materials if m.name.startswith("gas_") and m.node_tree
              for n in m.node_tree.nodes if n.type == "MAP_RANGE"]
+# T08b: the gas lit through the glass (--gas-emit): the shipped layer's own colour (the wisps, the neutral) also
+# given off at this strength, so the side of the column away from the sun reads in the gas's colour, not dark.
+# A lift for the white layer the engine tints in Blender only: the engine draws it as ordinary paint (not
+# draw_as_glow, not draw_as_light), so nothing on the building glows in game (spec 3.3). Only while the glass is
+# full (the gas's fill value): idle the glass is the plate's dark, empty glass as before; 0 for the painted review
+# gases and the icon, which keep the concept's paint. 0 was the T08 layer.
+GAS_EMIT = _opt("--gas-emit", 30.0)
+# and its sheen (--gas-spec, a share of the T08 layer's specular, the satin floor's: 1 is the T08 layer): the sun's
+# highlight on the gas column is white whatever the paint, and on the shipped layer that white is the engine's to
+# tint flat. Only while the glass is full (the fill value): the plate's empty glass keeps its T08 sheen, so the idle
+# plate is the T08 plate. The painted review gases and the icon keep the T08 specular (1 was the T08 layer).
+GAS_SPEC = _opt("--gas-spec", 0.0)
+GAS_EMITS = []
+GAS_BSDFS = []
+for m_ in bpy.data.materials:
+    if not (m_.name.startswith("gas_") and m_.node_tree):
+        continue
+    nt_ = m_.node_tree
+    bsdf_ = nt_.nodes["Principled BSDF"]
+    mx_ = next(n for n in nt_.nodes if n.type == "MIX" and n.inputs["Factor"].is_linked
+               and n.inputs["Factor"].links[0].from_node.type == "VALUE")
+    fill_ = mx_.inputs["Factor"].links[0].from_node
+    em_ = nt_.nodes.new("ShaderNodeValue")
+    em_.outputs[0].default_value = 0.0
+    st_ = nt_.nodes.new("ShaderNodeMath")
+    st_.operation = "MULTIPLY"
+    nt_.links.new(fill_.outputs[0], st_.inputs[0])
+    nt_.links.new(em_.outputs[0], st_.inputs[1])
+    nt_.links.new(mx_.outputs["Result"], bsdf_.inputs["Emission Color"])
+    nt_.links.new(st_.outputs[0], bsdf_.inputs["Emission Strength"])
+    GAS_EMITS.append(em_)
+    # specular = s0 * (1 - fill * drop), drop = 1 - the --gas-spec share
+    s0_ = bsdf_.inputs["Specular IOR Level"].default_value
+    drop_ = nt_.nodes.new("ShaderNodeValue")
+    drop_.outputs[0].default_value = 0.0
+    fd_ = nt_.nodes.new("ShaderNodeMath")
+    fd_.operation = "MULTIPLY"
+    nt_.links.new(fill_.outputs[0], fd_.inputs[0])
+    nt_.links.new(drop_.outputs[0], fd_.inputs[1])
+    sp_ = nt_.nodes.new("ShaderNodeMath")
+    sp_.operation = "MULTIPLY_ADD"                      # fill*drop * -s0 + s0
+    nt_.links.new(fd_.outputs[0], sp_.inputs[0])
+    sp_.inputs[1].default_value = -s0_
+    sp_.inputs[2].default_value = s0_
+    nt_.links.new(sp_.outputs[0], bsdf_.inputs["Specular IOR Level"])
+    GAS_BSDFS.append(drop_)
 
 
-def set_tint(hexc, white=None, lo=None, hi=None, neutral=None):
+def set_tint(hexc, white=None, lo=None, hi=None, neutral=None, emit=None, spec=None):
     """The gas's paint in the glass: a neutral for the shipped layer (the engine tints it), a gas's own for review."""
     w = GAS_WHITE if white is None else white
     nu = GAS_NEUTRAL if neutral is None else neutral
@@ -587,6 +640,10 @@ def set_tint(hexc, white=None, lo=None, hi=None, neutral=None):
     for n in GAS_RAMPS:
         n.inputs["To Min"].default_value = 0.42 if painted else (GAS_LO if lo is None else lo)
         n.inputs["To Max"].default_value = 0.86 if painted else (GAS_HI if hi is None else hi)
+    for n in GAS_EMITS:
+        n.outputs[0].default_value = 0.0 if painted else (GAS_EMIT if emit is None else emit)
+    for n in GAS_BSDFS:
+        n.outputs[0].default_value = 0.0 if painted else 1.0 - (GAS_SPEC if spec is None else spec)
 
 
 set_tint(None)
@@ -1074,21 +1131,25 @@ if TINTS:
     sys.exit(0)
 
 # ---------------------------------------------------------------- --glass-sweep: the shipped glass layer alone (T08b)
-# --glass-sweep "tag:white:lo:hi:neutral;..." renders, per variant, the glass layer as the pass below does (north,
-# the rest held out, the pane hidden) for --sweep-frames (default every frame) into <OUT>/<tag>/glass-NN-north.png
+# --glass-sweep "tag:white:lo:hi:neutral[:emit[:spec]];..." renders, per variant, the glass layer as the pass below does (the
+# rest held out, the pane hidden) for --sweep-frames (default every frame) and --only's directions (default all four)
+# into <OUT>/<tag>/glass-NN-<direction>.png: to the sprite size and cut as a pack would, they are the variant's sheets
 SWEEP = _opt("--glass-sweep", "")
 if SWEEP:
     sc.cycles.samples = ANIM_SAMPLES
-    turn("north")
-    border(window(members("glass")))
     frames = [int(x) for x in _opt("--sweep-frames", ",".join(str(i) for i in range(NF))).split(",")]
-    for spec_ in SWEEP.split(";"):
-        tag, w, lo, hi, nu = spec_.split(":")
-        set_tint(None, float(w), float(lo), float(hi), float(nu))
-        for f in frames:
-            set_pose(f, gas=True)
-            setup(visible=("glass",), holdouts=("body", "mech"), hide_glassy=True)
-            rig.render(os.path.join(OUT, tag, f"glass-{f:02d}-north.png"))
+    for d in ONLY:                      # --only picks the directions, as for a pack (default all four)
+        turn(d)
+        border(window(members("glass")))
+        for spec_ in SWEEP.split(";"):
+            tag, w, lo, hi, nu, *more = spec_.split(":")
+            more = [float(x) for x in more] + [0.0, 1.0][len(more):]
+            set_tint(None, float(w), float(lo), float(hi), float(nu), *more[:2])
+            for f in frames:
+                set_pose(f, gas=True)
+                setup(visible=("glass",), holdouts=("body", "mech"), hide_glassy=True)
+                rig.render(os.path.join(OUT, tag, f"glass-{f:02d}-{d}.png"))
+    set_tint(None)
     print("done")
     sys.exit(0)
 
