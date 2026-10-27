@@ -118,7 +118,7 @@ for the animation alone, its meta.json entry size, shift, frames, line_length, a
 and animation_speed as a building's; with no still, so no frame-0 check. Their checks join the flat
 ones, as a building's: <name>_cycle and <name>_sequence, and for a glow animation <name>_white_px,
 _frames, _edge_px, _light and _clipped_px, this last the most over every cell of the resource (the
-cell as the screen holds it, lit_cell's: drawn over GROUND, snow-flat's typical colour, where
+cell as the screen holds it, lit_cell's: drawn over GROUND, snow-flat's p90 colour, where
 it is clear the ground at its brightest, and a partly transparent pixel read both as its colour
 times its alpha over the ground and as its colour, whichever counts more; with its effect's cell
 added at full strength, when it has an effect, whatever the cell's alpha, as the engine adds
@@ -228,15 +228,16 @@ SHADOW_MIN_PX = 64
 KNEE = 236
 TOP = 244
 # The ground under a resource cell's clear pixels (lit_cell), at its brightest: the worst case for
-# a glow clipping over it (vents T02e, Liam, 2026-10-27: "Bright worst case"). The Core without
-# Alien Biomes is Aquilo's snow and ice (prototypes/core/map-gen.lua, without_pack); the
-# brightest is snow-flat, and this is its typical colour: the per-channel median of the opaque
-# pixels of __space-age__/graphics/terrain/aquilo/snow-flat.png (measured 2026-10-27; its mean
-# (199.7, 202.1, 222.7), luminance median 211; snow-lumpy's, snow-crests' and snow-patchy-8x's
-# luminance medians 201, 202 and 153; ice-rough's and ice-smooth's 86). As the sprite holds it,
+# a glow clipping over it (vents T02e, Liam, 2026-10-27: "Bright worst case", then "p90"). The Core
+# without Alien Biomes is Aquilo's snow and ice (prototypes/core/map-gen.lua, without_pack); the
+# brightest is snow-flat, and this is the per-channel 90th percentile of the opaque pixels of
+# __space-age__/graphics/terrain/aquilo/snow-flat.png (measured 2026-10-27): brighter than its
+# typical colour (median (204, 210, 234), mean (199.7, 202.1, 222.7)), so it covers the brighter
+# flecks a glow can land on. snow-lumpy's, snow-crests' and snow-patchy-8x's luminance medians are
+# 201, 202 and 153 to snow-flat's 211; ice-rough's and ice-smooth's 86. As the sprite holds it,
 # before the engine's lighting: the Core's darkness only dims it, so this is the brightest the
 # ground is drawn.
-GROUND = (204, 210, 234)
+GROUND = (219, 222, 243)
 
 
 def clean(im):
