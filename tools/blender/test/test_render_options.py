@@ -62,12 +62,17 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              "moving: 0 clashes", then "model: 1 clashes": FAIL, nothing rendered (a count
              answers to the allowed lines of its own block, since the count line before
              it). A pattern that is not a regular expression, one that matches the empty
-             string (".*"), or --collide-allow without --collide: exit 2.
+             string (".*"), or --collide-allow without --collide: exit 2. A LOOSE line with
+             "ends: 1 clashes" -> FAIL, and allowed whole -> PASS. A BELOW line with "ground: 1
+             clashes" -> FAIL, and still FAIL when the allow is in another block. A below_ok
+             line -> PASS. An UNTESTED line, or runs.py's "runs not checked" lines -> FAIL,
+             with nothing rendered.
 """
 import argparse
 import copy
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -542,6 +547,61 @@ def test_collide(out):
     _, code, text, _ = render("lone-allow", meant, "--collide-allow", "x")
     check("--collide-allow without --collide: exit 2", code == 2 and "goes with --collide" in text,
           f"exit {code}: {text[-300:]}")
+    # runs.py's lines (its docstring): a LOOSE end and a part BELOW the ground are pair lines, each
+    # block ending in its count, so measure.py gates and allows them as any other, unchanged
+    loose = "LOOSE hose end 1 at (+0.93,+0.30,0.45) x nothing: no fitting within 0.02, frames 0"
+    ends = (f"COLLIDE runs: 1 recorded, 1 fittings, 0 parts below_ok, 9 parts; frames 1\\nCOLLIDE {loose}\\n"
+            "COLLIDE ends: 1 clashes, 1 runs, 2 ends\\nCOLLIDE untested: 0 clashes, 1 runs recorded\\n"
+            "COLLIDE body: 0 clashes, 1 runs\\n"
+            "COLLIDE ground: 0 clashes, 9 parts, 0 below_ok\\nCOLLIDE unrecorded tubes: 0 (information)\\n")
+    o9, code, text, _ = render("loose", ends, "--collide")
+    check("a LOOSE end and 'ends: 1 clashes': FAIL, the line printed, nothing rendered",
+          code == 1 and "collide: FAIL" in text and f"COLLIDE {loose}" in text
+          and not os.path.exists(os.path.join(o9, "blender.log")), f"exit {code}: {text[-400:]}")
+    o10, code, text, _ = render("loose-allowed", ends, "--collide", "--collide-allow", re.escape(loose))
+    check("the LOOSE line allowed whole: PASS, 1 allowed, the render goes ahead",
+          "collide: PASS" in text and "1 pair line(s) allowed" in text
+          and os.path.isfile(os.path.join(o10, "blender.log")), text[-400:])
+    below = "BELOW post[steel] at (+1.30,-0.60,0.08) x ground: 0.050 deep, frames 0"
+    ground = (f"COLLIDE ends: 0 clashes, 1 runs, 2 ends\\nCOLLIDE body: 0 clashes, 1 runs\\nCOLLIDE {below}\\n"
+              "COLLIDE ground: 1 clashes, 11 parts, 0 below_ok\\n")
+    o11, code, text, _ = render("below", ground, "--collide")
+    check("a part BELOW the ground and 'ground: 1 clashes': FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and f"COLLIDE {below}" in text
+          and not os.path.exists(os.path.join(o11, "blender.log")), f"exit {code}: {text[-400:]}")
+    # the BELOW line allowed in the ends block would not answer for the ground block's count
+    o12, code, text, _ = render("below-other-block", ground.replace(f"COLLIDE {below}\\n", "").replace(
+        "COLLIDE ends: 0", f"COLLIDE {below}\\nCOLLIDE ends: 0"), "--collide", "--collide-allow", re.escape(below))
+    check("a BELOW line allowed in another block: FAIL ('ground: 1 clashes' counts 1, its block 0 allowed)",
+          code == 1 and "its block 0 allowed" in text and not os.path.exists(os.path.join(o12, "blender.log")),
+          f"exit {code}: {text[-400:]}")
+    ok_line = "COLLIDE below_ok post[steel] at (+1.30,-0.60,0.08): 0.050 deep  (a footing poured into the ground)"
+    o13, code, text, _ = render("below-ok", f"{ok_line}\\nCOLLIDE ground: 0 clashes, 11 parts, 1 below_ok\\n",
+                                "--collide")
+    check("a below_ok line and 'ground: 0 clashes': PASS (an information line), the render goes ahead",
+          "collide: PASS" in text and os.path.isfile(os.path.join(o13, "blender.log")), text[-400:])
+    untested = "UNTESTED wire x nothing: no part of it shown with polygons in any frame"
+    o14, code, text, _ = render("untested", f"COLLIDE {untested}\\nCOLLIDE untested: 1 clashes, 2 runs recorded\\n",
+                                "--collide")
+    check("an UNTESTED run and 'untested: 1 clashes': FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o14, "blender.log")),
+          f"exit {code}: {text[-400:]}")
+    unchecked = "COLLIDE runs not checked follow: 0 clashes\\nCOLLIDE runs not checked: 1 clashes (1 records)\\n"
+    o15, code, text, _ = render("unchecked", "COLLIDE clashes 0\\n" + unchecked, "--collide")
+    check("records never checked, 'runs not checked: 1 clashes' at exit: FAIL, nothing rendered",
+          code == 1 and "collide: FAIL" in text and not os.path.exists(os.path.join(o15, "blender.log")),
+          f"exit {code}: {text[-400:]}")
+    # an allowed pair line after the model's last count would answer for the exit's count if it shared
+    # its block (the bare count, PASS); the 0 count runs.py prints first closes that block (FAIL)
+    meant_after = "COLLIDE clashes 0\\nCOLLIDE meant slider x roof: frames [0]\\n"
+    _, code, text, _ = render("unchecked-bare", meant_after + "COLLIDE runs not checked: 1 clashes (1 records)\\n",
+                              "--collide", "--collide-allow", whole)
+    check("an allowed pair line, then a bare 'runs not checked: 1 clashes': PASS (absorbed: why runs.py closes "
+          "the block)", "collide: PASS" in text, text[-400:])
+    o16, code, text, _ = render("unchecked-absorbed", meant_after + unchecked, "--collide", "--collide-allow", whole)
+    check("an allowed pair line, then runs.py's two exit lines: FAIL (its block 0 allowed), nothing rendered",
+          code == 1 and "its block 0 allowed" in text and not os.path.exists(os.path.join(o16, "blender.log")),
+          f"exit {code}: {text[-400:]}")
 
 
 def main():
