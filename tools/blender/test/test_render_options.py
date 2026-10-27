@@ -62,7 +62,11 @@ Exits 0 when every case below comes out as listed, 1 naming those that do not.
              "moving: 0 clashes", then "model: 1 clashes": FAIL, nothing rendered (a count
              answers to the allowed lines of its own block, since the count line before
              it). A pattern that is not a regular expression, one that matches the empty
-             string (".*"), or --collide-allow without --collide: exit 2.
+             string (".*"), or --collide-allow without --collide: exit 2. A LOOSE line with
+             "ends: 1 clashes" -> FAIL, and allowed whole -> PASS. A BELOW line with "ground: 1
+             clashes" -> FAIL, and still FAIL when the allow is in another block. A below_ok
+             line -> PASS. An UNTESTED line, or runs.py's "runs not checked" lines -> FAIL,
+             with nothing rendered.
 """
 import argparse
 import copy

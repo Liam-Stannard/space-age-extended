@@ -68,6 +68,7 @@
 # step -- one rule for both tools, given in its docstring: a line naming a pair ("<a> x
 # <b>"), or a clash count above 0, is a clash; so is Blender failing, a Traceback, or
 # no count at all (a model with no --collide prints none).
+# runs.py's LOOSE, BODY, BELOW and UNTESTED lines, and its "runs not checked" count, fail a run the same way (runs.py's docstring).
 # --collide-allow <pattern> (repeatable, with --collide) is measure.py's: a contact the
 # model means, as a regular expression that names the whole pair line -- it must match
 # all of the line's text after "COLLIDE ", not just part of it -- and a line it matches
