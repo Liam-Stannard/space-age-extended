@@ -210,7 +210,7 @@ crew's kit piled together, not one machined casting.
 
 ## 3.2 Key Visual Features
 
-* **Two glass legs with the solution moving in them**, the only blue.
+* **Two glass legs with the solution moving in them**, the only blue but the solution's sight glass.
 * **The agitator drive** on the reactor head.
 * **The filter press and its drop box.**
 * **Lead** on the vessels the solution lives in.
@@ -246,7 +246,7 @@ Teal is dropped.
 | Radiant light | `#1F63FF` → `#73ADFF` | **the two legs only** (1.1–2.0 % of the plate, by direction) |
 
 **The blue rule:** blue is in the legs and nowhere else — no blue cable, paint
-or lamp. Idle, the legs are a still dark navy.
+or lamp — except the solution's sight glass, which shows the solution in its line (§8 constraint 3). Idle, the legs are a still dark navy.
 
 **The paint rule:** paint keeps its colour and wears locally: chips at the
 edges, rust only in seams, round bolts, at the foot and down from the bands; a
@@ -765,7 +765,7 @@ Not required — rendered from the model with --icon. See §14.
 
 ### Blue and glow
 
-* [ ] **No blue outside the legs** — no blue cable, paint or lamp
+* [ ] **No blue outside the legs and the solution's sight glass** — no blue cable, paint or lamp
 * [ ] The blue sits more than a tile from every edge
 * [ ] The glow layer is the legs only, and `glow_white_px` is 0
 * [ ] Idle, the legs are a still dark navy
