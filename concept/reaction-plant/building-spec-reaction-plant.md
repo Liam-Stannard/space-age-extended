@@ -5,9 +5,12 @@
 **Rendered from a model, design chosen.** Liam chose F, the Circulator, at 5×5
 on **2026-10-11**, its finish over rounds 3–5 (*"The colours are good"*) and six
 motions (*"All of the animations look good"*), and signed it off the same day
-(*"Sign off the reaction plant."*). The plate, pipe pictures, glow and icon are
-rendered from `concept/reaction-plant/model/` through `tools/blender/`; there is
-no master plate and nothing is generated.
+(*"Sign off the reaction plant."*). Liam then reversed the one plate
+(2026-10-20): the building turns with its ports, one model drawn in four
+directions. Form 1, the casing, was picked on 2026-10-21 (*"1 Casing"*), and the
+four-way model with its ports was signed off on **2026-10-28** (*"Sign off pump
+and plant"*). The four plates, glow, lamps and icon are rendered from that model
+through `tools/blender/`. There is no master plate, and nothing is generated.
 
 §1, §2, §8 and §13 are records of `prototypes/core/machines.lua`; where they
 disagree with the code, the code is right. Until the 5×5 is wired, the code is
@@ -20,19 +23,20 @@ still the 3×3 and the 5×5 numbers below are what the wiring task writes into i
 | # | Asset | Gate before moving on | State |
 | - | ----- | --------------------- | ----- |
 | 0 | Options and concept | Liam picks | **done: F, round 5** |
-| 1 | Model | `--collide` clean; pack checks; cover, corners and rise as the model (85.8 %; NW 96 %, NE 94 %, SW 2 %, SE 4 %; 0.78 tile) | open |
-| 2 | Pipe pictures | each face within 1 px of assembler 3's outline | round 5 passes |
-| 3 | Plate, shadow, idle | p50 ~75–81, p95 into vanilla's | round 5: p50 75, p95 161 |
+| 1 | Model, four directions | `--collide` 0 and `--clash` 0; pack checks; cover ≥ 92 % in every direction | **signed off 2026-10-28** (cover 95.4 / 94.3 / 95.2 / 94.0 %, N/E/S/W) |
+| 2 | Fittings | joins pass (no gap) at all 3 connections in all 4 directions, 12/12 | **12/12** |
+| 3 | Plates, shadows | p50 ~75–81, p95 into vanilla's | p50 81 / 78 / 81 / 74; west *"A: as built"* |
 | 4 | Legs glow | differenced; blue only in the legs | open |
 | 5 | Animation layers | the plate equals every layer's frame 0 | open |
 | 6 | Icon | §14 | open |
 
 ### Where generation happens
 
-`BLENDER=<blender> tools/blender/render.sh <the model under concept/reaction-plant/model/> <scratch> --ports --icon`,
-on the GPU. `render.sh` prints `pack.py`'s checks, and every size and shift in
-§11 and §13 is copied from the `meta.json` files it writes. Nothing enters
-`graphics/` without sign-off.
+`RP_FORM=casing RP_DIRECTION=<north|east|south|west> BLENDER=<blender> tools/blender/render.sh <the model> <scratch>`,
+one run per direction, on the GPU. No `--ports`: the model has no pipe pictures.
+Every size and shift in §11 and §13 is copied from each direction's `meta.json`.
+Nothing enters `graphics/` without sign-off.
+The icon is re-rendered from the casing model in T09 and shown to Liam before it is set (Liam, 2026-10-28: *"Re-render"*).
 
 ### Round log
 
@@ -50,8 +54,8 @@ Every round is in §17.
 via `derive.from` (`crafter()` in `machines.lua`). The type is load-bearing
 twice: a crafting machine holds its product in an inventory until an inserter
 takes it, so the art draws **no output chute** (§8); and a crafting machine with
-fluid boxes **rotates**, which is what makes §5's one-plate answer possible
-rather than merely cheap. `derive.from` clears `next_upgrade`,
+fluid boxes **rotates**, so the building can be drawn turning with its ports
+(§5). `derive.from` clears `next_upgrade`,
 `fast_replaceable_group`, `factoriopedia_simulation`, the frozen patches and the
 water reflection.
 
@@ -79,10 +83,7 @@ carries the plant, the recipe and the generator together, because none is worth
 anything alone. **Tier 0, the foothold tier** (`08-core-power.md` §6). This is
 the register-setting fact for §4.
 
-**Recipe (to build one):** 40 × `sae-kamacite-plate`, 20 × `pipe`, 15 ×
-`advanced-circuit`, 8 s — set for the 3×3 and not yet re-argued for 5×5. **To be
-raised toward the refinery's with the wiring task** (Liam, 2026-10-11); no
-recipe is fixed here.
+**Recipe (to build one):** 60 × `sae-kamacite-plate`, 30 × `pipe`, 20 × `advanced-circuit`, 10 s (Liam, 2026-10-20: *"×1.5: 60/30/20, 10 s"*).
 
 **Throughput:** unchanged at 5×5 — one cell per 20 s at crafting speed 1 (Liam,
 2026-10-11). The bigger footprint buys the art room, not more output.
@@ -99,7 +100,7 @@ planet's whole power supply runs through it."*
 
 | | |
 | --- | --- |
-| **Tile Size** | **5×5** (Liam, 2026-10-11: *"Make the reaction plant 5x5 so any tall parts can mostly remain inside the grid as per the FFF."*). The mass rises 0.78 tile above the north edge (the oil refinery's 0.97). The art is cut to exactly 5.000 tiles wide — §11 |
+| **Tile Size** | **5×5** (Liam, 2026-10-11: *"Make the reaction plant 5x5 so any tall parts can mostly remain inside the grid as per the FFF."*). The mass rises 0.64 / 0.81 / 0.52 / 0.73 tile above the north edge, facing N/E/S/W (the oil refinery's 0.97). The art is cut to exactly 5.000 tiles wide — §11 |
 | **Collision Box** | `{-2.4,-2.4} → {2.4,2.4}` |
 | **Selection Box** | `{-2.5,-2.5} → {2.5,2.5}` |
 | **Placement Restrictions** | `pressure` min 1, max 9 — the Core's surface only. `fast_replaceable_group` and `next_upgrade` cleared by `derive.from` |
@@ -136,7 +137,7 @@ that. Measured on 2.1.19 by the coder, the reviewer and the tester:
 
 | State | What the engine exposes |
 | --- | --- |
-| **No recipe set** | **all three boxes and all three pipe pictures.** It keeps whatever direction it is given, and a pipe laid against the output face joins |
+| **No recipe set** | **all three boxes and all three wall fittings.** It keeps whatever direction it is given, and a pipe laid against the output face joins |
 | **`sae-radiant-precipitation`** | **the two input boxes only** — the recipe's products are solid, so the engine drops the output box whatever the flag says. No output picture. Still rotates |
 | **A future stage-3 fluid recipe** | all three again |
 
@@ -179,26 +180,30 @@ art has to carry it.
 **Primary Visual Theme:** *a thermosiphon you watch go round: hour-one plant
 piled onto one site.*
 
-**Overall Appearance:** a tall lead-clad **reactor** right of centre. Two fat
-strapped **glass legs** stand off its west side: a **riser**, where the blue
-climbs with bright bubbles, and a **downcomer**, where it falls with dark
-flecks. Fat hoses close the loop into the reactor's shoulder, a cast header at
-the foot. An exposed **agitator drive** on the head: shaft, a big five-spoked
-pulley, a laced belt and the motor's pulley.
+**Overall Appearance:** one riveted **housing**, 0.85 tile tall over the whole
+footprint, in a putty grey. The vessels stand up through its roof in bolted
+collars: the tall lead-clad **reactor**, its two fat strapped **glass legs** (a
+**riser**, where the blue climbs with bright bubbles, and a **downcomer**, where
+it falls with dark flecks), the condenser and the settling pot. The rest of the
+kit stands on the roof. An exposed **agitator drive** sits on the reactor head:
+shaft, a big five-spoked pulley, a laced belt and the motor's pulley.
 
-The plant is piled into **three masses**:
+**The flow reads through the building.** Each connection enters the housing's
+wall through a fitting. The unit that uses it stands on the roof straight over
+it, joined by a riser with a visible reducer: the feed drum over the solution's,
+the compressor's bottle (on legs) over the gas's, and the receiver over the
+output's.
 
-1. the reactor with its legs and the compressor;
-2. the oxide-red scrubber and the ochre feed drum;
-3. the press house, the filtrate receiver and the pump house.
+The two front corners are broken by the units on the ground in them: the
+**filter press** on its lead-lined **drop box** (south-west) and the pump house
+(south-east).
 
-The **filter press** stands on a lead-lined **drop box**. The corners drop out
-unevenly (FFF #350): round vessels with ground round them in the north-west and
-north-east, bare ground in the south-west and south-east. **Every edge's middle
-three tiles meet a wall.**
+**Every hose and cable lands in a port:** a bolted nozzle, a reducer adaptor on
+a tank's own nozzle, a saddle clamp on a glass leg, or a gland. The compressor's
+own discharge stack is the only run end with none.
 
-**Silhouette:** broken and asymmetric, height in the back corners. Cover 85.8 %
-of the footprint.
+**Silhouette:** one building with broken front corners and the vessels rising
+out of it. Cover 94.0–95.4 % of the footprint.
 
 **Visual Age:** **Primitive/Industrial — tier 0.** Hoses, cables and clutter, a
 crew's kit piled together, not one machined casting.
@@ -210,7 +215,8 @@ crew's kit piled together, not one machined casting.
 * **The filter press and its drop box.**
 * **Lead** on the vessels the solution lives in.
 * **A paint per unit.**
-* **Our own pipe pictures.**
+* **A fitting in the housing's wall at each connection**, its user standing over it.
+* **The casing.**
 
 ### Signature Feature
 
@@ -230,13 +236,14 @@ Teal is dropped.
 | Weathered green | `#4E6034` | receiver, motors, press ram |
 | Cream | `#ACA084` | pump house, make-up pot, filter leaves |
 | Grey | `#6E6A62` | exchanger, instrument house |
-| Dark steel | `#3E3934` | skids, saddles, frames, headers, the four pipe pictures' plates |
+| Casing | `#8E8572`, grey trim | the housing |
+| Dark steel | `#3E3934` | skids, saddles, frames, headers, the fittings' bosses |
 | Bare steel | `#A8A090` | pipes, flanges, straps |
 | Copper / brass | `#94592C` / `#9A7438` | condenser / gauges, nuts |
 | Hoses / lagging | `#5E4636`, `#38302A` / `#9A8A68` | |
 | Accents | `#A8301E`, `#D0A428` | handwheels, marking rings |
 | Filter cake | `#8C8476` | the cake, only in motion (§6.2) |
-| Radiant light | `#1F63FF` → `#73ADFF` | **the two legs only** (3.2 % of the plate) |
+| Radiant light | `#1F63FF` → `#73ADFF` | **the two legs only** (1.1–2.0 % of the plate, by direction) |
 
 **The blue rule:** blue is in the legs and nowhere else — no blue cable, paint
 or lamp. Idle, the legs are a still dark navy.
@@ -244,10 +251,6 @@ or lamp. Idle, the legs are a still dark navy.
 **The paint rule:** paint keeps its colour and wears locally: chips at the
 edges, rust only in seams, round bolts, at the foot and down from the bands; a
 dirt film, wiped patches, oil at the feet.
-
-**The south pipe picture is neutral dark steel**, like the other three (Liam,
-2026-10-11). Round 5 painted its plate the receiver's green; the model changes
-that.
 
 **Lends the generator:** the lead and its bloom, and the paint-per-unit rule.
 
@@ -285,7 +288,7 @@ foothold crew would actually do.
 ### Style Reference Buildings
 
 1. `oil-refinery` and `chemical-plant` — massing, hoses, the fluid window.
-2. `assembling-machine-3` — the pipe pictures' shape, size and placement.
+2. `chemical-plant`, `oil-refinery`, `cryogenic-plant`, `foundry`: how a pipe enters the casing (the fittings).
 3. `pumpjack`, `storage-tank` — surfaces and wear.
 4. `foundry`, `electromagnetic-plant` — colour.
 
@@ -295,18 +298,24 @@ foothold crew would actually do.
 
 ## Required Directions
 
-* [x] North · [x] East · [x] South · [x] West — **the entity rotates, and keeps rotating**
-* [ ] but **one plate is drawn**, not four
+* [x] North · [x] East · [x] South · [x] West: **the building turns with its ports, one model drawn in four directions**
 
-**Direction count:** `4` in the prototype, `1` in the artwork. **Settled by Liam,
-2026-09-17:** the fluid ports rotate with the entity and the building itself does
-not turn.
+**Direction count:** `4` in the prototype and `4` in the artwork. **Reversed by
+Liam, 2026-10-20**, the 2026-09-17 one plate: *"The model should be adjusted so
+the pipe connections make sense and follow the flow of the fluid/gas through the
+model. We could draw a model for each rotation rotate like factorio does for some
+of the vanilla models"*.
 
-**One asymmetric plate serves all four directions.** The mass is off-centre on
-purpose and reads in every rotation. What may not exist is a feature that
-**names a port**: no painted flange, stub or fluid-coloured marking at an edge.
-The engine draws the ports; every edge's middle three tiles meet a wall, so a
-picture at any of the twelve positions has something to butt against.
+One model, with the camera and sun fixed, is turned on its turntable to face
+each direction, as vanilla's chemical plant and oil refinery are. Each direction
+is its own render with its own plate, shadow, glow, lamps and moving layers
+(§6.2). The connections are fixed (Liam, 2026-10-20): the solution's at
+`{-1,-2}`, the gas's at `{1,-2}` and the output at `{0,2}`, facing north, all
+turning with the building.
+
+**Ports hidden in one direction are accepted, as in vanilla** (Q21, 2026-10-27).
+Facing north, the west leg's feed and gas saddles, the side-nozzle spool and the
+cabinet's north gland are hidden. Each of them shows in another direction.
 
 **Hazard tape on the drop box's south face is allowed** (Liam, 2026-10-11): it
 names no port.
@@ -319,10 +328,10 @@ names no port.
 
 | Asset         | Required | Directions |
 | ------------- | -------: | ---------: |
-| Main building |        ✓ |          1 |
-| Shadow        |        ✓ |          1 |
-| Idle state    |        ✓ |          1 |
-| Working state |        ✓ |          1 |
+| Main building |        ✓ |          4 |
+| Shadow        |        ✓ |          4 |
+| Idle state    |        ✓ |          4 |
+| Working state |        ✓ |          4 |
 
 **Idle:** frame 0 of every layer, the legs unlit dark navy, the press closed,
 the two status lamps tinted by the engine.
@@ -338,10 +347,10 @@ otherwise — never drawn as a rising level, because no hook would drive one.
 **The plate has to read correctly in two port states, which are the two a
 player meets** (§2, measured on 2.1.19):
 
-| State | What the engine draws |
+| State | What the engine draws over the plate's fittings |
 | --- | --- |
-| No recipe set — a plant just placed | **all three pipe pictures**, on whichever direction it was given |
-| `sae-radiant-precipitation` | **two input pictures on the faced side, and no output picture** |
+| No recipe set | three boxes; vanilla's cover on each unconnected fitting |
+| `sae-radiant-precipitation` | the two input boxes only; **no box at the output, so no cover on its fitting** |
 | A future stage-3 fluid recipe | all three again |
 
 ## 6.2 Animation Layers — what moves, decided here
@@ -378,25 +387,27 @@ fixed in `options/animation/` (`6-all-fixed.gif`):
   from a drain cock on its **south-east flank, inside the footprint**, onto a wet
   patch. No steam.
 
-**Moving share, all together: 8.5 %** (chemical plant 5.2 %, refinery 15.9 %).
+**Layers per direction.** A layer the camera never sees in a direction has no
+sheet there. Its parts stand in that direction's plate at frame 0.
+
+| Facing | Moving layers |
+| --- | --- |
+| North | legs, drive, the three couplings, press, the three gauges, drip |
+| East | as north, without the dosing-pump coupling |
+| South | legs, drive, compressor and pump couplings, press |
+| West | legs, drive, dosing-pump coupling, press |
+
+**Moving share: 5.17 / 3.54 / 3.96 / 4.63 %**, N/E/S/W (chemical plant 5.2 %, refinery 15.9 %).
 Each part is its own cropped sheet.
 
 **The press, in the engine.** Once per craft, **rate-locked, not
 phase-locked**: the engine does not reset the animation at a craft's start, so
 the press runs once in every craft's worth of animation without being tied to
-when a craft begins. It **snaps closed when idle** (`idle_animation`). The cake
-lands on press frame 10, which carries the sound accent, never frame 0. Two
-engine details to verify when wired:
+when a craft begins. The press is its own `working_visualisation`, always drawn (Liam, 2026-10-20: *"Own working visualisation"*): a 140-entry `frame_sequence` at 7/60, 1200 ticks, one craft. The engine never draws `idle_animation` here, so a stopped plant shows the press where it stopped (*"Accept frozen-open"*). The cake lands on press frame 10. The accent counts sequence entries from 0 and sits on entry 21 (measured in T04).
 
-1. the maximum `frame_sequence` length;
-2. whether `sound_accents.frame` counts the sequence index or the sprite index.
+**The steam row is struck.** Nothing burns in this plant: no flame, no exhaust, no smoke, no steam plume, ever. The Core's thin atmosphere would allow them; the design has none.
 
-The alternative is the press as its own `working_visualisation`.
-
-**The steam row is struck.** No air here: no flame, no exhaust, no smoke, no
-steam plume, ever.
-
-**No fans, deliberately.** Nothing on a plant without air moves air.
+**No fans, deliberately.** Nothing in this plant needs air moved.
 
 ---
 
@@ -419,14 +430,16 @@ Building
 **Shadow:** its own `draw_as_shadow` sheet off the model, never baked into the
 colour layer.
 
-**Base, Main Structure, Static Machinery:** one plate, rendered; there is no flat
-base under the machine (template rule 7). Every moving part of §6.2 is rendered
-out of it as its own cropped sheet, and the plate equals each sheet's frame 0.
+**Base, Main Structure, Static Machinery:** one plate per direction, rendered.
+The housing fills the footprint, and there is no flat base under it (template
+rule 7). Every moving part of §6.2 is rendered out of it as its own cropped
+sheet, and each plate equals its own direction's frame 0.
 
-**Pipes:** the plant's own pipe pictures, in assembler 3's shape, size and
-placement and our own metal, drawn by the engine; vanilla's covers.
+**Pipes:** none drawn by the engine. Each connection's fitting is modelled into
+every direction's plate and casts and takes its own shadows. The engine draws
+vanilla's covers on an unconnected fitting.
 
-**Lighting:** **two status lamps**, on the pump house and the instrument house,
+**Lighting:** **two status lamps**, one sheet per direction, on the pump house and the instrument house,
 cut white and tinted by the engine, `apply_tint = "status"`, `always_draw = true`.
 
 **Glow:** **the legs only**, differenced from a lit and an unlit render of the
@@ -460,7 +473,7 @@ all three turn with the building.
 | input 2 | `input` | north | `{ 1, -2}` | north face, east of centre | 1000 |
 | output | `output` | south | `{ 0,  2}` | south face, centre column | 1000 |
 
-All three: the plant's own pipe pictures (§13), `pipe_covers =
+All three: no `pipe_picture`; the fitting is in the plate. `pipe_covers =
 derive.pipe_covers()`, `always_draw_covers = false`, `secondary_draw_orders = {
 north = -1 }`. The entity sets `fluid_boxes_off_when_no_fluid_recipe = false`
 (§2).
@@ -471,30 +484,40 @@ north = -1 }`. The entity sets `fluid_boxes_off_when_no_fluid_recipe = false`
 | ---- | -------- | --------------- |
 | in | no visible connector | electric network, `secondary-input`, 1500 kW |
 
+## Circuit connector
+
+The model carries a terminal box with its cable gland on the wall facing the
+camera, one per direction. The engine's connector sprite is drawn over it (model
+tiles, x east, y north, facing north before turning):
+
+| Facing | Socket | Model position |
+| --- | --- | --- |
+| North | the housing's south wall | `(0.85, -2.328, 0.5)` |
+| East | the housing's east wall | `(2.428, -0.95, 0.5)` |
+| South | the housing's north wall | `(0.0, 2.328, 0.5)` |
+| West | the housing's west wall | `(-2.428, 0.6, 0.5)` |
+
+The prototype positions come from the render.
+
 ### Hard geometric constraints
 
-1. **The pipe pictures are within 1 px of assembler 3's outline on every face**
-   (template rule 6), in our own metal, all four plates neutral dark steel;
-   vanilla's covers.
-2. **Every edge's middle three tiles meet a wall**, so a picture at any of the
-   twelve positions has something to butt against.
-3. **North pictures are drawn behind** (`secondary_draw_orders = { north = -1 }`).
-   The plate rises 0.17–0.19 tile over the north port tiles; assembler 3's north
-   picture stands 0.0–0.31 above the edge.
-4. **No marking names a fluid.** Box assignment follows the recipe's ingredient
+1. **Each connection enters the housing's wall through its fitting, and the
+   joins pass (no gap) at all 12 connections, measured.**
+2. **North covers are drawn behind** (`secondary_draw_orders = { north = -1 }`).
+3. **No marking names a fluid.** Box assignment follows the recipe's ingredient
    order: under `sae-radiant-precipitation` the west input takes solution and the
    east takes gas, and under stage 3's dissolve (`4 spent cells + 50 crust gas`)
    the first fluid is the gas and the assignment swaps. A fluid box is a socket,
    not a fluid. Hazard tape on the drop box's south face names no port and is
    allowed (§5).
-5. **The blue sits more than a tile from every edge.**
-6. **Nothing crosses ±2.5** (the selection box), and the art is cut to **exactly 5.000 tiles** wide.
+4. **The blue sits more than a tile from every edge.**
+5. **Nothing crosses ±2.5** (the selection box), and the art is cut to **exactly 5.000 tiles** wide.
    This is a machine players build in rows.
-7. **The press's cake is only ever drawn in motion, into a closed box.**
+6. **The press's cake is only ever drawn in motion, into a closed box.**
 
 ### Visual Requirement
 
-The player tells inputs from outputs by the engine's pipe pictures and the recipe
+The player tells inputs from outputs by the wall fittings modelled into each direction's plate and the recipe
 tooltip, not by the art, and the art must not pretend otherwise. **The most
 likely mistake is an output chute**: a solid does come out of this machine, and
 the cell comes out wherever the inserter is. The drop box is not a chute: the
@@ -528,7 +551,7 @@ Not required — rendered from the model. See §0.
 ### North
 
 ```text
-Not required — rendered from the model. One plate; the engine rotates the ports. See §5.
+Not required — rendered from the model. Four directions from one model; see §5.
 ```
 
 ### East
@@ -585,9 +608,10 @@ copied from its `meta.json`, never measured off a sheet.
 | | tiles | in-game px | source px |
 | --- | --- | --- | --- |
 | **Building width** | 5.000 exactly | 160 | **320** |
-| **Building height** | ~5.7 (the mass: 5.08 × 5.73 tiles in round 5) | — | — |
 
-**Rise:** 0.78 tile above the north edge (round 5), against the refinery's 0.97.
+**Per direction.** Each direction has its own sizes and shifts, copied from that
+direction's `meta.json`. **Rise:** 0.64 / 0.81 / 0.52 / 0.73 tile, N/E/S/W,
+against the refinery's 0.97.
 
 ---
 
@@ -602,21 +626,13 @@ copied from its `meta.json`, never measured off a sheet.
 └── graphics/
     └── entity/
         └── reaction-plant/
-            ├── base.png                  the plate, static
-            ├── shadow.png                draw_as_shadow
-            ├── legs.png                  24 f, the solution going round
-            ├── legs-glow.png             the legs, differenced
-            ├── drive.png                 24 f, the agitator drive
-            ├── couplings.png             the compressor, dosing-pump and pump couplings
-            ├── press.png                 16 f, the filter press
-            ├── gauges.png                24 f, the needles
-            ├── drip.png                  24 f, the condenser
-            ├── status-lamp.png           white lens, engine-tinted
-            └── port-*.png                the four pipe pictures
+            ├── north/ east/ south/ west/   one folder a direction, each with:
+            │   ├── base.png  shadow.png  legs.png  legs-glow.png  status-lamp.png
+            │   └── the moving layers seen in that direction (§6.2)
 ```
 
 Nothing moves to `graphics/` without sign-off. Smoke and particles are not
-wanted at all — there is no atmosphere.
+wanted at all: nothing here burns or vents.
 
 ---
 
@@ -627,15 +643,13 @@ wanted at all — there is no atmosphere.
 ### Graphics
 
 ```text
-To be written by the wiring task, from the packed meta.json, via
-derive.own_graphics:
-  animation              the plate, the shadow and the moving layers of §6.2,
-                         each its own cropped sheet; the press once per craft
-                         (§6.2, "The press, in the engine")
-  idle_animation         the press closed
-  working_visualisations the legs and their glow (only while crafting);
-                         the two status lamps (always_draw, apply_tint "status")
-  sound accent           on press frame 10, never frame 0
+From each direction's packed meta.json, via derive.own_graphics:
+  animation              north/east/south/west_animation: each direction's
+                         plate, shadow and the moving layers seen in it (§6.2)
+  working_visualisations each with north/east/south/west_animation: the press;
+                         the legs and their glow; the two status lamps
+                         (always_draw, apply_tint "status")
+  circuit_connector      one per direction, at the model's socket (§8)
 ```
 
 **No `flags` line, and no `not-rotatable`.** Settled 2026-09-17.
@@ -648,33 +662,23 @@ Max health:            350, the oil refinery's
 Shadow:                own draw_as_shadow layer off the model
 Lights:                none beyond the glow layer
 Fluid Boxes:           2 in (north, {-1,-2} and {1,-2}) + 1 out (south, {0,2}),
-                       volume 1000 each; pipe_picture = the plant's own
-                       (port-N/E/S/W), pipe_covers = derive.pipe_covers(),
+                       volume 1000 each; no pipe_picture,
+                       pipe_covers = derive.pipe_covers(),
                        always_draw_covers = false,
                        secondary_draw_orders = { north = -1 },
                        fluid_boxes_off_when_no_fluid_recipe = FALSE, this plant alone
-Circuit Connections:   inherited from chemical-plant
+Circuit Connections:   one per direction, from the model (§8)
 Remnants:              oil-refinery-remnants, oil-refinery-explosion
 ```
-
-**Port shifts, from round 5's packed `ports/meta.json`** (re-read from the full
-model's pack). Each picture is rendered on the middle tile of its face and
-shifted from the tile outside the port:
-
-| Face | Size (px) | Shift |
-| --- | --- | --- |
-| N | 53 × 22 | `{ 0.00781, 0.34375 }` |
-| E | 31 × 71 | `{ -0.72656, 0.05469 }` |
-| S | 63 × 69 | `{ -0.00781, -0.77344 }` |
-| W | 31 × 72 | `{ 0.72656, 0.01562 }` |
 
 **Remnants and explosion: the oil refinery's for now** (Liam, 2026-10-11), the
 5×5 vanilla machine they fit. Our own remnants are a TODO.
 
 **The sound accent is ours.** `derive.own_graphics` strips the inherited
 `sound_accents` when the new `graphics_set` is attached, because a gated sound
-cannot survive the art it was cued to; the press's accent is set on press frame
-10 after that.
+cannot survive the art it was cued to; the press's accent is set on the press's sequence entry 21 after that.
+
+Alt-mode icon: twice the size, on the reactor's roof (Liam, 2026-10-20: *"Double, like the refinery"*).
 
 The `icon` is taken via `entity_icon()`; the item follows the entity by design,
 so the two can never disagree.
@@ -688,6 +692,7 @@ so the two can never disagree.
 
 **Icon Concept:** rendered with `--icon`: **the lead reactor and its two lit
 legs** (Liam, 2026-10-11). Legible at 32 px.
+The icon is re-rendered from the casing model in T09 and shown to Liam before it is set (Liam, 2026-10-28: *"Re-render"*).
 
 ### Icon Prompt
 
@@ -704,24 +709,24 @@ Not required — rendered from the model with --icon. See §14.
 * [ ] Correct tile size — 5.000 tiles wide, measured, not judged
 * [ ] Correct perspective — mostly roof, shallow near faces, nothing leans
 * [ ] Correct scale
-* [ ] Clear silhouette — broken, asymmetric, height in the back corners; corners drop out unevenly
+* [ ] Clear silhouette — one building, front corners broken, vessels rising out of it
 * [ ] Looks like Factorio
 * [ ] Matches the Core
-* [ ] Inputs are visually understandable — by the engine's pipe pictures, not by the plate
+* [ ] Inputs are visually understandable — each input's run reads from its fitting to the unit that uses it
 * [ ] Outputs are visually understandable — there is no output port to understand
 * [ ] **Does not read as** the vanilla chemical plant — no chimneys, no exhaust, no red-and-white
 * [ ] **Does not read as** the oil refinery — no towers, no flare stacks, nothing burns
 * [ ] **Does not read as** a storage tank
 * [ ] **No plume** — the condenser drips, it never steams
 * [ ] Tier 0 finish: hoses, lagging, bolted plate, wear. A paint per unit, worn locally
+* [ ] Every hose and cable end lands in a port; clipping checked by eye
 
 ### Ports — every line comes from §8
 
-* [ ] Each face's pipe picture is **within 1 px of assembler 3's outline**, measured
-* [ ] All four pipe pictures' plates are neutral dark steel
-* [ ] Every edge's middle three tiles meet a wall
-* [ ] The plate reads correctly with **two pipe pictures and with three** (§6.1)
-* [ ] A north picture, drawn *behind*, still reads
+* [ ] Joins pass (no gap) at all 12 connections
+* [ ] Each fitting sits in the housing's wall
+* [ ] The plate reads correctly with **two boxes and with three, in every direction** (§6.1)
+* [ ] A north cover, drawn *behind*, still reads
 * [ ] Nothing names which port takes which fluid
 * [ ] No output chute; the cake is only drawn in motion, into a closed box
 * [ ] Nothing crosses ±2.5
@@ -737,13 +742,14 @@ Not required — rendered from the model with --icon. See §14.
 
 * [ ] The plate equals every layer's frame 0
 * [ ] **The press's accent is off frame 0** — the cake lands on press frame 10
-* [ ] The press runs once per craft and is closed when idle
+* [ ] The press runs once per craft and holds where it stopped
 * [ ] Nothing moving clashes (`--collide`, every frame)
 
 ### Directions
 
-* [ ] North · [ ] East · [ ] South · [ ] West — one plate serves all four; the engine moves the ports
+* [ ] North · [ ] East · [ ] South · [ ] West: the building turns with its ports; measured in each
 * [ ] All directions represent the same building
+* [ ] The circuit connector sits on the model's socket in every direction
 
 ### Rendered-art defects
 
@@ -759,13 +765,14 @@ recipe, and rotate one.
 
 * [x] **The ports turn with the entity in all four directions, inputs on the faced side and output opposite** — measured on 2.1.19 by the coder, the reviewer and the tester (at 3×3)
 * [x] **With no recipe the plant carries all three boxes, keeps its direction, and a pipe at the output joins; with `sae-radiant-precipitation` the engine keeps the two inputs only and drops the output** — measured on 2.1.19 (at 3×3)
-* [ ] The pipe pictures land on a wall and look like they belong, in all four directions
+* [ ] Pipes join each fitting, in all four directions
+* [ ] With `sae-radiant-precipitation`, the output fitting with no box looks right
 * [ ] An unconnected port's cover sits right
 * [ ] Shadow aligns, does not double, and is *visible* — brighten the screenshot and confirm it is actually there
 * [ ] Inserters take the cell from any adjacent tile without the art implying one
 * [ ] Neighbours do not overlap — measured, not judged: see Appendix C
 * [ ] The building sits on its tile, not above it
-* [ ] The press runs once per craft, its accent sounds as the cake lands, and it is closed when idle
+* [ ] The press runs once per craft, its accent sounds as the cake lands, and it holds where it stopped
 * [ ] Performance is acceptable
 
 ---
@@ -774,8 +781,8 @@ recipe, and rotate one.
 
 ```text
 [ ] Model
-[ ] Pipe pictures
-[ ] Directional sprites   (n/a -- one plate, §5)
+[ ] Fittings (in the plates)
+[ ] Directional sprites   (four, §5)
 [ ] Shadow
 [ ] Idle / static picture
 [ ] Working state
@@ -803,6 +810,12 @@ recipe, and rotate one.
 | `R5` | `options/round-5/` | A paint per unit, rust confined, details | **accepted** — *"The colours are good."* | The animation previews |
 | `A1` | `options/animation/` | Six motion previews | **accepted, one fault** — the vent condenser clips | Fix every clash; re-render "all together" |
 | `A2` | `options/animation/6-all-fixed.gif` | The clashes fixed | **signed off** | — |
+| `T06` | `model/four-way/` | The model in four directions, a fitting at each connection | flow did not read | the runs visible to their users |
+| `T06b–d` | `model/four-way/`, `t06d/` | Flow traced; hose and pipe scale; fat-hose variant | thin hoses, visibly fastened | new layouts |
+| `T06e` | `options/round-layout/` | Takes A–D | *"more like a building"* | three forms |
+| `T06g` | `options/round-forms/` | Casing, frame, rotunda | **1, the casing** | refine |
+| `T06h` | `options/round-forms-refine/` | Kit restored, tone lifted | *"A: as built"* | ports |
+| `T06i` | `options/round-ports/` | Every run end in a port, 42 of 42 | **signed off 2026-10-28** | — |
 
 ### Version 1
 
@@ -895,3 +908,29 @@ on frame 10; the icon the reactor and its two lit legs; the south pipe picture
 dark steel; hazard tape on the drop box allowed; two status lamps; old 3×3 saves
 left to overlap, no migrations before 1.0. The sprite brief beside this spec is
 retired, superseded by the model (§0).
+
+### Version 5 — four directions
+
+**Why.** Liam, 2026-10-20, on the engine's pipe pictures over the one plate:
+*"The model should be adjusted so the pipe connections make sense and follow the
+flow of the fluid/gas through the model. We could draw a model for each rotation
+rotate like factorio does for some of the vanilla models"*; the connector: *"All
+of them - the model should cater for them"*. This reverses the one plate of
+Version 3.
+
+**Flow, then layout.** *"The pipe connections should allow the liquid to flow
+through the building or out of the building as you expect."* On the runs: *"it
+wouldn't make sense to suddenly half the diameter of the pipe"*. Hoses: *"Thin,
+when hoses connect to something they need to look like they're structurally
+connected"*. On the layouts: *"it would help if it looked more like a building
+than some tanks on the ground"*; connections *"Should enter the building's
+wall"*.
+
+**The casing.** *"1 Casing"*; the left-out kit *"Restore in refine"*; tone *"A: as
+built"*. Then: *"The hoses on thr reaction plant don't have appropriate ports,
+they look like they lead to nowhere"*. Every run end now lands in a port. Q21 was
+answered A on all four: kit as built, saddles kept, ports hidden in one direction
+accepted, gland as is.
+
+**Signed off, 2026-10-28.** *"Sign off pump and plant"*. Joins 12/12, collide 0,
+clash 0, cover 94.0–95.4 %.
