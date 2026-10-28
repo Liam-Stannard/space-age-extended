@@ -1,0 +1,142 @@
+[
+ {
+  "direction": "north",
+  "face": "N",
+  "state": "joined",
+  "vanilla_drawn": "under the pump",
+  "reach_px": {
+   "pump": 7.0,
+   "all": 84.0,
+   "vanilla_cover_bar": 22
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  }
+ },
+ {
+  "direction": "north",
+  "face": "N",
+  "state": "unconnected",
+  "vanilla_drawn": "under the pump",
+  "reach_px": {
+   "pump": 7.0,
+   "all": 22.0,
+   "vanilla_cover_bar": 22
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  },
+  "cover_shown_pct": 79.1
+ },
+ {
+  "direction": "east",
+  "face": "E",
+  "state": "joined",
+  "vanilla_drawn": "under the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 64.0,
+   "vanilla_cover_bar": 13
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  }
+ },
+ {
+  "direction": "east",
+  "face": "E",
+  "state": "unconnected",
+  "vanilla_drawn": "over the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 13.0,
+   "vanilla_cover_bar": 13
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  },
+  "cover_shown_pct": 100.0
+ },
+ {
+  "direction": "south",
+  "face": "S",
+  "state": "joined",
+  "vanilla_drawn": "over the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 64.0,
+   "vanilla_cover_bar": 20
+  },
+  "over": {
+   "px": 584,
+   "rise_px": 20.0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  }
+ },
+ {
+  "direction": "south",
+  "face": "S",
+  "state": "unconnected",
+  "vanilla_drawn": "over the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 20.0,
+   "vanilla_cover_bar": 20
+  },
+  "over": {
+   "px": 775,
+   "rise_px": 24.0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  },
+  "cover_shown_pct": 100.0
+ },
+ {
+  "direction": "west",
+  "face": "W",
+  "state": "joined",
+  "vanilla_drawn": "under the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 64.0,
+   "vanilla_cover_bar": 12
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  }
+ },
+ {
+  "direction": "west",
+  "face": "W",
+  "state": "unconnected",
+  "vanilla_drawn": "over the pump",
+  "reach_px": {
+   "pump": 0,
+   "all": 12.0,
+   "vanilla_cover_bar": 12
+  },
+  "over": {
+   "px": 0,
+   "rise_px": 0,
+   "off_stub_px": 0,
+   "off_stub_rise_px": 0
+  },
+  "cover_shown_pct": 100.0
+ }
+]
