@@ -27,7 +27,8 @@ centre, x east, y north (the body's, before the screen's y stretch); z up from t
 
 Filled ("Cast infill to the wall"): G1-G4, each by a cast block (rig_parts.INFILL) from the
 ledge up 0.004 into the overhang and out to the footprint's face (2.496), in the plinth's own
-cast iron (the chassis's "iron"), a bolted cast lip along its top; the ends that meet the corner
+cast iron (the chassis's "iron"), a bolted cast lip along the top of the south ones' outer face
+(the sides' outer faces have none, so the plate stays 2.5 tiles wide); the ends that meet the corner
 girders stop 0.0005 short of the girders' ends at 1.5.
   G1  x 0.775 .. 1.4995,   y -2.496 .. -1.93, z 0.53 .. 1.304
   G2  x -1.4995 .. -0.775, y -2.496 .. -1.93, z 0.53 .. 1.254

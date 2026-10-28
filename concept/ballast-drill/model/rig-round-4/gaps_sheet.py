@@ -28,10 +28,12 @@ DIRS = ts.DIRS
 PPT = v.PPT
 # the gaps (gap-list.txt): name, plan box (x0, y0, x1, y1), the void's top
 GAPS = [
-    ("G1 under the SE cabinet (Liam's marked crop)", (0.79, -2.5, 1.5, -1.94), 1.30),
-    ("G2 under the SW housing", (-1.5, -2.5, -0.79, -1.94), 1.25),
-    ("G3 under the NE drive cabinet", (1.94, 0.78, 2.5, 1.5), 1.25),
-    ("G4 under the NW drive cabinet", (-2.5, 0.78, -1.94, 1.5), 1.25),
+    ("G1", "G1 under the SE cabinet (Liam's marked crop): filled", (0.79, -2.5, 1.5, -1.94), 1.30),
+    ("G2", "G2 under the SW housing: filled", (-1.5, -2.5, -0.79, -1.94), 1.25),
+    ("G3", "G3 under the NE drive cabinet: filled", (1.94, 0.78, 2.5, 1.5), 1.25),
+    ("G4", "G4 under the NW drive cabinet: filled", (-2.5, 0.78, -1.94, 1.5), 1.25),
+    ("G5-SE", "G5 the SE wing's inner corner (0.05 tile): left", (1.94, -1.52, 2.02, -1.44), 1.25),
+    ("G5-SW", "G5 the SW wing's inner corner (0.05 tile): left", (-2.02, -1.52, -1.94, -1.44), 1.25),
 ]
 BG = (32, 32, 34)
 
@@ -78,7 +80,7 @@ def gap_sheets(outdir, before, after):
             cache[key] = ts.ours(t, d, wet=wet, size=big).convert("RGB")
         return cache[key]
     paths = []
-    for gi, (name, (x0, y0, x1, y1), ztop) in enumerate(GAPS):
+    for key, name, (x0, y0, x1, y1), ztop in GAPS:
         sx0, sx1 = x0 - 0.3, x1 + 0.3
         top, bottom = -y1 - ztop / 2 - 0.45, -y0 + 0.3
         views = [("north", False)] + [(d, True) for d in DIRS]
@@ -97,7 +99,8 @@ def gap_sheets(outdir, before, after):
                 sheet.paste(c.resize((c.width * k, c.height * k), Image.NEAREST), (i * (cw + 10), y + head))
                 lab = f"{'dry (every direction)' if not wet else d + ', wet'}: {'before' if i == 0 else 'after'}"
                 label(dr, i * (cw + 10) + 6, y + 4, lab, 14)
-        p = os.path.join(outdir, f"gap-G{gi + 1}.png")
+        assert max(sheet.size) < 8000, sheet.size
+        p = os.path.join(outdir, f"gap-{key}.png")
         sheet.save(p)
         paths.append(p)
         print(p, sheet.size)
@@ -116,7 +119,7 @@ def clipping(out, after):
         for c in rj.get("collars", {}).get(d, []):
             items.append((d, True, f"collar ({c[0]:+.2f},{c[1]:+.2f})", (c[0], c[1], c[2])))
         for n in rj.get("niches", {}).get(d, []):
-            items.append((d, True, f"buried junction's wall fitting {n[2]} ({n[0]:+.2f},{n[1]:+.2f})",
+            items.append((d, True, f"niche {n[2]} ({n[0]:+.2f},{n[1]:+.2f})",
                           (n[0], n[1], 0.42)))
         for nm, (x, y, z) in ends[d]:
             items.append((d, True, nm, (x, y, z)))
@@ -125,8 +128,8 @@ def clipping(out, after):
         for sy in (-1, 1):
             items.append(("north", False, f"frame, corner {'N' if sy > 0 else 'S'}{'E' if sx > 0 else 'W'}",
                           (sx * 2.1, sy * 2.1, 0.35)))
-    for name, (x0, y0, x1, y1), zt in GAPS:
-        items.append(("north", False, f"infill {name.split()[0]}", ((x0 + x1) / 2, (y0 + y1) / 2, zt / 2)))
+    for key, name, (x0, y0, x1, y1), zt in GAPS[:4]:
+        items.append(("north", False, f"infill {key}", ((x0 + x1) / 2, (y0 + y1) / 2, zt / 2)))
     per_row = 6
     rows = -(-len(items) // per_row)
     W, H = per_row * cpx, 50 + rows * (cpx + head)
@@ -146,7 +149,8 @@ def clipping(out, after):
         c = c.resize((c.width * k, c.height * k), Image.NEAREST)
         px, py = (i % per_row) * cpx, 50 + (i // per_row) * (cpx + head)
         sheet.paste(c, (px, py + head))
-        label(dr, px + 4, py + 3, f"{d}{'' if wet else ' dry'}: {nm}", 12, (150, 210, 255))
+        label(dr, px + 4, py + 3, f"{d}{'' if wet else ' dry'}: {nm}"[:30], 12, (150, 210, 255))
+    assert max(sheet.size) < 8000, sheet.size
     sheet.save(out)
     print(out, sheet.size, len(items), "crops")
 

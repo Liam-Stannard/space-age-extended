@@ -266,6 +266,8 @@ class Rig:
                 face = x1 if x1 >= 2.49 else x0
                 along0, along1 = y0, y1
             sgn = -1 if (south or face < 0) else 1
+            if not south:
+                continue          # the sides' outer faces stay inside the footprint (2.5): no lip there
             for zc, hh in ((top - 0.035, 0.05),):
                 c = (((along0 + along1) / 2, face + sgn * 0.006, zc) if south
                      else (face + sgn * 0.006, (along0 + along1) / 2, zc))
@@ -1081,6 +1083,7 @@ class Rig:
         # the connection: a sleeve of the bore from the riser at ZA out to the end ring (the
         # signed-off port's), bolted into it as into a blind flange, open
         Js = J
+        sleeve = self.cfg["pipe"] if buried else "steel"   # T03g: in a niche it reads as the run's pipe
         if buried:
             Js = J - n * (R_AX - CUT_IN - 0.006 - 0.004 - 0.02)          # the wall flange's face
             wf = J - n * (R_AX - CUT_IN - 0.006 - 0.004 - 0.01)
@@ -1092,7 +1095,7 @@ class Rig:
         if f == "S":
             ye = -2.53 - ZA / 2
             if buried:
-                self.along((J.x, (Js.y + ye + 0.04) / 2, ZA), (0, 1, 0), R_RUN, abs(ye + 0.04 - Js.y), "steel", g,
+                self.along((J.x, (Js.y + ye + 0.04) / 2, ZA), (0, 1, 0), R_RUN, abs(ye + 0.04 - Js.y), sleeve, g,
                            verts=48, bevel=0.0)
             else:
                 self.along((J.x, (J.y + ye) / 2 + 0.02, ZA), (0, 1, 0), R_RUN, abs(ye - J.y) - 0.04, "steel", g,
@@ -1107,13 +1110,13 @@ class Rig:
             end = ye
         elif f == "N":
             ye = 2.495 - 0.025
-            self.along((J.x, (Js.y + ye) / 2, ZA), (0, 1, 0), R_RUN, abs(ye - Js.y), "steel", g, verts=48, bevel=0.0)
+            self.along((J.x, (Js.y + ye) / 2, ZA), (0, 1, 0), R_RUN, abs(ye - Js.y), sleeve, g, verts=48, bevel=0.0)
             G["cyl"]((J.x, ye, ZA), POCKET_HW - 0.01, 0.04, "steel", g, verts=48, rot=(math.pi / 2, 0, 0), bevel=0.008)
             end = ye
         else:
             sgn = 1 if f == "E" else -1
             xf = sgn * (2.5 - 0.03)
-            self.along(((Js.x + xf) / 2, J.y, ZA), (1, 0, 0), R_RUN, abs(xf - Js.x), "steel", g, verts=48, bevel=0.0)
+            self.along(((Js.x + xf) / 2, J.y, ZA), (1, 0, 0), R_RUN, abs(xf - Js.x), sleeve, g, verts=48, bevel=0.0)
             G["cyl"]((xf, J.y, ZA), G["H_RING_R"] - 0.02, 0.04, "steel", g, verts=48, rot=(0, math.pi / 2, 0),
                      bevel=0.006)
             for k in range(8):
