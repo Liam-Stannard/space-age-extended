@@ -22,6 +22,20 @@
   A remnants sheet (the wreck, pack.py: render.json's remnants pass, or meta.json's kind
   "remnants") is the corpse's, not the building's: never drawn or measured here, and listed
   as ignored in every direction.
+  A resource model (render.json's resource pass, or meta.json's kind "resource" with the
+  sheets alone, --footprint then its collision box in tiles) is measured a cell at a time: its
+  cells stand where a building's directions do, every one of them, keyed "SS-VV" (stage and
+  variation from 0, as contract.cell names its renders: "00-00" the richest stage's first look),
+  in measures.json's "directions" and on the sheet. In each the cell is the plate; the still is
+  it with every paint animation's frame 0 over it (its stateless_visualisation, which plays over
+  whichever cell the engine drew); the effect's cell (meta.json's kind "effect", its
+  stages_effect) is a glow layer, added at full strength in working frame 0 and its glow
+  figures (the engine pulses it between min_effect_alpha and max_effect_alpha: not modelled);
+  the animations are layers as a building's. A resource has no pipe connections, so
+  --connection is refused and no joins are measured; --plate does not apply, and --directions
+  other than "one" is refused. Its references are --vanilla crude-oil and fluorine-vent (REFS):
+  each cell beside their variation of its own number (mod 4), with their figures.
+  pack_checks are meta.json's flat checks, the same in every cell.
 
 Everything is measured as the engine draws it: each sheet placed at its shift on one canvas,
 the entity origin at the canvas's centre, 64 px a tile (the vanilla pipe and the references
@@ -294,7 +308,12 @@ measures.json:
    "gates": {"joins": bool | null, "collide": bool | null}, "pass": bool}
 
 REFS (--vanilla): steam-turbine, steam-engine, assembling-machine-3, chemical-plant,
-oil-refinery, pumpjack, fusion-generator, foundry, electromagnetic-plant. Their geometry is
+oil-refinery, pumpjack, fusion-generator, foundry, electromagnetic-plant; and the resources
+crude-oil and fluorine-vent, a 3 x 3 footprint each (their collision box +-1.4, as contract.py
+counts a resource's), each a stage of four variations: in a resource model's cell "SS-VV" the
+variation VV mod 4, in any other direction variation 0; crude oil with its stateless_visualisation
+crude-oil-animation's frame 0 over it, and neither with its smoke (render_layer smoke, tinted to a
+tenth or a fifth). Their geometry is
 read from the vanilla data (<FACTORIO_ROOT>/data, tools/paths.conf): a sprite's .lua beside
 it (util.sprite_load) or the prototype table naming it, plus what the prototype adds where the
 .lua alone is wrong (vanilla_sprite's opts): the chemical plant's sprite_load shift
@@ -881,8 +900,9 @@ class Layer:
     pack.py copies from render.json; declared, render.json's own (contract.sequence and speed),
     for a meta.json packed before they were copied."""
 
-    def __init__(self, stem, kind, meta, working=False, declared=(None, None)):
+    def __init__(self, stem, kind, meta, working=False, declared=(None, None), at=0):
         self.stem, self.kind, self.meta, self.working = stem, kind, meta, working
+        self.at = at        # its frame 0's place in the sheet: a resource's cell, stage x line_length + variation
         self.frames = int(meta.get("frames", 1))
         seq = meta.get("frame_sequence", declared[0])
         speed = meta.get("animation_speed", declared[1])
@@ -934,6 +954,10 @@ class Source:
                 raise Usage(str(e)) from None
             self.render_json = os.path.join(renders, contract.FILE)
         d = self.decl or {}
+        self.resource = contract.is_resource(self.decl) if self.decl else any(
+            isinstance(m, dict) and m.get("kind") == "resource" for m in self.meta.values())
+        if self.resource and directions not in (None, "one"):
+            raise Usage(f"--directions {directions!r}: a resource model has one, its cells measured each")
         self.directions = directions or d.get("directions") or self.infer_directions()
         if self.directions not in contract.DIRECTIONS:
             raise Usage(f"--directions {self.directions!r} is not one of {', '.join(contract.DIRECTIONS)}")
@@ -951,6 +975,10 @@ class Source:
             with open(os.path.join(self.ports, "meta.json")) as f:
                 self.port_meta = json.load(f)
         self.dirs = [n for n, _ in contract.DIRECTIONS[self.directions]]
+        if self.resource:               # its cells stand in for directions, "SS-VV"
+            res = next(m for m in self.meta.values() if isinstance(m, dict) and m.get("kind") == "resource")
+            self.dirs = [f"{s:02d}-{v:02d}" for s in range(int(res["variation_count"]))
+                         for v in range(int(res["frame_count"]))]
         self.layers, self.ignored, self.lights = {}, {}, {}
         for dn in self.dirs:
             self.layers[dn], self.ignored[dn] = self.classify(dn)
@@ -970,6 +998,8 @@ class Source:
         return "one"
 
     def classify(self, dn):
+        if self.resource:
+            return self.classify_cell(dn)
         layers, ignored = [], []
         if self.decl:
             for p in self.decl["passes"]:
@@ -1028,6 +1058,29 @@ class Source:
         self.lights[dn] = [lay for lay in layers if lay.kind == "light"]       # not drawn; measured alone
         return [lay for lay in layers if lay.kind != "light"], ignored
 
+    def classify_cell(self, dn):
+        """A resource model's cell dn ("SS-VV"): its resource sheet's cell the plate, its effect's a
+        glow, every animation (an entry with frames) a layer as a building's; from meta.json, with
+        render.json's timing for an entry packed without it (as classify)."""
+        s, v = (int(x) for x in dn.split("-"))
+        anims = {a["name"]: a for a in (self.decl or {}).get("animations", [])}
+        layers, ignored = [], []
+        for k, m in self.meta.items():
+            if k == "checks" or not isinstance(m, dict):
+                continue
+            if m.get("kind") in ("resource", "effect"):
+                layers.append(Layer(k, "plate" if m["kind"] == "resource" else "glow", m,
+                                    at=s * int(m["line_length"]) + v))
+            elif "frames" in m and m.get("kind", "paint") in ("paint", "glow"):
+                a = anims.get(k)
+                layers.append(Layer(k, "glow-anim" if m.get("kind") == "glow" else "anim", m, declared=(
+                    contract.sequence(self.decl, a), contract.speed(self.decl, a)) if a else (None, None)))
+            else:
+                ignored.append(k)
+        layers.sort(key=lambda lay: lay.kind != "plate")
+        self.lights[dn] = []
+        return layers, ignored
+
     def canvas_size(self):
         half = (max(self.footprint) / 2 + 2.5) * PPT
         for dn in self.dirs:
@@ -1047,7 +1100,7 @@ class Source:
         im = self.sheet(lay.stem)
         w, h = lay.meta["size"]
         line = int(lay.meta.get("line_length", 1))
-        f %= lay.frames
+        f = lay.at + f % lay.frames
         return im.crop(((f % line) * w, (f // line) * h, (f % line) * w + w, (f // line) * h + h))
 
     def place(self, im, shift_tiles, at=(0.0, 0.0)):
@@ -1176,7 +1229,8 @@ def strobe_own_loop(sc, acc, need=3):
 
 def measure_direction(src, dn, conns):
     sc = Scene(src, dn)
-    foot = contract.footprint_in(dict(footprint=src.footprint, directions=src.directions), dn)
+    foot = tuple(src.footprint) if src.resource else contract.footprint_in(
+        dict(footprint=src.footprint, directions=src.directions), dn)
     out = dict(layers={lay.stem: lay.kind + (" (working)" if lay.working else "") + (
         f", {lay.frames} frames" if lay.frames > 1 else "") for lay in src.layers[dn]},
         ignored=src.ignored[dn])
@@ -1251,10 +1305,10 @@ def measure_direction(src, dn, conns):
                                                  cut=lay.alone.note() if lay.timed else None) for lay in alone}
     out["light"] = {lay.stem: light_figures([src.frame(lay, f) for f in range(lay.frames)])
                     for lay in src.lights[dn]}
-    out["pack_checks"] = pack_checks(src.meta, dn)
+    out["pack_checks"] = pack_checks(src.meta, "" if src.resource else dn)     # a resource's are flat
     out["joins"] = []
     pictures = []
-    deg = dict(contract.DIRECTIONS[src.directions])[dn]
+    deg = dict(contract.DIRECTIONS[src.directions]).get(dn, 0)      # a resource's cell: one direction
     for c in conns:
         res, pics = join(sc, turn(c, deg))
         out["joins"].append(res)
@@ -1692,6 +1746,16 @@ REFS = {
               ("space-age/graphics/entity/electromagnetic-plant/electromagnetic-plant-main-rotate-1.png:"
                "electromagnetic-plant-main-rotate.lua", "base"),
               ("space-age/graphics/entity/electromagnetic-plant/electromagnetic-plant-base-shadow.png", "shadow")]}),
+    # the resources (base and space-age prototypes/entity/resources.lua): stage_counts {0}, so one
+    # stage of four variations in a row; a cell's variation takes the frame of its number, mod
+    # `variations` (opts cell). Crude oil's stateless_visualisation crude-oil-animation (render_layer
+    # decorative, over the resource) is drawn at frame 0 over it; neither's smoke layers are
+    # (render_layer smoke, tinted to a tenth or a fifth: not the ground's look)
+    "crude-oil": dict(label="crude oil", footprint=(3, 3), variations=4, layers={
+        "*": [("base/graphics/entity/crude-oil/crude-oil.png", "base", dict(cell=True)),
+              ("base/graphics/entity/crude-oil/crude-oil-animation.png", "base")]}),
+    "fluorine-vent": dict(label="fluorine vent", footprint=(3, 3), variations=4, layers={
+        "*": [("space-age/graphics/entity/fluorine-vent/fluorine-vent.png", "base", dict(cell=True))]}),
 }
 REF_DIR = {"": "north", "north": "north", "vertical": "north", "east": "east", "horizontal": "east",
            "south": "south", "west": "west"}
@@ -1775,16 +1839,25 @@ def vanilla_sprite(rel, opts=None):
 
 def vanilla(name, dn):
     """A reference in one of our directions: (label, footprint as it stands, still, shadow, light)
-    on a canvas of its own, the origin at its centre."""
+    on a canvas of its own, the origin at its centre. A resource reference (REFS' variations) in a
+    resource model's cell "SS-VV" is its variation VV mod its own count, in any other direction its
+    variation 0."""
     ref = REFS[name]
-    key = REF_DIR[dn]
+    key = REF_DIR.get(dn, "north")      # a resource model's cell ("SS-VV"): as it faces north
     lays = ref["layers"].get(key) or ref["layers"].get("*") or ref["layers"].get(
         {"south": "north", "west": "east"}.get(key, "north")) or ref["layers"]["north"]
     fw, fh = ref["footprint"]
     foot = (fh, fw) if key in ("east", "west") else (fw, fh)
+    if "variations" in ref:
+        m = re.fullmatch(r"\d+-(\d+)", dn)
+        variation = int(m.group(1)) % ref["variations"] if m else 0
+        key = f"variation {variation}"
     parts = []
     for rel, role, *opts in lays:
-        im, sx, sy = vanilla_sprite(rel, opts[0] if opts else None)
+        opt = dict(opts[0]) if opts else None
+        if opt and opt.pop("cell", False):
+            opt["col"] = variation
+        im, sx, sy = vanilla_sprite(rel, opt)
         parts.append((im, sx, sy, role))
     half = max([(max(foot) / 2 + 1) * PPT] + [max(abs(sx) + im.width / 2, abs(sy) + im.height / 2)
                                              for im, sx, sy, _ in parts])
@@ -1815,9 +1888,45 @@ def vanilla_figures(still, light, foot):
 
 # ---------------------------------------------------------------- the sheet
 
+FONT_DIRS = ("/usr/share/fonts/truetype/dejavu",     # Debian, Ubuntu
+             "/usr/share/fonts/TTF",                 # Arch, CachyOS
+             "/usr/share/fonts/dejavu-sans-fonts",   # Fedora
+             "/usr/share/fonts/dejavu")              # older Fedora, openSUSE
+_FONT_FILES = {}
+
+
+def font_file(bold=False):
+    """The DejaVu Sans file the sheet's text is set in (Bold for titles), or None.
+
+    Looked for in FONT_DIRS, then asked of fontconfig (fc-match), whose answer counts only
+    if it is that same file: fc-match names some other font when DejaVu is not installed.
+    Found once a run; with none, says so on stderr once rather than shrink the text unasked."""
+    name = "DejaVuSans" + ("-Bold" if bold else "") + ".ttf"
+    if name not in _FONT_FILES:
+        found = next((os.path.join(d, name) for d in FONT_DIRS if os.path.isfile(os.path.join(d, name))), None)
+        if found is None:
+            try:
+                ask = subprocess.run(["fc-match", "-f", "%{file}", "DejaVu Sans" + (":bold" if bold else "")],
+                                     capture_output=True, text=True, timeout=10).stdout.strip()
+            except (OSError, subprocess.SubprocessError):
+                ask = ""
+            found = ask if os.path.basename(ask) == name and os.path.isfile(ask) else None
+        if found is None:
+            print(f"measure.py: no {name} in {', '.join(FONT_DIRS)} or from fc-match: the sheet's text "
+                  "is in Pillow's default font instead (install DejaVu Sans for the usual sheet)",
+                  file=sys.stderr)
+        _FONT_FILES[name] = found
+    return _FONT_FILES[name]
+
+
 def font(size, bold=False):
-    f = "/usr/share/fonts/truetype/dejavu/DejaVuSans" + ("-Bold" if bold else "") + ".ttf"
-    return ImageFont.truetype(f, size) if os.path.exists(f) else ImageFont.load_default()
+    f = font_file(bold)
+    if f:
+        return ImageFont.truetype(f, size)
+    try:
+        return ImageFont.load_default(size)         # Pillow 10.1 and later: at the size asked
+    except TypeError:
+        return ImageFont.load_default()
 
 
 def captioned(im, lines, colour_=TXT):
@@ -1973,7 +2082,8 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
         if sc.glows or sc.loop > 1:
             ims.append(seen(sc.paint(0), sc.shadow, foot, sc.src.origin, sc.light(0)))
         box = crop_to([sc.still, sc.shadow] + ([sc.light(0)] if sc.glows else []))
-        panels = [captioned(ims[0].crop(box), [f"OURS {dn or '(one direction)'}, as seen (the still), 1x"]
+        seen_as = f"cell {dn} (stage-variation)" if sc.src.resource else dn or "(one direction)"
+        panels = [captioned(ims[0].crop(box), [f"OURS {seen_as}, as seen (the still), 1x"]
                             + fig_line(m))]
         if len(ims) > 1:
             col = m["colour"]
@@ -2086,6 +2196,8 @@ def run(argv):
         raise Usage("--collide-allow without --collide: nothing to allow")
     allow_patterns(a.collide_allow)
     src = Source(a.src, parse_footprint(a.footprint) if a.footprint else None, a.directions, a.plate)
+    if src.resource and a.connection:
+        raise Usage("--connection: a resource model has no pipe connections to join")
     conns = src.connections([parse_connection(c) for c in a.connection])
     out = os.path.abspath(a.out or os.path.join(src.src, "measures"))
     if not a.out and "concept" in out.split(os.sep):

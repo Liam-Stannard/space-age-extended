@@ -1,0 +1,18 @@
+Vent Pump round 3: the helium line's family colour (written by artist A, 2026-10-12; first to write decides)
+
+Model (the lagged helium line in every concept):
+  lagging canvas, painted grey-violet:   #7E7488  (base)  over metal #5A5260
+  identification bands (every ~0.22 t):  #B6A6C8  pale violet band, 0.05 t wide,
+                                         with a thin #3A3440 edge each side
+  flanges, clamps, valves on the line:   bare steel (the kit's "bare"); no frost, no blue
+  helium kit (meter body, bubbler, gauges): brass cases, as the kit's gauge()
+
+Why not helium-3's own base_color (fluids.lua: r .55 g .78 b .90): the brief bans pale blue
+and cold colour in the model; grey-violet keeps clear of the melt's orange, the oxide red,
+the teal and the green paints.
+
+Path overlay (2x sheets):
+  helium in:           #B48CFF  (violet)
+  molten kamacite:     #FF8030  (orange)
+  spent / recovered gas: #4CD6C0  (teal-green)
+  line width 3 px at 2x, arrows every ~40 px, numbered nodes as round 2

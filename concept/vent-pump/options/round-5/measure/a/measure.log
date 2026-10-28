@@ -1,0 +1,5 @@
+measure.py: 1 gate(s) failed (numbers in /tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t05/measure/a/measures.json)
+measures: /tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t05/measure/a/measures.json
+sheet: /tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/vent-pump-t05/measure/a/comparison.png 2964x1489
+join (one) [0.0, -1.0, 'N']: PASS
+join (one) [0.0, 1.0, 'S']: FAIL: 7 of the pipe body's 39 columns show 2 px or more of ground between the pipe and the building (at most 2 allowed); the most in one column 6 px
