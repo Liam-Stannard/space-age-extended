@@ -613,6 +613,25 @@ copied from its `meta.json`, never measured off a sheet.
 direction's `meta.json`. **Rise:** 0.64 / 0.81 / 0.52 / 0.73 tile, N/E/S/W,
 against the refinery's 0.97.
 
+| Sheet | Frames | North | East | South | West |
+| --- | ---: | --- | --- | --- | --- |
+| `base` | 1 | 327×381 @ (-0.00781, -0.21094) | 327×381 @ (-0.00781, -0.39844) | 327×373 @ (+0.00781, -0.14844) | 327×375 @ (+0.00781, -0.35156) |
+| `shadow` | 1 | 360×346 @ (+0.3125, +0.0625) | 353×344 @ (+0.25781, -0.09375) | 365×346 @ (+0.35156, +0.0625) | 345×335 @ (+0.21094, -0.02344) |
+| `legs-glow` | 1 | 188×57 @ (-0.01562, +0.13281) | 34×210 @ (-0.73438, -0.59375) | 188×56 @ (-0.01562, -1.3125) | 34×207 @ (+0.70312, -0.57031) |
+| `status-lamp` | 1 | 14×216 @ (+2.29688, +0.17188) | 189×41 @ (-0.82031, +1.64844) | 13×164 @ (-2.28906, -1.46875) | 189×25 @ (+0.82031, -2.94531) |
+| `legs` | 24 | 189×61 @ (-0.02344, +0.11719) | 35×213 @ (-0.74219, -0.60156) | 189×60 @ (-0.02344, -1.32812) | 35×210 @ (+0.69531, -0.57812) |
+| `drive` | 24 | 64×60 @ (-0.0625, -2.10938) | 59×65 @ (+0.25781, -1.91406) | 64×61 @ (+0.0625, -1.60156) | 59×65 @ (-0.25781, -1.78906) |
+| `coupling-compressor` | 24 | 7×20 @ (+1.94531, -2.375) | 16×6 @ (+1.75, +1.25) | 7×20 @ (-1.94531, +1.125) | — |
+| `coupling-dosing` | 24 | 7×15 @ (-0.44531, +0.42969) | — | — | 6×4 @ (+1.03125, -0.17188) |
+| `coupling-pump` | 24 | 10×18 @ (+2.03125, +1.375) | 17×10 @ (-1.94531, +1.42188) | 10×19 @ (-2.03125, -2.50781) | — |
+| `press` | 16 | 53×65 @ (-2.10156, +1.52344) | 46×52 @ (-1.98438, -2.73438) | 53×65 @ (+2.10156, -2.44531) | 46×72 @ (+1.98438, +1.65625) |
+| `gauge-reactor-upper` | 24 | 10×5 @ (+0.03125, -0.10156) | 5×11 @ (-0.75781, -0.82031) | — | — |
+| `gauge-reactor-lower` | 24 | 10×7 @ (-0.17188, +0.24219) | 4×10 @ (-0.76562, -0.67188) | — | — |
+| `gauge-scrubber` | 24 | 8×7 @ (-1.5, -2.02344) | 6×8 @ (+1.29688, -2.23438) | — | — |
+| `drip` | 24 | 23×36 @ (+2.21094, -0.03125) | 37×33 @ (-0.44531, +1.66406) | — | — |
+
+East and west reach one faint pixel (alpha 29 or less) past the 5-tile edge, as at sign-off (Liam, 2026-10-28: *"Accept, note in spec"*).
+
 ---
 
 # 12. File Structure
@@ -671,6 +690,15 @@ Circuit Connections:   one per direction, from the model (§8)
 Remnants:              oil-refinery-remnants, oil-refinery-explosion
 ```
 
+| Facing | Socket | `main_offset` (screen tiles) | ground under it (tiles) |
+| --- | --- | --- | --- |
+| North | the housing's south wall | `{0.85, 2.078}` | `{0.85, 2.328}` |
+| East | the housing's east wall | `{-0.95, 2.178}` | `{-0.95, 2.428}` |
+| South | the housing's north wall | `{0.0, 2.078}` | `{0.0, 2.328}` |
+| West | the housing's west wall | `{-0.6, 2.178}` | `{-0.6, 2.428}` |
+
+Connector sprite: vanilla's variation 18 (Liam, 2026-10-28: *"18, face-on"*).
+
 **Remnants and explosion: the oil refinery's for now** (Liam, 2026-10-11), the
 5×5 vanilla machine they fit. Our own remnants are a TODO.
 
@@ -678,7 +706,7 @@ Remnants:              oil-refinery-remnants, oil-refinery-explosion
 `sound_accents` when the new `graphics_set` is attached, because a gated sound
 cannot survive the art it was cued to; the press's accent is set on the press's sequence entry 21 after that.
 
-Alt-mode icon: twice the size, on the reactor's roof (Liam, 2026-10-20: *"Double, like the refinery"*).
+Alt-mode icon: twice the size (Liam, 2026-10-20: *"Double, like the refinery"*), at the centre, `{0, 0}`, one place for all four directions (Liam, 2026-10-28: *"Centre"*).
 
 The `icon` is taken via `entity_icon()`; the item follows the entity by design,
 so the two can never disagree.
