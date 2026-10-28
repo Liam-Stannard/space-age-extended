@@ -36,9 +36,9 @@
 --     sake. Nothing here can stand on Aquilo, so it never fires, and stripping
 --     it would make our prototypes the odd ones out for no gain.
 --   * `circuit_connector` -- its sprites are placed for the *source's*
---     footprint. Right when the footprint is kept, wrong when it is not (the
---     Gas Pump is 2x2 on a 3x3 pumpjack's connector), and only the building's
---     own file knows which.
+--     footprint. Right when the footprint is kept (the 3x3 Gas Pump wears the
+--     3x3 pumpjack's), wrong when it is not, and only the building's own file
+--     knows which.
 
 local derive = {}
 

@@ -1,10 +1,6 @@
 # Factorio Building — Art & Implementation Specification
 
-**Crust Tap.** The design is locked: **option A, the Bolted Collar**, chosen
-2026-09-09 from five drawn against each other and regenerated twice for the pipe
-connection. The decision record is `crust-tap-options/`, the sheet is
-`concept/adopted/A-sheet.png`, and the four rejected designs are gone. §6, §12
-and §13 stay open until a canonical plate exists and has been measured.
+**Crust Tap**, now the **Gas Pump**. The design is the **Flywheel Compressor**, take 2 of the 3×3 round, refined and signed off by Liam on 2026-10-21. The decision record is `concept/crust-tap/options/round-3x3/` and `round-3x3-refine/`; the Bolted Collar it replaces is recorded in §22. §13 stays open until the model's sheets exist.
 
 **This brief covers two prototypes**, and that is a design decision rather than
 an accident — see §2. The tap raises a gas; a companion turbine burns it. The tap
@@ -15,7 +11,7 @@ sells **pressure, not heat**, and that single choice is what keeps it simple.
 **Amended 2026-10-09 (Liam): this building is now the Gas Pump.** One generic
 pump for every gas on the Core, drawing from vent *resources* that deplete as
 crude oil does. The amendment below replaces what it names; where the older
-sections still describe an offshore pump on a vent tile, the amendment wins.
+sections still describe an offshore pump on a vent tile, the amendment wins. Rewritten in place 2026-10-21 (Liam) for the 3×3 pump; §22 records what changed.
 
 ---
 
@@ -75,13 +71,14 @@ prototype task tests.
 
 | | |
 | --- | --- |
-| Tile footprint | 2×2, unchanged; the adopted bolted collar and its riser stay the design |
-| Directions | 4: the outlet moves round the four tile centres, as §24 found |
+| Tile footprint | **3×3**, the pumpjack's boxes (collision ±1.2, selection ±1.5), reaching 0.49 for its vent, so it always stands centred on it |
+| Directions | 4: the whole machine turns, and the outlet with it (§5) |
 | Output | the vent's gas: siderane or helium-3 |
 | Rate | **9/s** on a fresh siderane vent — one turbine's burn, 1.8 MW — falling with depletion |
 | Energy | none (`void`) — see A.2 |
 | Surface conditions | `gravity` ≥ 45, unchanged |
 | Placement | on a gas vent resource; nowhere else |
+| Recipe | set by Liam (T10) |
 
 **Depletion, as crude oil's.** Each gas vent is `infinite = true` with a
 `normal` yield, a `minimum` floor and an `infinite_depletion_amount`, so a vent
@@ -115,10 +112,9 @@ landing's first act anyway.
 tiles exist"; it becomes "how many vents, and how rich", which is the treatment
 `resources.lua` already gives every other vent.
 
-**Vent size.** A resource sits under its machine, so the gas vents become 2×2:
-the siderane vent is new as a resource, and helium-3's vent shrinks from 3×3
-to 2×2 (`collision_box` ±0.9). That changes where helium can be
-drawn but not how much.
+**Vent size: crude oil's.** A 2×2 pump cannot sit centred on its vent: the engine puts every resource on a tile centre and a 2×2 machine's centre on a tile corner, so the pump stood half a tile off its vent in any of four quadrants (Liam: *"The offsetting of the pump needs to be fixed"*; the fix *"Gas Pump to 3x3 (vanilla's way)"*). So the pump is 3×3 over a small vent, as the pumpjack is over crude oil, and both gas vents take **crude oil's real boxes** (Liam: *"Crude oil's real boxes"*): collision ±1.4, selection ±0.5. A 3×3 pump with a 0.49 reach was centred on its vent every time, by hand and by script (T01).
+
+**The starting fields at that size.** The siderane field keeps its four. Helium-3's starting patch, which gave 4 to 7 vents at ±1.4 against 9 to 13 before, is **retuned to about eleven** (Liam: *"Retune to about 11"*): the gas patch's radius in `map-gen.lua`, 3.5 for the 2×2 vent, is re-measured over 30 seeds and the seed harness's reference re-recorded with a note.
 
 ## A.4 What the older sections lose, and keep
 
@@ -134,10 +130,7 @@ drawn but not how much.
 * The vent tile's art (§20) is replaced by a resource sprite, as crude oil's and
   the other vents' are.
 
-**Kept:** pressure, not heat (§2) and every S10 finding about `burns_fluid` —
-those are the turbine's, and the turbine is unchanged; `auto_barrel = false`;
-the four directions and §24's connection table; the adopted design and the
-model in progress (`crust-tap-model`).
+**Kept:** pressure, not heat (§2) and every S10 finding about `burns_fluid` — those are the turbine's, and the turbine is unchanged; `auto_barrel = false`; the four directions, though the whole machine now turns (§5).
 
 **To prove again on the rig**, since the pump is new: a Gas Pump on a fresh
 siderane vent, piped to a turbine under load, produces the declared 1.8 MW; on
@@ -150,12 +143,18 @@ on neither the melt vent nor bare ground; and it runs with no power connected.
 {
   type = "mining-drill",
   name = "sae-gas-pump",
-  -- from pumpjack: an output fluid box, no input, no vector_to_place_result
+  -- from pumpjack, with its boxes and its reach: always centred on the vent
   resource_categories = { "sae-gas" },
+  collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
+  selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
+  resource_searching_radius = 0.49,
   mining_speed = 1,
   energy_source = { type = "void" },        -- landing day: no grid yet
+  max_health = 200,                          -- the pumpjack's, with its wreck and explosion
+  corpse = "pumpjack-remnants",
+  dying_explosion = "pumpjack-explosion",
   output_fluid_box = { volume = 1000, pipe_connections = {
-    { flow_direction = "output", direction = defines.direction.north, position = { 0.5, -0.5 } }
+    { flow_direction = "output", direction = defines.direction.north, position = { 0, -1 } }
   } },
   surface_conditions = { { property = "gravity", min = 45 } }
 }
@@ -164,9 +163,13 @@ on neither the melt vent nor bare ground; and it runs with no power connected.
   type = "resource", name = "sae-crust-vent", category = "sae-gas",
   infinite = true, minimum = --[[ 20% of normal ]], normal = --[[ ~1 turbine ]],
   infinite_depletion_amount = 10,
-  minable = { mining_time = 1, results = { { type = "fluid", name = "sae-crust-gas", amount = 10 } } },
-  collision_box = { { -0.9, -0.9 }, { 0.9, 0.9 } }
+  minable = { mining_time = 1, results = { { type = "fluid", name = "sae-crust-gas", amount = 9 } } },
+  collision_box = { { -1.4, -1.4 }, { 1.4, 1.4 } },   -- crude oil's
+  selection_box = { { -0.5, -0.5 }, { 0.5, 0.5 } }
 }
+-- the helium-3 vent's sight-glass tint and map colour, #B6A6C8:
+mining_visualisation_tint = { r = 0.714, g = 0.651, b = 0.784 }
+map_color = { r = 0.714, g = 0.651, b = 0.784 }
 ```
 
 ## A.6 Names
@@ -181,16 +184,9 @@ on neither the melt vent nor bare ground; and it runs with no power connected.
 "Gas vent" for helium's vent stops making sense once there are two gas vents, so
 it takes its gas's name, as the siderane vent does.
 
-## A.7 The working animation (Liam, 2026-10-10)
+## A.7 The working animation (Liam, 2026-10-10; 3×3, 2026-10-21)
 
-While pumping, a flywheel and crank on the compressor housing's roof turn and
-drive a connecting rod into an open trunk cylinder on a stand beside the
-housing; the pressure gauge's needle kicks on each stroke; and gas moves in the
-sight glass, tinted by the vent. One stroke a loop, the same loop for all three.
-Idle, the crank and needle stop where they are and the glass shows empty, as
-vanilla's pumpjack stops mid-nod. The breather moves to the roof's north-west
-corner to make room for the flywheel. The model is otherwise the signed-off
-round 13.
+While pumping, the flywheel turns once a loop; both crossheads and their rods go out and back once, opposed, moving apart and together; the power cylinders' rockers nod; the lubricator works off the flywheel hub; the gauge board's three needles kick on the strokes; and gas drifts in the sight glass, tinted by the vent. One loop of 24 frames, **one turn a second** (Liam: *"One turn a second"*), the same loop for every gas. Idle, everything stops where it is and the glass shows empty, as vanilla's pumpjack stops mid-nod.
 
 ---
 
@@ -327,42 +323,25 @@ vanilla world's opening power is either burned or shone on.
 
 ## 3.1 Design Concept
 
-A wellhead holding something back. The building is a **capped bore** — a squat
-armoured collar clamped over a hole in the crust — and every feature on it exists
-to contain pressure: heavy ground anchors, a thick collar, and a single choked
-riser leaving one side.
+**An oilfield integral engine-compressor**, the 2×2 Gas Pump's idea — a flywheel and crank driving a compressor, a gauge kicking, gas in a sight glass, its green casing — grown to 3×3 (Liam, T03: *"2 Flywheel Compressor"*). One crankcase carries two upright power cylinders and two horizontal compressor cylinders, opposed, their rods and crossheads seen sliding in open distance pieces; a big flywheel on the crankshaft's south end.
 
-**This is the adopted design and it beat four alternatives**: a driven wedge, a
-cross-yoke, a screwed gland stack and a flush plate. It won because it is the
-most direct statement of the building's argument, not the most distinctive
-shape — see `crust-tap-options/README.md`.
+**The chain, which the eye can follow:** the vent under the wellhead; a tall suction scrubber over it, the liquid knocked out; suction lines over the top to both compressor cylinders; their discharges up each side, the east one through the sight glass; into the discharge bottle along the north face; out of the bottle's north side at the connection's size, to the outlet.
 
-**The anti-read is the offshore pump.** Vanilla's is a light open frame standing
-in water with a visible impeller, and every part of that is wrong: there is no
-water, no impeller, and nothing about this should look light.
+**The gas engine** (Liam: *"Keep the gas engine"*): the power cylinders burn a slip of the vent's own gas, fed by a tan hose from the scrubber's head through a yellow regulator to their gas rail. **It is art only** (Liam: *"Art only"*): the pump's energy source stays `void` and its rate 9/s.
 
-**The second anti-read is a lava tap.** This is not a hot-fluid building. The heat
-is underground and stays there; what comes out is cold, because gas that expands
-does.
+**The anti-read is still the offshore pump**, and it is not a hot-fluid building: the gas comes up cold.
 
 ## 3.2 Key Visual Features
 
-* An **armoured collar**, low and heavy, clamped down with visible ground anchors
-  — this thing is holding something in.
-* A **choked riser** leaving one side and turning horizontal, visibly narrower at
-  the throat than at either end.
-* A **burst disc** — a small bulging plate on the collar's shoulder, the honest
-  admission that this could go wrong.
-* **Frost** on the riser downstream of the choke, and a **thin dull heat line** in
-  the ground joint beneath the collar.
+* The **flywheel**, its web cast solid in the casing's green with the spokes only a little proud, and a **yellow balance weight** bolted between two spokes.
+* The **opposed compressor cylinders**, crossheads in bare steel on an oil-dark guide floor, a yellow slipper on each.
+* The **suction scrubber** standing over the vent, the tallest thing on the machine.
+* A **lubricator** driven off the flywheel hub by a short rod (Liam: *"Add a lubricator"*); the artist places it (Liam: *"Artist places it"*).
+* The kit: the **gauge board** (west, three needles), the **sight glass** run (east), the lube tank and panel (north-east), spare cylinder liners, crated.
 
 ### Signature Feature
 
-**The two-temperature read: hot underneath, cold coming out.** A dull orange seam
-where the collar meets the ground and a pale frost jacket a few pixels away on the
-riser. It is physically exactly right — gas cools as it expands — and it is a
-silhouette-level cue no other building in the mod has. It also says *pressure*
-rather than *heat* in one glance, which is the whole point of the building.
+**The flywheel and its yellow weight** (Liam: *"Flywheel + yellow weight"*): one bold mark a turn, so the turn reads at 1x and a player sees the pump working from across the landing. The refine made it so: the moving share went from 3.69 % to 4.49 %.
 
 ## 3.3 Colour Palette
 
@@ -374,29 +353,18 @@ are told apart. Within the building, variation comes from replacement panels in 
 slightly different shade, small stencilled markings, and rust that differs by place:
 dry orange on tops, dark wet streaks below fittings.
 
-**This building's: faded industrial green.** The casing and lid are painted
-`#4A5A44` → `#5E6E56`, sun-faded and worn to steel on edges and bolt heads, with a
-stencilled band round the lid for its gas, as real gas plant is colour-coded.
-The riser and fittings stay bare steel and brass.
-
+**This building's: the Vent Pump's finish** (Liam: *"Vent Pump finish"*), its kit's variant (a), *"warmer paints"*, used whole. **An exception to the rule above:** the two pumps share one finish, and are told apart by shape and by what moves.
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Plinth and anchors | `#3E3B36` → `#5E584E` | the base the green casing stands on |
-| Riser body | `#8A8580` | the single pipe |
-| Frost jacket | `#BFD8E8` → `#EAF4FA` | riser, downstream of the choke only |
-| Seam heat | `#C8541E` → `#E8A24A` | ground joint only, dull |
-| Burst disc | `#C8A23A` | one small plate |
-| Scorched ground | `#2E2A26` | tight ring at the base — **its own layer, never the plate** |
+| Green | `#5C7A2C` | casing, cylinders, flywheel web |
+| Yellow | `#A8841E` at most | balance weight, crosshead slippers, regulator |
+| Cream | `#C0A676` | lube tank, gauge board |
+| Grey | `#86704C` | discharge bottle, panel |
+| Siderane in the glass | `#A8D929` | the siderane vent's `mining_visualisation_tint` |
+| Helium-3 in the glass | `#B6A6C8` | the Vent Pump's paler bubble and band violet (Liam: *"Violet, like the Vent Pump"*, then *"#B6A6C8"*); also the helium-3 vent's map colour (Liam: *"Also the vent's map colour"*). Helium-3's own fluid colours do not change |
 
-**The scorched ring is ground scatter and belongs in its own layer**, the way
-vanilla does it with `mining_drill_scorch_mark`. Baked into a 2×2 plate it would
-cross the collision box, which is the template's §8 rule 4. The concept sheets
-draw no ground at all, deliberately.
-
-**Dull orange, not bright, and only at ground level.** This is conducted heat
-through metal, not a flame. The frost must be close enough to the seam that both
-are legible in the same glance — that adjacency *is* the signature.
+**The gas is paint, never light: nothing on this building glows.** Idle, the glass shows empty.
 
 ---
 
@@ -404,7 +372,7 @@ are legible in the same glance — that adjacency *is* the signature.
 
 ## Technology tier and visual register
 
-**Tier 0 — Foothold.** Crude and mechanical: heavy bolted collar, ground anchors, a burst disc that is plainly a safety afterthought. The first thing built on the planet.
+**Tier 0 — Foothold.** Crude and mechanical: castings, bolted heads, open crossheads and hoses. The first thing built on the planet.
 
 See the template's *"Technology tier sets the visual register"* — the player
 should be able to read their progress off the factory floor without opening the
@@ -413,10 +381,7 @@ tech tree, so this building's surface treatment is set by where it sits on
 
 
 
-2×2 and very low, so the camera sees almost entirely roof and the ring of scorched
-ground. That is the right emphasis: the interesting thing about this building is
-where it is, not how tall it is. Style reference to attach: the **pumpjack**,
-cropped and upscaled, for the wellhead read. **Do not attach the offshore pump.**
+3×3 and low — the scrubber its tallest part, 0.34 tiles over the north edge against the pumpjack's 0.47 — and it covers 92.9 % of its footprint against the pumpjack's open 73.0 %. Style reference: the **pumpjack**, for the oilfield read and the camera. **Do not attach the offshore pump.**
 
 ---
 
@@ -424,8 +389,7 @@ cropped and upscaled, for the wellhead read. **Do not attach the offshore pump.*
 
 * [x] North · [x] East · [x] South · [x] West
 
-**Direction count:** `4`. The riser is the fluid box, and a riser pointing the
-wrong way is the fluid box in the wrong place.
+**Direction count:** `4`. **The whole machine turns** (Liam: *"Whole machine turns"*): four drawings, each the whole machine turned a quarter, not the pumpjack's split, where the moving part is drawn once and only the base under it turns. The outlet is the fluid box, and it turns with the machine (§24).
 
 ---
 
@@ -433,7 +397,7 @@ wrong way is the fluid box in the wrong place.
 
 | Connection | Where | Notes |
 | ---------- | ----- | ----- |
-| `sae-crust-gas` out | the riser's tip, at `fluid_box.pipe_connections` | must match the art in all four directions |
+| the vent's gas out | the outlet off the discharge bottle, middle of the north face, `output_fluid_box.pipe_connections` | must match the art in all four drawings, measured by the no-gap rule |
 | Electric | none | the tap draws no power |
 | Items | none | no inserter ever touches this building |
 
@@ -461,25 +425,7 @@ onto it.
 
 # 11. Generation Requirements
 
-**The concept prompt lives with the design it drew:**
-`crust-tap-options/A-bolted-collar.md`, in the form that finally worked — with
-the geometry diagram and the pump-and-pipe connection reference both named.
-
-**Do not re-prompt this design.** Appendix C's rule applies: crop the approved
-view out of the sheet, attach it, and give a numbered list of permitted changes.
-
-**Two changes are permitted at stage 1**, from the option page's production
-notes:
-
-1. **Much more hardware on the collar** — bolt rings, cleats, tag plates, grease
-   nipples, lock wire, chipped cast edges, weld spatter. It measured 0.099 edge
-   density against vanilla's 0.144 floor, and a 2×2 has a quarter of a 3×3's
-   canvas to work with.
-2. **Nothing else.** The collar, the four anchors, the burst disc, the choked
-   riser and its open pipe mouth are the design.
-
-**Four plates, drawn not rotated**, and `fluid_box.pipe_connections` measured off
-each one — see §8.
+**The model is built from the signed-off concept script**, `concept/crust-tap/options/round-3x3-refine/gp_2_flywheel_compressor.py`, in the Vent Pump's kit. Changes from the concept, each from Liam: the lubricator off the flywheel hub; helium-3 at `#B6A6C8` (the concept still renders `#9C86CC`); four drawings, the whole machine turned. Then the icon (§16).
 
 ---
 
@@ -532,10 +478,7 @@ And the turbine burns it rather than reading its temperature:
 
 # 16. Icon
 
-The collar seen from slightly above, riser leaving one side with its frost band,
-and the seam line beneath. Must read at 32 px as *"a capped hole under
-pressure"*. The burst disc will not survive at that size and should not be
-attempted.
+**Rendered from the model** (Liam: *"icon from the model"*), at T08: the machine from the house camera, the flywheel and its yellow weight the thing that must read at 32 px.
 
 ---
 
@@ -617,42 +560,25 @@ connection is not drawn until a pipe can be drawn butted onto it.* Both failures
 looked fine in isolation. Both were only visible against the thing that has to
 mate with them.
 
+**Round 3×3, 2026-10-21 — the pump made 3×3, and the spec rewritten in place.** A 2×2 pump sat half a tile off its vent, so the pump became 3×3 over crude oil's boxes. Three takes: the Gas Jack, the Flywheel Compressor, the Gas Bell. Liam picked take 2, *"Whole machine turns"*; the refine made its motion read at 1x (3.69 % moving to 4.49 %); he signed off the concept with a lubricator off the flywheel hub, the yellow weight and helium-3 in `#B6A6C8`. Replaced in this rewrite: the Bolted Collar's design, palette, signature, prompt, icon and plates (§3, §4, §11, §13, §16), the 2×2 boxes and the 2×2 model (A.3, A.4, A.5, A.7), and §24's tile-centre table. Earlier rounds are recorded above.
+
 ---
 
 # 13. Sprite Dimensions
 
-**Four plates, drawn rather than rotated**, cut from one strip by
-`tools/cut-rotation-strip.py`.
+**Four drawings of the whole machine, one per direction**, from the model at 64 px a tile. Their sizes, shifts and frame counts are copied from the model's `sheets/meta.json` when it exists (T08); none is measured off a sheet or typed. The concept, one direction, measured beside the pumpjack (T04, `measures.json`):
 
-| Plate | Canvas | Base square | Shift | Shadow | Shadow shift |
-| ----- | ------ | ----------: | ----- | ------ | ------------ |
-| `base-north.png` | 148 × 178 | 2.016 tiles | `{ +0.00781, 0 }` | 305 × 198 | `{ +1.07812, 0 }` |
-| `base-east.png` | 190 × 132 | 2.000 tiles | `{ −0.32812, 0 }` | 310 × 152 | `{ +0.45313, 0 }` |
-| `base-south.png` | 145 × 175 | 1.953 tiles | `{ 0, 0 }` | 299 × 195 | `{ +1.04688, 0 }` |
-| `base-west.png` | 180 × 132 | 1.938 tiles | `{ +0.28125, 0 }` | 300 × 152 | `{ +1.06250, 0 }` |
+| Measure | Concept | Pumpjack |
+| --- | --- | --- |
+| Footprint coverage | 92.9 % (bar ≥ 92 %) | 73.0 % |
+| Rise above the north edge | 0.34 tiles | 0.47 |
+| Tonal, plate p50 / p95 | 78 / 157 | 38 / 138 |
+| Black | 13.3 % | 18.2 % |
+| White and clipped px | 0 | — |
+| Moving share / strobe | 4.49 % / 0.34 % | — |
+| Join, north | pass, 0 gap columns | — |
 
-Alpha `0` on all four edges of all eight plates. The four base squares agree
-within 4% — 1.938 to 2.016 tiles — which is the check that they are four
-rotations of one machine rather than four machines.
-
-**Two things about the cut are not obvious, and both are in the tool.** Scale
-comes from the **base square**, not the content, because the riser leaves a
-different face in each view and fitting each view to its own content box would
-draw four machines at four sizes. And each plate is shifted so the **base's**
-centre lands on the tile: centre an east plate on its content and the building
-slides left to make room for a pipe that is meant to hang over the edge.
-
-### Compared against vanilla's offshore pump
-
-| | content | tiles | luminance | saturation |
-| --- | ---: | ---: | ---: | ---: |
-| vanilla offshore pump, one frame | 90 × 161 | 1.406 × 2.516 | 81 | 0.349 |
-| **ours, north** | 140 × 170 | **2.188 × 2.656** | 69 | 0.403 |
-
-**Vanilla's pump art reaches well past its own 1×2 collision box**, exactly as
-ours reaches past 2×2 with the riser — a fluid connector is *supposed* to arrive
-at the tile it connects on. Ours is darker (69 against 81), which is §21's open
-tier-0 question and not a defect of this plate.
+The model is measured in all four directions, with the lubricator.
 
 ---
 
@@ -667,24 +593,15 @@ on an even one they are half a tile apart.
 
 The first four plates were drawn to the diagram and were therefore half a tile
 out. They were re-rendered against a corrected diagram — four tiles with their
-centres marked, a cross over the middle of the face — and the riser now rotates
-around the machine the way the connection does:
+centres marked, a cross over the middle of the face.
 
-| Direction | Connection | Riser leaves |
-| --------- | ---------- | ------------ |
-| north | `{ 0.5, −0.5 }` | far edge, right-hand tile |
-| east | `{ 0.5, 0.5 }` | right edge, near tile |
-| south | `{ −0.5, 0.5 }` | near edge, left-hand tile |
-| west | `{ −0.5, −0.5 }` | left edge, far tile |
+**On a 3×3 the middle of a face is a tile centre**, so the outlet sits there and the half-tile correction no longer applies:
 
-**This is the same class of error as the Vacuum Furnace's flux flange and the
-Concentrator's second outlet** — art and prototype describing different tiles —
-and it is the third one this stage has caught. All three were invisible in the
-Lua and invisible in the sheet; all three were only visible when the plate was
-read *against* the prototype.
+| Direction | Connection |
+| --------- | ---------- |
+| north | `{ 0, −1 }` |
+| east | `{ 1, 0 }` |
+| south | `{ 0, 1 }` |
+| west | `{ −1, 0 }` |
 
-**Vanilla's graphics set had to go with the water.** The offshore pump ships an
-underwater layer, a glass overlay, a fluid animation and a base picture, every
-one of them describing a shoreline this planet does not have. Replacing the set
-removes them, and `pipe_covers` is cleared with `pipe_picture` emptied because
-the plate draws its own mouth.
+The lesson stands: art and prototype are read against each other, connection by connection, in every drawing.
