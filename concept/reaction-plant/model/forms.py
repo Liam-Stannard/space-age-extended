@@ -224,6 +224,11 @@ DECL = dict(
         dict(name="working", kind="glow", over="idle", sheet="legs-glow"),
         # the two status lamps' lenses, cut white for the engine to tint (spec 7)
         dict(name="lamp", kind="light", sheet="status-lamp"),
+        # T09d: each input line's sight glass, its fluid column cut white for the engine to tint by the recipe
+        # (a glass the camera never sees in a direction has no sheet there: "unseen", as a layer's)
+        *[dict(name=g_["group"], kind="light", sheet=g_["sheet"])
+          for _, g_ in sorted(TK.get("sight_glasses", {}).items(), key=lambda kv: kv[1]["group"])
+          if g_["group"] not in HIDDEN],
     ],
     animations=[
         # the solution going round: drawn only while crafting, over the plate's dark legs
@@ -763,6 +768,27 @@ def lamp_cut(on):
     """The lens as the light pass wants it: lit white; else the plate's unlit glass."""
     lb.inputs["Emission Strength"].default_value = 1.0 if on else 0.0
     lb.inputs["Base Color"].default_value = (0.9, 0.9, 0.9, 1) if on else rig.srgb("#C8C4BA")
+# T09d: the sight glasses. Empty in the plate: a dark core seen through the tube. Full in the glass pass: the
+# fluid column, a neutral near-white the engine tints by the recipe (the Gas Pump's glass: sun-lit paint,
+# white-balanced against the warm sun so the tint comes out as the fluid's colour, a little lit through).
+_se = bpy.data.materials.new("sight_empty")
+_se.use_nodes = True
+_seb = _se.node_tree.nodes["Principled BSDF"]
+_seb.inputs["Base Color"].default_value = rig.srgb("#1A1C1E")
+_seb.inputs["Roughness"].default_value = 0.4
+M["sight_empty"] = _se
+SIGHT_WHITE = _opt("--sight-white", 0.1)        # linear albedo of the column; mostly lit through (below):
+SIGHT_EMIT = _opt("--sight-emit", 0.45)         # 1x north: mean 214, p90 231, none clipped (the Gas Pump's ~215)
+_sf = bpy.data.materials.new("sight_fluid")
+_sf.use_nodes = True
+_sfb = _sf.node_tree.nodes["Principled BSDF"]
+_sun_c = (1.0, 0.94, 0.82)
+_sfb.inputs["Base Color"].default_value = tuple(SIGHT_WHITE * _sun_c[0] / c_ for c_ in _sun_c) + (1.0,)
+_sfb.inputs["Roughness"].default_value = 0.5
+_sfb.inputs["Specular IOR Level"].default_value = 0.15     # no sun glint clipped to white
+_sfb.inputs["Emission Color"].default_value = (1, 1, 1, 1)
+_sfb.inputs["Emission Strength"].default_value = SIGHT_EMIT
+M["sight_fluid"] = _sf
 M["fleck"] = layered("fleck", "#1A1E28", paint_metal=0.2, paint_rough=0.5, wear=0, rust=0, dust=0, grime=0)
 
 # ---------------------------------------------------------------- geometry
@@ -974,9 +1000,9 @@ def frames(P):
     return T, N, B
 
 
-def sweep(P, r, mat, corr=0.0, pitch=0.03, seg=16):
+def sweep(P, r, mat, corr=0.0, pitch=0.03, seg=16, s0=0.0):
     T, N, B = frames(P)
-    s = [0.0]
+    s = [s0]          # T09d: s0, where along its run a piece starts (a run cut round a sight glass keeps its ribs)
     for a_, b_ in zip(P, P[1:]):
         s.append(s[-1] + (b_ - a_).length)
     me = bpy.data.meshes.new("sweep")
@@ -1014,8 +1040,9 @@ def hose(pts, r=0.085, mat="hose"):
     RUN_T[_ASM[0]] = ((P[0] - P[1]).normalized(), (P[-1] - P[-2]).normalized())
     RUN_PTS[_ASM[0]] = ("cable" if mat.startswith("cable") else "hose", [tuple(q) for q in P[::5]] + [tuple(P[-1])])
     # (fat: the cryogenic plant's ribs, coarser and deeper)
-    sweep(P, r, mat, corr=0.07 if fat else 0.055, pitch=0.16 if fat else 0.095, seg=24 if fat else 18)
     kf, kn = (1.12, 1.22) if fat else (1.3, 1.6)
+    for P_, s0 in sight_glass(P, name, r, "hose", kn):    # T09d: cut round its sight glass, if it has one
+        sweep(P_, r, mat, corr=0.07 if fat else 0.055, pitch=0.16 if fat else 0.095, seg=24 if fat else 18, s0=s0)
     cable = mat.startswith("cable")
     for i, (p, q) in enumerate(((P[0], P[1]), (P[-1], P[-2]))):
         t = (p - q).normalized()
@@ -1052,6 +1079,60 @@ def fasten(p, t, r):
             "bolt", rot=along(t), verts=6, bevel=0)
 
 
+SIGHTS = {}         # T09d: sight-glass group -> its run's name
+SIGHT_HIDE = []     # the glass tubes and the empty glass's dark core: in the plate, hidden in the glass pass
+
+
+def sight_glass(P, name, r, kind, kn=1.6):
+    """T09d (spec 8, constraint 3: "No marking names a fluid; a sight glass shows it"): an in-line sight glass
+    on an input run, as the Gas Pump's (concept/crust-tap/model-3x3/gas_pump.py): the run cut, each cut end
+    finished as the run's own ends are (a hose's ferrule and nut, a lagged line's bare end ring) and bolted to
+    the glass's flanged collar, a glass tube between the collars. The plate has the glass empty (a dark core
+    behind the tube); the fluid column inside is its own group (form_plans "sight_glasses"), rendered alone and
+    white for the engine to tint by the recipe (apply_recipe_tint). Returns the run's pieces to sweep: the run
+    whole when it has no glass."""
+    sg = TK.get("sight_glasses", {}).get(name)
+    if not sg:
+        return [(P, 0.0)]
+    s = [0.0]
+    for a_, b_ in zip(P, P[1:]):
+        s.append(s[-1] + (b_ - a_).length)
+    at = Vector(sg["at"])
+    c = min(range(len(P)), key=lambda i: (P[i] - at).length)
+    half = sg["L"] / 2 + 0.085
+    i0 = max(i for i in range(len(P)) if s[i] <= s[c] - half)
+    i1 = min(i for i in range(len(P)) if s[i] >= s[c] + half)
+    a, b = P[i0], P[i1]
+    u = (b - a).normalized()
+    rot = along(u)
+    for p, t in ((a, (a - P[i0 - 1]).normalized()), (b, (b - P[i1 + 1]).normalized())):
+        if kind == "hose":          # the hose's own end: crimped ferrule, its big nut on the collar's flange
+            cyl(tuple(p - t * 0.05), r * 1.3, 0.11, "bare", rot=along(t), verts=20, bevel=0.006)
+            torus(tuple(p - t * 0.09), r * 1.3, 0.010, "bare", rot=along(t), seg=20)
+            cyl(tuple(p + t * 0.005), r * kn, 0.04, "brass", rot=along(t), verts=6, bevel=0.0)
+        else:                       # the lagged line's own end ring
+            cyl(tuple(p), r * 1.25, 0.04, "bare", rot=along(t), verts=24, bevel=0.005)
+    rt = r * 0.82                   # the tube; the collars hold it
+    for p, t in ((a, u), (b, -u)):
+        cyl(tuple(p + t * 0.035), r * 1.5, 0.028, "dark_steel", rot=rot, verts=28, bevel=0.004)    # flange
+        cyl(tuple(p + t * 0.075), rt * 1.28, 0.055, "dark_steel", rot=rot, verts=28, bevel=0.005)  # collar
+        side = u.cross(Vector((0, 0, 1)))
+        side = side.normalized() if side.length > 1e-6 else Vector((1, 0, 0))
+        w = u.cross(side)
+        for k in range(6):
+            ang = 2 * PI * (k + 0.5) / 6
+            cyl(tuple(p + t * 0.052 + (side * math.cos(ang) + w * math.sin(ang)) * r * 1.3), 0.016, 0.012, "bare",
+                rot=rot, verts=6, bevel=0)                                  # its nuts
+    g0, g1 = a + u * 0.1, b - u * 0.1
+    mid, ln = (g0 + g1) / 2, (g1 - g0).length
+    SIGHT_HIDE.append(cyl(tuple(mid), rt, ln + 0.012, "glass", rot=rot, verts=32, bevel=0))
+    SIGHT_HIDE.append(cyl(tuple(mid), rt * 0.78, ln, "sight_empty", rot=rot, verts=32, bevel=0))
+    with grp(sg["group"]):
+        cyl(tuple(mid), rt * 0.9, ln, "sight_fluid", rot=rot, verts=32, bevel=0)
+    SIGHTS[sg["group"]] = name
+    return [(P[:i0 + 1], 0.0), (P[i1:], s[i1])]
+
+
 def mark(P, frac, mat, r, w=0.035):
     """A pipe-marking ring (round 5): a painted band round a line at frac of its length,
     the colour saying what it carries -- never blue."""
@@ -1072,12 +1153,18 @@ def lagged(pts, r=0.11, bands=0.22, marks=()):
     RUN_PTS[_ASM[0]] = ("lagged line", [tuple(q) for q in P[::5]] + [tuple(P[-1])])
     for f, m in marks:
         mark(P, f, m, r, 0.05)
-    _, P, T, s = sweep(P, r, "lag", seg=20)
-    nxt = bands / 2
-    for i, p in enumerate(P):
-        if s[i] >= nxt and s[i] < s[-1] - 0.05:
-            torus(tuple(p), r + 0.004, 0.009, "bare", rot=along(T[i]), seg=24)
+    P0 = P
+    s_end = sum((b_ - a_).length for a_, b_ in zip(P0, P0[1:]))
+    for P_, s0 in sight_glass(P0, name, r, "lagged"):    # T09d: cut round its sight glass, if it has one
+        _, P, T, s = sweep(P_, r, "lag", seg=20, s0=s0)   # (s along the whole run: the straps stay where they were)
+        nxt = bands / 2
+        while nxt < s0:
             nxt += bands
+        for i, p in enumerate(P):
+            if s[i] >= nxt and s[i] < s_end - 0.05:
+                torus(tuple(p), r + 0.004, 0.009, "bare", rot=along(T[i]), seg=24)
+                nxt += bands
+    P, T = P0, frames(P0)[0]
     for i, (p, t) in enumerate(((P[0], T[0]), (P[-1], T[-1]))):
         cyl(tuple(p), r * 1.25, 0.04, "bare", rot=along(t), verts=24, bevel=0.005)
         s_ = sp.get("ab"[i])
@@ -4118,6 +4205,15 @@ for D_, _deg in contract.DIRECTIONS["four"]:
     lamp_cut(True)
     render(path("lamp"))
     lamp_cut(False)
+    # T09d: each sight glass's fluid column alone, everything else held out, its tube and the empty glass's
+    # dark core hidden (the Gas Pump's glass pass)
+    for g_ in sorted(SIGHTS):
+        if g_ in UNSEEN[D_]:
+            continue
+        setup(visible=(g_,), holdouts=("body", "legs", "lens") + LAYERS)
+        for o in SIGHT_HIDE:
+            o.hide_render = True
+        render(path(g_))
 
     # the layers: each its moving parts alone, everything else holding out what it stands in
     # front of, inside its own window

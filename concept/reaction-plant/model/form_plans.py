@@ -172,6 +172,18 @@ TAKES["casing"] = dict(
         "cabinet1:a": dict(S=(1.2, -1.64, 1.40), N=(0, 1, 0)),
         "cabinet1:b": dict(S=(1.0, -1.45, 0.85), N=(0, 0, 1)),
     },
+    # T09d: a sight glass on each input line (spec 8, constraint 3), at the point of its run nearest `at` (model
+    # space, the building facing north), its glass L long between flanged collars; its fluid column is rendered
+    # white as its own sheet, tinted by the recipe. Input 1, the {-1,-2} fitting's line (the solution under
+    # sae-radiant-precipitation: the feed drum's feed main to the west leg), takes the primary tint; input 2,
+    # the {1,-2} fitting's (the crust gas: the compressor's discharge hose to the east leg), the secondary.
+    # Placed by a ray probe of each run toward the camera in every direction: the gas hose's straight fall
+    # shows in all four; the feed main shows north, south and west between its two marking rings, and facing
+    # east the reactor hides the whole main (its glass's pass renders empty there: "sight-1" is unseen east).
+    sight_glasses={
+        "feed_main1": dict(at=(-1.19, 0.64, 1.035), L=0.24, group="sight-1", sheet="sight-glass-1"),
+        "gas_line1": dict(at=(1.543, 0.971, 2.166), L=0.28, group="sight-2", sheet="sight-glass-2"),
+    },
     lifted_clutter=[(ZC, [
         # T06h: the added kit ("Keep it") moved off the gaps the restored kit now takes
         ("barrels", 2.24, -1.3, 1, 3),
@@ -184,5 +196,5 @@ TAKES["casing"] = dict(
     chain=["solution", "wall sleeve", "riser", "feed drum", "downcomer foot", "riser (gas lift)", "reactor",
            "downcomer", "settling pot", "filter press", "receiver", "output"],
     # from --probe (frame 0 of each layer alone, px over half alpha at 4x; under 40 is not a motion anyone sees)
-    unseen={"north": (), "east": ("coupling-dosing",), "south": ("coupling-dosing", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"), "west": ("coupling-compressor", "coupling-pump", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip")},
+    unseen={"north": (), "east": ("coupling-dosing", "sight-1"), "south": ("coupling-dosing", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"), "west": ("coupling-compressor", "coupling-pump", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip")},
 )
