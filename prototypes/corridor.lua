@@ -455,9 +455,8 @@ local rg_remnants =
 -- with every wisp of smoke taken out, the turbine's fireball, and sparks.
 --
 --   * **No smoke.** The explosion's own puffs go, and any debris that trails
---     smoke as it flies flies as a copy of ours with the trail struck off.
---     Smoke is struck by field and by effect type, so one vanilla adds later
---     goes too.
+--     smoke as it flies flies as a copy of ours with the trail struck off
+--     (`derive.smokeless_explosion`).
 --   * **The fireball is the turbine's**, vanilla's medium explosion: the Core
 --     has a thin atmosphere wherever its pressure is above 0, so a flash of
 --     fire is fair where smoke is not. Not the reactor's own: vanilla's massive
@@ -471,50 +470,6 @@ local rg_remnants =
 --     of their own the big one sets off where it stands, and vanilla's hit
 --     sparks (what a bullet strikes off metal) thrown over the 5x5 with the
 --     debris.
-local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
-local TRAILS = { "regular_trigger_effect", "ended_on_ground_trigger_effect", "ended_in_water_trigger_effect" }
-
--- A trigger, a delivery or an effect may each be one table or a list of them.
-local function each(x)
-  if x == nil then return {} end
-  if x.type then return { x } end
-  return x
-end
-
--- A list of trigger effects less any that make smoke, or nil if none is left.
-local function without_smoke(effects)
-  local kept = {}
-  for _, effect in ipairs(each(effects)) do
-    if not SMOKE_EFFECTS[effect.type] then kept[#kept + 1] = effect end
-  end
-  return #kept > 0 and kept or nil
-end
-
--- The name to throw for a piece of vanilla debris: its own if it trails no
--- smoke, otherwise our copy of it without the trail (made once).
-local smokeless = {}
-local function smokeless_particle(name)
-  if smokeless[name] then return smokeless[name] end
-  local particle = data.raw["optimized-particle"][name]
-  assert(particle, "optimized-particle/" .. name .. " does not exist")
-  local smokes = false
-  for _, key in ipairs(TRAILS) do
-    for _, effect in ipairs(each(particle[key])) do
-      if SMOKE_EFFECTS[effect.type] then smokes = true end
-    end
-  end
-  smokeless[name] = name
-  if smokes then
-    local copy = table.deepcopy(particle)
-    copy.name = "sae-radiant-generator-" .. name
-    for _, key in ipairs(TRAILS) do copy[key] = without_smoke(copy[key]) end
-    if copy.regular_trigger_effect == nil then copy.regular_trigger_effect_frequency = nil end
-    data:extend({ copy })
-    smokeless[name] = copy.name
-  end
-  return smokeless[name]
-end
-
 -- Vanilla's hit sparks, thrown from about head height over the 5x5. An
 -- explosion's offsets do not turn with the building; here they need not.
 local function spark_burst(particle_name, count)
@@ -562,20 +517,9 @@ rg_explosion.localised_name = { "dying-explosion-name", { "entity-name.sae-radia
 local turbine_fireball = data.raw.explosion["steam-turbine-explosion"]
 assert(turbine_fireball, "explosion/steam-turbine-explosion does not exist")
 rg_explosion.animations = table.deepcopy(turbine_fireball.animations)
-rg_explosion.smoke = nil
-rg_explosion.smoke_count = nil
-rg_explosion.smoke_slow_down_factor = nil
-for _, trigger in ipairs(each(rg_explosion.created_effect)) do
-  for _, delivery in ipairs(each(trigger.action_delivery)) do
-    for _, key in ipairs({ "target_effects", "source_effects" }) do
-      local effects = without_smoke(delivery[key])
-      for _, effect in ipairs(effects or {}) do
-        if effect.type == "create-particle" then
-          effect.particle_name = smokeless_particle(effect.particle_name)
-        end
-      end
-      delivery[key] = effects
-    end
+derive.smokeless_explosion(rg_explosion, function(name) return "sae-radiant-generator-" .. name end)
+for _, trigger in ipairs(derive.each(rg_explosion.created_effect)) do
+  for _, delivery in ipairs(derive.each(trigger.action_delivery)) do
     if delivery.type == "instant" then
       delivery.target_effects = delivery.target_effects or {}
       table.insert(delivery.target_effects, spark_burst("spark-particle", 60))

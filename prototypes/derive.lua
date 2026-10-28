@@ -444,4 +444,88 @@ function derive.pipe_covers()
   return pipecoverspictures()
 end
 
+--- A trigger, a delivery or an effect may each be one table or a list of them;
+--- this is always a list (empty for nil), to walk either the same way.
+function derive.each(x)
+  if x == nil then return {} end
+  if x.type then return { x } end
+  return x
+end
+
+local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
+-- Where a particle carries the effects it sets off as it flies and as it lands.
+local TRAILS = { "regular_trigger_effect", "ended_on_ground_trigger_effect", "ended_in_water_trigger_effect" }
+
+-- A list of trigger effects less any that make smoke, or nil if none is left.
+local function without_smoke(effects)
+  local kept = {}
+  for _, effect in ipairs(derive.each(effects)) do
+    if not SMOKE_EFFECTS[effect.type] then kept[#kept + 1] = effect end
+  end
+  return #kept > 0 and kept or nil
+end
+
+-- The name to throw for a piece of vanilla debris: its own if it trails no
+-- smoke, otherwise a copy of it named `copy_name(name)` with the trail struck
+-- off, made the first time it is asked for.
+local smokeless_made = {}
+local function smokeless_particle(name, copy_name)
+  local particle = data.raw["optimized-particle"][name]
+  assert(particle, "optimized-particle/" .. name .. " does not exist")
+  local smokes = false
+  for _, key in ipairs(TRAILS) do
+    for _, effect in ipairs(derive.each(particle[key])) do
+      if SMOKE_EFFECTS[effect.type] then smokes = true end
+    end
+  end
+  if not smokes then return name end
+  local new_name = copy_name(name)
+  if smokeless_made[new_name] then return new_name end
+  assert(new_name ~= name and not data.raw["optimized-particle"][new_name],
+         "optimized-particle/" .. new_name .. " already exists; a smokeless copy of " .. name
+         .. " needs a name of its own")
+  local copy = table.deepcopy(particle)
+  copy.name = new_name
+  for _, key in ipairs(TRAILS) do copy[key] = without_smoke(copy[key]) end
+  if copy.regular_trigger_effect == nil then copy.regular_trigger_effect_frequency = nil end
+  data:extend({ copy })
+  smokeless_made[new_name] = true
+  return new_name
+end
+
+--- Strip every wisp of smoke from an explosion (a copy of ours), in place.
+---
+--- Its own puffs go (`smoke`, `smoke_count`, `smoke_slow_down_factor`), and so
+--- does any smoke effect its deliveries set off. Debris that trails smoke as it
+--- flies -- a particle whose flight or landing sets off a smoke effect -- is
+--- thrown as a copy with the trail struck off; debris that trails none is
+--- thrown as it is. Smoke is struck by field and by effect type rather than by
+--- name, so smoke vanilla adds later goes too.
+---
+--- What is *not* touched is smoke drawn into the explosion's own animation:
+--- no field strikes that, so the caller picks a fireball that has none.
+--- @param explosion table           the explosion, already copied
+--- @param copy_name function(string): string  this mod's name for the
+---        smokeless copy of a vanilla particle
+--- @return table explosion
+function derive.smokeless_explosion(explosion, copy_name)
+  explosion.smoke = nil
+  explosion.smoke_count = nil
+  explosion.smoke_slow_down_factor = nil
+  for _, trigger in ipairs(derive.each(explosion.created_effect)) do
+    for _, delivery in ipairs(derive.each(trigger.action_delivery)) do
+      for _, key in ipairs({ "target_effects", "source_effects" }) do
+        local effects = without_smoke(delivery[key])
+        for _, effect in ipairs(effects or {}) do
+          if effect.type == "create-particle" then
+            effect.particle_name = smokeless_particle(effect.particle_name, copy_name)
+          end
+        end
+        delivery[key] = effects
+      end
+    end
+  end
+  return explosion
+end
+
 return derive
