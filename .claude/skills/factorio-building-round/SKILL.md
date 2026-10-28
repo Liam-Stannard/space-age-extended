@@ -28,7 +28,10 @@ with `factorio-brief`, and stop at the stage's gate.
 
 ## Bars at every stage from options on
 - **A building, not a deck:** coverage of the footprint ≥ 92 % (the 3×3
-  and 5×5 showpieces' figure), built up in height, no flat base or plinth;
+  and 5×5 showpieces' figure), built up in height, no flat base or plinth
+  (where the connections need a wall to enter, the lowest part may be a
+  casing at pipe height filling the footprint, which the pipes enter and
+  the machinery stands on, as in vanilla's foundry and cryogenic plant);
   the outline broken at the corners by equipment (FFF #350). The vessels
   and machines belong to one structure (a casing, frame or house they are
   set into or carried by), never units standing on the ground (Liam,

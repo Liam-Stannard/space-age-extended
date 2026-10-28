@@ -625,6 +625,12 @@ a pipe that looks different at every building reads as a different pipe.
 **7. No flat base.** A building is one structure filling its footprint, not
 a smaller machine standing on a slab. Size the structure itself to the
 footprint; a plinth around a small machine makes the machine read small.
+One exception: where the connections need a wall to enter, the building's
+lowest part may be a casing at pipe height filling the footprint, which
+the pipes enter and the machinery stands on. Vanilla's pipes always enter
+a part of the building itself: the assembler's casing, the foundry's and
+the cryogenic plant's raised base, which the machinery stands on (Liam,
+2026-10-28, the Ballast Drill).
 
 ## Item Inputs
 

@@ -4,7 +4,11 @@ Each line: the standard, Liam's words or the decision, and the date.
 
 ## Buildings
 - A building, not a deck: footprint coverage ≥ 92 %, no flat base or
-  plinth; Liam: "Not much ground should be visible on the area it covers
+  plinth. Where the connections need a wall to enter, the building's
+  lowest part may be a casing at pipe height filling the footprint, which
+  the pipes enter and the machinery stands on, as vanilla's pipes enter
+  the building's own lowest parts (the assembler's casing, the foundry's
+  and cryogenic plant's raised base) (Liam, 2026-10-28); Liam: "Not much should be visible on the area it covers
   as its a building" (2026-10-12). The outline is still broken at the
   corners by equipment (FFF #350; the Reaction Plant model, 85.8 %).
 - Tall parts stay mostly inside the grid: Liam chose 5×5 for the Reaction
