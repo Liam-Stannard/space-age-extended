@@ -504,12 +504,16 @@ The prototype positions come from the render.
 1. **Each connection enters the housing's wall through its fitting, and the
    joins pass (no gap) at all 12 connections, measured.**
 2. **North covers are drawn behind** (`secondary_draw_orders = { north = -1 }`).
-3. **No marking names a fluid.** Box assignment follows the recipe's ingredient
+3. **No marking names a fluid; a sight glass shows it.** Box assignment follows the recipe's ingredient
    order: under `sae-radiant-precipitation` the west input takes solution and the
    east takes gas, and under stage 3's dissolve (`4 spent cells + 50 crust gas`)
    the first fluid is the gas and the assignment swaps. A fluid box is a socket,
-   not a fluid. Hazard tape on the drop box's south face names no port and is
-   allowed (§5).
+   not a fluid. Each input line carries a sight glass, drawn white and tinted by
+   the recipe (`crafting_machine_tint`: primary is the first fluid's colour,
+   secondary the second's), so it shows whatever fluid is in that line; a
+   mirrored plant draws `graphics_set_flipped` with the two tints swapped (Liam,
+   2026-10-28: *"Adopt"*, *"Sight glass"*). Hazard tape on the drop box's south
+   face names no port and is allowed (§5).
 4. **The blue sits more than a tile from every edge.**
 5. **Nothing crosses ±2.5** (the selection box), and the art is cut to **exactly 5.000 tiles** wide.
    This is a machine players build in rows.
