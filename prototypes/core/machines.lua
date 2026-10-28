@@ -1135,24 +1135,18 @@ data:extend({ furnace })
 -- -- which does return fluid -- is set on a plant, the port comes alive on a
 -- line the player already left room for.
 --
--- **The ports are the engine's and turn with the building, which is the
--- opposite of the Helium Concentrator on purpose.** That machine paints its
--- flanges into its own plate, so it empties `pipe_picture` and the engine must
--- not draw a stub over the art. This one is the other arrangement, the one
--- assembling machines 2 and 3 use: `pipe_picture` is a stub per direction
--- that the engine draws and redraws whenever the player rotates the entity,
--- and the plate paints no flange at all. That is what lets this building stay
--- rotatable on ONE plate rather than the Gas Pump's four -- nothing in the
--- still art has a facing, so there is nothing to draw four times. The entity
--- therefore carries no `not-rotatable` flag. The stubs are the plant's own,
--- rendered from the same model as the plate in assembler 3's shape and size
--- and our own metal (see "Art"), not vanilla's `assembler2pipepictures`.
+-- **The fittings are modelled into the plate, one plate per direction, and the
+-- building turns with them** (spec §5, §7, §8; Liam, 2026-10-20, reversing the
+-- 2026-09-17 one plate). Each connection enters the housing's wall through a
+-- fitting that is part of that direction's render and casts and takes its own
+-- shadows, so there is no `pipe_picture`: the engine draws nothing at a port
+-- but vanilla's cover on one nothing is joined to. The entity carries no
+-- `not-rotatable` flag; the two inputs sit on the faced side and the output
+-- opposite, in every direction.
 --
--- `pipe_covers` caps a port nothing is joined to, and those are vanilla's
--- (`derive.pipe_covers()`, spec §8): the model renders a cover per face too,
--- but the spec takes vanilla's, so those sheets stay in the model's pack.
+-- `pipe_covers` are vanilla's (`derive.pipe_covers()`, spec §8);
 -- `always_draw_covers = false` takes the cap away once a pipe arrives;
--- `secondary_draw_orders = { north = -1 }` puts a north stub behind the
+-- `secondary_draw_orders = { north = -1 }` puts a north cover behind the
 -- building, as vanilla's assemblers set it.
 --
 -- `sae-reaction` is private like every other category in this file, and here
@@ -1160,36 +1154,51 @@ data:extend({ furnace })
 -- Core's fuel, and this plant must not be able to run chemistry.
 --------------------------------------------------------------------------------
 
--- Art: F, the Circulator, rendered in Blender from
--- concept/reaction-plant/model/circulator.py and signed off by Liam with tight
--- crops, 2026-10-19 ("Sign off", 83fe586).
+-- Art: F, the Circulator in its casing, rendered in Blender from
+-- concept/reaction-plant/model/forms.py (RP_FORM=casing) in four directions and
+-- signed off by Liam, 2026-10-28 ("Sign off pump and plant").
 --
 -- **Rendered, not cut.** There is no master plate: every pass is rendered from
 -- one model, through one calibrated camera (tools/blender/rig.py), on one canvas
 -- with the entity origin at the canvas centre. So the layers register by
 -- construction, and every size, shift, frame count and line length below is
--- computed by the packer and copied from the meta.json it writes
--- (concept/reaction-plant/model/sheets/ and sheets/ports/) -- none of them was
--- measured off a sheet. To regenerate, with any Blender 5 binary:
+-- computed by the packer and copied from the meta.json it writes for each
+-- direction -- none of them was measured off a sheet. To regenerate, with any
+-- Blender 5 binary, one run a direction (spec §0):
 --
---   BLENDER=<blender> tools/blender/render.sh \
---       concept/reaction-plant/model/circulator.py <scratch> --ports --icon
+--   RP_FORM=casing RP_DIRECTION=<north|east|south|west> BLENDER=<blender> \
+--       tools/blender/render.sh concept/reaction-plant/model/forms.py <scratch>
 --
--- then copy <scratch>/sheets/icon.png to graphics/icons/reaction-plant.png, the
--- other <scratch>/sheets/*.png and <scratch>/sheets/ports/port-*.png into
--- graphics/entity/reaction-plant/, and the numbers out of the two meta.json
--- files into RP_SHEETS and RP_PORTS. The pack's checks are in the model's
--- measures.txt (centre_offset_px 0, edge_alpha_max 0, half_width_tiles 2.5,
--- legs-glow_white_px 0, the press within 1 px of its declared path).
+-- (the north run with --icon as well), then copy each run's <scratch>/sheets/
+-- *.png into graphics/entity/reaction-plant/<direction>/, the icon to
+-- graphics/icons/reaction-plant.png, the figures of each sheets/meta.json into
+-- RP_SHEETS and the connector sockets of hi/model.json into RP_SOCKETS. The
+-- pack's checks hold in every direction (edge_alpha_max 0, legs-glow_white_px
+-- 0, the press within 1 px of its declared path); north and south are exactly
+-- 5.000 tiles wide, and east and west reach one faint pixel (alpha 29 or less)
+-- past it, accepted at sign-off (Liam, 2026-10-28: "Accept, note in spec").
 --
--- **One plate, for all four directions.** Nothing on it has a facing: the ports
--- are the engine's (above).
+-- **Four plates, one a direction** (spec §5): the model is turned on its
+-- turntable to face each direction, as vanilla's chemical plant and oil
+-- refinery are, and each direction has its own plate, shadow, legs, glow,
+-- lamps, press and moving parts. A part the camera does not see in a
+-- direction has no sheet there and stands in the plate at frame 0.
 --
 -- **The plate is the machine without its moving parts**, and every moving part
--- is its own cropped sheet drawn over it (spec §6.2, §7): the agitator drive,
--- the dosing-pump and pump couplings, the three gauge needles, the condenser
--- drip and the filter press. The plate's legs are unlit dark navy; the lit legs
--- are drawn over them only while crafting.
+-- is its own cropped sheet drawn over it (spec §6.2, §7). Seen in each
+-- direction:
+--
+--   north  legs, drive, compressor, dosing-pump and pump couplings, press,
+--          the three gauge needles, condenser drip
+--   east   as north, without the dosing-pump coupling
+--   south  legs, drive, compressor and pump couplings, press
+--   west   legs, drive, dosing-pump coupling, press
+--
+-- and every direction has its plate, shadow, legs glow and status lamps. The
+-- plate's legs are unlit dark navy; the lit legs are drawn over them only while
+-- crafting. No two moving sheets of one direction share an opaque pixel at
+-- frame 0 (each was rendered with the rest of the model held out), so the
+-- order they are drawn in does not show.
 --
 -- **The 24-frame parts play at 14/60 frames a tick, a loop in ~1.7 s**
 -- (measures.txt), in the main animation, which an assembling machine draws in
@@ -1274,39 +1283,101 @@ local RP_PRESS_SPEED = 7 / 60
 local RP_PRESS_FRAMES = 16
 local RP_PRESS_LENGTH = 140               -- 140 / (7/60) = 1200 ticks, one craft
 
--- From sheets/meta.json: size in px, shift in tiles, and the frames and line
--- length of each sheet that moves.
+-- From each direction's sheets/meta.json: size in px, shift in tiles, and the
+-- frames and line length of each sheet that moves. A direction has a sheet for
+-- each part the camera sees there, and no other (spec §6.2).
 local RP_SHEETS =
 {
-  ["base"] = { width = 327, height = 377, shift = { -0.00781, -0.39844 } },
-  ["shadow"] = { width = 370, height = 329, shift = { 0.375, -0.08594 } },
-  ["legs-glow"] = { width = 63, height = 157, shift = { -0.11719, -0.44531 } },
-  ["status-lamp"] = { width = 57, height = 106, shift = { 1.80469, 0.98438 } },
-  ["legs"] = { width = 63, height = 159, shift = { -0.11719, -0.44531 }, frames = 24, line_length = 24 },
-  ["drive"] = { width = 64, height = 61, shift = { 1.34375, -2.00781 }, frames = 24, line_length = 24 },
-  ["coupling-dosing"] = { width = 7, height = 13, shift = { -0.99219, -0.28906 }, frames = 24, line_length = 24 },
-  ["coupling-pump"] = { width = 10, height = 19, shift = { 1.09375, 1.33594 }, frames = 24, line_length = 24 },
-  ["press"] = { width = 54, height = 66, shift = { -1.20312, 1.51562 }, frames = 16, line_length = 16 },
-  ["gauge-reactor-upper"] = { width = 10, height = 6, shift = { 1.42188, 0 }, frames = 24, line_length = 24 },
-  ["gauge-reactor-lower"] = { width = 12, height = 8, shift = { 1.21875, 0.34375 }, frames = 24, line_length = 24 },
-  ["gauge-scrubber"] = { width = 9, height = 6, shift = { -1.55469, -2.17188 }, frames = 24, line_length = 24 },
-  ["drip"] = { width = 24, height = 63, shift = { 2.26562, -2.03906 }, frames = 24, line_length = 24 }
+  north =
+  {
+    ["base"] = { width = 327, height = 381, shift = { -0.00781, -0.21094 } },
+    ["shadow"] = { width = 360, height = 346, shift = { 0.3125, 0.0625 } },
+    ["legs-glow"] = { width = 188, height = 57, shift = { -0.01562, 0.13281 } },
+    ["status-lamp"] = { width = 14, height = 216, shift = { 2.29688, 0.17188 } },
+    ["legs"] = { width = 189, height = 61, shift = { -0.02344, 0.11719 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 64, height = 60, shift = { -0.0625, -2.10938 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 7, height = 20, shift = { 1.94531, -2.375 }, frames = 24, line_length = 24 },
+    ["coupling-dosing"] = { width = 7, height = 15, shift = { -0.44531, 0.42969 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 10, height = 18, shift = { 2.03125, 1.375 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 53, height = 65, shift = { -2.10156, 1.52344 }, frames = 16, line_length = 16 },
+    ["gauge-reactor-upper"] = { width = 10, height = 5, shift = { 0.03125, -0.10156 }, frames = 24, line_length = 24 },
+    ["gauge-reactor-lower"] = { width = 10, height = 7, shift = { -0.17188, 0.24219 }, frames = 24, line_length = 24 },
+    ["gauge-scrubber"] = { width = 8, height = 7, shift = { -1.5, -2.02344 }, frames = 24, line_length = 24 },
+    ["drip"] = { width = 23, height = 36, shift = { 2.21094, -0.03125 }, frames = 24, line_length = 24 }
+  },
+  east =
+  {
+    ["base"] = { width = 327, height = 381, shift = { -0.00781, -0.39844 } },
+    ["shadow"] = { width = 353, height = 344, shift = { 0.25781, -0.09375 } },
+    ["legs-glow"] = { width = 34, height = 210, shift = { -0.73438, -0.59375 } },
+    ["status-lamp"] = { width = 189, height = 41, shift = { -0.82031, 1.64844 } },
+    ["legs"] = { width = 35, height = 213, shift = { -0.74219, -0.60156 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 59, height = 65, shift = { 0.25781, -1.91406 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 16, height = 6, shift = { 1.75, 1.25 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 17, height = 10, shift = { -1.94531, 1.42188 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 46, height = 52, shift = { -1.98438, -2.73438 }, frames = 16, line_length = 16 },
+    ["gauge-reactor-upper"] = { width = 5, height = 11, shift = { -0.75781, -0.82031 }, frames = 24, line_length = 24 },
+    ["gauge-reactor-lower"] = { width = 4, height = 10, shift = { -0.76562, -0.67188 }, frames = 24, line_length = 24 },
+    ["gauge-scrubber"] = { width = 6, height = 8, shift = { 1.29688, -2.23438 }, frames = 24, line_length = 24 },
+    ["drip"] = { width = 37, height = 33, shift = { -0.44531, 1.66406 }, frames = 24, line_length = 24 }
+  },
+  south =
+  {
+    ["base"] = { width = 327, height = 373, shift = { 0.00781, -0.14844 } },
+    ["shadow"] = { width = 365, height = 346, shift = { 0.35156, 0.0625 } },
+    ["legs-glow"] = { width = 188, height = 56, shift = { -0.01562, -1.3125 } },
+    ["status-lamp"] = { width = 13, height = 164, shift = { -2.28906, -1.46875 } },
+    ["legs"] = { width = 189, height = 60, shift = { -0.02344, -1.32812 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 64, height = 61, shift = { 0.0625, -1.60156 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 7, height = 20, shift = { -1.94531, 1.125 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 10, height = 19, shift = { -2.03125, -2.50781 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 53, height = 65, shift = { 2.10156, -2.44531 }, frames = 16, line_length = 16 }
+  },
+  west =
+  {
+    ["base"] = { width = 327, height = 375, shift = { 0.00781, -0.35156 } },
+    ["shadow"] = { width = 345, height = 335, shift = { 0.21094, -0.02344 } },
+    ["legs-glow"] = { width = 34, height = 207, shift = { 0.70312, -0.57031 } },
+    ["status-lamp"] = { width = 189, height = 25, shift = { 0.82031, -2.94531 } },
+    ["legs"] = { width = 35, height = 210, shift = { 0.69531, -0.57812 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 59, height = 65, shift = { -0.25781, -1.78906 }, frames = 24, line_length = 24 },
+    ["coupling-dosing"] = { width = 6, height = 4, shift = { 1.03125, -0.17188 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 46, height = 72, shift = { 1.98438, 1.65625 }, frames = 16, line_length = 16 }
+  }
 }
 
--- The 24-frame parts of the main animation, drawn over the plate in this order.
+local RP_DIRECTIONS = { "north", "east", "south", "west" }
+
+-- The 24-frame parts of the main animation, drawn over the plate in this order
+-- where the direction has them.
 local RP_PARTS =
 {
-  "drive", "coupling-dosing", "coupling-pump",
+  "drive", "coupling-compressor", "coupling-dosing", "coupling-pump",
   "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"
 }
 
---- One sheet as an Animation, its numbers from RP_SHEETS; `extra` adds to or
---- overrides them.
-local function rp_sheet(name, extra)
-  local s = RP_SHEETS[name]
+-- Every sheet of a direction is drawn: either a part above, or one of these.
+-- A sheet packed for a direction and not wired would be a part frozen in the
+-- plate; one wired and not packed, a file that does not exist.
+local RP_DRAWN = { base = true, shadow = true, legs = true, ["legs-glow"] = true,
+                   ["status-lamp"] = true, press = true }
+for _, name in ipairs(RP_PARTS) do RP_DRAWN[name] = true end
+for _, dir in ipairs(RP_DIRECTIONS) do
+  for _, name in ipairs({ "base", "shadow", "legs", "legs-glow", "status-lamp", "press" }) do
+    assert(RP_SHEETS[dir][name], "sae-reaction-plant: no " .. name .. " sheet facing " .. dir)
+  end
+  for name in pairs(RP_SHEETS[dir]) do
+    assert(RP_DRAWN[name], "sae-reaction-plant: sheet " .. dir .. "/" .. name .. " is not drawn")
+  end
+end
+
+--- One direction's sheet as an Animation, its numbers from RP_SHEETS; `extra`
+--- adds to or overrides them.
+local function rp_sheet(dir, name, extra)
+  local s = RP_SHEETS[dir][name]
   local anim =
   {
-    filename = RP .. name .. ".png",
+    filename = RP .. dir .. "/" .. name .. ".png",
     priority = "high",
     width = s.width, height = s.height,
     frame_count = s.frames or 1,
@@ -1318,6 +1389,16 @@ local function rp_sheet(name, extra)
   return anim
 end
 
+--- A working visualisation with four animations, one sheet a direction, as
+--- `north_animation` .. `west_animation`; `vis` holds its other fields.
+local function rp_four(name, extra, vis)
+  vis = vis or {}
+  for _, dir in ipairs(RP_DIRECTIONS) do
+    vis[dir .. "_animation"] = rp_sheet(dir, name, extra)
+  end
+  return vis
+end
+
 -- The press's sequence: each of its 16 frames twice, then shut (frame 1) for
 -- the rest of the craft.
 local RP_PRESS_SEQUENCE = {}
@@ -1327,41 +1408,61 @@ for f = 1, RP_PRESS_FRAMES do
 end
 for i = 2 * RP_PRESS_FRAMES + 1, RP_PRESS_LENGTH do RP_PRESS_SEQUENCE[i] = 1 end
 
---- The main animation's layers: the plate, the 24-frame parts and the shadow,
---- the plate and shadow repeated to the parts' 24 frames.
-local function rp_layers()
-  local layers = { rp_sheet("base", { repeat_count = RP_FRAMES, animation_speed = RP_SPEED }) }
+--- One direction's main animation: the plate, the 24-frame parts seen in that
+--- direction and the shadow, the plate and shadow repeated to the parts' 24
+--- frames.
+local function rp_direction(dir)
+  local layers = { rp_sheet(dir, "base", { repeat_count = RP_FRAMES, animation_speed = RP_SPEED }) }
   for _, name in ipairs(RP_PARTS) do
-    layers[#layers + 1] = rp_sheet(name, { animation_speed = RP_SPEED })
+    if RP_SHEETS[dir][name] then
+      layers[#layers + 1] = rp_sheet(dir, name, { animation_speed = RP_SPEED })
+    end
   end
   -- The whole machine at frame 0. The moving parts' shadows on the ground do
   -- not move with them: each is a sliver, and no player looks at it.
-  layers[#layers + 1] = rp_sheet("shadow",
+  layers[#layers + 1] = rp_sheet(dir, "shadow",
     { draw_as_shadow = true, repeat_count = RP_FRAMES, animation_speed = RP_SPEED })
-  return layers
+  return { layers = layers }
 end
 
--- From sheets/ports/meta.json. Each fitting was rendered on the middle tile of
--- its face, and its shift is taken from the tile outside the port -- the one a
--- pipe picture is drawn relative to -- so the same sheet sits right at any
--- port on that face.
-local function rp_port(face, width, height, shift)
-  return
-  {
-    filename = RP .. "port-" .. face .. ".png",
-    priority = "extra-high",
-    width = width, height = height,
-    shift = shift,
-    scale = 0.5
-  }
-end
-local RP_PORTS =
+-- **The circuit connector: one a direction, on the terminal box the model
+-- carries** (spec §8). Facing each way the box sits on the housing's wall that
+-- faces the camera, with its cable gland under it, and the engine's connector is
+-- drawn over the box. From the model's hi/model.json (`sockets`, identical in
+-- all four runs): `screen` is where the box's centre is drawn, tiles from the
+-- entity centre, and `ground` the point on the ground beneath it.
+local RP_SOCKETS =
 {
-  north = rp_port("N", 53, 22, { 0.00781, 0.34375 }),
-  east = rp_port("E", 31, 71, { -0.72656, 0.05469 }),
-  south = rp_port("S", 63, 69, { -0.00781, -0.77344 }),
-  west = rp_port("W", 31, 72, { 0.72656, 0.01562 })
+  north = { screen = { 0.85, 2.078 }, ground = { 0.85, 2.328 } },
+  east = { screen = { -0.95, 2.178 }, ground = { -0.95, 2.428 } },
+  south = { screen = { 0, 2.078 }, ground = { 0, 2.328 } },
+  west = { screen = { -0.6, 2.178 }, ground = { -0.6, 2.428 } }
 }
+
+-- The connector's shadow falls where the rig's sun puts the shadow of a point at
+-- the box's height (tools/blender/rig.py, SHADOW_KX and SHADOW_KY, measured off
+-- vanilla): a point h' tiles above its foot on screen casts kx * h' right of
+-- the foot and ky * h' up. So it lands as the plate's own shadows do.
+local RP_SHADOW_KX, RP_SHADOW_KY = 0.79, 0.25
+-- PROVISIONAL, not yet chosen by Liam: which of the universal connector's 40
+-- drawings stands on the box (see the T09b report).
+local RP_CONNECTOR_VARIATION = 18
+local function rp_circuit_connector()
+  local defs = {}
+  for i, dir in ipairs(RP_DIRECTIONS) do
+    local s = RP_SOCKETS[dir]
+    local rise = s.ground[2] - s.screen[2]
+    defs[i] =
+    {
+      variation = RP_CONNECTOR_VARIATION,
+      main_offset = s.screen,
+      shadow_offset = { s.ground[1] + RP_SHADOW_KX * rise, s.ground[2] - RP_SHADOW_KY * rise },
+      show_shadow = true
+    }
+  end
+  return circuit_connector_definitions.create_vector(universal_connector_template, defs)
+end
+
 local RP_COVERS = derive.pipe_covers()
 
 -- The status lamps' colours: the ones vanilla's electric mining drill uses
@@ -1386,7 +1487,7 @@ local function reaction_box(flow, direction, position)
   {
     production_type = flow,
     volume = 1000,
-    pipe_picture = RP_PORTS,
+    -- No pipe_picture: the fitting is in each direction's plate (above).
     pipe_covers = RP_COVERS,
     always_draw_covers = false,
     secondary_draw_orders = { north = -1 },
@@ -1418,38 +1519,41 @@ reaction_plant.selection_box = { { -2.5, -2.5 }, { 2.5, 2.5 } }
 reaction_plant.max_health = 350
 reaction_plant.corpse = "oil-refinery-remnants"
 reaction_plant.dying_explosion = "oil-refinery-explosion"
+-- The chemical plant's connector is placed for a 3x3 plate; this one is on the
+-- model's terminal box, one a direction (above).
+reaction_plant.circuit_connector = rp_circuit_connector()
 -- The lead reactor and its two lit legs (spec §14), a 64 px mipmap strip.
 reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
 -- The alt-mode recipe icon at twice the size, as the oil refinery's is, and on
 -- the lead reactor's roof (Liam, 2026-10-20: "Double, like the refinery"),
--- clear of the legs, which are the working read.
+-- clear of the legs, which are the working read. One shift for every
+-- direction: IconDrawSpecification has no per-direction form (2.1.22 docs),
+-- and this one was set on the one-plate north (see the T09b report).
 reaction_plant.icon_draw_specification = { scale = 2, shift = { 1.35, -1.55 } }
 
 derive.own_graphics(reaction_plant,
 {
   status_colors = rp_status_colors(),
   animation_progress = 1,               -- see "animation_progress = 1" above
-  animation = { layers = rp_layers() },
+  animation =
+  {
+    north = rp_direction("north"),
+    east = rp_direction("east"),
+    south = rp_direction("south"),
+    west = rp_direction("west")
+  },
   working_visualisations =
   {
     -- The filter press, once a craft: see "The press" above. Named, so the
     -- landing's accent can be cued to it.
-    {
-      name = "press",
-      always_draw = true,                 -- see "Stopped" above
-      animation = rp_sheet("press",
-        { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED })
-    },
+    rp_four("press", { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED },
+      { name = "press", always_draw = true }),   -- always_draw: see "Stopped" above
     -- The legs, lit and circulating, over the plate's dark ones.
-    { animation = rp_sheet("legs", { animation_speed = RP_SPEED }) },
+    rp_four("legs", { animation_speed = RP_SPEED }),
     -- Their light: see "The legs glow" above.
-    { animation = rp_sheet("legs-glow", { draw_as_light = true }) },
+    rp_four("legs-glow", { draw_as_light = true }),
     -- The two status lamps.
-    {
-      always_draw = true,
-      apply_tint = "status",
-      animation = rp_sheet("status-lamp", { draw_as_glow = true })
-    }
+    rp_four("status-lamp", { draw_as_glow = true }, { always_draw = true, apply_tint = "status" })
   }
 })
 
