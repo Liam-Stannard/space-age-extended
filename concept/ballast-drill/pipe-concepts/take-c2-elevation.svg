@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1834.0" height="843.0" viewBox="0 0 1834.0 843.0">
+<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" fill="#FF4A3A" fill-opacity="0.25"/><line x1="0" y1="0" x2="0" y2="6" stroke="#FF4A3A" stroke-width="2.5"/></pattern></defs>
+<rect x="0" y="0" width="1834.0" height="843.0" fill="#1B1B1D"/>
+<text x="14.0" y="32.0" font-family="DejaVu Sans" font-size="16.0" fill="#E8E6E1" text-anchor="start" font-weight="bold">Side elevation: the south-east connection (S+) and its hose, looking west</text>
+<rect x="14.0" y="42.0" width="742.5" height="685.8" fill="#2A2723" stroke="none" stroke-width="0.0"/>
+<svg x="14.0" y="42.0" width="742.5" height="685.8" overflow="hidden">
+<g opacity="0.5">
+<polygon points="407.7,391.5 553.5,391.5 553.5,54.0 407.7,54.0" fill="#77726A" stroke="#121212" stroke-width="1.0"/>
+<rect x="413.1" y="8.1" width="59.4" height="45.9" fill="#7C2C1E" stroke="#121212" stroke-width="1.0"/>
+<rect x="580.5" y="44.6" width="702.0" height="202.5" fill="#3E3E42" stroke="#121212" stroke-width="1.0"/>
+</g>
+<rect x="553.5" y="348.3" width="756.0" height="43.2" fill="#4A4A4E" stroke="#121212" stroke-width="1.0"/>
+<rect x="580.5" y="145.8" width="702.0" height="202.5" fill="none" stroke="#B9B4A8" stroke-width="1.0" stroke-dasharray="6,4"/>
+<polygon points="191.7,621.0 1012.5,621.0 1012.5,391.5 191.7,391.5" fill="#575249" stroke="#121212" stroke-width="1.0"/>
+<line x1="257.6" y1="621.0" x2="257.6" y2="391.5" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<line x1="256.5" y1="685.8" x2="256.5" y2="0.0" stroke="#C8A23A" stroke-width="1.2" stroke-dasharray="2,4"/>
+<line x1="0.0" y1="621.0" x2="742.5" y2="621.0" stroke="#8C877C" stroke-width="2.0"/>
+<line x1="210.6" y1="550.8" x2="313.2" y2="550.8" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<line x1="313.2" y1="550.8" x2="313.2" y2="391.5" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<line x1="210.6" y1="464.4" x2="226.8" y2="464.4" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<line x1="226.8" y1="464.4" x2="226.8" y2="391.5" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<rect x="191.7" y="396.1" width="27.0" height="223.0" fill="#302D28" stroke="#121212" stroke-width="1.0"/>
+<rect x="191.7" y="405.5" width="18.9" height="204.1" fill="#A6A8AE" stroke="#121212" stroke-width="1.0"/>
+<rect x="190.6" y="456.3" width="1.6" height="102.6" fill="#1A1816" stroke="none" stroke-width="0.0"/>
+<rect x="197.1" y="380.7" width="145.8" height="13.5" fill="#575249" stroke="#121212" stroke-width="1.0"/>
+<path d="M 213.3,380.7 L 213.3,310.5 A 56.7,56.7 0 0 1 270.0,253.8 L 303.3,253.8 L 303.3,367.2 L 326.7,367.2 L 326.7,380.7 Z" fill="#575249" stroke="#121212" stroke-width="1.2"/>
+<path d="M 270.0,310.5 L 274.4,312.4 L 280.1,314.9 L 286.8,317.8 L 294.4,321.0 L 302.6,324.3 L 311.2,327.5 L 320.0,330.5 L 328.7,333.2 L 337.2,335.4 L 345.2,337.1 L 352.6,338.4 L 359.1,339.2 L 364.7,339.7 L 369.5,340.0 L 373.8,340.2 L 377.7,340.2 L 381.4,340.2 L 385.0,340.1 L 388.6,340.0 L 392.4,339.8 L 396.7,339.4 L 401.4,339.0 L 406.8,338.4 L 413.1,337.5 L 420.5,336.3 L 429.2,334.6 L 438.7,332.4 L 448.9,329.8 L 459.5,326.8 L 470.2,323.4 L 480.6,319.9 L 490.7,316.3 L 499.9,312.9 L 508.2,309.8 L 515.1,307.2 L 520.5,305.1" fill="none" stroke="#121212" stroke-width="88.8" stroke-linejoin="round" stroke-linecap="butt"/>
+<path d="M 270.0,310.5 L 274.4,312.4 L 280.1,314.9 L 286.8,317.8 L 294.4,321.0 L 302.6,324.3 L 311.2,327.5 L 320.0,330.5 L 328.7,333.2 L 337.2,335.4 L 345.2,337.1 L 352.6,338.4 L 359.1,339.2 L 364.7,339.7 L 369.5,340.0 L 373.8,340.2 L 377.7,340.2 L 381.4,340.2 L 385.0,340.1 L 388.6,340.0 L 392.4,339.8 L 396.7,339.4 L 401.4,339.0 L 406.8,338.4 L 413.1,337.5 L 420.5,336.3 L 429.2,334.6 L 438.7,332.4 L 448.9,329.8 L 459.5,326.8 L 470.2,323.4 L 480.6,319.9 L 490.7,316.3 L 499.9,312.9 L 508.2,309.8 L 515.1,307.2 L 520.5,305.1" fill="none" stroke="#7A7064" stroke-width="86.4" stroke-linejoin="round" stroke-linecap="butt"/>
+<line x1="309.8" y1="284.4" x2="279.0" y2="357.6" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="332.8" y1="292.9" x2="307.1" y2="368.1" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="347.2" y1="296.9" x2="327.2" y2="373.9" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="364.1" y1="299.8" x2="354.1" y2="378.6" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="378.3" y1="300.5" x2="377.2" y2="380.0" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="397.7" y1="299.4" x2="405.2" y2="378.6" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="421.6" y1="295.6" x2="436.7" y2="373.6" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="448.5" y1="288.6" x2="470.5" y2="365.0" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="467.9" y1="282.2" x2="493.3" y2="357.5" stroke="#5F574E" stroke-width="1.4"/>
+<line x1="494.2" y1="272.6" x2="522.2" y2="347.0" stroke="#5F574E" stroke-width="1.4"/>
+<rect x="302.0" y="256.5" width="13.5" height="108.0" fill="#A6A8AE" stroke="#121212" stroke-width="1.0"/>
+<rect x="503.2" y="251.1" width="13.5" height="108.0" fill="#A6A8AE" stroke="#121212" stroke-width="1.0"/>
+<rect x="471.6" y="348.3" width="128.3" height="43.2" fill="#4A4A4E" stroke="#121212" stroke-width="1.0"/>
+<path d="M 520.5,305.1 L 545.9,345.6" fill="none" stroke="#121212" stroke-width="78.0" stroke-linecap="round"/>
+<path d="M 520.5,305.1 L 545.9,345.6" fill="none" stroke="#4A4A4E" stroke-width="75.6" stroke-linecap="round"/>
+<line x1="13.5" y1="621.0" x2="13.5" y2="391.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="9.5" y1="621.0" x2="17.5" y2="621.0" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="9.5" y1="391.5" x2="17.5" y2="391.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="19.5" y="510.2" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">plate top 0.85</text>
+<line x1="116.1" y1="621.0" x2="116.1" y2="507.6" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="112.1" y1="621.0" x2="120.1" y2="621.0" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="112.1" y1="507.6" x2="120.1" y2="507.6" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="122.1" y="568.3" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">axis 0.42</text>
+<line x1="13.5" y1="391.5" x2="13.5" y2="310.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="9.5" y1="391.5" x2="17.5" y2="391.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="9.5" y1="310.5" x2="17.5" y2="310.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="19.5" y="355.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">mouth axis 1.15</text>
+<line x1="229.5" y1="609.7" x2="229.5" y2="405.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="225.5" y1="609.7" x2="233.5" y2="609.7" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="225.5" y1="405.5" x2="233.5" y2="405.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="235.5" y="511.6" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">ring 0.76, flush</text>
+<line x1="191.7" y1="639.9" x2="256.5" y2="639.9" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="191.7" y1="635.9" x2="191.7" y2="643.9" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="256.5" y1="635.9" x2="256.5" y2="643.9" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="224.1" y="655.9" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="middle" font-weight="normal">face 0.24 past the footprint edge</text>
+<line x1="191.7" y1="391.5" x2="191.7" y2="216.0" stroke="#B9B4A8" stroke-width="1.0" stroke-dasharray="2,3"/>
+<line x1="213.3" y1="310.5" x2="213.3" y2="216.0" stroke="#B9B4A8" stroke-width="1.0" stroke-dasharray="2,3"/>
+<line x1="191.7" y1="224.1" x2="213.3" y2="224.1" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="191.7" y1="220.1" x2="191.7" y2="228.1" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="213.3" y1="220.1" x2="213.3" y2="228.1" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="202.5" y="218.1" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="middle" font-weight="normal">body 0.08 in from the face</text>
+<line x1="377.7" y1="391.5" x2="377.7" y2="383.4" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="373.7" y1="391.5" x2="381.7" y2="391.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="373.7" y1="383.4" x2="381.7" y2="383.4" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="383.7" y="391.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">0.03 over the plate</text>
+<text x="13.5" y="183.6" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">hose 0.32 across, ribbed, clamped both ends</text>
+<text x="13.5" y="102.6" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">gooseneck: cast in the plate's top over its fitting,</text>
+<text x="13.5" y="124.2" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">solid wall all round it</text>
+<text x="337.5" y="442.8" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">end boss on the plate against the shoulder (press iron),</text>
+<text x="337.5" y="464.4" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">the nozzle down into it, 0.08 outside the landed ring</text>
+<text x="337.5" y="567.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">pipe inside the casting (hidden, dashed)</text>
+<text x="594.0" y="27.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">ring raised</text>
+<text x="594.0" y="48.6" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">landed dashed</text>
+<text x="410.4" y="94.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">SE bastion</text>
+<text x="410.4" y="116.1" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">(behind)</text>
+<text x="13.5" y="27.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">old face 2.496 dashed; footprint edge 2.5 dotted; 270 px a tile</text>
+</svg>
+<text x="782.5" y="32.0" font-family="DejaVu Sans" font-size="16.0" fill="#E8E6E1" text-anchor="start" font-weight="bold">Chute, recommended: through a port in the wall at ground level</text>
+<rect x="782.5" y="42.0" width="535.5" height="367.5" fill="#2A2723" stroke="none" stroke-width="0.0"/>
+<svg x="782.5" y="42.0" width="535.5" height="367.5" overflow="hidden">
+<rect x="483.0" y="113.4" width="399.0" height="33.6" fill="#4A4A4E" stroke="#121212" stroke-width="1.0"/>
+<rect x="504.0" y="-122.8" width="378.0" height="157.5" fill="#3E3E42" stroke="#121212" stroke-width="1.0"/>
+<polygon points="201.6,262.5 434.7,262.5 434.7,325.5 882.0,325.5 882.0,147.0 201.6,147.0" fill="#575249" stroke="#121212" stroke-width="1.0"/>
+<rect x="201.6" y="262.5" width="233.1" height="63.0" fill="#141312" stroke="none" stroke-width="0.0"/>
+<rect x="434.7" y="262.5" width="6.3" height="63.0" fill="#45413A" stroke="#121212" stroke-width="1.0"/>
+<rect x="201.6" y="254.1" width="6.3" height="8.4" fill="#A6A8AE" stroke="#121212" stroke-width="1.0"/>
+<polygon points="432.6,319.2 201.6,319.2 201.6,302.4 432.6,310.8" fill="#303033" stroke="#121212" stroke-width="1.0"/>
+<rect x="201.6" y="283.9" width="231.0" height="35.3" fill="none" stroke="#121212" stroke-width="1.0" stroke-dasharray="6,4"/>
+<rect x="396.9" y="283.9" width="35.7" height="35.3" fill="#4E4E52" stroke="#121212" stroke-width="1.0"/>
+<rect x="201.6" y="283.9" width="27.3" height="22.7" fill="#4E4E52" stroke="#121212" stroke-width="1.0"/>
+<circle cx="215.2" cy="302.4" r="9.4" fill="#B89A4A" stroke="#121212" stroke-width="1.0"/>
+<rect x="214.2" y="109.2" width="58.8" height="37.8" fill="#A8643C" stroke="#121212" stroke-width="1.0"/>
+<rect x="228.9" y="98.7" width="29.4" height="10.5" fill="#A6A8AE" stroke="#121212" stroke-width="1.0"/>
+<line x1="215.2" y1="294.0" x2="215.2" y2="147.0" stroke="#B9B4A8" stroke-width="1.2" stroke-dasharray="6,4"/>
+<circle cx="180.6" cy="300.3" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<circle cx="165.9" cy="312.9" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<circle cx="151.2" cy="321.3" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<line x1="117.6" y1="325.5" x2="117.6" y2="262.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="113.6" y1="325.5" x2="121.6" y2="325.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="113.6" y1="262.5" x2="121.6" y2="262.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="111.6" y="298.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="end" font-weight="normal">port 0.30 high</text>
+<line x1="180.6" y1="262.5" x2="180.6" y2="147.0" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="176.6" y1="262.5" x2="184.6" y2="262.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="176.6" y1="147.0" x2="184.6" y2="147.0" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="174.6" y="208.8" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="end" font-weight="normal">lintel 0.55</text>
+<line x1="201.6" y1="224.7" x2="434.7" y2="224.7" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="201.6" y1="220.7" x2="201.6" y2="228.7" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="434.7" y1="220.7" x2="434.7" y2="228.7" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="318.2" y="218.7" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="middle" font-weight="normal">tunnel 1.11 (south; 0.87 on N, E, W)</text>
+<text x="277.2" y="94.5" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">the chute's drive on the plate top</text>
+<text x="277.2" y="109.2" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">(copper): marks the output face</text>
+<text x="197.4" y="357.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="end" font-weight="normal">ore out at the mouth</text>
+<line x1="0.0" y1="325.5" x2="535.5" y2="325.5" stroke="#8C877C" stroke-width="2.0"/>
+<line x1="252.0" y1="367.5" x2="252.0" y2="0.0" stroke="#C8A23A" stroke-width="1.2" stroke-dasharray="2,4"/>
+</svg>
+<text x="1332.0" y="56.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">Port 0.86 wide, 0.30 high, in a steel frame. The spec's chute</text>
+<text x="1332.0" y="73.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">unchanged (ground level, set into the face, mouth flush,</text>
+<text x="1332.0" y="90.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">nothing over the roofline): the plate bridges it as a lintel. The body</text>
+<text x="1332.0" y="107.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">never turns, so every face has the port; the three the ore does not leave</text>
+<text x="1332.0" y="124.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">by are shut by a flush bolted hatch (today's bay hatches, stood up).</text>
+<text x="1332.0" y="141.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">From the camera the S port is seen; N, E and W ports are not (edge on or</text>
+<text x="1332.0" y="158.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">behind), so the drive sits on the plate top over the mouth to show the</text>
+<text x="1332.0" y="175.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">output face in every direction (turns with the chute).</text>
+<text x="1332.0" y="192.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">South: the face is 0.24 further out, so its tunnel and chute are 0.24 longer</text>
+<text x="1332.0" y="209.0" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">and its vector_to_place_result is re-measured; N, E, W unchanged.</text>
+<text x="782.5" y="439.5" font-family="DejaVu Sans" font-size="16.0" fill="#E8E6E1" text-anchor="start" font-weight="bold">Chute, alternative: over the wall</text>
+<rect x="782.5" y="449.5" width="535.5" height="367.5" fill="#2A2723" stroke="none" stroke-width="0.0"/>
+<svg x="782.5" y="449.5" width="535.5" height="367.5" overflow="hidden">
+<rect x="483.0" y="113.4" width="399.0" height="33.6" fill="#4A4A4E" stroke="#121212" stroke-width="1.0"/>
+<rect x="504.0" y="-122.8" width="378.0" height="157.5" fill="#3E3E42" stroke="#121212" stroke-width="1.0"/>
+<polygon points="201.6,325.5 882.0,325.5 882.0,147.0 201.6,147.0" fill="#575249" stroke="#121212" stroke-width="1.0"/>
+<polygon points="478.8,147.0 201.6,147.0 201.6,67.2 478.8,115.5" fill="#4E4E52" stroke="#121212" stroke-width="1.0"/>
+<polygon points="201.6,100.8 235.2,100.8 235.2,58.8 201.6,58.8" fill="#3E3E42" stroke="#121212" stroke-width="1.0"/>
+<rect x="264.6" y="54.6" width="58.8" height="37.8" fill="#A8643C" stroke="#121212" stroke-width="1.0"/>
+<circle cx="184.8" cy="111.3" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<circle cx="172.2" cy="178.5" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<circle cx="159.6" cy="249.9" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<circle cx="151.2" cy="312.9" r="7.4" fill="#B8B4AC" stroke="#121212" stroke-width="1.0"/>
+<line x1="117.6" y1="325.5" x2="117.6" y2="88.2" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="113.6" y1="325.5" x2="121.6" y2="325.5" stroke="#B9B4A8" stroke-width="1.0"/>
+<line x1="113.6" y1="88.2" x2="121.6" y2="88.2" stroke="#B9B4A8" stroke-width="1.0"/>
+<text x="111.6" y="210.9" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="end" font-weight="normal">ore falls 1.13</text>
+<text x="222.6" y="35.7" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">inclined drag chain on the plate top;</text>
+<text x="222.6" y="50.4" font-family="DejaVu Sans" font-size="12.0" fill="#E8E6E1" text-anchor="start" font-weight="normal">the head over the wall's edge</text>
+<text x="222.6" y="220.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">the ore must first be lifted 0.85 inside the press</text>
+<line x1="0.0" y1="325.5" x2="535.5" y2="325.5" stroke="#8C877C" stroke-width="2.0"/>
+<line x1="252.0" y1="367.5" x2="252.0" y2="0.0" stroke="#C8A23A" stroke-width="1.2" stroke-dasharray="2,4"/>
+</svg>
+<text x="1332.0" y="463.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">The chain shows from the camera on every face, but: the spec's chute</text>
+<text x="1332.0" y="480.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">(ground level, sloping down and forward out of the deck) is replaced; the</text>
+<text x="1332.0" y="497.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">ore must be lifted inside the press; it falls about 1.1 to the ground, so</text>
+<text x="1332.0" y="514.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">the ore particles and vector_to_place_result are redone in all four</text>
+<text x="1332.0" y="531.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">directions; and the chute crosses the plate top where the hoses of other</text>
+<text x="1332.0" y="548.5" font-family="DejaVu Sans" font-size="12.0" fill="#B9B4A8" text-anchor="start" font-weight="normal">directions run (the E/W hoses' lanes).</text>
+</svg>
