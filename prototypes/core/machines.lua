@@ -841,9 +841,9 @@ furnace.source_inventory_size = 1          -- one, as the electric furnace has
 furnace.result_inventory_size = 1
 -- Every size and shift below is copied from the model's two meta.json files
 -- (concept/vacuum-furnace/model/sheets/ and sheets/ports/), as the Reaction
--- Plant's are; none was measured off a sheet or typed from memory. The needle
--- is the one layer meta.json does not carry; its own comment says where its
--- numbers come from.
+-- Plant's are from its four, one a direction; none was measured off a sheet or
+-- typed from memory. The needle is the one layer meta.json does not carry; its
+-- own comment says where its numbers come from.
 local VF = "__space-age-extended__/graphics/entity/vacuum-furnace/"
 
 local function vf_sprite(file, width, height, shift)
@@ -1444,8 +1444,9 @@ local RP_SOCKETS =
 -- vanilla): a point h' tiles above its foot on screen casts kx * h' right of
 -- the foot and ky * h' up. So it lands as the plate's own shadows do.
 local RP_SHADOW_KX, RP_SHADOW_KY = 0.79, 0.25
--- PROVISIONAL, not yet chosen by Liam: which of the universal connector's 40
--- drawings stands on the box (see the T09b report).
+-- Which of the universal connector's 40 drawings stands on the box: 18, the
+-- face-on box assembling machines use (spec §13; Liam, 2026-10-28: "18,
+-- face-on").
 local RP_CONNECTOR_VARIATION = 18
 local function rp_circuit_connector()
   local defs = {}
@@ -1524,12 +1525,11 @@ reaction_plant.dying_explosion = "oil-refinery-explosion"
 reaction_plant.circuit_connector = rp_circuit_connector()
 -- The lead reactor and its two lit legs (spec §14), a 64 px mipmap strip.
 reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
--- The alt-mode recipe icon at twice the size, as the oil refinery's is, and on
--- the lead reactor's roof (Liam, 2026-10-20: "Double, like the refinery"),
--- clear of the legs, which are the working read. One shift for every
--- direction: IconDrawSpecification has no per-direction form (2.1.22 docs),
--- and this one was set on the one-plate north (see the T09b report).
-reaction_plant.icon_draw_specification = { scale = 2, shift = { 1.35, -1.55 } }
+-- The alt-mode recipe icon at twice the size, as the oil refinery's is (Liam,
+-- 2026-10-20: "Double, like the refinery"), at the centre (spec §13; Liam,
+-- 2026-10-28: "Centre"). One place for all four directions:
+-- IconDrawSpecification has no per-direction form (2.1.22 docs).
+reaction_plant.icon_draw_specification = { scale = 2, shift = { 0, 0 } }
 
 derive.own_graphics(reaction_plant,
 {
