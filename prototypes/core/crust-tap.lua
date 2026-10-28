@@ -747,8 +747,8 @@ local turbine_remnants =
 --   * **No smoke.** The explosion's `smoke-fast` puffs go, and so do the
 --     wisps the big and medium metal pieces trail as they fly (their
 --     `regular_trigger_effect`, base/prototypes/particles.lua): those two fly
---     as copies of our own with the trail struck off. Smoke is struck by
---     field and by effect type, so one vanilla adds later goes too.
+--     as copies of our own with the trail struck off
+--     (`derive.smokeless_explosion`).
 --   * **The fireball stays**, vanilla's medium explosion: the Core has a
 --     small atmosphere wherever its pressure is above 0, so a flash of fire
 --     is fair even where smoke is not.
@@ -763,40 +763,6 @@ local turbine_remnants =
 --     vanilla's hit sparks (`spark-particle` and `spark-particle-debris`, what
 --     a bullet strikes off metal) are thrown over the turbine with the debris,
 --     to carry the burst to its 3x5.
-local SMOKE_EFFECTS = { ["create-smoke"] = true, ["create-trivial-smoke"] = true }
-
--- A trigger, a delivery or an effect may each be one table or a list of them.
-local function each(x)
-  if x == nil then return {} end
-  if x.type then return { x } end
-  return x
-end
-
--- A list of trigger effects less any that make smoke, or nil if none is left.
-local function without_smoke(effects)
-  local kept = {}
-  for _, effect in ipairs(each(effects)) do
-    if not SMOKE_EFFECTS[effect.type] then kept[#kept + 1] = effect end
-  end
-  return #kept > 0 and kept or nil
-end
-
--- The two smoking pieces of vanilla's debris, as ours, without the smoke.
-local SMOKELESS = {}
-for _, size in ipairs({ "big", "medium" }) do
-  local from = "steam-turbine-metal-particle-" .. size
-  local particle = table.deepcopy(data.raw["optimized-particle"][from])
-  assert(particle, "optimized-particle/" .. from .. " does not exist")
-  particle.name = "sae-crust-turbine-metal-particle-" .. size
-  for _, key in ipairs({ "regular_trigger_effect", "ended_on_ground_trigger_effect",
-                         "ended_in_water_trigger_effect" }) do
-    particle[key] = without_smoke(particle[key])
-  end
-  if particle.regular_trigger_effect == nil then particle.regular_trigger_effect_frequency = nil end
-  SMOKELESS[from] = particle.name
-  data:extend({ particle })
-end
-
 -- Vanilla's hit sparks, thrown from about head height. An explosion's offsets
 -- do not turn with the building, so the spread is square, inside the 3x5 lying
 -- either way.
@@ -844,18 +810,13 @@ turbine_explosion.icon = "__space-age-extended__/graphics/icons/crust-turbine.pn
 turbine_explosion.icon_size = 64
 turbine_explosion.order = "a-g-a-z[sae-crust-turbine]"
 turbine_explosion.localised_name = { "dying-explosion-name", { "entity-name.sae-crust-turbine" } }
-turbine_explosion.smoke = nil
-turbine_explosion.smoke_count = nil
-turbine_explosion.smoke_slow_down_factor = nil
-for _, trigger in ipairs(each(turbine_explosion.created_effect)) do
-  for _, delivery in ipairs(each(trigger.action_delivery)) do
-    for _, key in ipairs({ "target_effects", "source_effects" }) do
-      local effects = without_smoke(delivery[key])
-      for _, effect in ipairs(effects or {}) do
-        effect.particle_name = SMOKELESS[effect.particle_name] or effect.particle_name
-      end
-      delivery[key] = effects
-    end
+-- The copies keep the names they have always had: the copy of
+-- steam-turbine-metal-particle-big is sae-crust-turbine-metal-particle-big.
+derive.smokeless_explosion(turbine_explosion, function(name)
+  return "sae-crust-turbine-" .. (name:gsub("^steam%-turbine%-", ""))
+end)
+for _, trigger in ipairs(derive.each(turbine_explosion.created_effect)) do
+  for _, delivery in ipairs(derive.each(trigger.action_delivery)) do
     if delivery.type == "instant" then
       delivery.target_effects = delivery.target_effects or {}
       table.insert(delivery.target_effects, spark_burst("spark-particle", 40))
