@@ -1291,8 +1291,9 @@ data:extend({ furnace })
 -- Ordinary paint, not `draw_as_light` or `draw_as_glow`, as the Gas Pump's
 -- glass is (crust-tap.lua): it is fluid seen through glass, not a lamp, and a
 -- light-only layer is drawn in the light map alone, so it would not show by
--- day. meta.json's `kind = "light"` is the render pipeline's name for a white
--- layer the engine tints.
+-- day. `kind = "light"` in the model's layer list
+-- (concept/reaction-plant/model/forms.py) is the render pipeline's name for a
+-- white layer the engine tints.
 --
 -- **Mirrored, the two lines trade fluids, and the glasses trade tints.** The
 -- engine draws a mirrored plant's sprites unmirrored and moves its fluid boxes
