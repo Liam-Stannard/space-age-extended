@@ -24,7 +24,7 @@ still the 3×3 and the 5×5 numbers below are what the wiring task writes into i
 | - | ----- | --------------------- | ----- |
 | 0 | Options and concept | Liam picks | **done: F, round 5** |
 | 1 | Model, four directions | `--collide` 0 and `--clash` 0; pack checks; cover ≥ 92 % in every direction | **signed off 2026-10-28** (cover 95.4 / 94.3 / 95.2 / 94.0 %, N/E/S/W) |
-| 2 | Fittings | joins pass (no gap) at all 3 connections in all 4 directions, 12/12 | **12/12** |
+| 2 | Connections | vanilla's pipe joins (no gap) at all 3 stubs in all 4 directions, 12/12; nothing of vanilla's pipe or cover laps over the body | **12/12** |
 | 3 | Plates, shadows | p50 ~75–81, p95 into vanilla's | p50 81 / 78 / 81 / 74; west *"A: as built"* |
 | 4 | Legs glow | differenced; blue only in the legs | open |
 | 5 | Animation layers | the plate equals every layer's frame 0 | open |
@@ -137,7 +137,7 @@ that. Measured on 2.1.19 by the coder, the reviewer and the tester:
 
 | State | What the engine exposes |
 | --- | --- |
-| **No recipe set** | **all three boxes and all three wall fittings.** It keeps whatever direction it is given, and a pipe laid against the output face joins |
+| **No recipe set** | **all three boxes, so all three stubs take a pipe or a cover.** It keeps whatever direction it is given, and a pipe laid against the output face joins |
 | **`sae-radiant-precipitation`** | **the two input boxes only** — the recipe's products are solid, so the engine drops the output box whatever the flag says. No output picture. Still rotates |
 | **A future stage-3 fluid recipe** | all three again |
 
@@ -188,8 +188,9 @@ it falls with dark flecks), the condenser and the settling pot. The rest of the
 kit stands on the roof. An exposed **agitator drive** sits on the reactor head:
 shaft, a big five-spoked pulley, a laced belt and the motor's pulley.
 
-**The flow reads through the building.** Each connection enters the housing's
-wall through a fitting. The unit that uses it stands on the roof straight over
+**The flow reads through the building.** Each connection meets a low stub in the
+housing, as vanilla's chemical plant's do: vanilla's pipe joins it, or vanilla's
+cover sits on it. The unit that uses it stands on the roof straight over
 it, joined by a riser with a visible reducer: the feed drum over the solution's,
 the compressor's bottle (on legs) over the gas's, and the receiver over the
 output's.
@@ -215,7 +216,8 @@ crew's kit piled together, not one machined casting.
 * **The filter press and its drop box.**
 * **Lead** on the vessels the solution lives in.
 * **A paint per unit.**
-* **A fitting in the housing's wall at each connection**, its user standing over it.
+* **A low stub at each connection**, as vanilla's, its user standing over it.
+* **A sight glass on each input line**, showing the fluid in it.
 * **The casing.**
 
 ### Signature Feature
@@ -237,7 +239,7 @@ Teal is dropped.
 | Cream | `#ACA084` | pump house, make-up pot, filter leaves |
 | Grey | `#6E6A62` | exchanger, instrument house |
 | Casing | `#8E8572`, grey trim | the housing |
-| Dark steel | `#3E3934` | skids, saddles, frames, headers, the fittings' bosses |
+| Dark steel | `#3E3934` | skids, saddles, frames, headers, the stubs |
 | Bare steel | `#A8A090` | pipes, flanges, straps |
 | Copper / brass | `#94592C` / `#9A7438` | condenser / gauges, nuts |
 | Hoses / lagging | `#5E4636`, `#38302A` / `#9A8A68` | |
@@ -288,7 +290,7 @@ foothold crew would actually do.
 ### Style Reference Buildings
 
 1. `oil-refinery` and `chemical-plant` — massing, hoses, the fluid window.
-2. `chemical-plant`, `oil-refinery`, `cryogenic-plant`, `foundry`: how a pipe enters the casing (the fittings).
+2. `chemical-plant`, `oil-refinery`, `cryogenic-plant`, `foundry`: how a pipe meets the casing (the stubs).
 3. `pumpjack`, `storage-tank` — surfaces and wear.
 4. `foundry`, `electromagnetic-plant` — colour.
 
@@ -347,10 +349,10 @@ otherwise — never drawn as a rising level, because no hook would drive one.
 **The plate has to read correctly in two port states, which are the two a
 player meets** (§2, measured on 2.1.19):
 
-| State | What the engine draws over the plate's fittings |
+| State | What the engine draws at the plate's stubs |
 | --- | --- |
-| No recipe set | three boxes; vanilla's cover on each unconnected fitting |
-| `sae-radiant-precipitation` | the two input boxes only; **no box at the output, so no cover on its fitting** |
+| No recipe set | three boxes; vanilla's cover on each unconnected stub |
+| `sae-radiant-precipitation` | the two input boxes only; **no box at the output, so no cover on its stub** |
 | A future stage-3 fluid recipe | all three again |
 
 ## 6.2 Animation Layers — what moves, decided here
@@ -435,9 +437,12 @@ The housing fills the footprint, and there is no flat base under it (template
 rule 7). Every moving part of §6.2 is rendered out of it as its own cropped
 sheet, and each plate equals its own direction's frame 0.
 
-**Pipes:** none drawn by the engine. Each connection's fitting is modelled into
+**Pipes:** none drawn by the engine. Each connection's low stub is modelled into
 every direction's plate and casts and takes its own shadows. The engine draws
-vanilla's covers on an unconnected fitting.
+vanilla's pipe joined to it, or vanilla's cover on it when unconnected.
+
+**Sight glasses:** two, one per input line, one white sheet a direction each,
+ordinary paint (not glow), tinted by the recipe (§8).
 
 **Lighting:** **two status lamps**, one sheet per direction, on the pump house and the instrument house,
 cut white and tinted by the engine, `apply_tint = "status"`, `always_draw = true`.
@@ -473,7 +478,7 @@ all three turn with the building.
 | input 2 | `input` | north | `{ 1, -2}` | north face, east of centre | 1000 |
 | output | `output` | south | `{ 0,  2}` | south face, centre column | 1000 |
 
-All three: no `pipe_picture`; the fitting is in the plate. `pipe_covers =
+All three: no `pipe_picture`; the stub is in the plate. `pipe_covers =
 derive.pipe_covers()`, `always_draw_covers = false`, `secondary_draw_orders = {
 north = -1 }`. The entity sets `fluid_boxes_off_when_no_fluid_recipe = false`
 (§2).
@@ -501,8 +506,9 @@ The prototype positions come from the render.
 
 ### Hard geometric constraints
 
-1. **Each connection enters the housing's wall through its fitting, and the
-   joins pass (no gap) at all 12 connections, measured.**
+1. **Each connection meets a low stub in the housing; vanilla's pipe joins it
+   with no gap at all 12 connections, measured, and nothing of vanilla's pipe or
+   cover laps over the body's top.**
 2. **North covers are drawn behind** (`secondary_draw_orders = { north = -1 }`).
 3. **No marking names a fluid; a sight glass shows it.** Box assignment follows the recipe's ingredient
    order: under `sae-radiant-precipitation` the west input takes solution and the
@@ -521,7 +527,7 @@ The prototype positions come from the render.
 
 ### Visual Requirement
 
-The player tells inputs from outputs by the wall fittings modelled into each direction's plate and the recipe
+The player tells inputs from outputs by the stubs modelled into each direction's plate and the recipe
 tooltip, not by the art, and the art must not pretend otherwise. **The most
 likely mistake is an output chute**: a solid does come out of this machine, and
 the cell comes out wherever the inserter is. The drop box is not a chute: the
@@ -604,7 +610,7 @@ and `glow_white_px` stays at 0.
 
 # 11. Sprite Dimensions
 
-**Provisional until packed.** Every size and shift is computed by the packer and
+Every size and shift is computed by the packer and
 copied from its `meta.json`, never measured off a sheet.
 
 **Tile Size:** `32` px in-game · **Scale:** `0.5` → `64` source px per tile
@@ -619,10 +625,12 @@ against the refinery's 0.97.
 
 | Sheet | Frames | North | East | South | West |
 | --- | ---: | --- | --- | --- | --- |
-| `base` | 1 | 327×381 @ (-0.00781, -0.21094) | 327×381 @ (-0.00781, -0.39844) | 327×373 @ (+0.00781, -0.14844) | 327×375 @ (+0.00781, -0.35156) |
-| `shadow` | 1 | 360×346 @ (+0.3125, +0.0625) | 353×344 @ (+0.25781, -0.09375) | 365×346 @ (+0.35156, +0.0625) | 345×335 @ (+0.21094, -0.02344) |
+| `base` | 1 | 327×367 @ (-0.00781, -0.32031) | 327×381 @ (-0.00781, -0.39844) | 327×355 @ (+0.00781, -0.28906) | 327×375 @ (+0.00781, -0.35156) |
+| `shadow` | 1 | 360×329 @ (+0.3125, -0.05469) | 353×344 @ (+0.25781, -0.09375) | 365×329 @ (+0.35156, -0.07031) | 344×335 @ (+0.21875, -0.02344) |
 | `legs-glow` | 1 | 188×57 @ (-0.01562, +0.13281) | 34×210 @ (-0.73438, -0.59375) | 188×56 @ (-0.01562, -1.3125) | 34×207 @ (+0.70312, -0.57031) |
 | `status-lamp` | 1 | 14×216 @ (+2.29688, +0.17188) | 189×41 @ (-0.82031, +1.64844) | 13×164 @ (-2.28906, -1.46875) | 189×25 @ (+0.82031, -2.94531) |
+| `sight-glass-1` | 1 | 16×19 @ (-1.17188, -1.17969) | 14×7 @ (+2.0, -0.47656) | 91×104 @ (+0.58594, +0.75) | 19×18 @ (-0.63281, +0.65625) |
+| `sight-glass-2` | 1 | 15×23 @ (+1.53906, -2.05469) | 18×14 @ (+0.9375, +0.46875) | 14×15 @ (-1.53125, -0.16406) | 21×19 @ (-0.96094, -2.61719) |
 | `legs` | 24 | 189×61 @ (-0.02344, +0.11719) | 35×213 @ (-0.74219, -0.60156) | 189×60 @ (-0.02344, -1.32812) | 35×210 @ (+0.69531, -0.57812) |
 | `drive` | 24 | 64×60 @ (-0.0625, -2.10938) | 59×65 @ (+0.25781, -1.91406) | 64×61 @ (+0.0625, -1.60156) | 59×65 @ (-0.25781, -1.78906) |
 | `coupling-compressor` | 24 | 7×20 @ (+1.94531, -2.375) | 16×6 @ (+1.75, +1.25) | 7×20 @ (-1.94531, +1.125) | — |
@@ -650,7 +658,7 @@ East and west reach one faint pixel (alpha 29 or less) past the 5-tile edge, as 
     └── entity/
         └── reaction-plant/
             ├── north/ east/ south/ west/   one folder a direction, each with:
-            │   ├── base.png  shadow.png  legs.png  legs-glow.png  status-lamp.png
+            │   ├── base.png  shadow.png  legs.png  legs-glow.png  status-lamp.png  sight-glass-1.png  sight-glass-2.png
             │   └── the moving layers seen in that direction (§6.2)
 ```
 
@@ -671,8 +679,12 @@ From each direction's packed meta.json, via derive.own_graphics:
                          plate, shadow and the moving layers seen in it (§6.2)
   working_visualisations each with north/east/south/west_animation: the press;
                          the legs and their glow; the two status lamps
-                         (always_draw, apply_tint "status")
+                         (always_draw, apply_tint "status"); the two sight
+                         glasses (always_draw, apply_recipe_tint primary /
+                         secondary)
   circuit_connector      one per direction, at the model's socket (§8)
+  graphics_set_flipped   the same set with the two glasses' tints swapped (§8)
+  recipe_not_set_tint    neutral grey, 0.5
 ```
 
 **No `flags` line, and no `not-rotatable`.** Settled 2026-09-17.
@@ -744,7 +756,7 @@ Not required — rendered from the model with --icon. See §14.
 * [ ] Clear silhouette — one building, front corners broken, vessels rising out of it
 * [ ] Looks like Factorio
 * [ ] Matches the Core
-* [ ] Inputs are visually understandable — each input's run reads from its fitting to the unit that uses it
+* [ ] Inputs are visually understandable — each input's run reads from its stub to the unit that uses it
 * [ ] Outputs are visually understandable — there is no output port to understand
 * [ ] **Does not read as** the vanilla chemical plant — no chimneys, no exhaust, no red-and-white
 * [ ] **Does not read as** the oil refinery — no towers, no flare stacks, nothing burns
@@ -756,7 +768,7 @@ Not required — rendered from the model with --icon. See §14.
 ### Ports — every line comes from §8
 
 * [ ] Joins pass (no gap) at all 12 connections
-* [ ] Each fitting sits in the housing's wall
+* [ ] Each stub sits low in the housing, as vanilla's
 * [ ] The plate reads correctly with **two boxes and with three, in every direction** (§6.1)
 * [ ] A north cover, drawn *behind*, still reads
 * [ ] Nothing names which port takes which fluid
@@ -797,9 +809,10 @@ recipe, and rotate one.
 
 * [x] **The ports turn with the entity in all four directions, inputs on the faced side and output opposite** — measured on 2.1.19 by the coder, the reviewer and the tester (at 3×3)
 * [x] **With no recipe the plant carries all three boxes, keeps its direction, and a pipe at the output joins; with `sae-radiant-precipitation` the engine keeps the two inputs only and drops the output** — measured on 2.1.19 (at 3×3)
-* [ ] Pipes join each fitting, in all four directions
-* [ ] With `sae-radiant-precipitation`, the output fitting with no box looks right
+* [ ] Pipes join each stub, in all four directions
+* [ ] With `sae-radiant-precipitation`, the output stub with no box looks right
 * [ ] An unconnected port's cover sits right
+* [ ] Each sight glass shows its line's fluid, in four directions, normal and mirrored
 * [ ] Shadow aligns, does not double, and is *visible* — brighten the screenshot and confirm it is actually there
 * [ ] Inserters take the cell from any adjacent tile without the art implying one
 * [ ] Neighbours do not overlap — measured, not judged: see Appendix C
@@ -813,7 +826,7 @@ recipe, and rotate one.
 
 ```text
 [ ] Model
-[ ] Fittings (in the plates)
+[ ] Stubs (in the plates)
 [ ] Directional sprites   (four, §5)
 [ ] Shadow
 [ ] Idle / static picture
@@ -966,3 +979,5 @@ accepted, gland as is.
 
 **Signed off, 2026-10-28.** *"Sign off pump and plant"*. Joins 12/12, collide 0,
 clash 0, cover 94.0–95.4 %.
+
+**Connections like vanilla's, and sight glasses, 2026-10-28/29.** *"For the reaction plant make the pipe connections like vanillas"*, *"Like the Gas Pump fix"*: the wall fittings became low stubs, signed off *"Sign off"*. A sight glass on each input line, tinted by the recipe and swapped when mirrored (*"Adopt"*, *"Sight glass"*; a second glass facing east, *"Add a second glass"*).
