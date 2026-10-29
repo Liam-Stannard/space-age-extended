@@ -841,9 +841,9 @@ furnace.source_inventory_size = 1          -- one, as the electric furnace has
 furnace.result_inventory_size = 1
 -- Every size and shift below is copied from the model's two meta.json files
 -- (concept/vacuum-furnace/model/sheets/ and sheets/ports/), as the Reaction
--- Plant's are; none was measured off a sheet or typed from memory. The needle
--- is the one layer meta.json does not carry; its own comment says where its
--- numbers come from.
+-- Plant's are from its four, one a direction; none was measured off a sheet or
+-- typed from memory. The needle is the one layer meta.json does not carry; its
+-- own comment says where its numbers come from.
 local VF = "__space-age-extended__/graphics/entity/vacuum-furnace/"
 
 local function vf_sprite(file, width, height, shift)
@@ -1091,8 +1091,16 @@ data:extend({ furnace })
 -- shore gives the solution, a vent gives the gas, and neither is a thing
 -- anything else on the planet is waiting for.
 --
--- Three boxes: two in on the north face at the two positions the chemical plant
--- puts its own pair, and one out at the south face's centre.
+-- **5x5, the oil refinery's footprint** (spec §2; Liam, 2026-10-11: "Make the
+-- reaction plant 5x5 so any tall parts can mostly remain inside the grid as
+-- per the FFF"). It was a 3x3 on the chemical plant's footprint, and it is
+-- still derived from the chemical plant -- the machine it is shaped after, and
+-- the one whose rotation it keeps (below) -- with the boxes, health and
+-- remnants of a 5x5 laid over the copy. Plants placed at 3x3 will overlap their
+-- neighbours: no migrations before 1.0 (Liam, 2026-10-11).
+--
+-- Three boxes: two in on the north face, either side of the centre column at
+-- {-1, -2} and {1, -2}, and one out at the south face's centre, {0, 2}.
 --
 -- **`fluid_boxes_off_when_no_fluid_recipe` is false here, against `crafter`'s
 -- default, so that a plant with no recipe can be turned.** `crafter` sets the
@@ -1115,7 +1123,8 @@ data:extend({ furnace })
 -- inputs and no output, and a pipe that had joined the south port goes quiet
 -- until the recipe is cleared again. No flag turns that off: it is how the
 -- engine handles a crafting machine's fluid boxes, and a vanilla chemical plant
--- on a recipe whose products are solid behaves identically. Measured, both.
+-- on a recipe whose products are solid behaves identically. Measured, both
+-- (at 3x3, 2.1.19).
 --
 -- **The output box is still declared now rather than with stage 3's recipe.** A
 -- fluid box is a prototype property and not a recipe's, so declaring it later
@@ -1126,120 +1135,378 @@ data:extend({ furnace })
 -- -- which does return fluid -- is set on a plant, the port comes alive on a
 -- line the player already left room for.
 --
--- **The ports are the engine's and turn with the building, which is the
--- opposite of the Helium Concentrator on purpose.** That machine paints its
--- flanges into its own plate, so it empties `pipe_picture` and the engine must
--- not draw a stub over the art. This one is the other arrangement, the one
--- assembling machines 2 and 3 use: `pipe_picture` is a stub per direction
--- that the engine draws and redraws whenever the player rotates the entity,
--- and the plate paints no flange at all. That is what lets this building stay
--- rotatable on ONE plate rather than the Gas Pump's four -- nothing in the
--- still art has a facing, so there is nothing to draw four times. The entity
--- therefore carries no `not-rotatable` flag. The stubs are the plant's own,
--- rendered from the same model as the plate (see "Art"), not vanilla's
--- `assembler2pipepictures`: that fitting is blue paint and polished brass at a
--- size that does not meet this building's gutter.
+-- **The stubs are modelled into the plate, one plate per direction, and the
+-- building turns with them** (spec §5, §7, §8; Liam, 2026-10-20, reversing the
+-- 2026-09-17 one plate; 2026-10-28, "Like the Gas Pump fix"). Each connection
+-- meets a low stub in the housing, as vanilla's chemical plant's do, which is
+-- part of that direction's render and casts and takes its own shadows, so there
+-- is no `pipe_picture`: vanilla's pipe joins the stub, and the engine draws
+-- nothing else at a port but vanilla's cover on one nothing is joined to. The entity carries no
+-- `not-rotatable` flag; the two inputs sit on the faced side and the output
+-- opposite, in every direction.
 --
--- `pipe_covers` caps a port nothing is joined to -- the plant's own blind cap,
--- rendered with the stubs -- and `always_draw_covers = false` takes the cap
--- away once a pipe arrives; `secondary_draw_orders = { north = -1 }` puts a
--- north stub behind the building, as vanilla's assemblers set it.
+-- `pipe_covers` are vanilla's (`derive.pipe_covers()`, spec §8);
+-- `always_draw_covers = false` takes the cap away once a pipe arrives;
+-- `secondary_draw_orders = { north = -1 }` puts a north cover behind the
+-- building, as vanilla's assemblers set it.
 --
 -- `sae-reaction` is private like every other category in this file, and here
 -- that cuts both ways: a vanilla chemical plant must not be able to make the
 -- Core's fuel, and this plant must not be able to run chemistry.
 --------------------------------------------------------------------------------
 
--- Art: rendered in Blender from concept/reaction-plant/model/reaction_plant.py,
--- and signed off by Liam with the task that put it here, 2026-10-01.
+-- Art: F, the Circulator in its casing, rendered in Blender from
+-- concept/reaction-plant/model/forms.py (RP_FORM=casing) in four directions and
+-- signed off by Liam, 2026-10-28 ("Sign off pump and plant"); with a sight glass
+-- on each input line and low stubs at the connections, signed off 2026-10-29.
 --
 -- **Rendered, not cut.** There is no master plate: every pass is rendered from
 -- one model, through one calibrated camera (tools/blender/rig.py), on one canvas
 -- with the entity origin at the canvas centre. So the layers register by
--- construction, and every size and shift below is computed by the packer and
--- copied from the meta.json it writes -- none of them was measured off a sheet.
+-- construction, and every size, shift, frame count and line length below is
+-- computed by the packer and copied from the meta.json it writes for each
+-- direction -- none of them was measured off a sheet. To regenerate, with any
+-- Blender 5 binary, one run a direction (spec §0):
 --
--- To regenerate, with any Blender 5 binary:
+--   RP_FORM=casing RP_DIRECTION=<north|east|south|west> BLENDER=<blender> \
+--       tools/blender/render.sh concept/reaction-plant/model/forms.py <scratch>
 --
---   BLENDER=<blender> tools/blender/render.sh \
---       concept/reaction-plant/model/reaction_plant.py <scratch> --ports --icon
+-- (the north run with --icon as well), then copy each run's <scratch>/sheets/
+-- *.png into graphics/entity/reaction-plant/<direction>/, the icon to
+-- graphics/icons/reaction-plant.png, the figures of each sheets/meta.json into
+-- RP_SHEETS and the connector sockets of hi/model.json into RP_SOCKETS. The
+-- pack's checks hold in every direction (edge_alpha_max 0, legs-glow_white_px
+-- 0, the press within 1 px of its declared path); north and south are exactly
+-- 5.000 tiles wide, and east and west reach one faint pixel (alpha 29 or less)
+-- past it, accepted at sign-off (Liam, 2026-10-28: "Accept, note in spec").
 --
--- then copy <scratch>/sheets/icon.png to graphics/icons/reaction-plant.png (and
--- its keyed master, sheets/masters/icon.png, to graphics/icons/masters/
--- reaction-plant.png), the other <scratch>/sheets/*.png and
--- <scratch>/sheets/ports/*.png into graphics/entity/reaction-plant/, and the
--- numbers out of the two meta.json files into this block. render.sh prints
--- pack.py's checks; Appendix C's must hold exactly (centre_offset_px 0,
--- edge_alpha_max 0, half_width_tiles 1.5) and glow_white_px stay at 0, and the
--- run stops if coupling_drift_px goes over 1.
+-- **Four plates, one a direction** (spec §5): the model is turned on its
+-- turntable to face each direction, as vanilla's chemical plant and oil
+-- refinery are, and each direction has its own plate, shadow, legs, glow,
+-- lamps, press and moving parts. A part the camera does not see in a
+-- direction has no sheet there and stands in the plate at frame 0.
 --
--- **One plate, for all four directions.** Nothing on it has a facing: the ports
--- are the engine's (above), and the one moving part is on the crown.
+-- **The plate is the machine without its moving parts**, and every moving part
+-- is its own cropped sheet drawn over it (spec §6.2, §7). Seen in each
+-- direction:
 --
--- **The coupling is the animation, and the plate does not contain it.** The
--- spider coupling on the drive tower is rendered alone, 12 frames through 60
--- degrees -- six-fold symmetry makes that the whole loop -- with its shadow
--- caught on the head beneath it, and base.png is the machine WITHOUT it. So it
--- cannot be a working visualisation, which the engine stops drawing when the
--- machine stops: the plant would stand idle with a hole in its crown. It is a
--- layer of the main animation, which an assembling machine draws in every state
--- and only advances while crafting -- shown when idle, turning only while
--- working. The plate and shadow are one frame each, repeated 12 times so every
--- layer carries the same count. 0.4 is the building spec's speed (section 13),
--- but the engine plays it at 0.2 frames a tick: a crafting machine advances by
--- `animation_speed x crafting_speed x animation_progress`, and
--- `animation_progress` defaults to 0.5 (see the Drop Crusher's note), so 0.4 x
--- 1 x 0.5. One turn of the loop is a second, a full revolution every six.
--- Measured in a client on the Core, 2026-10-10, 720 ticks, one screenshot of
--- the coupling a tick: 144 frame changes, 0.200 frames a tick, a 60-tick loop.
--- Liam kept that rate.
+--   north  legs, drive, compressor, dosing-pump and pump couplings, press,
+--          the three gauge needles, condenser drip
+--   east   as north, without the dosing-pump coupling
+--   south  legs, drive, compressor and pump couplings, press
+--   west   legs, drive, dosing-pump coupling, press
 --
--- **The slot glow is working minus idle**, differenced by pack.py from a lit and
--- an unlit render of the same scene, and drawn additively and only while
--- crafting. The emission was turned down until the light kept its colour
--- (glow_white_px 0), so the layer is green and not grey.
+-- and every direction has its plate, shadow, legs glow, status lamps and both
+-- sight glasses (below). The plate's legs are unlit dark navy; the lit legs are
+-- drawn over them only while crafting. No two moving sheets of one direction
+-- share an opaque pixel at frame 0 (each was rendered with the rest of the
+-- model held out), so the order they are drawn in does not show.
 --
--- **The status lamp is cut white and tinted by the engine.** `always_draw`,
--- because a lamp that only appears while working cannot report that the
--- machine has stopped. Vanilla declares `status_colors` only on its mining
--- drills, and an assembling machine without the table drew this lens dark in
--- every state when the render was piloted, so it is set here, as vanilla's
--- electric mining drill sets it.
+-- **The 24-frame parts play at 14/60 frames a tick, a loop in ~1.7 s**
+-- (measures.txt), in the main animation, which an assembling machine draws in
+-- every state and advances only while crafting. The layers of one Animation all
+-- run at the first layer's speed (Animation::layers, 2.1.22 docs), so the plate
+-- and shadow, one frame each, are repeated 24 times and carry the same speed.
+--
+-- **`animation_progress = 1`, so that speed is the rate in game.** A crafting
+-- machine advances by `animation_speed x crafting_speed x animation_progress`
+-- a tick, and `animation_progress` defaults to 0.5 (see the Drop Crusher's
+-- note): left there, the press would run once every two crafts and the loops at
+-- 7 fps. The spec's numbers -- 14 fps for the loops, and the press's 140
+-- entries in 1200 ticks, one 20 s craft -- are rates in game, so this set says
+-- 1 rather than doubling every speed. Every machine above keeps the default.
+--
+-- **The press is its own working visualisation** (Liam, 2026-10-20: "Own
+-- working visualisation"), once per craft. Its clock is the machine's: it starts
+-- at zero, advances only while the machine crafts and at the craft's own rate
+-- (slowed when browned out, sped by modules), and is never reset; so one cycle
+-- is one craft and the two stay in step (below).
+-- Its 16 frames, each shown twice, then frame 1 held 108 times: 140 entries
+-- (AnimationFrameSequence holds 255) at 7/60 entries a tick is 1200 ticks, one
+-- craft of `sae-radiant-precipitation` (20 s) at crafting speed 1. Seven
+-- entries a second, two to a frame: each frame of the stroke holds ~17 ticks,
+-- 3.5 frames a second, and the stroke takes ~4.6 s (measured in T04). Frames
+-- 1-4 (0-based) open it west, 5 the cake hangs, 6-9 it falls, 10 it lands in
+-- the drop box, 11-15 it closes. A visualisation of its own because it cannot
+-- be a layer of the main animation: at the parts' 14/60, 140 entries' worth of
+-- hold would need 280, past the limit.
+--
+-- **Stopped, the press stays where it stopped: it is `always_draw`, because
+-- `idle_animation` is never drawn on this plant** (Liam, 2026-10-20: "Find out
+-- why, then fix", the fallback if the idle could not be made to draw). The
+-- engine draws a crafting machine's `idle_animation` only while it has no live
+-- fluid boxes, and this plant keeps its boxes in every state (above). Measured
+-- in a client on the Core, 2026-10-20 (T02b), with each variant's idle tinted
+-- red, unpowered, powered with no recipe, with a recipe and no input, working
+-- and after a power cut. The plant as wired drew its frozen `animation` in
+-- every stopped state and never the idle, and so did each variant with one
+-- thing changed: no `animation_progress`, no `use_mirroring`, the crusher's
+-- `perceived_performance`, a random start frame, an idle without the press, no
+-- working visualisations, `always_draw_idle_animation`, a 4-way animation.
+-- With its fluid boxes removed, its idle drew. With
+-- `fluid_boxes_off_when_no_fluid_recipe` true it drew only with no recipe, when
+-- the engine had switched the boxes off, and assembling machine 2 likewise.
+-- The Drop Crusher has no fluid boxes, which is why its idle draws. So there is
+-- no `idle_animation` here: it could only ever have been dead weight.
+--
+-- Visual `states` (the electromagnetic plant's) can draw a shut press whenever
+-- the machine stops -- the same client drew one in every stopped state -- but a
+-- visualisation gated by a state plays from the moment its state began, so a
+-- press held to "working" restarted every time the state renewed and never left
+-- frame 0. Keeping it once a craft that way means a chain of states timed to the
+-- stroke, which would tie the press to the states rather than the craft: not
+-- done.
+--
+-- **In practice a stopped plant shows its press shut, all but after a power
+-- cut.** The press's clock and the craft move together, so each stroke opens a
+-- craft, and a plant that stops for want of input or room stops between crafts,
+-- on the shut hold. Measured in the same client (T02b), one press shot every 2
+-- ticks over three crafts, the power cut for 90 ticks of every 250, then the
+-- inputs starved: strokes began at r118, 1318, 2518 and 3822, each 18 ticks
+-- (two entries of frame 1) after its craft began; every shot of the plant
+-- stopped for want of input showed it shut. Only a stop in mid-craft -- the
+-- power going -- can catch it open: cut 120 working ticks into a craft, it
+-- stood open on its frame 7 with the cake falling, and a cut during a stroke
+-- held it with the cake hanging (frame 4 or 5) until the power came back and
+-- it carried on.
+--
+-- **The legs glow only while crafting, at one strength.** legs.png is the lit
+-- legs, 24 frames, and legs-glow.png is the lit render minus the plate. The
+-- glow is `draw_as_light`, so it lights the legs at night without being added
+-- a second time over the lit legs by day, as an additive `draw_as_glow` would.
+--
+-- **Two status lamps, on the pump house and the instrument house**, in one
+-- sheet, cut white and tinted by the engine. `always_draw`, because a lamp that
+-- only appears while working cannot report that the machine has stopped.
+--
+-- **A sight glass on each input line shows the fluid in it** (spec §8; Liam,
+-- 2026-10-28, T09c: "Adopt", "Sight glass"). sight-glass-1 is the line from the
+-- {-1, -2} fitting, sight-glass-2 the line from {1, -2}; each is one white
+-- sheet a direction, one frame, which the engine tints with the recipe's
+-- colour for that line (`apply_recipe_tint`). Facing east sight-glass-1 is the
+-- glass on the riser, where the camera cannot see the first one (T09d2).
+-- `always_draw`: the glass shows what the line holds whether or not the
+-- machine is crafting; with no recipe both are a neutral grey
+-- (`recipe_not_set_tint`).
+--
+-- Ordinary paint, not `draw_as_light` or `draw_as_glow`, as the Gas Pump's
+-- glass is (crust-tap.lua): it is fluid seen through glass, not a lamp, and a
+-- light-only layer is drawn in the light map alone, so it would not show by
+-- day. `kind = "light"` in the model's layer list
+-- (concept/reaction-plant/model/forms.py) is the render pipeline's name for a
+-- white layer the engine tints.
+--
+-- **Mirrored, the two lines trade fluids, and the glasses trade tints.** The
+-- engine draws a mirrored plant's sprites unmirrored and moves its fluid boxes
+-- to the other side: box 1, the recipe's first fluid, then enters at {1, -2},
+-- on sight-glass-2's line. `graphics_set_flipped`, which the engine draws in
+-- place of `graphics_set` on a mirrored plant, is the same set with the two
+-- glasses' tints swapped. Measured in the T09c spike (evidence/rp-t09c), 8 of 8
+-- cases: north and east, normal and mirrored, either fluid first.
 local RP = "__space-age-extended__/graphics/entity/reaction-plant/"
-local RP_FRAMES = 12
-local RP_SPEED = 0.4                      -- 0.2 in game: x 1 x progress 0.5
+local RP_FRAMES = 24
+local RP_SPEED = 14 / 60                  -- in game: animation_progress 1, below
+local RP_PRESS_SPEED = 7 / 60
+local RP_PRESS_FRAMES = 16
+local RP_PRESS_LENGTH = 140               -- 140 / (7/60) = 1200 ticks, one craft
 
-local function rp_sprite(file, width, height, shift)
-  return
+-- From each direction's sheets/meta.json: size in px, shift in tiles, and the
+-- frames and line length of each sheet that moves. A direction has a sheet for
+-- each part the camera sees there, and no other (spec §6.2).
+local RP_SHEETS =
+{
+  north =
   {
-    filename = RP .. file .. ".png",
-    priority = "extra-high",
-    width = width, height = height,
-    shift = shift,
-    scale = 0.5
+    ["base"] = { width = 327, height = 367, shift = { -0.00781, -0.32031 } },
+    ["shadow"] = { width = 360, height = 329, shift = { 0.3125, -0.05469 } },
+    ["legs-glow"] = { width = 188, height = 57, shift = { -0.01562, 0.13281 } },
+    ["status-lamp"] = { width = 14, height = 216, shift = { 2.29688, 0.17188 } },
+    ["sight-glass-1"] = { width = 16, height = 19, shift = { -1.17188, -1.17969 } },
+    ["sight-glass-2"] = { width = 15, height = 23, shift = { 1.53906, -2.05469 } },
+    ["legs"] = { width = 189, height = 61, shift = { -0.02344, 0.11719 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 64, height = 60, shift = { -0.0625, -2.10938 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 7, height = 20, shift = { 1.94531, -2.375 }, frames = 24, line_length = 24 },
+    ["coupling-dosing"] = { width = 7, height = 15, shift = { -0.44531, 0.42969 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 10, height = 18, shift = { 2.03125, 1.375 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 53, height = 65, shift = { -2.10156, 1.52344 }, frames = 16, line_length = 16 },
+    ["gauge-reactor-upper"] = { width = 10, height = 5, shift = { 0.03125, -0.10156 }, frames = 24, line_length = 24 },
+    ["gauge-reactor-lower"] = { width = 10, height = 7, shift = { -0.17188, 0.24219 }, frames = 24, line_length = 24 },
+    ["gauge-scrubber"] = { width = 8, height = 7, shift = { -1.5, -2.02344 }, frames = 24, line_length = 24 },
+    ["drip"] = { width = 23, height = 36, shift = { 2.21094, -0.03125 }, frames = 24, line_length = 24 }
+  },
+  east =
+  {
+    ["base"] = { width = 327, height = 381, shift = { -0.00781, -0.39844 } },
+    ["shadow"] = { width = 353, height = 344, shift = { 0.25781, -0.09375 } },
+    ["legs-glow"] = { width = 34, height = 210, shift = { -0.73438, -0.59375 } },
+    ["status-lamp"] = { width = 189, height = 41, shift = { -0.82031, 1.64844 } },
+    ["sight-glass-1"] = { width = 14, height = 7, shift = { 2.0, -0.47656 } },
+    ["sight-glass-2"] = { width = 18, height = 14, shift = { 0.9375, 0.46875 } },
+    ["legs"] = { width = 35, height = 213, shift = { -0.74219, -0.60156 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 59, height = 65, shift = { 0.25781, -1.91406 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 16, height = 6, shift = { 1.75, 1.25 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 17, height = 10, shift = { -1.94531, 1.42188 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 46, height = 52, shift = { -1.98438, -2.73438 }, frames = 16, line_length = 16 },
+    ["gauge-reactor-upper"] = { width = 5, height = 11, shift = { -0.75781, -0.82031 }, frames = 24, line_length = 24 },
+    ["gauge-reactor-lower"] = { width = 4, height = 10, shift = { -0.76562, -0.67188 }, frames = 24, line_length = 24 },
+    ["gauge-scrubber"] = { width = 6, height = 8, shift = { 1.29688, -2.23438 }, frames = 24, line_length = 24 },
+    ["drip"] = { width = 37, height = 33, shift = { -0.44531, 1.66406 }, frames = 24, line_length = 24 }
+  },
+  south =
+  {
+    ["base"] = { width = 327, height = 355, shift = { 0.00781, -0.28906 } },
+    ["shadow"] = { width = 365, height = 329, shift = { 0.35156, -0.07031 } },
+    ["legs-glow"] = { width = 188, height = 56, shift = { -0.01562, -1.3125 } },
+    ["status-lamp"] = { width = 13, height = 164, shift = { -2.28906, -1.46875 } },
+    ["sight-glass-1"] = { width = 91, height = 104, shift = { 0.58594, 0.75 } },
+    ["sight-glass-2"] = { width = 14, height = 15, shift = { -1.53125, -0.16406 } },
+    ["legs"] = { width = 189, height = 60, shift = { -0.02344, -1.32812 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 64, height = 61, shift = { 0.0625, -1.60156 }, frames = 24, line_length = 24 },
+    ["coupling-compressor"] = { width = 7, height = 20, shift = { -1.94531, 1.125 }, frames = 24, line_length = 24 },
+    ["coupling-pump"] = { width = 10, height = 19, shift = { -2.03125, -2.50781 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 53, height = 65, shift = { 2.10156, -2.44531 }, frames = 16, line_length = 16 }
+  },
+  west =
+  {
+    ["base"] = { width = 327, height = 375, shift = { 0.00781, -0.35156 } },
+    ["shadow"] = { width = 344, height = 335, shift = { 0.21875, -0.02344 } },
+    ["legs-glow"] = { width = 34, height = 207, shift = { 0.70312, -0.57031 } },
+    ["status-lamp"] = { width = 189, height = 25, shift = { 0.82031, -2.94531 } },
+    ["sight-glass-1"] = { width = 19, height = 18, shift = { -0.63281, 0.65625 } },
+    ["sight-glass-2"] = { width = 21, height = 19, shift = { -0.96094, -2.61719 } },
+    ["legs"] = { width = 35, height = 210, shift = { 0.69531, -0.57812 }, frames = 24, line_length = 24 },
+    ["drive"] = { width = 59, height = 65, shift = { -0.25781, -1.78906 }, frames = 24, line_length = 24 },
+    ["coupling-dosing"] = { width = 6, height = 4, shift = { 1.03125, -0.17188 }, frames = 24, line_length = 24 },
+    ["press"] = { width = 46, height = 72, shift = { 1.98438, 1.65625 }, frames = 16, line_length = 16 }
   }
+}
+
+local RP_DIRECTIONS = { "north", "east", "south", "west" }
+
+-- The 24-frame parts of the main animation, drawn over the plate in this order
+-- where the direction has them.
+local RP_PARTS =
+{
+  "drive", "coupling-compressor", "coupling-dosing", "coupling-pump",
+  "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"
+}
+
+-- The sheets every direction has: the plate and its shadow, the lit legs and
+-- their light, the lamps, the press and the two sight glasses.
+local RP_ALWAYS = { "base", "shadow", "legs", "legs-glow", "status-lamp", "press",
+                    "sight-glass-1", "sight-glass-2" }
+
+-- Every sheet of a direction is drawn: either a part above, or one of these.
+-- A sheet packed for a direction and not wired would be a part frozen in the
+-- plate; one wired and not packed, a file that does not exist.
+local RP_DRAWN = {}
+for _, name in ipairs(RP_ALWAYS) do RP_DRAWN[name] = true end
+for _, name in ipairs(RP_PARTS) do RP_DRAWN[name] = true end
+for _, dir in ipairs(RP_DIRECTIONS) do
+  for _, name in ipairs(RP_ALWAYS) do
+    assert(RP_SHEETS[dir][name], "sae-reaction-plant: no " .. name .. " sheet facing " .. dir)
+  end
+  for name in pairs(RP_SHEETS[dir]) do
+    assert(RP_DRAWN[name], "sae-reaction-plant: sheet " .. dir .. "/" .. name .. " is not drawn")
+  end
 end
 
--- From sheets/ports/meta.json. Each fitting was rendered on the middle tile of
--- its face, and its shift is taken from the tile outside the port -- the one a
--- pipe picture is drawn relative to -- so the same sheet sits right at either
--- port on a face.
-local RP_PORTS =
+--- One direction's sheet as an Animation, its numbers from RP_SHEETS; `extra`
+--- adds to or overrides them.
+local function rp_sheet(dir, name, extra)
+  local s = RP_SHEETS[dir][name]
+  local anim =
+  {
+    filename = RP .. dir .. "/" .. name .. ".png",
+    priority = "high",
+    width = s.width, height = s.height,
+    frame_count = s.frames or 1,
+    line_length = s.line_length,
+    shift = s.shift,
+    scale = 0.5
+  }
+  for k, v in pairs(extra or {}) do anim[k] = v end
+  return anim
+end
+
+--- A working visualisation with four animations, one sheet a direction, as
+--- `north_animation` .. `west_animation`; `vis` holds its other fields.
+local function rp_four(name, extra, vis)
+  vis = vis or {}
+  for _, dir in ipairs(RP_DIRECTIONS) do
+    vis[dir .. "_animation"] = rp_sheet(dir, name, extra)
+  end
+  return vis
+end
+
+-- The press's sequence: each of its 16 frames twice, then shut (frame 1) for
+-- the rest of the craft.
+local RP_PRESS_SEQUENCE = {}
+for f = 1, RP_PRESS_FRAMES do
+  RP_PRESS_SEQUENCE[2 * f - 1] = f
+  RP_PRESS_SEQUENCE[2 * f] = f
+end
+for i = 2 * RP_PRESS_FRAMES + 1, RP_PRESS_LENGTH do RP_PRESS_SEQUENCE[i] = 1 end
+
+--- One direction's main animation: the plate, the 24-frame parts seen in that
+--- direction and the shadow, the plate and shadow repeated to the parts' 24
+--- frames.
+local function rp_direction(dir)
+  local layers = { rp_sheet(dir, "base", { repeat_count = RP_FRAMES, animation_speed = RP_SPEED }) }
+  for _, name in ipairs(RP_PARTS) do
+    if RP_SHEETS[dir][name] then
+      layers[#layers + 1] = rp_sheet(dir, name, { animation_speed = RP_SPEED })
+    end
+  end
+  -- The whole machine at frame 0. The moving parts' shadows on the ground do
+  -- not move with them: each is a sliver, and no player looks at it.
+  layers[#layers + 1] = rp_sheet(dir, "shadow",
+    { draw_as_shadow = true, repeat_count = RP_FRAMES, animation_speed = RP_SPEED })
+  return { layers = layers }
+end
+
+-- **The circuit connector: one a direction, on the terminal box the model
+-- carries** (spec §8). Facing each way the box sits on the housing's wall that
+-- faces the camera, with its cable gland under it, and the engine's connector is
+-- drawn over the box. From the model's hi/model.json (`sockets`, identical in
+-- all four runs): `screen` is where the box's centre is drawn, tiles from the
+-- entity centre, and `ground` the point on the ground beneath it.
+local RP_SOCKETS =
 {
-  north = rp_sprite("port-N", 56, 44, { 0.03125, 0.5 }),
-  east = rp_sprite("port-E", 35, 63, { -0.74219, 0.07031 }),
-  south = rp_sprite("port-S", 61, 55, { 0.07031, -0.83594 }),
-  west = rp_sprite("port-W", 29, 65, { 0.69531, 0.08594 })
-}
-local RP_COVERS =
-{
-  north = rp_sprite("cover-N", 54, 13, { 0.03125, 0.22656 }),
-  east = rp_sprite("cover-E", 9, 62, { -0.47656, 0.07812 }),
-  south = rp_sprite("cover-S", 60, 30, { 0.07812, -0.60938 }),
-  west = rp_sprite("cover-W", 8, 60, { 0.46875, 0.0625 })
+  north = { screen = { 0.85, 2.078 }, ground = { 0.85, 2.328 } },
+  east = { screen = { -0.95, 2.178 }, ground = { -0.95, 2.428 } },
+  south = { screen = { 0, 2.078 }, ground = { 0, 2.328 } },
+  west = { screen = { -0.6, 2.178 }, ground = { -0.6, 2.428 } }
 }
 
--- The fault lamp's colours: the ones vanilla's electric mining drill uses
+-- The connector's shadow falls where the rig's sun puts the shadow of a point at
+-- the box's height (tools/blender/rig.py, SHADOW_KX and SHADOW_KY, measured off
+-- vanilla): a point h' tiles above its foot on screen casts kx * h' right of
+-- the foot and ky * h' up. So it lands as the plate's own shadows do.
+local RP_SHADOW_KX, RP_SHADOW_KY = 0.79, 0.25
+-- Which of the universal connector's 40 drawings stands on the box: 18, the
+-- face-on box assembling machines use (spec §13; Liam, 2026-10-28: "18,
+-- face-on").
+local RP_CONNECTOR_VARIATION = 18
+local function rp_circuit_connector()
+  local defs = {}
+  for i, dir in ipairs(RP_DIRECTIONS) do
+    local s = RP_SOCKETS[dir]
+    local rise = s.ground[2] - s.screen[2]
+    defs[i] =
+    {
+      variation = RP_CONNECTOR_VARIATION,
+      main_offset = s.screen,
+      shadow_offset = { s.ground[1] + RP_SHADOW_KX * rise, s.ground[2] - RP_SHADOW_KY * rise },
+      show_shadow = true
+    }
+  end
+  return circuit_connector_definitions.create_vector(universal_connector_template, defs)
+end
+
+local RP_COVERS = derive.pipe_covers()
+
+-- The status lamps' colours: the ones vanilla's electric mining drill uses
 -- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
 -- less `no_minable_resources`, the one state a drill has and a crafter does not.
 -- Red is short of input, yellow is blocked or browned out, green is working.
@@ -1261,7 +1528,7 @@ local function reaction_box(flow, direction, position)
   {
     production_type = flow,
     volume = 1000,
-    pipe_picture = RP_PORTS,
+    -- No pipe_picture: the fitting is in each direction's plate (above).
     pipe_covers = RP_COVERS,
     always_draw_covers = false,
     secondary_draw_orders = { north = -1 },
@@ -1277,91 +1544,107 @@ local reaction_plant = crafter("sae-reaction-plant", "chemical-plant", {
   conditions = CORE_ONLY,
   fluid_boxes =
   {
-    reaction_box("input", defines.direction.north, { -1, -1 }),
-    reaction_box("input", defines.direction.north, { 1, -1 }),
-    reaction_box("output", defines.direction.south, { 0, 1 })
+    reaction_box("input", defines.direction.north, { -1, -2 }),
+    reaction_box("input", defines.direction.north, { 1, -2 }),
+    reaction_box("output", defines.direction.south, { 0, 2 })
   }
 })
 -- Undoing `crafter`'s blanket setting for this machine alone: a plant with no
 -- recipe has to keep a direction. See the block comment above.
 reaction_plant.fluid_boxes_off_when_no_fluid_recipe = false
+-- 5x5 over `crafter`'s 3x3 (spec §2), with the oil refinery's health and, until
+-- the plant has its own, its remnants and explosion (spec §13, Liam 2026-10-11):
+-- the 5x5 vanilla machine they fit.
+reaction_plant.collision_box = { { -2.4, -2.4 }, { 2.4, 2.4 } }
+reaction_plant.selection_box = { { -2.5, -2.5 }, { 2.5, 2.5 } }
+reaction_plant.max_health = 350
+reaction_plant.corpse = "oil-refinery-remnants"
+reaction_plant.dying_explosion = "oil-refinery-explosion"
+-- The chemical plant's connector is placed for a 3x3 plate; this one is on the
+-- model's terminal box, one a direction (above).
+reaction_plant.circuit_connector = rp_circuit_connector()
+-- The lead reactor and its two lit legs (spec §14), a 64 px mipmap strip.
 reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
+-- The alt-mode recipe icon at twice the size, as the oil refinery's is (Liam,
+-- 2026-10-20: "Double, like the refinery"), at the centre (spec §13; Liam,
+-- 2026-10-28: "Centre"). One place for all four directions:
+-- IconDrawSpecification has no per-direction form (2.1.22 docs).
+reaction_plant.icon_draw_specification = { scale = 2, shift = { 0, 0 } }
 
--- From sheets/meta.json.
-derive.own_graphics(reaction_plant,
-{
-  status_colors = rp_status_colors(),
-  animation =
+-- With no recipe, the glasses' grey: neither fluid, a mid tone between the
+-- plate's empty glass and the white sheet.
+local RP_NO_RECIPE = { r = 0.5, g = 0.5, b = 0.5 }
+
+--- The plant's graphics set, `line1` and `line2` the recipe tint each sight
+--- glass takes: "primary" and "secondary" for `graphics_set`, swapped for
+--- `graphics_set_flipped` (see "Mirrored" above). Nothing else differs.
+local function rp_graphics_set(line1, line2)
+  return
   {
-    layers =
+    status_colors = rp_status_colors(),
+    animation_progress = 1,               -- see "animation_progress = 1" above
+    animation =
     {
-      {
-        filename = RP .. "base.png",
-        priority = "high",
-        width = 198, height = 214,
-        frame_count = 1,
-        repeat_count = RP_FRAMES,
-        animation_speed = RP_SPEED,
-        shift = { 0, -0.14062 },
-        scale = 0.5
-      },
-      {
-        filename = RP .. "coupling.png",
-        priority = "high",
-        width = 46, height = 37,
-        frame_count = RP_FRAMES,
-        line_length = 12,
-        animation_speed = RP_SPEED,
-        shift = { 0.10938, -0.78906 },
-        scale = 0.5
-      },
-      {
-        filename = RP .. "shadow.png",
-        priority = "high",
-        draw_as_shadow = true,
-        width = 208, height = 193,
-        frame_count = 1,
-        repeat_count = RP_FRAMES,
-        animation_speed = RP_SPEED,
-        shift = { 0.125, -0.00781 },
-        scale = 0.5
-      }
-    }
-  },
-  working_visualisations =
-  {
-    -- The three sight slots.
-    {
-      always_draw = false,
-      animation =
-      {
-        filename = RP .. "glow.png",
-        priority = "high",
-        blend_mode = "additive",
-        draw_as_glow = true,
-        width = 58, height = 13,
-        frame_count = 1,
-        shift = { 0, 0.82031 },
-        scale = 0.5
-      }
+      north = rp_direction("north"),
+      east = rp_direction("east"),
+      south = rp_direction("south"),
+      west = rp_direction("west")
     },
-    -- The status lamp, on its post at the west rim, clear of the alt-mode icon.
+    recipe_not_set_tint = { primary = RP_NO_RECIPE, secondary = RP_NO_RECIPE },
+    working_visualisations =
     {
-      always_draw = true,
-      apply_tint = "status",
-      animation =
-      {
-        filename = RP .. "status-lamp.png",
-        priority = "high",
-        draw_as_glow = true,
-        width = 10, height = 12,
-        frame_count = 1,
-        shift = { -0.9375, -0.54688 },
-        scale = 0.5
-      }
+      -- The filter press, once a craft: see "The press" above. Named, so the
+      -- landing's accent can be cued to it.
+      rp_four("press", { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED },
+        { name = "press", always_draw = true }),   -- always_draw: see "Stopped" above
+      -- The legs, lit and circulating, over the plate's dark ones.
+      rp_four("legs", { animation_speed = RP_SPEED }),
+      -- Their light: see "The legs glow" above.
+      rp_four("legs-glow", { draw_as_light = true }),
+      -- The two status lamps.
+      rp_four("status-lamp", { draw_as_glow = true }, { always_draw = true, apply_tint = "status" }),
+      -- The sight glasses: see "A sight glass on each input line" above.
+      rp_four("sight-glass-1", nil, { always_draw = true, apply_recipe_tint = line1 }),
+      rp_four("sight-glass-2", nil, { always_draw = true, apply_recipe_tint = line2 })
     }
   }
-})
+end
+
+derive.own_graphics(reaction_plant, rp_graphics_set("primary", "secondary"))
+reaction_plant.graphics_set_flipped = rp_graphics_set("secondary", "primary")
+-- The chemical plant's, kept: a plant can be mirrored (spec §8, constraint 3).
+reaction_plant.use_mirroring = true
+
+-- Sound: the chemical plant's loop, kept as the bed, and one accent of ours as
+-- the cake lands (spec §12-13).
+--
+-- **The landing falls on the press sheet's frame 11 (1-based), and which number
+-- that is depends on what `frame` counts**, which no client has measured yet
+-- (T04). The sequence shows it at its entries 21 and 22 (1-based), 20 and 21
+-- counted from 0. Chosen: 21, counting sequence entries, as derive.working_sound
+-- counts a cycle (`frame_sequence`'s length) -- and on the landing whether the
+-- engine counts entries from 0 or from 1. If it counts the sheet's frames
+-- instead, swap to `sprite`: 10, the landing counted from 0, as the Drop
+-- Crusher's accent was measured (measures.txt's 11 is the same frame from 1).
+-- Never 0: the engine fires nothing there.
+--
+-- The accent's sound is a stand-in, vanilla's landfill inventory sound, until
+-- the plant has its own.
+local RP_ACCENT = { sequence = 21, sprite = 10 }
+local rp_ws = reaction_plant.working_sound   -- the chemical plant's, ungated
+assert(rp_ws and rp_ws.sound, "sae-reaction-plant: the chemical plant's working sound has no loop to keep")
+local rp_sound = { accents =
+{
+  {
+    sound = { filename = "__base__/sound/item/landfill-inventory-move.ogg", volume = 0.5 },
+    visualisation = "press",
+    frame = RP_ACCENT.sequence
+  }
+} }
+for k, v in pairs(rp_ws) do
+  if k == "sound" then rp_sound.bed = v elseif k ~= "sound_accents" then rp_sound[k] = v end
+end
+derive.working_sound(reaction_plant, rp_sound)
 data:extend({ reaction_plant })
 
 --------------------------------------------------------------------------------
@@ -1442,11 +1725,11 @@ for _, spec in ipairs({
   { "sae-ballast-drill", "b", { steel(60), gear(40), circuit(15) }, 10 },
   { "sae-vacuum-furnace", "g",
     { plate(50), { type = "item", name = "processing-unit", amount = 10 } }, 10 },
-  -- The Helium Concentrator's price, for the same reason it is the same
-  -- silhouette: a 3x3 shell with fluid ports on it, built out of plate, pipe
-  -- and enough circuitry to meter what goes through.
+  -- Plate, pipe and enough circuitry to meter what goes through: the 3x3's
+  -- price raised by half as the plant grew to 5x5, toward the refinery's
+  -- (Liam, 2026-10-20: "x1.5: 60/30/20, 10 s").
   { "sae-reaction-plant", "h",
-    { plate(40), { type = "item", name = "pipe", amount = 20 }, circuit(15) }, 8 },
+    { plate(60), { type = "item", name = "pipe", amount = 30 }, circuit(20) }, 10 },
 }) do
   data:extend(machine_item(spec[1], spec[2], spec[3], spec[4]))
 end

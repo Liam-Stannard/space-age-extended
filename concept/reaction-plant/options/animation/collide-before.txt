@@ -1,0 +1,728 @@
+COLLIDE mode all, before the fixes; 48 frames; 106 moving objects
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,0.98) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 23,47  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.01) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 22,46  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.04) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 21,45  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.07) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 20,44  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.09) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 19,43  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.12) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 18,42  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.15) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 17,41  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.18) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 16,40  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.20) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 15,39  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.23) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 14,38  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.25) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 13,37  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.28) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 12,36  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.30) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 11,35  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.184[water] at (+2.40,+1.72,1.30) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 11,35
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.32) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 10,34  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.184[water] at (+2.40,+1.72,1.32) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 10,34
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.35) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 9,33  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.184[water] at (+2.40,+1.72,1.35) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): inside, frames 9,33
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.37) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 8,32  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.184[water] at (+2.40,+1.72,1.37) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 8,32
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.39) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 7,31  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.184[water] at (+2.40,+1.72,1.39) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 7,31
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.41) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 6,30  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.43) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 5,29  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.45) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 4,28  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.46) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 3,27  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.48) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 2,26  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.49) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 1,25  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.184[water] at (+2.40,+1.72,1.50) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 0,24  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.07) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 11,35  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.10) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 10,34  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.12) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 9,33  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.14) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 8,32  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.16) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 7,31  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.18) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 6,30  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.21) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 5,29  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.23) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 4,28  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.25) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 3,27  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.27) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 2,26  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.29) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 1,25  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.31) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 0,24  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.31) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 0,24
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.32) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 23,47  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.32) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 23,47
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.34) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 22,46  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.34) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): inside, frames 22,46
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.36) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 21,45  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.36) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): inside, frames 21,45
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.38) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 20,44  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.38) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 20,44
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.39) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 19,43  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.185[water] at (+2.45,+1.90,1.39) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 19,43
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.41) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 18,42  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.42) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 17,41  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.44) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 16,40  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.45) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 15,39  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.46) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 14,38  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.47) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 13,37  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.185[water] at (+2.45,+1.90,1.48) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 12,36  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,0.93) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 17,41  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,0.96) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 16,40  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,0.99) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 15,39  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.02) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 14,38  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.04) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 13,37  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.07) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 12,36  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.10) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 11,35  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.13) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 10,34  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.15) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 9,33  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.18) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 8,32  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.20) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 7,31  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.23) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 6,30  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.25) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 5,29  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.27) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 4,28  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.30) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 3,27  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.30) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 3,27
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.32) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 2,26  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.32) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 2,26
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.34) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 1,25  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.34) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): inside, frames 1,25
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.36) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 0,24  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.36) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): inside, frames 0,24
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.38) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 23,47  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.38) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 23,47
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.40) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 22,46  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.186[water] at (+2.44,+2.02,1.40) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 22,46
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.41) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 21,45  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.43) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 20,44  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.44) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 19,43  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.186[water] at (+2.44,+2.02,1.45) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 18,42  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.85) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 7,31  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.88) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 6,30  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.90) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 5,29  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.93) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 4,28  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.95) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 3,27  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.97) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 2,26  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,0.99) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 1,25  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.187[water] at (+2.43,+1.80,0.99) x Cylinder.494[copper] at (+2.49,+1.83,1.00): cross, frames 1,25
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.02) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 0,24  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.187[water] at (+2.43,+1.80,1.02) x Cylinder.494[copper] at (+2.49,+1.83,1.00): cross, frames 0,24
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.04) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 23,47  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.06) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 22,46  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.08) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 21,45  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.10) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 20,44  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.12) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 19,43  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.14) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 18,42  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.16) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 17,41  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.18) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 16,40  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.20) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 15,39  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.21) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 14,38  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.23) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 13,37  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.24) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 12,36  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.26) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 11,35  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.27) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 10,34  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.28) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 9,33  (a bead running on the condenser's wall)
+COLLIDE meant moving [bead] Sphere.187[water] at (+2.43,+1.80,1.29) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross, frames 8,32  (a bead running on the condenser's wall)
+COLLIDE CLASH moving [bead] Sphere.187[water] at (+2.43,+1.80,1.29) x Cylinder.195[dark_steel] at (+2.04,+1.92,1.35): cross, frames 8,32
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.08,+0.34,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 0,24  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.10,+0.35,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 1,25  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.13,+0.36,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 2,26  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.15,+0.38,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 3,27  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.18,+0.39,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 4,28  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.21,+0.40,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 5,29  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.23,+0.41,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 6,30  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.26,+0.42,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 7,31  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.28,+0.43,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 8,32  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.31,+0.44,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 9,33  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.33,+0.45,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 10,34  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.36,+0.46,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 11,35  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.39,+0.47,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 12,36  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.41,+0.48,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 13,37  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.44,+0.50,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 14,38  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.46,+0.51,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 15,39  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.49,+0.52,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 16,40  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.52,+0.53,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 17,41  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.54,+0.54,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 18,42  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.57,+0.55,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 19,43  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.59,+0.56,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 20,44  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.62,+0.57,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 21,45  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.65,+0.58,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 22,46  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.173[bare] at (+1.67,+0.58,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 23,47  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.57,+0.03,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 23,47  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.58,+0.06,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 22,46  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.60,+0.08,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 21,45  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.61,+0.11,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 20,44  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.63,+0.13,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 19,43  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.64,+0.15,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 18,42  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.66,+0.18,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 17,41  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.67,+0.20,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 16,40  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.69,+0.22,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 15,39  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.70,+0.25,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 14,38  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.70,+0.57,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 0,24  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.72,+0.27,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 13,37  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.73,+0.29,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 12,36  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.73,+0.56,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 1,25  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.75,+0.32,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 11,35  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.75,+0.54,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 2,26  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.76,+0.34,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 10,34  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.77,+0.52,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 3,27  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.78,+0.37,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 9,33  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.78,+0.50,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 4,28  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.79,+0.39,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 8,32  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.79,+0.47,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 5,29  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.80,+0.42,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 7,31  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.174[bare] at (+1.80,+0.45,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 6,30  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.04,-0.22,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 23,47  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.06,-0.24,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 22,46  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.09,-0.25,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 21,45  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.11,-0.26,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 20,44  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.14,-0.26,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 19,43  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.17,-0.27,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 18,42  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.20,-0.27,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 17,41  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.23,-0.27,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 16,40  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.25,-0.26,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 15,39  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.28,-0.26,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 14,38  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.31,-0.25,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 13,37  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.33,-0.24,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 12,36  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.36,-0.23,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 11,35  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.38,-0.21,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 10,34  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.40,-0.19,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 9,33  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.43,-0.17,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 8,32  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.44,-0.15,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 7,31  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.46,-0.13,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 6,30  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.48,-0.11,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 5,29  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.49,-0.08,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 4,28  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.51,-0.06,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 3,27  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.52,-0.04,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 2,26  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.54,-0.01,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 1,25  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.175[bare] at (+1.55,+0.01,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 0,24  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.88,+0.03,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 10,34  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.88,+0.06,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 11,35  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.88,+0.09,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 12,36  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.89,+0.00,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 9,33  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.89,+0.11,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 13,37  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.89,-0.03,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 8,32  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.90,+0.14,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 14,38  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.90,+0.17,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 15,39  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.90,-0.05,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 7,31  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.91,-0.08,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 6,30  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.92,+0.19,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 16,40  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.92,-0.10,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 5,29  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.93,+0.22,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 17,41  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.94,-0.13,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 4,28  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.95,+0.24,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 18,42  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.95,-0.15,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 3,27  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.96,+0.26,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 19,43  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.97,-0.17,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 2,26  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.98,+0.28,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 20,44  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+0.99,-0.19,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 1,25  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+1.00,+0.30,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 21,45  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+1.01,-0.21,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 0,24  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+1.03,+0.32,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 22,46  (a lacing clip on the belt)
+COLLIDE meant moving [belt clip] Cube.176[bare] at (+1.05,+0.33,3.71) x belt[hose_k] at (+1.32,+0.15,3.71): cross, frames 23,47  (a lacing clip on the belt)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.72,-1.98,0.87) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 26-29  (the cake on the leaf it peels off)
+COLLIDE CLASH moving [cake] Cube.164[cake] at (-0.72,-1.98,0.87) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 26-29
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.74,-1.98,0.85) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 30-30  (the cake on the leaf it peels off)
+COLLIDE CLASH moving [cake] Cube.164[cake] at (-0.74,-1.98,0.85) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 30-30
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.76,-1.98,0.77) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 31-31  (the cake dropping through the chute mouth into the drop box)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.76,-1.98,0.77) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 31-31  (the cake on the leaf it peels off)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.76,-1.98,0.77) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 31-31  (the cake dropping through the chute mouth into the drop box)
+COLLIDE CLASH moving [cake] Cube.164[cake] at (-0.76,-1.98,0.77) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 31-31
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.79,-1.98,0.65) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 32-32  (the cake dropping through the chute mouth into the drop box)
+COLLIDE CLASH moving [cake] Cube.164[cake] at (-0.79,-1.98,0.65) x Cube.100[lead] at (-0.92,-1.98,0.90): cross, frames 32-32
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.79,-1.98,0.65) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 32-32  (the cake on the leaf it peels off)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.79,-1.98,0.65) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 32-32  (the cake dropping through the chute mouth into the drop box)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.80,-1.98,0.47) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 33-33  (the cake dropping through the chute mouth into the drop box)
+COLLIDE CLASH moving [cake] Cube.164[cake] at (-0.80,-1.98,0.47) x Cube.100[lead] at (-0.92,-1.98,0.90): cross, frames 33-33
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.80,-1.98,0.47) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 33-33  (the cake on the leaf it peels off)
+COLLIDE meant moving [cake] Cube.164[cake] at (-0.80,-1.98,0.47) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 33-33  (the cake dropping through the chute mouth into the drop box)
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.41,0.44) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 20,44
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.41,0.45) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 21,22,23,45,46,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.42,0.43) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 16,40
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.42,0.44) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 17,18,19,41,42,43
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.43,0.42) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 11,12,35,36
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.43,0.43) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 13,14,15,37,38,39
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.44,0.38) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.44,0.39) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 2,3,4,26,27,28
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.44,0.40) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 5,6,29,30
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.44,0.41) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 7,8,9,31,32,33
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.064[brass] at (+0.42,+1.44,0.42) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 10,34
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.32,0.45) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.32,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 22,46
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.33,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 19,20,21,43,44,45
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.34,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 17,18,41,42
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.35,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 14,15,16,38,39,40
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.36,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 11,12,13,35,36,37
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.37,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 8,9,10,32,33,34
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.38,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 6,7,30,31
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.39,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 3,4,5,27,28,29
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.40,0.45) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.065[brass] at (+0.42,+1.40,0.46) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 2,26
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.28,0.38) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.28,0.39) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 20,21,22,44,45,46
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.28,0.40) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 18,19,42,43
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.28,0.41) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 15,16,17,39,40,41
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.28,0.42) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 14,38
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.29,0.42) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 12,13,36,37
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.29,0.43) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 9,10,11,33,34,35
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.30,0.43) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 8,32
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.30,0.44) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 5,6,7,29,30,31
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.31,0.44) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 4,28
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.31,0.45) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 1,2,3,25,26,27
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.066[brass] at (+0.42,+1.32,0.45) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,24
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.28,0.34) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 10,34
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.28,0.35) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 7,8,9,31,32,33
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.28,0.36) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 5,6,29,30
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.28,0.37) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 2,3,4,26,27,28
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.28,0.38) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.29,0.33) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 13,14,15,37,38,39
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.29,0.34) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 11,12,35,36
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.30,0.32) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 17,18,19,41,42,43
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.30,0.33) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 16,40
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.31,0.31) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 21,22,23,45,46,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.067[brass] at (+0.42,+1.31,0.32) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 20,44
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.32,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 2,26
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.32,0.31) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.33,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 3,4,5,27,28,29
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.34,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 6,7,30,31
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.35,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 8,9,10,32,33,34
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.36,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 11,12,13,35,36,37
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.37,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 14,15,16,38,39,40
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.38,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 17,18,41,42
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.39,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 19,20,21,43,44,45
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.40,0.30) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 22,46
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.068[brass] at (+0.42,+1.40,0.31) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.40,0.31) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0,24
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.41,0.31) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 1,2,3,25,26,27
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.41,0.32) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 4,28
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.42,0.32) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 5,6,7,29,30,31
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.42,0.33) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 8,32
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.43,0.33) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 9,10,11,33,34,35
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.43,0.34) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 12,13,36,37
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.44,0.34) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 14,38
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.44,0.35) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 15,16,17,39,40,41
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.44,0.36) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 18,19,42,43
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.44,0.37) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 20,21,22,44,45,46
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.069[brass] at (+0.42,+1.44,0.38) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cube.070[hazard] at (+0.47,+1.36,0.38) x Cube.063[green] at (+0.66,+1.36,0.38): cross, frames 0-47
+COLLIDE CLASH moving [coupling at (+0.42,+1.36,0.38)] Cylinder.227[dark_steel] at (+0.42,+1.36,0.38) x Cylinder.222[dark_steel] at (+0.15,+1.36,0.40): cross, frames 0-47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.16,0.33) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.17,0.32) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 18,42
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.17,0.32) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 18,42
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.17,0.33) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 19,20,21,22,43,44,45,46
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.17,0.33) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 19,20,21,22,43,44,45,46
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.18,0.31) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 12,13,36,37
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.18,0.31) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 12,13,36,37
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.18,0.32) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 14,15,16,17,38,39,40,41
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.18,0.32) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 14,15,16,17,38,39,40,41
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.28) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.28) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.29) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 2,3,4,5,26,27,28,29
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.29) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 2,3,4,5,26,27,28,29
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.30) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 6,7,8,9,30,31,32,33
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.30) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 6,7,8,9,30,31,32,33
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.31) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 10,11,34,35
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.078[brass] at (-1.00,+0.19,0.31) x sweep.011[hose] at (-1.06,+0.36,0.38): cross, frames 10,11,34,35
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.10,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 22,23,46,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.11,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 18,19,20,21,42,43,44,45
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.12,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 14,15,16,17,38,39,40,41
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.13,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 11,12,13,35,36,37
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.14,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 7,8,9,10,31,32,33,34
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.15,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 3,4,5,6,27,28,29,30
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.16,0.33) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,24
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.079[brass] at (-1.00,+0.16,0.34) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 1,2,25,26
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.07,0.28) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.07,0.29) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 19,20,21,22,43,44,45,46
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.07,0.30) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 15,16,17,18,39,40,41,42
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.07,0.31) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 13,14,37,38
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.08,0.31) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 11,12,35,36
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.08,0.32) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 7,8,9,10,31,32,33,34
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.09,0.32) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 6,30
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.09,0.33) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 2,3,4,5,26,27,28,29
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.080[brass] at (-1.00,+0.10,0.33) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.07,0.25) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 10,11,34,35
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.07,0.26) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 6,7,8,9,30,31,32,33
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.07,0.27) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 2,3,4,5,26,27,28,29
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.07,0.28) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.08,0.24) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 14,15,16,17,38,39,40,41
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.08,0.25) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 12,13,36,37
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.09,0.23) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 19,20,21,22,43,44,45,46
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.09,0.24) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 18,42
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.081[brass] at (-1.00,+0.10,0.23) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.10,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 1,2,25,26
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.10,0.23) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,24
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.11,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 3,4,5,6,27,28,29,30
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.12,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 7,8,9,10,31,32,33,34
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.13,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 11,12,13,35,36,37
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.14,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 14,15,16,17,38,39,40,41
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.15,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 18,19,20,21,42,43,44,45
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.082[brass] at (-1.00,+0.16,0.22) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 22,23,46,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.16,0.23) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0,1,24,25
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.17,0.23) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 2,3,4,5,26,27,28,29
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.17,0.24) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 6,30
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.18,0.24) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 7,8,9,10,31,32,33,34
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.18,0.25) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 11,12,35,36
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.19,0.25) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 13,14,37,38
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.19,0.26) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 15,16,17,18,39,40,41,42
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.19,0.27) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 19,20,21,22,43,44,45,46
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.083[brass] at (-1.00,+0.19,0.28) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 23,47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cube.084[hazard] at (-0.95,+0.13,0.28) x Cylinder.253[dark_steel] at (-0.85,+0.13,0.28): inside, frames 0-47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cylinder.254[dark_steel] at (-1.00,+0.13,0.28) x Cube.077[green] at (-1.20,+0.13,0.30): cross, frames 0-47
+COLLIDE CLASH moving [coupling at (-1.00,+0.13,0.28)] Cylinder.254[dark_steel] at (-1.00,+0.13,0.28) x Cylinder.253[dark_steel] at (-0.85,+0.13,0.28): cross, frames 0-47
+COLLIDE meant moving [drive pulley big] Cylinder.490[dark_steel] at (+1.20,+0.05,3.71) x Cylinder.481[bare] at (+1.20,+0.05,3.65): cross, frames 0-47  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley big] Cylinder.491[bare] at (+1.20,+0.05,3.76) x Cylinder.481[bare] at (+1.20,+0.05,3.65): inside, frames 0-47  (a pulley on its shaft)
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.173[bare] at (+1.08,+0.34,3.71): cross, frames 0,24
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.173[bare] at (+1.10,+0.35,3.71): cross, frames 1,25
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.173[bare] at (+1.13,+0.36,3.71): cross, frames 2,26
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.04,-0.22,3.71): cross, frames 23,47
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.06,-0.24,3.71): cross, frames 22,46
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.09,-0.25,3.71): cross, frames 21,45
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.11,-0.26,3.71): cross, frames 20,44
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.14,-0.26,3.71): cross, frames 19,43
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.17,-0.27,3.71): cross, frames 18,42
+COLLIDE meant moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.20,-0.27,3.71): cross, frames 17,41  (a pulley on its shaft)
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.23,-0.27,3.71): cross, frames 16,40
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.25,-0.26,3.71): cross, frames 15,39
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.28,-0.26,3.71): cross, frames 14,38
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.31,-0.25,3.71): cross, frames 13,37
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.33,-0.24,3.71): cross, frames 12,36
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.36,-0.23,3.71): cross, frames 11,35
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.38,-0.21,3.71): cross, frames 10,34
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.40,-0.19,3.71): cross, frames 9,33
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.43,-0.17,3.71): cross, frames 8,32
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.44,-0.15,3.71): cross, frames 7,31
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.46,-0.13,3.71): cross, frames 6,30
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.48,-0.11,3.71): cross, frames 5,29
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.49,-0.08,3.71): cross, frames 4,28
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.175[bare] at (+1.51,-0.06,3.71): cross, frames 3,27
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.88,+0.03,3.71): cross, frames 10,34
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.88,+0.06,3.71): cross, frames 11,35
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.88,+0.09,3.71): cross, frames 12,36
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.89,+0.00,3.71): cross, frames 9,33
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.89,+0.11,3.71): cross, frames 13,37
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.89,-0.03,3.71): cross, frames 8,32
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.90,+0.14,3.71): cross, frames 14,38
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.90,+0.17,3.71): cross, frames 15,39
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.90,-0.05,3.71): cross, frames 7,31
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.91,-0.08,3.71): cross, frames 6,30
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.92,+0.19,3.71): cross, frames 16,40
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.92,-0.10,3.71): cross, frames 5,29
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.93,+0.22,3.71): cross, frames 17,41
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.94,-0.13,3.71): cross, frames 4,28
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.95,+0.24,3.71): cross, frames 18,42
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.95,-0.15,3.71): cross, frames 3,27
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.96,+0.26,3.71): cross, frames 19,43
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.97,-0.17,3.71): cross, frames 2,26
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.98,+0.28,3.71): cross, frames 20,44
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+0.99,-0.19,3.71): cross, frames 1,25
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+1.00,+0.30,3.71): cross, frames 21,45
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+1.01,-0.21,3.71): cross, frames 0,24
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+1.03,+0.32,3.71): cross, frames 22,46
+COLLIDE CLASH moving [drive pulley big] annulus[yellow] at (+1.20,+0.05,3.71) x belt clip: Cube.176[bare] at (+1.05,+0.33,3.71): cross, frames 23,47
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.60,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 12,36  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.61,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 10,34  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.61,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 11,35  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.61,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 13,37  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.61,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 14,38  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.62,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 9,33  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.62,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 15,39  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.63,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 8,32  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.63,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 16,40  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.65,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 7,31  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.65,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 17,41  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.66,+0.38,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 6,30  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.66,+0.50,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 18,42  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.67,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 5,29  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.67,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 19,43  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.69,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 4,28  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.69,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 20,44  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.70,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 3,27  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.70,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 21,45  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.71,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 2,26  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.71,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 1,25  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.71,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 23,47  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.71,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 22,46  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.170[yellow] at (+1.72,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 0,24  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.60,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 20,44  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.61,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 18,42  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.61,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 19,43  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.61,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 21,45  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.61,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 22,46  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.62,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 17,41  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.62,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 23,47  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.63,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 16,40  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.63,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 0,24  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.65,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 15,39  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.65,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 1,25  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.66,+0.38,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 14,38  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.66,+0.50,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 2,26  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.67,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 13,37  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.67,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 3,27  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.69,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 12,36  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.69,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 4,28  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.70,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 11,35  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.70,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 5,29  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.71,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 10,34  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.71,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 9,33  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.71,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 7,31  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.71,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 6,30  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.171[yellow] at (+1.72,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 8,32  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.60,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 4,28  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.61,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 2,26  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.61,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 3,27  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.61,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 5,29  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.61,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 6,30  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.62,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 1,25  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.62,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 7,31  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.63,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 0,24  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.63,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 8,32  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.65,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 23,47  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.65,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 9,33  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.66,+0.38,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 22,46  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.66,+0.50,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 10,34  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.67,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 21,45  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.67,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 11,35  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.69,+0.39,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 20,44  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.69,+0.49,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 12,36  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.70,+0.40,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 19,43  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.70,+0.48,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 13,37  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.71,+0.41,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 18,42  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.71,+0.43,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 17,41  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.71,+0.45,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 15,39  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.71,+0.47,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 14,38  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cube.172[yellow] at (+1.72,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 16,40  (a pulley on its shaft)
+COLLIDE meant moving [drive pulley small] Cylinder.492[dark_steel] at (+1.66,+0.44,3.71) x Cylinder.489[bare] at (+1.66,+0.44,3.68): cross, frames 0-47  (a pulley on its shaft)
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.173[bare] at (+1.57,+0.55,3.71): cross, frames 19,43
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.173[bare] at (+1.59,+0.56,3.71): cross, frames 20,44
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.173[bare] at (+1.62,+0.57,3.71): cross, frames 21,45
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.173[bare] at (+1.65,+0.58,3.71): cross, frames 22,46
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.173[bare] at (+1.67,+0.58,3.71): cross, frames 23,47
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.70,+0.57,3.71): cross, frames 0,24
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.73,+0.56,3.71): cross, frames 1,25
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.75,+0.54,3.71): cross, frames 2,26
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.76,+0.34,3.71): cross, frames 10,34
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.77,+0.52,3.71): cross, frames 3,27
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.78,+0.37,3.71): cross, frames 9,33
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.78,+0.50,3.71): cross, frames 4,28
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.79,+0.39,3.71): cross, frames 8,32
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.79,+0.47,3.71): cross, frames 5,29
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.80,+0.42,3.71): cross, frames 7,31
+COLLIDE CLASH moving [drive pulley small] annulus.001[dark_steel] at (+1.66,+0.44,3.71) x belt clip: Cube.174[bare] at (+1.80,+0.45,3.71): cross, frames 6,30
+COLLIDE meant moving [drop] Sphere.182[water] at (+2.57,+1.81,0.01) x Circle[wet] at (+2.57,+1.81,0.00): cross, frames 6,30  (a drop landing in its wet patch)
+COLLIDE CLASH moving [drop] Sphere.182[water] at (+2.57,+1.81,0.88) x Cylinder.496[copper] at (+2.57,+1.81,0.95): cross, frames 0,23,24,47
+COLLIDE meant moving [drop] Sphere.183[water] at (+2.57,+1.81,0.01) x Circle[wet] at (+2.57,+1.81,0.00): cross, frames 18,42  (a drop landing in its wet patch)
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.497[bare] at (-0.56,-1.75,1.31) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 26,37
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.497[bare] at (-0.62,-1.75,1.31) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 38-38
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.497[bare] at (-0.64,-1.75,1.31) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 25-25
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.497[bare] at (-0.66,-1.75,1.31) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 39-39
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.498[brass] at (-0.66,-1.78,1.32) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 38-38
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.498[brass] at (-0.69,-1.78,1.32) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 25-25
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.498[brass] at (-0.71,-1.78,1.32) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 39-39
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.499[bare] at (-0.12,-1.72,0.98) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 27,35,36
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.499[bare] at (-0.12,-1.72,0.99) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.499[bare] at (-0.13,-1.72,0.98) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25,38,39
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.499[bare] at (-0.13,-1.72,0.98) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 25,26,37,38,39
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.500[brass] at (-0.10,-1.75,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25-39
+COLLIDE CLASH moving [feed hose (flexed)] Cylinder.500[brass] at (-0.10,-1.75,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 25-39
+COLLIDE CLASH moving [feed hose (flexed)] Torus.084[bare] at (-0.61,-1.73,1.30) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 25-25
+COLLIDE CLASH moving [feed hose (flexed)] Torus.086[bare] at (-0.53,-1.73,1.29) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 26-26
+COLLIDE CLASH moving [feed hose (flexed)] Torus.108[bare] at (-0.53,-1.73,1.29) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 37-37
+COLLIDE CLASH moving [feed hose (flexed)] Torus.110[bare] at (-0.59,-1.73,1.29) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 38-38
+COLLIDE CLASH moving [feed hose (flexed)] Torus.112[bare] at (-0.63,-1.73,1.30) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 39-39
+COLLIDE CLASH moving [feed hose (flexed)] sweep.029[hose_k] at (-0.35,-1.64,1.18) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 38-38
+COLLIDE CLASH moving [feed hose (flexed)] sweep.029[hose_k] at (-0.37,-1.64,1.18) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 25,39
+COLLIDE meant moving [leg particle] particle x Cylinder.121[glass] at (-0.32,+0.62,1.43): inside, frames 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47  (a fleck or bubble in the solution, inside the glass)
+COLLIDE meant moving [leg particle] particle x Cylinder.122[fl_f1] at (-0.32,+0.62,1.44): cross, frames 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47  (a fleck or bubble in the solution, inside the glass)
+COLLIDE meant moving [leg particle] particle x Cylinder.123[bare] at (-0.32,+0.62,1.43): cross, frames 0,1,2,2,3,4,5,10,10,12,13,15,16,16,16,17,17,20,21,21,22,23,23,24,25,26,26,27,28,29,34,34,36,37,39,40,40,40,41,41,44,45,45,46,47,47  (inside the glass, behind the leg's middle band)
+COLLIDE meant moving [leg particle] particle x Cylinder.123[bare] at (-0.32,+0.62,1.43): inside, frames 0,1,6,12,14,24,25,30,36,38  (inside the glass, behind the leg's middle band)
+COLLIDE meant moving [leg particle] particle x Cylinder.160[glass] at (+0.12,-0.72,1.43): inside, frames 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47  (a fleck or bubble in the solution, inside the glass)
+COLLIDE meant moving [leg particle] particle x Cylinder.161[fl_f2] at (+0.12,-0.72,1.44): cross, frames 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,26,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,36,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,44,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,46,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47  (a fleck or bubble in the solution, inside the glass)
+COLLIDE meant moving [leg particle] particle x Cylinder.162[bare] at (+0.12,-0.72,1.43): cross, frames 0,1,4,5,5,7,8,13,14,22,23,23,24,25,28,29,29,31,32,37,38,46,47,47  (inside the glass, behind the leg's middle band)
+COLLIDE meant moving [leg particle] particle x Cylinder.162[bare] at (+0.12,-0.72,1.43): inside, frames 3,4,8,10,12,12,13,22,27,28,32,34,36,36,37,46  (inside the glass, behind the leg's middle band)
+COLLIDE meant moving [leg particle] particle x Cylinder.257[bare] at (-0.53,+0.39,0.64): cross, frames 12,14,17,19,36,38,41,43  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [leg particle] particle x Cylinder.258[brass] at (-0.50,+0.42,0.62): cross, frames 0,6,8,11,12,14,17,19,21,24,30,32,35,36,38,41,43,45  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [leg particle] particle x Cylinder.344[bare] at (+0.24,-1.05,0.94): cross, frames 7,9,13,19,31,33,37,43  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [leg particle] particle x Cylinder.345[brass] at (+0.22,-1.03,0.90): cross, frames 3,7,9,10,13,15,19,27,31,33,34,37,39,43  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [leg particle] particle x sweep.012[hose_k] at (-0.67,+0.27,0.62): cross, frames 12,17,36,41  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [leg particle] particle x sweep.022[hose] at (+0.54,-1.40,1.29): cross, frames 7,13,31,37  (inside the glass, past the end of a hose let into the leg (round 5))
+COLLIDE meant moving [needle] Cube.036[needle] at (+1.23,-0.84,1.00) x Cylinder.063[brass] at (+1.25,-0.82,1.00): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,17,18,19,24,25,26,27,28,29,30,31,32,33,34,35,36,41,42,43  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.036[needle] at (+1.23,-0.84,1.00) x Cylinder.064[gauge] at (+1.25,-0.84,1.00): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,17,18,19,24,25,26,27,28,29,30,31,32,33,34,35,36,41,42,43  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.036[needle] at (+1.23,-0.84,1.01) x Cylinder.063[brass] at (+1.25,-0.82,1.00): cross, frames 13,14,15,16,20,21,22,23,37,38,39,40,44,45,46,47  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.036[needle] at (+1.23,-0.84,1.01) x Cylinder.064[gauge] at (+1.25,-0.84,1.00): cross, frames 13,14,15,16,20,21,22,23,37,38,39,40,44,45,46,47  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.140[needle] at (+1.54,-0.81,1.68) x Cylinder.397[brass] at (+1.54,-0.79,1.68): cross, frames 0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.140[needle] at (+1.54,-0.81,1.68) x Cylinder.398[gauge] at (+1.55,-0.80,1.68): cross, frames 0,1,2,3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.140[needle] at (+1.54,-0.81,1.69) x Cylinder.397[brass] at (+1.54,-0.79,1.68): cross, frames 8,32  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.140[needle] at (+1.54,-0.81,1.69) x Cylinder.398[gauge] at (+1.55,-0.80,1.68): cross, frames 8,32  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.143[needle] at (-1.62,+1.47,1.42) x Cylinder.411[brass] at (-1.62,+1.50,1.42): cross, frames 0-47  (a needle on its own dial)
+COLLIDE meant moving [needle] Cube.143[needle] at (-1.62,+1.47,1.42) x Cylinder.412[gauge] at (-1.62,+1.48,1.42): cross, frames 0-47  (a needle on its own dial)
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.45,-1.75,1.30): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.48,-1.78,1.32): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.090[bare] at (-0.42,-1.72,1.29): cross, frames 28-28
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.092[bare] at (-0.42,-1.72,1.29): cross, frames 29-29
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.094[bare] at (-0.42,-1.72,1.29): cross, frames 30-30
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.096[bare] at (-0.42,-1.72,1.29): cross, frames 31-31
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.098[bare] at (-0.42,-1.72,1.29): cross, frames 32-32
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.100[bare] at (-0.42,-1.72,1.29): cross, frames 33-33
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): Torus.102[bare] at (-0.42,-1.72,1.29): cross, frames 34-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.48,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.27,-1.64,1.17): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.46,-1.75,1.30): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.50,-1.78,1.32): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x feed hose (flexed): Torus.104[bare] at (-0.44,-1.72,1.29): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.50,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.28,-1.64,1.17): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.48,-1.75,1.30): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.52,-1.78,1.32): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x feed hose (flexed): Torus.088[bare] at (-0.46,-1.72,1.29): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.52,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.28,-1.64,1.17): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.51,-1.75,1.30): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.55,-1.78,1.32): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x feed hose (flexed): Torus.106[bare] at (-0.48,-1.72,1.29): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.54,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.30,-1.64,1.17): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x cake: Cube.164[cake] at (-0.72,-1.98,0.87): cross, frames 26-26
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.56,-1.75,1.31): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.60,-1.78,1.32): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x feed hose (flexed): Torus.086[bare] at (-0.53,-1.73,1.29): cross, frames 26-26
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x feed hose (flexed): Torus.108[bare] at (-0.53,-1.73,1.29): cross, frames 37-37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.60,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.33,-1.64,1.17): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.62,-1.75,1.31): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.66,-1.78,1.32): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x feed hose (flexed): Torus.110[bare] at (-0.59,-1.73,1.29): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.66,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.35,-1.64,1.18): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.64,-1.75,1.31): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.69,-1.78,1.32): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x feed hose (flexed): Torus.084[bare] at (-0.61,-1.73,1.30): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.68,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.37,-1.64,1.18): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x feed hose (flexed): Cylinder.497[bare] at (-0.66,-1.75,1.31): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x feed hose (flexed): Cylinder.498[brass] at (-0.71,-1.78,1.32): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x feed hose (flexed): Torus.112[bare] at (-0.63,-1.73,1.30): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.70,-1.98,0.92) x feed hose (flexed): sweep.029[hose_k] at (-0.37,-1.64,1.18): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cube.092[lead] at (-1.02,-1.98,0.27): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cube.094[bare] at (-1.02,-2.28,1.18): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cube.095[bare] at (-1.02,-1.68,1.18): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cube.101[cream] at (-0.82,-1.98,0.90): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cylinder.319[dark_steel] at (-1.02,-1.98,0.56): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cylinder.332[bare] at (-0.68,-1.75,1.31): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Cylinder.333[brass] at (-0.72,-1.78,1.32): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x Torus.035[bare] at (-0.65,-1.73,1.30): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cube.102[dark_steel] at (-0.72,-1.98,0.92) x sweep.021[hose_k] at (-0.38,-1.64,1.18): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.30,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.30,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.30,-1.98,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.32,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.32,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.34,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.34,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.36,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.36,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.42,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.48,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.48,-1.98,0.95) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.50,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.50,-1.98,0.95) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.52,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.52,-1.98,0.95) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.54,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.320[green] at (-0.54,-1.98,0.95) x Sphere.114[green] at (-0.63,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.16,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.16,-1.90,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.18,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.18,-1.90,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.20,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.20,-1.90,0.95) x feed hose (flexed): Cylinder.499[bare] at (-0.12,-1.72,0.98): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.20,-1.90,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.22,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.22,-1.90,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.28,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.28,-1.90,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.34,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.36,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.38,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.321[yellow] at (-0.40,-1.90,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.16,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.18,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.20,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.22,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.22,-2.02,1.01) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.28,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.28,-2.02,1.01) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.34,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.36,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.38,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.322[yellow] at (-0.40,-2.02,1.01) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.16,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.18,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.20,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.22,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.22,-2.02,0.89) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): inside, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.28,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.28,-2.02,0.89) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.34,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.36,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.38,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.323[yellow] at (-0.40,-2.02,0.89) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.16,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 28-34
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.18,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 35-35
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.20,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.20,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.22,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.22,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.28,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.28,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.34,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 38-38
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.36,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 25-25
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.38,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 39-39
+COLLIDE CLASH moving [press follower] Cylinder.324[bare] at (-0.40,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): inside, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.16,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.16,-1.98,0.95) x feed hose (flexed): Cylinder.499[bare] at (-0.12,-1.72,0.99): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.16,-1.98,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.16,-1.98,0.95) x feed hose (flexed): sweep.029[hose_k] at (-0.27,-1.64,1.17): cross, frames 28-34
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.18,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.18,-1.98,0.95) x feed hose (flexed): Cylinder.499[bare] at (-0.12,-1.72,0.98): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.18,-1.98,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.18,-1.98,0.95) x feed hose (flexed): sweep.029[hose_k] at (-0.28,-1.64,1.17): cross, frames 35-35
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.20,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.20,-1.98,0.95) x feed hose (flexed): Cylinder.499[bare] at (-0.12,-1.72,0.98): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.20,-1.98,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 27-27
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.22,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.22,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.22,-1.98,0.95) x feed hose (flexed): Cylinder.500[brass] at (-0.10,-1.75,0.95): cross, frames 36-36
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.28,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.28,-1.98,0.95) x Cylinder.330[dark_steel] at (-0.25,-2.04,0.58): cross, frames 26,37
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.34,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 38-38
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.36,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 25-25
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.38,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 39-39
+COLLIDE CLASH moving [press follower] Torus.034[yellow] at (-0.40,-1.98,0.95) x Cylinder.329[green] at (+0.03,-2.04,0.58): cross, frames 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,40,41,42,43,44,45,46,47
+COLLIDE moving: 415 clashes, 305 meant contacts
+COLLIDE meant added Cylinder.481[bare] at (+1.20,+0.05,3.65) x Cylinder.058[dark_steel] at (+1.20,+0.05,3.39): cross  (a shaft out of its gearbox or motor)
+COLLIDE meant added Cylinder.489[bare] at (+1.66,+0.44,3.68) x Cube.023[green] at (+1.54,+0.34,3.49): cross  (a shaft out of its gearbox or motor)
+COLLIDE CLASH added Cylinder.494[copper] at (+2.49,+1.83,1.00) x Cylinder.193[copper] at (+2.04,+1.92,0.94): cross
+COLLIDE CLASH added Circle[wet] at (+2.57,+1.81,0.00) x Cylinder.192[dark_steel] at (+2.04,+1.92,0.07): cross
+COLLIDE added: 14 parts, 2 clashes
+COLLIDE model: 834 fixed parts, 1370 touching pairs (collide-model.txt)

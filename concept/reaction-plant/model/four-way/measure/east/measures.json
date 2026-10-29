@@ -1,0 +1,1201 @@
+{
+ "source": {
+  "src": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/rp-four-way/run-east",
+  "sheets": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/rp-four-way/run-east/sheets",
+  "render_json": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/rp-four-way/run-east/renders/render.json",
+  "directions": "one",
+  "footprint": [
+   5,
+   5
+  ],
+  "px_per_tile": 64,
+  "connections": [
+   [
+    2.0,
+    -1.0,
+    "E"
+   ],
+   [
+    2.0,
+    1.0,
+    "E"
+   ],
+   [
+    -2.0,
+    0.0,
+    "W"
+   ]
+  ],
+  "vanilla": [
+   "chemical-plant",
+   "oil-refinery"
+  ]
+ },
+ "collide": null,
+ "directions": {
+  "": {
+   "layers": {
+    "base": "plate",
+    "shadow": "shadow",
+    "legs-glow": "glow (working)",
+    "legs": "anim (working), 24 frames",
+    "drive": "anim, 24 frames",
+    "coupling-compressor": "anim, 24 frames",
+    "coupling-dosing": "anim, 24 frames",
+    "coupling-pump": "anim, 24 frames",
+    "press": "anim, 16 frames",
+    "gauge-reactor-upper": "anim, 24 frames",
+    "gauge-reactor-lower": "anim, 24 frames",
+    "gauge-scrubber": "anim, 24 frames",
+    "drip": "anim, 24 frames"
+   },
+   "ignored": [
+    "status-lamp (a white cut the engine tints: not drawn here)"
+   ],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 83.4,
+    "mass_pct": 90.2,
+    "corners_pct": {
+     "NW": 54.1,
+     "NE": 88.5,
+     "SW": 3.0,
+     "SE": 79.7
+    },
+    "outer_band_pct": 61.4,
+    "rise_tiles": 0.86,
+    "rise_by_column_tiles": [
+     0.33,
+     0.36,
+     0.36,
+     0.7,
+     0.86
+    ],
+    "extent_tiles": [
+     5.0,
+     5.84
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": -0.02
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 4,
+     "p50": 73,
+     "p95": 159,
+     "spread": 155
+    },
+    "still": {
+     "p5": 4,
+     "p50": 75,
+     "p95": 162,
+     "spread": 158
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 9.7,
+     "fine": 6.22,
+     "mid": 9.76,
+     "ratio": 0.64,
+     "darkchr": 14.7
+    },
+    "still": {
+     "black_pct": 8.6,
+     "fine": 6.6,
+     "mid": 10.13,
+     "ratio": 0.65,
+     "darkchr": 16.0
+    }
+   },
+   "colour": {
+    "opaque_px": 92368,
+    "blue_px": 575,
+    "blue_pct": 0.62,
+    "pale_px": 190,
+    "pale_pct_of_blue": 33.0,
+    "orange_px": 4857,
+    "orange_pct": 5.26,
+    "white_px": 98,
+    "clipped_px": 1,
+    "idle_blue_pct": 0.02,
+    "idle_orange_pct": 5.26
+   },
+   "glow": {
+    "legs-glow": {
+     "area": 587,
+     "peak": 84,
+     "core": 30.7,
+     "halo": 10.4,
+     "sat_core": 0.94,
+     "sat_halo": 0.99,
+     "white": 0,
+     "blue_pct": 86.9,
+     "frames": 1
+    }
+   },
+   "motion": {
+    "loop_frames": 48,
+    "moving_pct": 3.46,
+    "strobe_pct": 1.67,
+    "strobe_px": 1546,
+    "step_px": [
+     1995,
+     2422,
+     2538,
+     2203,
+     988,
+     1043,
+     1032,
+     940,
+     910,
+     894,
+     1850,
+     2259,
+     2279,
+     2229,
+     2083,
+     1708,
+     2004,
+     2403,
+     2545,
+     2195,
+     894,
+     994,
+     998,
+     936,
+     940,
+     954,
+     1858,
+     2291,
+     2359,
+     2281,
+     2156,
+     1741,
+     1965,
+     2362,
+     2530,
+     2171,
+     908,
+     991,
+     959,
+     907,
+     949,
+     935,
+     1865,
+     2283,
+     2265,
+     2232,
+     2122
+    ],
+    "wrap_px": 1737,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "legs": 0.58,
+     "drive": 1.21,
+     "coupling-compressor": 0.0,
+     "coupling-dosing": 0.0,
+     "coupling-pump": 0.06,
+     "press": 1.47,
+     "gauge-reactor-upper": 0.0,
+     "gauge-reactor-lower": 0.0,
+     "gauge-scrubber": 0.0,
+     "drip": 0.16
+    }
+   },
+   "layers_alone": {
+    "legs": {
+     "frames": 24,
+     "frame_px": [
+      121,
+      101
+     ],
+     "step_px": [
+      680,
+      692,
+      667,
+      673,
+      692,
+      692,
+      676,
+      698,
+      661,
+      644,
+      655,
+      644,
+      658,
+      660,
+      636,
+      656,
+      669,
+      677,
+      661,
+      701,
+      665,
+      680,
+      688
+     ],
+     "wrap_px": 678,
+     "step_range": [
+      636,
+      701
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 824,
+     "between_frames": [
+      4,
+      22
+     ]
+    },
+    "drive": {
+     "frames": 24,
+     "frame_px": [
+      60,
+      65
+     ],
+     "step_px": [
+      691,
+      708,
+      678,
+      663,
+      692,
+      673,
+      692,
+      692,
+      674,
+      689,
+      681,
+      690,
+      706,
+      700,
+      676,
+      670,
+      689,
+      702,
+      697,
+      685,
+      686,
+      671,
+      674
+     ],
+     "wrap_px": 700,
+     "step_range": [
+      663,
+      708
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 930,
+     "between_frames": [
+      3,
+      9
+     ]
+    },
+    "coupling-compressor": {
+     "frames": 24,
+     "frame_px": [
+      14,
+      4
+     ],
+     "step_px": [
+      9,
+      10,
+      9,
+      9,
+      8,
+      9,
+      7,
+      9,
+      6,
+      7,
+      5,
+      6,
+      6,
+      5,
+      5,
+      8,
+      8,
+      8,
+      9,
+      8,
+      9,
+      8,
+      10
+     ],
+     "wrap_px": 9,
+     "step_range": [
+      5,
+      10
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 22,
+     "between_frames": [
+      6,
+      19
+     ]
+    },
+    "coupling-dosing": {
+     "frames": 24,
+     "frame_px": [
+      13,
+      6
+     ],
+     "step_px": [
+      22,
+      20,
+      19,
+      21,
+      19,
+      24,
+      20,
+      19,
+      24,
+      19,
+      16,
+      19,
+      18,
+      23,
+      20,
+      18,
+      22,
+      20,
+      23,
+      20,
+      22,
+      26,
+      26
+     ],
+     "wrap_px": 20,
+     "step_range": [
+      16,
+      26
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 39,
+     "between_frames": [
+      3,
+      14
+     ]
+    },
+    "coupling-pump": {
+     "frames": 24,
+     "frame_px": [
+      17,
+      9
+     ],
+     "step_px": [
+      51,
+      57,
+      51,
+      52,
+      55,
+      48,
+      56,
+      53,
+      48,
+      48,
+      58,
+      59,
+      52,
+      54,
+      47,
+      52,
+      52,
+      53,
+      56,
+      60,
+      53,
+      55,
+      51
+     ],
+     "wrap_px": 61,
+     "step_range": [
+      47,
+      60
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 96,
+     "between_frames": [
+      7,
+      18
+     ]
+    },
+    "press": {
+     "frames": 16,
+     "frame_px": [
+      45,
+      52
+     ],
+     "step_px": [
+      1228,
+      1651,
+      1809,
+      1401,
+      0,
+      130,
+      110,
+      25,
+      10,
+      7,
+      1089,
+      1552,
+      1549,
+      1510,
+      1354
+     ],
+     "wrap_px": 987,
+     "step_range": [
+      0,
+      1809
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 1838,
+     "between_frames": [
+      11,
+      14
+     ]
+    },
+    "gauge-reactor-upper": {
+     "frames": 24,
+     "frame_px": [
+      5,
+      11
+     ],
+     "step_px": [
+      17,
+      4,
+      1,
+      12,
+      13,
+      15,
+      14,
+      16,
+      20,
+      1,
+      18,
+      22,
+      24,
+      11,
+      5,
+      12,
+      11,
+      15,
+      15,
+      7,
+      4,
+      6,
+      5
+     ],
+     "wrap_px": 18,
+     "step_range": [
+      1,
+      24
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 24,
+     "between_frames": [
+      8,
+      16
+     ]
+    },
+    "gauge-reactor-lower": {
+     "frames": 24,
+     "frame_px": [
+      4,
+      10
+     ],
+     "step_px": [
+      10,
+      1,
+      2,
+      4,
+      6,
+      12,
+      12,
+      6,
+      4,
+      2,
+      1,
+      10,
+      13,
+      1,
+      0,
+      1,
+      2,
+      2,
+      2,
+      2,
+      1,
+      0,
+      1
+     ],
+     "wrap_px": 13,
+     "step_range": [
+      0,
+      13
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 6,
+     "between_frames": [
+      8,
+      23
+     ]
+    },
+    "gauge-scrubber": {
+     "frames": 24,
+     "frame_px": [
+      6,
+      10
+     ],
+     "step_px": [
+      24,
+      3,
+      6,
+      19,
+      22,
+      19,
+      19,
+      23,
+      20,
+      3,
+      10,
+      26,
+      22,
+      1,
+      1,
+      1,
+      15,
+      11,
+      9,
+      15,
+      4,
+      0,
+      3
+     ],
+     "wrap_px": 20,
+     "step_range": [
+      0,
+      26
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 25,
+     "between_frames": [
+      8,
+      22
+     ]
+    },
+    "drip": {
+     "frames": 24,
+     "frame_px": [
+      37,
+      61
+     ],
+     "step_px": [
+      77,
+      99,
+      106,
+      117,
+      117,
+      118,
+      99,
+      88,
+      67,
+      75,
+      75,
+      83,
+      78,
+      96,
+      105,
+      109,
+      126,
+      117,
+      92,
+      74,
+      79,
+      76,
+      90
+     ],
+     "wrap_px": 85,
+     "step_range": [
+      67,
+      126
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 169,
+     "between_frames": [
+      5,
+      16
+     ]
+    }
+   },
+   "light": {
+    "status-lamp": {
+     "frames": 1,
+     "px_range": [
+      43,
+      43
+     ],
+     "channel_spread_max": 0.4,
+     "frame0": {
+      "px": 43,
+      "mean_rgb": [
+       254.7,
+       254.5,
+       254.3
+      ],
+      "channel_spread": 0.4,
+      "luminance_range": [
+       237,
+       255
+      ]
+     }
+    }
+   },
+   "pack_checks": {
+    "centre_offset_px": 0.0,
+    "edge_alpha_max": 0,
+    "half_width_tiles": [
+     2.5,
+     "2.5 = footprint width / 2"
+    ],
+    "footprint_rows_tiles": [
+     2.5,
+     "bottom edge below origin; 2.5 = on the footprint"
+    ],
+    "legs-glow_white_px": [
+     0,
+     "pixels the working light clipped to white; 0 = the light keeps its colour"
+    ],
+    "drive_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "coupling-compressor_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "coupling-dosing_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "coupling-pump_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "press_path_px": {
+     "declared": [
+      0.0,
+      1.8,
+      5.76,
+      9.72,
+      11.52,
+      11.52,
+      11.52,
+      11.52,
+      11.52,
+      11.52,
+      11.52,
+      10.67,
+      8.53,
+      5.76,
+      2.99,
+      0.85
+     ],
+     "measured": [
+      -0.02,
+      1.79,
+      5.76,
+      9.72,
+      11.53,
+      11.53,
+      11.53,
+      11.53,
+      11.53,
+      11.53,
+      11.53,
+      10.68,
+      8.54,
+      5.76,
+      2.97,
+      0.85
+     ],
+     "off_curve": 0.02,
+     "off_line": 0.0,
+     "note": "each frame's position along the line, declared and measured (px from frame 0's declared point); the most any frame is off the curve and off the line: both must stay within 1",
+     "tracked": "pack"
+    },
+    "gauge-reactor-upper_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "gauge-reactor-lower_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "gauge-scrubber_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "drip_cycle": [
+     24,
+     "frames of a closed loop; no positional check"
+    ],
+    "frame0_vs_still": [
+     170,
+     0.0021,
+     "max channel difference, and share of pixels over 8 (sampling noise)"
+    ]
+   },
+   "joins": [
+    {
+     "connection": [
+      2.0,
+      -1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      -1.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -27,
+      "last_row_px": -5
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 164,
+      "ground_px": 1,
+      "where": {
+       "across_px": [
+        18.5,
+        18.5
+       ],
+       "along_px": [
+        -4,
+        -4
+       ]
+      }
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 204,
+      "ground_px": 10,
+      "where": {
+       "across_px": [
+        18.5,
+        26.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 29,
+      "where": {
+       "across_px": [
+        -32.5,
+        -24.5
+       ],
+       "along_px": [
+        -4,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      2.0,
+      1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      1.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -28,
+      "last_row_px": -12
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 451,
+      "ground_px": 39,
+      "where": {
+       "across_px": [
+        -19.5,
+        20.5
+       ],
+       "along_px": [
+        -11,
+        -4
+       ]
+      }
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 561,
+      "ground_px": 103,
+      "where": {
+       "across_px": [
+        -23.5,
+        26.5
+       ],
+       "along_px": [
+        -11,
+        -1
+       ]
+      }
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 350,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        -11,
+        -1
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -2.0,
+      0.0,
+      "W"
+     ],
+     "pipe_tile": [
+      -3.0,
+      0.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -3,
+      "last_row_px": -3
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 82,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 102,
+      "ground_px": 4,
+      "where": {
+       "across_px": [
+        -26.5,
+        23.5
+       ],
+       "along_px": [
+        -2,
+        -1
+       ]
+      }
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    }
+   ]
+  }
+ },
+ "ports": null,
+ "vanilla": {
+  "chemical-plant": {
+   "": {
+    "coverage": {
+     "footprint": [
+      3,
+      3
+     ],
+     "footprint_pct": 92.4,
+     "mass_pct": 110.9,
+     "corners_pct": {
+      "NW": 95.3,
+      "NE": 84.2,
+      "SW": 89.5,
+      "SE": 83.9
+     },
+     "outer_band_pct": 76.0,
+     "rise_tiles": 1.05,
+     "rise_by_column_tiles": [
+      1.05,
+      1.05,
+      0.31
+     ],
+     "extent_tiles": [
+      2.97,
+      4.34
+     ],
+     "centre_offset_px": -4.0,
+     "past_edges_tiles": {
+      "west": 0.05,
+      "east": -0.08,
+      "south": 0.3
+     }
+    },
+    "tonal": {
+     "p5": 12,
+     "p50": 48,
+     "p95": 175,
+     "spread": 163
+    },
+    "finish": {
+     "black_pct": 4.7,
+     "fine": 5.7,
+     "mid": 11.6,
+     "ratio": 0.49,
+     "darkchr": 15.3
+    },
+    "colour": {
+     "opaque_px": 40889,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 1430,
+     "orange_pct": 3.5,
+     "white_px": 93,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 3.5
+    }
+   }
+  },
+  "oil-refinery": {
+   "": {
+    "coverage": {
+     "footprint": [
+      5,
+      5
+     ],
+     "footprint_pct": 88.7,
+     "mass_pct": 97.6,
+     "corners_pct": {
+      "NW": 82.7,
+      "NE": 79.5,
+      "SW": 61.7,
+      "SE": 61.5
+     },
+     "outer_band_pct": 45.5,
+     "rise_tiles": 0.97,
+     "rise_by_column_tiles": [
+      0.95,
+      0.97,
+      0.73,
+      0.48,
+      0.31
+     ],
+     "extent_tiles": [
+      4.91,
+      6.28
+     ],
+     "centre_offset_px": -1.0,
+     "past_edges_tiles": {
+      "west": -0.03,
+      "east": -0.06,
+      "south": 0.31
+     }
+    },
+    "tonal": {
+     "p5": 5,
+     "p50": 51,
+     "p95": 165,
+     "spread": 160
+    },
+    "finish": {
+     "black_pct": 12.0,
+     "fine": 6.53,
+     "mid": 12.62,
+     "ratio": 0.52,
+     "darkchr": 7.0
+    },
+    "colour": {
+     "opaque_px": 99989,
+     "blue_px": 0,
+     "blue_pct": 0.0,
+     "pale_px": 0,
+     "pale_pct_of_blue": 0.0,
+     "orange_px": 428,
+     "orange_pct": 0.43,
+     "white_px": 5,
+     "clipped_px": 0,
+     "idle_blue_pct": 0.0,
+     "idle_orange_pct": 0.43
+    }
+   }
+  }
+ },
+ "gates": {
+  "joins": true,
+  "collide": null
+ },
+ "pass": true,
+ "sheets": [
+  {
+   "path": "/tmp/claude-1000/-home-liam-stannard-git-space-age-extended/6dfbc6a9-437c-4a53-aeaf-be93c11a2450/scratchpad/artist/rp-four-way/measure-east/comparison.png",
+   "size": [
+    3956,
+    1585
+   ]
+  }
+ ],
+ "sheet_unsplit_px": [
+  3956,
+  1585
+ ]
+}
