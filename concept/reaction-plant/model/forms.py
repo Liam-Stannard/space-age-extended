@@ -239,7 +239,7 @@ DECL = dict(
         # the three couplings and the three double dials: each its own layer, cropped tight
         # round its own moving pixels (the amendment of 2026-10-12)
         *[dict(name=n_, frames=NF, motion="cycle") for n_ in COUPLINGS if n_ not in HIDDEN],
-        # the leaf pack and tail stand slide west on the rails (held to PRESS_PATH, measured
+        # the leaf pack slides west on the rails, the tail stand bolted (T12) (held to PRESS_PATH, measured
         # on the pack alone: press-pack-NN); the cake falls on its own
         # (in a one-direction run of the turned building the path is declared as it moves there,
         # turned as the building is: PRESS_PATH_RUN)
@@ -265,7 +265,7 @@ PI = math.pi
 #            legs layer lit, moving)
 #   lens     the two status lamps' lenses
 #   drive, coupling-*, press, gauge-*, drip: the moving parts of each layer (not in the plate)
-#   pack     the press's leaf pack and tail stand, also in "press": rendered alone, measured
+#   pack     the press's leaf pack (T12: not the tail stand, which stays), also in "press": rendered alone, measured
 PART = {}                           # object name -> group
 CUR = ["body"]
 ICON_SET = set()                    # the parts the icon draws: the reactor, its legs, the drive
@@ -595,6 +595,8 @@ for _k, _m in M.items():
 # shared finish as they were there: the cake toned down from white (Liam), a damp grey-buff
 # a step under the cream leaves; the condensate; the wet patch under the drain cock
 M["cake"] = layered("cake", "#8C8476", paint_metal=0.0, paint_rough=0.85, wear=0.0, rust=0.0, dust=0.3, grime=0.35)
+# T12: the chute mouth's throat: a shadowed dark lead, not black (what the open press shows)
+M["throat"] = layered("throat", "#5A5248", paint_metal=0.0, paint_rough=0.85, wear=0.0, rust=0.0, dust=0.2, grime=0.3)
 M["water"] = bpy.data.materials.new("water")
 M["water"].use_nodes = True
 _wb = M["water"].node_tree.nodes["Principled BSDF"]
@@ -2091,9 +2093,13 @@ DB = TK["press"]                          # the drop box's centre; the press sta
 PRESS = (DB[0] - 0.365, DB[0] + 0.435, DB[1], 0.66)   # the filter press: tail x, head x, its line y, depth
 PACK = []
 CAKE = []
-LAST_LEAF_E = PRESS[0] + 0.2 + 0.1 * 4 + 0.045
+LEAVES = (2, 3, 4)                        # T12: the press's three leaves (pitch 0.1 from the tail): see press_unit
+PRESS_BED = []                            # T12: the fixed parts drawn in the press's sheet too (press_unit)
+LAST_LEAF_E = PRESS[0] + 0.2 + 0.1 * LEAVES[-1] + 0.045
 CAKE_T, CAKE_Z0, CAKE_D = 0.08, 0.62, PRESS[3] - 0.18
 RAM_Z = 1.14
+ROD_E = LAST_LEAF_E - STROKE - 0.025                       # the guide rod's east end: inside the last leaf, open
+CHUTE = (LAST_LEAF_E - STROKE - 0.015, PRESS[1] - 0.1 - 0.09 - 0.005)   # the chute mouth's west and east ends
 MANI = TK.get("manifold")                 # (x0, y0, x1, y1): the sampling manifold's skid, its line along x
 USERS = {}                                # connection index -> the vessel that owns it (for the flow sheet)
 NOZZLE = {}                               # connection index -> how its neck meets that vessel (collar(), below)
@@ -2498,25 +2504,48 @@ def press_unit():
     px, py = DB
     dw = TK.get("dropbox_w", (0.455, 0.455))         # the drop box's reach west and east of its centre
     dd = TK.get("dropbox_d", 0.45)
+    o0 = len(OBJS)
     box((px + (dw[1] - dw[0]) / 2, py, 0.27), (dw[0] + dw[1], 2 * dd, 0.54), "lead", bevel=0.025)
     box((px + 0.035, py - dd - 0.005, 0.27), (0.8, 0.02, 0.12), "hazard", bevel=0)
     cyl((px + 0.035, py, 0.56), 0.36, 0.04, "dark_steel", verts=32)
+    # T12: the rails run from the tail stand, which is bolted down, to the head (they used to reach
+    # STROKE past the tail, for a tail that moved)
     for s_ in (-1, 1):
-        box(((L0 - STROKE + L1) / 2, yp + s_ * (d / 2 - 0.03), 1.18), (L1 - L0 + STROKE, 0.07, 0.08), "bare",
-            bevel=0.01)
+        box(((L0 + L1) / 2, yp + s_ * (d / 2 - 0.03), 1.18), (L1 - L0, 0.07, 0.08), "bare", bevel=0.01)
     with grp("press"):
-        PACK.append(box((L0 + 0.06, yp, 0.92), (0.12, d, 0.66), "dark_steel"))
-        for i in range(5):
+        # T12 (Liam, 2026-10-29, "Fix it"): the tail stand stays put, as a real press's does; only the
+        # leaves back off, towards it, so nothing moving ever passes over the drop box's lid in any
+        # direction. Three leaves where five were, each as before, at the head's end of the rails:
+        # the stroke's room lies between the tail stand and the first leaf
+        box((L0 + 0.06, yp, 0.92), (0.12, d, 0.66), "dark_steel")
+        for i in LEAVES:
             PACK.append(box((L0 + 0.2 + 0.1 * i, yp, 0.9), (0.09, d - 0.08, 0.56), "lead" if i % 2 else "cream",
                             bevel=0.01))
     box((L1 - 0.1, yp, 0.94), (0.18, d + 0.04, 0.72), "dark_steel")
     cyl((L1 + 0.08, yp, RAM_Z), 0.14, 0.2, "green", rot=(0, PI / 2, 0), verts=24)
     handwheel((L1 + 0.22, yp, RAM_Z), 0.15, axis=(1, 0, 0), mat="yellow")
-    x0, x1 = LAST_LEAF_E - STROKE - 0.015, L1 - 0.1 - 0.09 - 0.005
-    box(((x0 + x1) / 2, yp, 0.582), (x1 - x0, CAKE_D + 0.03, 0.006), "dark", bevel=0)
+    # the chute mouth the cake drops through: a dark throat in a raised steel lip (west, north and south;
+    # the head's foot closes it east), so the opening shows the mouth's edge and depth, not a void
+    x0, x1 = CHUTE
+    box(((x0 + x1) / 2, yp, 0.582), (x1 - x0, CAKE_D + 0.03, 0.006), "throat", bevel=0)
+    lw, lz = 0.025, (0.585, 0.605)
+    box((x0 - lw / 2, yp, sum(lz) / 2), (lw, CAKE_D + 0.03 + 2 * lw, lz[1] - lz[0]), "dark_steel", bevel=0.004)
+    for s_ in (-1, 1):
+        box(((x0 + x1) / 2, yp + s_ * ((CAKE_D + 0.03) / 2 + lw / 2), sum(lz) / 2),
+            (x1 - x0, lw, lz[1] - lz[0]), "dark_steel", bevel=0.004)
     with grp("press"):
         CAKE.append(box((LAST_LEAF_E + CAKE_T / 2, yp, CAKE_Z0 + 0.25), (CAKE_T, CAKE_D, 0.5), "cake", bevel=0.02))
+    # the stroke's room between the tail stand and the leaves is the press's own frame: a steel bed plate
+    # over the lid, and the guide rod the leaves ride on, from the tail stand into the pack (a bore in each leaf)
+    bx0, bx1 = L0 + 0.12, x0 - lw
+    box(((bx0 + bx1) / 2, yp, 0.5925), (bx1 - bx0, d - 0.12, 0.015), "bare", bevel=0.003)
+    cyl(((L0 + 0.12 + ROD_E) / 2, yp, 0.9), 0.035, ROD_E - L0 - 0.12, "bare",
+        rot=(0, PI / 2, 0), verts=16)
     hazard_tag((L1 - 0.1, yp - d / 2 - 0.035, 1.12), 0.14, 0.06)
+    # T12: what the opening press uncovers is drawn in the press's own sheet, lit as each frame stands
+    # (the drop box, its lid and chute mouth, the rails, the head): the plate's own pixels there carry the
+    # shut press's shadow, a black void once the leaves move
+    PRESS_BED.extend(o for o in OBJS[o0:] if PART[o.name] == "body")
     # the filtrate: off the press head into the receiver's crown
     hose(route("filtrate"), r=0.1, mat="hose_k")
 
@@ -3709,16 +3738,18 @@ MEANT = [
     (r"^leg particle$", "", r"^prism(\.\d+)?\[casing\]", "inside the glass, where the leg stands down through the roof (T06g)"),
     (r"^leg particle$", "", r"\[bare\] at (" + "|".join(_xy(l_[0], l_[1]) for l_ in LEGS) + r"),1\.43\)",
      "inside the glass, behind the leg's middle band"),
-    (r"^press pack$", "", r"\[bare\] at (" + "|".join(_xy((_L0 - STROKE + _L1) / 2, _YP + s_ * (_DD / 2 - 0.03))
+    (r"^press pack$", "", r"\[bare\] at (" + "|".join(_xy((_L0 + _L1) / 2, _YP + s_ * (_DD / 2 - 0.03))
                                                       for s_ in (-1, 1)) + r"),1\.18\)",
-     "the leaves and tail stand riding on the rails"),
+     "the leaves riding on the rails"),
     (r"^press pack$", "", r"\[dark_steel\] at " + _xy(_L1 - 0.1, _YP), "the last leaf shut against the head"),
     (r"^press pack$", "", r"^cake: ", "the cake on the leaf it peels off"),
-    (r"^cake$", "", r"\[cream\] at (" + "|".join(_xy(_L0 + 0.2 + 0.1 * i, _YP) for i in (0, 2, 4)) + ")",
+    (r"^press pack$", "", r"\[bare\] at " + _xy((_L0 + 0.12 + ROD_E) / 2, _YP) + r",0\.90\)",
+     "the leaves riding on their guide rod"),
+    (r"^cake$", "", r"\[cream\] at (" + "|".join(_xy(_L0 + 0.2 + 0.1 * i, _YP) for i in LEAVES if i % 2 == 0) + ")",
      "the cake on the leaf it peels off"),
-    (r"^cake$", "", r"\[(lead|dark_steel|dark)\] at (" + "|".join(
+    (r"^cake$", "", r"\[(lead|dark_steel|throat)\] at (" + "|".join(
         _xy(x_, _YP) for x_ in (DB[0] + (TK.get("dropbox_w", (0.455, 0.455))[1] - TK.get("dropbox_w", (0.455, 0.455))[0]) / 2,
-                                DB[0] + 0.035, (LAST_LEAF_E - STROKE - 0.015 + _L1 - 0.195) / 2)) +
+                                DB[0] + 0.035, sum(CHUTE) / 2)) +
      r"),0\.(27|56|58)", "the cake dropping through the chute mouth into the drop box"),
 ]
 
@@ -4304,9 +4335,12 @@ for D_, _deg in contract.DIRECTIONS["four"]:
         for f in range(n):
             pose(0, f) if name == "press" else pose(f)
             setup(visible=(name,), holdouts=others)
+            if name == "press":
+                for o in PRESS_BED:          # T12: drawn, lit as this frame stands, not held out
+                    o.is_holdout = False
             render(path(contract.frame(name, f)))
         no_border()
-    # the press's tracked part: the leaf pack and tail stand alone, measured, not packed
+    # the press's tracked part: the leaf pack alone, measured, not packed
     border(WINDOWS["press"])
     for f in range(PRESS_NF):
         pose(0, f)
