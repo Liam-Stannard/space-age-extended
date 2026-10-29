@@ -42,7 +42,7 @@ argument is "spend electricity to make a finite thing last", and on a planet
 whose central tension is already electricity, that lands the trade in exactly the
 right place.
 
-**Locale** (locale/en/strings.cfg): *"Presses rather than hammers, and wastes half as much ore for it."* / *"Takes half as much out of a patch for what it yields."*
+**Locale** (locale/en/strings.cfg), item and building: *"A heavy drill that uses its own weight to mine. Depletes resources at a reduced rate."*
 
 ---
 
