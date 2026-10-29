@@ -1,8 +1,7 @@
 # Factorio Building — Art & Implementation Specification
 
 **Ballast Drill.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
-approved and a canonical plate has been measured.
+concept sheet. Not a specification: §6 stays open; §12 and §13 are filled from the wired sheets (T03b).
 
 **The model, signed off 2026-10-29** (T03m, rig-round-8): the plate, chute ports and wet-only hoses of §3 and §8.
 
@@ -216,6 +215,57 @@ connection, because north is where the ore comes out.
 **The hoses are wet-only.** The drill's dry graphics carry no plumbing. Its `wet_mining_graphics_set`, which the engine draws only on an ore that needs a fluid, adds the hoses from each fitting over the plate top (Liam: *"Keep wet-only, smaller"*). No `pipe_picture`. Vanilla's covers are on unconnected fittings, and north covers are hidden (`secondary_draw_orders = { north = -1 }`; Liam: *"Hide them"*).
 
 So on kamacite today the drill shows its closed fittings in the plate wall and nothing else. The day an ore asks for a fluid, the hoses appear by themselves, in all four directions, and no plate is repainted.
+
+---
+
+# 12. Sprite Dimensions and Files
+
+Every size and shift is copied from the packer's `meta.json`, never measured off a sheet. **Scale** `0.5`, 64 source px a tile. **Regenerate** with `concept/ballast-drill/model/rig-round-8/take.sh cast <scratch>`. It writes `plate/sheets`, `dry/` and `wet/`, each with its `meta.json`.
+
+One file per sheet per direction in `graphics/entity/ballast-drill/`, named `<sheet>-<direction>.png`:
+
+| Sheet | Frames | North | East | South | West |
+| --- | ---: | --- | --- | --- | --- |
+| `base` | 1 | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) |
+| `base-shadow` | 1 | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) |
+| `chute` | 5 | 26×28 @ (-0.1875, -2.75) | 24×30 @ (+2.29688, -0.65625) | 60×58 @ (+0.01562, +2.0625) | 24×30 @ (-2.29688, -0.28125) |
+| `stroke` | 24 | 305×323 @ (+0.13281, -0.61719) | 305×323 @ (+0.13281, -0.61719) | 305×323 @ (+0.13281, -0.61719) | 306×323 @ (+0.125, -0.61719) |
+| `ore` | 24 | 39×11 @ (+0.02344, -2.97656) | 35×44 @ (+2.74219, -0.0625) | 41×39 @ (+0.00781, +2.69531) | 35×42 @ (-2.74219, -0.07812) |
+| `dust` | 24 | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) |
+| `status-lamp` | 1 | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) |
+| `rig` | 1 | 330×82 @ (+0, -1.07812) | 226×166 @ (-0.8125, -1.73438) | 122×87 @ (+0, -2.35156) | 226×166 @ (+0.8125, -1.73438) |
+| `rig-front` | 2 | 191×116 @ (+0.00781, +1.60938) | 259×168 @ (-0.52344, +1.20312) | 326×112 @ (+0, +0.76562) | 258×168 @ (+0.53125, +1.20312) |
+| `rig-shadow` | 1 | 349×250 @ (+0.21094, +0.57812) | 278×332 @ (-0.34375, -0.0625) | 349×276 @ (+0.21094, -0.5) | 282×332 @ (+0.73438, -0.0625) |
+
+The base is the same plate in all four directions. The shadows differ only by what the chute throws. `rig`, `rig-front` and `rig-shadow` are the wet set's alone.
+
+---
+
+# 13. Factorio Prototype
+
+**Prototype Type:** `mining-drill`, derived from vanilla's `big-mining-drill` · **Prototype Name:** `sae-ballast-drill`
+
+```text
+graphics_set               the dry set: what every kamacite drill draws
+  animation                the plate and its shadow, 24 frames held (0.4)
+  working_visualisations   in this order:
+    chute                  always_draw, 5 frames at 0.5 (vanilla's output speed)
+    stroke                 always_draw, 24 frames at 0.4
+    ore                    apply_tint "resource-color", synced_fadeout
+    dust                   apply_tint "resource-color", synced_fadeout
+    status-lamp            always_draw, apply_tint "status", draw_as_glow
+wet_mining_graphics_set    the same, plus the hoses, drawn only on an ore
+                           that asks for a fluid:
+    rig                    always_draw, after the chute
+    rig-front              always_draw, after the dust, with rig-shadow as
+                           its shadow layer
+input_fluid_box            vanilla's four connections; no pipe_picture;
+                           pipe_covers = derive.pipe_covers();
+                           secondary_draw_orders = { north = -1 }
+vector_to_place_result     { 0, -2.85 }
+```
+
+The order follows vanilla's big mining drill: output, fluids, particles, `fluids_front`, then its LEDs. On a dry drill the engine draws no cover, so a pipe laid beside one ends in vanilla's end cap. Facing east and south, the cap at the west connection lies over the plate's lower-left corner, as vanilla's own drill's does (Liam, 2026-10-29: *"Accept"*).
 
 ---
 
