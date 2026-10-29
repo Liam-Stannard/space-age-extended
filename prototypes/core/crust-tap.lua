@@ -318,12 +318,13 @@ do
 end
 
 -- Art: the Gas Pump's Blender model, the Flywheel Compressor
--- (concept/crust-tap/model-3x3/gas_pump.py, take 2 of the 3x3 round; the model
--- signed off by Liam 2026-10-27 with the v3 sight glass): a flywheel with its
--- yellow weight, two compressor cylinders and their crossheads on a crankcase,
--- the gauge board, the sight glass run, the lube tank, the lubricator off the
--- flywheel hub, and the discharge bottle whose fitting is the outlet. Ours, so
--- no `derive.placeholder_art`.
+-- (concept/crust-tap/model-3x3-r2/gas_pump.py, take 2 of the 3x3 round; the
+-- model signed off by Liam 2026-10-27 with the v3 sight glass, its outlet
+-- fitting reworked for vanilla's pipe and cover and signed off 2026-10-28): a
+-- flywheel with its yellow weight, two compressor cylinders and their
+-- crossheads on a crankcase, the gauge board, the sight glass run, the lube
+-- tank, the lubricator off the flywheel hub, and the discharge bottle whose
+-- fitting is the outlet. Ours, so no `derive.placeholder_art`.
 --
 -- **Four drawings, the whole machine turned** (Liam: "Whole machine turns"):
 -- the outlet is the fluid box, and it turns with the machine.
@@ -342,18 +343,16 @@ end
 --   - glass, below: the gas drifting in the sight glass, 24 frames.
 --
 -- Every size, shift, frame count and line length below is copied from the
--- model's sheets/meta.json and sheets/ports/meta.json; none was measured off a
--- sheet or typed from memory. Each file is named whole so
--- tools/collect-graphics-refs.py can see it. To regenerate, with any Blender 5
--- binary:
+-- model's sheets/meta.json; none was measured off a sheet or typed from
+-- memory. Each file is named whole so tools/collect-graphics-refs.py can see
+-- it. To regenerate, with any Blender 5 binary:
 --
 --   BLENDER=<blender> tools/blender/render.sh \
---       concept/crust-tap/model-3x3/gas_pump.py <scratch> --ports --icon
+--       concept/crust-tap/model-3x3-r2/gas_pump.py <scratch> --icon
 --
 -- then copy <scratch>/sheets/icon.png to graphics/icons/gas-pump.png, the
--- base, shadow, mech and glass sheets and ports/port-*.png into
--- graphics/entity/gas-pump/, and the numbers out of the two meta.json files
--- into the tables below.
+-- base, shadow, mech and glass sheets into graphics/entity/gas-pump/, and the
+-- numbers out of meta.json into the tables below.
 --
 -- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
 -- ticks, one turn a second (Liam: "One turn a second"). A drill is not a
@@ -381,8 +380,8 @@ local GP_SHEETS =
 {
   north =
   {
-    base   = { GP .. "base-north.png",   205, 221, { 0.00781, -0.19531 } },
-    shadow = { GP .. "shadow-north.png", 211, 200, { 0.14844, -0.0625 } },
+    base   = { GP .. "base-north.png",   205, 219, { 0.00781, -0.17969 } },
+    shadow = { GP .. "shadow-north.png", 211, 195, { 0.14844, -0.02344 } },
     mech   = { GP .. "mech-north.png",   131, 149, { -0.19531, 0.08594 } },
     glass  = { GP .. "glass-north.png",  14, 31,   { 1.15625, -0.49219 } }
   },
@@ -481,32 +480,25 @@ pump.migrate_horizontal_mirroring = nil
 -- turns with the machine; the pumpjack's corner-walking `positions` list goes.
 --
 -- **The outlet enters through a fitting in the casing** (Liam's rule,
--- 2026-10-21): the model draws a pad on the discharge bottle and a flanged
--- sleeve to the north edge, the bore open, into its base. The pipe pictures
--- are the model's own, a mating flange and a short spool per face
--- (sheets/ports/meta.json, each shift from the tile the connection points
--- into, as the engine draws them); the covers are vanilla's, capping the
--- outlet while nothing is joined, and `always_draw_covers = false` takes the
--- cap away once a pipe arrives (the model's own blind caps are not shipped:
--- the rule draws vanilla's). `secondary_draw_orders = { north = -1 }` puts a
--- north fitting behind the building, as vanilla's assemblers set it.
+-- 2026-10-21), and vanilla's pipe and cover meet it as they meet vanilla's
+-- pumpjack and assembler: the pump has no pipe pictures of its own (Liam,
+-- 2026-10-28: the shipped ones stuck out too far; "vanilla covers only but
+-- ensure they fit naturally into the model"). The fitting is in the base:
+-- facing north, the flanged pad on the discharge bottle, its top just over
+-- the edge line, so vanilla's cover shows above it and a joined pipe runs
+-- down behind into it (Liam: "B: pad on the bottle"); facing east, south and
+-- west, a flanged sleeve to the edge, which vanilla's cover and pipe flange
+-- meet.
 --
--- Facing north the open bell hides vanilla's cover: an agreed exception to the
--- cover rule (Liam, 2026-10-27, T13b judged: "Revert to before, it looks much
--- cleaner"). port-W is T13b's (trim-t13b/sheets/ports/, its meta.json), which
--- carries the plate's flange and sleeve over the 1-2 px seam facing west.
-local function gp_port(filename, width, height, shift)
-  return { filename = filename, priority = "extra-high", width = width, height = height, shift = shift, scale = 0.5 }
-end
+-- The covers are vanilla's, capping the outlet while nothing is joined.
+-- `always_draw_covers` defaults to true once there is no `pipe_picture`
+-- (prototype docs, doc-html/types/FluidBox.html), which would draw the cap
+-- under a joined pipe too; it is set false so a pipe takes it away.
+-- `secondary_draw_orders = { north = -1 }` draws the north cover behind the
+-- building, as vanilla's assemblers set it.
 pump.input_fluid_box = nil
 pump.output_fluid_box = {
   volume = 1000,
-  pipe_picture = {
-    north = gp_port(GP .. "port-N.png", 48, 41, { 0.0, 0.13281 }),
-    east = gp_port(GP .. "port-E.png", 20, 52, { -0.35938, -0.01562 }),
-    south = gp_port(GP .. "port-S.png", 48, 41, { 0.0, -0.55469 }),
-    west = gp_port(GP .. "port-W.png", 26, 52, { 0.40625, -0.01562 })
-  },
   pipe_covers = derive.pipe_covers(),
   always_draw_covers = false,
   secondary_draw_orders = { north = -1 },
