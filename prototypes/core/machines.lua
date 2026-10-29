@@ -1135,12 +1135,13 @@ data:extend({ furnace })
 -- -- which does return fluid -- is set on a plant, the port comes alive on a
 -- line the player already left room for.
 --
--- **The fittings are modelled into the plate, one plate per direction, and the
+-- **The stubs are modelled into the plate, one plate per direction, and the
 -- building turns with them** (spec §5, §7, §8; Liam, 2026-10-20, reversing the
--- 2026-09-17 one plate). Each connection enters the housing's wall through a
--- fitting that is part of that direction's render and casts and takes its own
--- shadows, so there is no `pipe_picture`: the engine draws nothing at a port
--- but vanilla's cover on one nothing is joined to. The entity carries no
+-- 2026-09-17 one plate; 2026-10-28, "Like the Gas Pump fix"). Each connection
+-- meets a low stub in the housing, as vanilla's chemical plant's do, which is
+-- part of that direction's render and casts and takes its own shadows, so there
+-- is no `pipe_picture`: vanilla's pipe joins the stub, and the engine draws
+-- nothing else at a port but vanilla's cover on one nothing is joined to. The entity carries no
 -- `not-rotatable` flag; the two inputs sit on the faced side and the output
 -- opposite, in every direction.
 --
