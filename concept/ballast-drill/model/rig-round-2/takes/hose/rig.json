@@ -1,0 +1,182 @@
+{
+ "take": "hose",
+ "units": "outer diameter, tiles (64 px a tile)",
+ "directions": {
+  "north": [
+   {
+    "pair": [
+     [
+      -2,
+      -1,
+      "W"
+     ],
+     [
+      -1,
+      2,
+      "S"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 3.98
+   },
+   {
+    "pair": [
+     [
+      2,
+      -1,
+      "E"
+     ],
+     [
+      1,
+      2,
+      "S"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 3.96
+   }
+  ],
+  "east": [
+   {
+    "pair": [
+     [
+      1,
+      -2,
+      "N"
+     ],
+     [
+      -2,
+      -1,
+      "W"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 4.36
+   },
+   {
+    "pair": [
+     [
+      1,
+      2,
+      "S"
+     ],
+     [
+      -2,
+      1,
+      "W"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 3.98
+   }
+  ],
+  "south": [
+   {
+    "pair": [
+     [
+      2,
+      1,
+      "E"
+     ],
+     [
+      1,
+      -2,
+      "N"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 4.35
+   },
+   {
+    "pair": [
+     [
+      -2,
+      1,
+      "W"
+     ],
+     [
+      -1,
+      -2,
+      "N"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 4.36
+   }
+  ],
+  "west": [
+   {
+    "pair": [
+     [
+      -1,
+      2,
+      "S"
+     ],
+     [
+      2,
+      1,
+      "E"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 3.96
+   },
+   {
+    "pair": [
+     [
+      -1,
+      -2,
+      "N"
+     ],
+     [
+      2,
+      -1,
+      "E"
+     ]
+    ],
+    "fitting": 0.44,
+    "riser": 0.48,
+    "head": 0.52,
+    "run": 0.428,
+    "flanges": 0.56,
+    "end_ring": "the signed-off port's",
+    "length": 4.35
+   }
+  ]
+ }
+}

@@ -4,6 +4,8 @@
 concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
 approved and a canonical plate has been measured.
 
+**The model, signed off 2026-10-29** (T03m, rig-round-8): the plate, chute ports and wet-only hoses of §3 and §8.
+
 Named for what makes it work rather than for where it stands: the Core's own
 drill, but "Core Drill" reads as a drill *for* cores, and every other building
 here already says Core in its description.
@@ -12,13 +14,14 @@ here already says Core in its description.
 
 # 0. Generation Contract
 
-| # | Asset | Canvas | Gate before moving on | State |
-| - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
-| 3 | Directional frames | portrait 2:3 | **Four are needed** — see §5 | blocked on 1 |
-| 5 | Working animation | portrait 2:3 | Loops without a visible seam | blocked on 3 |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
+| # | Asset | Gate before moving on | State |
+| - | ----- | --------------------- | ----- |
+| 0 | Options and concept | Liam picks | **done: option B, the Ring Press** |
+| 1 | Model | `--collide` 0; support audit 0 floating; coverage ≥ 92 % | **signed off 2026-10-29** (T03m, rig-round-8) |
+| 2 | Connections | vanilla's pipe joins (no gap) at all 4 connections in all 4 directions, 16/16; nothing of vanilla's pipe or cover overhangs the wall | **16/16** |
+| 3 | Animation | the stroke, dust and chute loop as signed off at round 6 | **done** |
+| 4 | Wiring | sheets in `graphics/`, four directions, dry and wet | **in progress** (T03b) |
+| 5 | Icon | legible at 32 px | done, from the round-7 model; re-render after wiring? |
 
 ---
 
@@ -31,9 +34,7 @@ here already says Core in its description.
 `big-mining-drill` as the reference for proportions and for
 `resource_drain_rate_percent`.
 
-**Purpose:** Works kamacite ore **without wasting it.** Slower than an electric
-mining drill and far hungrier for power, but it takes half as much out of the
-patch for every ore it delivers.
+**Purpose:** Works kamacite ore **without wasting it.** It is the Core's only drill and the only machine that works kamacite at all. It mines a little faster than the big mining drill (3.0 against 2.5), draws twice its power (600 kW), and takes half as much out of the patch for every ore it delivers.
 
 **Why it matters:** kamacite patches *genuinely run out* (`decisions.md` D12) and
 nothing else in the mod cares. This is the only building in the game whose
@@ -41,9 +42,7 @@ argument is "spend electricity to make a finite thing last", and on a planet
 whose central tension is already electricity, that lands the trade in exactly the
 right place.
 
-**Locale:** *"Leans on the ore rather than tearing at it."* / *"Half the drain
-for every ore delivered, at twice the power and two thirds the speed. The patch
-is not coming back; the electricity is."*
+**Locale** (locale/en/strings.cfg): *"Presses rather than hammers, and wastes half as much ore for it."* / *"Takes half as much out of a patch for what it yields."*
 
 ---
 
@@ -53,10 +52,10 @@ is not coming back; the electricity is."*
 | --- | --- |
 | Tile footprint | 5×5, matching the big mining drill |
 | Directions | 4 |
-| Resource categories | `basic-solid` |
-| `mining_speed` | ~0.65 of the electric drill's, per ore |
+| Resource categories | `sae-kamacite` (the only drill that works kamacite) |
+| `mining_speed` | **3.0**, past the big mining drill's 2.5 |
 | `resource_drain_rate_percent` | **50** — vanilla precedent: `big-mining-drill.lua:568` |
-| Energy | 900 kW, electric, `secondary-input` |
+| Energy | **600 kW**, electric, `secondary-input` |
 | Surface conditions | `gravity` ≥ 45 — the Core alone |
 | Module slots | 4 |
 
@@ -85,6 +84,8 @@ splayed wide enough that it is obviously bracing rather than standing.
 **The anti-read is a derrick.** No tower, no headframe, no rotating superstructure.
 Everything about this machine is low and wide, because its argument is mass.
 
+**The whole machine stands on one raised cast plate** (Liam, 2026-10-28: *"Add the drill to a slighty raised plate so the pipe connections go into the wall"*; *"The whole structure should sit on top of the plate … no floating walls"*). The plate fills the footprint to its edge, its top at 0.85 tile, above the fittings. Its wall runs unbroken along all four faces, and the corners stay open, where the splayed legs stand on the ground. Every part stands on the plate top or on a part that does.
+
 ## 3.2 Key Visual Features
 
 * A **ballast block** — the tallest element, an unadorned slab of metal riding on
@@ -92,7 +93,9 @@ Everything about this machine is low and wide, because its argument is mass.
 * **Splayed bracing legs** at the four corners, each with a broad foot pad.
 * A **cutting head** under the block, mostly hidden, seen only as a rim of
   disturbed ground.
-* An **output boom** on one side, short and stubby.
+* A **chute through a port in the plate wall** on the face the ore leaves by: a low framed port at ground level, its mouth flush, the plate bridging it, the chute's drive on the plate top over it. The other three faces' ports are shut with a flush bolted hatch.
+* **The raised cast plate** under everything, its wall unbroken, the corners open for the legs.
+* **Hoses only when connected:** on an ore that needs a fluid, a hose leaves each connected fitting over the plate top to where the fluid is used, 0.32 bore as vanilla's, one curve, nozzle down.
 
 ### Signature Feature
 
@@ -171,8 +174,7 @@ disclaimer.
 
 * [x] North · [x] East · [x] South · [x] West
 
-**Direction count:** `4`. The output boom points a different way in each, and a
-drill whose boom does not match its belt is the single most confusing thing a
+**Direction count:** `4`. The chute faces a different way in each, and a drill whose chute does not match its belt is the single most confusing thing a
 mining building can do.
 
 ---
@@ -181,7 +183,7 @@ mining building can do.
 
 | Connection | Where | Notes |
 | ---------- | ----- | ----- |
-| Ore out | `vector_to_place_result` `{ 0, −2.85 }` — the **north** face, centred | must match the boom tip in all four directions |
+| Ore out | `vector_to_place_result` `{ 0, −2.85 }` — the **north** face, centred | must match the chute's mouth in all four directions; `{ 0, −2.85 }` kept (Liam: *"Grow canvas, keep spot"*) |
 | Mining fluid in | four connections, vanilla's big-mining-drill layout | **declared, and nothing uses them yet** |
 | Electric | no visible connector | poles reach it wirelessly |
 | Items in | none | no inserter feeds this building |
@@ -195,7 +197,7 @@ mining building can do.
 ```
 
 **`vector_to_place_result` is the one number that cannot be guessed.** It has to
-be measured off each directional plate so the ore appears at the boom's tip and
+be measured off each directional plate so the ore appears at the chute's mouth and
 not through the chassis.
 
 **This table used to say "Fluids: none; no `input_fluid_box`; this drill takes no
@@ -209,128 +211,13 @@ to a finished plate is a repaint of all four directions.
 who has plumbed a big mining drill has already learned this one. North takes no
 connection, because north is where the ore comes out.
 
-**The plate draws none of them.** Vanilla's own drills carry no plumbing in their
-art at all — the big mining drill's north sprite is a gantry and two ladders and
-nothing else. The fitting is the fluid box's `pipe_covers`, and the engine stamps
-it at whichever connections are live; **on an ore that needs no fluid it draws
-nothing.**
+**Each connection enters a closed fitting in the plate wall**, and vanilla's pipe joins it there. Nothing of vanilla's pipe or cover may overhang the wall or lap onto the plate top (Liam, 2026-10-28: the overhang is *"Where the game pipe joins"*). The south face sits at the footprint edge like the other three (*"A: face back to edge"*).
 
-That is what makes keeping the box free. Today the covers never appear. The day a
-recipe asks for a fluid, the flanges appear by themselves, in the right places,
-in all four directions, and no plate is repainted — which is the whole reason to
-settle the layout now and draw nothing.
+**The hoses are wet-only.** The drill's dry graphics carry no plumbing. Its `wet_mining_graphics_set`, which the engine draws only on an ore that needs a fluid, adds the hoses from each fitting over the plate top (Liam: *"Keep wet-only, smaller"*). No `pipe_picture`. Vanilla's covers are on unconnected fittings, and north covers are hidden (`secondary_draw_orders = { north = -1 }`; Liam: *"Hide them"*).
 
-So: **no flange, no stub, no hose, no valve, no capped port anywhere on the
-art.** Painting them in would put four visible sockets on a machine with no use
-for them.
+So on kamacite today the drill shows its closed fittings in the plate wall and nothing else. The day an ore asks for a fluid, the hoses appear by themselves, in all four directions, and no plate is repainted.
 
 ---
-
-# 11. Generation Requirements
-
-## Concept Sheet Prompt
-
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age mining machine, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a broad low wide five-by-five
-ore press standing on an airless metallic world, much wider than it is tall.
-Four splayed bracing legs with wide foot pads reach out to the corners. A
-heavy dark unadorned ballast slab rides above the centre on four short pale
-vertical guide rails. Directly beneath the slab, a toothed circular cutting
-head is set into the ground and mostly hidden, with only its rim showing. A
-short stubby empty output boom projects from one side. Dark grey-brown armour,
-charcoal ballast, pale grey rails, small yellow hazard banding on the foot
-pads only. No tower, no derrick, no headframe, no glow, no flame, no smoke.
-Panels: main view, front elevation, side elevation, a detail of the cutting
-head beneath the raised slab, and the slab shown at the top and bottom of its
-stroke. Title the sheet BALLAST DRILL. Draw no loose material anywhere: no
-ore, powder, fibre, grit, debris or product on the ground, in bins, at chutes,
-on trays or spilling from the machine. Factorio machines never show what they
-make, so every chute, port, bin and tray is drawn as empty machinery. Every
-pipe connection must run down to ground level and stop flush at the edge of
-the tile footprint; no pipe may end in mid-air and none may leave the top of
-the building. Nothing may extend past the tile footprint, pipework included,
-and the tile-grid panel must show the whole machine inside the grid with no
-overhang.
-```
-
----
-
-
-## Master Concept Prompt
-
-Stage 1. **Attach `concept/ballast-drill/adopted/B-sheet.png` and
-nothing else** — same machine as the sheet's hero view, not a new design.
-
-**The ring is RAISED.** This plate is the top of the press stroke and the frame
-the animation is cut from; a ring drawn seated would bake the bottom of the
-stroke into the still machine.
-
-**The output is rebuilt.** The adopted sheet drew an upright boom. It becomes a
-low drag-chain chute set into the north face — measured off vanilla, with the
-numbers in `ballast-drill-options/README.md`.
-
-```text
-FACTORIO SPACE AGE BUILDING SPRITE -- MASTER PLATE
-
-Redraw the machine in the ATTACHED SHEET's hero view as a single clean game
-sprite. Same building, same design, same camera. Do not redesign it, do not
-add or remove parts except where this brief says so, and do not draw any
-panels, labels, text, borders or background furniture.
-
-== WHAT IT IS ==
-The Ballast Drill: a 5x5 mining machine on an airless metal world at fifty
-gravities. It does not hammer and it does not spin -- it brings weight to bear.
-A low riveted deck fills the footprint. A short capped central column rises from
-its middle, blunt and closed. A heavy cast BALLAST RING, an annulus almost the
-full width of the machine, rides around that column with deep chamfers and cast
-webs across its top face. Three guide columns spaced round the ring, each with a
-visible shoe wrapping it. A hammered landing shoulder at the base for the ring to
-seat on. Compact geared winch housings at two of the three columns, gears
-exposed. Riveted seams, bolt lines, lifting lugs, cable cleats, honest wear.
-
-== THE OUTPUT, WHICH IS THE ONE CHANGE FROM THE SHEET ==
-The attached sheet drew a tall upright boom. REPLACE IT. This machine gets a
-SHORT DRAG-CHAIN SCRAPER CONVEYOR SET INTO THE NORTH FACE at ground level:
-sloping down and forward out of the deck, a chain-and-flight bed running in a
-guarded channel, a small drive sprocket at its head. It is BUILT INTO the
-machine, not bolted on top of it. Its mouth is FLUSH WITH THE NORTH TILE EDGE.
-NOTHING about it rises above the roofline and NOTHING overhangs the footprint.
-It is drawn EMPTY -- the ore is placed by the engine in front of the mouth and is
-never painted into the sprite.
-
-== CAMERA ==
-Looking steeply down from above, MOSTLY ROOF with only a shallow near face
-visible, square to the tile grid: the near face parallel to the bottom edge of
-the frame, the side faces parallel to the left and right edges. The square deck
-reads as a SQUARE, never a diamond. Not rotated corner-on, not a front
-elevation. Match the attached sheet's hero view exactly.
-
-== HARD REQUIREMENTS ==
-- ONE machine, centred, filling the frame, nothing else in the image
-- FULLY TRANSPARENT BACKGROUND. No ground, no floor, no shadow on the ground,
-  no grid, no vignette, no backdrop of any kind
-- THE BALLAST RING IS RAISED, clear of the landing shoulder, at the top of its
-  travel, with the guide columns visible beneath it
-- DRAW NO FLUID FITTINGS AT ALL: no flange, no pipe stub, no hose, no valve, no
-  manifold, no capped port, anywhere on the machine. Vanilla's own drills carry
-  no plumbing in their art; the engine stamps the fitting at whichever
-  connections are live, and draws nothing on an ore that needs no fluid
-- THE LAMP LENS is PAINTED WHITE -- a plain white lens, not lit, not coloured,
-  not glowing. The engine colours it in game
-- NOTHING IS HOT AND NOTHING GLOWS anywhere on the machine
-- The cutting head is PART OF THE MACHINE: a shrouded rim under the deck. No
-  disturbed earth, no crater, no spoil ring, no ground texture
-- No loose ore, rock, spoil, powder, grit, dust or debris anywhere
-- Nothing extends sideways past the 5x5 deck, the chute included
-- No tower, no headframe, no mast, nothing reaching upward
-- No text, no labels, no logos, no wordmarks, no watermarks
-
-== OUTPUT ==
-One square image, the machine alone on transparency, sharp and clean at full
-resolution, in the rendering and finish of the attached sheet.
-```
 
 # 15. Factorio Prototype — sketch
 
@@ -338,14 +225,14 @@ resolution, in the rendering and finish of the attached sheet.
 {
   type = "mining-drill",
   name = "sae-ballast-drill",
-  resource_categories = { "basic-solid" },
-  mining_speed = 0.65,
+  resource_categories = { "sae-kamacite" },
+  mining_speed = 3.0,
   resource_drain_rate_percent = 50,   -- big-mining-drill.lua:568 is the precedent
-  energy_usage = "900kW",
+  energy_usage = "600kW",
   energy_source = { type = "electric", usage_priority = "secondary-input" },
   surface_conditions = { { property = "gravity", min = 45 } },
   module_slots = 4,
-  vector_to_place_result = { --[[ measured per direction; see §8 ]] }
+  vector_to_place_result = { 0, -2.85 },   -- the north face; turned by the engine (§8)
 }
 ```
 

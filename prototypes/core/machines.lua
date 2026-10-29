@@ -438,7 +438,7 @@ drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- generous: with nothing to be strictly worse than, its numbers can describe the
 -- machine instead of defending it.
 drill.resource_categories = { "sae-kamacite" }
--- **The four inherited fluid connections stay, and the engine draws them.**
+-- **The four inherited fluid connections stay, and the engine draws them only wet.**
 --
 -- Nothing uses them yet: kamacite's `minable` carries no `required_fluid`, so
 -- today they accept nothing. They are kept deliberately, because a mining fluid
@@ -453,14 +453,15 @@ drill.resource_categories = { "sae-kamacite" }
 -- takes two flanking the centre, and north takes none -- because north is where
 -- the ore comes out (`vector_to_place_result` is { 0, -2.85 }).
 --
--- **And the plate draws none of them**, as vanilla's drills draw none -- the big
--- mining drill's north sprite is a gantry and two ladders and nothing else. The
--- fittings belong to the fluid box: a stub per face in `pipe_picture` and a
--- blind cap in `pipe_covers`, both rendered from the drill's own model (see
--- "Art" below, where they are set), which the ENGINE stamps at the connections
--- and turns with the drill. Painting flanges into the plate instead would put
--- four visible sockets on a machine that has no use for them, which is the Vent
--- Pump's §19 complaint exactly.
+-- **And the plumbing draws only when there is something to plumb**, as the big
+-- mining drill's does. Its pipe connections are layers of its
+-- `wet_mining_graphics_set` alone, which the engine draws only on an ore that
+-- asks for a fluid; on any other ore the drill has no fluid box at all, and the
+-- engine stamps nothing at the connections. This drill does the same: the hoses
+-- are its own wet layers (see "Art" below), and the fittings the engine stamps
+-- are vanilla's pipe covers, as the big drill's are. Painting flanges and hoses
+-- into the plate that every drill draws would put four sockets on a machine
+-- that has no use for them, which is the Vent Pump's §19 complaint exactly.
 drill.input_fluid_box = table.deepcopy(
   data.raw["mining-drill"]["big-mining-drill"].input_fluid_box)
 drill.resource_drain_rate_percent = 50
@@ -478,44 +479,77 @@ drill.module_slots = 4
 drill.surface_conditions = HIGH_G
 
 -- Art: the Ring Press, option B of five (concept/ballast-drill/options/),
--- rendered in Blender from concept/ballast-drill/model/ballast_drill.py and
--- signed off by Liam at round 7, 2026-10-10.
+-- signed off by Liam at round 7, 2026-10-10, and rebuilt for its plumbing in
+-- task ballast-drill-ports: the cast take, signed off 2026-10-29 (T03m).
 --
 -- A heavy cast ring riding up and down three guide columns round a capped
 -- central column that does not move, in a press frame with red-oxide
 -- gear-houses, on a raised cast chassis braced by four splayed legs. Nothing
 -- about it rises, because the anti-read for this building is a derrick.
 --
+-- **What the rebuild changed.** Round 7's fittings were a stub and a blind cap
+-- per face, rendered from the model and stamped by the engine as the fluid
+-- box's `pipe_picture` and `pipe_covers`; but the engine stamps a face's one
+-- sheet at every connection on that face, so 8 of the 16 (four connections,
+-- four directions) showed a fitting rendered for another tile (T01). Now the drill
+-- stands on a raised cast plate (option B2, its wall unbroken round all four
+-- faces, 0.85 tile high) with a wall fitting at each connection, and the fluid
+-- box has no `pipe_picture` at all. The hoses that feed
+-- the fittings are layers of their own, drawn only by
+-- `wet_mining_graphics_set` (below), and an unconnected fitting gets vanilla's
+-- pipe cover, as the big mining drill's does. Its wall stands at the footprint
+-- edge on every face, so vanilla's pipe, and its cover, meet the fitting there
+-- and lie on nothing of the plate top (Liam, T03m: "face back to edge").
+--
 -- **Rendered, not cut**, as the Drop Crusher and the Reaction Plant are: every
 -- pass comes off one model through one calibrated camera (tools/blender/rig.py)
 -- on one canvas with the entity origin at its centre, so the layers register by
 -- construction. Every size, shift, frame count and line length below is copied
--- from the two meta.json files the packers write; none was measured off a
--- sheet. To regenerate, with any Blender 5 binary:
+-- from the meta.json files the packers write; none was measured off a sheet.
+-- To regenerate:
 --
---   BLENDER=<blender> tools/blender/render.sh \
---       concept/ballast-drill/model/ballast_drill.py <scratch> --ports --icon
+--   concept/ballast-drill/model/rig-round-8/take.sh cast <scratch>
 --
--- then copy <scratch>/sheets/icon.png to graphics/icons/ballast-drill.png, the
--- other <scratch>/sheets/*.png and <scratch>/sheets/ports/*.png into
--- graphics/entity/ballast-drill/, and the numbers out of the two meta.json
--- files into BD_SHEETS and the port sprites below.
+-- which renders the plate's passes and the wet rig's through
+-- tools/blender/render.sh (the Blender in tools/paths.conf), and combine.py
+-- then lays them out as the engine draws a dry drill and a wet one. Copy
+-- <scratch>/plate/sheets/*.png (base, base-shadow, chute, stroke, ore, dust,
+-- status-lamp) and <scratch>/wet/rig*.png (rig, rig-front, rig-shadow) into
+-- graphics/entity/ballast-drill/, and the numbers out of
+-- <scratch>/plate/sheets/meta.json and <scratch>/wet/meta.json into BD_SHEETS;
+-- <scratch>/dry/meta.json repeats the plate's and must agree with it. The icon
+-- is still round 7's (ballast_drill.py --icon).
 --
 -- **The body is one plate, the same in all four directions; what turns is the
 -- output.** The chute and the ore falling off it are their own layers per
 -- direction, as vanilla's big mining drill draws
 -- `big-mining-drill-{N,E,S,W}-output`, so the art follows
--- `vector_to_place_result` round when the drill is rotated. The four base and
--- shadow sheets are the one render, kept one per direction so that every
--- direction reads off its own meta.json entry.
+-- `vector_to_place_result` round when the drill is rotated. The four base
+-- sheets are the one plate, and the four shadows differ only by what the chute
+-- throws; each is kept per direction so that every direction reads off its own
+-- meta.json entry.
 --
--- **The chute** is a short drag chain at ground level in the bay the ore leaves
--- by, inside the footprint with its mouth at the face edge, and drawn empty: the
--- template's convention 1, draw the chute and never what comes out of it. The
--- plate closes every bay with a flush bolted hatch, and the chute covers the
--- hatch of the face it uses. It is an always-drawn working visualisation, as
--- vanilla's output is, so an idle drill still has its chute; its 5-frame loop
--- runs at vanilla's output speed, 0.5.
+-- **The chute** is a framed port through the plate wall at ground level on the
+-- face the ore leaves by, with its drive on the plate top over the mouth, and
+-- drawn empty: the template's convention 1, draw the chute and never what comes
+-- out of it. The plate shuts the port on every face with a flush bolted hatch,
+-- and the chute draws the open port and its drive over the hatch of the face it
+-- uses. It is an always-drawn working visualisation, as vanilla's output is, so
+-- an idle drill still has its chute; its 5-frame loop runs at vanilla's output
+-- speed, 0.5.
+--
+-- **The rig is the wet set's alone**, as the big mining drill's pipe
+-- connections are (space-age/prototypes/entity/big-mining-drill.lua,
+-- `graphical_set(true)`): a hose from each wall fitting over the plate top,
+-- drawn only while the drill mines an ore that asks for a fluid. It is two
+-- always-drawn visualisations, placed where vanilla places its two: "rig", the
+-- runs behind the press, after the chute and under the stroke (vanilla's
+-- `fluids`, after its output); and "rig-front", the runs in front of the press,
+-- with the rig's shadow, over the stroke, ore and dust and under the lamp
+-- (vanilla's `fluids_front`, after its output particles and before its LEDs).
+-- The rig and the chute never share a pixel in any direction, so which of the
+-- two goes first changes nothing on screen. rig-front's two frames are the one
+-- render twice (the render contract's least animation); it does not move.
 --
 -- **The stroke is the animation, and the plate does not contain it.** The ring
 -- with its hub, spokes, guide shoes and ropes, the press frame and the
@@ -572,49 +606,64 @@ local BD_SPEED = 0.4             -- 0.4 in game: a drill's progress is 1
 local BD_CHUTE_SPEED = 0.5       -- vanilla's: big-mining-drill's output chain
 local BD_DIRECTIONS = { "north", "east", "south", "west" }
 
--- From sheets/meta.json, per direction: width, height, shift, and for an
--- animation its frame count and line length.
+-- From the take's meta.json files (see "Art" above), per direction: width,
+-- height, shift, and for an animation its frame count and line length.
+-- base to status-lamp are plate/sheets/meta.json's (dry/meta.json repeats
+-- base, base-shadow, chute and stroke); rig, rig-front and rig-shadow are
+-- wet/meta.json's.
 local BD_SHEETS =
 {
   north =
   {
-    base = { 326, 358, { 0, -0.25 } },
-    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
-    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
-    chute = { 56, 37, { 0, -2.32031 }, 5, 5 },
-    ore = { 41, 32, { 0.00781, -2.8125 }, 24, 24 },
-    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
-    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+    base = { 330, 362, { 0, -0.28125 } },
+    ["base-shadow"] = { 370, 330, { 0.375, -0.0625 } },
+    chute = { 26, 28, { -0.1875, -2.75 }, 5, 5 },
+    stroke = { 305, 323, { 0.13281, -0.61719 }, 24, 24 },
+    ore = { 39, 11, { 0.02344, -2.97656 }, 24, 24 },
+    dust = { 259, 271, { 0.02344, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.60156, 0.42969 } },
+    rig = { 330, 82, { 0, -1.07812 }, 1, 1 },
+    ["rig-front"] = { 191, 116, { 0.00781, 1.60938 }, 2, 2 },
+    ["rig-shadow"] = { 349, 250, { 0.21094, 0.57812 } }
   },
   east =
   {
-    base = { 326, 358, { 0, -0.25 } },
-    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
-    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
-    chute = { 58, 58, { 2.0625, -0.09375 }, 5, 5 },
+    base = { 330, 362, { 0, -0.28125 } },
+    ["base-shadow"] = { 370, 330, { 0.375, -0.0625 } },
+    chute = { 24, 30, { 2.29688, -0.65625 }, 5, 5 },
+    stroke = { 305, 323, { 0.13281, -0.61719 }, 24, 24 },
     ore = { 35, 44, { 2.74219, -0.0625 }, 24, 24 },
-    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
-    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+    dust = { 259, 271, { 0.02344, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.60156, 0.42969 } },
+    rig = { 226, 166, { -0.8125, -1.73438 }, 1, 1 },
+    ["rig-front"] = { 259, 168, { -0.52344, 1.20312 }, 2, 2 },
+    ["rig-shadow"] = { 278, 332, { -0.34375, -0.0625 } }
   },
   south =
   {
-    base = { 326, 358, { 0, -0.25 } },
-    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
-    stroke = { 310, 317, { 0.09375, -0.55469 }, 24, 24 },
-    chute = { 56, 63, { 0.01562, 2.00781 }, 5, 5 },
+    base = { 330, 362, { 0, -0.28125 } },
+    ["base-shadow"] = { 370, 330, { 0.375, -0.0625 } },
+    chute = { 60, 58, { 0.01562, 2.0625 }, 5, 5 },
+    stroke = { 305, 323, { 0.13281, -0.61719 }, 24, 24 },
     ore = { 41, 39, { 0.00781, 2.69531 }, 24, 24 },
-    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
-    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+    dust = { 259, 271, { 0.02344, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.60156, 0.42969 } },
+    rig = { 122, 87, { 0, -2.35156 }, 1, 1 },
+    ["rig-front"] = { 326, 112, { 0, 0.76562 }, 2, 2 },
+    ["rig-shadow"] = { 349, 276, { 0.21094, -0.5 } }
   },
   west =
   {
-    base = { 326, 358, { 0, -0.25 } },
-    ["base-shadow"] = { 370, 329, { 0.375, -0.05469 } },
-    stroke = { 313, 317, { 0.07031, -0.55469 }, 24, 24 },
-    chute = { 58, 58, { -2.0625, -0.09375 }, 5, 5 },
+    base = { 330, 362, { 0, -0.28125 } },
+    ["base-shadow"] = { 370, 330, { 0.375, -0.0625 } },
+    chute = { 24, 30, { -2.29688, -0.28125 }, 5, 5 },
+    stroke = { 306, 323, { 0.125, -0.61719 }, 24, 24 },
     ore = { 35, 42, { -2.74219, -0.07812 }, 24, 24 },
-    dust = { 260, 271, { 0.03125, -0.52344 }, 24, 24 },
-    ["status-lamp"] = { 13, 13, { -1.05469, 0.83594 } }
+    dust = { 259, 271, { 0.02344, -0.52344 }, 24, 24 },
+    ["status-lamp"] = { 13, 13, { -1.60156, 0.42969 } },
+    rig = { 226, 166, { 0.8125, -1.73438 }, 1, 1 },
+    ["rig-front"] = { 258, 168, { 0.53125, 1.20312 }, 2, 2 },
+    ["rig-shadow"] = { 282, 332, { 0.73438, -0.0625 } }
   }
 }
 
@@ -667,47 +716,22 @@ for _, d in ipairs(BD_DIRECTIONS) do
   }
 end
 
-local function bd_port(file, width, height, shift)
-  return
-  {
-    filename = BD .. file .. ".png",
-    priority = "extra-high",
-    width = width, height = height,
-    shift = shift,
-    scale = 0.5
-  }
-end
-
--- The fluid fittings, from sheets/ports/meta.json: rendered from the model in
--- its own cast iron to assembler 3's outline, one stub per face on the face's
--- middle tile, each shifted from the tile outside its port -- the one a pipe
--- picture is drawn relative to -- so the same sheet sits right at either port
--- on a face. The covers are the model's blind caps, drawn only while nothing
--- is plumbed to a port; `secondary_draw_orders` puts a north stub behind the
--- building, as assembler 3's does.
-drill.input_fluid_box.pipe_picture =
-{
-  north = bd_port("port-N", 53, 22, { 0.00781, 0.34375 }),
-  east = bd_port("port-E", 31, 71, { -0.72656, 0.05469 }),
-  south = bd_port("port-S", 63, 69, { -0.00781, -0.77344 }),
-  west = bd_port("port-W", 31, 72, { 0.72656, 0.01562 })
-}
-drill.input_fluid_box.pipe_covers =
-{
-  north = bd_port("cover-N", 53, 22, { 0.00781, 0.34375 }),
-  east = bd_port("cover-E", 31, 71, { -0.72656, 0.05469 }),
-  south = bd_port("cover-S", 63, 69, { -0.00781, -0.77344 }),
-  west = bd_port("cover-W", 31, 72, { 0.72656, 0.01562 })
-}
-drill.input_fluid_box.always_draw_covers = false
+-- The fluid box as the big mining drill's: no `pipe_picture`, since the wall
+-- fittings are the plate's and the hoses are the wet set's (see "Art" above),
+-- and vanilla's pipe covers on a connection nothing is plumbed to. Its
+-- `always_draw_covers` is left at the engine's default, as vanilla's is.
+--
+-- **A cover on a north-facing connection is drawn behind the drill**
+-- (`secondary_draw_orders` north = -1; Liam, T03m: "Hide them"). Only a turned
+-- drill has such a connection: one facing east or west (its west or east
+-- connection, turned) and two facing south (its south pair). In front of the
+-- drill, at vanilla's default order, the cover lay on the plate top over the
+-- red gear-houses (evidence/ballast-drill-t03m/s2/joins/north-covers-question.png);
+-- behind it, the plate hides it. A pipe joined there is the pipe's own sprite,
+-- drawn behind the drill as anything north of it is.
+drill.input_fluid_box.pipe_picture = nil
+drill.input_fluid_box.pipe_covers = derive.pipe_covers()
 drill.input_fluid_box.secondary_draw_orders = { north = -1 }
--- The big mining drill draws a second, plumbed copy of itself while it mines
--- with a fluid, and the copy came across with the deepcopy: on an ore that asks
--- for one, this drill wore vanilla's whole sprite set (seen in a client,
--- 2026-10-10, with a probe making kamacite ask for water). Without it the
--- engine draws `graphics_set` wet or dry, and the fittings above are the
--- plumbing.
-drill.wet_mining_graphics_set = nil
 
 -- The status lamp's colours: vanilla's electric mining drill's
 -- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
@@ -730,23 +754,61 @@ end
 
 drill.icon = "__space-age-extended__/graphics/icons/ballast-drill.png"
 drill.icons = nil
-derive.own_graphics(drill,
-{
-  status_colors = bd_status_colors(),
-  animation = bd_animation,
-  working_visualisations =
+-- The rig in front of the press, and the whole rig's shadow with it, as
+-- vanilla's `fluids_front` carries its pipe connections' shadow. The shadow is
+-- one frame, held for rig-front's two.
+local function bd_rig_front()
+  local visualisation = { name = "rig-front", always_draw = true }
+  for _, d in ipairs(BD_DIRECTIONS) do
+    local front = bd_sheet("rig-front", d)
+    visualisation[d .. "_animation"] =
+    {
+      layers =
+      {
+        front,
+        bd_sheet("rig-shadow", d, { draw_as_shadow = true, repeat_count = front.frame_count })
+      }
+    }
+  end
+  return visualisation
+end
+
+--- The drill's graphics set, dry or wet, built fresh each time as vanilla's
+--- `graphical_set(with_fluid)` is: the wet one is the dry one with the rig
+--- added, "rig" after the chute and "rig-front" after the dust (see "The rig is
+--- the wet set's alone" above). Everything else is the same in both, in the
+--- same order.
+local function bd_graphics_set(wet)
+  local visualisations =
   {
-    bd_visualisation("chute", { animation_speed = BD_CHUTE_SPEED }, { always_draw = true }),
-    -- After the chute: see "The stroke draws over the chute" above.
-    bd_visualisation("stroke", { animation_speed = BD_SPEED }, { always_draw = true }),
-    bd_visualisation("ore", { animation_speed = BD_SPEED },
-      { apply_tint = "resource-color", synced_fadeout = true }),
-    bd_visualisation("dust", { animation_speed = BD_SPEED },
-      { apply_tint = "resource-color", synced_fadeout = true }),
-    bd_visualisation("status-lamp", { draw_as_glow = true },
-      { always_draw = true, apply_tint = "status" })
+    bd_visualisation("chute", { animation_speed = BD_CHUTE_SPEED }, { always_draw = true })
   }
-})
+  local function add(v) visualisations[#visualisations + 1] = v end
+  if wet then add(bd_visualisation("rig", nil, { always_draw = true })) end
+  -- After the chute: see "The stroke draws over the chute" above.
+  add(bd_visualisation("stroke", { animation_speed = BD_SPEED }, { always_draw = true }))
+  add(bd_visualisation("ore", { animation_speed = BD_SPEED },
+    { apply_tint = "resource-color", synced_fadeout = true }))
+  add(bd_visualisation("dust", { animation_speed = BD_SPEED },
+    { apply_tint = "resource-color", synced_fadeout = true }))
+  if wet then add(bd_rig_front()) end
+  add(bd_visualisation("status-lamp", { draw_as_glow = true },
+    { always_draw = true, apply_tint = "status" }))
+  return
+  {
+    status_colors = bd_status_colors(),
+    animation = table.deepcopy(bd_animation),
+    working_visualisations = visualisations
+  }
+end
+
+-- Dry is every drill on an ore that asks for no fluid, which today is every
+-- drill: kamacite asks for none. Wet replaces the big mining drill's own wet
+-- set, which came across with the deepcopy and would otherwise dress this
+-- drill in vanilla's whole sprite set on an ore that asks for a fluid (seen in
+-- a client, 2026-10-10, with a probe making kamacite ask for water).
+derive.own_graphics(drill, bd_graphics_set(false))
+derive.own_graphics(drill, bd_graphics_set(true), "wet_mining_graphics_set")
 
 -- Sound: §3.4 of the building spec, signed off by Liam 2026-10-11. The files
 -- are built by concept/ballast-drill/sound/ballast_drill_sound.py, and each

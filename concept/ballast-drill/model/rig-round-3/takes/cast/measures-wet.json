@@ -1,0 +1,2795 @@
+{
+ "source": {
+  "src": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/takes/cast/wet",
+  "sheets": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/takes/cast/wet",
+  "render_json": null,
+  "directions": "four",
+  "footprint": [
+   5,
+   5
+  ],
+  "px_per_tile": 64,
+  "connections": [
+   [
+    -2.0,
+    -1.0,
+    "W"
+   ],
+   [
+    2.0,
+    -1.0,
+    "E"
+   ],
+   [
+    1.0,
+    2.0,
+    "S"
+   ],
+   [
+    -1.0,
+    2.0,
+    "S"
+   ]
+  ],
+  "vanilla": []
+ },
+ "collide": null,
+ "directions": {
+  "north": {
+   "layers": {
+    "base-north": "plate",
+    "base-shadow-north": "shadow",
+    "rig-shadow-north": "shadow",
+    "rig-north": "anim",
+    "chute-north": "anim, 5 frames",
+    "stroke-north": "anim, 24 frames",
+    "rig-front-north": "anim, 2 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 97.6,
+    "mass_pct": 105.6,
+    "corners_pct": {
+     "NW": 92.8,
+     "NE": 92.9,
+     "SW": 79.4,
+     "SE": 80.0
+    },
+    "outer_band_pct": 88.1,
+    "rise_tiles": 0.5,
+    "rise_by_column_tiles": [
+     0.5,
+     0.5,
+     0.28,
+     0.5,
+     0.5
+    ],
+    "extent_tiles": [
+     5.06,
+     5.72
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.03,
+     "east": 0.03,
+     "south": 0.22
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 94,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 145,
+     "spread": 138
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.7,
+     "fine": 6.94,
+     "mid": 11.23,
+     "ratio": 0.62,
+     "darkchr": 14.7
+    },
+    "still": {
+     "black_pct": 8.6,
+     "fine": 7.3,
+     "mid": 10.78,
+     "ratio": 0.68,
+     "darkchr": 11.3
+    }
+   },
+   "colour": {
+    "opaque_px": 108116,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 169,
+    "orange_pct": 0.16,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.16
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 21.26,
+    "strobe_pct": 13.33,
+    "strobe_px": 14412,
+    "step_px": [
+     12,
+     9091,
+     15992,
+     19026,
+     29821,
+     19469,
+     17066,
+     6099,
+     3119,
+     2096,
+     1920,
+     2545,
+     5037,
+     8069,
+     11651,
+     13160,
+     13367,
+     13852,
+     13902,
+     12664,
+     12075,
+     10597,
+     8190,
+     3322,
+     10,
+     9096,
+     15993,
+     19035,
+     29886,
+     19376,
+     16981,
+     6100,
+     3142,
+     2223,
+     1831,
+     2481,
+     5015,
+     8104,
+     11827,
+     13132,
+     13333,
+     13835,
+     13890,
+     12672,
+     12073,
+     10600,
+     8194,
+     3318,
+     0,
+     9095,
+     15990,
+     19039,
+     29881,
+     19547,
+     16892,
+     6033,
+     3145,
+     2247,
+     1958,
+     2392,
+     4926,
+     8072,
+     11842,
+     13285,
+     13325,
+     13820,
+     13885,
+     12668,
+     12061,
+     10595,
+     8193,
+     3334,
+     0,
+     9094,
+     15992,
+     19031,
+     29831,
+     19581,
+     17056,
+     5948,
+     3082,
+     2249,
+     1982,
+     2519,
+     4845,
+     7990,
+     11804,
+     13281,
+     13418,
+     13819,
+     13882,
+     12674,
+     12067,
+     10597,
+     8194,
+     3329,
+     16,
+     9095,
+     15989,
+     19031,
+     29822,
+     19551,
+     17101,
+     6073,
+     2992,
+     2185,
+     1984,
+     2543,
+     4997,
+     7896,
+     11716,
+     13245,
+     13417,
+     13851,
+     13882,
+     12669,
+     12074,
+     10598,
+     8190
+    ],
+    "wrap_px": 3326,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "rig-north": 0.0,
+     "chute-north": 0.51,
+     "stroke-north": 21.39,
+     "rig-front-north": 0.0
+    }
+   },
+   "layers_alone": {
+    "chute-north": {
+     "frames": 5,
+     "frame_px": [
+      56,
+      37
+     ],
+     "step_px": [
+      486,
+      556,
+      579,
+      538
+     ],
+     "wrap_px": 385,
+     "step_range": [
+      486,
+      579
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 621,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-north": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10971,
+      18228,
+      21711,
+      33791,
+      22321,
+      19667,
+      7315,
+      3785,
+      2999,
+      2742,
+      3247,
+      6638,
+      9353,
+      13875,
+      15587,
+      15802,
+      16476,
+      16711,
+      14619,
+      14035,
+      12586,
+      9954
+     ],
+     "wrap_px": 4038,
+     "step_range": [
+      0,
+      33791
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28843,
+     "between_frames": [
+      1,
+      5
+     ]
+    },
+    "rig-front-north": {
+     "frames": 2,
+     "frame_px": [
+      326,
+      217
+     ],
+     "step_px": [
+      0
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      0
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 0,
+     "between_frames": [
+      0,
+      1
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": [
+    {
+     "connection": [
+      -2.0,
+      -1.0,
+      "W"
+     ],
+     "pipe_tile": [
+      -3.0,
+      -1.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 11,
+      "where": {
+       "across_px": [
+        -31.5,
+        38.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 13,
+      "where": {
+       "across_px": [
+        -31.5,
+        38.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      2.0,
+      -1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      -1.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 9,
+      "where": {
+       "across_px": [
+        -38.5,
+        -30.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 13,
+      "where": {
+       "across_px": [
+        -38.5,
+        31.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1.0,
+      2.0,
+      "S"
+     ],
+     "pipe_tile": [
+      1.0,
+      3.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      -1.0,
+      2.0,
+      "S"
+     ],
+     "pipe_tile": [
+      -1.0,
+      3.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    }
+   ]
+  },
+  "east": {
+   "layers": {
+    "base-east": "plate",
+    "base-shadow-east": "shadow",
+    "rig-shadow-east": "shadow",
+    "rig-east": "anim",
+    "chute-east": "anim, 5 frames",
+    "stroke-east": "anim, 24 frames",
+    "rig-front-east": "anim, 2 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 97.3,
+    "mass_pct": 106.7,
+    "corners_pct": {
+     "NW": 96.1,
+     "NE": 92.9,
+     "SW": 79.4,
+     "SE": 77.2
+    },
+    "outer_band_pct": 87.1,
+    "rise_tiles": 0.56,
+    "rise_by_column_tiles": [
+     0.52,
+     0.5,
+     0.52,
+     0.56,
+     0.5
+    ],
+    "extent_tiles": [
+     5.03,
+     5.78
+    ],
+    "centre_offset_px": -1.0,
+    "past_edges_tiles": {
+     "west": 0.03,
+     "east": 0.0,
+     "south": 0.22
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 94,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 81,
+     "p95": 145,
+     "spread": 138
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.7,
+     "fine": 6.94,
+     "mid": 11.23,
+     "ratio": 0.62,
+     "darkchr": 14.7
+    },
+    "still": {
+     "black_pct": 8.5,
+     "fine": 7.48,
+     "mid": 10.93,
+     "ratio": 0.68,
+     "darkchr": 11.5
+    }
+   },
+   "colour": {
+    "opaque_px": 109292,
+    "blue_px": 95,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 153,
+    "orange_pct": 0.14,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.14
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 22.05,
+    "strobe_pct": 14.28,
+    "strobe_px": 15611,
+    "step_px": [
+     489,
+     9778,
+     16755,
+     19729,
+     30468,
+     19925,
+     17595,
+     6792,
+     3929,
+     2782,
+     2605,
+     3276,
+     5742,
+     8615,
+     12290,
+     13878,
+     14063,
+     14531,
+     14741,
+     13219,
+     12700,
+     11302,
+     8838,
+     3912,
+     441,
+     9754,
+     16743,
+     19670,
+     30619,
+     19896,
+     17533,
+     6795,
+     3901,
+     2972,
+     2536,
+     3177,
+     5757,
+     8544,
+     12428,
+     13825,
+     14050,
+     14554,
+     14722,
+     13392,
+     12636,
+     11250,
+     8848,
+     3847,
+     612,
+     9665,
+     16662,
+     19690,
+     30546,
+     20046,
+     17483,
+     6693,
+     3905,
+     2945,
+     2726,
+     3107,
+     5655,
+     8548,
+     12386,
+     13962,
+     13990,
+     14528,
+     14734,
+     13362,
+     12804,
+     11219,
+     8772,
+     3866,
+     541,
+     9862,
+     16640,
+     19643,
+     30496,
+     19974,
+     17684,
+     6626,
+     3807,
+     2951,
+     2699,
+     3299,
+     5605,
+     8480,
+     12373,
+     13925,
+     14123,
+     14464,
+     14688,
+     13350,
+     12759,
+     11330,
+     8739,
+     3790,
+     548,
+     9774,
+     16770,
+     19581,
+     30514,
+     19986,
+     17604,
+     6819,
+     3737,
+     2850,
+     2705,
+     3271,
+     5788,
+     8457,
+     12332,
+     13895,
+     14053,
+     14582,
+     14618,
+     13322,
+     12737,
+     11297,
+     8869
+    ],
+    "wrap_px": 3745,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "rig-east": 0.0,
+     "chute-east": 0.79,
+     "stroke-east": 21.61,
+     "rig-front-east": 0.0
+    }
+   },
+   "layers_alone": {
+    "chute-east": {
+     "frames": 5,
+     "frame_px": [
+      58,
+      58
+     ],
+     "step_px": [
+      795,
+      882,
+      874,
+      911
+     ],
+     "wrap_px": 744,
+     "step_range": [
+      795,
+      911
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 779,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-east": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10979,
+      18269,
+      21833,
+      33882,
+      22402,
+      19735,
+      7309,
+      3782,
+      2996,
+      2745,
+      3240,
+      6637,
+      9416,
+      13930,
+      15642,
+      15855,
+      16530,
+      16758,
+      14644,
+      14057,
+      12629,
+      10002
+     ],
+     "wrap_px": 4026,
+     "step_range": [
+      0,
+      33882
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28985,
+     "between_frames": [
+      1,
+      5
+     ]
+    },
+    "rig-front-east": {
+     "frames": 2,
+     "frame_px": [
+      257,
+      153
+     ],
+     "step_px": [
+      0
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      0
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 0,
+     "between_frames": [
+      0,
+      1
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": [
+    {
+     "connection": [
+      1.0,
+      -2.0,
+      "N"
+     ],
+     "pipe_tile": [
+      1.0,
+      -3.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 30
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 46,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        31,
+        32
+       ]
+      },
+      "rows_px": [
+       31,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 39,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        31,
+        31
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1.0,
+      2.0,
+      "S"
+     ],
+     "pipe_tile": [
+      1.0,
+      3.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      -2.0,
+      1.0,
+      "W"
+     ],
+     "pipe_tile": [
+      -3.0,
+      1.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 8,
+      "where": {
+       "across_px": [
+        -31.5,
+        32.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 11,
+      "where": {
+       "across_px": [
+        -31.5,
+        32.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -2.0,
+      -1.0,
+      "W"
+     ],
+     "pipe_tile": [
+      -3.0,
+      -1.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 15,
+      "where": {
+       "across_px": [
+        -63.5,
+        -29.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 17,
+      "where": {
+       "across_px": [
+        -63.5,
+        -27.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "south": {
+   "layers": {
+    "base-south": "plate",
+    "base-shadow-south": "shadow",
+    "rig-shadow-south": "shadow",
+    "rig-south": "anim",
+    "chute-south": "anim, 5 frames",
+    "stroke-south": "anim, 24 frames",
+    "rig-front-south": "anim, 2 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 97.0,
+    "mass_pct": 104.6,
+    "corners_pct": {
+     "NW": 96.1,
+     "NE": 96.1,
+     "SW": 76.6,
+     "SE": 77.2
+    },
+    "outer_band_pct": 86.3,
+    "rise_tiles": 0.56,
+    "rise_by_column_tiles": [
+     0.52,
+     0.56,
+     0.28,
+     0.56,
+     0.52
+    ],
+    "extent_tiles": [
+     5.06,
+     5.56
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.03,
+     "east": 0.03,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 94,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 145,
+     "spread": 138
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.7,
+     "fine": 6.94,
+     "mid": 11.23,
+     "ratio": 0.62,
+     "darkchr": 14.7
+    },
+    "still": {
+     "black_pct": 8.9,
+     "fine": 7.13,
+     "mid": 10.58,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "colour": {
+    "opaque_px": 107083,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 156,
+    "orange_pct": 0.15,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.15
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 22.22,
+    "strobe_pct": 14.15,
+    "strobe_px": 15147,
+    "step_px": [
+     720,
+     9825,
+     16983,
+     19982,
+     30638,
+     20064,
+     17586,
+     6786,
+     3831,
+     2784,
+     2503,
+     3066,
+     5775,
+     8748,
+     12454,
+     13949,
+     14141,
+     14828,
+     14936,
+     13449,
+     12864,
+     11359,
+     9098,
+     4189,
+     726,
+     9833,
+     16779,
+     20017,
+     30794,
+     20071,
+     17594,
+     6582,
+     3866,
+     2939,
+     2509,
+     3074,
+     5571,
+     8783,
+     12609,
+     13955,
+     14149,
+     14624,
+     14971,
+     13604,
+     12870,
+     11367,
+     8894,
+     4224,
+     881,
+     9839,
+     16787,
+     19813,
+     30829,
+     20226,
+     17599,
+     6590,
+     3662,
+     2974,
+     2664,
+     3080,
+     5578,
+     8579,
+     12644,
+     14110,
+     14155,
+     14632,
+     14767,
+     13639,
+     13025,
+     11373,
+     8902,
+     4020,
+     916,
+     9994,
+     16793,
+     19821,
+     30625,
+     20261,
+     17755,
+     6596,
+     3670,
+     2770,
+     2699,
+     3235,
+     5585,
+     8587,
+     12440,
+     14145,
+     14310,
+     14638,
+     14775,
+     13435,
+     13060,
+     11528,
+     8908,
+     4028,
+     712,
+     10029,
+     16948,
+     19827,
+     30633,
+     20057,
+     17790,
+     6751,
+     3676,
+     2778,
+     2495,
+     3270,
+     5740,
+     8593,
+     12448,
+     13941,
+     14345,
+     14793,
+     14781,
+     13443,
+     12856,
+     11563,
+     9063
+    ],
+    "wrap_px": 4034,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "rig-south": 0.0,
+     "chute-south": 0.68,
+     "stroke-south": 21.67,
+     "rig-front-south": 0.0
+    }
+   },
+   "layers_alone": {
+    "chute-south": {
+     "frames": 5,
+     "frame_px": [
+      56,
+      63
+     ],
+     "step_px": [
+      720,
+      712,
+      916,
+      881
+     ],
+     "wrap_px": 726,
+     "step_range": [
+      712,
+      916
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 718,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-south": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10979,
+      18227,
+      21718,
+      33789,
+      22315,
+      19658,
+      7310,
+      3783,
+      2994,
+      2744,
+      3237,
+      6644,
+      9366,
+      13882,
+      15588,
+      15814,
+      16472,
+      16716,
+      14602,
+      14027,
+      12591,
+      9949
+     ],
+     "wrap_px": 4045,
+     "step_range": [
+      0,
+      33789
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28839,
+     "between_frames": [
+      1,
+      5
+     ]
+    },
+    "rig-front-south": {
+     "frames": 2,
+     "frame_px": [
+      326,
+      137
+     ],
+     "step_px": [
+      0
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      0
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 0,
+     "between_frames": [
+      0,
+      1
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": [
+    {
+     "connection": [
+      2.0,
+      1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      1.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 12,
+      "where": {
+       "across_px": [
+        -30.5,
+        41.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 19,
+      "where": {
+       "across_px": [
+        -32.5,
+        41.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -2.0,
+      1.0,
+      "W"
+     ],
+     "pipe_tile": [
+      -3.0,
+      1.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -26.5,
+       23.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       3
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -20.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 16,
+      "where": {
+       "across_px": [
+        -41.5,
+        32.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 19,
+      "where": {
+       "across_px": [
+        -41.5,
+        32.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      -1.0,
+      -2.0,
+      "N"
+     ],
+     "pipe_tile": [
+      -1.0,
+      -3.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 29
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 90,
+      "where": {
+       "across_px": [
+        21.5,
+        63.5
+       ],
+       "along_px": [
+        30,
+        32
+       ]
+      },
+      "rows_px": [
+       30,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 81,
+      "where": {
+       "across_px": [
+        25.5,
+        63.5
+       ],
+       "along_px": [
+        30,
+        32
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      1.0,
+      -2.0,
+      "N"
+     ],
+     "pipe_tile": [
+      1.0,
+      -3.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 30
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 46,
+      "where": {
+       "across_px": [
+        -63.5,
+        -22.5
+       ],
+       "along_px": [
+        31,
+        32
+       ]
+      },
+      "rows_px": [
+       31,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 41,
+      "where": {
+       "across_px": [
+        -63.5,
+        -26.5
+       ],
+       "along_px": [
+        31,
+        32
+       ]
+      }
+     }
+    }
+   ]
+  },
+  "west": {
+   "layers": {
+    "base-west": "plate",
+    "base-shadow-west": "shadow",
+    "rig-shadow-west": "shadow",
+    "rig-west": "anim",
+    "chute-west": "anim, 5 frames",
+    "stroke-west": "anim, 24 frames",
+    "rig-front-west": "anim, 2 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 97.3,
+    "mass_pct": 106.7,
+    "corners_pct": {
+     "NW": 92.8,
+     "NE": 96.1,
+     "SW": 76.6,
+     "SE": 80.0
+    },
+    "outer_band_pct": 87.1,
+    "rise_tiles": 0.56,
+    "rise_by_column_tiles": [
+     0.5,
+     0.56,
+     0.52,
+     0.5,
+     0.52
+    ],
+    "extent_tiles": [
+     5.03,
+     5.78
+    ],
+    "centre_offset_px": 1.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.03,
+     "south": 0.22
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 94,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.7,
+     "fine": 6.94,
+     "mid": 11.23,
+     "ratio": 0.62,
+     "darkchr": 14.7
+    },
+    "still": {
+     "black_pct": 8.5,
+     "fine": 7.48,
+     "mid": 10.89,
+     "ratio": 0.69,
+     "darkchr": 11.6
+    }
+   },
+   "colour": {
+    "opaque_px": 109289,
+    "blue_px": 95,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 166,
+    "orange_pct": 0.15,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.15
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 22.48,
+    "strobe_pct": 14.49,
+    "strobe_px": 15835,
+    "step_px": [
+     884,
+     9958,
+     17252,
+     20294,
+     30822,
+     20339,
+     17754,
+     6937,
+     4136,
+     2876,
+     2760,
+     3239,
+     5906,
+     8948,
+     12559,
+     14244,
+     14361,
+     15019,
+     15308,
+     13639,
+     13199,
+     11618,
+     9199,
+     4371,
+     761,
+     10030,
+     17085,
+     20198,
+     31136,
+     20216,
+     17826,
+     6770,
+     4040,
+     3190,
+     2637,
+     3311,
+     5739,
+     8852,
+     12873,
+     14121,
+     14433,
+     14852,
+     15212,
+     13953,
+     13076,
+     11690,
+     9032,
+     4275,
+     1075,
+     9907,
+     17157,
+     20031,
+     31040,
+     20530,
+     17703,
+     6842,
+     3873,
+     3094,
+     2951,
+     3188,
+     5811,
+     8685,
+     12777,
+     14435,
+     14310,
+     14924,
+     15045,
+     13857,
+     13390,
+     11567,
+     9104,
+     4108,
+     979,
+     10221,
+     17034,
+     20103,
+     30873,
+     20434,
+     18017,
+     6719,
+     3945,
+     2927,
+     2855,
+     3502,
+     5688,
+     8757,
+     12610,
+     14339,
+     14624,
+     14801,
+     15117,
+     13690,
+     13294,
+     11882,
+     8981,
+     4180,
+     812,
+     10125,
+     17348,
+     19980,
+     30945,
+     20267,
+     17921,
+     7033,
+     3822,
+     2999,
+     2688,
+     3406,
+     6002,
+     8634,
+     12682,
+     14172,
+     14528,
+     15115,
+     14994,
+     13762,
+     13127,
+     11785,
+     9295
+    ],
+    "wrap_px": 4057,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "rig-west": 0.0,
+     "chute-west": 0.86,
+     "stroke-west": 21.55,
+     "rig-front-west": 0.0
+    }
+   },
+   "layers_alone": {
+    "chute-west": {
+     "frames": 5,
+     "frame_px": [
+      58,
+      58
+     ],
+     "step_px": [
+      898,
+      826,
+      995,
+      1092
+     ],
+     "wrap_px": 777,
+     "step_range": [
+      826,
+      1092
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 1019,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-west": {
+     "frames": 24,
+     "frame_px": [
+      313,
+      317
+     ],
+     "step_px": [
+      0,
+      10970,
+      18234,
+      21724,
+      33800,
+      22317,
+      19669,
+      7320,
+      3784,
+      2993,
+      2744,
+      3238,
+      6637,
+      9361,
+      13866,
+      15604,
+      15811,
+      16484,
+      16716,
+      14608,
+      14041,
+      12596,
+      9968
+     ],
+     "wrap_px": 4034,
+     "step_range": [
+      0,
+      33800
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28855,
+     "between_frames": [
+      1,
+      5
+     ]
+    },
+    "rig-front-west": {
+     "frames": 2,
+     "frame_px": [
+      256,
+      153
+     ],
+     "step_px": [
+      0
+     ],
+     "wrap_px": 0,
+     "step_range": [
+      0,
+      0
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 0,
+     "between_frames": [
+      0,
+      1
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": [
+    {
+     "connection": [
+      -1.0,
+      2.0,
+      "S"
+     ],
+     "pipe_tile": [
+      -1.0,
+      3.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -24.5,
+       25.5
+      ],
+      "first_row_px": -20,
+      "rows": 31,
+      "sides_rows_px": [
+       -9,
+       7
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -18.5,
+       19.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -20,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 0,
+      "where": null,
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 0,
+      "where": null
+     }
+    },
+    {
+     "connection": [
+      -1.0,
+      -2.0,
+      "N"
+     ],
+     "pipe_tile": [
+      -1.0,
+      -3.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -25.5,
+       24.5
+      ],
+      "first_row_px": 0,
+      "rows": 14,
+      "sides_rows_px": [
+       0,
+       10
+      ]
+     },
+     "pipe_body": {
+      "width_px": 39,
+      "across_px": [
+       -19.5,
+       18.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 39,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": 0,
+      "last_row_px": 29
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 99,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        30,
+        32
+       ]
+      },
+      "rows_px": [
+       30,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 86,
+      "where": {
+       "across_px": [
+        -63.5,
+        63.5
+       ],
+       "along_px": [
+        30,
+        32
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      2.0,
+      -1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      -1.0
+     ],
+     "pipe_drawn": "under",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 11,
+      "where": {
+       "across_px": [
+        35.5,
+        63.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 17,
+      "where": {
+       "across_px": [
+        27.5,
+        63.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "connection": [
+      2.0,
+      1.0,
+      "E"
+     ],
+     "pipe_tile": [
+      3.0,
+      1.0
+     ],
+     "pipe_drawn": "over",
+     "ring": {
+      "width_px": 51,
+      "across_px": [
+       -23.5,
+       26.5
+      ],
+      "first_row_px": 0,
+      "rows": 7,
+      "sides_rows_px": [
+       0,
+       4
+      ]
+     },
+     "pipe_body": {
+      "width_px": 41,
+      "across_px": [
+       -19.5,
+       20.5
+      ]
+     },
+     "gap": {
+      "rule": "in the pipe body's columns (every one), the ground (alpha <= 128) from the pipe's end back to where the building's main piece (alpha > 64, joined to the rest) covers 4 rows in a row: 2 px or more makes a gap column; more than 2 fail",
+      "columns": 0,
+      "columns_allowed": 2,
+      "ground_px_counted_from": 2,
+      "of_columns": 41,
+      "max_ground_px": 0,
+      "where": null
+     },
+     "pass": true,
+     "why": null,
+     "body": {
+      "rule": "ring",
+      "found_row_px": -1,
+      "last_row_px": -1
+     },
+     "band": {
+      "note": "information only",
+      "width": "pipe body",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "ring_band": {
+      "note": "information only",
+      "width": "ring",
+      "px": 0,
+      "ground_px": 0,
+      "where": null
+     },
+     "beside": {
+      "note": "information only: building seen beside the ring or the pipe; vanilla does it everywhere",
+      "px": 5,
+      "where": {
+       "across_px": [
+        -30.5,
+        31.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      },
+      "rows_px": [
+       0,
+       63
+      ],
+      "edge_allowance_px": 2,
+      "shadow": "max channel < 40 and alpha < 224, or max channel < 20"
+     },
+     "beside_strict": {
+      "note": "information only: every seen building pixel outside the ring's exact width from the body to the far end of the pipe's tile, dark ones too",
+      "px": 11,
+      "where": {
+       "across_px": [
+        -32.5,
+        31.5
+       ],
+       "along_px": [
+        0,
+        0
+       ]
+      }
+     }
+    }
+   ]
+  }
+ },
+ "ports": null,
+ "vanilla": {},
+ "gates": {
+  "joins": true,
+  "collide": null
+ },
+ "pass": true,
+ "sheets": [
+  {
+   "path": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/takes/cast/measures-wet/comparison.png",
+   "size": [
+    5268,
+    5369
+   ]
+  }
+ ],
+ "sheet_unsplit_px": [
+  5268,
+  5369
+ ]
+}

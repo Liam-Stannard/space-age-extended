@@ -222,6 +222,10 @@ CHUTES = "--chutes" in argv
 DOOR_ONLY = "--doors" in argv
 DUST_ONLY = "--dust" in argv              # debugging: every direction's dust frames alone
 F0 = "--f0" in argv
+FITTINGS = "--fittings" in argv            # T03a: the fittings, a layer set per direction (section 7b)
+BLIND = "--blind" in argv                  # with --fittings: every stub blind-capped (the cover's cap)
+# T03c: with --fittings, the runs from every connection to the head, one of fitting_runs.TAKES
+RUNS = next((a.split("=")[1] for a in argv if a.startswith("--runs=")), None)
 
 # ---------------------------------------------------------------- the stroke, the chain, the ore
 
@@ -2720,11 +2724,12 @@ def slab(face, tile, lift, group):
     return mesh_object(f"slab-{face}", build, "slab", group, bevel=0)
 
 
-def fitting(p, cap):
+def fitting(p, cap, group=None):
     """One port's picture: the backplate, and inside its outline a flanged stub out to
-    where the vanilla pipe's end ring lands, open (the port) or capped (the cover)."""
+    where the vanilla pipe's end ring lands, open (the port) or capped (the cover).
+    `group` (--fittings) puts it in a group of its own, else port-<face> or cover-<face>."""
     face, tile = p["face"], p["tile"]
-    g = f"{'cover' if cap else 'port'}-{face}"
+    g = group or f"{'cover' if cap else 'port'}-{face}"
     cx, cy = tile[0], -tile[1]                        # the tile's centre, model coordinates (y north)
     if face == "S":
         yw = -(E + 0.035)
@@ -2915,6 +2920,47 @@ if PORTS:
         fitting(p, cap=False)
         fitting(p, cap=True)
 
+# ---------------------------------------------------------------- 7b. the fittings (--fittings)
+#
+# Task ballast-drill-ports, T03a (Liam, 2026-10-20: "Vanilla's way"): as vanilla's big mining
+# drill draws its pipe connections (space-age big-mining-drill.lua:124-175), the fittings are
+# always-drawn working visualisations, one set per direction, reaching every connection the
+# drill has in that direction -- no pipe_picture; vanilla's covers at the unconnected ones.
+# The plate does not turn, so each direction's fittings are the north model's fitting
+# (section 7, the signed-off port picture, unchanged) laid at that direction's four
+# connections. Split as vanilla's: "behind" (the connections north of the centre: drawn over
+# the plate, under the chute, the stroke, the ore and the dust, which stand in front of them)
+# and "front" (south of the centre: over all of those, which stand behind them); each
+# rendered with the plate's parts held out, so whatever of the body stands in front of a
+# fitting hides it. "shadow": the fittings' own shadow on the ground, the body hidden (the
+# plate's shadow is its own layer). Rendered as a contract of its own, packed by pack.py:
+#   plate pass "behind" -> fittings-<d>; animation "fittings-front" (one frame) ->
+#   fittings-front-<d>; shadow -> fittings-shadow-<d>; still: both together.
+FIT_CONNS = [(-2, -1, "W"), (2, -1, "E"), (1, 2, "S"), (-1, 2, "S")]     # big-mining-drill.lua:570-580
+
+
+def fit_conns(deg):
+    """The connections in a direction turned deg clockwise: (x, y, face), y down."""
+    out = []
+    for x, y, f in FIT_CONNS:
+        for _ in range(round(deg / 90) % 4):
+            x, y, f = -y, x, FACES[(FACES.index(f) + 1) % 4]
+        out.append((x, y, f))
+    return out
+
+
+if FITTINGS:
+    for d, deg in contract.DIRECTIONS["four"]:
+        for x, y, f in fit_conns(deg):
+            fitting(dict(tile=(x, y), face=f), cap=BLIND, group=f"fit-{'front' if y > 0 else 'behind'}-{d}")
+    if RUNS:                                    # T03c: fitting_runs.py says where they go
+        sys.path.insert(0, HERE)
+        import fitting_runs
+        RUN_SIZES = {}
+        for d, deg in contract.DIRECTIONS["four"]:
+            RUN_SIZES[d] = fitting_runs.build(globals(), RUNS, d, fit_conns(deg),
+                                              lambda y, d=d: f"fit-{'front' if y > 0 else 'behind'}-{d}")
+
 if "--blend" in argv:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT_DIR, "scene.blend"))
     sys.exit(0)
@@ -2965,6 +3011,38 @@ def empty_frame(path):
     img.file_format = "PNG"
     img.save()
     bpy.data.images.remove(img)
+
+if FITTINGS:
+    contract.declare(OUT_DIR, canvas=PORT_CANVAS, footprint=DECL["footprint"], directions="four",
+                     passes=[dict(name="behind", kind="plate", sheet="fittings"),
+                             dict(name="still", kind="still"),
+                             dict(name="shadow", kind="shadow", sheet="fittings-shadow")],
+                     # the contract's animations have two frames at least: frame 1 a copy of 0,
+                     # so the pack is still; the sheet keeps frame 0 (one frame, always drawn)
+                     animations=[dict(name="fittings-front", frames=2, motion="cycle")])
+    rig.camera(*PORT_CANVAS)
+    with open(os.path.join(OUT_DIR, "fittings.json"), "w") as _f:
+        json.dump({d: [dict(position=[x, y], face=f, layer="front" if y > 0 else "behind")
+                       for x, y, f in fit_conns(deg)] for d, deg in contract.DIRECTIONS["four"]}, _f, indent=1)
+    if RUNS:
+        with open(os.path.join(OUT_DIR, "runs.json"), "w") as _f:
+            json.dump(dict(take=RUNS, units="outer diameter, tiles (64 px a tile)", directions=RUN_SIZES), _f, indent=1)
+    held = STATIC + DOORS                   # the plate's parts
+    for d, deg in contract.DIRECTIONS["four"]:
+        b, fr = f"fit-behind-{d}", f"fit-front-{d}"
+        setup(visible=(b,), holdouts=held)
+        rig.render(f"{OUT_DIR}/{contract.named('behind', d)}.png")
+        setup(visible=(fr,), holdouts=held)
+        rig.render(f"{OUT_DIR}/{contract.frame('fittings-front', 0, d)}.png")
+        shutil.copy(f"{OUT_DIR}/{contract.frame('fittings-front', 0, d)}.png",
+                    f"{OUT_DIR}/{contract.frame('fittings-front', 1, d)}.png")
+        setup(visible=(b, fr), holdouts=held)
+        rig.render(f"{OUT_DIR}/{contract.named('still', d)}.png")
+        setup(visible=(b, fr), ground=True)
+        for o in PARTS[b] + PARTS[fr]:
+            o.visible_camera = False
+        rig.render(f"{OUT_DIR}/{contract.named('shadow', d)}.png")
+    sys.exit(0)
 
 if PORTS:
     contract.declare(OUT_DIR, canvas=PORT_CANVAS, **DECL)

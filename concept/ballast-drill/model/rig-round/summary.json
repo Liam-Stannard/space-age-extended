@@ -1,0 +1,1299 @@
+{
+ "signed": {
+  "still_north": {
+   "tonal": {
+    "p5": 7,
+    "p50": 81,
+    "p95": 147,
+    "spread": 140
+   },
+   "finish": {
+    "black_pct": 8.8,
+    "fine": 7.27,
+    "mid": 10.64,
+    "ratio": 0.68,
+    "darkchr": 11.0
+   }
+  },
+  "plate_north": {
+   "tonal": {
+    "p5": 13,
+    "p50": 90,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 4.1,
+    "fine": 7.17,
+    "mid": 11.18,
+    "ratio": 0.64,
+    "darkchr": 14.5
+   }
+  },
+  "coverage_pct": 95.1
+ },
+ "rigid": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 96.9,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 76,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.3,
+     "fine": 7.23,
+     "mid": 10.46,
+     "ratio": 0.69,
+     "darkchr": 11.4
+    }
+   },
+   "east": {
+    "coverage_pct": 96.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.38,
+     "mid": 10.69,
+     "ratio": 0.69,
+     "darkchr": 11.6
+    }
+   },
+   "south": {
+    "coverage_pct": 96.5,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 78,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 7.1,
+     "mid": 10.13,
+     "ratio": 0.7,
+     "darkchr": 11.6
+    }
+   },
+   "west": {
+    "coverage_pct": 96.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.2,
+     "fine": 7.41,
+     "mid": 10.58,
+     "ratio": 0.7,
+     "darkchr": 11.8
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 14,
+    "p50": 95,
+    "p95": 156,
+    "spread": 142
+   },
+   "finish": {
+    "black_pct": 3.3,
+    "fine": 6.84,
+    "mid": 10.98,
+    "ratio": 0.62,
+    "darkchr": 15.1
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.93,
+     "mid": 10.4,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "east": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 6.96,
+     "mid": 10.39,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "south": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.95,
+     "mid": 10.26,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   },
+   "west": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.07,
+     "mid": 10.47,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31
+    }
+   ]
+  }
+ },
+ "hose": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 96.9,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 74,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.8,
+     "fine": 7.33,
+     "mid": 10.52,
+     "ratio": 0.7,
+     "darkchr": 10.7
+    }
+   },
+   "east": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 76,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 9.0,
+     "fine": 7.54,
+     "mid": 10.78,
+     "ratio": 0.7,
+     "darkchr": 11.0
+    }
+   },
+   "south": {
+    "coverage_pct": 96.5,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 77,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.14,
+     "mid": 10.13,
+     "ratio": 0.71,
+     "darkchr": 11.3
+    }
+   },
+   "west": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 78,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.59,
+     "mid": 10.62,
+     "ratio": 0.72,
+     "darkchr": 11.1
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 14,
+    "p50": 95,
+    "p95": 156,
+    "spread": 142
+   },
+   "finish": {
+    "black_pct": 3.3,
+    "fine": 6.84,
+    "mid": 10.98,
+    "ratio": 0.62,
+    "darkchr": 15.1
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.93,
+     "mid": 10.4,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "east": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 6.96,
+     "mid": 10.39,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "south": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.95,
+     "mid": 10.26,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   },
+   "west": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.07,
+     "mid": 10.47,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 3.94
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 3.92
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 4.33
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 3.94
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 4.31
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 4.33
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 3.92
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.54,
+     "head": 0.56,
+     "length": 4.31
+    }
+   ]
+  }
+ },
+ "feed": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 96.9,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 77,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.2,
+     "fine": 7.26,
+     "mid": 10.48,
+     "ratio": 0.69,
+     "darkchr": 11.5
+    }
+   },
+   "east": {
+    "coverage_pct": 96.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.37,
+     "mid": 10.68,
+     "ratio": 0.69,
+     "darkchr": 11.6
+    }
+   },
+   "south": {
+    "coverage_pct": 96.5,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 77,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 7.09,
+     "mid": 10.19,
+     "ratio": 0.7,
+     "darkchr": 11.6
+    }
+   },
+   "west": {
+    "coverage_pct": 96.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.2,
+     "fine": 7.41,
+     "mid": 10.56,
+     "ratio": 0.7,
+     "darkchr": 11.8
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 14,
+    "p50": 95,
+    "p95": 156,
+    "spread": 142
+   },
+   "finish": {
+    "black_pct": 3.3,
+    "fine": 6.84,
+    "mid": 10.98,
+    "ratio": 0.62,
+    "darkchr": 15.1
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.93,
+     "mid": 10.41,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "east": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 6.95,
+     "mid": 10.39,
+     "ratio": 0.67,
+     "darkchr": 11.1
+    }
+   },
+   "south": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.4,
+     "fine": 6.94,
+     "mid": 10.26,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   },
+   "west": {
+    "coverage_pct": 96.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.07,
+     "mid": 10.47,
+     "ratio": 0.68,
+     "darkchr": 11.2
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31,
+     "feed": "reducer 0.56 -> 0.30, line 0.30"
+    }
+   ]
+  }
+ },
+ "low": {
+  "joins": "16/16",
+  "join_gap_columns_max": 1,
+  "wet": {
+   "north": {
+    "coverage_pct": 96.1,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 77,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 7.7,
+     "fine": 7.05,
+     "mid": 10.41,
+     "ratio": 0.68,
+     "darkchr": 11.7
+    }
+   },
+   "east": {
+    "coverage_pct": 92.4,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 7.9,
+     "fine": 7.14,
+     "mid": 10.47,
+     "ratio": 0.68,
+     "darkchr": 11.8
+    }
+   },
+   "south": {
+    "coverage_pct": 91.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 78,
+     "p95": 144,
+     "spread": 137
+    },
+    "finish_still": {
+     "black_pct": 8.2,
+     "fine": 6.98,
+     "mid": 10.06,
+     "ratio": 0.69,
+     "darkchr": 11.7
+    }
+   },
+   "west": {
+    "coverage_pct": 91.9,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 78,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.0,
+     "fine": 7.2,
+     "mid": 10.5,
+     "ratio": 0.69,
+     "darkchr": 11.7
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 15,
+    "p50": 92,
+    "p95": 161,
+    "spread": 146
+   },
+   "finish": {
+    "black_pct": 3.5,
+    "fine": 7.11,
+    "mid": 11.42,
+    "ratio": 0.62,
+    "darkchr": 14.8
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 83.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.25,
+     "mid": 10.79,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "east": {
+    "coverage_pct": 83.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.8,
+     "fine": 7.28,
+     "mid": 10.76,
+     "ratio": 0.68,
+     "darkchr": 10.9
+    }
+   },
+   "south": {
+    "coverage_pct": 83.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.27,
+     "mid": 10.61,
+     "ratio": 0.69,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 83.7,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.42,
+     "mid": 10.86,
+     "ratio": 0.68,
+     "darkchr": 11.0
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.94
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.33
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 3.92
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.56,
+     "body": 0.58,
+     "run": 0.56,
+     "head": 0.56,
+     "length": 4.31
+    }
+   ]
+  }
+ }
+}

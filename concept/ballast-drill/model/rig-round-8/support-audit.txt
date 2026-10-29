@@ -1,0 +1,369 @@
+The support audit, before and after (T03i | T03l; T03m: T03l | T03m), as one text list (task
+ballast-drill-ports, T03l: "support audit 0 floating"; first written for T03i).
+
+== after (T03l, C2), dry: 1723 parts
+FLOATING (touching nothing that stands): 0
+OPEN AIR UNDER PART OF THE UNDERSIDE: 51 structural parts
+  [void] 0
+  [port] 5
+    Cube.464 [liner] chute: 96% of 812 samples open, gap to 0.276; lo [-0.444, 1.65, 0.306] hi [0.444, 2.495, 0.316]; carried by Cube.024
+    Cube.454 [chute] chute: 16% of 700 samples open, gap to 0.018; lo [-0.385, 1.639, 0.03] hi [0.385, 2.496, 0.11]; carried by Cube.455, Cube.026, Cube.460
+    Cube.037 [steel] body: 100% of 28 samples open, gap to 0.293; lo [2.47, -0.429, 0.301] hi [2.494, 0.429, 0.339]; carried by 
+    Cube.050 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-0.429, -2.739, 0.301] hi [0.429, -2.715, 0.339]; carried by 
+    Cube.063 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-2.494, -0.429, 0.301] hi [-2.47, 0.429, 0.339]; carried by 
+  [edge] 4
+    bastion.002 [house_ne] body: 4% of 551 samples open, gap to 0.038; lo [0.9, 0.82, 0.85] hi [1.94, 1.94, 2.25]; carried by chassis, Cube.145
+    bastion.003 [house_nw] body: 3% of 551 samples open, gap to 0.038; lo [-1.94, 0.82, 0.85] hi [-0.9, 1.94, 2.25]; carried by chassis, cable.042, Cube.146
+    bastion [house] body: 1% of 323 samples open, gap to 0.018; lo [-1.94, -1.88, 0.85] hi [-0.9, -1.4, 2.1]; carried by chassis
+    bastion.001 [house] body: 1% of 323 samples open, gap to 0.018; lo [0.9, -1.88, 0.85] hi [1.94, -1.4, 2.1]; carried by chassis, cable.044
+  [hatch] 0
+  [span] 12
+    roof [house_ne] frame: 76% of 1195 samples open, gap to 2.964; lo [0.87, 0.78, 2.94] hi [1.97, 1.97, 3.0]; carried by lintel, housewall, Cylinder.404, Cylinder.405
+    roof.001 [house_nw] frame: 76% of 1195 samples open, gap to 2.964; lo [-1.97, 0.78, 2.94] hi [-0.87, 1.97, 3.0]; carried by lintel.001, housewall.001, Cylinder.432, Cylinder.433
+    housefloor [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [0.9, 0.81, 2.25] hi [1.94, 1.94, 2.31]; carried by bastion.002, Cylinder.308, Cube.241, Cube.240
+    housefloor.001 [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [-1.94, 0.81, 2.25] hi [-0.9, 1.94, 2.31]; carried by bastion.003, Cylinder.313, Cylinder.604, hose.004
+    lintel [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [0.9, 0.81, 2.84] hi [1.94, 1.94, 2.94]; carried by housewall, Cylinder.332, Cube.269, lathe.012
+    lintel.001 [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [-1.94, 0.81, 2.84] hi [-0.9, 1.94, 2.94]; carried by housewall.001, Cylinder.363, Cube.297, lathe.014
+    roofcap.001 [house] body: 18% of 367 samples open, gap to 2.104; lo [0.88, -1.9, 2.1] hi [1.96, -1.38, 2.14]; carried by bastion.001
+    roofcap [house] body: 18% of 367 samples open, gap to 2.104; lo [-1.96, -1.9, 2.1] hi [-0.88, -1.38, 2.14]; carried by bastion, hose
+    Cylinder.404 [house_ne] frame: 68% of 72 samples open, gap to 2.053; lo [1.25, 0.73, 2.89] hi [1.97, 0.83, 2.99]; carried by lintel, housewall
+    Cylinder.432 [house_nw] frame: 68% of 72 samples open, gap to 2.053; lo [-1.97, 0.73, 2.89] hi [-1.25, 0.83, 2.99]; carried by lintel.001, housewall.001
+    Cylinder.405 [house_ne] frame: 68% of 63 samples open, gap to 2.055; lo [0.87, 1.92, 2.89] hi [1.5, 2.02, 2.99]; carried by housewall
+    Cylinder.433 [house_nw] frame: 68% of 63 samples open, gap to 2.055; lo [-1.5, 1.92, 2.89] hi [-0.87, 2.02, 2.99]; carried by housewall.001
+  [collar] 7
+    Cylinder.285 [column] body: 40% of 665 samples open, gap to 2.57; lo [-0.44, -0.44, 3.2] hi [0.44, 0.44, 3.3]; carried by Cylinder.284
+    Cylinder.319 [iron] body: 45% of 177 samples open, gap to 0.229; lo [-0.23, -1.37, 2.35] hi [0.23, -0.91, 2.45]; carried by Cylinder.318
+    lathe.005 [copper] body: 73% of 88 samples open, gap to 1.537; lo [-0.37, -0.37, 2.165] hi [0.37, 0.37, 2.235]; carried by Cylinder.284
+    lathe.010 [iron] body: 18% of 114 samples open, gap to 0.022; lo [-0.24, -1.38, 1.01] hi [0.24, -0.9, 1.09]; carried by lathe.003, lathe.011, Cylinder.318
+    lathe.002 [iron] under: 0% of 3984 samples open, gap to 0.015; lo [-1.4, -1.4, 0.85] hi [1.4, 1.4, 0.99]; carried by chassis, Cube.381, Cube.380
+    Cylinder.332 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [0.897, 1.017, 2.36] hi [1.437, 1.077, 2.9]; carried by Cube.167, Cube.168, Cube.169, Cube.170
+    Cylinder.363 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [-1.437, 1.017, 2.36] hi [-0.897, 1.077, 2.9]; carried by Cube.213, Cube.214, Cube.215, Cube.216
+  [leg] 16
+    rod [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, -2.232, 0.03] hi [-1.455, -1.455, 0.632]; carried by chassis, Cylinder.072, Cylinder.074, rod.002
+    rod.003 [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, 1.455, 0.03] hi [-1.455, 2.232, 0.632]; carried by chassis, Cylinder.085, Cylinder.087, rod.005
+    rod.006 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, -2.232, 0.03] hi [2.232, -1.455, 0.632]; carried by chassis, Cylinder.098, Cylinder.100, rod.008
+    rod.009 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, 1.455, 0.03] hi [2.232, 2.232, 0.632]; carried by chassis, Cylinder.111, Cylinder.113, rod.011
+    rod.001 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, -1.915, 0.167] hi [-1.551, -1.551, 0.585]; carried by rod, chassis
+    rod.004 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, 1.551, 0.167] hi [-1.551, 1.915, 0.585]; carried by rod.003, chassis
+    rod.007 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, -1.915, 0.167] hi [1.915, -1.551, 0.585]; carried by rod.006, chassis
+    rod.010 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, 1.551, 0.167] hi [1.915, 1.915, 0.585]; carried by rod.009, chassis
+    rod.002 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, -2.147, 0.062] hi [-1.836, -1.836, 0.416]; carried by rod, Cylinder.072, Cylinder.073
+    rod.005 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, 1.836, 0.062] hi [-1.836, 2.147, 0.416]; carried by rod.003, Cylinder.085, Cylinder.086
+    rod.008 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, -2.147, 0.062] hi [2.147, -1.836, 0.416]; carried by rod.006, Cylinder.098, Cylinder.099
+    rod.011 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, 1.836, 0.062] hi [2.147, 2.147, 0.416]; carried by rod.009, Cylinder.111, Cylinder.112
+    Cube.014 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, -1.836, 0.215] hi [-1.486, -1.486, 0.675]; carried by chassis, rod.001, rod
+    Cube.015 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, 1.486, 0.215] hi [-1.486, 1.836, 0.675]; carried by chassis, rod.004, rod.003
+    Cube.016 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, -1.836, 0.215] hi [1.836, -1.486, 0.675]; carried by chassis, rod.007, rod.006
+    Cube.017 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, 1.486, 0.215] hi [1.836, 1.836, 0.675]; carried by chassis, rod.010, rod.009
+  [line] 7
+    pipe.001 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [1.122, 0.942, 2.43] hi [1.628, 1.495, 2.668]; carried by Cube.148
+    pipe.003 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [-1.628, 0.942, 2.43] hi [-1.122, 1.495, 2.668]; carried by Cube.194
+    pipe.004 [copper] frame: 91% of 11 samples open, gap to 0.922; lo [1.159, 0.745, 2.678] hi [1.47, 1.209, 3.109]; carried by Cylinder.329
+    Cylinder.331 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [1.132, 0.877, 2.595] hi [1.202, 1.537, 2.665]; carried by Cylinder.339, Cube.147, Cylinder.333, Cylinder.332
+    Cylinder.362 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [-1.202, 0.877, 2.595] hi [-1.132, 1.537, 2.665]; carried by Cylinder.370, Cube.193, Cylinder.364, Cylinder.363
+    pipe [copper] frame: 100% of 1 samples open, gap to 0.15; lo [1.122, 0.909, 2.43] hi [1.628, 0.958, 2.668]; carried by 
+    pipe.002 [copper] frame: 100% of 1 samples open, gap to 0.15; lo [-1.628, 0.909, 2.43] hi [-1.122, 0.958, 2.668]; carried by 
+  [rig] 0
+
+== after (T03l, C2), wet-north: 2041 parts
+FLOATING (touching nothing that stands): 0
+OPEN AIR UNDER PART OF THE UNDERSIDE: 100 structural parts
+  [void] 0
+  [port] 5
+    Cube.464 [liner] chute: 96% of 812 samples open, gap to 0.276; lo [-0.444, 1.65, 0.306] hi [0.444, 2.495, 0.316]; carried by Cube.024
+    Cube.454 [chute] chute: 16% of 700 samples open, gap to 0.018; lo [-0.385, 1.639, 0.03] hi [0.385, 2.496, 0.11]; carried by Cube.455, Cube.026, Cube.460
+    Cube.037 [steel] body: 100% of 28 samples open, gap to 0.293; lo [2.47, -0.429, 0.301] hi [2.494, 0.427, 0.339]; carried by 
+    Cube.050 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-0.429, -2.739, 0.301] hi [0.429, -2.715, 0.339]; carried by 
+    Cube.063 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-2.494, -0.429, 0.301] hi [-2.47, 0.427, 0.339]; carried by 
+  [edge] 4
+    bastion.002 [house_ne] body: 4% of 551 samples open, gap to 0.038; lo [0.9, 0.82, 0.85] hi [1.94, 1.94, 2.25]; carried by chassis, Cube.145
+    bastion.003 [house_nw] body: 3% of 551 samples open, gap to 0.038; lo [-1.94, 0.82, 0.85] hi [-0.9, 1.94, 2.25]; carried by chassis, cable.042, Cube.146
+    bastion [house] body: 1% of 323 samples open, gap to 0.018; lo [-1.94, -1.88, 0.85] hi [-0.9, -1.4, 2.1]; carried by chassis
+    bastion.001 [house] body: 1% of 323 samples open, gap to 0.018; lo [0.9, -1.88, 0.85] hi [1.94, -1.4, 2.1]; carried by chassis, cable.044
+  [hatch] 0
+  [span] 12
+    roof [house_ne] frame: 76% of 1195 samples open, gap to 2.964; lo [0.87, 0.78, 2.94] hi [1.97, 1.97, 3.0]; carried by lintel, housewall, Cylinder.404, Cylinder.405
+    roof.001 [house_nw] frame: 76% of 1195 samples open, gap to 2.964; lo [-1.97, 0.78, 2.94] hi [-0.87, 1.97, 3.0]; carried by lintel.001, housewall.001, Cylinder.432, Cylinder.433
+    housefloor [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [0.9, 0.81, 2.25] hi [1.94, 1.94, 2.31]; carried by bastion.002, Cylinder.308, Cube.241, Cube.240
+    housefloor.001 [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [-1.94, 0.81, 2.25] hi [-0.9, 1.94, 2.31]; carried by bastion.003, Cylinder.313, Cylinder.604, hose.004
+    lintel [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [0.9, 0.81, 2.84] hi [1.94, 1.94, 2.94]; carried by housewall, Cylinder.332, Cube.269, lathe.012
+    lintel.001 [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [-1.94, 0.81, 2.84] hi [-0.9, 1.94, 2.94]; carried by housewall.001, Cylinder.363, Cube.297, lathe.014
+    roofcap.001 [house] body: 18% of 367 samples open, gap to 2.104; lo [0.88, -1.9, 2.1] hi [1.96, -1.38, 2.14]; carried by bastion.001
+    roofcap [house] body: 18% of 367 samples open, gap to 2.104; lo [-1.96, -1.9, 2.1] hi [-0.88, -1.38, 2.14]; carried by bastion, hose
+    Cylinder.404 [house_ne] frame: 68% of 72 samples open, gap to 2.053; lo [1.25, 0.73, 2.89] hi [1.97, 0.83, 2.99]; carried by lintel, housewall
+    Cylinder.432 [house_nw] frame: 68% of 72 samples open, gap to 2.053; lo [-1.97, 0.73, 2.89] hi [-1.25, 0.83, 2.99]; carried by lintel.001, housewall.001
+    Cylinder.405 [house_ne] frame: 68% of 63 samples open, gap to 2.055; lo [0.87, 1.92, 2.89] hi [1.5, 2.02, 2.99]; carried by housewall
+    Cylinder.433 [house_nw] frame: 68% of 63 samples open, gap to 2.055; lo [-1.5, 1.92, 2.89] hi [-0.87, 2.02, 2.99]; carried by housewall.001
+  [collar] 7
+    Cylinder.285 [column] body: 40% of 665 samples open, gap to 2.57; lo [-0.44, -0.44, 3.2] hi [0.44, 0.44, 3.3]; carried by Cylinder.284
+    Cylinder.319 [iron] body: 45% of 177 samples open, gap to 0.229; lo [-0.23, -1.37, 2.35] hi [0.23, -0.91, 2.45]; carried by Cylinder.318
+    lathe.005 [copper] body: 73% of 88 samples open, gap to 1.537; lo [-0.37, -0.37, 2.165] hi [0.37, 0.37, 2.235]; carried by Cylinder.284
+    lathe.010 [iron] body: 18% of 114 samples open, gap to 0.022; lo [-0.24, -1.38, 1.01] hi [0.24, -0.9, 1.09]; carried by lathe.003, lathe.011, Cylinder.318
+    lathe.002 [iron] under: 0% of 3984 samples open, gap to 0.015; lo [-1.4, -1.4, 0.85] hi [1.4, 1.4, 0.99]; carried by chassis, Cube.381, Cube.380
+    Cylinder.332 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [0.897, 1.017, 2.36] hi [1.437, 1.077, 2.9]; carried by Cube.167, Cube.168, Cube.169, Cube.170
+    Cylinder.363 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [-1.437, 1.017, 2.36] hi [-0.897, 1.077, 2.9]; carried by Cube.213, Cube.214, Cube.215, Cube.216
+  [leg] 16
+    rod [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, -2.232, 0.03] hi [-1.455, -1.455, 0.632]; carried by chassis, Cylinder.072, Cylinder.074, rod.002
+    rod.003 [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, 1.455, 0.03] hi [-1.455, 2.232, 0.632]; carried by chassis, Cylinder.085, Cylinder.087, rod.005
+    rod.006 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, -2.232, 0.03] hi [2.232, -1.455, 0.632]; carried by chassis, Cylinder.098, Cylinder.100, rod.008
+    rod.009 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, 1.455, 0.03] hi [2.232, 2.232, 0.632]; carried by chassis, Cylinder.111, Cylinder.113, rod.011
+    rod.001 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, -1.915, 0.167] hi [-1.551, -1.551, 0.585]; carried by rod, chassis
+    rod.004 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, 1.551, 0.167] hi [-1.551, 1.915, 0.585]; carried by rod.003, chassis
+    rod.007 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, -1.915, 0.167] hi [1.915, -1.551, 0.585]; carried by rod.006, chassis
+    rod.010 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, 1.551, 0.167] hi [1.915, 1.915, 0.585]; carried by rod.009, chassis
+    rod.002 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, -2.147, 0.062] hi [-1.836, -1.836, 0.416]; carried by rod, Cylinder.072, Cylinder.073
+    rod.005 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, 1.836, 0.062] hi [-1.836, 2.147, 0.416]; carried by rod.003, Cylinder.085, Cylinder.086
+    rod.008 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, -2.147, 0.062] hi [2.147, -1.836, 0.416]; carried by rod.006, Cylinder.098, Cylinder.099
+    rod.011 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, 1.836, 0.062] hi [2.147, 2.147, 0.416]; carried by rod.009, Cylinder.111, Cylinder.112
+    Cube.014 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, -1.836, 0.215] hi [-1.486, -1.486, 0.675]; carried by chassis, rod.001, rod
+    Cube.015 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, 1.486, 0.215] hi [-1.486, 1.836, 0.675]; carried by chassis, rod.004, rod.003
+    Cube.016 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, -1.836, 0.215] hi [1.836, -1.486, 0.675]; carried by chassis, rod.007, rod.006
+    Cube.017 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, 1.486, 0.215] hi [1.836, 1.836, 0.675]; carried by chassis, rod.010, rod.009
+  [line] 7
+    pipe.001 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [1.122, 0.942, 2.43] hi [1.628, 1.495, 2.668]; carried by Cube.148
+    pipe.003 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [-1.628, 0.942, 2.43] hi [-1.122, 1.495, 2.668]; carried by Cube.194
+    pipe.004 [copper] frame: 91% of 11 samples open, gap to 0.922; lo [1.159, 0.745, 2.678] hi [1.47, 1.209, 3.109]; carried by Cylinder.329
+    Cylinder.331 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [1.132, 0.877, 2.595] hi [1.202, 1.537, 2.665]; carried by Cylinder.339, Cube.147, Cylinder.333, Cylinder.332
+    Cylinder.362 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [-1.202, 0.877, 2.595] hi [-1.132, 1.537, 2.665]; carried by Cylinder.370, Cube.193, Cylinder.364, Cylinder.363
+    pipe [copper] frame: 100% of 1 samples open, gap to 0.15; lo [1.122, 0.909, 2.43] hi [1.628, 0.958, 2.668]; carried by 
+    pipe.002 [copper] frame: 100% of 1 samples open, gap to 0.15; lo [-1.628, 0.909, 2.43] hi [-1.122, 0.958, 2.668]; carried by 
+  [rig] 49
+    rig-north-Sp-cube-002 [liner] rig-front-north: 100% of 52 samples open, gap to 0.772; lo [0.604, -2.738, 0.811] hi [1.412, -2.654, 0.819]; carried by 
+    rig-north-Sm-cube-002 [liner] rig-front-north: 100% of 52 samples open, gap to 0.772; lo [-1.396, -2.738, 0.811] hi [-0.588, -2.654, 0.819]; carried by 
+    rig-north-Wp-cube-002 [liner] rig-behind-north: 100% of 46 samples open, gap to 0.772; lo [-2.494, 0.472, 0.811] hi [-2.41, 1.183, 0.819]; carried by 
+    rig-north-Ep-cube-002 [liner] rig-behind-north: 100% of 46 samples open, gap to 0.772; lo [2.41, 0.472, 0.811] hi [2.494, 1.183, 0.819]; carried by 
+    rig-north-Sp-cylinder-022 [steel] rig-front-north: 80% of 50 samples open, gap to 0.276; lo [0.629, -2.74, 0.042] hi [1.386, -2.67, 0.798]; carried by rig-north-Sp-cube-001
+    rig-north-Sm-cylinder-022 [steel] rig-front-north: 80% of 50 samples open, gap to 0.276; lo [-1.371, -2.74, 0.042] hi [-0.614, -2.67, 0.798]; carried by rig-north-Sm-cube-001
+    rig-north-Wp-cylinder-018 [steel] rig-behind-north: 100% of 22 samples open, gap to 0.281; lo [-2.49, 0.462, 0.077] hi [-2.45, 1.149, 0.763]; carried by 
+    rig-north-Ep-cylinder-018 [steel] rig-behind-north: 100% of 22 samples open, gap to 0.281; lo [2.45, 0.462, 0.077] hi [2.49, 1.149, 0.763]; carried by 
+    rig-north-Wp-cylinder-010 [iron_worn] rig-behind-north: 100% of 18 samples open, gap to 0.29; lo [-2.431, 0.526, 0.14] hi [-2.411, 1.086, 0.7]; carried by 
+    rig-north-Ep-cylinder-010 [iron_worn] rig-behind-north: 100% of 18 samples open, gap to 0.29; lo [2.411, 0.526, 0.14] hi [2.431, 1.086, 0.7]; carried by 
+    rig-north-Sp-cylinder-015 [iron_worn] rig-front-north: 100% of 18 samples open, gap to 0.29; lo [0.728, -2.674, 0.14] hi [1.288, -2.655, 0.7]; carried by 
+    rig-north-Sm-cylinder-015 [iron_worn] rig-front-north: 100% of 18 samples open, gap to 0.29; lo [-1.272, -2.674, 0.14] hi [-0.712, -2.655, 0.7]; carried by 
+    rig-north-Sp-cylinder-042 [iron_worn] rig-front-north: 10% of 156 samples open, gap to 0.057; lo [0.786, -2.672, 0.946] hi [1.23, -2.228, 0.976]; carried by rig-north-Sp-cylinder-041
+    rig-north-Sm-cylinder-042 [iron_worn] rig-front-north: 10% of 156 samples open, gap to 0.057; lo [-1.214, -2.672, 0.946] hi [-0.77, -2.228, 0.976]; carried by rig-north-Sm-cylinder-041
+    rig-north-Wp-cylinder-038 [iron_worn] rig-behind-north: 10% of 156 samples open, gap to 0.057; lo [-2.428, 0.584, 0.946] hi [-1.984, 1.028, 0.976]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-042
+    rig-north-Ep-cylinder-038 [iron_worn] rig-behind-north: 10% of 156 samples open, gap to 0.057; lo [1.984, 0.584, 0.946] hi [2.428, 1.028, 0.976]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-042
+    rig-north-Sp-cylinder-054 [steel] rig-front-north: 31% of 42 samples open, gap to 0.298; lo [0.648, -2.354, 0.914] hi [0.97, -2.069, 1.282]; carried by rig-north-Sp-hose-081, rig-north-Sp-cylinder-057, rig-north-Sp-cylinder-056, rig-north-Sp-cylinder-055
+    rig-north-Wp-cylinder-039 [iron_worn] rig-behind-north: 8% of 156 samples open, gap to 0.134; lo [-2.426, 0.586, 1.108] hi [-1.986, 1.026, 1.132]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-041
+    rig-north-Ep-cylinder-039 [iron_worn] rig-behind-north: 8% of 156 samples open, gap to 0.134; lo [1.986, 0.586, 1.108] hi [2.426, 1.026, 1.132]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-041
+    rig-north-Sm-cylinder-054 [steel] rig-front-north: 29% of 42 samples open, gap to 0.284; lo [-0.964, -2.345, 0.913] hi [-0.638, -2.066, 1.281]; carried by rig-north-Sm-hose-081, rig-north-Sm-cylinder-057, rig-north-Sm-cylinder-056, rig-north-Sm-cylinder-055
+    rig-north-Wp-cylinder-042 [iron_worn] rig-behind-north: 34% of 35 samples open, gap to 0.196; lo [-2.161, 0.489, 0.906] hi [-1.886, 0.779, 1.271]; carried by rig-north-Wp-cylinder-043, rig-north-Wp-hose-077, rig-north-Wp-cylinder-037
+    rig-north-Ep-cylinder-042 [iron_worn] rig-behind-north: 34% of 35 samples open, gap to 0.196; lo [1.886, 0.489, 0.906] hi [2.161, 0.779, 1.271]; carried by rig-north-Ep-cylinder-043, rig-north-Ep-hose-077, rig-north-Ep-cylinder-037
+    rig-north-Sp-cylinder-045 [iron] rig-front-north: 11% of 106 samples open, gap to 0.208; lo [0.714, -2.558, 0.941] hi [1.137, -2.145, 1.316]; carried by rig-north-Sp-cylinder-041, rig-north-Sp-cylinder-046, rig-north-Sp-cylinder-042
+    rig-north-Sp-cylinder-043 [iron_worn] rig-front-north: 7% of 156 samples open, gap to 0.134; lo [0.788, -2.67, 1.108] hi [1.228, -2.23, 1.132]; carried by rig-north-Sp-cylinder-041, rig-north-Sp-cylinder-045
+    rig-north-Sm-cylinder-043 [iron_worn] rig-front-north: 7% of 156 samples open, gap to 0.134; lo [-1.212, -2.67, 1.108] hi [-0.772, -2.23, 1.132]; carried by rig-north-Sm-cylinder-041, rig-north-Sm-cylinder-045
+    rig-north-Wp-cylinder-050 [steel] rig-behind-north: 21% of 52 samples open, gap to 0.247; lo [-2.134, 0.439, 0.891] hi [-1.832, 0.753, 1.258]; carried by rig-north-Wp-hose-077, rig-north-Wp-cylinder-053, rig-north-Wp-cylinder-052, rig-north-Wp-cylinder-051
+    rig-north-Ep-cylinder-050 [steel] rig-behind-north: 21% of 52 samples open, gap to 0.247; lo [1.832, 0.439, 0.891] hi [2.134, 0.753, 1.258]; carried by rig-north-Ep-hose-077, rig-north-Ep-cylinder-053, rig-north-Ep-cylinder-052, rig-north-Ep-cylinder-051
+    rig-north-Sp-cylinder-046 [iron_worn] rig-front-north: 42% of 26 samples open, gap to 0.199; lo [0.695, -2.383, 0.923] hi [0.995, -2.126, 1.292]; carried by rig-north-Sp-cylinder-047, rig-north-Sp-hose-081
+    rig-north-Sp-cylinder-057 [iron_worn] rig-front-north: 36% of 28 samples open, gap to 0.195; lo [0.654, -2.343, 0.906] hi [0.964, -2.079, 1.29]; carried by rig-north-Sp-cylinder-054
+    rig-north-Sm-cylinder-057 [iron_worn] rig-front-north: 36% of 28 samples open, gap to 0.196; lo [-0.959, -2.333, 0.905] hi [-0.643, -2.077, 1.289]; carried by rig-north-Sm-cylinder-054
+    rig-north-Sm-cylinder-045 [iron] rig-front-north: 9% of 104 samples open, gap to 0.178; lo [-1.125, -2.555, 0.94] hi [-0.702, -2.143, 1.316]; carried by rig-north-Sm-cylinder-041, rig-north-Sm-cylinder-046, rig-north-Sm-cylinder-042
+    rig-north-Wp-cylinder-041 [iron] rig-behind-north: 8% of 114 samples open, gap to 0.183; lo [-2.324, 0.508, 0.924] hi [-1.904, 0.93, 1.314]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-042, rig-north-Wp-cylinder-046
+    rig-north-Ep-cylinder-041 [iron] rig-behind-north: 8% of 114 samples open, gap to 0.183; lo [1.904, 0.508, 0.924] hi [2.324, 0.93, 1.314]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-042, rig-north-Ep-cylinder-044
+    rig-north-Wp-cylinder-053 [iron_worn] rig-behind-north: 26% of 35 samples open, gap to 0.191; lo [-2.125, 0.447, 0.885] hi [-1.841, 0.746, 1.264]; carried by rig-north-Wp-cylinder-050
+    rig-north-Ep-cylinder-053 [iron_worn] rig-behind-north: 26% of 35 samples open, gap to 0.191; lo [1.841, 0.447, 0.885] hi [2.125, 0.746, 1.264]; carried by rig-north-Ep-cylinder-050
+    rig-north-Wp-cylinder-055 [steel] rig-behind-north: 11% of 44 samples open, gap to 0.324; lo [-1.817, 0.179, 1.049] hi [-1.535, 0.505, 1.417]; carried by rig-north-Wp-hose-077, rig-north-Wp-cylinder-061, rig-north-Wp-cylinder-058, rig-north-Wp-cylinder-057
+    rig-north-Ep-cylinder-055 [steel] rig-behind-north: 11% of 44 samples open, gap to 0.324; lo [1.535, 0.179, 1.049] hi [1.817, 0.505, 1.417]; carried by rig-north-Ep-hose-077, rig-north-Ep-cylinder-061, rig-north-Ep-cylinder-058, rig-north-Ep-cylinder-057
+    rig-north-Wp-cylinder-058 [iron_worn] rig-behind-north: 13% of 30 samples open, gap to 0.334; lo [-1.806, 0.184, 1.042] hi [-1.546, 0.5, 1.424]; carried by rig-north-Wp-cylinder-055, rig-north-Wp-cylinder-061
+    rig-north-Ep-cylinder-058 [iron_worn] rig-behind-north: 13% of 30 samples open, gap to 0.334; lo [1.546, 0.184, 1.042] hi [1.806, 0.5, 1.424]; carried by rig-north-Ep-cylinder-055, rig-north-Ep-cylinder-061
+    rig-north-Wp-cylinder-051 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.128; lo [-2.131, 0.468, 0.898] hi [-1.863, 0.751, 1.261]; carried by rig-north-Wp-cylinder-043, rig-north-Wp-cylinder-050
+    rig-north-Wp-cylinder-052 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.118; lo [-2.103, 0.441, 0.888] hi [-1.835, 0.724, 1.252]; carried by rig-north-Wp-cylinder-050
+    rig-north-Ep-cylinder-051 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.128; lo [1.863, 0.468, 0.898] hi [2.131, 0.751, 1.261]; carried by rig-north-Ep-cylinder-043, rig-north-Ep-cylinder-050
+    rig-north-Ep-cylinder-052 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.118; lo [1.835, 0.441, 0.888] hi [2.103, 0.724, 1.252]; carried by rig-north-Ep-cylinder-050
+    rig-north-Wp-cylinder-062 [iron_worn] rig-behind-north: 1% of 97 samples open, gap to 0.014; lo [-1.778, 0.109, 1.01] hi [-1.428, 0.459, 1.034]; carried by rig-north-Wp-block-075
+    rig-north-Ep-cylinder-062 [iron_worn] rig-behind-north: 1% of 97 samples open, gap to 0.014; lo [1.428, 0.109, 1.01] hi [1.778, 0.459, 1.034]; carried by rig-north-Ep-block-075
+    rig-north-Sp-cylinder-066 [iron_worn] rig-front-north: 1% of 97 samples open, gap to 0.16; lo [0.389, -1.695, 1.01] hi [0.739, -1.345, 1.034]; carried by rig-north-Sp-block-079
+    rig-north-Sm-cylinder-066 [iron_worn] rig-front-north: 1% of 97 samples open, gap to 0.16; lo [-0.739, -1.695, 1.01] hi [-0.389, -1.345, 1.034]; carried by rig-north-Sm-block-079
+    rig-north-Wp-block-075 [iron] rig-behind-north: 1% of 138 samples open, gap to 0.015; lo [-1.813, 0.06, 0.851] hi [-1.405, 0.51, 1.01]; carried by chassis, rig-north-Wp-block-076
+    rig-north-Ep-block-075 [iron] rig-behind-north: 1% of 138 samples open, gap to 0.015; lo [1.405, 0.06, 0.851] hi [1.813, 0.51, 1.01]; carried by chassis, rig-north-Ep-block-076
+
+== after (T03m), dry: 2372 parts
+FLOATING (touching nothing that stands): 0
+OPEN AIR UNDER PART OF THE UNDERSIDE: 59 structural parts
+  [void] 0
+  [port] 5
+    Cube.526 [liner] chute: 96% of 812 samples open, gap to 0.276; lo [-0.444, 1.65, 0.306] hi [0.444, 2.495, 0.316]; carried by Cube.024
+    Cube.516 [chute] chute: 16% of 700 samples open, gap to 0.018; lo [-0.385, 1.639, 0.03] hi [0.385, 2.496, 0.11]; carried by Cube.517, Cube.026, Cube.522
+    Cube.037 [steel] body: 100% of 28 samples open, gap to 0.293; lo [2.47, -0.429, 0.301] hi [2.494, 0.429, 0.339]; carried by 
+    Cube.050 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-0.429, -2.494, 0.301] hi [0.429, -2.47, 0.339]; carried by 
+    Cube.063 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-2.494, -0.429, 0.301] hi [-2.47, 0.429, 0.339]; carried by 
+  [edge] 4
+    bastion.002 [house_ne] body: 4% of 551 samples open, gap to 0.038; lo [0.9, 0.82, 0.85] hi [1.94, 1.94, 2.25]; carried by chassis, Cube.145
+    bastion.003 [house_nw] body: 3% of 551 samples open, gap to 0.038; lo [-1.94, 0.82, 0.85] hi [-0.9, 1.94, 2.25]; carried by chassis, cable.042, Cube.146
+    bastion [house] body: 1% of 323 samples open, gap to 0.018; lo [-1.94, -1.88, 0.85] hi [-0.9, -1.4, 2.1]; carried by chassis
+    bastion.001 [house] body: 1% of 323 samples open, gap to 0.018; lo [0.9, -1.88, 0.85] hi [1.94, -1.4, 2.1]; carried by chassis, cable.044
+  [hatch] 0
+  [span] 20
+    roof [house_ne] frame: 76% of 1195 samples open, gap to 2.964; lo [0.87, 0.78, 2.94] hi [1.97, 1.97, 3.0]; carried by lintel, housewall, Cylinder.404, Cylinder.405
+    roof.001 [house_nw] frame: 76% of 1195 samples open, gap to 2.964; lo [-1.97, 0.78, 2.94] hi [-0.87, 1.97, 3.0]; carried by lintel.001, housewall.001, Cylinder.432, Cylinder.433
+    housefloor [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [0.9, 0.81, 2.25] hi [1.94, 1.94, 2.31]; carried by bastion.002, Cylinder.308, Cube.241, Cube.240
+    housefloor.001 [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [-1.94, 0.81, 2.25] hi [-0.9, 1.94, 2.31]; carried by bastion.003, Cylinder.313, Cylinder.625, hose.008
+    rigdry-girder-370 [iron] body: 75% of 243 samples open, gap to 0.832; lo [-2.34, -2.34, 0.83] hi [-1.504, -1.504, 0.85]; carried by rigdry-girder-371, rigdry-strut-382, rigdry-strut-383, rigdry-cube-005
+    rigdry-girder-373 [iron] body: 75% of 243 samples open, gap to 0.832; lo [-2.34, 1.504, 0.83] hi [-1.504, 2.34, 0.85]; carried by rigdry-girder-374, rigdry-strut-385, rigdry-strut-384, rigdry-cube-019
+    rigdry-girder-376 [iron] body: 75% of 243 samples open, gap to 0.832; lo [1.504, -2.34, 0.83] hi [2.34, -1.504, 0.85]; carried by rigdry-girder-377, rigdry-strut-386, rigdry-strut-387, rigdry-cube-037
+    rigdry-girder-379 [iron] body: 75% of 243 samples open, gap to 0.832; lo [1.504, 1.504, 0.83] hi [2.34, 2.34, 0.85]; carried by rigdry-girder-380, rigdry-strut-389, rigdry-strut-388, rigdry-cube-051
+    rigdry-girder-372 [iron] body: 72% of 202 samples open, gap to 0.75; lo [-2.32, -2.32, 0.75] hi [-1.504, -1.504, 0.77]; carried by rigdry-cube-083, rigdry-cube-112, rigdry-strut-382, rigdry-strut-383
+    rigdry-girder-378 [iron] body: 72% of 202 samples open, gap to 0.75; lo [1.504, -2.32, 0.75] hi [2.32, -1.504, 0.77]; carried by rigdry-cube-199, rigdry-cube-228, rigdry-strut-386, rigdry-strut-387
+    rigdry-girder-375 [iron] body: 65% of 202 samples open, gap to 0.75; lo [-2.32, 1.504, 0.75] hi [-1.504, 2.32, 0.77]; carried by rigdry-cube-170, rigdry-cube-141, rigdry-block-368, rigdry-strut-385
+    rigdry-girder-381 [iron] body: 65% of 202 samples open, gap to 0.75; lo [1.504, 1.504, 0.75] hi [2.32, 2.32, 0.77]; carried by rigdry-cube-286, rigdry-cube-257, rigdry-block-369, rigdry-strut-389
+    lintel [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [0.9, 0.81, 2.84] hi [1.94, 1.94, 2.94]; carried by housewall, Cylinder.332, Cube.269, lathe.012
+    lintel.001 [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [-1.94, 0.81, 2.84] hi [-0.9, 1.94, 2.94]; carried by housewall.001, Cylinder.363, Cube.297, lathe.014
+    roofcap.001 [house] body: 18% of 367 samples open, gap to 2.104; lo [0.88, -1.9, 2.1] hi [1.96, -1.38, 2.14]; carried by bastion.001
+    roofcap [house] body: 18% of 367 samples open, gap to 2.104; lo [-1.96, -1.9, 2.1] hi [-0.88, -1.38, 2.14]; carried by bastion, hose.003
+    Cylinder.404 [house_ne] frame: 68% of 72 samples open, gap to 2.053; lo [1.25, 0.73, 2.89] hi [1.97, 0.83, 2.99]; carried by lintel, housewall
+    Cylinder.432 [house_nw] frame: 68% of 72 samples open, gap to 2.053; lo [-1.97, 0.73, 2.89] hi [-1.25, 0.83, 2.99]; carried by lintel.001, housewall.001
+    Cylinder.405 [house_ne] frame: 68% of 63 samples open, gap to 2.055; lo [0.87, 1.92, 2.89] hi [1.5, 2.02, 2.99]; carried by housewall
+    Cylinder.433 [house_nw] frame: 68% of 63 samples open, gap to 2.055; lo [-1.5, 1.92, 2.89] hi [-0.87, 2.02, 2.99]; carried by housewall.001
+  [collar] 7
+    Cylinder.285 [column] body: 40% of 665 samples open, gap to 2.57; lo [-0.44, -0.44, 3.2] hi [0.44, 0.44, 3.3]; carried by Cylinder.284
+    Cylinder.319 [iron] body: 45% of 177 samples open, gap to 0.229; lo [-0.23, -1.37, 2.35] hi [0.23, -0.91, 2.45]; carried by Cylinder.318
+    lathe.005 [copper] body: 73% of 88 samples open, gap to 1.537; lo [-0.37, -0.37, 2.165] hi [0.37, 0.37, 2.235]; carried by Cylinder.284
+    lathe.010 [iron] body: 18% of 114 samples open, gap to 0.022; lo [-0.24, -1.38, 1.01] hi [0.24, -0.9, 1.09]; carried by lathe.003, lathe.011, Cylinder.318
+    lathe.002 [iron] under: 0% of 3984 samples open, gap to 0.015; lo [-1.4, -1.4, 0.85] hi [1.4, 1.4, 0.99]; carried by chassis, Cube.381, Cube.380
+    Cylinder.332 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [0.897, 1.017, 2.36] hi [1.437, 1.077, 2.9]; carried by Cube.167, Cube.168, Cube.169, Cube.170
+    Cylinder.363 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [-1.437, 1.017, 2.36] hi [-0.897, 1.077, 2.9]; carried by Cube.213, Cube.214, Cube.215, Cube.216
+  [leg] 16
+    rod [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, -2.232, 0.03] hi [-1.455, -1.455, 0.632]; carried by chassis, Cylinder.072, Cylinder.074, rod.002
+    rod.003 [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, 1.455, 0.03] hi [-1.455, 2.232, 0.632]; carried by chassis, Cylinder.085, Cylinder.087, rod.005
+    rod.006 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, -2.232, 0.03] hi [2.232, -1.455, 0.632]; carried by chassis, Cylinder.098, Cylinder.100, rod.008
+    rod.009 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, 1.455, 0.03] hi [2.232, 2.232, 0.632]; carried by chassis, Cylinder.111, Cylinder.113, rod.011
+    rod.001 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, -1.915, 0.167] hi [-1.551, -1.551, 0.585]; carried by rod, chassis
+    rod.004 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, 1.551, 0.167] hi [-1.551, 1.915, 0.585]; carried by rod.003, chassis
+    rod.007 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, -1.915, 0.167] hi [1.915, -1.551, 0.585]; carried by rod.006, chassis
+    rod.010 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, 1.551, 0.167] hi [1.915, 1.915, 0.585]; carried by rod.009, chassis
+    rod.002 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, -2.147, 0.062] hi [-1.836, -1.836, 0.416]; carried by rod, Cylinder.072, Cylinder.073
+    rod.005 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, 1.836, 0.062] hi [-1.836, 2.147, 0.416]; carried by rod.003, Cylinder.085, Cylinder.086
+    rod.008 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, -2.147, 0.062] hi [2.147, -1.836, 0.416]; carried by rod.006, Cylinder.098, Cylinder.099
+    rod.011 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, 1.836, 0.062] hi [2.147, 2.147, 0.416]; carried by rod.009, Cylinder.111, Cylinder.112
+    Cube.014 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, -1.836, 0.215] hi [-1.486, -1.486, 0.675]; carried by chassis, rod.001, rod
+    Cube.015 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, 1.486, 0.215] hi [-1.486, 1.836, 0.675]; carried by chassis, rod.004, rod.003
+    Cube.016 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, -1.836, 0.215] hi [1.836, -1.486, 0.675]; carried by chassis, rod.007, rod.006
+    Cube.017 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, 1.486, 0.215] hi [1.836, 1.836, 0.675]; carried by chassis, rod.010, rod.009
+  [line] 7
+    pipe.001 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [1.122, 0.942, 2.43] hi [1.628, 1.495, 2.668]; carried by Cube.148
+    pipe.003 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [-1.628, 0.942, 2.43] hi [-1.122, 1.495, 2.668]; carried by Cube.194
+    pipe.004 [copper] frame: 91% of 11 samples open, gap to 0.922; lo [1.159, 0.745, 2.678] hi [1.47, 1.209, 3.109]; carried by Cylinder.329
+    Cylinder.331 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [1.132, 0.877, 2.595] hi [1.202, 1.537, 2.665]; carried by Cylinder.339, Cube.147, Cylinder.333, Cylinder.332
+    Cylinder.362 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [-1.202, 0.877, 2.595] hi [-1.132, 1.537, 2.665]; carried by Cylinder.370, Cube.193, Cylinder.364, Cylinder.363
+    pipe [copper] frame: 100% of 1 samples open, gap to 0.15; lo [1.122, 0.909, 2.43] hi [1.628, 0.958, 2.668]; carried by 
+    pipe.002 [copper] frame: 100% of 1 samples open, gap to 0.15; lo [-1.628, 0.909, 2.43] hi [-1.122, 0.958, 2.668]; carried by 
+  [rig] 0
+
+== after (T03m), wet-north: 2690 parts
+FLOATING (touching nothing that stands): 0
+OPEN AIR UNDER PART OF THE UNDERSIDE: 104 structural parts
+  [void] 0
+  [port] 5
+    Cube.526 [liner] chute: 96% of 812 samples open, gap to 0.276; lo [-0.444, 1.65, 0.306] hi [0.444, 2.495, 0.316]; carried by Cube.024
+    Cube.516 [chute] chute: 16% of 700 samples open, gap to 0.018; lo [-0.385, 1.639, 0.03] hi [0.385, 2.496, 0.11]; carried by Cube.517, Cube.026, Cube.522
+    Cube.037 [steel] body: 100% of 28 samples open, gap to 0.293; lo [2.47, -0.429, 0.301] hi [2.494, 0.427, 0.339]; carried by 
+    Cube.050 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-0.429, -2.494, 0.301] hi [0.429, -2.47, 0.339]; carried by 
+    Cube.063 [steel] body: 100% of 28 samples open, gap to 0.293; lo [-2.494, -0.429, 0.301] hi [-2.47, 0.427, 0.339]; carried by 
+  [edge] 4
+    bastion.002 [house_ne] body: 4% of 551 samples open, gap to 0.038; lo [0.9, 0.82, 0.85] hi [1.94, 1.94, 2.25]; carried by chassis, Cube.145
+    bastion.003 [house_nw] body: 3% of 551 samples open, gap to 0.038; lo [-1.94, 0.82, 0.85] hi [-0.9, 1.94, 2.25]; carried by chassis, cable.042, Cube.146
+    bastion [house] body: 1% of 323 samples open, gap to 0.018; lo [-1.94, -1.88, 0.85] hi [-0.9, -1.4, 2.1]; carried by chassis
+    bastion.001 [house] body: 1% of 323 samples open, gap to 0.018; lo [0.9, -1.88, 0.85] hi [1.94, -1.4, 2.1]; carried by chassis, cable.044
+  [hatch] 0
+  [span] 20
+    roof [house_ne] frame: 76% of 1195 samples open, gap to 2.964; lo [0.87, 0.78, 2.94] hi [1.97, 1.97, 3.0]; carried by lintel, housewall, Cylinder.404, Cylinder.405
+    roof.001 [house_nw] frame: 76% of 1195 samples open, gap to 2.964; lo [-1.97, 0.78, 2.94] hi [-0.87, 1.97, 3.0]; carried by lintel.001, housewall.001, Cylinder.432, Cylinder.433
+    housefloor [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [0.9, 0.81, 2.25] hi [1.94, 1.94, 2.31]; carried by bastion.002, Cylinder.308, Cube.241, Cube.240
+    housefloor.001 [iron] frame: 41% of 1044 samples open, gap to 1.4; lo [-1.94, 0.81, 2.25] hi [-0.9, 1.94, 2.31]; carried by bastion.003, Cylinder.313, Cylinder.625, hose.008
+    rigdry-girder-370 [iron] body: 75% of 243 samples open, gap to 0.832; lo [-2.34, -2.34, 0.83] hi [-1.504, -1.504, 0.85]; carried by rigdry-girder-371, rigdry-strut-382, rigdry-strut-383, rigdry-cube-005
+    rigdry-girder-373 [iron] body: 75% of 243 samples open, gap to 0.832; lo [-2.34, 1.504, 0.83] hi [-1.504, 2.34, 0.85]; carried by rigdry-girder-374, rigdry-strut-385, rigdry-strut-384, rigdry-cube-019
+    rigdry-girder-376 [iron] body: 75% of 243 samples open, gap to 0.832; lo [1.504, -2.34, 0.83] hi [2.34, -1.504, 0.85]; carried by rigdry-girder-377, rigdry-strut-386, rigdry-strut-387, rigdry-cube-037
+    rigdry-girder-379 [iron] body: 75% of 243 samples open, gap to 0.832; lo [1.504, 1.504, 0.83] hi [2.34, 2.34, 0.85]; carried by rigdry-girder-380, rigdry-strut-389, rigdry-strut-388, rigdry-cube-051
+    rigdry-girder-372 [iron] body: 72% of 202 samples open, gap to 0.75; lo [-2.32, -2.32, 0.75] hi [-1.504, -1.504, 0.77]; carried by rigdry-cube-083, rigdry-cube-112, rigdry-strut-382, rigdry-strut-383
+    rigdry-girder-378 [iron] body: 72% of 202 samples open, gap to 0.75; lo [1.504, -2.32, 0.75] hi [2.32, -1.504, 0.77]; carried by rigdry-cube-199, rigdry-cube-228, rigdry-strut-386, rigdry-strut-387
+    rigdry-girder-375 [iron] body: 65% of 202 samples open, gap to 0.75; lo [-2.32, 1.504, 0.75] hi [-1.504, 2.32, 0.77]; carried by rigdry-cube-170, rigdry-cube-141, rigdry-block-368, rigdry-strut-385
+    rigdry-girder-381 [iron] body: 65% of 202 samples open, gap to 0.75; lo [1.504, 1.504, 0.75] hi [2.32, 2.32, 0.77]; carried by rigdry-cube-286, rigdry-cube-257, rigdry-block-369, rigdry-strut-389
+    lintel [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [0.9, 0.81, 2.84] hi [1.94, 1.94, 2.94]; carried by housewall, Cylinder.332, Cube.269, lathe.012
+    lintel.001 [iron_worn] frame: 87% of 127 samples open, gap to 0.53; lo [-1.94, 0.81, 2.84] hi [-0.9, 1.94, 2.94]; carried by housewall.001, Cylinder.363, Cube.297, lathe.014
+    roofcap.001 [house] body: 18% of 367 samples open, gap to 2.104; lo [0.88, -1.9, 2.1] hi [1.96, -1.38, 2.14]; carried by bastion.001
+    roofcap [house] body: 18% of 367 samples open, gap to 2.104; lo [-1.96, -1.9, 2.1] hi [-0.88, -1.38, 2.14]; carried by bastion, hose.003
+    Cylinder.404 [house_ne] frame: 68% of 72 samples open, gap to 2.053; lo [1.25, 0.73, 2.89] hi [1.97, 0.83, 2.99]; carried by lintel, housewall
+    Cylinder.432 [house_nw] frame: 68% of 72 samples open, gap to 2.053; lo [-1.97, 0.73, 2.89] hi [-1.25, 0.83, 2.99]; carried by lintel.001, housewall.001
+    Cylinder.405 [house_ne] frame: 68% of 63 samples open, gap to 2.055; lo [0.87, 1.92, 2.89] hi [1.5, 2.02, 2.99]; carried by housewall
+    Cylinder.433 [house_nw] frame: 68% of 63 samples open, gap to 2.055; lo [-1.5, 1.92, 2.89] hi [-0.87, 2.02, 2.99]; carried by housewall.001
+  [collar] 7
+    Cylinder.285 [column] body: 40% of 665 samples open, gap to 2.57; lo [-0.44, -0.44, 3.2] hi [0.44, 0.44, 3.3]; carried by Cylinder.284
+    Cylinder.319 [iron] body: 45% of 177 samples open, gap to 0.229; lo [-0.23, -1.37, 2.35] hi [0.23, -0.91, 2.45]; carried by Cylinder.318
+    lathe.005 [copper] body: 73% of 88 samples open, gap to 1.537; lo [-0.37, -0.37, 2.165] hi [0.37, 0.37, 2.235]; carried by Cylinder.284
+    lathe.010 [iron] body: 18% of 114 samples open, gap to 0.022; lo [-0.24, -1.38, 1.01] hi [0.24, -0.9, 1.09]; carried by lathe.003, lathe.011, Cylinder.318
+    lathe.002 [iron] under: 0% of 3984 samples open, gap to 0.015; lo [-1.4, -1.4, 0.85] hi [1.4, 1.4, 0.99]; carried by chassis, Cube.381, Cube.380
+    Cylinder.332 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [0.897, 1.017, 2.36] hi [1.437, 1.077, 2.9]; carried by Cube.167, Cube.168, Cube.169, Cube.170
+    Cylinder.363 [gear] frame: 24% of 17 samples open, gap to 0.05; lo [-1.437, 1.017, 2.36] hi [-0.897, 1.077, 2.9]; carried by Cube.213, Cube.214, Cube.215, Cube.216
+  [leg] 16
+    rod [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, -2.232, 0.03] hi [-1.455, -1.455, 0.632]; carried by chassis, Cylinder.072, Cylinder.074, rod.002
+    rod.003 [leg] body: 44% of 302 samples open, gap to 0.311; lo [-2.232, 1.455, 0.03] hi [-1.455, 2.232, 0.632]; carried by chassis, Cylinder.085, Cylinder.087, rod.005
+    rod.006 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, -2.232, 0.03] hi [2.232, -1.455, 0.632]; carried by chassis, Cylinder.098, Cylinder.100, rod.008
+    rod.009 [leg] body: 44% of 302 samples open, gap to 0.311; lo [1.455, 1.455, 0.03] hi [2.232, 2.232, 0.632]; carried by chassis, Cylinder.111, Cylinder.113, rod.011
+    rod.001 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, -1.915, 0.167] hi [-1.551, -1.551, 0.585]; carried by rod, chassis
+    rod.004 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [-1.915, 1.551, 0.167] hi [-1.551, 1.915, 0.585]; carried by rod.003, chassis
+    rod.007 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, -1.915, 0.167] hi [1.915, -1.551, 0.585]; carried by rod.006, chassis
+    rod.010 [iron_worn] body: 37% of 92 samples open, gap to 0.4; lo [1.551, 1.551, 0.167] hi [1.915, 1.915, 0.585]; carried by rod.009, chassis
+    rod.002 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, -2.147, 0.062] hi [-1.836, -1.836, 0.416]; carried by rod, Cylinder.072, Cylinder.073
+    rod.005 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [-2.147, 1.836, 0.062] hi [-1.836, 2.147, 0.416]; carried by rod.003, Cylinder.085, Cylinder.086
+    rod.008 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, -2.147, 0.062] hi [2.147, -1.836, 0.416]; carried by rod.006, Cylinder.098, Cylinder.099
+    rod.011 [iron_worn] body: 16% of 64 samples open, gap to 0.125; lo [1.836, 1.836, 0.062] hi [2.147, 2.147, 0.416]; carried by rod.009, Cylinder.111, Cylinder.112
+    Cube.014 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, -1.836, 0.215] hi [-1.486, -1.486, 0.675]; carried by chassis, rod.001, rod
+    Cube.015 [leg] body: 14% of 29 samples open, gap to 0.215; lo [-1.836, 1.486, 0.215] hi [-1.486, 1.836, 0.675]; carried by chassis, rod.004, rod.003
+    Cube.016 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, -1.836, 0.215] hi [1.836, -1.486, 0.675]; carried by chassis, rod.007, rod.006
+    Cube.017 [leg] body: 14% of 29 samples open, gap to 0.215; lo [1.486, 1.486, 0.215] hi [1.836, 1.836, 0.675]; carried by chassis, rod.010, rod.009
+  [line] 7
+    pipe.001 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [1.122, 0.942, 2.43] hi [1.628, 1.495, 2.668]; carried by Cube.148
+    pipe.003 [copper] frame: 91% of 33 samples open, gap to 0.349; lo [-1.628, 0.942, 2.43] hi [-1.122, 1.495, 2.668]; carried by Cube.194
+    pipe.004 [copper] frame: 91% of 11 samples open, gap to 0.922; lo [1.159, 0.745, 2.678] hi [1.47, 1.209, 3.109]; carried by Cylinder.329
+    Cylinder.331 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [1.132, 0.877, 2.595] hi [1.202, 1.537, 2.665]; carried by Cylinder.339, Cube.147, Cylinder.333, Cylinder.332
+    Cylinder.362 [steel] frame: 14% of 44 samples open, gap to 0.29; lo [-1.202, 0.877, 2.595] hi [-1.132, 1.537, 2.665]; carried by Cylinder.370, Cube.193, Cylinder.364, Cylinder.363
+    pipe [copper] frame: 100% of 1 samples open, gap to 0.15; lo [1.122, 0.909, 2.43] hi [1.628, 0.958, 2.668]; carried by 
+    pipe.002 [copper] frame: 100% of 1 samples open, gap to 0.15; lo [-1.628, 0.909, 2.43] hi [-1.122, 0.958, 2.668]; carried by 
+  [rig] 45
+    rig-north-Sp-cube-002 [liner] rig-front-north: 100% of 52 samples open, gap to 0.772; lo [0.604, -2.494, 0.811] hi [1.412, -2.41, 0.819]; carried by 
+    rig-north-Sm-cube-002 [liner] rig-front-north: 100% of 52 samples open, gap to 0.772; lo [-1.396, -2.494, 0.811] hi [-0.588, -2.41, 0.819]; carried by 
+    rig-north-Wp-cube-002 [liner] rig-behind-north: 100% of 46 samples open, gap to 0.772; lo [-2.494, 0.472, 0.811] hi [-2.41, 1.183, 0.819]; carried by 
+    rig-north-Ep-cube-002 [liner] rig-behind-north: 100% of 46 samples open, gap to 0.772; lo [2.41, 0.472, 0.811] hi [2.494, 1.183, 0.819]; carried by 
+    rig-north-Sp-cylinder-022 [steel] rig-front-north: 80% of 50 samples open, gap to 0.276; lo [0.629, -2.496, 0.042] hi [1.386, -2.426, 0.798]; carried by rig-north-Sp-cube-001
+    rig-north-Sm-cylinder-022 [steel] rig-front-north: 80% of 50 samples open, gap to 0.276; lo [-1.371, -2.496, 0.042] hi [-0.614, -2.426, 0.798]; carried by rig-north-Sm-cube-001
+    rig-north-Wp-cylinder-018 [steel] rig-behind-north: 100% of 22 samples open, gap to 0.281; lo [-2.49, 0.462, 0.077] hi [-2.45, 1.149, 0.763]; carried by 
+    rig-north-Ep-cylinder-018 [steel] rig-behind-north: 100% of 22 samples open, gap to 0.281; lo [2.45, 0.462, 0.077] hi [2.49, 1.149, 0.763]; carried by 
+    rig-north-Wp-cylinder-010 [iron_worn] rig-behind-north: 100% of 18 samples open, gap to 0.29; lo [-2.431, 0.526, 0.14] hi [-2.411, 1.086, 0.7]; carried by 
+    rig-north-Ep-cylinder-010 [iron_worn] rig-behind-north: 100% of 18 samples open, gap to 0.29; lo [2.411, 0.526, 0.14] hi [2.431, 1.086, 0.7]; carried by 
+    rig-north-Sp-cylinder-015 [iron_worn] rig-front-north: 100% of 18 samples open, gap to 0.29; lo [0.728, -2.431, 0.14] hi [1.288, -2.411, 0.7]; carried by 
+    rig-north-Sm-cylinder-015 [iron_worn] rig-front-north: 100% of 18 samples open, gap to 0.29; lo [-1.272, -2.431, 0.14] hi [-0.712, -2.411, 0.7]; carried by 
+    rig-north-Wp-cylinder-038 [iron_worn] rig-behind-north: 10% of 156 samples open, gap to 0.057; lo [-2.428, 0.584, 0.946] hi [-1.984, 1.028, 0.976]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-042
+    rig-north-Ep-cylinder-038 [iron_worn] rig-behind-north: 10% of 156 samples open, gap to 0.057; lo [1.984, 0.584, 0.946] hi [2.428, 1.028, 0.976]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-042
+    rig-north-Sp-cylinder-042 [iron_worn] rig-front-north: 9% of 156 samples open, gap to 0.057; lo [0.786, -2.428, 0.946] hi [1.23, -1.984, 0.976]; carried by rig-north-Sp-cylinder-041, rig-north-Sp-cylinder-045
+    rig-north-Sm-cylinder-042 [iron_worn] rig-front-north: 9% of 156 samples open, gap to 0.057; lo [-1.214, -2.428, 0.946] hi [-0.77, -1.984, 0.976]; carried by rig-north-Sm-cylinder-041, rig-north-Sm-cylinder-045
+    rig-north-Wp-cylinder-039 [iron_worn] rig-behind-north: 8% of 156 samples open, gap to 0.134; lo [-2.426, 0.586, 1.108] hi [-1.986, 1.026, 1.132]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-041
+    rig-north-Ep-cylinder-039 [iron_worn] rig-behind-north: 8% of 156 samples open, gap to 0.134; lo [1.986, 0.586, 1.108] hi [2.426, 1.026, 1.132]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-041
+    rig-north-Wp-cylinder-042 [iron_worn] rig-behind-north: 34% of 35 samples open, gap to 0.196; lo [-2.161, 0.489, 0.906] hi [-1.886, 0.779, 1.271]; carried by rig-north-Wp-cylinder-043, rig-north-Wp-hose-077, rig-north-Wp-cylinder-037
+    rig-north-Ep-cylinder-042 [iron_worn] rig-behind-north: 34% of 35 samples open, gap to 0.196; lo [1.886, 0.489, 0.906] hi [2.161, 0.779, 1.271]; carried by rig-north-Ep-cylinder-043, rig-north-Ep-hose-077, rig-north-Ep-cylinder-037
+    rig-north-Sp-cylinder-043 [iron_worn] rig-front-north: 7% of 156 samples open, gap to 0.134; lo [0.788, -2.426, 1.108] hi [1.228, -1.986, 1.132]; carried by rig-north-Sp-cylinder-041, rig-north-Sp-cylinder-045
+    rig-north-Sm-cylinder-043 [iron_worn] rig-front-north: 7% of 156 samples open, gap to 0.134; lo [-1.212, -2.426, 1.108] hi [-0.772, -1.986, 1.132]; carried by rig-north-Sm-cylinder-041, rig-north-Sm-cylinder-045
+    rig-north-Wp-cylinder-050 [steel] rig-behind-north: 21% of 52 samples open, gap to 0.247; lo [-2.134, 0.439, 0.891] hi [-1.832, 0.753, 1.258]; carried by rig-north-Wp-hose-077, rig-north-Wp-cylinder-053, rig-north-Wp-cylinder-052, rig-north-Wp-cylinder-051
+    rig-north-Ep-cylinder-050 [steel] rig-behind-north: 21% of 52 samples open, gap to 0.247; lo [1.832, 0.439, 0.891] hi [2.134, 0.753, 1.258]; carried by rig-north-Ep-hose-077, rig-north-Ep-cylinder-053, rig-north-Ep-cylinder-052, rig-north-Ep-cylinder-051
+    rig-north-Sp-cylinder-045 [iron] rig-front-north: 8% of 110 samples open, gap to 0.242; lo [0.704, -2.363, 0.931] hi [1.074, -1.959, 1.315]; carried by rig-north-Sp-cylinder-041, rig-north-Sp-cylinder-046, rig-north-Sp-cylinder-042
+    rig-north-Wp-cylinder-041 [iron] rig-behind-north: 8% of 114 samples open, gap to 0.183; lo [-2.324, 0.508, 0.924] hi [-1.904, 0.93, 1.314]; carried by rig-north-Wp-cylinder-037, rig-north-Wp-cylinder-042, rig-north-Wp-cylinder-046
+    rig-north-Ep-cylinder-041 [iron] rig-behind-north: 8% of 114 samples open, gap to 0.183; lo [1.904, 0.508, 0.924] hi [2.324, 0.93, 1.314]; carried by rig-north-Ep-cylinder-037, rig-north-Ep-cylinder-042, rig-north-Ep-cylinder-044
+    rig-north-Wp-cylinder-053 [iron_worn] rig-behind-north: 26% of 35 samples open, gap to 0.191; lo [-2.125, 0.447, 0.885] hi [-1.841, 0.746, 1.264]; carried by rig-north-Wp-cylinder-050
+    rig-north-Ep-cylinder-053 [iron_worn] rig-behind-north: 26% of 35 samples open, gap to 0.191; lo [1.841, 0.447, 0.885] hi [2.125, 0.746, 1.264]; carried by rig-north-Ep-cylinder-050
+    rig-north-Sm-cylinder-045 [iron] rig-front-north: 8% of 104 samples open, gap to 0.228; lo [-1.064, -2.361, 0.93] hi [-0.687, -1.953, 1.314]; carried by rig-north-Sm-cylinder-041, rig-north-Sm-cylinder-046, rig-north-Sm-cylinder-042
+    rig-north-Wp-cylinder-055 [steel] rig-behind-north: 11% of 44 samples open, gap to 0.324; lo [-1.817, 0.179, 1.049] hi [-1.535, 0.505, 1.417]; carried by rig-north-Wp-hose-077, rig-north-Wp-cylinder-061, rig-north-Wp-cylinder-058, rig-north-Wp-cylinder-057
+    rig-north-Ep-cylinder-055 [steel] rig-behind-north: 11% of 44 samples open, gap to 0.324; lo [1.535, 0.179, 1.049] hi [1.817, 0.505, 1.417]; carried by rig-north-Ep-hose-077, rig-north-Ep-cylinder-061, rig-north-Ep-cylinder-058, rig-north-Ep-cylinder-057
+    rig-north-Wp-cylinder-058 [iron_worn] rig-behind-north: 13% of 30 samples open, gap to 0.334; lo [-1.806, 0.184, 1.042] hi [-1.546, 0.5, 1.424]; carried by rig-north-Wp-cylinder-055, rig-north-Wp-cylinder-061
+    rig-north-Ep-cylinder-058 [iron_worn] rig-behind-north: 13% of 30 samples open, gap to 0.334; lo [1.546, 0.184, 1.042] hi [1.806, 0.5, 1.424]; carried by rig-north-Ep-cylinder-055, rig-north-Ep-cylinder-061
+    rig-north-Wp-cylinder-051 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.128; lo [-2.131, 0.468, 0.898] hi [-1.863, 0.751, 1.261]; carried by rig-north-Wp-cylinder-043, rig-north-Wp-cylinder-050
+    rig-north-Wp-cylinder-052 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.118; lo [-2.103, 0.441, 0.888] hi [-1.835, 0.724, 1.252]; carried by rig-north-Wp-cylinder-050
+    rig-north-Ep-cylinder-051 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.128; lo [1.863, 0.468, 0.898] hi [2.131, 0.751, 1.261]; carried by rig-north-Ep-cylinder-043, rig-north-Ep-cylinder-050
+    rig-north-Ep-cylinder-052 [steel] rig-behind-north: 11% of 28 samples open, gap to 0.118; lo [1.835, 0.441, 0.888] hi [2.103, 0.724, 1.252]; carried by rig-north-Ep-cylinder-050
+    rig-north-Sm-block-079 [iron] rig-front-north: 1% of 152 samples open, gap to 0.014; lo [-0.81, -1.754, 0.851] hi [-0.326, -1.304, 1.01]; carried by chassis, rig-north-Sm-block-080
+    rig-north-Wp-cylinder-062 [iron_worn] rig-behind-north: 1% of 97 samples open, gap to 0.014; lo [-1.778, 0.109, 1.01] hi [-1.428, 0.459, 1.034]; carried by rig-north-Wp-block-075
+    rig-north-Ep-cylinder-062 [iron_worn] rig-behind-north: 1% of 97 samples open, gap to 0.014; lo [1.428, 0.109, 1.01] hi [1.778, 0.459, 1.034]; carried by rig-north-Ep-block-075
+    rig-north-Sp-cylinder-066 [iron_worn] rig-front-north: 1% of 97 samples open, gap to 0.16; lo [0.39, -1.695, 1.01] hi [0.74, -1.345, 1.034]; carried by rig-north-Sp-block-079
+    rig-north-Sm-cylinder-066 [iron_worn] rig-front-north: 1% of 97 samples open, gap to 0.16; lo [-0.74, -1.695, 1.01] hi [-0.39, -1.345, 1.034]; carried by rig-north-Sm-block-079
+    rig-north-Wp-block-075 [iron] rig-behind-north: 1% of 138 samples open, gap to 0.015; lo [-1.813, 0.06, 0.851] hi [-1.405, 0.51, 1.01]; carried by chassis, rig-north-Wp-block-076
+    rig-north-Ep-block-075 [iron] rig-behind-north: 1% of 138 samples open, gap to 0.015; lo [1.405, 0.06, 0.851] hi [1.813, 0.51, 1.01]; carried by chassis, rig-north-Ep-block-076
+

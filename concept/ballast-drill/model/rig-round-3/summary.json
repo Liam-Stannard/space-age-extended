@@ -1,0 +1,1359 @@
+{
+ "signed": {
+  "still_north": {
+   "tonal": {
+    "p5": 7,
+    "p50": 81,
+    "p95": 147,
+    "spread": 140
+   },
+   "finish": {
+    "black_pct": 8.8,
+    "fine": 7.27,
+    "mid": 10.64,
+    "ratio": 0.68,
+    "darkchr": 11.0
+   }
+  },
+  "plate_north": {
+   "tonal": {
+    "p5": 13,
+    "p50": 90,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 4.1,
+    "fine": 7.17,
+    "mid": 11.18,
+    "ratio": 0.64,
+    "darkchr": 14.5
+   }
+  },
+  "coverage_pct": 95.1
+ },
+ "cast": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 97.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.3,
+     "mid": 10.78,
+     "ratio": 0.68,
+     "darkchr": 11.3
+    }
+   },
+   "east": {
+    "coverage_pct": 97.3,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 81,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.48,
+     "mid": 10.93,
+     "ratio": 0.68,
+     "darkchr": 11.5
+    }
+   },
+   "south": {
+    "coverage_pct": 97.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.9,
+     "fine": 7.13,
+     "mid": 10.58,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 97.3,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.48,
+     "mid": 10.89,
+     "ratio": 0.69,
+     "darkchr": 11.6
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 13,
+    "p50": 94,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 3.7,
+    "fine": 6.94,
+    "mid": 11.23,
+    "ratio": 0.62,
+    "darkchr": 14.7
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.02,
+     "mid": 10.61,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "east": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.04,
+     "mid": 10.6,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "south": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.03,
+     "mid": 10.46,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.16,
+     "mid": 10.67,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "runs_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    }
+   ]
+  }
+ },
+ "bracket": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 97.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.25,
+     "mid": 10.8,
+     "ratio": 0.67,
+     "darkchr": 11.2
+    }
+   },
+   "east": {
+    "coverage_pct": 97.1,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 81,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.46,
+     "mid": 10.94,
+     "ratio": 0.68,
+     "darkchr": 11.4
+    }
+   },
+   "south": {
+    "coverage_pct": 96.8,
+    "tonal_still": {
+     "p5": 6,
+     "p50": 80,
+     "p95": 145,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 9.1,
+     "fine": 7.15,
+     "mid": 10.61,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 97.1,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.48,
+     "mid": 10.94,
+     "ratio": 0.68,
+     "darkchr": 11.6
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 13,
+    "p50": 94,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 3.8,
+    "fine": 6.97,
+    "mid": 11.3,
+    "ratio": 0.62,
+    "darkchr": 14.6
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.4,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.04,
+     "mid": 10.66,
+     "ratio": 0.66,
+     "darkchr": 10.8
+    }
+   },
+   "east": {
+    "coverage_pct": 96.4,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.8,
+     "fine": 7.07,
+     "mid": 10.65,
+     "ratio": 0.66,
+     "darkchr": 10.8
+    }
+   },
+   "south": {
+    "coverage_pct": 96.4,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.06,
+     "mid": 10.51,
+     "ratio": 0.67,
+     "darkchr": 10.9
+    }
+   },
+   "west": {
+    "coverage_pct": 96.4,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.18,
+     "mid": 10.73,
+     "ratio": 0.67,
+     "darkchr": 10.9
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "runs_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    }
+   ]
+  }
+ },
+ "oxide": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 97.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 79,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.35,
+     "mid": 10.79,
+     "ratio": 0.68,
+     "darkchr": 11.5
+    }
+   },
+   "east": {
+    "coverage_pct": 97.3,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 81,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.57,
+     "mid": 11.05,
+     "ratio": 0.68,
+     "darkchr": 11.6
+    }
+   },
+   "south": {
+    "coverage_pct": 97.0,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 8.9,
+     "fine": 7.16,
+     "mid": 10.53,
+     "ratio": 0.68,
+     "darkchr": 11.1
+    }
+   },
+   "west": {
+    "coverage_pct": 97.3,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 82,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.56,
+     "mid": 10.93,
+     "ratio": 0.69,
+     "darkchr": 12.0
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 13,
+    "p50": 94,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 3.7,
+    "fine": 6.94,
+    "mid": 11.23,
+    "ratio": 0.62,
+    "darkchr": 14.7
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.02,
+     "mid": 10.61,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "east": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.04,
+     "mid": 10.6,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "south": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.03,
+     "mid": 10.46,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.16,
+     "mid": 10.67,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "runs_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.44,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    }
+   ]
+  }
+ },
+ "hose": {
+  "joins": "16/16",
+  "join_gap_columns_max": 0,
+  "wet": {
+   "north": {
+    "coverage_pct": 97.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 76,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 9.0,
+     "fine": 7.29,
+     "mid": 10.67,
+     "ratio": 0.68,
+     "darkchr": 10.8
+    }
+   },
+   "east": {
+    "coverage_pct": 97.2,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 78,
+     "p95": 145,
+     "spread": 138
+    },
+    "finish_still": {
+     "black_pct": 9.0,
+     "fine": 7.49,
+     "mid": 10.89,
+     "ratio": 0.69,
+     "darkchr": 11.0
+    }
+   },
+   "south": {
+    "coverage_pct": 97.0,
+    "tonal_still": {
+     "p5": 6,
+     "p50": 78,
+     "p95": 145,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 9.1,
+     "fine": 7.13,
+     "mid": 10.54,
+     "ratio": 0.68,
+     "darkchr": 10.8
+    }
+   },
+   "west": {
+    "coverage_pct": 97.2,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 80,
+     "p95": 146,
+     "spread": 139
+    },
+    "finish_still": {
+     "black_pct": 9.1,
+     "fine": 7.51,
+     "mid": 10.86,
+     "ratio": 0.69,
+     "darkchr": 11.0
+    }
+   }
+  },
+  "plate": {
+   "tonal": {
+    "p5": 13,
+    "p50": 94,
+    "p95": 156,
+    "spread": 143
+   },
+   "finish": {
+    "black_pct": 3.7,
+    "fine": 6.94,
+    "mid": 11.23,
+    "ratio": 0.62,
+    "darkchr": 14.7
+   }
+  },
+  "dry": {
+   "north": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.02,
+     "mid": 10.61,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "east": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.7,
+     "fine": 7.04,
+     "mid": 10.6,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "south": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.5,
+     "fine": 7.03,
+     "mid": 10.46,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   },
+   "west": {
+    "coverage_pct": 96.6,
+    "tonal_still": {
+     "p5": 7,
+     "p50": 85,
+     "p95": 147,
+     "spread": 140
+    },
+    "finish_still": {
+     "black_pct": 8.6,
+     "fine": 7.16,
+     "mid": 10.67,
+     "ratio": 0.67,
+     "darkchr": 11.0
+    }
+   }
+  },
+  "collide_clashes": 0,
+  "runs_clashes": 0,
+  "diameters": {
+   "north": [
+    {
+     "pair": [
+      [
+       -2,
+       -1,
+       "W"
+      ],
+      [
+       -1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    },
+    {
+     "pair": [
+      [
+       2,
+       -1,
+       "E"
+      ],
+      [
+       1,
+       2,
+       "S"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    }
+   ],
+   "east": [
+    {
+     "pair": [
+      [
+       1,
+       -2,
+       "N"
+      ],
+      [
+       -2,
+       -1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    },
+    {
+     "pair": [
+      [
+       1,
+       2,
+       "S"
+      ],
+      [
+       -2,
+       1,
+       "W"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.98
+    }
+   ],
+   "south": [
+    {
+     "pair": [
+      [
+       2,
+       1,
+       "E"
+      ],
+      [
+       1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    },
+    {
+     "pair": [
+      [
+       -2,
+       1,
+       "W"
+      ],
+      [
+       -1,
+       -2,
+       "N"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.36
+    }
+   ],
+   "west": [
+    {
+     "pair": [
+      [
+       -1,
+       2,
+       "S"
+      ],
+      [
+       2,
+       1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 3.96
+    },
+    {
+     "pair": [
+      [
+       -1,
+       -2,
+       "N"
+      ],
+      [
+       2,
+       -1,
+       "E"
+      ]
+     ],
+     "fitting": 0.44,
+     "riser": 0.48,
+     "head": 0.52,
+     "run": 0.428,
+     "flanges": 0.56,
+     "end_ring": "the signed-off port's",
+     "length": 4.35
+    }
+   ]
+  }
+ }
+}

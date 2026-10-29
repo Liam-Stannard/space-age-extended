@@ -1,0 +1,18 @@
+render device: GPU OPTIX on NVIDIA GeForce RTX 5080 (Cycles preferences -- OPTIX: 1 device(s))
+RIG scene built in 117 s; take 'feed', pass 'rig'
+RIG cut-back: 66 cut, 288 removed, 14 moved
+RIG dry rig: 32 parts
+RIG slots: 75 plate parts take the slot cutters
+COLLIDE dry rig: 32 parts against 2189 plate meshes; clashes 0
+COLLIDE wet north: 408 parts; clashes 0
+COLLIDE wet east: 396 parts; clashes 0
+COLLIDE wet south: 410 parts; clashes 0
+COLLIDE wet west: 396 parts; clashes 0
+COLLIDE clashes 0
+Blender 5.0.1 (hash a3db93c5b259 built 2025-12-16 01:30:59)
+/home/lstan/data/git/space-age-extended/.claude/worktrees/ballast-drill-ports/concept/ballast-drill/model/ballast_drill.py:490: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+/home/lstan/data/git/space-age-extended/.claude/worktrees/ballast-drill-ports/concept/ballast-drill/model/ballast_drill.py:501: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+/home/lstan/data/git/space-age-extended/.claude/worktrees/ballast-drill-ports/concept/ballast-drill/model/ballast_drill.py:2839: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  M["dust"].use_nodes = True

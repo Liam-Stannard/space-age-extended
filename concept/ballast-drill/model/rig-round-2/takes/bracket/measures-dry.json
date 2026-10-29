@@ -1,0 +1,1202 @@
+{
+ "source": {
+  "src": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/r2/takes/bracket/dry",
+  "sheets": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/r2/takes/bracket/dry",
+  "render_json": null,
+  "directions": "four",
+  "footprint": [
+   5,
+   5
+  ],
+  "px_per_tile": 64,
+  "connections": [],
+  "vanilla": []
+ },
+ "collide": null,
+ "directions": {
+  "north": {
+   "layers": {
+    "base-north": "plate",
+    "base-shadow-north": "shadow",
+    "chute-north": "anim, 5 frames",
+    "stroke-north": "anim, 24 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 94.5,
+    "mass_pct": 101.3,
+    "corners_pct": {
+     "NW": 91.9,
+     "NE": 92.0,
+     "SW": 54.2,
+     "SE": 55.8
+    },
+    "outer_band_pct": 80.9,
+    "rise_tiles": 0.5,
+    "rise_by_column_tiles": [
+     0.5,
+     0.5,
+     0.28,
+     0.5,
+     0.5
+    ],
+    "extent_tiles": [
+     5.0,
+     5.5
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 93,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.6,
+     "fine": 7.0,
+     "mid": 11.34,
+     "ratio": 0.62,
+     "darkchr": 14.6
+    },
+    "still": {
+     "black_pct": 8.6,
+     "fine": 7.06,
+     "mid": 10.72,
+     "ratio": 0.66,
+     "darkchr": 10.9
+    }
+   },
+   "colour": {
+    "opaque_px": 103716,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 172,
+    "orange_pct": 0.17,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.17
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 22.52,
+    "strobe_pct": 13.89,
+    "strobe_px": 14408,
+    "step_px": [
+     12,
+     9255,
+     16412,
+     19308,
+     29899,
+     19362,
+     17051,
+     6096,
+     3120,
+     2097,
+     1920,
+     2545,
+     5038,
+     8091,
+     11689,
+     13232,
+     13489,
+     14037,
+     14171,
+     12985,
+     12441,
+     10925,
+     8288,
+     3339,
+     10,
+     9260,
+     16413,
+     19317,
+     29964,
+     19269,
+     16966,
+     6097,
+     3143,
+     2224,
+     1831,
+     2481,
+     5016,
+     8126,
+     11865,
+     13204,
+     13455,
+     14020,
+     14159,
+     12993,
+     12439,
+     10928,
+     8292,
+     3335,
+     0,
+     9259,
+     16410,
+     19321,
+     29959,
+     19440,
+     16877,
+     6030,
+     3146,
+     2248,
+     1958,
+     2392,
+     4927,
+     8094,
+     11880,
+     13357,
+     13447,
+     14005,
+     14154,
+     12989,
+     12427,
+     10923,
+     8291,
+     3351,
+     0,
+     9258,
+     16412,
+     19313,
+     29909,
+     19474,
+     17041,
+     5945,
+     3083,
+     2250,
+     1982,
+     2519,
+     4846,
+     8012,
+     11842,
+     13353,
+     13540,
+     14004,
+     14151,
+     12995,
+     12433,
+     10925,
+     8292,
+     3346,
+     16,
+     9259,
+     16409,
+     19313,
+     29900,
+     19444,
+     17086,
+     6070,
+     2993,
+     2186,
+     1984,
+     2543,
+     4998,
+     7918,
+     11754,
+     13317,
+     13539,
+     14036,
+     14151,
+     12990,
+     12440,
+     10926,
+     8288
+    ],
+    "wrap_px": 3343,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "chute-north": 0.53,
+     "stroke-north": 22.29
+    }
+   },
+   "layers_alone": {
+    "chute-north": {
+     "frames": 5,
+     "frame_px": [
+      56,
+      37
+     ],
+     "step_px": [
+      486,
+      556,
+      579,
+      538
+     ],
+     "wrap_px": 385,
+     "step_range": [
+      486,
+      579
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 621,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-north": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10971,
+      18228,
+      21711,
+      33791,
+      22321,
+      19667,
+      7315,
+      3785,
+      2999,
+      2742,
+      3247,
+      6638,
+      9353,
+      13875,
+      15587,
+      15802,
+      16476,
+      16711,
+      14619,
+      14035,
+      12586,
+      9954
+     ],
+     "wrap_px": 4038,
+     "step_range": [
+      0,
+      33791
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28843,
+     "between_frames": [
+      1,
+      5
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": []
+  },
+  "east": {
+   "layers": {
+    "base-east": "plate",
+    "base-shadow-east": "shadow",
+    "chute-east": "anim, 5 frames",
+    "stroke-east": "anim, 24 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 94.5,
+    "mass_pct": 101.2,
+    "corners_pct": {
+     "NW": 91.9,
+     "NE": 92.0,
+     "SW": 54.2,
+     "SE": 55.8
+    },
+    "outer_band_pct": 80.9,
+    "rise_tiles": 0.5,
+    "rise_by_column_tiles": [
+     0.5,
+     0.5,
+     0.28,
+     0.5,
+     0.5
+    ],
+    "extent_tiles": [
+     5.0,
+     5.5
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 93,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.6,
+     "fine": 7.0,
+     "mid": 11.34,
+     "ratio": 0.62,
+     "darkchr": 14.6
+    },
+    "still": {
+     "black_pct": 8.7,
+     "fine": 7.09,
+     "mid": 10.7,
+     "ratio": 0.66,
+     "darkchr": 10.8
+    }
+   },
+   "colour": {
+    "opaque_px": 103598,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 174,
+    "orange_pct": 0.17,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.17
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 22.69,
+    "strobe_pct": 14.53,
+    "strobe_px": 15051,
+    "step_px": [
+     489,
+     9785,
+     16757,
+     19732,
+     30327,
+     19800,
+     17480,
+     6627,
+     3728,
+     2639,
+     2443,
+     3098,
+     5592,
+     8614,
+     12147,
+     13707,
+     13942,
+     14438,
+     14585,
+     13223,
+     12703,
+     11309,
+     8841,
+     3915,
+     441,
+     9761,
+     16745,
+     19673,
+     30478,
+     19771,
+     17418,
+     6630,
+     3700,
+     2829,
+     2374,
+     2999,
+     5607,
+     8543,
+     12285,
+     13654,
+     13929,
+     14461,
+     14566,
+     13396,
+     12639,
+     11257,
+     8851,
+     3850,
+     612,
+     9672,
+     16664,
+     19693,
+     30405,
+     19921,
+     17368,
+     6528,
+     3704,
+     2802,
+     2564,
+     2929,
+     5505,
+     8547,
+     12243,
+     13791,
+     13869,
+     14435,
+     14578,
+     13366,
+     12807,
+     11226,
+     8775,
+     3869,
+     541,
+     9869,
+     16642,
+     19646,
+     30355,
+     19849,
+     17569,
+     6461,
+     3606,
+     2808,
+     2537,
+     3121,
+     5455,
+     8479,
+     12230,
+     13754,
+     14002,
+     14371,
+     14532,
+     13354,
+     12762,
+     11337,
+     8742,
+     3793,
+     548,
+     9781,
+     16772,
+     19584,
+     30373,
+     19861,
+     17489,
+     6654,
+     3536,
+     2707,
+     2543,
+     3093,
+     5638,
+     8456,
+     12189,
+     13724,
+     13932,
+     14489,
+     14462,
+     13326,
+     12740,
+     11304,
+     8872
+    ],
+    "wrap_px": 3748,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "chute-east": 0.83,
+     "stroke-east": 22.38
+    }
+   },
+   "layers_alone": {
+    "chute-east": {
+     "frames": 5,
+     "frame_px": [
+      58,
+      58
+     ],
+     "step_px": [
+      795,
+      882,
+      874,
+      911
+     ],
+     "wrap_px": 744,
+     "step_range": [
+      795,
+      911
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 779,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-east": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10979,
+      18269,
+      21833,
+      33882,
+      22402,
+      19735,
+      7309,
+      3782,
+      2996,
+      2745,
+      3240,
+      6637,
+      9416,
+      13930,
+      15642,
+      15855,
+      16530,
+      16758,
+      14644,
+      14057,
+      12629,
+      10002
+     ],
+     "wrap_px": 4026,
+     "step_range": [
+      0,
+      33882
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28985,
+     "between_frames": [
+      1,
+      5
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": []
+  },
+  "south": {
+   "layers": {
+    "base-south": "plate",
+    "base-shadow-south": "shadow",
+    "chute-south": "anim, 5 frames",
+    "stroke-south": "anim, 24 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 94.5,
+    "mass_pct": 101.2,
+    "corners_pct": {
+     "NW": 91.9,
+     "NE": 92.0,
+     "SW": 54.2,
+     "SE": 55.8
+    },
+    "outer_band_pct": 80.9,
+    "rise_tiles": 0.5,
+    "rise_by_column_tiles": [
+     0.5,
+     0.5,
+     0.28,
+     0.5,
+     0.5
+    ],
+    "extent_tiles": [
+     5.0,
+     5.5
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 93,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.6,
+     "fine": 7.0,
+     "mid": 11.34,
+     "ratio": 0.62,
+     "darkchr": 14.6
+    },
+    "still": {
+     "black_pct": 8.6,
+     "fine": 7.08,
+     "mid": 10.57,
+     "ratio": 0.67,
+     "darkchr": 10.9
+    }
+   },
+   "colour": {
+    "opaque_px": 103598,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 179,
+    "orange_pct": 0.17,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.17
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 23.02,
+    "strobe_pct": 14.47,
+    "strobe_px": 14995,
+    "step_px": [
+     720,
+     9964,
+     17320,
+     20175,
+     30615,
+     19936,
+     17516,
+     6715,
+     3751,
+     2698,
+     2426,
+     2976,
+     5691,
+     8760,
+     12397,
+     13908,
+     14155,
+     14899,
+     15032,
+     13698,
+     13144,
+     11630,
+     9190,
+     4202,
+     726,
+     9972,
+     17116,
+     20210,
+     30771,
+     19943,
+     17524,
+     6511,
+     3786,
+     2853,
+     2432,
+     2984,
+     5487,
+     8795,
+     12552,
+     13914,
+     14163,
+     14695,
+     15067,
+     13853,
+     13150,
+     11638,
+     8986,
+     4237,
+     881,
+     9978,
+     17124,
+     20006,
+     30806,
+     20098,
+     17529,
+     6519,
+     3582,
+     2888,
+     2587,
+     2990,
+     5494,
+     8591,
+     12587,
+     14069,
+     14169,
+     14703,
+     14863,
+     13888,
+     13305,
+     11644,
+     8994,
+     4033,
+     916,
+     10133,
+     17130,
+     20014,
+     30602,
+     20133,
+     17685,
+     6525,
+     3590,
+     2684,
+     2622,
+     3145,
+     5501,
+     8599,
+     12383,
+     14104,
+     14324,
+     14709,
+     14871,
+     13684,
+     13340,
+     11799,
+     9000,
+     4041,
+     712,
+     10168,
+     17285,
+     20020,
+     30610,
+     19929,
+     17720,
+     6680,
+     3596,
+     2692,
+     2418,
+     3180,
+     5656,
+     8605,
+     12391,
+     13900,
+     14359,
+     14864,
+     14877,
+     13692,
+     13136,
+     11834,
+     9155
+    ],
+    "wrap_px": 4047,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "chute-south": 0.71,
+     "stroke-south": 22.31
+    }
+   },
+   "layers_alone": {
+    "chute-south": {
+     "frames": 5,
+     "frame_px": [
+      56,
+      63
+     ],
+     "step_px": [
+      720,
+      712,
+      916,
+      881
+     ],
+     "wrap_px": 726,
+     "step_range": [
+      712,
+      916
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 718,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-south": {
+     "frames": 24,
+     "frame_px": [
+      310,
+      317
+     ],
+     "step_px": [
+      0,
+      10979,
+      18227,
+      21718,
+      33789,
+      22315,
+      19658,
+      7310,
+      3783,
+      2994,
+      2744,
+      3237,
+      6644,
+      9366,
+      13882,
+      15588,
+      15814,
+      16472,
+      16716,
+      14602,
+      14027,
+      12591,
+      9949
+     ],
+     "wrap_px": 4045,
+     "step_range": [
+      0,
+      33789
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28839,
+     "between_frames": [
+      1,
+      5
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": []
+  },
+  "west": {
+   "layers": {
+    "base-west": "plate",
+    "base-shadow-west": "shadow",
+    "chute-west": "anim, 5 frames",
+    "stroke-west": "anim, 24 frames"
+   },
+   "ignored": [],
+   "coverage": {
+    "footprint": [
+     5,
+     5
+    ],
+    "footprint_pct": 94.5,
+    "mass_pct": 101.2,
+    "corners_pct": {
+     "NW": 91.9,
+     "NE": 92.0,
+     "SW": 54.2,
+     "SE": 55.8
+    },
+    "outer_band_pct": 80.9,
+    "rise_tiles": 0.5,
+    "rise_by_column_tiles": [
+     0.5,
+     0.5,
+     0.28,
+     0.5,
+     0.5
+    ],
+    "extent_tiles": [
+     5.0,
+     5.5
+    ],
+    "centre_offset_px": 0.0,
+    "past_edges_tiles": {
+     "west": 0.0,
+     "east": 0.0,
+     "south": 0.0
+    }
+   },
+   "tonal": {
+    "plate": {
+     "p5": 13,
+     "p50": 93,
+     "p95": 156,
+     "spread": 143
+    },
+    "still": {
+     "p5": 7,
+     "p50": 84,
+     "p95": 147,
+     "spread": 140
+    }
+   },
+   "finish": {
+    "plate": {
+     "black_pct": 3.6,
+     "fine": 7.0,
+     "mid": 11.34,
+     "ratio": 0.62,
+     "darkchr": 14.6
+    },
+    "still": {
+     "black_pct": 8.6,
+     "fine": 7.2,
+     "mid": 10.78,
+     "ratio": 0.67,
+     "darkchr": 10.9
+    }
+   },
+   "colour": {
+    "opaque_px": 103598,
+    "blue_px": 96,
+    "blue_pct": 0.09,
+    "pale_px": 0,
+    "pale_pct_of_blue": 0.0,
+    "orange_px": 171,
+    "orange_pct": 0.17,
+    "white_px": 14,
+    "clipped_px": 0,
+    "idle_blue_pct": 0.09,
+    "idle_orange_pct": 0.17
+   },
+   "glow": {},
+   "motion": {
+    "loop_frames": 120,
+    "moving_pct": 23.22,
+    "strobe_pct": 14.71,
+    "strobe_px": 15242,
+    "step_px": [
+     884,
+     10052,
+     17390,
+     20368,
+     30654,
+     20098,
+     17619,
+     6780,
+     3945,
+     2733,
+     2590,
+     3076,
+     5755,
+     8954,
+     12421,
+     14079,
+     14256,
+     14968,
+     15221,
+     13735,
+     13316,
+     11731,
+     9261,
+     4386,
+     761,
+     10124,
+     17223,
+     20272,
+     30968,
+     19975,
+     17691,
+     6613,
+     3849,
+     3047,
+     2467,
+     3148,
+     5588,
+     8858,
+     12735,
+     13956,
+     14328,
+     14801,
+     15125,
+     14049,
+     13193,
+     11803,
+     9094,
+     4290,
+     1075,
+     10001,
+     17295,
+     20105,
+     30872,
+     20289,
+     17568,
+     6685,
+     3682,
+     2951,
+     2781,
+     3025,
+     5660,
+     8691,
+     12639,
+     14270,
+     14205,
+     14873,
+     14958,
+     13953,
+     13507,
+     11680,
+     9166,
+     4123,
+     979,
+     10315,
+     17172,
+     20177,
+     30705,
+     20193,
+     17882,
+     6562,
+     3754,
+     2784,
+     2685,
+     3339,
+     5537,
+     8763,
+     12472,
+     14174,
+     14519,
+     14750,
+     15030,
+     13786,
+     13411,
+     11995,
+     9043,
+     4195,
+     812,
+     10219,
+     17486,
+     20054,
+     30777,
+     20026,
+     17786,
+     6876,
+     3631,
+     2856,
+     2518,
+     3243,
+     5851,
+     8640,
+     12544,
+     14007,
+     14423,
+     15064,
+     14907,
+     13858,
+     13244,
+     11898,
+     9357
+    ],
+    "wrap_px": 4072,
+    "wrap_within_steps": true,
+    "per_layer_moving_pct": {
+     "chute-west": 0.91,
+     "stroke-west": 22.31
+    }
+   },
+   "layers_alone": {
+    "chute-west": {
+     "frames": 5,
+     "frame_px": [
+      58,
+      58
+     ],
+     "step_px": [
+      898,
+      826,
+      995,
+      1092
+     ],
+     "wrap_px": 777,
+     "step_range": [
+      826,
+      1092
+     ],
+     "wrap_within_steps": false,
+     "most_changed_px": 1019,
+     "between_frames": [
+      1,
+      3
+     ]
+    },
+    "stroke-west": {
+     "frames": 24,
+     "frame_px": [
+      313,
+      317
+     ],
+     "step_px": [
+      0,
+      10970,
+      18234,
+      21724,
+      33800,
+      22317,
+      19669,
+      7320,
+      3784,
+      2993,
+      2744,
+      3238,
+      6637,
+      9361,
+      13866,
+      15604,
+      15811,
+      16484,
+      16716,
+      14608,
+      14041,
+      12596,
+      9968
+     ],
+     "wrap_px": 4034,
+     "step_range": [
+      0,
+      33800
+     ],
+     "wrap_within_steps": true,
+     "most_changed_px": 28855,
+     "between_frames": [
+      1,
+      5
+     ]
+    }
+   },
+   "light": {},
+   "pack_checks": null,
+   "joins": []
+  }
+ },
+ "ports": null,
+ "vanilla": {},
+ "gates": {
+  "joins": null,
+  "collide": null
+ },
+ "pass": true,
+ "sheets": [
+  {
+   "path": "/tmp/claude-1000/-home-lstan-data-git-space-age-extended/981d1f20-ab55-40a2-8523-c83679ec2759/scratchpad/artist/ballast-drill-ports/r2/takes/bracket/measures-dry/comparison.png",
+   "size": [
+    1636,
+    2461
+   ]
+  }
+ ],
+ "sheet_unsplit_px": [
+  1636,
+  2461
+ ]
+}
