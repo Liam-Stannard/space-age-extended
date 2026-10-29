@@ -226,9 +226,11 @@ DECL = dict(
         dict(name="lamp", kind="light", sheet="status-lamp"),
         # T09d: each input line's sight glass, its fluid column cut white for the engine to tint by the recipe
         # (a glass the camera never sees in a direction has no sheet there: "unseen", as a layer's)
-        *[dict(name=g_["group"], kind="light", sheet=g_["sheet"])
-          for _, g_ in sorted(TK.get("sight_glasses", {}).items(), key=lambda kv: kv[1]["group"])
-          if g_["group"] not in HIDDEN],
+        # (T09d2: a line may have more than one glass -- the solution's second, seen facing east -- all of a
+        # line's glasses rendered together into its one sheet)
+        *[dict(name=gr_, kind="light", sheet=sh_)
+          for gr_, sh_ in sorted({g_["group"]: g_["sheet"] for g_ in TK.get("sight_glasses", {}).values()}.items())
+          if gr_ not in HIDDEN],
     ],
     animations=[
         # the solution going round: drawn only while crafting, over the plate's dark legs
@@ -1995,6 +1997,33 @@ def sleeve(c_wall, out, rn, L):
         nut(tuple(c + out * (0.044 + L + 0.002) + q * rn * 1.33), 0.018, 0.012, rot)
 
 
+# T09d2: the stub's bore, vanilla's pipe's: its body is 40 px across at 64 a tile seen from above (base/graphics/
+# entity/pipe/pipe-straight-vertical.png, row 64, the opaque body less its cast shade), 0.31 tile in radius. A stub
+# lying east-west shows 1.118 x its radius on screen; built 0.30 / 1.118 (38 px) it left ground showing past 3 of
+# the 41 rows of vanilla's horizontal pipe body (measure.py joins, east and west), so it is 0.30 as well (43 px).
+STUB_RV = 0.30
+STUB_RH = 0.30
+
+
+def stub(c_wall, out, rs):
+    """T09d2 (Liam, 2026-10-28, "Like the Gas Pump fix"): a connection's stub as vanilla's pumpjack, assembler and
+    chemical plant have: the pipe at vanilla's bore standing out of the casing's wall to the footprint's edge and
+    no further, low (its top under the casing's roof), with a thin welded flange on the wall and nothing at its
+    end: there vanilla's own pipe's flange (joined) or vanilla's cover (unconnected) meets it."""
+    c, out = Vector(c_wall), Vector(out).normalized()
+    rot = along(out)
+    up = Vector((0, 0, 1))
+    side = out.cross(up).normalized()
+    L = E5 - abs(c.dot(out)) + 0.01
+    cyl(tuple(c + out * (L / 2 - 0.01)), rs, L, "bare", rot=rot, verts=48, bevel=0.004)
+    cyl(tuple(c + out * 0.015), rs + 0.045, 0.03, "dark_steel", rot=rot, verts=48, bevel=0.004)     # wall flange
+    torus(tuple(c + out * 0.031), rs + 0.003, 0.009, "seam", rot=rot, seg=40)                      # its weld
+    for i in range(8):
+        a = 2 * PI * (i + 0.5) / 8
+        q = side * math.cos(a) + up * math.sin(a)
+        nut(tuple(c + out * 0.034 + q * (rs + 0.026)), 0.013, 0.009, rot)
+
+
 def riser_up(x, y, z0, z1, r=0.2, rin=0.27, mark_=None):
     """Where a connection's run comes up out of the building's roof or deck to the vessel standing over it: a
     bolted collar in the roof, a visible reducer from the connection's bore (rin) to the riser's (r), the riser
@@ -2419,6 +2448,27 @@ def dosing():
 
 def feed_main():
     lagged(route("feed"), r=0.11, marks=((0.3, "green"), (0.62, "yellow")))
+    sr = TK.get("solution_riser")
+    if sr:
+        solution_riser(**sr)
+
+
+def solution_riser(at, pts, z0=0.85, rin=0.2, r=0.11):
+    """T09d2 (Liam, 2026-10-28, on T09d's solution glass hidden facing east: "Add a second glass"): the solution's
+    riser, moved from under the feed drum (where no view sees it) to beside the drum's east head, so a second glass
+    on the solution's line shows facing east. It leaves the roof at the riser's bore (rin, as the riser under the
+    drum had it), welded into the roof; a visible reducer takes it to the line's bore (r); from there a lagged
+    line, as the feed main is, rises and turns into a welded nozzle on the drum's head (form_plans "ports":
+    feed_main2:b), its glass on the straight rise (form_plans "sight_glasses"). The side-nozzle pot's foot ring
+    leaves no room for a bolted collar: a weld bead."""
+    x, y = at
+    lagged(pts, r=r, marks=((0.9, "green"),))            # feed_main2
+    with asm():
+        cyl((x, y, z0 + 0.02), rin, 0.06, "bare", verts=40, bevel=0.004)
+        torus((x, y, z0 + 0.004), rin + 0.004, 0.012, "seam", seg=40)
+        bpy.ops.mesh.primitive_cone_add(vertices=40, radius1=rin, radius2=r * 1.2, depth=0.08,
+                                        location=(x, y, z0 + 0.09))
+        _finish(bpy.context.active_object, "bare", 0.006, smooth=True)
 
 
 def makeup():
@@ -3038,8 +3088,31 @@ def nut(loc, r, h, rot):
 def fitting(face, tile, k, out=False):
     """One fitting, built as the building stands turned: x east, y north, the connection's `tile`
     (prototype, y down) on `face` of the footprint as it stands. Its neck starts inside connection k's
-    vessel (shell_d) and runs out to the wall at full bore."""
+    vessel (shell_d) and runs out to the wall at full bore.
+
+    T09d2 (Liam, 2026-10-28: "make the pipe connections like vanillas" -> "Like the Gas Pump fix"): on a wall
+    (NOZZLE "wall") the fitting is a low stub (stub()), not T06g's sleeve, boss and end ring."""
     cx, cy = tile[0], -tile[1]
+    if WALL(k):
+        if face in "NS":
+            s = 1 if face == "N" else -1
+            x = cx + V_AXIS_U
+            mx = x if (face == "N") == (k < 2) else -x
+            d = shell_d(k, mx)
+            n0 = d - NECK_IN
+            inner = (x, s * n0, ZA)
+            pipe([(x, s * n0, ZA), (x, s * (d + 0.012), ZA)], r=0.27, mat="bare")      # the neck, inside the casing
+            stub((x, s * d, ZA), (0, s, 0), STUB_RV)
+        else:
+            sgn = 1 if face == "E" else -1
+            ya = cy + H_AXIS_V - ZA / 2
+            mx = -ya * sgn if k < 2 else ya * sgn
+            d = shell_d(k, mx)
+            n0 = d - NECK_IN
+            inner = (sgn * n0, ya, ZA)
+            pipe([(sgn * n0, ya, ZA), (sgn * (d + 0.012), ya, ZA)], r=0.24, mat="bare")
+            stub((sgn * d, ya, ZA), (sgn, 0, 0), STUB_RH)
+        return inner
     if face in "NS":
         x = cx + V_AXIS_U
         mx = x if (face == "N") == (k < 2) else -x      # its model x, the plant facing north

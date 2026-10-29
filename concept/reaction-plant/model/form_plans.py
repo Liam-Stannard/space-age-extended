@@ -69,8 +69,9 @@ TAKES["casing"] = dict(
                  (1.95, -0.3, 0.4, ZC), (-1.9, 0.2, 0.44, ZC)],
         hatches=[(-0.75, 1.0, ZC, 0.3, 0.3)],
         # each connection's riser: (x, y, z0, z1, r, rin, mark)
-        risers=[(-1.0, 1.68, ZC, 0.8 + ZC - 0.47, 0.2, 0.27, "green"),
-                (1.0, 1.75, ZC, ZC + 0.26 - 0.1, 0.2, 0.27, "yellow"),
+        # (T09d2: the solution's riser, under the feed drum at (-1.0, 1.68), moved beside the drum's east head:
+        # "solution_riser" below)
+        risers=[(1.0, 1.75, ZC, ZC + 0.26 - 0.1, 0.2, 0.27, "yellow"),
                 (0.0, -1.75, ZC, 0.72 + ZC - 0.39, 0.2, 0.27, "green")],
     ),
     walls={0: 2.18, 1: 2.18, 2: 2.18},
@@ -180,8 +181,16 @@ TAKES["casing"] = dict(
     # Placed by a ray probe of each run toward the camera in every direction: the gas hose's straight fall
     # shows in all four; the feed main shows north, south and west between its two marking rings, and facing
     # east the reactor hides the whole main (its glass's pass renders empty there: "sight-1" is unseen east).
+    # T09d2 (Liam, 2026-10-28, east: "Add a second glass"): the solution's second glass, same build, on its riser's
+    # straight rise beside the feed drum's east head, which a probe of rays toward the camera found open facing
+    # east (and south); rendered with the first into the line's one sheet, so sight-glass-1 exists facing east too.
+    solution_riser=dict(
+        at=(0.02, 2.0),
+        pts=[(0.02, 2.0, ZC + 0.125), (0.02, 2.0, 1.5), (0.008, 2.0, 1.63), (-0.05, 2.0, 1.69)],
+        z0=ZC, rin=0.2, r=0.11),
     sight_glasses={
         "feed_main1": dict(at=(-1.19, 0.64, 1.035), L=0.24, group="sight-1", sheet="sight-glass-1"),
+        "feed_main2": dict(at=(0.02, 2.0, 1.2), L=0.24, group="sight-1", sheet="sight-glass-1"),
         "gas_line1": dict(at=(1.543, 0.971, 2.166), L=0.28, group="sight-2", sheet="sight-glass-2"),
     },
     lifted_clutter=[(ZC, [
@@ -193,8 +202,8 @@ TAKES["casing"] = dict(
     ])],
     clutter=[],
     stains=[(2.0, -2.38, 0.4, 0.12, 0.1), (-1.85, -2.38, 0.4, 0.1, -0.05)],
-    chain=["solution", "wall sleeve", "riser", "feed drum", "downcomer foot", "riser (gas lift)", "reactor",
+    chain=["solution", "wall stub", "riser", "feed drum", "downcomer foot", "riser (gas lift)", "reactor",
            "downcomer", "settling pot", "filter press", "receiver", "output"],
     # from --probe (frame 0 of each layer alone, px over half alpha at 4x; under 40 is not a motion anyone sees)
-    unseen={"north": (), "east": ("coupling-dosing", "sight-1"), "south": ("coupling-dosing", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"), "west": ("coupling-compressor", "coupling-pump", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip")},
+    unseen={"north": (), "east": ("coupling-dosing",), "south": ("coupling-dosing", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"), "west": ("coupling-compressor", "coupling-pump", "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip")},
 )
