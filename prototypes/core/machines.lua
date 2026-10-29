@@ -438,7 +438,7 @@ drill.minable = { mining_time = 0.5, result = "sae-ballast-drill" }
 -- generous: with nothing to be strictly worse than, its numbers can describe the
 -- machine instead of defending it.
 drill.resource_categories = { "sae-kamacite" }
--- **The four inherited fluid connections stay, and the engine draws them.**
+-- **The four inherited fluid connections stay, and the engine draws them only wet.**
 --
 -- Nothing uses them yet: kamacite's `minable` carries no `required_fluid`, so
 -- today they accept nothing. They are kept deliberately, because a mining fluid
@@ -499,7 +499,7 @@ drill.surface_conditions = HIGH_G
 -- `wet_mining_graphics_set` (below), and an unconnected fitting gets vanilla's
 -- pipe cover, as the big mining drill's does. Its wall stands at the footprint
 -- edge on every face, so vanilla's pipe, and its cover, meet the fitting there
--- and lie on nothing of the plate (Liam, T03m: "face back to edge").
+-- and lie on nothing of the plate top (Liam, T03m: "face back to edge").
 --
 -- **Rendered, not cut**, as the Drop Crusher and the Reaction Plant are: every
 -- pass comes off one model through one calibrated camera (tools/blender/rig.py)
@@ -524,9 +524,10 @@ drill.surface_conditions = HIGH_G
 -- output.** The chute and the ore falling off it are their own layers per
 -- direction, as vanilla's big mining drill draws
 -- `big-mining-drill-{N,E,S,W}-output`, so the art follows
--- `vector_to_place_result` round when the drill is rotated. The four base and
--- shadow sheets are the one render, kept one per direction so that every
--- direction reads off its own meta.json entry.
+-- `vector_to_place_result` round when the drill is rotated. The four base
+-- sheets are the one plate, and the four shadows differ only by what the chute
+-- throws; each is kept per direction so that every direction reads off its own
+-- meta.json entry.
 --
 -- **The chute** is a framed port through the plate wall at ground level on the
 -- face the ore leaves by, with its drive on the plate top over the mouth, and
