@@ -311,24 +311,43 @@ data:extend({ gen })
 --
 -- It runs in the Reaction Plant and nowhere else (machines.lua): the recipe's
 -- category is private, so no vanilla chemical plant will take this job.
-data:extend({
+--
+-- **Its tints are its fluids' colours, in ingredient order** (spec §8,
+-- constraint 3): primary the first fluid's `base_color`, secondary the second's.
+-- The plant fills its input boxes in that order, so each of its sight glasses
+-- shows the fluid in its own line. Read off the recipe and the fluids, so
+-- neither the order nor a colour can drift from them. Stage 3's dissolve, when
+-- it exists, takes its tints the same way.
+local function fluid_tints(recipe)
+  local slots, tints, n = { "primary", "secondary" }, {}, 0
+  for _, ingredient in ipairs(recipe.ingredients) do
+    if ingredient.type == "fluid" and n < #slots then
+      n = n + 1
+      tints[slots[n]] = data.raw.fluid[ingredient.name].base_color
+    end
+  end
+  return tints
+end
+
+local precipitation =
+{
+  type = "recipe",
+  name = "sae-radiant-precipitation",
+  categories = { "sae-reaction" },
+  energy_required = 20,
+  ingredients =
   {
-    type = "recipe",
-    name = "sae-radiant-precipitation",
-    categories = { "sae-reaction" },
-    energy_required = 20,
-    ingredients =
-    {
-      { type = "fluid", name = "sae-radiant-solution", amount = 100 },
-      { type = "fluid", name = "sae-crust-gas", amount = 100 }
-    },
-    results = { { type = "item", name = "sae-radiant-fuel", amount = 1 } },
-    icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
-    icon_size = 64,
-    surface_conditions = { { property = "pressure", min = 1, max = 9 } },
-    enabled = false
-  }
-})
+    { type = "fluid", name = "sae-radiant-solution", amount = 100 },
+    { type = "fluid", name = "sae-crust-gas", amount = 100 }
+  },
+  results = { { type = "item", name = "sae-radiant-fuel", amount = 1 } },
+  icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
+  icon_size = 64,
+  surface_conditions = { { property = "pressure", min = 1, max = 9 } },
+  enabled = false
+}
+precipitation.crafting_machine_tint = fluid_tints(precipitation)
+data:extend({ precipitation })
 
 data:extend({
   {

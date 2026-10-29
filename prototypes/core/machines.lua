@@ -1156,7 +1156,8 @@ data:extend({ furnace })
 
 -- Art: F, the Circulator in its casing, rendered in Blender from
 -- concept/reaction-plant/model/forms.py (RP_FORM=casing) in four directions and
--- signed off by Liam, 2026-10-28 ("Sign off pump and plant").
+-- signed off by Liam, 2026-10-28 ("Sign off pump and plant"); with a sight glass
+-- on each input line and low stubs at the connections, signed off 2026-10-29.
 --
 -- **Rendered, not cut.** There is no master plate: every pass is rendered from
 -- one model, through one calibrated camera (tools/blender/rig.py), on one canvas
@@ -1194,11 +1195,11 @@ data:extend({ furnace })
 --   south  legs, drive, compressor and pump couplings, press
 --   west   legs, drive, dosing-pump coupling, press
 --
--- and every direction has its plate, shadow, legs glow and status lamps. The
--- plate's legs are unlit dark navy; the lit legs are drawn over them only while
--- crafting. No two moving sheets of one direction share an opaque pixel at
--- frame 0 (each was rendered with the rest of the model held out), so the
--- order they are drawn in does not show.
+-- and every direction has its plate, shadow, legs glow, status lamps and both
+-- sight glasses (below). The plate's legs are unlit dark navy; the lit legs are
+-- drawn over them only while crafting. No two moving sheets of one direction
+-- share an opaque pixel at frame 0 (each was rendered with the rest of the
+-- model held out), so the order they are drawn in does not show.
 --
 -- **The 24-frame parts play at 14/60 frames a tick, a loop in ~1.7 s**
 -- (measures.txt), in the main animation, which an assembling machine draws in
@@ -1276,6 +1277,30 @@ data:extend({ furnace })
 -- **Two status lamps, on the pump house and the instrument house**, in one
 -- sheet, cut white and tinted by the engine. `always_draw`, because a lamp that
 -- only appears while working cannot report that the machine has stopped.
+--
+-- **A sight glass on each input line shows the fluid in it** (spec §8; Liam,
+-- 2026-10-28, T09c: "Adopt", "Sight glass"). sight-glass-1 is the line from the
+-- {-1, -2} fitting, sight-glass-2 the line from {1, -2}; each is one white
+-- sheet a direction, one frame, which the engine tints with the recipe's
+-- colour for that line (`apply_recipe_tint`). Facing east sight-glass-1 is the
+-- glass on the riser, where the camera cannot see the first one (T09d2).
+-- `always_draw`: the glass shows what the line holds whether or not the
+-- machine is crafting; with no recipe both are a neutral grey
+-- (`recipe_not_set_tint`).
+--
+-- Ordinary paint, not `draw_as_light` or `draw_as_glow`, as the Gas Pump's
+-- glass is (crust-tap.lua): it is fluid seen through glass, not a lamp, and a
+-- light-only layer is drawn in the light map alone, so it would not show by
+-- day. meta.json's `kind = "light"` is the render pipeline's name for a white
+-- layer the engine tints.
+--
+-- **Mirrored, the two lines trade fluids, and the glasses trade tints.** The
+-- engine draws a mirrored plant's sprites unmirrored and moves its fluid boxes
+-- to the other side: box 1, the recipe's first fluid, then enters at {1, -2},
+-- on sight-glass-2's line. `graphics_set_flipped`, which the engine draws in
+-- place of `graphics_set` on a mirrored plant, is the same set with the two
+-- glasses' tints swapped. Measured in the T09c spike (evidence/rp-t09c), 8 of 8
+-- cases: north and east, normal and mirrored, either fluid first.
 local RP = "__space-age-extended__/graphics/entity/reaction-plant/"
 local RP_FRAMES = 24
 local RP_SPEED = 14 / 60                  -- in game: animation_progress 1, below
@@ -1290,10 +1315,12 @@ local RP_SHEETS =
 {
   north =
   {
-    ["base"] = { width = 327, height = 381, shift = { -0.00781, -0.21094 } },
-    ["shadow"] = { width = 360, height = 346, shift = { 0.3125, 0.0625 } },
+    ["base"] = { width = 327, height = 367, shift = { -0.00781, -0.32031 } },
+    ["shadow"] = { width = 360, height = 329, shift = { 0.3125, -0.05469 } },
     ["legs-glow"] = { width = 188, height = 57, shift = { -0.01562, 0.13281 } },
     ["status-lamp"] = { width = 14, height = 216, shift = { 2.29688, 0.17188 } },
+    ["sight-glass-1"] = { width = 16, height = 19, shift = { -1.17188, -1.17969 } },
+    ["sight-glass-2"] = { width = 15, height = 23, shift = { 1.53906, -2.05469 } },
     ["legs"] = { width = 189, height = 61, shift = { -0.02344, 0.11719 }, frames = 24, line_length = 24 },
     ["drive"] = { width = 64, height = 60, shift = { -0.0625, -2.10938 }, frames = 24, line_length = 24 },
     ["coupling-compressor"] = { width = 7, height = 20, shift = { 1.94531, -2.375 }, frames = 24, line_length = 24 },
@@ -1311,6 +1338,8 @@ local RP_SHEETS =
     ["shadow"] = { width = 353, height = 344, shift = { 0.25781, -0.09375 } },
     ["legs-glow"] = { width = 34, height = 210, shift = { -0.73438, -0.59375 } },
     ["status-lamp"] = { width = 189, height = 41, shift = { -0.82031, 1.64844 } },
+    ["sight-glass-1"] = { width = 14, height = 7, shift = { 2.0, -0.47656 } },
+    ["sight-glass-2"] = { width = 18, height = 14, shift = { 0.9375, 0.46875 } },
     ["legs"] = { width = 35, height = 213, shift = { -0.74219, -0.60156 }, frames = 24, line_length = 24 },
     ["drive"] = { width = 59, height = 65, shift = { 0.25781, -1.91406 }, frames = 24, line_length = 24 },
     ["coupling-compressor"] = { width = 16, height = 6, shift = { 1.75, 1.25 }, frames = 24, line_length = 24 },
@@ -1323,10 +1352,12 @@ local RP_SHEETS =
   },
   south =
   {
-    ["base"] = { width = 327, height = 373, shift = { 0.00781, -0.14844 } },
-    ["shadow"] = { width = 365, height = 346, shift = { 0.35156, 0.0625 } },
+    ["base"] = { width = 327, height = 355, shift = { 0.00781, -0.28906 } },
+    ["shadow"] = { width = 365, height = 329, shift = { 0.35156, -0.07031 } },
     ["legs-glow"] = { width = 188, height = 56, shift = { -0.01562, -1.3125 } },
     ["status-lamp"] = { width = 13, height = 164, shift = { -2.28906, -1.46875 } },
+    ["sight-glass-1"] = { width = 91, height = 104, shift = { 0.58594, 0.75 } },
+    ["sight-glass-2"] = { width = 14, height = 15, shift = { -1.53125, -0.16406 } },
     ["legs"] = { width = 189, height = 60, shift = { -0.02344, -1.32812 }, frames = 24, line_length = 24 },
     ["drive"] = { width = 64, height = 61, shift = { 0.0625, -1.60156 }, frames = 24, line_length = 24 },
     ["coupling-compressor"] = { width = 7, height = 20, shift = { -1.94531, 1.125 }, frames = 24, line_length = 24 },
@@ -1336,9 +1367,11 @@ local RP_SHEETS =
   west =
   {
     ["base"] = { width = 327, height = 375, shift = { 0.00781, -0.35156 } },
-    ["shadow"] = { width = 345, height = 335, shift = { 0.21094, -0.02344 } },
+    ["shadow"] = { width = 344, height = 335, shift = { 0.21875, -0.02344 } },
     ["legs-glow"] = { width = 34, height = 207, shift = { 0.70312, -0.57031 } },
     ["status-lamp"] = { width = 189, height = 25, shift = { 0.82031, -2.94531 } },
+    ["sight-glass-1"] = { width = 19, height = 18, shift = { -0.63281, 0.65625 } },
+    ["sight-glass-2"] = { width = 21, height = 19, shift = { -0.96094, -2.61719 } },
     ["legs"] = { width = 35, height = 210, shift = { 0.69531, -0.57812 }, frames = 24, line_length = 24 },
     ["drive"] = { width = 59, height = 65, shift = { -0.25781, -1.78906 }, frames = 24, line_length = 24 },
     ["coupling-dosing"] = { width = 6, height = 4, shift = { 1.03125, -0.17188 }, frames = 24, line_length = 24 },
@@ -1356,14 +1389,19 @@ local RP_PARTS =
   "gauge-reactor-upper", "gauge-reactor-lower", "gauge-scrubber", "drip"
 }
 
+-- The sheets every direction has: the plate and its shadow, the lit legs and
+-- their light, the lamps, the press and the two sight glasses.
+local RP_ALWAYS = { "base", "shadow", "legs", "legs-glow", "status-lamp", "press",
+                    "sight-glass-1", "sight-glass-2" }
+
 -- Every sheet of a direction is drawn: either a part above, or one of these.
 -- A sheet packed for a direction and not wired would be a part frozen in the
 -- plate; one wired and not packed, a file that does not exist.
-local RP_DRAWN = { base = true, shadow = true, legs = true, ["legs-glow"] = true,
-                   ["status-lamp"] = true, press = true }
+local RP_DRAWN = {}
+for _, name in ipairs(RP_ALWAYS) do RP_DRAWN[name] = true end
 for _, name in ipairs(RP_PARTS) do RP_DRAWN[name] = true end
 for _, dir in ipairs(RP_DIRECTIONS) do
-  for _, name in ipairs({ "base", "shadow", "legs", "legs-glow", "status-lamp", "press" }) do
+  for _, name in ipairs(RP_ALWAYS) do
     assert(RP_SHEETS[dir][name], "sae-reaction-plant: no " .. name .. " sheet facing " .. dir)
   end
   for name in pairs(RP_SHEETS[dir]) do
@@ -1531,31 +1569,49 @@ reaction_plant.icon = "__space-age-extended__/graphics/icons/reaction-plant.png"
 -- IconDrawSpecification has no per-direction form (2.1.22 docs).
 reaction_plant.icon_draw_specification = { scale = 2, shift = { 0, 0 } }
 
-derive.own_graphics(reaction_plant,
-{
-  status_colors = rp_status_colors(),
-  animation_progress = 1,               -- see "animation_progress = 1" above
-  animation =
+-- With no recipe, the glasses' grey: neither fluid, a mid tone between the
+-- plate's empty glass and the white sheet.
+local RP_NO_RECIPE = { r = 0.5, g = 0.5, b = 0.5 }
+
+--- The plant's graphics set, `line1` and `line2` the recipe tint each sight
+--- glass takes: "primary" and "secondary" for `graphics_set`, swapped for
+--- `graphics_set_flipped` (see "Mirrored" above). Nothing else differs.
+local function rp_graphics_set(line1, line2)
+  return
   {
-    north = rp_direction("north"),
-    east = rp_direction("east"),
-    south = rp_direction("south"),
-    west = rp_direction("west")
-  },
-  working_visualisations =
-  {
-    -- The filter press, once a craft: see "The press" above. Named, so the
-    -- landing's accent can be cued to it.
-    rp_four("press", { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED },
-      { name = "press", always_draw = true }),   -- always_draw: see "Stopped" above
-    -- The legs, lit and circulating, over the plate's dark ones.
-    rp_four("legs", { animation_speed = RP_SPEED }),
-    -- Their light: see "The legs glow" above.
-    rp_four("legs-glow", { draw_as_light = true }),
-    -- The two status lamps.
-    rp_four("status-lamp", { draw_as_glow = true }, { always_draw = true, apply_tint = "status" })
+    status_colors = rp_status_colors(),
+    animation_progress = 1,               -- see "animation_progress = 1" above
+    animation =
+    {
+      north = rp_direction("north"),
+      east = rp_direction("east"),
+      south = rp_direction("south"),
+      west = rp_direction("west")
+    },
+    recipe_not_set_tint = { primary = RP_NO_RECIPE, secondary = RP_NO_RECIPE },
+    working_visualisations =
+    {
+      -- The filter press, once a craft: see "The press" above. Named, so the
+      -- landing's accent can be cued to it.
+      rp_four("press", { frame_sequence = RP_PRESS_SEQUENCE, animation_speed = RP_PRESS_SPEED },
+        { name = "press", always_draw = true }),   -- always_draw: see "Stopped" above
+      -- The legs, lit and circulating, over the plate's dark ones.
+      rp_four("legs", { animation_speed = RP_SPEED }),
+      -- Their light: see "The legs glow" above.
+      rp_four("legs-glow", { draw_as_light = true }),
+      -- The two status lamps.
+      rp_four("status-lamp", { draw_as_glow = true }, { always_draw = true, apply_tint = "status" }),
+      -- The sight glasses: see "A sight glass on each input line" above.
+      rp_four("sight-glass-1", nil, { always_draw = true, apply_recipe_tint = line1 }),
+      rp_four("sight-glass-2", nil, { always_draw = true, apply_recipe_tint = line2 })
+    }
   }
-})
+end
+
+derive.own_graphics(reaction_plant, rp_graphics_set("primary", "secondary"))
+reaction_plant.graphics_set_flipped = rp_graphics_set("secondary", "primary")
+-- The chemical plant's, kept: a plant can be mirrored (spec §8, constraint 3).
+reaction_plant.use_mirroring = true
 
 -- Sound: the chemical plant's loop, kept as the bed, and one accent of ours as
 -- the cake lands (spec §12-13).
