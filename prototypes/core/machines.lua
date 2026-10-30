@@ -1158,7 +1158,9 @@ data:extend({ furnace })
 -- Art: F, the Circulator in its casing, rendered in Blender from
 -- concept/reaction-plant/model/forms.py (RP_FORM=casing) in four directions and
 -- signed off by Liam, 2026-10-28 ("Sign off pump and plant"); with a sight glass
--- on each input line and low stubs at the connections, signed off 2026-10-29.
+-- on each input line and low stubs at the connections, signed off 2026-10-29;
+-- with the press reworked (tail stand bolted down, five thin leaves), signed off
+-- 2026-10-30.
 --
 -- **Rendered, not cut.** There is no master plate: every pass is rendered from
 -- one model, through one calibrated camera (tools/blender/rig.py), on one canvas
@@ -1618,15 +1620,13 @@ reaction_plant.use_mirroring = true
 -- Sound: the chemical plant's loop, kept as the bed, and one accent of ours as
 -- the cake lands (spec §12-13).
 --
--- **The landing falls on the press sheet's frame 11 (1-based), and which number
--- that is depends on what `frame` counts**, which no client has measured yet
--- (T04). The sequence shows it at its entries 21 and 22 (1-based), 20 and 21
--- counted from 0. Chosen: 21, counting sequence entries, as derive.working_sound
--- counts a cycle (`frame_sequence`'s length) -- and on the landing whether the
--- engine counts entries from 0 or from 1. If it counts the sheet's frames
--- instead, swap to `sprite`: 10, the landing counted from 0, as the Drop
--- Crusher's accent was measured (measures.txt's 11 is the same frame from 1).
--- Never 0: the engine fires nothing there.
+-- **The landing falls on the press sheet's frame 11 (1-based), and the accent
+-- counts `frame_sequence` entries from 0** (measured in a client, T04): the
+-- sequence shows the landing at its entries 20 and 21 counted from 0, and the
+-- accent is on 21. Recorded in T10 (2026-10-29): one landing sound per stroke,
+-- half a frame after the cake lands. `sprite`, 10, is kept for reference: the
+-- same landing counted in sheet frames, as the Drop Crusher's accent was
+-- measured. Never 0: the engine fires nothing there.
 --
 -- The accent's sound is a stand-in, vanilla's landfill inventory sound, until
 -- the plant has its own.
