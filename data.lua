@@ -1,6 +1,6 @@
 -- Space Age Extended -- data stage.
 --
--- The Core (prototypes/core), the one cross-planet tree that is built
+-- The Core (prototypes/core), the cross-planet trees that are built
 -- (prototypes/trees) and the corridor between them (prototypes/corridor.lua),
 -- in dependency order: fluids and tiles before the machines that use them,
 -- items before recipes, the planet before the technology that unlocks it.
@@ -17,6 +17,7 @@ require("prototypes.core.planet")
 require("prototypes.core.endgame")
 require("prototypes.core.technology")
 require("prototypes.trees.fulgora-aquilo")
+require("prototypes.trees.vulcanus-fulgora")
 require("prototypes.corridor")
 
 -- Last, deliberately: it re-points every item and fluid the files above defined
