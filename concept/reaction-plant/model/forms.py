@@ -2107,9 +2107,10 @@ def leaf_x(i):
 CAKE_T, CAKE_Z0, CAKE_D = 0.08, 0.62, PRESS[3] - 0.18
 RAM_Z = 1.14
 TAIL_F = PRESS[0] + 0.168                 # T12: the tail stand's pressure plate's face (the open pack backs onto it)
-# T12: the faces that wall the open gaps (the tail stand's pressure plate, the head's inner face) take a light matte
-# paint: the sun reaches the head's, and both throw light down into the gaps; a bare (metallic) face there, out of
-# the sun, reflects only the dark round it and renders black
+# T12: the head's inner face, which the sun reaches and the camera never sees face on, takes a light matte paint that
+# throws light down into the gap the cake drops through; the tail stand's pressure plate takes the casing's putty
+# (in label it read as a white stripe on the shut press: Liam, 2026-10-30, "Accept as shadow"). A bare (metallic)
+# face there, out of the sun, reflects only the dark round it and renders black
 FACE_P = "label"
 FLOOR_P = "cream"                         # T12: the floors the open gaps look down on (bed plate, cake breaker): light, matte
 ROD_E = LAST_LEAF_E - STROKE - 0.025                       # the guide rod's east end: inside the last leaf, open
@@ -2534,7 +2535,7 @@ def press_unit():
         box((L0 + 0.06, yp, 0.92), (0.12, d, 0.66), "dark_steel")
         # the tail stand's pressure plate, which the open pack backs onto (no slot left between them
         # open: a slot that narrow is a black line); inside the rails
-        box(((L0 + 0.12 + TAIL_F) / 2, yp, 0.9), (TAIL_F - L0 - 0.12, d - 0.14, 0.56), FACE_P, bevel=0.004)
+        box(((L0 + 0.12 + TAIL_F) / 2, yp, 0.9), (TAIL_F - L0 - 0.12, d - 0.14, 0.56), "casing", bevel=0.004)
         for i in LEAVES:
             PACK.append(box((leaf_x(i), yp, 0.9), (LEAF_T, d - 0.08, 0.56), "lead" if i % 2 else "cream",
                             bevel=0.008))
