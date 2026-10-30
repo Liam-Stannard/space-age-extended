@@ -1328,7 +1328,7 @@ local RP_SHEETS =
     ["coupling-compressor"] = { width = 7, height = 20, shift = { 1.94531, -2.375 }, frames = 24, line_length = 24 },
     ["coupling-dosing"] = { width = 7, height = 15, shift = { -0.44531, 0.42969 }, frames = 24, line_length = 24 },
     ["coupling-pump"] = { width = 10, height = 18, shift = { 2.03125, 1.375 }, frames = 24, line_length = 24 },
-    ["press"] = { width = 53, height = 65, shift = { -2.10156, 1.52344 }, frames = 16, line_length = 16 },
+    ["press"] = { width = 81, height = 92, shift = { -1.88281, 1.73438 }, frames = 16, line_length = 16 },
     ["gauge-reactor-upper"] = { width = 10, height = 5, shift = { 0.03125, -0.10156 }, frames = 24, line_length = 24 },
     ["gauge-reactor-lower"] = { width = 10, height = 7, shift = { -0.17188, 0.24219 }, frames = 24, line_length = 24 },
     ["gauge-scrubber"] = { width = 8, height = 7, shift = { -1.5, -2.02344 }, frames = 24, line_length = 24 },
@@ -1346,7 +1346,7 @@ local RP_SHEETS =
     ["drive"] = { width = 59, height = 65, shift = { 0.25781, -1.91406 }, frames = 24, line_length = 24 },
     ["coupling-compressor"] = { width = 16, height = 6, shift = { 1.75, 1.25 }, frames = 24, line_length = 24 },
     ["coupling-pump"] = { width = 17, height = 10, shift = { -1.94531, 1.42188 }, frames = 24, line_length = 24 },
-    ["press"] = { width = 46, height = 52, shift = { -1.98438, -2.73438 }, frames = 16, line_length = 16 },
+    ["press"] = { width = 61, height = 93, shift = { -1.99219, -2.22656 }, frames = 16, line_length = 16 },
     ["gauge-reactor-upper"] = { width = 5, height = 11, shift = { -0.75781, -0.82031 }, frames = 24, line_length = 24 },
     ["gauge-reactor-lower"] = { width = 4, height = 10, shift = { -0.76562, -0.67188 }, frames = 24, line_length = 24 },
     ["gauge-scrubber"] = { width = 6, height = 8, shift = { 1.29688, -2.23438 }, frames = 24, line_length = 24 },
@@ -1354,7 +1354,7 @@ local RP_SHEETS =
   },
   south =
   {
-    ["base"] = { width = 327, height = 355, shift = { 0.00781, -0.28906 } },
+    ["base"] = { width = 327, height = 357, shift = { 0.00781, -0.30469 } },
     ["shadow"] = { width = 365, height = 329, shift = { 0.35156, -0.07031 } },
     ["legs-glow"] = { width = 188, height = 56, shift = { -0.01562, -1.3125 } },
     ["status-lamp"] = { width = 13, height = 164, shift = { -2.28906, -1.46875 } },
@@ -1364,12 +1364,12 @@ local RP_SHEETS =
     ["drive"] = { width = 64, height = 61, shift = { 0.0625, -1.60156 }, frames = 24, line_length = 24 },
     ["coupling-compressor"] = { width = 7, height = 20, shift = { -1.94531, 1.125 }, frames = 24, line_length = 24 },
     ["coupling-pump"] = { width = 10, height = 19, shift = { -2.03125, -2.50781 }, frames = 24, line_length = 24 },
-    ["press"] = { width = 53, height = 65, shift = { 2.10156, -2.44531 }, frames = 16, line_length = 16 }
+    ["press"] = { width = 81, height = 94, shift = { 1.88281, -2.26562 }, frames = 16, line_length = 16 }
   },
   west =
   {
     ["base"] = { width = 327, height = 375, shift = { 0.00781, -0.35156 } },
-    ["shadow"] = { width = 344, height = 335, shift = { 0.21875, -0.02344 } },
+    ["shadow"] = { width = 345, height = 335, shift = { 0.22656, -0.02344 } },
     ["legs-glow"] = { width = 34, height = 207, shift = { 0.70312, -0.57031 } },
     ["status-lamp"] = { width = 189, height = 25, shift = { 0.82031, -2.94531 } },
     ["sight-glass-1"] = { width = 19, height = 18, shift = { -0.63281, 0.65625 } },
@@ -1377,7 +1377,7 @@ local RP_SHEETS =
     ["legs"] = { width = 35, height = 210, shift = { 0.69531, -0.57812 }, frames = 24, line_length = 24 },
     ["drive"] = { width = 59, height = 65, shift = { -0.25781, -1.78906 }, frames = 24, line_length = 24 },
     ["coupling-dosing"] = { width = 6, height = 4, shift = { 1.03125, -0.17188 }, frames = 24, line_length = 24 },
-    ["press"] = { width = 46, height = 72, shift = { 1.98438, 1.65625 }, frames = 16, line_length = 16 }
+    ["press"] = { width = 61, height = 114, shift = { 1.99219, 1.5 }, frames = 16, line_length = 16 }
   }
 }
 
