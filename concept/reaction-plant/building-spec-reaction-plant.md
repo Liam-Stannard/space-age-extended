@@ -100,7 +100,7 @@ planet's whole power supply runs through it."*
 
 | | |
 | --- | --- |
-| **Tile Size** | **5×5** (Liam, 2026-10-11: *"Make the reaction plant 5x5 so any tall parts can mostly remain inside the grid as per the FFF."*). The mass rises 0.64 / 0.81 / 0.52 / 0.73 tile above the north edge, facing N/E/S/W (the oil refinery's 0.97). The art is cut to exactly 5.000 tiles wide — §11 |
+| **Tile Size** | **5×5** (Liam, 2026-10-11: *"Make the reaction plant 5x5 so any tall parts can mostly remain inside the grid as per the FFF."*). The mass rises 0.64 / 0.81 / 0.53 / 0.73 tile above the north edge, facing N/E/S/W (the oil refinery's 0.97). The art is cut to exactly 5.000 tiles wide — §11 |
 | **Collision Box** | `{-2.4,-2.4} → {2.4,2.4}` |
 | **Selection Box** | `{-2.5,-2.5} → {2.5,2.5}` |
 | **Placement Restrictions** | `pressure` min 1, max 9 — the Core's surface only. `fast_replaceable_group` and `next_upgrade` cleared by `derive.from` |
