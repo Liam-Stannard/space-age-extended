@@ -17,8 +17,9 @@ Each line: the fact, then how it was verified and when.
 - A `sound_accents` entry on frame 0 never fires: 0 is the unset value.
   Use frame 1 or later; `derive.working_sound` refuses 0. (Recorded in a
   client, 2026-10-11.)
-- Accent frames count from 0 on the animation they name. Whether they
-  count `frame_sequence` entries or sprite frames is not yet verified.
+- Accent frames count from 0 on the animation they name, and with a
+  `frame_sequence` they count its entries, not sprite frames. (Reaction
+  Plant T04, measured again with sound in T10, 2026-10-29.)
 - A generator (`GeneratorPrototype`) draws `pictures` (north/east, each
   animation + frozen_patch): no `working_visualisations`, no
   status-tinted lamp. Its animation speed scales with output through
@@ -39,6 +40,11 @@ Each line: the fact, then how it was verified and when.
 - Without Alien Biomes, the Core's ground falls back to Vulcanus's
   volcanic tiles, whose expressions step in straight lines on the Core.
   (2026-10-12.)
+- A resource added to a vanilla planet's map gen reaches new games only. A
+  save's existing surface keeps its stored map gen settings, so even new
+  chunks get none, until a script adds the autoplace entries to that surface
+  (on_configuration_changed). Explored ground never gets them. (V↔F T02 (b),
+  2026-10-30.)
 
 ## Surfaces, lights and placement (2.1.23, 2026-10-21)
 - `day-night-cycle = 0` freezes a surface at noon (always_day, darkness
@@ -67,6 +73,35 @@ Each line: the fact, then how it was verified and when.
   radiant-generator T08b.
 - A corpse may carry a `draw_as_glow` layer (vanilla's demolisher
   fissure scorch mark). Source: radiant-generator T08e.
+
+## Lightning and asteroid collectors (2.1.24, 2026-10-30)
+- No trigger effect adds fluid, and a lightning attractor has no fluid box. To
+  make a fluid per strike: a script effect in the lightning's
+  `attractor_hit_effect`, under `target_effects`, raises
+  `on_script_trigger_effect` with the attractor hit as `target_entity`; under
+  `source_effects` it gives only the lightning. It fires for every attractor,
+  including ruins and vanilla rods. Cost with 50 collectors: 0.0003–0.006
+  ms/tick. (V↔F T02 (a).)
+- Fulgora's lightning falls only at night: its daytime multiplier is 0. A
+  collector in a storm took about one strike every 14 s. (V↔F T02 (a).)
+- An asteroid collector's catch area is a square, half-side
+  `collection_radius`, centred `collection_box_offset` tiles ahead (5 in
+  vanilla). No prototype field limits which chunks it takes. Filters are a
+  runtime whitelist: `filter_slot_count` is 0 on a fresh collector and grows as
+  filters are set, `get_filter` returns the prototype, not its name, and
+  circuit 'set filters' overwrites them with no event. Turning that circuit
+  mode off clears them. (V↔F T02 (c).)
+- Asteroid chunks stack to 1. (V↔F T02 (c).)
+- An entity with no item that places it can't have a ghost. (V↔F T02 (c).)
+
+## Fluids
+- A fluid's `max_temperature` defaults to its `default_temperature`, so
+  vanilla sulfuric acid (25°, no max) can't be heated without raising it. A
+  recipe can require a temperature (`minimum_temperature` on a fluid
+  ingredient) and set one (`temperature` on a fluid product). Vanilla's
+  generated empty-barrel recipe sets no temperature, so a barrelled fluid comes
+  back at its default. (V↔F T01 research, base/prototypes/fluid.lua and
+  base/data-updates.lua, 2026-10-30.)
 
 ## Running a client on this machine
 - `xvfb-run` alone leaves WAYLAND_DISPLAY set: the client opens
