@@ -130,9 +130,14 @@ TAKES["casing"] = dict(
         scrub=[(-1.6, 1.4, 2.85), (-1.1, 0.6, 3.45), (-0.75, 0.1, 3.5), (-0.6, -0.1, 3.3)],
         vent=[(1.57, -0.21, 1.1), (1.1, -0.1, 1.1), (0.78, -0.02, 1.1)],
         settle=[(-1.65, 0.05, 1.95), (-1.42, -0.55, 1.7)],
-        slurry=[(-1.95, -0.26, 1.15), (-1.88, -0.9, 1.25), (-1.7, -1.25, 1.2), (-1.615, -1.42, 1.0),
-                (-1.615, -1.53, 1.0)],
-        filtrate=[(-1.585, -1.985, 1.33), (-1.585, -1.95, 1.6), (-1.2, -1.82, 1.95), (-0.68, -1.75, 2.03)],
+        # T12 (Liam, 2026-10-29, of the slurry hose: "What is the hose connecting to?" ... "Make it clearer"): it
+        # used to land on the press head's north face, which the camera never sees facing north; it now arches
+        # over the casing's edge and drops square into a nozzle on the head's top, seen in every direction. The
+        # filtrate's nozzle moves south along the head's top to give it room, and its hose runs east before it climbs.
+        slurry=[(-1.95, -0.26, 1.15), (-1.88, -0.9, 1.35), (-1.74, -1.36, 1.6), (-1.63, -1.63, 1.72),
+                (-1.615, -1.74, 1.62), (-1.615, -1.74, 1.415)],
+        filtrate=[(-1.585, -2.10, 1.33), (-1.585, -2.10, 1.52), (-1.38, -2.07, 1.68), (-1.02, -1.88, 2.04),
+                  (-0.68, -1.75, 2.03)],   # T12: east along the head before it climbs, clear of the slurry's inlet
         pump=[(1.62, -1.85, 1.5), (1.4, -1.45, ZC + 0.02)],
         cable=[(1.15, -1.38, 0.45), (1.0, -1.45, 0.02)],            # T06i: out of the cabinet's north face
         bundle_e=[(2.24, 0.2, 0.42), (2.24, 0.1, 0.3), (2.24, 0.14, 0.02)],   # T06i: square out of the house's wall
@@ -154,6 +159,10 @@ TAKES["casing"] = dict(
         "feed_main1:b": dict(z=1.06),
         # the feed main off the feed drum's lower south flank, between its saddle and weld seam
         "feed_main1:a": dict(S=(-0.91, 1.304, 1.368), N=(0, -0.8, -0.6), pad=0.11),
+        # T12: the slurry's inlet and the filtrate's outlet, welded nozzles standing on the press head's top (its pad
+        # kept near the head's 0.18 width)
+        "settling2:b": dict(S=(-1.615, -1.74, 1.30), N=(0, 0, 1), pad=0.11),
+        "press1:a": dict(S=(-1.585, -2.10, 1.30), N=(0, 0, 1), pad=0.11),
         # the filtrate into the receiver's crown, clear of its band and weld seam
         "press1:b": dict(S=(-0.12, -1.75, 1.97), N=(0, 0, 1), approach=0.15),
         # the drain header from the settling pot's wall (it stopped in the air short of it)

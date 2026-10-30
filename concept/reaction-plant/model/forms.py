@@ -2093,11 +2093,25 @@ DB = TK["press"]                          # the drop box's centre; the press sta
 PRESS = (DB[0] - 0.365, DB[0] + 0.435, DB[1], 0.66)   # the filter press: tail x, head x, its line y, depth
 PACK = []
 CAKE = []
-LEAVES = (2, 3, 4)                        # T12: the press's three leaves (pitch 0.1 from the tail): see press_unit
+# T12 (Liam, 2026-10-29: "5 thinner"): five leaves, thinner, in the pack length three full ones took (0.29),
+# so the stroke has its room between the tail stand and the first leaf: see press_unit
+LEAF_T, LEAF_P = 0.052, 0.0595            # a leaf's thickness and pitch
+LEAVES = tuple(range(5))
 PRESS_BED = []                            # T12: the fixed parts drawn in the press's sheet too (press_unit)
-LAST_LEAF_E = PRESS[0] + 0.2 + 0.1 * LEAVES[-1] + 0.045
+LAST_LEAF_E = PRESS[0] + 0.645            # the last leaf's east face, shut against the head (as before)
+
+
+def leaf_x(i):
+    """Leaf i's centre x, shut."""
+    return LAST_LEAF_E - LEAF_T / 2 - LEAF_P * (LEAVES[-1] - i)
 CAKE_T, CAKE_Z0, CAKE_D = 0.08, 0.62, PRESS[3] - 0.18
 RAM_Z = 1.14
+TAIL_F = PRESS[0] + 0.168                 # T12: the tail stand's pressure plate's face (the open pack backs onto it)
+# T12: the faces that wall the open gaps (the tail stand's pressure plate, the head's inner face) take a light matte
+# paint: the sun reaches the head's, and both throw light down into the gaps; a bare (metallic) face there, out of
+# the sun, reflects only the dark round it and renders black
+FACE_P = "label"
+FLOOR_P = "cream"                         # T12: the floors the open gaps look down on (bed plate, cake breaker): light, matte
 ROD_E = LAST_LEAF_E - STROKE - 0.025                       # the guide rod's east end: inside the last leaf, open
 CHUTE = (LAST_LEAF_E - STROKE - 0.015, PRESS[1] - 0.1 - 0.09 - 0.005)   # the chute mouth's west and east ends
 MANI = TK.get("manifold")                 # (x0, y0, x1, y1): the sampling manifold's skid, its line along x
@@ -2515,20 +2529,25 @@ def press_unit():
     with grp("press"):
         # T12 (Liam, 2026-10-29, "Fix it"): the tail stand stays put, as a real press's does; only the
         # leaves back off, towards it, so nothing moving ever passes over the drop box's lid in any
-        # direction. Three leaves where five were, each as before, at the head's end of the rails:
-        # the stroke's room lies between the tail stand and the first leaf
+        # direction. Five thin leaves at the head's end of the rails: the stroke's room lies between the
+        # tail stand and the first leaf
         box((L0 + 0.06, yp, 0.92), (0.12, d, 0.66), "dark_steel")
+        # the tail stand's pressure plate, which the open pack backs onto (no slot left between them
+        # open: a slot that narrow is a black line); inside the rails
+        box(((L0 + 0.12 + TAIL_F) / 2, yp, 0.9), (TAIL_F - L0 - 0.12, d - 0.14, 0.56), FACE_P, bevel=0.004)
         for i in LEAVES:
-            PACK.append(box((L0 + 0.2 + 0.1 * i, yp, 0.9), (0.09, d - 0.08, 0.56), "lead" if i % 2 else "cream",
-                            bevel=0.01))
+            PACK.append(box((leaf_x(i), yp, 0.9), (LEAF_T, d - 0.08, 0.56), "lead" if i % 2 else "cream",
+                            bevel=0.008))
     box((L1 - 0.1, yp, 0.94), (0.18, d + 0.04, 0.72), "dark_steel")
+    # T12: the head's inner face plate, the far wall of the gap the cake drops through (FACE_P paint)
+    box((L1 - 0.194, yp, 0.9), (0.008, d - 0.14, 0.56), FACE_P, bevel=0.002)   # inside the rails
     cyl((L1 + 0.08, yp, RAM_Z), 0.14, 0.2, "green", rot=(0, PI / 2, 0), verts=24)
     handwheel((L1 + 0.22, yp, RAM_Z), 0.15, axis=(1, 0, 0), mat="yellow")
     # the chute mouth the cake drops through: a dark throat in a raised steel lip (west, north and south;
     # the head's foot closes it east), so the opening shows the mouth's edge and depth, not a void
     x0, x1 = CHUTE
     box(((x0 + x1) / 2, yp, 0.582), (x1 - x0, CAKE_D + 0.03, 0.006), "throat", bevel=0)
-    lw, lz = 0.025, (0.585, 0.605)
+    lw, lz = 0.025, (0.585, 0.612)          # T12: the lip stands up to just under the leaves: a shallow mouth
     box((x0 - lw / 2, yp, sum(lz) / 2), (lw, CAKE_D + 0.03 + 2 * lw, lz[1] - lz[0]), "dark_steel", bevel=0.004)
     for s_ in (-1, 1):
         box(((x0 + x1) / 2, yp + s_ * ((CAKE_D + 0.03) / 2 + lw / 2), sum(lz) / 2),
@@ -2537,10 +2556,13 @@ def press_unit():
         CAKE.append(box((LAST_LEAF_E + CAKE_T / 2, yp, CAKE_Z0 + 0.25), (CAKE_T, CAKE_D, 0.5), "cake", bevel=0.02))
     # the stroke's room between the tail stand and the leaves is the press's own frame: a steel bed plate
     # over the lid, and the guide rod the leaves ride on, from the tail stand into the pack (a bore in each leaf)
-    bx0, bx1 = L0 + 0.12, x0 - lw
-    box(((bx0 + bx1) / 2, yp, 0.5925), (bx1 - bx0, d - 0.12, 0.015), "bare", bevel=0.003)
-    cyl(((L0 + 0.12 + ROD_E) / 2, yp, 0.9), 0.035, ROD_E - L0 - 0.12, "bare",
-        rot=(0, PI / 2, 0), verts=16)
+    bx0, bx1 = TAIL_F, x0 - lw
+    box(((bx0 + bx1) / 2, yp, 0.5925), (bx1 - bx0, d - 0.06, 0.015), FLOOR_P, bevel=0.003)
+    cyl(((TAIL_F + ROD_E) / 2, yp, 0.9), 0.035, ROD_E - TAIL_F, "bare", rot=(0, PI / 2, 0), verts=16)
+    # the cake breaker: steel bars across the chute mouth, the cake dropping through them (a lit floor to the gap)
+    nb_ = 7
+    for k in range(nb_):
+        box(((x0 + x1) / 2, yp + (k - (nb_ - 1) / 2) * 0.07, 0.595), (x1 - x0, 0.06, 0.02), FLOOR_P, bevel=0.004)
     hazard_tag((L1 - 0.1, yp - d / 2 - 0.035, 1.12), 0.14, 0.06)
     # T12: what the opening press uncovers is drawn in the press's own sheet, lit as each frame stands
     # (the drop box, its lid and chute mouth, the rails, the head): the plate's own pixels there carry the
@@ -3741,16 +3763,19 @@ MEANT = [
     (r"^press pack$", "", r"\[bare\] at (" + "|".join(_xy((_L0 + _L1) / 2, _YP + s_ * (_DD / 2 - 0.03))
                                                       for s_ in (-1, 1)) + r"),1\.18\)",
      "the leaves riding on the rails"),
-    (r"^press pack$", "", r"\[dark_steel\] at " + _xy(_L1 - 0.1, _YP), "the last leaf shut against the head"),
+    (r"^press pack$", "", r"\[(dark_steel\] at " + _xy(_L1 - 0.1, _YP) + "|label\\] at " + _xy(_L1 - 0.194, _YP) + ")",
+     "the last leaf shut against the head"),
     (r"^press pack$", "", r"^cake: ", "the cake on the leaf it peels off"),
-    (r"^press pack$", "", r"\[bare\] at " + _xy((_L0 + 0.12 + ROD_E) / 2, _YP) + r",0\.90\)",
+    (r"^press pack$", "", r"\[bare\] at " + _xy((TAIL_F + ROD_E) / 2, _YP) + r",0\.90\)",
      "the leaves riding on their guide rod"),
-    (r"^cake$", "", r"\[cream\] at (" + "|".join(_xy(_L0 + 0.2 + 0.1 * i, _YP) for i in LEAVES if i % 2 == 0) + ")",
+    (r"^cake$", "", r"\[cream\] at (" + "|".join(_xy(leaf_x(i), _YP) for i in LEAVES if i % 2 == 0) + ")",
      "the cake on the leaf it peels off"),
     (r"^cake$", "", r"\[(lead|dark_steel|throat)\] at (" + "|".join(
         _xy(x_, _YP) for x_ in (DB[0] + (TK.get("dropbox_w", (0.455, 0.455))[1] - TK.get("dropbox_w", (0.455, 0.455))[0]) / 2,
                                 DB[0] + 0.035, sum(CHUTE) / 2)) +
      r"),0\.(27|56|58)", "the cake dropping through the chute mouth into the drop box"),
+    (r"^cake$", "", r"\[cream\] at \((" + "|".join(re.escape(v) for v in sorted({f"{sum(CHUTE) / 2 + e:+.2f}" for e in (-0.006, 0, 0.006)}))
+     + r"),[-+]\d\.\d\d,0\.(59|60)\)", "the cake dropping through the cake breaker's bars"),
 ]
 
 
