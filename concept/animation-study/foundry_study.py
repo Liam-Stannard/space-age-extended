@@ -350,7 +350,7 @@ def draw_timeline(A, F, out):
     lane_h = 60
     strip_y = top
     steps_y = strip_y + 2 * (th + 30) + 20
-    lane_y = steps_y + 120
+    lane_y = steps_y + 140
     acc_y = lane_y + lanes * lane_h + 10
     H = acc_y + 190
     im = Image.new("RGB", (W, H), (24, 24, 24))
@@ -367,11 +367,11 @@ def draw_timeline(A, F, out):
     # steps bar
     for i, st in enumerate(F["steps"]):
         x0, x1 = st["first"] * px, (st["last"] + 1) * px
-        d.rectangle((x0, steps_y, x1 - 2, steps_y + 104), fill=STEP_PAL[i])
+        d.rectangle((x0, steps_y, x1 - 2, steps_y + 126), fill=STEP_PAL[i])
         d.text((x0 + 8, steps_y + 6), f"{i + 1}. {st['name']}", fill=(255, 255, 255), font=fS)
         d.text((x0 + 8, steps_y + 42), f"{st['first']}-{st['last']}  ({st['frames']} f)", fill=(240, 240, 240), font=fL)
-        d.text((x0 + 8, steps_y + 72), _fit(d, "still: " + (", ".join(st["still"]) or "nothing"), x1 - x0 - 14, fL),
-               fill=(230, 230, 230), font=fL)
+        for j, line in enumerate(_wrap(d, "still: " + (", ".join(st["still"]) or "nothing"), x1 - x0 - 14, fL)[:2]):
+            d.text((x0 + 8, steps_y + 70 + 26 * j), line, fill=(230, 230, 230), font=fL)
     # lanes
     names = [p[0] for p in PARTS]
     for li, name in enumerate(names + ["lights", "smoke"]):
@@ -416,6 +416,20 @@ def draw_timeline(A, F, out):
                          "threshold. Lights: lit pixels; smoke: summed alpha of the three smoke layers (both min to max). "
                          "Red lines: the 12 sound accents.", fill=(190, 190, 190), font=fL)
     im.save(os.path.join(out, "foundry-timeline.png"), optimize=False)
+
+
+def _wrap(d, text, width, f):
+    out, cur = [], ""
+    for w in text.split():
+        s = (cur + " " + w).strip()
+        if d.textlength(s, font=f) > width and cur:
+            out.append(cur)
+            cur = w
+        else:
+            cur = s
+    if cur:
+        out.append(cur)
+    return out
 
 
 def _fit(d, text, width, f):

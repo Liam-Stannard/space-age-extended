@@ -99,12 +99,12 @@
  "plan_steps": [
   {
    "first": 0,
-   "last": 13,
-   "frames": 14,
-   "ticks": 56.0,
+   "last": 12,
+   "frames": 13,
+   "ticks": 52.0,
    "name": "Wind-up, upper half",
    "motion": "crown climbs the rack, gears turn, pawl ticks over the teeth",
-   "ease": "even speed, slowing over the last 4 frames into the top",
+   "ease": "even speed, slowing over the last 4 frame changes into the top",
    "accents": [
     [
      6,
@@ -113,12 +113,12 @@
    ]
   },
   {
-   "first": 14,
+   "first": 13,
    "last": 19,
-   "frames": 6,
-   "ticks": 24.0,
+   "frames": 7,
+   "ticks": 28.0,
    "name": "Top hold",
-   "motion": "crown held at the top by the pawl; gears stopped",
+   "motion": "crown at the top (reached on 13), held by the pawl; gears stopped",
    "ease": "hold",
    "accents": []
   },
@@ -144,7 +144,7 @@
    "ticks": 24.0,
    "name": "Fall",
    "motion": "crown drops; gears spin back with the rack",
-   "ease": "accelerating: distance goes as t squared",
+   "ease": "faster every frame (t squared): 7 frame changes, 21 to the seat on 28, 28 ticks",
    "accents": []
   },
   {
@@ -194,7 +194,7 @@
  ],
  "plan_checks": {
   "every_frame_once": true,
-  "frames_sum": "14 + 6 + 2 + 6 + 1 + 13 + 18 = 60",
+  "frames_sum": "13 + 7 + 2 + 6 + 1 + 13 + 18 = 60",
   "loop_ticks": 240.0,
   "recipe_ticks": 240,
   "loop_matches_recipe": true,
@@ -210,13 +210,15 @@
   "top_is_1": true,
   "seated_on_land": true,
   "fall_increments": [
+   -0.02,
    -0.061,
    -0.102,
    -0.143,
    -0.184,
    -0.224,
    -0.265
-  ]
+  ],
+  "top_reached_frame": 13
  },
  "lift_plan": [
   0.6071,
@@ -280,6 +282,135 @@
   0.5357,
   0.5714
  ],
+ "frame_sequence": {
+  "entries": 60,
+  "unique_frames": 44,
+  "animation": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   14,
+   14,
+   14,
+   14,
+   14,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   23,
+   24,
+   25,
+   26,
+   26,
+   26,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44
+  ],
+  "idle": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "note": "accent frames count the sequence's entries from 0 (settled: Reaction Plant T04/T10, 2026-10-29)"
+ },
  "lift_now": [
   0.625,
   0.6875,
@@ -315,10 +446,14 @@
   "plan": 84.0
  },
  "fall": {
-  "now_frames": 8,
+  "now_changes": 8,
   "now_ticks": 80.0,
-  "plan_frames": 6,
-  "plan_ticks": 24.0,
+  "now_seconds": 1.333,
+  "plan_changes": 7,
+  "plan_ticks": 28.0,
+  "plan_seconds": 0.467,
+  "faster": 2.86,
+  "sum": "now 14 - 6 = 8 changes x 10 ticks = 80; plan 28 - 21 = 7 changes x 4 ticks = 28",
   "now_last_step": 0.234,
   "plan_last_step": 0.265
  },
@@ -466,7 +601,7 @@
   },
   "unique_frames_with_sequence": {
    "frames": 44,
-   "sum": "14 wind-up + 2 trip + 6 fall + 1 land + 2 pawl drop-in + 1 seated with the pawl in + 18 wind-up = 44",
+   "sum": "13 wind-up + 1 top + 2 trip + 6 fall + 1 seated, pawl clear + 2 pawl drop-in + 1 seated, pawl in + 18 wind-up = 44",
    "A": {
     "px": 1238988,
     "mib": 4.73,
@@ -484,6 +619,19 @@
   }
  },
  "render_time": {
+  "vent pump r2 (3x3, nearest in size) [sequence]": {
+   "log": "/home/lstan/data/git/space-age-extended/evidence/gas-pump-t15/r2/blender.log",
+   "A44": {
+    "seconds": 168.8,
+    "minutes": 2.8,
+    "sum": "11.2 + 3 x 1.93 + 44 x 1.15 (layer) + 2 x 44 x 1.15 (QA) = 168.8 s"
+   },
+   "B44": {
+    "seconds": 203.1,
+    "minutes": 3.4,
+    "sum": "11.2 + 3 x 1.93 + 44 x 1.93 (whole building) + 2 x 44 x 1.15 (QA) = 203.1 s"
+   }
+  },
   "vent pump r2 (3x3, nearest in size)": {
    "log": "/home/lstan/data/git/space-age-extended/evidence/gas-pump-t15/r2/blender.log",
    "startup_s": 11.2,
@@ -517,6 +665,19 @@
     "sum": "11.2 + 3 x 1.93 + 60 x 1.93 (whole building) + 2 x 60 x 1.15 (QA) + 60 x 3.62 (shadow) = 488.0 s"
    }
   },
+  "ballast drill t03m s2 north (5x5) [sequence]": {
+   "log": "/home/lstan/data/git/space-age-extended/evidence/ballast-drill-t03m/s2/north/plate/blender.log",
+   "A44": {
+    "seconds": 460.5,
+    "minutes": 7.7,
+    "sum": "168.5 + 3 x 4.78 + 44 x 3.93 (layer) + 2 x 44 x 1.19 (QA) = 460.5 s"
+   },
+   "B44": {
+    "seconds": 497.9,
+    "minutes": 8.3,
+    "sum": "168.5 + 3 x 4.78 + 44 x 4.78 (whole building) + 2 x 44 x 1.19 (QA) = 497.9 s"
+   }
+  },
   "ballast drill t03m s2 north (5x5)": {
    "log": "/home/lstan/data/git/space-age-extended/evidence/ballast-drill-t03m/s2/north/plate/blender.log",
    "startup_s": 168.5,
@@ -548,6 +709,19 @@
    "B60_shadow": {
     "seconds": 961.0,
     "sum": "168.5 + 3 x 4.78 + 60 x 4.78 (whole building) + 2 x 60 x 1.19 (QA) + 60 x 5.81 (shadow) = 961.0 s"
+   }
+  },
+  "reaction plant t09d north (5x5, slowest) [sequence]": {
+   "log": "/home/lstan/data/git/space-age-extended/evidence/rp-t09d/run-north/blender.log",
+   "A44": {
+    "seconds": 343.5,
+    "minutes": 5.7,
+    "sum": "118.5 + 3 x 6.64 + 44 x 3.22 (layer) + 2 x 44 x 0.72 (QA) = 343.5 s"
+   },
+   "B44": {
+    "seconds": 493.9,
+    "minutes": 8.2,
+    "sum": "118.5 + 3 x 6.64 + 44 x 6.64 (whole building) + 2 x 44 x 0.72 (QA) = 493.9 s"
    }
   },
   "reaction plant t09d north (5x5, slowest)": {

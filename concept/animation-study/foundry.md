@@ -3,7 +3,7 @@
 A study of how vanilla's foundry animation is built and timed. It is for Liam to
 judge. Nothing here is signed off, and nothing in the mod changes.
 
-- **Timeline sheet:** `concept/animation-study/foundry-timeline.png` (2704 × 1304).
+- **Timeline sheet:** `concept/animation-study/foundry-timeline.png` (2704 × 1324).
 - **Part regions:** `concept/animation-study/foundry-parts.png`.
 - **Every figure:** `concept/animation-study/foundry-figures.json`.
 - **Script:** `concept/animation-study/foundry_study.py`. It reads only the game's files.
@@ -37,12 +37,12 @@ judge. Nothing here is signed off, and nothing in the mod changes.
 
 | Part | What it is | When it moves (frames) | Ease | Longest hold |
 | --- | --- | --- | --- | --- |
-| head | hatch on top of the tower | 118–30, 78–103 (and a 3-frame flick at 60–62) | medium in and out; slow out on opening | 29 frames |
+| head | hatch on top of the tower | 118–30, 78–103 (and a 3-frame flick at 60–62) | medium in and out; slow out on opening | 29 frames by the threshold; truly still only about 68–74 (see limits) |
 | launder | red trough telescoping out on the west | 12–43 out, 76–103 back | slow in going out; slow out coming back | 36 frames |
 | arm | red pouring hood that comes down on the crucible | 8–48 down, 72–105 up | slow in going down; slow out going up | 30 frames |
 | crucible | sinks into its pit, rises, tips and pours | 5–54, 71–120 | medium in, slow out; then slow in, slow out | 16 frames |
 | moulds | cast boxes round the tower's foot | 1–7, 25–99, 101–103 | medium; even through the long run | 25 frames |
-| flap | pale ejector plate, north-west | 51–72 (drifts back), 118–123 (kicks out), 125–127 (bounce) | even speed on the return; snaps out | 51 frames |
+| flap | pale ejector plate, north-west | 51–72 (drifts back, near the threshold), 118–123 (kicks out), 125–127 (bounce) | even speed on the return; snaps out | 51 frames |
 
 - **46.4 %** of the drawn pixels change at some point in the loop. The task file
   quotes 48 % from the earlier research, measured with a different threshold.
@@ -59,7 +59,7 @@ Every frame 0 to 127 is in exactly one step. **Sum:** 16 + 22 + 10 + 26 + 26 + 1
 | 1 | Reset | 0–15 | 16 | crucible rights itself after the pour; arm starts down slowly; hatch closing | flap | 2 pipe-out |
 | 2 | Close and lower | 16–37 | 22 | launder slides out; arm comes down; crucible sinks; hatch closes; moulds start | flap | 18 slide-close |
 | 3 | Clamp | 38–47 | 10 | arm locks onto the crucible; launder reaches its stop | hatch, flap | 39 clamp, 43 slide-stop |
-| 4 | Charge (hold) | 48–73 | 26 | moulds turn; flap drifts back | launder; arm from 49 to 71; hatch, but for a 3-frame flick at 60–62 | 64 fire-whoosh + metal-clunk |
+| 4 | Charge (hold) | 48–73 | 26 | moulds turn, gathering speed; flap drifts back slowly | launder; arm from 49 to 71; the hatch mostly (it creeps until about 67, below the threshold, and flicks at 60–62) | 64 fire-whoosh + metal-clunk |
 | 5 | Open and raise | 74–99 | 26 | arm lifts; launder runs back; hatch opens; crucible climbs; moulds finish | flap | 74 slide-open |
 | 6 | Tip and pour | 100–117 | 18 | crucible tips forward and pours | flap | 106 pipe-in + smoke-puff, 110 pour |
 | 7 | Eject | 118–127 | 10 | flap snaps out and bounces; rocks drop; hatch starts to close | launder, arm, moulds | 120 rocks, 126 blade |
@@ -85,8 +85,9 @@ pour on 110. All 12 are matched here. None is on frame 0.
 | 120 | rocks | 7 Eject | **the crucible stops on 120**; the flap is out (118–123) |
 | 126 | blade | 7 Eject | the flap's bounce (125–127) |
 
-**The pattern:** accents sit on starts and stops, not in the middle of a slide.
-The one exception is 64, which marks the middle of the longest hold.
+**The pattern:** accents mostly sit on starts and stops. There are three exceptions:
+18 lands in the middle of the launder's slide, 64 marks the middle of the longest hold,
+and 110 lands in the middle of the crucible's tip.
 
 ## What the lights and smoke add
 
@@ -112,16 +113,17 @@ The one exception is 64, which marks the middle of the longest hold.
 
 ## How the stills hold the eye
 
-- Nothing ever stops completely. But **every part holds still for a long time**:
-  16 to 51 frames each, out of 128.
+- Nothing ever stops completely. But **every part rests for a long time**: 16 to 51
+  frames each by the threshold, out of 128. (The head's 29 is mostly a slow creep; see limits.)
 - **One big motion leads at a time.** The launder and arm go out together, then
   hold. The crucible rises, then tips. The flap kicks last.
 - **Motions overlap at their ends.** The launder stops on 43, the arm on 48, the
   crucible on 54. Each one settles while the next is already going. Nothing stops
   on the same frame as everything else.
-- **The long hold is never dead.** In step 4 the arm, launder and hatch are still for
-  26 frames. Meanwhile the moulds turn evenly, the flap drifts back, the light swells
-  back, and a sound lands in the middle (64).
+- **The long hold is never dead.** In step 4 the arm and launder are still and the
+  hatch nearly so. Meanwhile the moulds turn and gather speed (their motion energy rises
+  from 2,783 to 3,617 changed pixels a frame across the hold), the flap drifts back, the
+  light swells back, and a sound lands in the middle (64).
 - **Snaps come after slow motions.** The flap's 6-frame kick (118–123) follows the
   crucible's slow tip. The contrast is what makes it read.
 
@@ -152,12 +154,19 @@ what the engine's own packing and sprite compression do to this.
 ## What this means for us (input to T02)
 
 1. Holds matter as much as motion. Each part rests for a quarter of the loop or more.
-2. Accents go on starts and stops, and one goes inside the long hold.
+2. Accents mostly go on starts and stops; a few go inside a motion or the long hold.
 3. Light gets its own slow curve, under the fast parts.
 4. The frame rate is high: about 19 frames a second at the foundry's speed.
 5. The shadow stays still, even on a building where half the pixels move.
 
 ## Limits of this study
+
+- **Some holds sit at the threshold.** A part counts as moving when its energy is over a
+  quarter of its own peak. The head's energy from 31 to 65 is about 200 changed pixels a
+  frame, 21 % of its peak (937): just under the line. So its "longest hold, 29 frames"
+  is overstated: it creeps through most of that, and is truly still only about 68–74.
+  The flap's drift (51–72) and the head's flick (60–62) sit just over the line in the
+  same way. The steps and accents do not depend on these edges.
 
 - Motion energy is a stand-in for speed. A part that changes colour as it moves
   (light falling across it) can read as moving faster than it is.

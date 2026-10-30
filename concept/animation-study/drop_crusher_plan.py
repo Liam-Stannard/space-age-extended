@@ -42,17 +42,19 @@ NOW = dict(frames=24, speed=0.2, top=6, seat=14, rise=16, fall=8,
 PLAN_FRAMES = 60
 PLAN_SPEED = 0.5
 PLAN = [
-    (0, 13, "Wind-up, upper half", "crown climbs the rack, gears turn, pawl ticks over the teeth",
-     "even speed, slowing over the last 4 frames into the top"),
-    (14, 19, "Top hold", "crown held at the top by the pawl; gears stopped", "hold"),
+    (0, 12, "Wind-up, upper half", "crown climbs the rack, gears turn, pawl ticks over the teeth",
+     "even speed, slowing over the last 4 frame changes into the top"),
+    (13, 19, "Top hold", "crown at the top (reached on 13), held by the pawl; gears stopped", "hold"),
     (20, 21, "Trip", "pawl kicks clear of the rack", "snap (2 frames)"),
-    (22, 27, "Fall", "crown drops; gears spin back with the rack", "accelerating: distance goes as t squared"),
+    (22, 27, "Fall", "crown drops; gears spin back with the rack",
+     "faster every frame (t squared): 7 frame changes, 21 to the seat on 28, 28 ticks"),
     (28, 28, "Land", "crown seated flush in the collar; gears stop dead", "hard stop"),
     (29, 41, "Seated hold", "everything still; the pawl drops back onto the rack on 36-37", "hold, one 2-frame snap"),
     (42, 59, "Wind-up, lower half", "motor takes up the load, crown leaves the seat", "slow in over 4 frames, then even"),
 ]
 PLAN_ACCENTS = [(6, "pawl"), (20, "trip"), (28, "drop"), (50, "pawl"), (58, "pawl")]
-PLAN_TOP_REACHED, PLAN_TRIP, PLAN_LAND = 14, 20, 28
+PLAN_TOP_REACHED, PLAN_TRIP, PLAN_LAND = 13, 20, 28
+FALL_FROM = 21                     # the last frame at the top: the fall is the frame changes 21 -> 28
 PAWL_REENGAGE = (36, 37)
 
 # ---- Blender logs for render-time estimates: (label, path under evidence, canvas, samples note)
@@ -169,8 +171,28 @@ def main():
         rise_top_trip_frames=rise, fall_land_hold_frames=PLAN_FRAMES - rise,
         rise_share=round(rise / PLAN_FRAMES, 3),
         top_is_1=lp[PLAN_TOP_REACHED] == 1.0, seated_on_land=lp[PLAN_LAND] == 0.0,
-        fall_increments=[round(lp[f + 1] - lp[f], 3) for f in range(22, 28)])
+        fall_increments=[round(lp[f + 1] - lp[f], 3) for f in range(FALL_FROM, PLAN_LAND)],
+        top_reached_frame=min(f for f in range(PLAN_FRAMES) if lp[f] == 1.0))
     fig["lift_plan"] = [round(v, 4) for v in lp]
+
+    # the frame_sequence: one sheet frame per distinct pose (crown height, pawl state)
+    def pawl(f):
+        if f in (PLAN_TRIP, PLAN_TRIP + 1):
+            return f"kick-{f}"
+        if PLAN_TRIP + 2 <= f < PAWL_REENGAGE[0]:
+            return "clear"
+        if f in PAWL_REENGAGE:
+            return f"drop-{f}"
+        return "engaged"
+    keys, seq = [], []
+    for f in range(PLAN_FRAMES):
+        k = (round(lp[f], 6), pawl(f))
+        if k not in keys:
+            keys.append(k)
+        seq.append(keys.index(k) + 1)              # 1-based, as the engine's frame_sequence
+    fig["frame_sequence"] = dict(
+        entries=len(seq), unique_frames=len(keys), animation=seq, idle=[1] * PLAN_FRAMES,
+        note="accent frames count the sequence's entries from 0 (settled: Reaction Plant T04/T10, 2026-10-29)")
     fig["lift_now"] = [round(v, 4) for v in ln]
 
     def holds(lift):
@@ -181,9 +203,16 @@ def main():
     fig["crown_still_ticks"] = dict(
         now=round(holds(ln) / fig["timing_now"]["frames_per_tick"], 1),
         plan=round(holds(lp) / fig["timing_plan"]["frames_per_tick"], 1))
-    fall_now_ticks = NOW["fall"] / fig["timing_now"]["frames_per_tick"]
-    fall_plan_ticks = 6 / fig["timing_plan"]["frames_per_tick"]
-    fig["fall"] = dict(now_frames=NOW["fall"], now_ticks=fall_now_ticks, plan_frames=6, plan_ticks=fall_plan_ticks,
+    # both counted the same way: frame changes from the last frame at the top to the seat
+    now_changes = NOW["seat"] - NOW["top"]                 # 6 -> 14: 8
+    plan_changes = PLAN_LAND - FALL_FROM                   # 21 -> 28: 7
+    fall_now_ticks = now_changes / fig["timing_now"]["frames_per_tick"]
+    fall_plan_ticks = plan_changes / fig["timing_plan"]["frames_per_tick"]
+    fig["fall"] = dict(now_changes=now_changes, now_ticks=fall_now_ticks, now_seconds=round(fall_now_ticks / 60, 3),
+                       plan_changes=plan_changes, plan_ticks=fall_plan_ticks, plan_seconds=round(fall_plan_ticks / 60, 3),
+                       faster=round(fall_now_ticks / fall_plan_ticks, 2),
+                       sum=f"now {NOW['seat']} - {NOW['top']} = {now_changes} changes x 10 ticks = {fall_now_ticks:g}; "
+                           f"plan {PLAN_LAND} - {FALL_FROM} = {plan_changes} changes x 4 ticks = {fall_plan_ticks:g}",
                        now_last_step=round(ln[NOW["seat"] - 1] - ln[NOW["seat"]], 3), plan_last_step=round(lp[27] - lp[28], 3))
 
     # ---- the shipped sheets, measured
@@ -236,7 +265,7 @@ def main():
         now_A24=method_a(24), plan_A60=method_a(PLAN_FRAMES), plan_B60=method_b(PLAN_FRAMES),
         plan_B60_shadow=method_b(PLAN_FRAMES, True), B24=method_b(24),
         options={n: dict(A=method_a(n), B=method_b(n)) for n in (24, 48, 60, 96)},
-        unique_frames_with_sequence=dict(frames=44, sum="14 wind-up + 2 trip + 6 fall + 1 land + 2 pawl drop-in + 1 seated with the pawl in + 18 wind-up = 44", A=method_a(44), B=method_b(44)),
+        unique_frames_with_sequence=dict(frames=len(keys), sum="13 wind-up + 1 top + 2 trip + 6 fall + 1 seated, pawl clear + 2 pawl drop-in + 1 seated, pawl in + 18 wind-up = 44", A=method_a(len(keys)), B=method_b(len(keys))),
         sheet_layout=dict(
             A60=f"{sw} x {sh} frames, 10 to a row: {sw * 10} x {sh * 6} px, one file",
             B60=f"{W} x {H} frames, 10 to a row: {W * 10} x {H * 6} px, one file"))
@@ -259,6 +288,8 @@ def main():
             tot = start + 3 * t_full + frames * frame_t + 2 * frames * t_qa
             return dict(seconds=round(tot, 1), minutes=round(tot / 60, 1),
                         sum=f"{start} + 3 x {t_full} + {frames} x {frame_t} ({label_frame}) + 2 x {frames} x {t_qa} (QA) = {tot:.1f} s")
+        u = len(keys)
+        logs[label + " [sequence]"] = dict(log=p, A44=est(t_layer, u, "layer"), B44=est(t_full, u, "whole building"))
         logs[label] = dict(log=p, startup_s=start, t_full_s=t_full, t_layer_s=t_layer, t_qa_s=t_qa,
                            roles=roles, renders=L["renders"], total_s=L["total_s"],
                            A_now24=est(t_layer, 24, "layer"), A60=est(t_layer, n, "layer"),
@@ -282,11 +313,11 @@ def main():
 def draw(fig, comp, out):
     W = 2920
     fT, fS, fL = font(36), font(26), font(22)
-    H = 1640
+    H = 1680
     im = Image.new("RGB", (W, H), (24, 24, 24))
     d = ImageDraw.Draw(im)
     d.text((20, 14), "Drop Crusher: the shipped stroke (24 frames, 10 ticks a frame) against the plan "
-                     "(60 frames, 4 ticks a frame). One loop = 240 ticks = one craft.", fill=(235, 235, 235), font=fS)
+                     "(60 frame_sequence entries over 44 sheet frames, 4 ticks an entry). One loop = 240 ticks = one craft.", fill=(235, 235, 235), font=fS)
     # shipped frames, composited over the plate, 1x, cropped round the roof
     y0 = 60
     d.text((20, y0), "Shipped, every frame: the roof, sheet pixels at 2x (the plate with the stroke layer on it):",
@@ -343,6 +374,8 @@ def draw(fig, comp, out):
         d.rectangle((x0, sy, x1 - 2, sy + 170), fill=pal[i])
         lines = [f"{i + 1}. {st['name']}", f"{st['first']}-{st['last']} ({st['frames']} f, {st['ticks']:g} t)"] + \
                 _wrap(d, st["ease"], x1 - x0 - 12, fL)
+        if x1 - x0 < 120:                    # too narrow to name: the number, named in the key below
+            lines = [f"{i + 1}."]
         for j, t in enumerate(lines[:5]):
             d.text((x0 + 6, sy + 6 + j * 32), _fit(d, t, x1 - x0 - 10, fL), fill=(255, 255, 255), font=fL)
     for f, k in PLAN_ACCENTS:
@@ -350,7 +383,10 @@ def draw(fig, comp, out):
         d.line((x, sy + 170, x, sy + 200), fill=(255, 90, 60), width=3)
         d.text((x - 10, sy + 204), f"{f} {k}", fill=(255, 140, 110), font=fL)
     # lanes: crown, gears, pawl
-    ly = sy + 250
+    narrow = [f"{i + 1}. {st['name']} ({st['first']}-{st['last']}, {st['frames']} f)"
+              for i, st in enumerate(fig["plan_steps"]) if (st["last"] + 1 - st["first"]) * px < 120]
+    d.text((20, sy + 236), "Narrow steps: " + ";  ".join(narrow), fill=(220, 220, 220), font=fL)
+    ly = sy + 280
     lanes = [("crown moving", [abs(fig["lift_plan"][(f + 1) % 60] - fig["lift_plan"][f]) > 1e-9 for f in range(60)]),
              ("gears turning", [abs(fig["lift_plan"][(f + 1) % 60] - fig["lift_plan"][f]) > 1e-9 for f in range(60)]),
              ("pawl moving", [f in (20, 21) or f in PAWL_REENGAGE for f in range(60)])]
