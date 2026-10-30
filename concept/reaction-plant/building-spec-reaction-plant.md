@@ -376,9 +376,7 @@ fixed in `options/animation/` (`6-all-fixed.gif`):
 * **Agitator drive** (replaces the head coupling): 24 f; the big pulley turns
   144° a loop, the motor's small one a full turn.
 * **Compressor, dosing-pump and pump couplings:** 60° a loop.
-* **Filter press:** 16 frames once per craft. The head stays bolted down; the
-  press **opens west** — the leaf pack and tail stand back off **0.18 tile** along
-  the rails. Frames 1–4 it opens, 5 the cake hangs, 6–9 it peels away from its
+* **Filter press:** 16 frames once per craft. The head and the tail stand stay bolted down; the press **opens west** — the leaf pack, five thin leaves, backs off **0.18 tile** along the rails towards the tail stand. Frames 1–4 it opens, 5 the cake hangs, 6–9 it peels away from its
   leaf and falls, **10 it lands in the drop box (the sound accent; never
   frame 0)**, 11–15 the press closes, then it holds. The cake is toned down to a
   grey-buff `#8C8476`: filter cake, not a cell. It falls into a dark chute mouth
