@@ -98,7 +98,7 @@ data:extend({ { type = "recipe-category", name = "sae-induction" } })
 -- Wired the way vanilla wires tungsten: the resource's own autoplace is
 -- probability 0, and Vulcanus's map_gen_settings name the planet's expressions
 -- for it. In the basalt lowlands near the lava, as tungsten, with no starting
--- patch. Against tungsten: 10 spots a region (15), radius 20 x size (25),
+-- patch. Against tungsten: 10 spots a region (15), radius 25 x size (as tungsten),
 -- richness 15,000 (10,000), the non-metal spot function's region size.
 --
 -- Placed only in chunks generated after the mod loads; an old save's Vulcanus
@@ -124,7 +124,7 @@ data:extend({
     name = "sae_obsidian_region",
     expression = "min(1 - vulcanus_starting_circle,\z
                       vulcanus_place_non_metal_spots(4471, 10, 0,\z
-                                                     sae_obsidian_size * min(1.2, vulcanus_ore_dist) * 20,\z
+                                                     sae_obsidian_size * min(1.2, vulcanus_ore_dist) * 25,\z
                                                      var('control:sae-obsidian:frequency'),\z
                                                      vulcanus_basalts_resource_favorability))"
   },
