@@ -100,8 +100,11 @@ That budget is spent carefully:
   or it has to be storable and shippable on its own, or it carries a spoil
   clock. "The chain feels more substantial with another step" is not a reason.
 - **New buildings** need a mechanical reason to be separate.
-- **No parallel tiers.** Never a better Foundry, a better Recycler, a better
-  Assembler. New behaviour, not the same behaviour with bigger numbers.
+- **No plain upgrades.** An improved vanilla building is allowed only when it
+  carries a trade-off the player can name. It doesn't run vanilla's own recipes.
+  Its gains are modest, and each costs something vanilla doesn't: an extra
+  ingredient, more power, or a narrower job. Never the same behaviour with bigger
+  numbers.
 
 ## 4. The theme has to be unrepeatable
 
