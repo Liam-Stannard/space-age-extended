@@ -518,7 +518,7 @@ drill.surface_conditions = HIGH_G
 -- graphics/entity/ballast-drill/, and the numbers out of
 -- <scratch>/plate/sheets/meta.json and <scratch>/wet/meta.json into BD_SHEETS;
 -- <scratch>/dry/meta.json repeats the plate's and must agree with it. The icon
--- is still round 7's (ballast_drill.py --icon).
+-- is round 8's: concept/ballast-drill/model/rig-round-8/icon_take.py (T08).
 --
 -- **The body is one plate, the same in all four directions; what turns is the
 -- output.** The chute and the ore falling off it are their own layers per
