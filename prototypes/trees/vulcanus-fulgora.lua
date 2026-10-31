@@ -25,7 +25,7 @@
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
 local hit_effects = require("__base__.prototypes.entity.hit-effects")
-local sounds = require("__base__.prototypes.entity.sounds")
+local entity_sounds = require("__base__.prototypes.entity.sounds")
 
 local SA = "__space-age__/graphics/"
 local BASE = "__base__/graphics/"
@@ -644,7 +644,6 @@ ICON.induction_foundry = tinted(SA .. "icons/foundry.png", INDUCTION_FOUNDRY_TIN
 
 local OZONE_COLLECTOR = "sae-ozone-collector"
 local OZONE_TANK = "sae-ozone-collector-tank"
-local OZONE_STRIKE = "sae-ozone-strike"   -- the script effect's id; the script matches it
 
 local collector_graphics = table.deepcopy(require("__space-age__.prototypes.entity.lightning-collector-graphics"))
 tint_layers(collector_graphics, OZONE_COLLECTOR_TINT)
@@ -672,6 +671,10 @@ data:extend({
     damaged_trigger_effect = hit_effects.entity({ { -0.5, -2.5 }, { 0.5, 0.5 } }),
     drawing_box_vertical_extension = 4.5,
     impact_category = "metal",
+    -- The lightning collector's own sounds, as a stand-in wears its sprites.
+    open_sound = entity_sounds.electric_large_open,
+    close_sound = entity_sounds.electric_large_close,
+    working_sound = table.deepcopy(data.raw["lightning-attractor"]["lightning-collector"].working_sound),
     chargable_graphics = collector_graphics
   }, "wears the lightning collector's sprites, tinted pale blue, until its own exist"),
 
@@ -732,33 +735,10 @@ data:extend({
   })
 })
 
--- Every strike on an attractor raises the script effect, with the attractor
--- hit as its target (T02: under target_effects; under source_effects it carries
--- only the lightning). Added to every lightning, beside whatever it already does.
-for _, lightning in pairs(data.raw.lightning) do
-  local hits = {}
-  for _, trigger in ipairs(derive.each(lightning.attractor_hit_effect)) do hits[#hits + 1] = trigger end
-  hits[#hits + 1] =
-  {
-    type = "direct",
-    action_delivery = { type = "instant", target_effects = { { type = "script", effect_id = OZONE_STRIKE } } }
-  }
-  lightning.attractor_hit_effect = hits
-end
-
--- Fulgora's lightning seeks the ozone collector as it seeks the vanilla one:
--- the same bonus, ranked beside it and ahead of the catch-all attractor rule.
-do
-  local rules = data.raw.planet["fulgora"].lightning_properties.priority_rules
-  local at, bonus = 1, 10000
-  for i, rule in ipairs(rules) do
-    if rule.type == "id" and rule.string == "lightning-collector" then
-      at, bonus = i + 1, rule.priority_bonus
-      break
-    end
-  end
-  table.insert(rules, at, { type = "id", string = OZONE_COLLECTOR, priority_bonus = bonus })
-end
+-- What makes a strike on it ozone (a script effect on every lightning) and
+-- Fulgora's lightning seeking it are in data-final-fixes, through
+-- prototypes/trees/vulcanus-fulgora-final.lua: both edit vanilla prototypes
+-- that another mod may define or replace after this file runs.
 
 --------------------------------------------------------------------------------
 -- The induction foundry, from the foundry.
@@ -781,13 +761,18 @@ tint_layers(induction_graphics, INDUCTION_FOUNDRY_TINT)
 
 -- One of the four boxes. The foundry's sprites draw the pipe ends themselves
 -- (its "input-pipe" and "output-pipe" visualisations), so the box draws none,
--- only vanilla's cover over a port with nothing joined.
+-- only vanilla's cover over a port with nothing joined, and the foundry's iced
+-- pipe ends on Aquilo (the foundry gives them to two of its four boxes; a
+-- stand-in gives them to all four).
+local foundry_pipe_frozen = require("__space-age__.prototypes.entity.foundry-pictures").pipe_picture_frozen
+
 local function induction_box(production_type, x)
   local south = production_type == "input"
   return
   {
     production_type = production_type,
     pipe_picture = util.empty_sprite(),
+    pipe_picture_frozen = table.deepcopy(foundry_pipe_frozen),
     pipe_covers = derive.pipe_covers(),
     always_draw_covers = false,
     enable_working_visualisations = { production_type .. "-pipe" },
@@ -837,8 +822,8 @@ data:extend({
     perceived_performance = { minimum = 0.25, maximum = 20 },
     use_mirroring = true,
     graphics_set = induction_graphics,
-    open_sound = sounds.steam_open,
-    close_sound = sounds.steam_close,
+    open_sound = entity_sounds.steam_open,
+    close_sound = entity_sounds.steam_close,
     -- The foundry's own, cued to frames of the main animation it wears.
     working_sound = table.deepcopy(foundry.working_sound),
     fluid_boxes =

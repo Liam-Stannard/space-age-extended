@@ -6,7 +6,9 @@
 -- the ozone and has the pipe connection (prototypes/trees/vulcanus-fulgora.lua).
 -- This file keeps the two together: a tank goes down when a collector is built,
 -- in `storage` under the collector's unit number, and goes when the collector
--- does. Every lightning's attractor_hit_effect raises a script effect with the
+-- does -- unless a collector built on the same tiles has taken it over, which
+-- is how a replaced collector (a quality upgrade, a fast-replace) keeps its
+-- ozone. Every lightning's attractor_hit_effect raises a script effect with the
 -- attractor hit as its target, and a hit on an ozone collector adds 100 ozone
 -- to its tank, which holds 1,000. Nothing runs per tick: one lookup and one
 -- insert per strike.
@@ -33,9 +35,13 @@ local OBSIDIAN = "sae-obsidian"
 -- The ozone collector.
 --------------------------------------------------------------------------------
 
+-- Who owns which tank: storage.sae_ozone_tanks maps a collector's unit number
+-- to its tank, and storage.sae_ozone_owner a tank's unit number back to the
+-- collector that owns it. A tank is destroyed only by its owner going.
+
 -- Give a collector its tank: the one already on its tiles if there is one (a
--- cloned area brings its tank along, and a reconcile finds the old one), or a
--- new one.
+-- replaced collector's, a cloned area's, or the one a reconcile finds), or a
+-- new one. Taking over a tank takes it from the collector that had it.
 local function attach(collector)
   local tank = collector.surface.find_entity(TANK, collector.position)
   if not tank then
@@ -43,16 +49,13 @@ local function attach(collector)
   end
   if not tank then return nil end
   tank.destructible = false
-  storage.sae_ozone_tanks[collector.unit_number] = tank
+  local unit = collector.unit_number
+  local previous = storage.sae_ozone_owner[tank.unit_number]
+  if previous and previous ~= unit then storage.sae_ozone_tanks[previous] = nil end
+  storage.sae_ozone_owner[tank.unit_number] = unit
+  storage.sae_ozone_tanks[unit] = tank
   script.register_on_object_destroyed(collector)
   return tank
-end
-
-local function detach(unit_number)
-  local tank = storage.sae_ozone_tanks[unit_number]
-  if tank == nil then return end
-  if tank.valid then tank.destroy() end
-  storage.sae_ozone_tanks[unit_number] = nil
 end
 
 local function on_built(event)
@@ -60,16 +63,22 @@ local function on_built(event)
   if collector and collector.valid and collector.name == COLLECTOR then attach(collector) end
 end
 
--- Mined or died: the tank goes at once, while the collector is still valid.
-local function on_removed(event)
-  local collector = event.entity
-  if collector and collector.valid and collector.name == COLLECTOR then detach(collector.unit_number) end
-end
-
--- Any other way a collector goes (destroy() with no event): the engine says so
--- here, by unit number, by the end of the next tick.
+-- A collector has gone, however it went (mined, died, replaced, destroyed by
+-- script): the engine says so here, by unit number, at the end of the tick it
+-- went or the next. That is after any collector built in its place in the same
+-- tick (a quality upgrade or a fast-replace removes the old one and builds the
+-- new one together), so by now that one owns the tank and it stays, ozone and
+-- all. A tank nobody took over goes.
 local function on_object_destroyed(event)
-  if event.type == defines.target_type.entity then detach(event.useful_id) end
+  if event.type ~= defines.target_type.entity then return end
+  local unit = event.useful_id
+  local tank = storage.sae_ozone_tanks[unit]
+  if tank == nil then return end
+  storage.sae_ozone_tanks[unit] = nil
+  if tank.valid and storage.sae_ozone_owner[tank.unit_number] == unit then
+    storage.sae_ozone_owner[tank.unit_number] = nil
+    tank.destroy()
+  end
 end
 
 local function on_strike(event)
@@ -85,6 +94,7 @@ end
 -- configuration change, so a save whose `storage` and entities disagree (the
 -- script added to a save, a tank lost) is put right without a per-tick check.
 local function reconcile()
+  storage.sae_ozone_owner = {}
   local kept = {}
   for _, surface in pairs(game.surfaces) do
     for _, collector in pairs(surface.find_entities_filtered({ name = COLLECTOR })) do
@@ -165,11 +175,13 @@ end
 
 function vf.on_init()
   storage.sae_ozone_tanks = {}
+  storage.sae_ozone_owner = {}
   add_obsidian_to_vulcanus()
 end
 
 function vf.on_configuration_changed()
   storage.sae_ozone_tanks = storage.sae_ozone_tanks or {}
+  storage.sae_ozone_owner = storage.sae_ozone_owner or {}
   reconcile()
   add_obsidian_to_vulcanus()
 end
@@ -186,15 +198,8 @@ function vf.register_events()
   }) do
     script.on_event(id, on_built, only)
   end
-  for _, id in ipairs({
-    defines.events.on_player_mined_entity,
-    defines.events.on_robot_mined_entity,
-    defines.events.on_space_platform_mined_entity,
-    defines.events.on_entity_died,
-    defines.events.script_raised_destroy
-  }) do
-    script.on_event(id, on_removed, only)
-  end
+  -- No mined or died handlers: every way a collector goes ends here, and
+  -- waiting for it is what lets a replacement keep the tank.
   script.on_event(defines.events.on_object_destroyed, on_object_destroyed)
   script.on_event(defines.events.on_script_trigger_effect, on_strike)
 end

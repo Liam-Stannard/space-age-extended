@@ -132,11 +132,23 @@ class Model:
         self.free = self._importable()
         self.mined = self._mined()
 
-        # A script-made product whose entity has no item to place it could never
-        # be obtained, and would fail every recipe that uses it for a reason
-        # the report would not name. Say so instead.
+        # A script-made product that does not exist (a renamed or misspelt
+        # key) would count as obtainable while naming nothing, and one whose
+        # entity has no item to place it could never be obtained and would fail
+        # every recipe that uses it for a reason the report would not name.
+        # Say so instead, naming the key.
         self.script_made = dict(SCRIPT_MADE)
+        item_like = set()
+        for t in ("item", "tool", "ammo", "capsule", "module", "gun", "armor",
+                  "repair-tool", "item-with-entity-data", "rail-planner",
+                  "space-platform-starter-pack", "selection-tool"):
+            item_like |= set(dump.get(t) or {})
         for thing, entity in sorted(self.script_made.items()):
+            exists = (thing[1] in self.fluids if thing[0] == "fluid"
+                      else thing[1] in item_like)
+            if not exists:
+                sys.exit("check-tech-reachability: SCRIPT_MADE key (%r, %r) names "
+                         "no %s in the dump" % (thing[0], thing[1], thing[0]))
             if not self.placers.get(entity):
                 sys.exit("check-tech-reachability: %s %s is listed as made by a "
                          "script through %s, which no item places"
