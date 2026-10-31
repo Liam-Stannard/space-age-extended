@@ -1,14 +1,17 @@
 -- Space Age Extended -- runtime.
 --
--- The mod is prototype-driven throughout. This file exists for two things the
--- data stage cannot express: what ends the game, and when the Core's day turns
--- to night.
+-- The mod is prototype-driven throughout. This file exists for what the data
+-- stage cannot express: what ends the game, when the Core's day turns to night,
+-- and the scripts a tree needs (scripts/trees: Vulcanus <-> Fulgora's ozone
+-- collector, and obsidian on a Vulcanus generated before that tree existed).
 --
 -- Vanilla ends it when a platform reaches the Solar System Edge. This mod means
 -- to end it at the Core instead, so vanilla's trigger is switched off. Nothing
 -- has replaced it yet -- the Ignition Array went with the cut back to the
 -- landing -- so the game does not end at all. That is the state of a rework in
 -- progress, not a decision about the design.
+
+local vulcanus_fulgora = require("scripts.trees.vulcanus-fulgora")
 
 local function disable_vanilla_victory()
   -- space_finish_script is registered by the freeplay scenario. If a scenario
@@ -40,15 +43,22 @@ local function on_surface_created(event)
   end
 end
 
+local function on_init()
+  disable_vanilla_victory()
+  vulcanus_fulgora.on_init()
+end
+
 local function on_configuration_changed()
   disable_vanilla_victory()
   local surface = game.planets[CORE].surface
   if surface then set_core_sky(surface) end
+  vulcanus_fulgora.on_configuration_changed()
 end
 
 -- The engine keeps ONE handler per lifecycle event: a second script.on_init
 -- replaces the first rather than adding to it, so everything that has to run at
 -- start-up shares this one registration.
-script.on_init(disable_vanilla_victory)
+script.on_init(on_init)
 script.on_configuration_changed(on_configuration_changed)
 script.on_event(defines.events.on_surface_created, on_surface_created)
+vulcanus_fulgora.register_events()

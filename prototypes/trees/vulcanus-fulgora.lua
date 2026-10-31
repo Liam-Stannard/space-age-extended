@@ -17,13 +17,15 @@
 -- ozone collector, and the steps that drink it (holmium oxide, oxide
 -- superconductor) run all the time, so the player buffers it through the calm.
 --
--- What is NOT in this file yet: the three buildings (ozone collector,
--- induction foundry, magnetic collector), their recipes and unlocks, and the
--- script that turns a strike into ozone. Until they land, nothing makes ozone
--- and nothing crafts `sae-induction`.
+-- Two of the three buildings are here: the ozone collector and the induction
+-- foundry. The script that turns a strike on an ozone collector into ozone is
+-- scripts/trees/vulcanus-fulgora.lua. What is NOT here yet is the magnetic
+-- collector and its recipe.
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
+local hit_effects = require("__base__.prototypes.entity.hit-effects")
+local sounds = require("__base__.prototypes.entity.sounds")
 
 local SA = "__space-age__/graphics/"
 local BASE = "__base__/graphics/"
@@ -53,8 +55,17 @@ local function badged(main, badge)
   return icons
 end
 
-local function stand_in(p)
-  return derive.placeholder_art(p, "wears a tinted vanilla icon until its own exists")
+-- derive.placeholder_art keys its record by name alone, and in this tree one
+-- name can be several prototypes: sae-obsidian is the ore and the item it
+-- yields, and each building is an entity, an item and a recipe. So everything
+-- but a building's entity is recorded under its type as well ("item/...",
+-- "resource/..."), and the records stay apart. A building's entity keeps the
+-- bare name (see the buildings below), the key derive.own_graphics strikes off
+-- when its art arrives.
+local function stand_in(p, note)
+  derive.placeholder_art({ name = p.type .. "/" .. p.name },
+    note or "wears a tinted vanilla icon until its own exists")
+  return p
 end
 
 local ICON =
@@ -251,14 +262,14 @@ local ELECTRIC = { move = item_sounds.electric_small_inventory_move, pick = item
 
 data:extend({
   -- Mined, so nothing to weigh it by: as stone and calcite.
-  item("sae-obsidian", ICON.obsidian, "vulcanus-processes", "z[sae-vf]-a[obsidian]", 50, RESOURCE, 2 * kg),
-  item("sae-obsidian-glass", ICON.glass, "vulcanus-processes", "z[sae-vf]-b[obsidian-glass]", 100, BRICK),
-  item("sae-obsidian-flux", ICON.flux, "vulcanus-processes", "z[sae-vf]-c[obsidian-flux]", 50, RESOURCE),
-  item("sae-slag-aggregate", ICON.slag, "vulcanus-processes", "z[sae-vf]-d[slag-aggregate]", 50, RESOURCE),
+  item("sae-obsidian", ICON.obsidian, "vulcanus-processes", "z[sae-vf]-a[item]-a[obsidian]", 50, RESOURCE, 2 * kg),
+  item("sae-obsidian-glass", ICON.glass, "vulcanus-processes", "z[sae-vf]-a[item]-b[obsidian-glass]", 100, BRICK),
+  item("sae-obsidian-flux", ICON.flux, "vulcanus-processes", "z[sae-vf]-a[item]-c[obsidian-flux]", 50, RESOURCE),
+  item("sae-slag-aggregate", ICON.slag, "vulcanus-processes", "z[sae-vf]-a[item]-d[slag-aggregate]", 50, RESOURCE),
   item("sae-holmium-oxide", ICON.oxide, "fulgora-processes", "z[sae-vf]-a[holmium-oxide]", 50, RESOURCE),
   -- It ships, so it stacks as the doc says: 50.
   item("sae-superconducting-coil", ICON.coil, "fulgora-processes", "z[sae-vf]-b[superconducting-coil]", 50, WIRE),
-  item("sae-field-core", ICON.core, "vulcanus-processes", "z[sae-vf]-e[field-core]", 50, ELECTRIC)
+  item("sae-field-core", ICON.core, "vulcanus-processes", "z[sae-vf]-a[item]-e[field-core]", 50, ELECTRIC)
 })
 
 --------------------------------------------------------------------------------
@@ -275,6 +286,15 @@ local function fluid(name, amount, extra)
   return f
 end
 local function solid(name, amount) return { type = "item", name = name, amount = amount } end
+
+-- A recipe that takes no productivity at all, the machine's built-in bonus
+-- included. `allow_productivity = false` alone does NOT stop a machine's base
+-- effect: in a client (2.1.24, T05a) an induction
+-- foundry made 6 field cores from 4 crafts' worth and 30 magnetar alloy from
+-- 20 field cores, both with allow_productivity false. Crafting machines clamp
+-- productivity to the recipe's `maximum_productivity` (EffectReceiver,
+-- productivity_limits), so 0 there is what holds it at none.
+local NO_PRODUCTIVITY = { allow_productivity = false, maximum_productivity = 0 }
 
 local function recipe(p)
   p.type = "recipe"
@@ -304,17 +324,18 @@ data:extend({
 
   ------------------------------------------------------------------ 2. flux
   -- Lava is the planet's heat. **No productivity**: the foundry's built-in
-  -- +50% would otherwise turn 100 acid into 150.
+  -- +50% would otherwise turn 100 acid into 150. See NO_PRODUCTIVITY.
   stand_in(alternate({
     name = "sae-superheated-sulfuric-acid",
     icons = ICON.hot_acid,
     categories = { "metallurgy" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-a[melting]-a[superheated-sulfuric-acid]",
+    order = "z[sae-vf]-b[melting]-a[superheated-sulfuric-acid]",
     energy_required = 4,
     ingredients = { fluid("sulfuric-acid", 100), fluid("lava", 20) },
     results = { fluid("sulfuric-acid", 100, { temperature = HOT }) },
-    allow_productivity = false
+    allow_productivity = NO_PRODUCTIVITY.allow_productivity,
+    maximum_productivity = NO_PRODUCTIVITY.maximum_productivity
   })),
   recipe({
     name = "sae-obsidian-flux",
@@ -329,26 +350,26 @@ data:extend({
     allow_productivity = true,
     auto_recycle = false
   }),
-  alternate({
+  stand_in(alternate({
     name = "sae-molten-iron-from-lava-flux",
     icons = badged(vanilla(SA .. "icons/fluid/molten-iron-from-lava.png"), ICON.flux),
     categories = { "metallurgy" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-a[melting]-b[molten-iron-from-lava-flux]",
+    order = "z[sae-vf]-b[melting]-b[molten-iron-from-lava-flux]",
     energy_required = 16,
     ingredients = { fluid("lava", 500), solid("sae-obsidian-flux", 1) },
     results = { fluid("molten-iron", 300), solid("stone", 10) },
     allow_productivity = true
-  }),
+  })),
 
   ------------------------------------------------------------------ 3. fluxed steel
   -- A third less iron per steel; the glass carries the impurities away as slag.
-  alternate({
+  stand_in(alternate({
     name = "sae-fluxed-steel",
     icons = badged(vanilla(SA .. "icons/casting-steel.png"), ICON.flux),
     categories = { "metallurgy" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-b[casting]-a[fluxed-steel]",
+    order = "z[sae-vf]-c[casting]-a[fluxed-steel]",
     energy_required = 6.4,
     ingredients =
     {
@@ -358,13 +379,13 @@ data:extend({
     },
     results = { solid("steel-plate", 2), solid("sae-slag-aggregate", 1) },
     allow_productivity = true
-  }),
-  alternate({
+  })),
+  stand_in(alternate({
     name = "sae-slag-concrete",
     icons = badged(vanilla(BASE .. "icons/concrete.png"), ICON.slag),
     categories = { "metallurgy" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-b[casting]-b[slag-concrete]",
+    order = "z[sae-vf]-c[casting]-b[slag-concrete]",
     energy_required = 10,
     ingredients =
     {
@@ -374,18 +395,18 @@ data:extend({
     },
     results = { solid("concrete", 10) },
     allow_productivity = true
-  }),
-  alternate({
+  })),
+  stand_in(alternate({
     name = "sae-slag-brick",
     icons = badged(vanilla(BASE .. "icons/stone-brick.png"), ICON.slag),
     categories = { "smelting" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-b[casting]-c[slag-brick]",
+    order = "z[sae-vf]-c[casting]-c[slag-brick]",
     energy_required = 3.2,
     ingredients = { solid("sae-slag-aggregate", 2) },
     results = { solid("stone-brick", 1) },
     allow_productivity = true
-  }),
+  })),
 
   ------------------------------------------------------------------ 4. refined iron
   -- A fifth of the iron lost to slag. Its only use is the convergence.
@@ -393,7 +414,7 @@ data:extend({
     name = "sae-refined-molten-iron",
     categories = { "metallurgy" },
     subgroup = "vulcanus-processes",
-    order = "z[sae-vf]-a[melting]-c[refined-molten-iron]",
+    order = "z[sae-vf]-b[melting]-c[refined-molten-iron]",
     main_product = "sae-refined-molten-iron",
     energy_required = 4,
     ingredients = { fluid("molten-iron", 100), solid("sae-obsidian-flux", 2) },
@@ -414,7 +435,7 @@ data:extend({
     allow_productivity = true,
     auto_recycle = false
   }),
-  alternate({
+  stand_in(alternate({
     name = "sae-holmium-plate-from-oxide",
     icons = badged(vanilla(SA .. "icons/holmium-plate.png"), ICON.oxide),
     categories = { "metallurgy" },
@@ -424,12 +445,12 @@ data:extend({
     ingredients = { solid("sae-holmium-oxide", 1) },
     results = { solid("holmium-plate", 1) },
     allow_productivity = true
-  }),
+  })),
 
   ------------------------------------------------------------------ 7. oxide superconductor
   -- Vanilla's superconductor, cheaper (oxide for plate, no light oil) while
   -- the ozone lasts.
-  alternate({
+  stand_in(alternate({
     name = "sae-oxide-superconductor",
     icons = badged(vanilla(SA .. "icons/superconductor.png"), ICON.oxide),
     categories = { "electromagnetics" },
@@ -445,7 +466,7 @@ data:extend({
     },
     results = { solid("superconductor", 2) },
     allow_productivity = true
-  }),
+  })),
 
   ------------------------------------------------------------------ 8. the coil
   -- Fulgora only (electrolyte has no barrel); the coil itself ships.
@@ -469,6 +490,10 @@ data:extend({
   recipe({
     name = "sae-molten-holmium-iron",
     categories = { "sae-induction" },
+    -- A fluid's recipe is filed nowhere useful by its product (fluids sit in
+    -- the fluids group), so it is filed by hand, as vanilla's molten iron is.
+    subgroup = "vulcanus-processes",
+    order = "z[sae-vf]-d[field]-a[molten-holmium-iron]",
     energy_required = 4,
     ingredients = { fluid("sae-refined-molten-iron", 100), solid("sae-holmium-oxide", 2) },
     results = { fluid("sae-molten-holmium-iron", 100) },
@@ -480,23 +505,28 @@ data:extend({
   recipe({
     name = "sae-field-core",
     categories = { "sae-induction" },
+    subgroup = "vulcanus-processes",
+    order = "z[sae-vf]-d[field]-b[field-core]",
     energy_required = 10,
     ingredients = { solid("sae-superconducting-coil", 1), fluid("sae-molten-holmium-iron", 50) },
     results = { solid("sae-field-core", 1) },
-    allow_productivity = false,
+    allow_productivity = NO_PRODUCTIVITY.allow_productivity,
+    maximum_productivity = NO_PRODUCTIVITY.maximum_productivity,
     auto_recycle = false
   }),
 
   ------------------------------------------------------------------ 10. the capstone
-  -- Charging is time in the field and nothing else. Named for the item; the
-  -- stub's recipe is `sae-magnetar-alloy-stub`, so the two never collide.
+  -- Charging is time in the field and nothing else. Named for the item, and
+  -- the item's only recipe: the stub's, `sae-magnetar-alloy-stub`, is gone
+  -- (prototypes/core/endgame.lua, migrations/space-age-extended-0.3.4.lua).
   recipe({
     name = "sae-magnetar-alloy",
     categories = { "sae-induction" },
     energy_required = 20,
     ingredients = { solid("sae-field-core", 1) },
     results = { solid("sae-magnetar-alloy", 1) },
-    allow_productivity = false,
+    allow_productivity = NO_PRODUCTIVITY.allow_productivity,
+    maximum_productivity = NO_PRODUCTIVITY.maximum_productivity,
     auto_recycle = false
   })
 })
@@ -519,7 +549,7 @@ local function cast(p)
   p.categories = { "sae-induction" }
   p.subgroup = "vulcanus-processes"
   p.allow_productivity = true
-  return alternate(p)
+  return stand_in(alternate(p))
 end
 
 data:extend({
@@ -527,7 +557,7 @@ data:extend({
   cast({
     name = "sae-induction-molten-copper",
     icons = badged(vanilla(SA .. "icons/fluid/molten-copper-from-lava.png"), ICON.hot_acid),
-    order = "z[sae-vf]-c[induction]-a[molten-copper]",
+    order = "z[sae-vf]-e[induction]-a[molten-copper]",
     energy_required = 15,
     ingredients = { fluid("lava", 500), solid("calcite", 1), hot_acid(20) },
     results = { fluid("molten-copper", 275), solid("stone", 15) }
@@ -536,7 +566,7 @@ data:extend({
   cast({
     name = "sae-induction-casting-iron",
     icons = badged(vanilla(SA .. "icons/casting-iron.png"), ICON.flux),
-    order = "z[sae-vf]-c[induction]-b[casting-iron]",
+    order = "z[sae-vf]-e[induction]-b[casting-iron]",
     energy_required = 15,
     ingredients = { fluid("molten-iron", 100, { fluidbox_multiplier = 2 }), solid("sae-obsidian-flux", 1) },
     results = { solid("iron-plate", 11) }
@@ -545,7 +575,7 @@ data:extend({
   cast({
     name = "sae-induction-casting-copper",
     icons = badged(vanilla(SA .. "icons/casting-copper.png"), ICON.hot_acid),
-    order = "z[sae-vf]-c[induction]-c[casting-copper]",
+    order = "z[sae-vf]-e[induction]-c[casting-copper]",
     energy_required = 15,
     ingredients = { fluid("molten-copper", 100, { fluidbox_multiplier = 2 }), hot_acid(10) },
     results = { solid("copper-plate", 11) }
@@ -554,7 +584,7 @@ data:extend({
   cast({
     name = "sae-induction-casting-iron-gear-wheel",
     icons = badged(vanilla(SA .. "icons/casting-iron-gear-wheel.png"), ICON.slag),
-    order = "z[sae-vf]-c[induction]-d[casting-iron-gear-wheel]",
+    order = "z[sae-vf]-e[induction]-d[casting-iron-gear-wheel]",
     energy_required = 10,
     ingredients = { fluid("molten-iron", 100, { fluidbox_multiplier = 1 }), solid("sae-slag-aggregate", 1) },
     results = { solid("iron-gear-wheel", 11) }
@@ -563,10 +593,292 @@ data:extend({
   cast({
     name = "sae-induction-casting-copper-cable",
     icons = badged(vanilla(SA .. "icons/casting-copper-cable.png"), ICON.flux),
-    order = "z[sae-vf]-c[induction]-e[casting-copper-cable]",
+    order = "z[sae-vf]-e[induction]-e[casting-copper-cable]",
     energy_required = 14,
     ingredients = { fluid("molten-copper", 75, { fluidbox_multiplier = 1 }), solid("sae-obsidian-flux", 1) },
     results = { solid("copper-cable", 33) }
+  })
+})
+
+--------------------------------------------------------------------------------
+-- The buildings. Each is written here field by field, from the vanilla building
+-- it stands in for, and wears that building's sprites in its own tint until it
+-- has art (derive.placeholder_art, under the entity's bare name).
+--------------------------------------------------------------------------------
+
+-- Tint every drawn layer of a copy of vanilla sprites, in place. Shadows, glows,
+-- lights and additive layers keep their colour: they are light, not metal.
+local function tint_layers(t, tint)
+  if type(t) ~= "table" then return end
+  if t.filename or t.filenames or t.stripes then
+    if not (t.draw_as_shadow or t.draw_as_glow or t.draw_as_light
+            or (t.blend_mode and t.blend_mode ~= "normal")) then
+      t.tint = tint
+    end
+  end
+  for k, v in pairs(t) do
+    if k ~= "stripes" and k ~= "tint" then tint_layers(v, tint) end
+  end
+end
+
+local OZONE_COLLECTOR_TINT = { 0.70, 0.86, 1.0 }     -- pale blue
+local INDUCTION_FOUNDRY_TINT = { 0.66, 0.64, 1.0 }   -- cold blue-violet
+
+ICON.ozone_collector = tinted(SA .. "icons/lightning-collector.png", OZONE_COLLECTOR_TINT)
+ICON.induction_foundry = tinted(SA .. "icons/foundry.png", INDUCTION_FOUNDRY_TINT)
+
+--------------------------------------------------------------------------------
+-- The ozone collector, from the lightning collector.
+--
+-- Against it: the same 2x2 attractor, but the rod's reach (range elongation 15,
+-- not 25), and it keeps none of a strike's power (efficiency 0, which the
+-- engine allows only with no energy source). What a strike gives instead is
+-- 100 ozone, held up to 1,000.
+--
+-- A lightning attractor has no fluid box, so the building is two entities:
+-- this attractor, which the player builds and sees, and a hidden storage tank
+-- on the same tiles that holds the ozone and has the pipe connection. The
+-- script (scripts/trees/vulcanus-fulgora.lua) puts the tank down when the
+-- collector is built, takes it away with it, and adds the ozone on each strike.
+--------------------------------------------------------------------------------
+
+local OZONE_COLLECTOR = "sae-ozone-collector"
+local OZONE_TANK = "sae-ozone-collector-tank"
+local OZONE_STRIKE = "sae-ozone-strike"   -- the script effect's id; the script matches it
+
+local collector_graphics = table.deepcopy(require("__space-age__.prototypes.entity.lightning-collector-graphics"))
+tint_layers(collector_graphics, OZONE_COLLECTOR_TINT)
+
+data:extend({
+  derive.placeholder_art({
+    type = "lightning-attractor",
+    name = OZONE_COLLECTOR,
+    icons = ICON.ozone_collector,
+    flags = { "placeable-neutral", "player-creation" },
+    minable = { mining_time = 0.1, result = OZONE_COLLECTOR },
+    max_health = 200,
+    corpse = "lightning-collector-remnants",
+    dying_explosion = "substation-explosion",
+    efficiency = 0,
+    range_elongation = 15,
+    resistances =
+    {
+      { type = "fire", percent = 90 },
+      { type = "electric", percent = 100 }
+    },
+    collision_box = { { -0.7, -0.7 }, { 0.7, 0.7 } },
+    selection_box = { { -1, -1 }, { 1, 1 } },
+    lightning_strike_offset = { 0, -4.8 },
+    damaged_trigger_effect = hit_effects.entity({ { -0.5, -2.5 }, { 0.5, 0.5 } }),
+    drawing_box_vertical_extension = 4.5,
+    impact_category = "metal",
+    chargable_graphics = collector_graphics
+  }, "wears the lightning collector's sprites, tinted pale blue, until its own exist"),
+
+  -- The hidden half. Nothing collides with it (it sits under the attractor),
+  -- it cannot be selected, mined, blueprinted or deconstructed, and the script
+  -- makes it indestructible: it lives and dies with its collector.
+  {
+    type = "storage-tank",
+    name = OZONE_TANK,
+    icons = ICON.ozone_collector,
+    hidden = true,
+    flags = { "not-on-map", "not-blueprintable", "not-deconstructable", "not-upgradable", "no-copy-paste",
+              "not-in-kill-statistics" },
+    max_health = 200,
+    collision_box = { { -0.7, -0.7 }, { 0.7, 0.7 } },
+    collision_mask = { layers = {} },
+    selectable_in_game = false,
+    fluid_box =
+    {
+      volume = 1000,
+      filter = "sae-ozone",
+      -- Capped with vanilla's cover until a pipe joins.
+      pipe_covers = derive.pipe_covers(),
+      pipe_connections = { { direction = defines.direction.south, position = { 0.5, 0.5 } } }
+    },
+    window_bounding_box = { { 0, 0 }, { 0, 0 } },
+    flow_length_in_ticks = 360
+  },
+
+  stand_in({
+    type = "item",
+    name = OZONE_COLLECTOR,
+    icons = ICON.ozone_collector,
+    subgroup = "environmental-protection",
+    order = "b[lightning-collector]-b[sae-ozone-collector]",
+    inventory_move_sound = item_sounds.electric_large_inventory_move,
+    pick_sound = item_sounds.electric_large_inventory_pickup,
+    drop_sound = item_sounds.electric_large_inventory_move,
+    place_result = OZONE_COLLECTOR,
+    stack_size = 20
+  }),
+
+  -- Half the lightning collector's supercapacitors and electrolyte, and a
+  -- storage tank for its accumulator. Fulgora only, as the collector's.
+  recipe({
+    name = OZONE_COLLECTOR,
+    categories = { "electromagnetics" },
+    surface_conditions = { { property = "magnetic-field", min = 99, max = 99 } },
+    energy_required = 5,
+    ingredients =
+    {
+      solid("lightning-rod", 1),
+      solid("supercapacitor", 4),
+      solid("storage-tank", 1),
+      fluid("electrolyte", 40)
+    },
+    results = { solid(OZONE_COLLECTOR, 1) }
+  })
+})
+
+-- Every strike on an attractor raises the script effect, with the attractor
+-- hit as its target (T02: under target_effects; under source_effects it carries
+-- only the lightning). Added to every lightning, beside whatever it already does.
+for _, lightning in pairs(data.raw.lightning) do
+  local hits = {}
+  for _, trigger in ipairs(derive.each(lightning.attractor_hit_effect)) do hits[#hits + 1] = trigger end
+  hits[#hits + 1] =
+  {
+    type = "direct",
+    action_delivery = { type = "instant", target_effects = { { type = "script", effect_id = OZONE_STRIKE } } }
+  }
+  lightning.attractor_hit_effect = hits
+end
+
+-- Fulgora's lightning seeks the ozone collector as it seeks the vanilla one:
+-- the same bonus, ranked beside it and ahead of the catch-all attractor rule.
+do
+  local rules = data.raw.planet["fulgora"].lightning_properties.priority_rules
+  local at, bonus = 1, 10000
+  for i, rule in ipairs(rules) do
+    if rule.type == "id" and rule.string == "lightning-collector" then
+      at, bonus = i + 1, rule.priority_bonus
+      break
+    end
+  end
+  table.insert(rules, at, { type = "id", string = OZONE_COLLECTOR, priority_bonus = bonus })
+end
+
+--------------------------------------------------------------------------------
+-- The induction foundry, from the foundry.
+--
+-- The foundry's equal as a machine: 5x5, speed 4, +50% built-in productivity,
+-- 4 modules. It draws 4 MW (2.5 MW) and crafts `sae-induction` only, so it runs
+-- no vanilla recipe: every gain is in its eight recipes, paid for by each one's
+-- extra ingredient. Field core and magnetar alloy forbid productivity, so the
+-- built-in +50% never touches them.
+--
+-- Its fluid boxes are the foundry's: two in on the south side, two out on the
+-- north. The most an induction recipe needs is two in and one out.
+--------------------------------------------------------------------------------
+
+local INDUCTION_FOUNDRY = "sae-induction-foundry"
+local foundry = data.raw["assembling-machine"]["foundry"]
+
+local induction_graphics = table.deepcopy(foundry.graphics_set)
+tint_layers(induction_graphics, INDUCTION_FOUNDRY_TINT)
+
+-- One of the four boxes. The foundry's sprites draw the pipe ends themselves
+-- (its "input-pipe" and "output-pipe" visualisations), so the box draws none,
+-- only vanilla's cover over a port with nothing joined.
+local function induction_box(production_type, x)
+  local south = production_type == "input"
+  return
+  {
+    production_type = production_type,
+    pipe_picture = util.empty_sprite(),
+    pipe_covers = derive.pipe_covers(),
+    always_draw_covers = false,
+    enable_working_visualisations = { production_type .. "-pipe" },
+    volume = south and 1000 or 100,
+    pipe_connections =
+    {
+      {
+        flow_direction = production_type,
+        direction = south and defines.direction.south or defines.direction.north,
+        position = { x, south and 2 or -2 }
+      }
+    }
+  }
+end
+
+data:extend({
+  derive.placeholder_art({
+    type = "assembling-machine",
+    name = INDUCTION_FOUNDRY,
+    icons = ICON.induction_foundry,
+    flags = { "placeable-neutral", "player-creation" },
+    minable = { mining_time = 0.2, result = INDUCTION_FOUNDRY },
+    max_health = 350,
+    corpse = "foundry-remnants",
+    dying_explosion = "foundry-explosion",
+    circuit_wire_max_distance = foundry.circuit_wire_max_distance,
+    circuit_connector = table.deepcopy(foundry.circuit_connector),
+    collision_box = { { -2.2, -2.2 }, { 2.2, 2.2 } },
+    selection_box = { { -2.5, -2.5 }, { 2.5, 2.5 } },
+    heating_energy = "300kW",
+    damaged_trigger_effect = hit_effects.entity(),
+    drawing_box_vertical_extension = 1.3,
+    effect_receiver = { base_effect = { productivity = 0.5 } },
+    module_slots = 4,
+    allowed_effects = { "consumption", "speed", "productivity", "pollution", "quality" },
+    icon_draw_specification = { scale = 2, shift = { 0, -0.3 } },
+    icons_positioning = { { inventory_index = defines.inventory.crafter_modules, shift = { 0, 1.25 } } },
+    crafting_categories = { "sae-induction" },
+    crafting_speed = 4,
+    energy_source =
+    {
+      type = "electric",
+      usage_priority = "secondary-input",
+      emissions_per_minute = { pollution = 6 }
+    },
+    energy_usage = "4MW",
+    perceived_performance = { minimum = 0.25, maximum = 20 },
+    use_mirroring = true,
+    graphics_set = induction_graphics,
+    open_sound = sounds.steam_open,
+    close_sound = sounds.steam_close,
+    -- The foundry's own, cued to frames of the main animation it wears.
+    working_sound = table.deepcopy(foundry.working_sound),
+    fluid_boxes =
+    {
+      induction_box("input", -1),
+      induction_box("input", 1),
+      induction_box("output", -1),
+      induction_box("output", 1)
+    },
+    fluid_boxes_off_when_no_fluid_recipe = true
+  }, "wears the foundry's sprites, tinted cold blue-violet, until its own exist"),
+
+  stand_in({
+    type = "item",
+    name = INDUCTION_FOUNDRY,
+    icons = ICON.induction_foundry,
+    subgroup = "smelting-machine",
+    order = "d[foundry]-b[sae-induction-foundry]",
+    inventory_move_sound = item_sounds.steam_inventory_move,
+    pick_sound = item_sounds.steam_inventory_pickup,
+    drop_sound = item_sounds.steam_inventory_move,
+    place_result = INDUCTION_FOUNDRY,
+    stack_size = 20
+  }),
+
+  -- A foundry wound with Fulgora's coil and lined with obsidian glass. Where
+  -- the foundry's own recipe can be made: pressure 4000 (Vulcanus).
+  recipe({
+    name = INDUCTION_FOUNDRY,
+    categories = { "crafting" },
+    surface_conditions = { { property = "pressure", min = 4000, max = 4000 } },
+    energy_required = 20,
+    ingredients =
+    {
+      solid("foundry", 1),
+      solid("sae-superconducting-coil", 10),
+      solid("sae-obsidian-glass", 20),
+      solid("tungsten-plate", 20)
+    },
+    results = { solid(INDUCTION_FOUNDRY, 1) }
   })
 })
 
@@ -576,8 +888,9 @@ data:extend({
 -- need. Both openers require both planets' science packs, so the tree opens
 -- only once both vanilla trees are done.
 --
--- The three building recipes are not unlocked here yet: they arrive with the
--- buildings, into Ozone capture, Induction foundry and Magnetar alloy.
+-- The ozone collector unlocks with Ozone capture and the induction foundry
+-- with Induction foundry. The magnetic collector's recipe is not here yet; it
+-- arrives with the building, into Magnetar alloy.
 --------------------------------------------------------------------------------
 
 local function packs(...)
@@ -595,7 +908,7 @@ local BOTH = packs("metallurgic-science-pack", "electromagnetic-science-pack")
 local function tech(name, icon, tint, prerequisites, ingredients, count, recipes)
   local effects = {}
   for _, r in ipairs(recipes) do effects[#effects + 1] = { type = "unlock-recipe", recipe = r } end
-  return derive.placeholder_art({
+  return stand_in({
     type = "technology",
     name = name,
     icons = tinted(icon, tint, 256),
@@ -630,7 +943,7 @@ data:extend({
   -- Fulgora.
   tech("sae-vf-ozone-capture", TECH .. "lightning-collector.png", { 0.60, 0.85, 1.0 },
     { "electromagnetic-science-pack", "metallurgic-science-pack", "lightning-collector" }, FULGORA, 200,
-    {}),
+    { "sae-ozone-collector" }),
   tech("sae-vf-holmium-oxide", TECH .. "holmium-processing.png", { 1.0, 0.92, 0.70 },
     { "sae-vf-ozone-capture" }, FULGORA, 300,
     { "sae-holmium-oxide", "sae-holmium-plate-from-oxide" }),
@@ -645,7 +958,7 @@ data:extend({
   tech("sae-vf-induction-foundry", TECH .. "foundry.png", { 0.55, 0.50, 0.95 },
     { "sae-vf-refined-molten-iron", "sae-vf-superconducting-coil" }, BOTH, 750,
     {
-      "sae-molten-holmium-iron", "sae-field-core",
+      "sae-induction-foundry", "sae-molten-holmium-iron", "sae-field-core",
       "sae-induction-molten-copper", "sae-induction-casting-iron", "sae-induction-casting-copper",
       "sae-induction-casting-iron-gear-wheel", "sae-induction-casting-copper-cable"
     }),
