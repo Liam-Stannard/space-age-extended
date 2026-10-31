@@ -19,7 +19,7 @@ possible pairs, and **five of them get trees**.
 
 Each chosen pair gets a **small tree of its own**:
 
-- **Around 3–10 technologies.**
+- **An estimated 3–10 technologies.**
 - **Its own production lines**, spanning both worlds, with material physically
   moving between them.
 - **New mechanics, buildings or items where the pairing calls for them** —
@@ -101,15 +101,26 @@ only earns the right to start building it.
 |---|---|---|
 | **Vulcanus ↔ Fulgora** | both | Metallurgy against electromagnetics |
 | **Vulcanus ↔ Gleba** | both | The hottest world against the living one |
-| **Fulgora ↔ Gleba** | both | The world with no soil against the world with no ore |
+| **Vulcanus ↔ Aquilo** | Aquilo | The hottest world against the coldest |
 | **Fulgora ↔ Aquilo** | Aquilo | Electromagnetics against cryogenics |
 | **Gleba ↔ Aquilo** | Aquilo | Living material against a world that freezes it |
 
-Three trees open once the player has developed two of Vulcanus, Fulgora and
-Gleba; two more open at Aquilo, which is where the run-up to the endgame sits.
+Two trees open once the player has developed two of Vulcanus, Fulgora and Gleba; three more open at Aquilo, which is where the run-up to the endgame sits.
+
+## A new resource on each planet
+
+Each of the four planets gets one new resource, shared by every tree it is in. Each is semi-realistic, fits its world and has a plain name:
+
+| Planet | Resource | What it is |
+|---|---|---|
+| Vulcanus | **Obsidian** | an ore of fast-cooled volcanic glass at the lava's edge; smelted into obsidian glass |
+| Fulgora | **Ozone** | a fluid made only by lightning, gathered beside the strikes; no barrel |
+| Gleba | **Spores** | gathered from the swamp air; a culture starter that spoils fast |
+| Aquilo | **Cryolite** | an ore of a mineral that forms in cold, fluorine-rich ground; a smelting flux |
+
+One tech in each tree processes a resource. It is new on that planet's map from the start, but only that tree's techs give it a use.
 
 ## Still open
 
 - **What each capstone building is.** Per-pair variety is the intent; each is
-  decided with its own tree. Fulgora ↔ Aquilo's is the superconducting store;
-  the other four are undecided.
+  decided with its own tree. Fulgora ↔ Aquilo's is the superconducting store and Vulcanus ↔ Fulgora's the magnetic collector; the other three are undecided.

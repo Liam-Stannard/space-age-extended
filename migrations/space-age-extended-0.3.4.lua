@@ -1,0 +1,18 @@
+-- Vulcanus <-> Fulgora is built: magnetar alloy is made for real, and its stub
+-- recipe is gone. This file records that swap; the engine does all of it, so
+-- there is no code here.
+--
+-- **The item stays.** It keeps the stub's name, sae-magnetar-alloy, so there is
+-- nothing to rename: whatever a save holds -- in chests, inventories, on belts,
+-- in a rocket -- is still magnetar alloy. What no longer exists is the recipe
+-- `sae-magnetar-alloy-stub`; an assembler that was set to it loses its recipe on
+-- load and keeps its contents (T05a, evidence/vf-t05a).
+--
+-- **The unlocks moved too** (Ozone capture now unlocks the ozone collector,
+-- Induction foundry the induction foundry). No reset_technology_effects is
+-- needed for that: "The game resets recipes and technologies any time mods,
+-- prototypes, or startup settings change, so this does not need to be done by
+-- migration scripts anymore" (Factorio 2.1.24 docs, auxiliary/migrations).
+--
+-- Obsidian on a Vulcanus the save had already generated is added by
+-- scripts/trees/vulcanus-fulgora.lua on the configuration change, not here.

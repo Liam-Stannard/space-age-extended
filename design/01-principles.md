@@ -91,7 +91,7 @@ capstone itself, which only it can assemble.
 
 ## 3. A tree is small and finishable
 
-**3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
+**An estimated 3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
 The player should be able to see its end from its beginning.
 
 That budget is spent carefully:
@@ -100,8 +100,11 @@ That budget is spent carefully:
   or it has to be storable and shippable on its own, or it carries a spoil
   clock. "The chain feels more substantial with another step" is not a reason.
 - **New buildings** need a mechanical reason to be separate.
-- **No parallel tiers.** Never a better Foundry, a better Recycler, a better
-  Assembler. New behaviour, not the same behaviour with bigger numbers.
+- **No plain upgrades.** An improved vanilla building is allowed only when it
+  carries a trade-off the player can name. It doesn't run vanilla's own recipes.
+  Its gains are modest, and each costs something vanilla doesn't: an extra
+  ingredient, more power, or a narrower job. Never the same behaviour with bigger
+  numbers.
 
 ## 4. The theme has to be unrepeatable
 
@@ -207,7 +210,7 @@ Before a tree's recipes are worth tuning, it should answer yes to all of these.
       rather than naming a planet? *(§1)*
 - [ ] Does material move both ways — or, if not, is the one-way shape a
       deliberate answer rather than an omission? *(§2)*
-- [ ] Is it 3–10 technologies, with every new item mechanically justified and at
+- [ ] Is it close to the estimated 3–10 technologies, with every new item mechanically justified and at
       most the one capstone building? *(§3)*
 - [ ] Can you name what each planet contributes that the other could not get by
       building differently? *(§4)*

@@ -1,15 +1,16 @@
 -- The five capstone products: what the cross-planet trees deliver to the Core.
 --
--- One is real -- the superconducting winding, from prototypes/trees -- and four
--- are stubs that craft from one iron plate, so the items exist to be freighted
--- long before their trees do. What the Core made *of* them went with the cut
--- back to the landing, and the capstones arrive to a planet that can receive
--- them and not yet use them.
+-- Two are real -- the superconducting winding and magnetar alloy, from
+-- prototypes/trees -- and three are stubs that craft from one iron plate, so
+-- the items exist to be freighted long before their trees do. What the Core
+-- made *of* them went with the cut back to the landing, and the capstones
+-- arrive to a planet that can receive them and not yet use them.
 
+local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
 
 --------------------------------------------------------------------------------
--- TEMPORARY: stand-ins for the five capstone products.
+-- TEMPORARY: stand-ins for the capstone products whose trees are not built.
 --
 -- Each of these is the end of a cross-planet tree that does not exist yet. They
 -- are craftable from nothing so that the whole endgame is playable long before
@@ -18,10 +19,10 @@ local item_sounds = require("__base__.prototypes.item_sounds")
 -- a recipe change and a migration, not a redesign.
 --------------------------------------------------------------------------------
 
--- Fulgora <-> Aquilo is built, so its capstone is no longer among these.
+-- Fulgora <-> Aquilo and Vulcanus <-> Fulgora are built, so their capstones are
+-- no longer among these.
 local stub_items =
 {
-  { name = "sae-magnetar-alloy",          icon = "__space-age__/graphics/icons/tungsten-plate.png",   order = "b" },
   { name = "sae-cultured-alloy",          icon = "__space-age__/graphics/icons/bioflux.png",          order = "c" },
   { name = "sae-bio-polymer",             icon = "__base__/graphics/icons/plastic-bar.png",           order = "d" }
 }
@@ -84,7 +85,7 @@ data:extend({
 })
 
 --------------------------------------------------------------------------------
--- The one real capstone's item. Its recipe is in prototypes/trees.
+-- The real capstones' items. Their recipes are in prototypes/trees.
 --------------------------------------------------------------------------------
 
 data:extend({
@@ -99,5 +100,23 @@ data:extend({
     drop_sound = item_sounds.wire_inventory_move,
     stack_size = 50,
     weight = 2 * kg
+  },
+  -- Was a stub; its recipe went when Vulcanus <-> Fulgora made it for real. The
+  -- item keeps the stub's name, so a save keeps what it holds. It wears the
+  -- stub's tungsten plate icon, tinted, until its own exists; recorded under
+  -- "item/", as the tree records its items.
+  {
+    type = "item",
+    name = "sae-magnetar-alloy",
+    icons = { { icon = "__space-age__/graphics/icons/tungsten-plate.png", icon_size = 64, tint = { 0.62, 0.64, 0.80 } } },
+    subgroup = "raw-material",
+    order = "z[sae]-fc[magnetar-alloy]",
+    inventory_move_sound = item_sounds.metal_small_inventory_move,
+    pick_sound = item_sounds.metal_small_inventory_pickup,
+    drop_sound = item_sounds.metal_small_inventory_move,
+    stack_size = 50,
+    weight = 2 * kg
   }
 })
+
+derive.placeholder_art({ name = "item/sae-magnetar-alloy" }, "wears a tinted vanilla icon until its own exists")

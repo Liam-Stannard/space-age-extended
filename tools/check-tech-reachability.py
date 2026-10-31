@@ -29,7 +29,10 @@ What counts as obtainable:
   * anything a *vanilla* recipe makes, because the Core is reached by rocket and
     the corridor can carry it. The mod's own items get no such pass;
   * anything an already-unlocked recipe makes, transitively, provided a machine
-    for its category exists and is buildable.
+    for its category exists and is buildable;
+  * anything a script makes, once the entity it makes it through is buildable
+    (SCRIPT_MADE below). No prototype says a script makes it, so each one is
+    listed by hand.
 
 Surface conditions are deliberately ignored. A recipe locked to gravity 0 is
 made in orbit and flown down, which is the endgame's whole shape -- so "can this
@@ -48,10 +51,23 @@ import sys
 MACHINE_TYPES = ("assembling-machine", "furnace", "rocket-silo")
 MINING_TYPES = ("mining-drill",)
 # Categories a player can craft in their own hands, so a recipe in one needs no
-# machine at all. A fluid anywhere in the recipe rules that out, which is how
-# vanilla stops anyone hand-making a processing unit.
-HAND_CRAFTABLE = ("crafting", "basic-crafting", "advanced-crafting",
-                  "crafting-with-fluid")
+# machine at all, are read from the dump: every character prototype's
+# `crafting_categories` (2.1's character has `crafting` and `hand-crafting`;
+# `advanced-crafting` is assemblers only, which is how vanilla keeps the engine
+# unit out of the hands). A fluid anywhere in the recipe also rules hand
+# crafting out, which is how vanilla stops anyone hand-making a processing
+# unit. This list is only the fallback for a dump with no character in it.
+FALLBACK_HAND_CRAFTABLE = ("crafting", "hand-crafting")
+
+# Products no recipe, drill or tile makes, because a control script makes
+# them: (kind, name) -> the entity the script makes it through. Each is
+# obtainable once that entity can be built.
+#
+#   sae-ozone   a lightning strike on an ozone collector adds 100 to the
+#               collector's hidden tank (scripts/trees/vulcanus-fulgora.lua).
+SCRIPT_MADE = {
+    ("fluid", "sae-ozone"): "sae-ozone-collector",
+}
 
 
 def ingredients(recipe):
@@ -91,6 +107,12 @@ class Model:
         self.techs = dump["technology"]
         self.fluids = set(dump.get("fluid", {}))
 
+        self.hand_craftable = set()
+        for character in (dump.get("character") or {}).values():
+            self.hand_craftable.update(character.get("crafting_categories") or [])
+        if not self.hand_craftable:
+            self.hand_craftable = set(FALLBACK_HAND_CRAFTABLE)
+
         self.unlocked_by = collections.defaultdict(list)
         for name, tech in self.techs.items():
             for effect in tech.get("effects") or []:
@@ -118,6 +140,28 @@ class Model:
 
         self.free = self._importable()
         self.mined = self._mined()
+
+        # A script-made product that does not exist (a renamed or misspelt
+        # key) would count as obtainable while naming nothing, and one whose
+        # entity has no item to place it could never be obtained and would fail
+        # every recipe that uses it for a reason the report would not name.
+        # Say so instead, naming the key.
+        self.script_made = dict(SCRIPT_MADE)
+        item_like = set()
+        for t in ("item", "tool", "ammo", "capsule", "module", "gun", "armor",
+                  "repair-tool", "item-with-entity-data", "rail-planner",
+                  "space-platform-starter-pack", "selection-tool"):
+            item_like |= set(dump.get(t) or {})
+        for thing, entity in sorted(self.script_made.items()):
+            exists = (thing[1] in self.fluids if thing[0] == "fluid"
+                      else thing[1] in item_like)
+            if not exists:
+                sys.exit("check-tech-reachability: SCRIPT_MADE key (%r, %r) names "
+                         "no %s in the dump" % (thing[0], thing[1], thing[0]))
+            if not self.placers.get(entity):
+                sys.exit("check-tech-reachability: %s %s is listed as made by a "
+                         "script through %s, which no item places"
+                         % (thing[0], thing[1], entity))
 
     def _kind(self, name):
         return "fluid" if name in self.fluids else "item"
@@ -158,7 +202,7 @@ class Model:
 
     def machine_ok(self, recipe, have):
         cats = categories(recipe)
-        if any(c in HAND_CRAFTABLE for c in cats):
+        if any(c in self.hand_craftable for c in cats):
             fluid = any(t == "fluid" for t, _ in
                         ingredients(recipe) + results(recipe))
             if not fluid:
@@ -183,6 +227,10 @@ class Model:
                 if thing in have:
                     continue
                 if drills is None or any(self.buildable(d, have) for d in drills):
+                    have.add(thing)
+                    changed = True
+            for thing, entity in self.script_made.items():
+                if thing not in have and self.buildable(entity, have):
                     have.add(thing)
                     changed = True
             for name in enabled:

@@ -34,18 +34,24 @@ end
 -- Left out, the Core's alternates would silently become the worse option at the
 -- exact point in the game the player is most likely to have those technologies
 -- finished. This adds ours to the lists and changes nothing else about them.
+--
+-- Vulcanus <-> Fulgora's fluxed steel is the same case: a third route to steel
+-- plate beside vanilla's smelting and casting, which steel-plate-productivity
+-- names both of (Liam, Q13: "Add to vanilla tech").
 
 local PRODUCTIVITY =
 {
   ["low-density-structure-productivity"] = "sae-cast-structure",
   ["rocket-fuel-productivity"] = "sae-crust-propellant",
-  ["processing-unit-productivity"] = "sae-valve-processor"
+  ["processing-unit-productivity"] = "sae-valve-processor",
+  ["steel-plate-productivity"] = "sae-fluxed-steel"
 }
 
 for tech_name, recipe_name in pairs(PRODUCTIVITY) do
   local tech = data.raw.technology[tech_name]
-  -- The recipe check is the same guard as the lab's: all three alternates went
-  -- with the cut, and a productivity effect naming a missing recipe is a load error.
+  -- The recipe check is the same guard as the lab's: the Core's three
+  -- alternates went with the cut (fluxed steel, the fourth, did not), and a
+  -- productivity effect naming a missing recipe is a load error.
   if not data.raw.recipe[recipe_name] then
     log("[sae] " .. recipe_name .. " does not exist; its productivity effect is skipped")
   elseif tech and tech.effects then

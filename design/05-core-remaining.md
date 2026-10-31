@@ -15,9 +15,9 @@ fluid loop, and every step needing something the other planet has.
 | Tree | Capstone | State |
 | ---- | -------- | ----- |
 | Fulgora ↔ Aquilo | Superconducting winding | **real** — 3 techs, 4 recipes |
-| Vulcanus ↔ Fulgora | Magnetar alloy | stub |
+| Vulcanus ↔ Fulgora | Magnetar alloy | **designed**, being built |
 | Vulcanus ↔ Gleba | Cultured alloy | stub |
-| Fulgora ↔ Gleba | Bio-polymer | stub |
+| Vulcanus ↔ Aquilo | to be designed (was bio-polymer) | stub |
 | Gleba ↔ Aquilo | Cryoprotectant | stub |
 
 **This is the single largest piece of work left in the mod**, and it is four

@@ -170,7 +170,7 @@ technologies are five different problems rather than one repeated.
 | Fulgora ↔ Aquilo | **Superconducting winding** | homogenised ingot — made in orbit | **Field conductor** | Conductor |
 | Vulcanus ↔ Fulgora | **Magnetar alloy** | settled melt | **Magnetic core billet** | Core |
 | Vulcanus ↔ Gleba | **Cultured alloy** | whisker tow — combed whiskers | **Reinforced frame** | Frame |
-| Fulgora ↔ Gleba | **Bio-polymer** | whisker felt and raw molten kamacite | **Insulation sleeve** | Insulation |
+| Vulcanus ↔ Aquilo | **to be designed** | whisker felt and raw molten kamacite | **Insulation sleeve** | Insulation |
 | Gleba ↔ Aquilo | **Cryoprotectant fluid** | helium-3 | **Coolant charge** | Coolant |
 
 As built in `prototypes/core/intermediates.lua`.
