@@ -1,0 +1,16 @@
+COLLIDE north (the whole machine turns, as modelled; its north variant): 494 parts, 40 moving; frames 0-23
+COLLIDE north moving: 0 clashes, 360 meant contacts (collide-model.txt)
+COLLIDE north model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 708 touching pairs, 132 touch at under 0.03 (collide-model.txt)
+COLLIDE ends: 12 of 12 runs end in what they serve
+COLLIDE east (the whole machine turns, as modelled; its east variant): 504 parts, 40 moving; frames 0-23
+COLLIDE east moving: 0 clashes, 360 meant contacts (collide-model.txt)
+COLLIDE east model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 727 touching pairs, 132 touch at under 0.03 (collide-model.txt)
+COLLIDE ends: 12 of 12 runs end in what they serve
+COLLIDE south (the whole machine turns, as modelled; its south variant): 504 parts, 40 moving; frames 0-23
+COLLIDE south moving: 0 clashes, 360 meant contacts (collide-model.txt)
+COLLIDE south model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 727 touching pairs, 132 touch at under 0.03 (collide-model.txt)
+COLLIDE ends: 12 of 12 runs end in what they serve
+COLLIDE west (the whole machine turns, as modelled; its west variant): 504 parts, 40 moving; frames 0-23
+COLLIDE west moving: 0 clashes, 360 meant contacts (collide-model.txt)
+COLLIDE west model: 0 clashes (REAL: reach more than 0.03 tile into each other and no rule explains them); 721 touching pairs, 131 touch at under 0.03 (collide-model.txt)
+COLLIDE ends: 12 of 12 runs end in what they serve
