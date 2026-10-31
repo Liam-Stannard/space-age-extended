@@ -11,7 +11,7 @@ what a tree is made of, in what order, and what every tree owes the endgame.
 
 ## 1. Anatomy
 
-A tree is four stages and 3–10 technologies.
+A tree is four stages and an estimated 3–10 technologies.
 
 ### Stage 1 — The opening (1 technology)
 
@@ -127,9 +127,9 @@ that:
 
 | Pair | Available after | Mechanic taught | Anchor | Capstone product | Endgame role | Status |
 |---|---|---|---|---|---|---|
-| Vulcanus ↔ Fulgora | both | **Surge production** | — | **Magnetar alloy** | The coil's magnetic core | Mechanic + capstone |
+| Vulcanus ↔ Fulgora | both | **Surge supply** | — | **Magnetar alloy** | The coil's magnetic core | **Designed** — [doc](trees/vulcanus-fulgora.md) |
 | **Vulcanus ↔ Gleba** | both | **Maturation** | — | **Cultured alloy** | The coil's frame; also ripens on the corridor run | Mechanic + capstone |
-| Fulgora ↔ Gleba | both | **The living line** | — | **Bio-polymer** | The coil's insulation | Mechanic + capstone |
+| Vulcanus ↔ Aquilo | Aquilo | to be designed | — | to be designed | The coil's insulation | — |
 | **Fulgora ↔ Aquilo** | Aquilo | **The cold loop** | Fluorine and electrolyte, neither barrellable | **Superconducting winding** | The coil's conductor | **Built** — [spec](trees/fulgora-aquilo.md) |
 | Gleba ↔ Aquilo | Aquilo | **Seed stock** | — | **Cryoprotectant fluid** | The coil's coolant | Mechanic + capstone |
 
@@ -140,7 +140,7 @@ how each is integrated through a different local input.
 
 Every tree now has a mechanic and a capstone product. Each still owes a
 **building** made from that product, an **anchor** that forces its crossing, and
-its own 3–10 technology ladder. The corridor has a mechanic of its own —
+its own technology ladder, an estimated 3–10. The corridor has a mechanic of its own —
 [seeding the field](03-corridor.md#2-seeding-the-field).
 
 Vulcanus and Aquilo appear twice, Fulgora and Gleba three times; with four

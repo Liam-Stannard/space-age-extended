@@ -15,4 +15,4 @@ against a data dump of the installed game.
 
 Five trees, one corridor: six mechanics.
 
-To be decided.
+- **Vulcanus ↔ Fulgora: surge supply.** Ozone comes only with lightning strikes, in bursts, and has no barrel, so it is stored through the calm ([doc](trees/vulcanus-fulgora.md)). The other five: to be decided.

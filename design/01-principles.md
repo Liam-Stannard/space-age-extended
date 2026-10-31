@@ -91,7 +91,7 @@ capstone itself, which only it can assemble.
 
 ## 3. A tree is small and finishable
 
-**3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
+**An estimated 3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
 The player should be able to see its end from its beginning.
 
 That budget is spent carefully:
@@ -210,7 +210,7 @@ Before a tree's recipes are worth tuning, it should answer yes to all of these.
       rather than naming a planet? *(§1)*
 - [ ] Does material move both ways — or, if not, is the one-way shape a
       deliberate answer rather than an omission? *(§2)*
-- [ ] Is it 3–10 technologies, with every new item mechanically justified and at
+- [ ] Is it close to the estimated 3–10 technologies, with every new item mechanically justified and at
       most the one capstone building? *(§3)*
 - [ ] Can you name what each planet contributes that the other could not get by
       building differently? *(§4)*

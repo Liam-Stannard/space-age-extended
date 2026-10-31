@@ -211,7 +211,7 @@ property and it earns two steps: **aligning** them, then **binding** them.
 | ---- | --------- | ----- | ------------- |
 | Kamacite whiskers | grown on beds from seed plates | bed tender | **exists** |
 | **Whisker tow** | 8 whiskers | assembler | Combed into one direction. Strength is directional, so alignment is a step |
-| **Whisker prepreg** | whisker tow + **bio-polymer** | assembler | Fibre in a matrix. This is where Fulgora ↔ Gleba's capstone enters, one tier earlier than now |
+| **Whisker prepreg** | whisker tow + **the Vulcanus ↔ Aquilo capstone** (to be designed; was bio-polymer) | assembler | Fibre in a matrix. This is where Vulcanus ↔ Aquilo's capstone enters, one tier earlier than now |
 | **Whisker felt** | 4 whiskers, low grade | assembler | Unaligned. Cheap thermal insulation for T6 — a use for whiskers that are not worth combing |
 
 Two grades from one crop is what makes the farm interesting: the player chooses
@@ -247,10 +247,10 @@ five technologies being one technology repeated.
 | Fulgora ↔ Aquilo | Superconducting winding | **kamacite wafer** (T4) | Field conductor |
 | Vulcanus ↔ Fulgora | Magnetar alloy | settled melt + **phosphide flux** (T2) | Magnetic core billet |
 | Vulcanus ↔ Gleba | Cultured alloy | **whisker prepreg** (T5) | Reinforced frame |
-| Fulgora ↔ Gleba | Bio-polymer | consumed earlier, in prepreg | *(see note)* |
+| Vulcanus ↔ Aquilo | to be designed (was bio-polymer) | consumed earlier, in prepreg | *(see note)* |
 | Gleba ↔ Aquilo | Cryoprotectant | consumed earlier, in dilution charge | *(see note)* |
 
-**Note on the two that moved.** Bio-polymer and cryoprotectant now enter at T5
+**Note on the two that moved.** The insulation capstone and cryoprotectant now enter at T5
 and T6 rather than at T7. That is deliberate: it means two capstones are consumed
 *deep* in the line rather than at the last moment, so a lagging tree starves the
 Core early and visibly instead of only blocking the final assembly. The insulation
