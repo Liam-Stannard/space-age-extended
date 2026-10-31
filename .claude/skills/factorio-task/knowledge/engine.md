@@ -93,6 +93,11 @@ Each line: the fact, then how it was verified and when.
   mode off clears them. (V↔F T02 (c).)
 - Asteroid chunks stack to 1. (V↔F T02 (c).)
 - An entity with no item that places it can't have a ghost. (V↔F T02 (c).)
+- A collector's catch area grows by `QualityPrototype.asteroid_collector_collection_radius_bonus` per quality (by default the quality level: +1 for uncommon … +5 for legendary). A fast chunk can't be caught by an arm at rest, but an arm already out chasing slower chunks can catch it, so chunk speed tilts which collector catches what, but can't lock any out. (V↔F T02e, 2026-10-31.)
+
+## Recipes
+- `allow_productivity = false` keeps productivity modules out but doesn't stop a machine's built-in productivity (the foundry's +50 %). To give a recipe none at all, also set `maximum_productivity = 0`. (V↔F T05a, measured in a client, 2026-10-31.)
+- A recipe's surface conditions are checked when a player picks it (or a blueprint is built), not while the machine crafts. A recipe set by script crafts off its planet. Vanilla's lightning collector and foundry recipes behave the same. The 2.1.24 runtime docs word it as 'required to craft'. (V↔F T07a, 2026-10-31.)
 
 ## Fluids
 - A fluid's `max_temperature` defaults to its `default_temperature`, so
