@@ -49,8 +49,9 @@ local PRODUCTIVITY =
 
 for tech_name, recipe_name in pairs(PRODUCTIVITY) do
   local tech = data.raw.technology[tech_name]
-  -- The recipe check is the same guard as the lab's: all three alternates went
-  -- with the cut, and a productivity effect naming a missing recipe is a load error.
+  -- The recipe check is the same guard as the lab's: the Core's three
+  -- alternates went with the cut (fluxed steel, the fourth, did not), and a
+  -- productivity effect naming a missing recipe is a load error.
   if not data.raw.recipe[recipe_name] then
     log("[sae] " .. recipe_name .. " does not exist; its productivity effect is skipped")
   elseif tech and tech.effects then

@@ -51,10 +51,13 @@ import sys
 MACHINE_TYPES = ("assembling-machine", "furnace", "rocket-silo")
 MINING_TYPES = ("mining-drill",)
 # Categories a player can craft in their own hands, so a recipe in one needs no
-# machine at all. A fluid anywhere in the recipe rules that out, which is how
-# vanilla stops anyone hand-making a processing unit.
-HAND_CRAFTABLE = ("crafting", "basic-crafting", "advanced-crafting",
-                  "crafting-with-fluid")
+# machine at all, are read from the dump: every character prototype's
+# `crafting_categories` (2.1's character has `crafting` and `hand-crafting`;
+# `advanced-crafting` is assemblers only, which is how vanilla keeps the engine
+# unit out of the hands). A fluid anywhere in the recipe also rules hand
+# crafting out, which is how vanilla stops anyone hand-making a processing
+# unit. This list is only the fallback for a dump with no character in it.
+FALLBACK_HAND_CRAFTABLE = ("crafting", "hand-crafting")
 
 # Products no recipe, drill or tile makes, because a control script makes
 # them: (kind, name) -> the entity the script makes it through. Each is
@@ -103,6 +106,12 @@ class Model:
         self.recipes = dump["recipe"]
         self.techs = dump["technology"]
         self.fluids = set(dump.get("fluid", {}))
+
+        self.hand_craftable = set()
+        for character in (dump.get("character") or {}).values():
+            self.hand_craftable.update(character.get("crafting_categories") or [])
+        if not self.hand_craftable:
+            self.hand_craftable = set(FALLBACK_HAND_CRAFTABLE)
 
         self.unlocked_by = collections.defaultdict(list)
         for name, tech in self.techs.items():
@@ -193,7 +202,7 @@ class Model:
 
     def machine_ok(self, recipe, have):
         cats = categories(recipe)
-        if any(c in HAND_CRAFTABLE for c in cats):
+        if any(c in self.hand_craftable for c in cats):
             fluid = any(t == "fluid" for t, _ in
                         ingredients(recipe) + results(recipe))
             if not fluid:

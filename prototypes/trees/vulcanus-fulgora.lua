@@ -908,6 +908,10 @@ data:extend({
     icons = ICON.magnetic_collector,
     flags = { "placeable-neutral", "placeable-player", "player-creation" },
     minable = { mining_time = 0.2, result = MAGNETIC_COLLECTOR },
+    -- Built over an asteroid collector in place, as its recipe is made from
+    -- one (Liam: "Allow it"). Only this side names the group; the vanilla
+    -- collector already carries it.
+    fast_replaceable_group = "asteroid-collector",
     max_health = 300,
     corpse = "asteroid-collector-remnants",
     dying_explosion = "asteroid-collector-explosion",
@@ -1018,6 +1022,19 @@ local MAGNETITE = "sae-magnetite"
 local MAGNETIC_TINT = { 0.55, 0.70, 1.0 }
 local metallic_chunk = data.raw["asteroid-chunk"]["metallic-asteroid-chunk"]
 
+-- The metallic chunk's art with one change, so the two can be told apart in
+-- flight until the magnetic chunk has its own maps (Liam: "Light blue rim
+-- now"): its rim light, the second of the set (vanilla's own chunk override
+-- sets that one to a rusty orange), goes light blue. A light colour, not a
+-- sprite.
+local magnetic_chunk_graphics = table.deepcopy(metallic_chunk.graphics_set)
+local rim = magnetic_chunk_graphics.lights and magnetic_chunk_graphics.lights[2]
+if rim then
+  rim.color = { 0.45, 0.72, 1.0 }
+else
+  log("[sae] the metallic chunk has no rim light; the magnetic chunk keeps its look unchanged")
+end
+
 ICON.magnetic_chunk = tinted(SA .. "icons/metallic-asteroid-chunk.png", MAGNETIC_TINT)
 ICON.magnetite = tinted(BASE .. "icons/iron-ore.png", { 0.42, 0.42, 0.50 })
 ICON.magnetite_round = tinted(SA .. "icons/railgun-ammo.png", MAGNETIC_TINT)
@@ -1037,8 +1054,8 @@ data:extend({
     {
       { type = "create-entity", entity_name = "metallic-asteroid-explosion-1", only_when_visible = true }
     },
-    graphics_set = table.deepcopy(metallic_chunk.graphics_set)
-  }, "wears the metallic chunk's art until its own exists"),
+    graphics_set = magnetic_chunk_graphics
+  }, "wears the metallic chunk's art, its rim light blue, until its own exists"),
 
   -- The held form, on vanilla's chunk-item pattern: one to a stack, 100 kg.
   stand_in({
@@ -1097,12 +1114,13 @@ local function point_at(points, d)
   end
 end
 
--- A connection's definitions by asteroid, optionally read end to end reversed.
+-- A connection's definitions by asteroid, optionally read end to end reversed,
+-- or nil if another mod has removed the connection.
 -- A reversed distance is rounded to a millionth: 1 - 0.9 is not 0.1 in floating
 -- point, and the two sides' points have to meet at the same distances.
 local function definitions_of(connection_name, reversed)
   local connection = data.raw["space-connection"][connection_name]
-  assert(connection, "space-connection " .. connection_name .. " does not exist")
+  if not connection then return nil end
   local out, order = {}, {}
   for _, def in ipairs(connection.asteroid_spawn_definitions or {}) do
     local points = {}
@@ -1121,9 +1139,24 @@ local function definitions_of(connection_name, reversed)
   return out, order
 end
 
+-- If one of the two connections is gone, the route takes the other's mix alone
+-- (read so its planet end is at this route's same planet); if both are, it has
+-- no ordinary asteroids. Either way the data stage goes on and says so.
 local function blend(vulcanus_side, fulgora_side)
   local near, near_order = definitions_of(vulcanus_side, true)
   local far, far_order = definitions_of(fulgora_side, false)
+  if not (near or far) then
+    log("[sae] neither " .. vulcanus_side .. " nor " .. fulgora_side
+        .. " exists; the Vulcanus-Fulgora route gets no ordinary asteroids")
+    return {}
+  end
+  local one_sided = not (near and far)
+  if one_sided then
+    log("[sae] " .. (near and fulgora_side or vulcanus_side) .. " does not exist; the Vulcanus-Fulgora route takes "
+        .. (near and vulcanus_side or fulgora_side) .. "'s asteroids alone")
+  end
+  near, near_order = near or {}, near_order or {}
+  far, far_order = far or {}, far_order or {}
   local names, seen = {}, {}
   for _, list in ipairs({ near_order, far_order }) do
     for _, name in ipairs(list) do
@@ -1144,6 +1177,8 @@ local function blend(vulcanus_side, fulgora_side)
     local points = {}
     for _, d in ipairs(distances) do
       local w = math.min(1, math.max(0, (d - VULCANUS_END) / (FULGORA_END - VULCANUS_END)))
+      -- With one side only, that side counts in full everywhere.
+      if one_sided then w = a and 0 or 1 end
       -- An asteroid only one route has counts as none on the other.
       local pa = a and point_at(a.points, d)
       local pb = b and point_at(b.points, d)
