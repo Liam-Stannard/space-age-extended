@@ -50,6 +50,7 @@ local function attach(collector)
   if not tank then return nil end
   tank.destructible = false
   local unit = collector.unit_number
+  storage.sae_ozone_owner = storage.sae_ozone_owner or {}
   local previous = storage.sae_ozone_owner[tank.unit_number]
   if previous and previous ~= unit then storage.sae_ozone_tanks[previous] = nil end
   storage.sae_ozone_owner[tank.unit_number] = unit
@@ -75,6 +76,7 @@ local function on_object_destroyed(event)
   local tank = storage.sae_ozone_tanks[unit]
   if tank == nil then return end
   storage.sae_ozone_tanks[unit] = nil
+  storage.sae_ozone_owner = storage.sae_ozone_owner or {}
   if tank.valid and storage.sae_ozone_owner[tank.unit_number] == unit then
     storage.sae_ozone_owner[tank.unit_number] = nil
     tank.destroy()
