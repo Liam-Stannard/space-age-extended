@@ -17,13 +17,18 @@
 -- ozone collector, and the steps that drink it (holmium oxide, oxide
 -- superconductor) run all the time, so the player buffers it through the calm.
 --
--- Two of the three buildings are here: the ozone collector and the induction
--- foundry. The script that turns a strike on an ozone collector into ozone is
--- scripts/trees/vulcanus-fulgora.lua. What is NOT here yet is the magnetic
--- collector and its recipe.
+-- The three buildings are here: the ozone collector, the induction foundry and
+-- the magnetic collector. The script that turns a strike on an ozone collector
+-- into ozone is scripts/trees/vulcanus-fulgora.lua.
+--
+-- AND AFTER THE TREE: the magnetic collector catches the magnetic chunk, which
+-- flies only on a new direct Vulcanus <-> Fulgora route; crushed, it gives
+-- magnetite, and magnetite makes the magnetite round (tech 11, after the
+-- railgun).
 
 local derive = require("prototypes.derive")
 local item_sounds = require("__base__.prototypes.item_sounds")
+local space_age_item_sounds = require("__space-age__.prototypes.item_sounds")
 local hit_effects = require("__base__.prototypes.entity.hit-effects")
 local entity_sounds = require("__base__.prototypes.entity.sounds")
 
@@ -850,10 +855,14 @@ data:extend({
   }),
 
   -- A foundry wound with Fulgora's coil and lined with obsidian glass. Where
-  -- the foundry's own recipe can be made: pressure 4000 (Vulcanus).
+  -- the foundry's own recipe can be made: pressure 4000 (Vulcanus). Made in an
+  -- assembler only, never by hand (Liam, Q15): `advanced-crafting` is the
+  -- category vanilla gives the engine unit for the same reason, every
+  -- assembler has it and the character does not (its categories are
+  -- `crafting` and `hand-crafting`).
   recipe({
     name = INDUCTION_FOUNDRY,
-    categories = { "crafting" },
+    categories = { "advanced-crafting" },
     surface_conditions = { { property = "pressure", min = 4000, max = 4000 } },
     energy_required = 20,
     ingredients =
@@ -868,14 +877,421 @@ data:extend({
 })
 
 --------------------------------------------------------------------------------
+-- The magnetic collector, from the asteroid collector.
+--
+-- Against it: twice the reach (collection radius 15, not 7.5) and arms almost
+-- three times as fast (arm and turn speed 0.55, not 0.2), which is what catches
+-- the magnetic chunk below; T02e measured 70-100 % of them in flight, against
+-- vanilla's 0-16 %. Paid for in power, four times the energy per arm move
+-- (4 kJ, slow 1.2 kJ; vanilla 1 kJ and 300 J), and in ten magnetar alloy.
+--
+-- No filter is set on it or changed on any collector (Liam: "We shouldn't alter
+-- the filter of either collector"), so it takes every chunk there is, as
+-- vanilla's does; nothing in the mod's script touches a collector. Everything
+-- not named above is the asteroid collector's: the catch box 5 tiles ahead,
+-- one arm and one more per quality level, the holds, the quality scaling.
+--------------------------------------------------------------------------------
+
+local MAGNETIC_COLLECTOR = "sae-magnetic-collector"
+local MAGNETIC_COLLECTOR_TINT = { 0.50, 0.52, 0.58 }   -- dark iron-grey
+local asteroid_collector = data.raw["asteroid-collector"]["asteroid-collector"]
+
+local magnetic_graphics = table.deepcopy(asteroid_collector.graphics_set)
+tint_layers(magnetic_graphics, MAGNETIC_COLLECTOR_TINT)
+
+ICON.magnetic_collector = tinted(SA .. "icons/asteroid-collector.png", MAGNETIC_COLLECTOR_TINT)
+
+data:extend({
+  derive.placeholder_art({
+    type = "asteroid-collector",
+    name = MAGNETIC_COLLECTOR,
+    icons = ICON.magnetic_collector,
+    flags = { "placeable-neutral", "placeable-player", "player-creation" },
+    minable = { mining_time = 0.2, result = MAGNETIC_COLLECTOR },
+    max_health = 300,
+    corpse = "asteroid-collector-remnants",
+    dying_explosion = "asteroid-collector-explosion",
+    resistances = { { type = "fire", percent = 70 } },
+    impact_category = "metal",
+    -- The asteroid collector's footprint: 3x3 on the platform's edge, its
+    -- front over empty space.
+    collision_box = { { -1.2, -1.2 }, { 1.2, 1.2 } },
+    collision_mask = { layers = { is_object = true, is_lower_object = true, transport_belt = true } },
+    selection_box = { { -1.5, -1.5 }, { 1.5, 1.5 } },
+    tile_width = 3,
+    tile_height = 3,
+    tile_buildability_rules =
+    {
+      { area = { { -1.4, -0.4 }, { 1.4, 1.4 } }, required_tiles = { layers = { ground_tile = true } },
+        colliding_tiles = { layers = { empty_space = true } }, remove_on_collision = true },
+      { area = { { -1.4, -4.4 }, { 1.4, -0.6 } }, required_tiles = { layers = { empty_space = true } },
+        remove_on_collision = true }
+    },
+    surface_conditions = { { property = "pressure", min = 0, max = 0 } },
+
+    -- What it is for.
+    collection_radius = 15,
+    collection_box_offset = 5,
+    deposit_radius = 1.5,
+    head_collection_radius = 0.6,
+    arm_count_base = 1,
+    arm_count_quality_scaling = 1,
+    arm_speed_base = 0.55,
+    arm_speed_quality_scaling = 0.05,
+    arm_angular_speed_cap_base = 0.55,
+    arm_angular_speed_cap_quality_scaling = 0.05,
+    minimal_arm_swing_segment_retraction = 6,
+    tether_size = 0.35,
+    unpowered_arm_speed_scale = 0.3,
+    held_items_offset = 0.6,
+    inventory_size = 39,
+    inventory_size_quality_increase = 5,
+    arm_inventory_size = 5,
+    arm_inventory_size_quality_increase = 0,
+
+    -- What it costs to run.
+    energy_source = { type = "electric", usage_priority = "secondary-input" },
+    passive_energy_usage = "200J",
+    arm_energy_usage = "4kJ",
+    arm_slow_energy_usage = "1.2kJ",
+    energy_usage_quality_scaling = 0.1,
+
+    circuit_wire_max_distance = asteroid_collector.circuit_wire_max_distance,
+    circuit_connector = table.deepcopy(asteroid_collector.circuit_connector),
+    -- The asteroid collector's sounds and arm colours, as a stand-in wears its
+    -- sprites.
+    open_sound = entity_sounds.mech_small_open,
+    close_sound = entity_sounds.mech_small_close,
+    munch_sound = table.deepcopy(asteroid_collector.munch_sound),
+    arm_extend_sound = table.deepcopy(asteroid_collector.arm_extend_sound),
+    arm_retract_sound = table.deepcopy(asteroid_collector.arm_retract_sound),
+    deposit_sound = table.deepcopy(asteroid_collector.deposit_sound),
+    arm_color_gradient = table.deepcopy(asteroid_collector.arm_color_gradient),
+    graphics_set = magnetic_graphics,
+    radius_visualisation_picture = table.deepcopy(asteroid_collector.radius_visualisation_picture)
+  }, "wears the asteroid collector's sprites, tinted dark iron-grey, until its own exist"),
+
+  stand_in({
+    type = "item",
+    name = MAGNETIC_COLLECTOR,
+    icons = ICON.magnetic_collector,
+    subgroup = "space-platform",
+    order = "d[asteroid-collector]-b[sae-magnetic-collector]",
+    inventory_move_sound = item_sounds.mechanical_inventory_move,
+    pick_sound = item_sounds.mechanical_inventory_pickup,
+    drop_sound = item_sounds.mechanical_inventory_move,
+    place_result = MAGNETIC_COLLECTOR,
+    -- As the asteroid collector: ten to a stack, ten to a rocket.
+    stack_size = 10,
+    weight = 100 * kg
+  }),
+
+  -- An asteroid collector given a magnetar alloy arm and a coil. In an
+  -- assembler or by hand, as the asteroid collector is.
+  recipe({
+    name = MAGNETIC_COLLECTOR,
+    categories = { "crafting" },
+    energy_required = 10,
+    ingredients =
+    {
+      solid("asteroid-collector", 1),
+      solid("sae-magnetar-alloy", 10),
+      solid("sae-superconducting-coil", 2)
+    },
+    results = { solid(MAGNETIC_COLLECTOR, 1) }
+  })
+})
+
+--------------------------------------------------------------------------------
+-- The magnetic chunk, and the route it flies on.
+--
+-- A new chunk, faster than any asteroid: own speed 0.25 tiles a tick (15 m/s;
+-- vanilla's asteroids fly at 1 m/s), which an asteroid collector's arm at rest
+-- cannot reach in time and a magnetic collector's can (T02e). It is the
+-- metallic chunk's art until it has its own. It flies on one route only, the
+-- new direct Vulcanus <-> Fulgora connection: no planet carries it, so no
+-- planet's asteroid_spawn_influence can carry it onto another route.
+--------------------------------------------------------------------------------
+
+local MAGNETIC_CHUNK = "sae-magnetic-asteroid-chunk"
+local MAGNETITE = "sae-magnetite"
+local MAGNETIC_TINT = { 0.55, 0.70, 1.0 }
+local metallic_chunk = data.raw["asteroid-chunk"]["metallic-asteroid-chunk"]
+
+ICON.magnetic_chunk = tinted(SA .. "icons/metallic-asteroid-chunk.png", MAGNETIC_TINT)
+ICON.magnetite = tinted(BASE .. "icons/iron-ore.png", { 0.42, 0.42, 0.50 })
+ICON.magnetite_round = tinted(SA .. "icons/railgun-ammo.png", MAGNETIC_TINT)
+
+data:extend({
+  stand_in({
+    type = "asteroid-chunk",
+    name = MAGNETIC_CHUNK,
+    icons = ICON.magnetic_chunk,
+    -- A chunk is not an entity, so its description is pointed at its item's,
+    -- as vanilla points each chunk at its asteroid's.
+    localised_description = { "item-description." .. MAGNETIC_CHUNK },
+    subgroup = "space-material",
+    order = "z[sae-vf]-a[magnetic-asteroid-chunk]",
+    minable = { mining_time = 0.2, result = MAGNETIC_CHUNK, mining_particle = "metallic-asteroid-chunk-particle-medium" },
+    dying_trigger_effect =
+    {
+      { type = "create-entity", entity_name = "metallic-asteroid-explosion-1", only_when_visible = true }
+    },
+    graphics_set = table.deepcopy(metallic_chunk.graphics_set)
+  }, "wears the metallic chunk's art until its own exists"),
+
+  -- The held form, on vanilla's chunk-item pattern: one to a stack, 100 kg.
+  stand_in({
+    type = "item",
+    name = MAGNETIC_CHUNK,
+    icons = ICON.magnetic_chunk,
+    subgroup = "space-material",
+    order = "z[sae-vf]-a[magnetic-asteroid-chunk]",
+    inventory_move_sound = space_age_item_sounds.rock_inventory_move,
+    pick_sound = space_age_item_sounds.rock_inventory_pickup,
+    drop_sound = space_age_item_sounds.rock_inventory_move,
+    stack_size = 1,
+    weight = 100 * kg
+  })
+})
+
+-- THE ROUTE'S ORDINARY ASTEROIDS: a blend of Nauvis-Vulcanus and Nauvis-Fulgora
+-- (Liam, Q16), built from those two connections' own spawn definitions.
+--
+-- How vanilla says where along a route an asteroid spawns: each definition is
+-- a list of spawn points, each at a `distance` from 0 (the route's `from`) to 1
+-- (its `to`), and the engine interpolates between them. Vanilla puts the two
+-- planets' own mixes at distance 0.1 and 0.9 and the route's mid-point at 0.5
+-- (space-age/prototypes/planet/asteroid-spawn-definitions.lua).
+--
+-- This route runs from Vulcanus (0) to Fulgora (1). Nauvis-Vulcanus has
+-- Vulcanus at 1, so it is read end to end reversed, distance 1 - d; Nauvis-Fulgora
+-- has Fulgora at 1 already. At each distance where either has a point, the
+-- route's point is the two read there and mixed: all Nauvis-Vulcanus at 0.1
+-- (its Vulcanus end), all Nauvis-Fulgora at 0.9 (its Fulgora end), and evenly
+-- between, half each at 0.5. Probability, speed and angle are all mixed.
+
+local VULCANUS_END, FULGORA_END = 0.1, 0.9
+
+-- One definition's point at distance d, read straight between its points and
+-- held flat beyond the first and the last.
+local function point_at(points, d)
+  local sorted = {}
+  for _, p in ipairs(points) do sorted[#sorted + 1] = p end
+  table.sort(sorted, function(a, b) return a.distance < b.distance end)
+  local function of(p) return { probability = p.probability, speed = p.speed, angle = p.angle_when_stopped or 1 } end
+  if d <= sorted[1].distance then return of(sorted[1]) end
+  if d >= sorted[#sorted].distance then return of(sorted[#sorted]) end
+  for i = 1, #sorted - 1 do
+    local a, b = sorted[i], sorted[i + 1]
+    if d <= b.distance then
+      local t = (d - a.distance) / (b.distance - a.distance)
+      local pa, pb = of(a), of(b)
+      return
+      {
+        probability = pa.probability + t * (pb.probability - pa.probability),
+        speed = pa.speed + t * (pb.speed - pa.speed),
+        angle = pa.angle + t * (pb.angle - pa.angle)
+      }
+    end
+  end
+end
+
+-- A connection's definitions by asteroid, optionally read end to end reversed.
+-- A reversed distance is rounded to a millionth: 1 - 0.9 is not 0.1 in floating
+-- point, and the two sides' points have to meet at the same distances.
+local function definitions_of(connection_name, reversed)
+  local connection = data.raw["space-connection"][connection_name]
+  assert(connection, "space-connection " .. connection_name .. " does not exist")
+  local out, order = {}, {}
+  for _, def in ipairs(connection.asteroid_spawn_definitions or {}) do
+    local points = {}
+    for _, p in ipairs(def.spawn_points) do
+      points[#points + 1] =
+      {
+        distance = reversed and math.floor((1 - p.distance) * 1e6 + 0.5) / 1e6 or p.distance,
+        probability = p.probability,
+        speed = p.speed,
+        angle_when_stopped = p.angle_when_stopped
+      }
+    end
+    out[def.asteroid] = { type = def.type, points = points }
+    order[#order + 1] = def.asteroid
+  end
+  return out, order
+end
+
+local function blend(vulcanus_side, fulgora_side)
+  local near, near_order = definitions_of(vulcanus_side, true)
+  local far, far_order = definitions_of(fulgora_side, false)
+  local names, seen = {}, {}
+  for _, list in ipairs({ near_order, far_order }) do
+    for _, name in ipairs(list) do
+      if not seen[name] then seen[name] = true; names[#names + 1] = name end
+    end
+  end
+
+  local defs = {}
+  for _, name in ipairs(names) do
+    local a, b = near[name], far[name]
+    local distances, at = {}, {}
+    for _, side in ipairs({ a or false, b or false }) do
+      for _, p in ipairs(side and side.points or {}) do
+        if not at[p.distance] then at[p.distance] = true; distances[#distances + 1] = p.distance end
+      end
+    end
+    table.sort(distances)
+    local points = {}
+    for _, d in ipairs(distances) do
+      local w = math.min(1, math.max(0, (d - VULCANUS_END) / (FULGORA_END - VULCANUS_END)))
+      -- An asteroid only one route has counts as none on the other.
+      local pa = a and point_at(a.points, d)
+      local pb = b and point_at(b.points, d)
+      pa = pa or { probability = 0, speed = pb.speed, angle = pb.angle }
+      pb = pb or { probability = 0, speed = pa.speed, angle = pa.angle }
+      points[#points + 1] =
+      {
+        distance = d,
+        probability = (1 - w) * pa.probability + w * pb.probability,
+        speed = (1 - w) * pa.speed + w * pb.speed,
+        angle_when_stopped = (1 - w) * pa.angle + w * pb.angle
+      }
+    end
+    defs[#defs + 1] = { type = (a or b).type, asteroid = name, spawn_points = points }
+  end
+  return defs
+end
+
+local route_asteroids = blend("nauvis-vulcanus", "nauvis-fulgora")
+
+-- And the magnetic chunk, the same at every point: probability 0.0015 at each
+-- of the route's three, about 4-5 % of the chunks in flight (T02e).
+local MAGNETIC_CHUNK_SPEED = 0.25
+local MAGNETIC_CHUNK_PROBABILITY = 0.0015
+local magnetic_points = {}
+for _, d in ipairs({ VULCANUS_END, 0.5, FULGORA_END }) do
+  magnetic_points[#magnetic_points + 1] =
+    { distance = d, probability = MAGNETIC_CHUNK_PROBABILITY, speed = MAGNETIC_CHUNK_SPEED, angle_when_stopped = 1 }
+end
+route_asteroids[#route_asteroids + 1] = { type = "asteroid-chunk", asteroid = MAGNETIC_CHUNK, spawn_points = magnetic_points }
+
+data:extend({
+  {
+    -- Space Age's data-updates gives it vanilla's route icon (the two planets
+    -- over planet-route.png), as it does every connection with none.
+    type = "space-connection",
+    name = "sae-vulcanus-fulgora",
+    subgroup = "planet-connections",
+    from = "vulcanus",
+    to = "fulgora",
+    -- After Vulcanus-Gleba (d), before Gleba-Fulgora (e).
+    order = "d-b[sae-vulcanus-fulgora]",
+    -- As every vanilla route between inner planets.
+    length = 15000,
+    asteroid_spawn_definitions = route_asteroids
+  }
+})
+
+--------------------------------------------------------------------------------
+-- Magnetite and the magnetite round.
+--
+-- Crushed, a magnetic chunk gives 10 magnetite (Liam: "10"), and the chunk back
+-- as often as vanilla's metallic crushing gives it back. Magnetite has one use,
+-- the round: railgun ammunition for the biggest targets. 15,000 physical
+-- against vanilla's 10,000 kills a huge promethium asteroid (10,000 health,
+-- 3,000 off a hit and then 10 %) in one shot where vanilla's takes two, and it
+-- fires 1.5 times slower (cooldown_modifier 1.5: 255 ticks on the railgun
+-- turret, against 170). Everything else is vanilla's railgun ammo, so vanilla's
+-- railgun research boosts both alike.
+--------------------------------------------------------------------------------
+
+local MAGNETITE_ROUND = "sae-magnetite-round"
+
+data:extend({
+  -- Stacked and weighed as vanilla's ores are.
+  item(MAGNETITE, ICON.magnetite, "space-material", "z[sae-vf]-b[magnetite]", 50, RESOURCE, 2 * kg),
+
+  stand_in({
+    type = "ammo",
+    name = MAGNETITE_ROUND,
+    icons = ICON.magnetite_round,
+    ammo_category = "railgun",
+    ammo_type =
+    {
+      target_type = "direction",
+      clamp_position = true,
+      cooldown_modifier = 1.5,
+      action =
+      {
+        type = "line",
+        range = 50,
+        width = 1,
+        range_effects = { type = "create-explosion", entity_name = "railgun-beam", only_when_visible = true },
+        action_delivery =
+        {
+          type = "instant",
+          target_effects = { type = "damage", damage = { amount = 15000, type = "physical" } },
+          source_effects = { type = "create-explosion", entity_name = "explosion-gunshot", only_when_visible = true }
+        }
+      }
+    },
+    subgroup = "ammo",
+    -- Beside vanilla's railgun ammo.
+    order = "e[railgun-ammo]-b[sae-magnetite-round]",
+    inventory_move_sound = item_sounds.ammo_large_inventory_move,
+    pick_sound = item_sounds.ammo_large_inventory_pickup,
+    drop_sound = item_sounds.ammo_large_inventory_move,
+    stack_size = 10,
+    weight = 200 * kg
+  }),
+
+  -- Vanilla's metallic crushing, with magnetite for iron ore.
+  stand_in(recipe({
+    name = "sae-magnetic-asteroid-crushing",
+    icons = badged(tinted(SA .. "icons/metallic-asteroid-crushing.png", MAGNETIC_TINT), ICON.magnetite),
+    categories = { "crushing" },
+    subgroup = "space-crushing",
+    order = "z[sae-vf]-a[magnetic-asteroid-crushing]",
+    energy_required = 2,
+    ingredients = { { type = "item", name = MAGNETIC_CHUNK, amount = 1, ignored_by_stats = 1 } },
+    results =
+    {
+      solid(MAGNETITE, 10),
+      { type = "item", name = MAGNETIC_CHUNK, amount = 1, independent_probability = 0.3, ignored_by_stats = 1 }
+    },
+    allow_productivity = true,
+    allow_decomposition = false,
+    auto_recycle = false
+  })),
+
+  -- Vanilla's round, with magnetite and the coil for its copper cable. In an
+  -- assembler or by hand, as vanilla's is.
+  recipe({
+    name = MAGNETITE_ROUND,
+    categories = { "crafting" },
+    energy_required = 30,
+    ingredients =
+    {
+      solid(MAGNETITE, 5),
+      solid("sae-superconducting-coil", 2),
+      solid("steel-plate", 5),
+      solid("explosives", 2)
+    },
+    results = { solid(MAGNETITE_ROUND, 1) }
+  })
+})
+
+--------------------------------------------------------------------------------
 -- Technologies. Ten: the Vulcanus path on metallurgic science, the Fulgora path
 -- on electromagnetic, the two shared steps on both, each with the packs those
 -- need. Both openers require both planets' science packs, so the tree opens
 -- only once both vanilla trees are done.
 --
--- The ozone collector unlocks with Ozone capture and the induction foundry
--- with Induction foundry. The magnetic collector's recipe is not here yet; it
--- arrives with the building, into Magnetar alloy.
+-- The ozone collector unlocks with Ozone capture, the induction foundry with
+-- Induction foundry and the magnetic collector with Magnetar alloy.
+--
+-- And an eleventh, outside the tree: Magnetite rounds, after the railgun and
+-- the capstone, on the railgun's ten packs at half its count.
 --------------------------------------------------------------------------------
 
 local function packs(...)
@@ -907,8 +1323,12 @@ local TECH = SA .. "technology/"
 local BASE_TECH = BASE .. "technology/"
 
 local magnetar = tech("sae-vf-magnetar-alloy", TECH .. "advanced-asteroid-processing.png", { 0.55, 0.55, 0.60 },
-  { "sae-vf-induction-foundry" }, BOTH, 1000, { "sae-magnetar-alloy" })
+  { "sae-vf-induction-foundry" }, BOTH, 1000, { "sae-magnetar-alloy", MAGNETIC_COLLECTOR })
 magnetar.essential = true
+
+-- The railgun's own ten packs.
+local RAILGUN = packs("military-science-pack", "utility-science-pack", "metallurgic-science-pack",
+                      "electromagnetic-science-pack", "agricultural-science-pack", "cryogenic-science-pack")
 
 data:extend({
   -- Vulcanus.
@@ -947,5 +1367,10 @@ data:extend({
       "sae-induction-molten-copper", "sae-induction-casting-iron", "sae-induction-casting-copper",
       "sae-induction-casting-iron-gear-wheel", "sae-induction-casting-copper-cable"
     }),
-  magnetar
+  magnetar,
+
+  -- After the tree.
+  tech("sae-vf-magnetite-rounds", TECH .. "railgun.png", MAGNETIC_TINT,
+    { "railgun", "sae-vf-magnetar-alloy" }, RAILGUN, 1000,
+    { "sae-magnetic-asteroid-crushing", MAGNETITE_ROUND })
 })
