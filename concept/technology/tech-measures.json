@@ -84,6 +84,48 @@
    },
    "shadow_px": 1317
   },
+  "sae-vent-tapping": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 213,
+    "opaque_bbox_h": 228,
+    "share": 0.411
+   },
+   "tonal": {
+    "p5": 6,
+    "p50": 71,
+    "p95": 183
+   },
+   "shadow_px": 2600
+  },
+  "sae-radiant-power": {
+   "strip": {
+    "size": [
+     480,
+     256
+    ],
+    "mode": "RGBA",
+    "alpha_outside_levels": 0
+   },
+   "framing": {
+    "opaque_bbox_w": 242,
+    "opaque_bbox_h": 188,
+    "share": 0.399
+   },
+   "tonal": {
+    "p5": 5,
+    "p50": 85,
+    "p95": 178
+   },
+   "shadow_px": 1795
+  },
   "sae-fa-cryogen": {
    "strip": {
     "size": [

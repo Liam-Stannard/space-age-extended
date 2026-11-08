@@ -5,7 +5,8 @@
 
 Draws each strip's 256, 128 and 64 levels on the technology screen's slot colour
 and on the review ground, beside Space Age's technology icons (VANILLA), and
-writes <sheet-dir>/tech-review.png and <sheet-dir>/tech-measures.json:
+writes <sheet-dir>/tech-review.png and <sheet-dir>/tech-measures.json, and
+<sheet-dir>/tech-review-phone.png, the same panels three to a band, PHONE_W wide:
 
   strip      size and mode (480x256 RGBA), nothing outside the four levels
   framing    opaque (alpha > 200) bounding box at 256, share of the canvas
@@ -28,6 +29,8 @@ LEVELS = ((256, 0), (128, 256), (64, 384), (32, 448))
 SLOT = (45, 44, 45, 255)
 GROUND = (74, 66, 58, 255)
 INK = (220, 214, 200, 255)
+MAX_W = 8000        # an image over 8000 px on its long side cannot be sent: the columns wrap into bands
+PHONE_W, PHONE_COLS = 1080, 3
 
 
 def font(n):
@@ -65,19 +68,32 @@ def measure(p):
             "tonal": {"p5": q(.05), "p50": q(.5), "p95": q(.95)}, "shadow_px": semi_dark}
 
 
-def sheet(cols, path):
+def sheet(cols, path, per=None, width=None):
+    """Columns of panels, slot row over ground row, wrapped into bands of `per` columns
+    (default: as few bands as keep the sheet under MAX_W, the columns spread evenly);
+    resized to `width` px wide if given."""
     cw, gap = 256 + 128 + 64 + 40, 16
     rows = (("technology slot", SLOT), ("ground", GROUND))
-    W = gap + len(cols) * (cw + gap)
-    H = 50 + len(rows) * (256 + 44) + 10
+    if per is None:
+        fit = max(1, (MAX_W - gap) // (cw + gap))
+        bands = -(-len(cols) // fit)
+        per = -(-len(cols) // bands)
+    bands = -(-len(cols) // per)
+    band_h = len(rows) * (256 + 44)
+    W = gap + per * (cw + gap)
+    H = 50 + bands * (band_h + 20) - 10
     im = Image.new("RGBA", (W, H), (28, 27, 26, 255))
     d = ImageDraw.Draw(im)
-    d.text((gap, 10), "Technology icons: ours, then Space Age's -- 256, 128, 64 each (1x); "
-           "top on the slot #2D2C2D, below on the ground #4A423A", font=font(18), fill=INK)
-    for r, (lab, bg) in enumerate(rows):
-        y = 50 + r * (256 + 44)
-        for c, (name, lv) in enumerate(cols):
-            x = gap + c * (cw + gap)
+    title = ("Technology icons: ours, then Space Age's -- 256, 128, 64 each (1x); "
+             "top on the slot #2D2C2D, below on the ground #4A423A")
+    if per < 5:
+        title = "Tech icons: ours, then Space Age's; 256/128/64; slot, then ground"
+    d.text((gap, 10), title, font=font(18), fill=INK)
+    for i, (name, lv) in enumerate(cols):
+        b, c = divmod(i, per)
+        x = gap + c * (cw + gap)
+        for r, (lab, bg) in enumerate(rows):
+            y = 50 + b * (band_h + 20) + r * (256 + 44)
             d.text((x, y), name, font=font(13), fill=INK)
             panel = Image.new("RGBA", (cw, 256), bg)
             xx = 0
@@ -85,6 +101,8 @@ def sheet(cols, path):
                 panel.alpha_composite(lv[s], (xx, 256 - s))
                 xx += s + 20
             im.alpha_composite(panel, (x, y + 20))
+    if width:
+        im = im.resize((width, round(H * width / W)), Image.LANCZOS)
     im.save(path)
 
 
@@ -93,7 +111,9 @@ def main(argv):
     os.makedirs(dest, exist_ok=True)
     ours = [(lab, p) for lab, _, p in (s.partition("=") for s in specs)]
     van = [(n, f"{SA}/{n}.png") for n in VANILLA]
-    sheet([(l, levels(p)) for l, p in ours + van], os.path.join(dest, "tech-review.png"))
+    cols = [(l, levels(p)) for l, p in ours + van]
+    sheet(cols, os.path.join(dest, "tech-review.png"))
+    sheet(cols, os.path.join(dest, "tech-review-phone.png"), per=PHONE_COLS, width=PHONE_W)
     res = {"ours": {l: measure(p) for l, p in ours}, "vanilla": {l: measure(p) for l, p in van}}
     vr = res["vanilla"].values()
     res["vanilla_range"] = {k: [min(f(v) for v in vr), max(f(v) for v in vr)] for k, f in (
