@@ -68,26 +68,27 @@ def measure(p):
             "tonal": {"p5": q(.05), "p50": q(.5), "p95": q(.95)}, "shadow_px": semi_dark}
 
 
-def sheet(cols, path, per=None, width=None):
+def sheet(cols, path, per=None, width=None, title=None):
     """Columns of panels, slot row over ground row, wrapped into bands of `per` columns
     (default: as few bands as keep the sheet under MAX_W, the columns spread evenly);
-    resized to `width` px wide if given."""
+    resized to `width` px wide if given; `title` in place of the default."""
     cw, gap = 256 + 128 + 64 + 40, 16
     rows = (("technology slot", SLOT), ("ground", GROUND))
     if per is None:
         fit = max(1, (MAX_W - gap) // (cw + gap))
-        bands = -(-len(cols) // fit)
-        per = -(-len(cols) // bands)
+        per = -(-len(cols) // -(-len(cols) // fit))
     bands = -(-len(cols) // per)
     band_h = len(rows) * (256 + 44)
     W = gap + per * (cw + gap)
     H = 50 + bands * (band_h + 20) - 10
     im = Image.new("RGBA", (W, H), (28, 27, 26, 255))
     d = ImageDraw.Draw(im)
-    title = ("Technology icons: ours, then Space Age's -- 256, 128, 64 each (1x); "
-             "top on the slot #2D2C2D, below on the ground #4A423A")
-    if per < 5:
-        title = "Tech icons: ours, then Space Age's; 256/128/64; slot, then ground"
+    if title is None and per < 5:
+        shown = f"shown x{width / W:.2f}" if width else "1x"
+        title = f"Tech icons: ours, then Space Age's; 256/128/64 {shown}; slot, then ground"
+    elif title is None:
+        title = ("Technology icons: ours, then Space Age's -- 256, 128, 64 each (1x); "
+                 "top on the slot #2D2C2D, below on the ground #4A423A")
     d.text((gap, 10), title, font=font(18), fill=INK)
     for i, (name, lv) in enumerate(cols):
         b, c = divmod(i, per)
