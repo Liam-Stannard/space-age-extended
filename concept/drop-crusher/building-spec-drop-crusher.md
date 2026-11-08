@@ -4,8 +4,7 @@
 2026-09-09 from a five-option round drawn against itself. The decision record is
 `drop-crusher-options/`, the sheet is `concept/adopted/A-sheet.png`, and the four
 rejected designs are gone, and the plate is cut, measured and in the engine —
-see §13. What is left is the stroke: the crown does not move yet, and §9 records
-exactly what that needs.
+see §13. The stroke is rendered in Blender and in the engine; §9 has its timeline.
 
 **This building is forced, not optional.** Vanilla's `crusher` carries
 `surface_conditions` of `gravity` min 0 **max 0** — it is space-only
@@ -21,7 +20,7 @@ production tree needs and the first thing that should be built.
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v10-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
-| 5 | Working animation | — | The drop loop reads as a drop | **built** — derived from the plate by Animatorio, not generated; see §9 |
+| 5 | Working animation | — | The drop loop reads as a drop | **built** — rendered in Blender, the moving parts as a layer over the plate; re-timed 2026-11 to a 60-entry loop over 44 frames, see §9 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
 ---
@@ -206,14 +205,11 @@ bolts, while carrying all the **forging** it likes.
 
 ## 3.4 Sound (Liam, 2026-10-11; softened 2026-10-20)
 
-A bed and three accents, cued to the stroke (24 frames, four seconds, one drop
-per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
+A bed and three accents, cued to the stroke (a 60-entry loop, four seconds, one drop per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
 (2026-10-11):** frame 0 is the weight just past halfway up, held by the pawl.
-Frames 0–6 wind up, 6 is the top, 7–13 fall, 14 lands seated, and 14–23 and 0
-wind up again. **Pawl clicks** tick on the wind-up on frames 18, 22 and 2, heavy
-and low: a gear tooth pitched down over an iron body. The **trip** on frame 6 is
-a rounded steel clack as the pawl kicks clear, its high end cut. The **drop** on
-frame 14, where the weight lands, is a heavy iron impact with rock breaking
+Entries 0–12 wind up, 13–19 hold at the top, 20–21 trip, 22–27 fall, 28 lands seated, 29–41 hold on the seat, and 42–59 wind up again. **Pawl clicks** tick on the wind-up on entries 50, 58 and 6, heavy
+and low: a gear tooth pitched down over an iron body. The **trip** on entry 20 is
+a rounded steel clack as the pawl kicks clear, its high end cut. The **drop** on entry 28, where the weight lands, is a heavy iron impact with rock breaking
 under it, and no grit: one craft, one bang. No sound is cued on frame 0:
 Factorio 2.1.21 never plays one there (it is the unset value), which is why the
 loop does not start at the seat. When the crusher stops working it rests cocked,
@@ -685,14 +681,12 @@ harder. Set `constant_speed = true` only if the fall ever looks silly at speed.
 rate, so a weight that falls at a constant rate looks like it is being *lowered*.
 The acceleration must be baked into **frame spacing**: many frames through the
 slow wind-up, progressively fewer through the fall, and a hard stop at the
-bottom. Budget roughly two thirds of the frame count to the rise and the pawl
-trip, and the last third to the fall and impact.
+bottom. Budget roughly two thirds of the loop to the rise and the pawl trip, and the last third to the fall, the impact and the seated hold.
 
 **One authoring gotcha, from the prototype docs:** `idle_animation` **must have
 the same frame count as `animation`**. So a 24-frame working animation cannot
 pair with a 1-frame idle — the idle would have to be 24 frames of the machine
-sitting still, weight cocked and pawl engaged. **Done 2026-10-11:** the idle
-holds the stroke sheet's frame 0 for 24 frames (`frame_sequence`), so no new
+sitting still, weight cocked and pawl engaged. **Done 2026-10-11:** the idle holds the stroke sheet's frame 0 for the loop's 60 entries (`frame_sequence`), so no new
 sheet; see §3.4 for when it draws.
 
 ### Where this stands — the stroke, and what measuring it overturned
@@ -701,6 +695,8 @@ sheet; see §3.4 for when it draws.
 the icon, all wired in `prototypes/core/machines.lua`. The building no longer
 wears `assembling-machine-3`'s sprites and no longer appears in the data stage's
 placeholder report.
+
+*History: the first stroke, cut with Animatorio before the Blender model. Kept as a record; §13 and the timeline above are current.*
 
 **Shipped 2026-09-10, second pass: the stroke moves.** It came out of
 [Animatorio](https://github.com/Onoulade/Animatorio), a sprite-sheet generator
@@ -752,7 +748,7 @@ is the plate without the moving parts, and frame 0 is the rest pose, the weight
 cocked just past halfway up, held by the pawl. The packer holds the plate plus
 frame 0 to a single render of the stopped machine (`frame0_vs_still`). A placed
 crusher starts on a random frame, so the idle animation (above) is what makes
-it rest cocked. The crown lands seated on frame 14.
+it rest cocked. The crown lands seated on entry 28.
 
 **Drawn the way the biochamber is.** Not 24 copies of a 200 × 206 plate: a static
 housing with a 48 × 54 window punched out and 24 frames of that window over the
@@ -787,6 +783,22 @@ layer only spins continuously. It would be turning while the crown sits at the
 top. The cast shadow is also still one frame; the crown's shadow is a small part
 of a plate nearly twice the machine's width, and cutting it apart is a second
 mask for something no player looks at.
+
+### The timeline (2026-11, from the animation study)
+
+One loop is 60 entries at `animation_speed` 0.5: 240 ticks, one craft. An entry is 4 ticks. Held entries repeat one sheet frame through a `frame_sequence`, so 44 frames are rendered.
+
+| # | Step | Entries | Ticks | What moves | Ease | Accent |
+|---|---|---|---|---|---|---|
+| 1 | Wind-up, upper half | 0–12 | 52 | crown climbs, gears turn, pawl ticks over the teeth | even, slowing over the last 4 | 6 pawl |
+| 2 | Top hold | 13–19 | 28 | nothing; the pawl holds the crown | hold | — |
+| 3 | Trip | 20–21 | 8 | the pawl kicks clear | snap | 20 trip |
+| 4 | Fall | 22–27 | 24 | crown drops, gears spin back | faster every entry (t²) | — |
+| 5 | Land | 28 | 4 | crown seated flush, gears stop dead | hard stop | 28 drop |
+| 6 | Seated hold | 29–41 | 52 | nothing, but the pawl drops back on 36–37 | hold | — |
+| 7 | Wind-up, lower half | 42–59 | 72 | crown leaves the seat | slow in over 4, then even | 50 pawl, 58 pawl |
+
+Entry 0 is the crown at 61 % of its travel, held by the pawl: the cocked rest pose, with no accent. The fall, from the last entry at the top to the seat, is 28 ticks; the 24-frame stroke's was 80. Every figure is in `concept/animation-study/drop-crusher-figures.json`.
 
 ---
 

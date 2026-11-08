@@ -396,6 +396,16 @@ moves it]`
 
 **Glow:** `[Description — and whether plates may be merged]`
 
+### Animation timeline
+
+Fill in before modelling, or write `None — [why]` for a building that does not move. One row a step:
+
+| # | Step | Entries | Ticks | What moves | Ease | Accent |
+|---|---|---|---|---|---|---|
+| 1 | [name] | [first–last] | [ticks] | [parts] | [even / eased / hold / snap] | [entry and sound, or —] |
+
+**Checks:** the steps' entries add up to the loop, with every entry in exactly one step; the loop's ticks equal one craft at crafting speed 1, or the spec says why not.
+
 ---
 
 # 8. Input / Output Visualisation
