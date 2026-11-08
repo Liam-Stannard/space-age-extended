@@ -178,8 +178,8 @@ for _e in range(ENTRIES):
     SEQUENCE.append(KEYS.index(_k) + 1)     # 1-based, as the prototype's frame_sequence
 FRAMES = len(KEYS)                          # 44
 ENTRY_OF = [SEQUENCE.index(f + 1) for f in range(FRAMES)]   # each sheet frame's first entry
-TOP = SEQUENCE[TRIP_AT + 1] - 1             # sheet frame 15: the top, the pawl kicked clear (the icon's pose)
-SEAT = SEQUENCE[LAND_AT] - 1                # sheet frame 22: the crown lands seated
+TOP = SEQUENCE[TRIP_AT + 1] - 1             # index 15 (0-based; sheet frame 16 1-based): the top, pawl clear (icon)
+SEAT = SEQUENCE[LAND_AT] - 1                # index 22 (0-based; sheet frame 23 1-based): the crown lands seated
 assert FRAMES == 44 and len(SEQUENCE) == ENTRIES
 
 # Held to the study's own figures, so the model and the plan cannot drift apart
