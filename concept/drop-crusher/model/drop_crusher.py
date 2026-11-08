@@ -5,7 +5,7 @@
 
   --idle   idle.png and still.png only: the quick loop
   --icon   icon.png: the whole machine, its crown standing proud of its collar (spec 16)
-           at the top of the stroke (frame 6, the shipped icon's pose); --icon-pose
+           at the top of the stroke (TOP, the shipped icon's pose); --icon-pose
            top|cocked|seated picks the pose (Liam to choose; top until he does)
 
 The design is the adopted Sealed Hammer (concept/drop-crusher/adopted/A-sheet.png,
@@ -65,22 +65,23 @@ so its facets separate at 1x; the wall's rust warmer (materials.py's opt-in rust
 and run in streaks from the bands and rivet rows rather than laid on more thickly.
 No output chute, no glow, no pipe (spec 8).
 
-The stroke (spec 9, the task): one animation layer, `stroke`, 24 frames -- the
-weight, the gears, the pinions, the pawl and its spring, their shadows caught on
-the plate. The stroke itself: wound up at constant speed over 16 frames, the gears
-turning; at the top the pawl kicks clear; it falls over 8 with the distance going
-as t^2, so each frame's travel is larger than the last, and lands seated, hard.
-The gears stay meshed: their angle is the rack's travel over their pitch radius in
-every frame, so they spin back fast as it falls.
+The stroke (spec 9, the task): one animation layer, `stroke` -- the weight, the gears,
+the pinions, the pawl and its spring, their shadows caught on the plate.
 
-The loop starts cocked (the sound-wiring task's amendment, 2026-10-11): 2.1.21
-never fires a working-sound accent on frame 0, so the landing cannot be there.
-Frame n is the stroke's step (n + PHASE) mod 24, PHASE = 10: frame 0 is the weight
-just past halfway up, between two pawl clicks, held by the pawl; 0-6 wind up, 6
-(TOP) is the top where the pawl trips, 7-13 fall, 14 (SEAT) lands seated, 14-23
-and 0 wind up again. Frame 0 is the rest pose: the still and the shadow show the
-crown cocked. The icon stays at the top of the stroke (the shipped pose) until Liam
-chooses between top, cocked and seated (--icon-pose).
+Re-timed 2026-11 (.claude/tasks/drop-crusher-reanimation.md, T03; spec 9's "The
+timeline (2026-11, from the animation study)"): 60 entries at animation_speed 0.5,
+played through a frame_sequence over 44 sheet frames -- a slow eased wind-up, a hold
+at the top, a two-entry snap trip, a 28-tick t^2 fall, a hard stop and a seated hold
+in which the pawl drops back in. The gears stay meshed: their angle is the rack's
+travel over their pitch radius in every frame, so they spin back fast as it falls and
+stop dead when it lands. The pawl rides the ratchet while engaged, its ticks on the
+clicks' entries 50, 58 and 6.
+
+The loop starts cocked (2026-10-11): 2.1.21 never fires a working-sound accent on
+entry 0, so the landing cannot be there. Entry 0 (sheet frame 0) is the weight at 61 %
+of its travel, between two pawl clicks, held by the pawl: the rest pose, the still and
+the shadow. The icon stays at the top of the stroke with the pawl kicked clear (TOP,
+the shipped pose) until Liam chooses between top, cocked and seated (--icon-pose).
 
 Units are tiles; north is +Y. A model point (x, y, z) lands on screen at
 (x, y + z/2) tiles from the origin.
@@ -117,32 +118,117 @@ def swatch(name):
 
 # ---------------------------------------------------------------- the stroke
 
-FRAMES = 24
-RISE = 16                          # steps 0..16 wind it up; 16 is the top, where the pawl trips
+# The timeline (spec 9, "The timeline (2026-11, from the animation study)"; the task
+# .claude/tasks/drop-crusher-reanimation.md T03): one loop is 60 entries at
+# animation_speed 0.5, 4 ticks an entry, 240 ticks, one craft. The poses are the
+# study's (concept/animation-study/drop_crusher_plan.py, lift_plan and pawl), the
+# held entries one sheet frame each through a frame_sequence: 44 sheet frames.
+#   entries  0-12  wind-up, upper half: even, slowing over the last 4; pawl click on 6
+#           13-19  top hold (the crown reached the top on 13)
+#           20-21  trip: the pawl kicks clear (accent on 20)
+#           22-27  fall, t^2; 28 lands seated, hard (accent on 28); the gears stop dead
+#           29-41  seated hold; the pawl drops back onto the ratchet on 36-37
+#           42-59  wind-up, lower half: slow in over 4, then even; clicks on 50, 58
+ENTRIES = 60
+SPEED = 0.5
 TRAVEL = 0.70                      # tiles of lift: 22.4 px on the screen
-FALL = FRAMES - RISE               # 8 steps from the top back to the seat
-PHASE = 10                         # frame n is step (n + PHASE) mod FRAMES: frame 0 is cocked
-TOP = (RISE - PHASE) % FRAMES      # frame 6: the top, where the pawl trips
-SEAT = (FRAMES - PHASE) % FRAMES   # frame 14: the crown lands seated
+TRIP_AT, LAND_AT = 20, 28          # the trip's and the landing's entries
+REENGAGE = (36, 37)                # the pawl drops back in
+CLICKS = (50, 58, 6)               # the pawl clicks' entries: the ratchet's ticks land on them
 
 
-def step(f):
-    """The stroke's step in frame f: 0 seated, RISE the top."""
-    return (f + PHASE) % FRAMES
+def share(e):
+    """The crown's height above its seat, as a share of the travel, entry e of 60:
+    drop_crusher_plan.py's lift_plan(), the same sum."""
+    s = (e + 32) % ENTRIES                  # seat-first: 0 = landing
+    if s <= 13:
+        return 0.0                          # landed, seated hold
+    if s <= 45:                             # wind-up, 32 changes: ease in 4, even, ease out 4
+        x, a, n = s - 13, 4.0, 32.0
+        v = 1.0 / (n - a)
+        if x <= a:
+            return v * x * x / (2 * a)
+        if x <= n - a:
+            return v * (a / 2 + (x - a))
+        return 1 - v * (n - x) ** 2 / (2 * a)
+    if s <= 53:
+        return 1.0                          # top hold and trip
+    k = (s - 53) / 7                        # fall: landing at s 60
+    return 1 - k * k
+
+
+def pawl_state(e):
+    """The pawl in entry e, as the plan keys it."""
+    if e in (TRIP_AT, TRIP_AT + 1):
+        return f"kick-{e}"
+    if TRIP_AT + 2 <= e < REENGAGE[0]:
+        return "clear"
+    if e in REENGAGE:
+        return f"drop-{e}"
+    return "engaged"
+
+
+# Sheet frames: one per distinct pose, (height, pawl), in entry order; the sequence plays
+# them. Held entries are the same sheet frame, so the same image, by construction.
+KEYS, SEQUENCE = [], []
+for _e in range(ENTRIES):
+    _k = (round(share(_e), 6), pawl_state(_e))
+    if _k not in KEYS:
+        KEYS.append(_k)
+    SEQUENCE.append(KEYS.index(_k) + 1)     # 1-based, as the prototype's frame_sequence
+FRAMES = len(KEYS)                          # 44
+ENTRY_OF = [SEQUENCE.index(f + 1) for f in range(FRAMES)]   # each sheet frame's first entry
+TOP = SEQUENCE[TRIP_AT + 1] - 1             # sheet frame 15: the top, the pawl kicked clear (the icon's pose)
+SEAT = SEQUENCE[LAND_AT] - 1                # sheet frame 22: the crown lands seated
+assert FRAMES == 44 and len(SEQUENCE) == ENTRIES
+
+# Held to the study's own figures, so the model and the plan cannot drift apart
+_FIG = os.path.join(HERE, "..", "..", "animation-study", "drop-crusher-figures.json")
+if os.path.exists(_FIG):
+    _fig = json.load(open(_FIG))
+    assert SEQUENCE == _fig["frame_sequence"]["animation"], "the frame_sequence is not the plan's"
+    assert all(abs(share(e) - v) < 1e-4 for e, v in enumerate(_fig["lift_plan"])), "heights are not the plan's"
 
 
 def lift(f):
-    """The weight's height above its seat in frame f (tiles)."""
-    s = step(f)
-    if s <= RISE:
-        return TRAVEL * s / RISE
-    k = (s - RISE) / FALL                 # 0 at the top .. 1 at the seat (step 24 = 0)
-    return TRAVEL * (1 - k * k)
+    """The weight's height above its seat in sheet frame f (tiles)."""
+    return TRAVEL * share(ENTRY_OF[f])
 
 
-def tripped(f):
-    """The pawl is clear of the ratchet from the top of the stroke until the seat."""
-    return RISE <= step(f) < FRAMES
+# The pawl, while engaged, rides the ratchet: its nose is lifted by the tooth under it,
+# a sawtooth in the crown's height that drops back -- the click -- each time the height
+# passes one of the clicks' entries' heights. One tick is 8 entries of the even wind-up
+# (0.286 of the travel), so the ticks land on 50, 58 and 6 by construction; in the holds
+# the height is still, so is the pawl. Kicked clear on 20-21 (snap: most of it on 20),
+# clear through the fall and the seat, and dropping back in on 36-37 as a weight falls
+# (t^2, the last change the largest) onto the tooth under it.
+TRIP = math.radians(15)                     # the pawl kicked clear: nose up off the ratchet
+TICK = math.radians(7)                      # the nose's rise over one tooth before it clicks
+TICK_SPAN = share(CLICKS[2]) - share(CLICKS[1])          # 8 entries of the even wind-up
+assert abs(TICK_SPAN - 8 / 28) < 1e-9 and abs(share(CLICKS[1]) - share(CLICKS[0]) - TICK_SPAN) < 1e-9
+
+
+def riding(h):
+    """The pawl's lift (radians) on the ratchet at crown height h (a share)."""
+    k = ((h - share(CLICKS[2])) / TICK_SPAN) % 1.0
+    return TICK * k
+
+
+def pawl_angle(f):
+    """The pawl's lift off its rest pose (radians, nose up) in sheet frame f."""
+    e = ENTRY_OF[f]
+    state = pawl_state(e)
+    ride = riding(share(e))
+    if state == "engaged":
+        return ride
+    if state == "clear":
+        return TRIP
+    if state.startswith("kick"):
+        k = (e - TRIP_AT + 1) / 2                         # 0.5, 1: eased out, a snap
+        k = 1 - (1 - k) ** 2
+        return ride + (TRIP - ride) * k
+    k = (e - REENGAGE[0] + 1) / 3                         # 1/3, 2/3; 1 is the seated entry 38
+    return TRIP - (TRIP - riding(0.0)) * k * k
 
 
 PATH = [[0.0, 0.0, round(lift(f), 6)] for f in range(FRAMES)]
@@ -159,7 +245,8 @@ DECL = dict(
     ],
     # the slide is measured on the crown and shank alone (contract: track), rendered as
     # stroke-crown-NN: the layer's own centroid is the gears' and the pawl's as well
-    animations=[dict(name="stroke", frames=FRAMES, motion="slide", path=PATH, track="crown")],
+    animations=[dict(name="stroke", frames=FRAMES, motion="slide", path=PATH, track="crown",
+                     frame_sequence=SEQUENCE, animation_speed=SPEED)],
     ports=[],
 )
 
@@ -2125,11 +2212,10 @@ def setup(visible=(), catchers=(), holdouts=(), ground=False):
 
 
 PAWL_REST = PAWL.rotation_euler.copy()
-TRIP = math.radians(15)                           # the pawl kicked clear: nose up off the ratchet
 
 
 def pose(f):
-    """Put every moving part where frame f has it."""
+    """Put every moving part where sheet frame f has it."""
     s = lift(f)
     WEIGHT.location.z = ZCT + s
     for sx, g in GEARS.items():
@@ -2137,9 +2223,7 @@ def pose(f):
         g.rotation_euler.z = -sx * s / RG
     for sx, p in PINIONS.items():
         p.rotation_euler.z = sx * s / RP
-    m = PAWL_REST.to_matrix()
-    if tripped(f):
-        m = Matrix.Rotation(TRIP, 3, PIN) @ m           # nose up, about the pin
+    m = Matrix.Rotation(pawl_angle(f), 3, PIN) @ PAWL_REST.to_matrix()   # nose up, about the pin
     PAWL.rotation_euler = m.to_euler()
     # the spring, from its shelf to the tail's underside
     tail = PIV + m @ Vector((-TAIL_L, -0.03, 0))
@@ -2185,7 +2269,7 @@ if "--collide" in argv:
 
 if ICON:
     sc.cycles.samples = 128
-    # the pose: top (TOP, frame 6: the shipped icon's pose) unless --icon-pose names
+    # the pose: top (TOP, the pawl kicked clear: the shipped icon's pose) unless --icon-pose names
     # another -- cocked (frame 0, the rest pose) or seated (SEAT) -- for Liam to choose
     # between; the default stays the shipped pose until he does
     ICON_POSES = {"top": TOP, "cocked": 0, "seated": SEAT}
@@ -2206,8 +2290,10 @@ contract.declare(OUT_DIR, canvas=CANVAS, **DECL)
 rig.camera(*CANVAS)
 # what measure_stroke.py needs to hold the frames to the mechanism, without Blender
 with open(os.path.join(OUT_DIR, "stroke.json"), "w") as _f:
-    json.dump(dict(frames=FRAMES, rise=RISE, phase=PHASE, top=TOP, seat=SEAT, travel=TRAVEL,
+    json.dump(dict(frames=FRAMES, entries=ENTRIES, sequence=SEQUENCE, animation_speed=SPEED,
+                   top=TOP, seat=SEAT, travel=TRAVEL,
                    lift=[lift(f) for f in range(FRAMES)],
+                   pawl_deg=[round(math.degrees(pawl_angle(f)), 3) for f in range(FRAMES)],
                    rg=RG, teeth=NG, spokes=5, crown_height=CH,
                    gear_centre_px=[CANVAS[0] / 2 + XG * rig.PX_PER_TILE,
                                    CANVAS[1] / 2 - (YC + ZA * math.cos(rig.ELEVATION)) * rig.PX_PER_TILE],
@@ -2251,7 +2337,7 @@ for d in contract.each_direction(ROOT, DECL["directions"]):
     rig.render(path("lamp"))
     lamp_cut(False)
 
-    # the stroke: 24 frames of the moving parts, their shadows caught on the plate;
+    # the stroke: 44 sheet frames of the moving parts, their shadows caught on the plate;
     # only the window round the collar changes, so only it is rendered
     sc.render.use_border = True
     sc.render.use_crop_to_border = False
