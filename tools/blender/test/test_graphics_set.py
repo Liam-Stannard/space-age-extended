@@ -39,16 +39,19 @@ kept. Exits 0 when every case below comes out as listed, 1 naming those that do 
              glow's played_frames 12) and strobe_own_loop counts over that loop. The
              untimed fixture at 0.5 x 2 (a rate of 1): timed (at_crafting_speed 2, loop_ticks 4,
              per_tick 1) and every other figure as the plain untimed run.
-  furnace    (T04d criterion 2) the Vacuum Furnace's committed sheets with --crafting-speed 1.5: the
-             flywheel's 16 entries at 1 (meta.json declares no speed) x 1.5 x 0.5 = 3/4 an entry a
-             tick, the engine's 16 / (1 x 1.5 x 0.5) = 21.33 ticks a cycle; loop_ticks 64, three
-             cycles, the first that starts on a tick. With no option per_tick 1/2, 32 ticks.
+  furnace    (T04d criterion 2, T04f criterion 2) the Vacuum Furnace's committed sheets with
+             --crafting-speed 1.5, its prototype's crafting speed: the flywheel's 16 entries at its
+             declared animation_speed 2/3 (meta.json, as machines.lua's VF_SPEED) x 1.5 x progress
+             0.5 = 1/2 an entry a tick, 16 / (2/3 x 1.5 x 0.5) = 32 ticks a cycle, loop_ticks 32:
+             the loop the game plays (machines.lua: "0.5 in game", "a 32-tick loop"). With no
+             option, at crafting speed 1: per_tick 1/3, 48 ticks.
   crusher    the Drop Crusher's committed sheets with no option: 240 ticks (its meta.json declares
              crafting-machine); --animation-progress 1: 120.
   refused    (exit 2, measure.Usage) --crafting-speed with a mining drill, a generator or no set
              declared or given, and at 0, -1, nan and inf; --animation-progress where meta.json
              declares graphics_set none; meta.json's graphics_set "foundry", animation_progress 0,
-             animation_progress with none, animation_progress without a set, and graphics_set on a
+             animation_progress with none (T04e finding 2: the message names the set as the fault and
+             does not call the number bad), animation_progress without a set, and graphics_set on a
              resource.
   lights     sheets whose meta.json has the lights entry pack.py writes (a light of each kind, no
              size) measure, the entry listed as ignored and not drawn or measured; a light sheet
@@ -91,13 +94,16 @@ def check(case, ok, detail=""):
         FAILED.append(f"{case}: {detail}")
 
 
-def refused(case, fn):
-    """fn() must raise measure.Usage (or contract.ContractError)."""
+def refused(case, fn, says=(), not_says=()):
+    """fn() must raise measure.Usage (or contract.ContractError), its message holding each of says
+    and none of not_says."""
     try:
         fn()
         check(f"refused: {case}", False, "ran")
     except (measure.Usage, contract.ContractError) as e:
-        check(f"refused: {case}", True)
+        msg = str(e)
+        check(f"refused: {case}", all(x in msg for x in says) and not any(x in msg for x in not_says),
+              f"the message {msg!r} should say {list(says)} and not {list(not_says)}")
         print(f"        ({e})")
 
 
@@ -330,19 +336,19 @@ def test_furnace(out):
     t = d["motion"]["timing"]
     fw = t["layers"]["flywheel"]
     cycle = Fraction(fw["entries"]) / Fraction(fw["per_tick"])
-    engine = fw["entries"] / (1 * 1.5 * 0.5)
-    print(f"        furnace at crafting speed 1.5: flywheel {fw}; a cycle {float(cycle):.4g} ticks (the engine's "
-          f"16 / (1 x 1.5 x 0.5) = {engine:.4g}); loop_ticks {t['loop_ticks']}")
+    engine = fw["entries"] / (2 / 3 * 1.5 * 0.5)
+    print(f"        furnace at crafting speed 1.5: flywheel {fw}; a cycle {float(cycle):.4g} ticks (the game's "
+          f"16 / (2/3 x 1.5 x 0.5) = {engine:.4g}); loop_ticks {t['loop_ticks']}")
     check("furnace: exit 0, crafting-machine declared, at 1.5", (code, src["graphics_set"], t["at_crafting_speed"])
           == (0, "crafting-machine", 1.5), f"got {code}, {src['graphics_set']}")
-    check("furnace: 16 entries at 3/4 a tick, a cycle of 64/3 ticks, the engine's figure",
-          (fw["entries"], fw["as_fraction"], fw["per_tick"], cycle) == (16, "1", "3/4", Fraction(64, 3))
+    check("furnace: 16 entries at the declared 2/3, 1/2 a tick, a cycle of 32 ticks, the game's figure",
+          (fw["entries"], fw["as_fraction"], fw["per_tick"], cycle) == (16, "2/3", "1/2", Fraction(32))
           and abs(float(cycle) - engine) < 1e-9, f"got {fw}")
-    check("furnace: loop_ticks 64, three cycles", (t["loop_ticks"], fw["loop_ticks"]) == (64, 64), f"got {t['loop_ticks']}")
+    check("furnace: loop_ticks 32, one cycle", (t["loop_ticks"], fw["loop_ticks"]) == (32, 32), f"got {t['loop_ticks']}")
     _, d, _ = run(sheets, os.path.join(out, "furnace", "1"), "3x3")
     fw = d["motion"]["timing"]["layers"]["flywheel"]
-    check("furnace: with no option 1/2 a tick, 32 ticks", (fw["per_tick"], d["motion"]["timing"]["loop_ticks"])
-          == ("1/2", 32), f"got {fw}")
+    check("furnace: with no option (crafting speed 1) 1/3 a tick, 48 ticks",
+          (fw["per_tick"], d["motion"]["timing"]["loop_ticks"]) == ("1/3", 48), f"got {fw}")
 
 
 def test_crusher(out):
@@ -379,14 +385,16 @@ def test_refused(out):
                               ("--crafting-speed inf", cm, ("--crafting-speed", "inf")),
                               ("--animation-progress where none is declared", gen, ("--animation-progress", "0.5"))):
         refused(label, lambda s=src, f=flags: measure.run([s, "--out", o, "--footprint", "1x1", *f]))
-    for label, declared in (("meta.json's graphics_set foundry", dict(graphics_set="foundry")),
-                            ("meta.json's animation_progress 0", dict(graphics_set="crafting-machine",
-                                                                      animation_progress=0)),
-                            ("meta.json's animation_progress with none", dict(graphics_set="none",
-                                                                              animation_progress=1)),
-                            ("meta.json's animation_progress without a set", dict(animation_progress=1))):
+    # (T04e finding 2) with none, the set is the fault: the message names it and does not call 1 a bad number
+    for label, declared, says, not_says in (
+            ("meta.json's graphics_set foundry", dict(graphics_set="foundry"), (), ()),
+            ("meta.json's animation_progress 0", dict(graphics_set="crafting-machine", animation_progress=0),
+             ("animation_progress 0 is not a number above 0",), ()),
+            ("meta.json's animation_progress with none", dict(graphics_set="none", animation_progress=1),
+             ("graphics_set none", "the set is the fault"), ("not a number above 0",)),
+            ("meta.json's animation_progress without a set", dict(animation_progress=1), (), ())):
         src = bad_meta(os.path.join(out, "refused", label.replace(" ", "-").replace("'", ""), "sheets"), **declared)
-        refused(label, lambda s=src: measure.run([s, "--out", o, "--footprint", "1x1"]))
+        refused(label, lambda s=src: measure.run([s, "--out", o, "--footprint", "1x1"]), says, not_says)
     res = os.path.join(out, "refused", "resource", "sheets")
     tmp.resource_sheets(res)
     with open(os.path.join(res, "meta.json")) as f:

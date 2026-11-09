@@ -1076,9 +1076,12 @@ class Source:
             where = os.path.join(self.sheets, "meta.json")
             if not (isinstance(gs, str) and gs in GRAPHICS_SETS):
                 raise Usage(f"{where}: graphics_set {gs!r} is not one of {', '.join(GRAPHICS_SETS)}")
-            if pr is not None and (gs == "none" or not positive(pr)):
-                raise Usage(f"{where}: animation_progress {pr!r} is not a number above 0 of graphics set "
-                            f"crafting-machine or mining-drill")
+            if pr is not None and gs == "none":
+                raise Usage(f"{where}: graphics_set none carries animation_progress {pr!r}, and that set has "
+                            f"none (a generator's animation is in no graphics set): the set is the fault, not "
+                            f"the number; a progress belongs to crafting-machine or mining-drill")
+            if pr is not None and not positive(pr):
+                raise Usage(f"{where}: animation_progress {pr!r} is not a number above 0")
             return gs, pr, "meta.json"
         if self.decl and "graphics_set" in self.decl:      # contract.load held it to the contract
             return self.decl["graphics_set"], self.decl.get("animation_progress"), "render.json"

@@ -49,7 +49,8 @@
    -0.39844
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.23333333333333334
  },
  "drive": {
   "size": [
@@ -61,7 +62,8 @@
    -3.19531
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.23333333333333334
  },
  "coupling-dosing": {
   "size": [
@@ -73,7 +75,8 @@
    0.79688
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.23333333333333334
  },
  "coupling-pump": {
   "size": [
@@ -85,7 +88,8 @@
    -1.67969
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.23333333333333334
  },
  "press": {
   "size": [
@@ -97,7 +101,8 @@
    0.76562
   ],
   "frames": 16,
-  "line_length": 16
+  "line_length": 16,
+  "animation_speed": 0.11666666666666667
  },
  "gauge-reactor-lower": {
   "size": [
@@ -109,7 +114,8 @@
    -1.73438
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.23333333333333334
  },
  "graphics_set": "crafting-machine",
  "animation_progress": 1,

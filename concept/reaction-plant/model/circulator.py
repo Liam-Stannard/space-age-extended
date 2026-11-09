@@ -79,6 +79,11 @@ CANVAS = (416, 480)
 PORT_CANVAS = (448, 448)            # the pictures reach a tile outside every face
 NF = 24                             # the 24-frame loops (spec 6.2): ~1.7 s at 14 fps
 PRESS_NF = 16                       # the filter press, once per craft
+# each layer's animation_speed, as its prototype sets it (machines.lua, at the graphics set's
+# animation_progress 1): the 24-frame parts RP_SPEED, 14/60 (the main animation's layers and the legs);
+# the press RP_PRESS_SPEED, 7/60, over a 140-entry frame_sequence there (not declared here)
+SPEED = 14 / 60
+PRESS_SPEED = 7 / 60
 PRESS_LAND = 10                     # the frame the cake lands in the drop box: the sound accent
 STROKE = 0.18                       # the press's opening stroke, tiles, west
 
@@ -123,16 +128,17 @@ DECL = dict(
     ],
     animations=[
         # the solution going round: drawn only while crafting, over the plate's dark legs
-        dict(name="legs", frames=NF, motion="flow", working=True),
-        dict(name="drive", frames=NF, motion="cycle"),
+        dict(name="legs", frames=NF, motion="flow", working=True, animation_speed=SPEED),
+        dict(name="drive", frames=NF, motion="cycle", animation_speed=SPEED),
         # the three couplings and the three double dials: each its own layer, cropped tight
         # round its own moving pixels (the amendment of 2026-10-12)
-        *[dict(name=n_, frames=NF, motion="cycle") for n_ in COUPLINGS if n_ not in HIDDEN],
+        *[dict(name=n_, frames=NF, motion="cycle", animation_speed=SPEED) for n_ in COUPLINGS if n_ not in HIDDEN],
         # the leaf pack and tail stand slide west on the rails (held to PRESS_PATH, measured
         # on the pack alone: press-pack-NN); the cake falls on its own
-        dict(name="press", frames=PRESS_NF, motion="slide", path=PRESS_PATH, track="pack"),
-        *[dict(name=n_, frames=NF, motion="cycle") for n_ in GAUGES],
-        dict(name="drip", frames=NF, motion="cycle"),
+        dict(name="press", frames=PRESS_NF, motion="slide", path=PRESS_PATH, track="pack",
+             animation_speed=PRESS_SPEED),
+        *[dict(name=n_, frames=NF, motion="cycle", animation_speed=SPEED) for n_ in GAUGES],
+        dict(name="drip", frames=NF, motion="cycle", animation_speed=SPEED),
     ],
     # one picture per face, on the middle tile of each (as round 5); facing north the inputs
     # are at -1 and +1 on the north face and the output at 0 on the south (spec 8)

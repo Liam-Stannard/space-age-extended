@@ -96,6 +96,9 @@ PORTS = "--ports" in argv
 FACES = "NESW"
 CANVAS = (320, 288)                   # entity origin at (160, 144); the shadow reaches east
 PORT_CANVAS = (320, 320)              # the pictures reach a tile outside on every side
+# the flywheel's animation_speed, as its prototype sets it (machines.lua VF_SPEED, on every layer of the
+# main animation): 2/3 x crafting speed 1.5 x progress 0.5 = 0.5 entries a tick, a 32-tick loop in game
+SPEED = 2 / 3
 DECL = dict(
     footprint=(3, 3),
     directions="one",                 # drawn once; only the input turns (spec 5)
@@ -109,7 +112,7 @@ DECL = dict(
         dict(name="indicator", kind="light", sheet="viewport-status"),
     ],
     # spec 6: the flywheel turns while working; six spokes, so 60 degrees is a loop
-    animations=[dict(name="flywheel", frames=16, motion="turn")],
+    animations=[dict(name="flywheel", frames=16, motion="turn", animation_speed=SPEED)],
     # the one input, {0, 1} facing south at rest, and where the engine turns it
     ports=[dict(tile=(0, -1), face="N"), dict(tile=(1, 0), face="E"),
            dict(tile=(0, 1), face="S"), dict(tile=(-1, 0), face="W")],

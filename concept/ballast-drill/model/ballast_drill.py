@@ -274,6 +274,10 @@ DUST_LIFE = 9                          # frames from the landing to the dust's l
 CHAIN_FRAMES = 5                   # vanilla's output: 5 frames
 PITCH = 0.125                      # the flights' spacing: the chain advances one in 5 frames
 ORE_FRAMES = 24                    # vanilla's output particles: 24 frames
+# each layer's animation_speed, as its prototype sets it (machines.lua, at a drill's animation_progress 1):
+# the stroke, the ore and the dust BD_SPEED, 0.4 (24 frames in 60 ticks); the chute BD_CHUTE_SPEED, 0.5
+SPEED = 0.4
+CHUTE_SPEED = 0.5
 
 CANVAS = (416, 400)                # origin at (208, 200); the winches' shadow reaches east
 PORT_CANVAS = (448, 448)           # the pictures reach a tile outside every face
@@ -292,12 +296,12 @@ DECL = dict(
     # the chute first: the ring is drawn over it, and the stroke's frames are rendered
     # with the chute as a catcher; the ore over both, and only while mining (working)
     animations=[
-        dict(name="chute", frames=CHAIN_FRAMES, motion="cycle"),
-        dict(name="stroke", frames=FRAMES, motion="slide", path=PATH, track="ring"),
-        dict(name="ore", frames=ORE_FRAMES, motion="cycle", working=True),
+        dict(name="chute", frames=CHAIN_FRAMES, motion="cycle", animation_speed=CHUTE_SPEED),
+        dict(name="stroke", frames=FRAMES, motion="slide", path=PATH, track="ring", animation_speed=SPEED),
+        dict(name="ore", frames=ORE_FRAMES, motion="cycle", working=True, animation_speed=SPEED),
         # (round 6, spec 3.2) the dust thrown out at the landing: in step with the stroke,
         # drawn only while working; empty but for the frames after the landing
-        dict(name="dust", frames=FRAMES, motion="cycle", working=True),
+        dict(name="dust", frames=FRAMES, motion="cycle", working=True, animation_speed=SPEED),
     ],
     # vanilla's big mining drill: W (-2,-1), E (2,-1), S (+-1, 2); turned, the south pair
     # lands on the north face. One picture per face. The west one declares a neck (pack_ports.py,
