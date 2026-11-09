@@ -42,8 +42,11 @@ with `factorio-brief`, and stop at the stage's gate.
   rust only where it forms, vanilla warmth and saturation); tonal p50
   ~75–81, p95 into vanilla's range.
 - **Light:** the radiant look (`tools/blender/radiant.py`) wherever the
-  isotope is seen; molten metal orange only where melt is seen; nothing
-  else glows.
+  isotope is seen; molten metal orange only where melt is seen. Any other
+  part may glow when the glow shows the building's work, as vanilla's
+  foundry, electromagnetic plant and fusion reactor do: each glow is named
+  in the spec with its colour and when it shows, and appears only while
+  working.
 - **Pipes:** each connection leads to the vessel or device that uses it,
   so the flow reads through the building as on vanilla's chemical plant
   and oil refinery. A run from a connection keeps the connection's size:

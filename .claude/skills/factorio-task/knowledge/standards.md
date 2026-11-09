@@ -52,6 +52,10 @@ Each line: the standard, Liam's words or the decision, and the date.
   nothing clipped; C's rising bubbles in glass columns only (Liam,
   2026-10-12). Helper: `tools/blender/radiant.py`.
 - Molten kamacite may glow orange only where melt is seen.
+- Other parts may glow when the glow shows the building's work (an
+  energised coil, an arc, a lit window), named in the spec with its colour
+  and when it shows, only while working (Liam, induction foundry,
+  2026-11-09: "other parts of buildings should be able to glow").
 - No frost or cold in a model; cold comes from effects (Liam, Vent Pump,
   2026-10-12).
 - The Core has a thin atmosphere (pressure > 0): fire and explosion
