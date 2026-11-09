@@ -43,6 +43,16 @@ Each line: the standard, Liam's words or the decision, and the date.
   wall, open, with vanilla's cover when unconnected (Liam, 2026-10-21:
   "Every building, it doesn't necessarily have to be casing but anything
   similar would work as well").
+- The wall a fitting is set into stands at least the pipe's full diameter
+  there, or curves round it: no flange or pipe overhangs its top edge
+  (Liam, induction foundry, 2026-11-09: "the wall the input/output is
+  connected to should be as tall as the diameter of the pipe so the edge
+  of the pipe doesnt overhang over the edge of the wall OR the structure
+  should curve to cater for where the pipe should be").
+- A pipe-height casing may carry the flow unseen, as vanilla's foundry
+  does; a run that shows is supported plumbing, not loose elbows (Liam,
+  induction foundry, 2026-11-09: "Still don't look like realistic
+  structures"; "Vanilla's way").
 - Clipping is checked by eye as well as by `--collide`, with crops of
   every run's ends (Liam, 2026-10-21: "When the artist reviews can it
   check for clipping").
@@ -53,6 +63,10 @@ Each line: the standard, Liam's words or the decision, and the date.
   nothing clipped; C's rising bubbles in glass columns only (Liam,
   2026-10-12). Helper: `tools/blender/radiant.py`.
 - Molten kamacite may glow orange only where melt is seen.
+- Other parts may glow when the glow shows the building's work (an
+  energised coil, an arc, a lit window), named in the spec with its colour
+  and when it shows, only while working (Liam, induction foundry,
+  2026-11-09: "other parts of buildings should be able to glow").
 - No frost or cold in a model; cold comes from effects (Liam, Vent Pump,
   2026-10-12).
 - The Core has a thin atmosphere (pressure > 0): fire and explosion

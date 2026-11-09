@@ -42,11 +42,18 @@ with `factorio-brief`, and stop at the stage's gate.
   rust only where it forms, vanilla warmth and saturation); tonal p50
   ~75–81, p95 into vanilla's range.
 - **Light:** the radiant look (`tools/blender/radiant.py`) wherever the
-  isotope is seen; molten metal orange only where melt is seen; nothing
-  else glows.
+  isotope is seen; molten metal orange only where melt is seen. Any other
+  part may glow when the glow shows the building's work, as vanilla's
+  foundry, electromagnetic plant and fusion reactor do: each glow is named
+  in the spec with its colour and when it shows, and appears only while
+  working.
 - **Pipes:** each connection leads to the vessel or device that uses it,
   so the flow reads through the building as on vanilla's chemical plant
-  and oil refinery. A run from a connection keeps the connection's size:
+  and oil refinery; or, as on vanilla's foundry, a casing at pipe height
+  takes the fittings in its edge and carries the flow unseen. A run that
+  shows is real plumbing: straight lengths, few bends, each held by a
+  bracket, rack or the vessel it joins, never loose elbows across a deck.
+  A run from a connection keeps the connection's size:
   no sudden narrowing after the fitting, and a narrowing only where a
   visible reducer shows why, at a valve, pump or vessel nozzle; thin pipes
   only for side lines (dosing, instruments). A model that turns reads that
@@ -54,7 +61,11 @@ with `factorio-brief`, and stop at the stage's gate.
   fitting set into its wall or casing (a recessed boss with a sleeve and
   flanges, as on the Reaction Plant's casing, or similar), never a stub
   standing off the machine; the pipe picture shows it open, and vanilla's
-  cover is drawn when nothing is connected. Its own pipe pictures to
+  cover is drawn when nothing is connected. The wall or casing a fitting
+  is set into stands at least the pipe's full diameter at that fitting, or
+  curves round it, so neither the fitting's flange nor the joined pipe
+  overhangs its top edge, and the pipe picture paints nothing over the
+  building. Its own pipe pictures to
   assembler 3's outline; joins checked with `factorio-art-measure`. Before the
   options stage, study how the comparable vanilla buildings meet their
   pipes.
