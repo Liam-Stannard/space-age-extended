@@ -57,7 +57,11 @@ with `factorio-brief`, and stop at the stage's gate.
   fitting set into its wall or casing (a recessed boss with a sleeve and
   flanges, as on the Reaction Plant's casing, or similar), never a stub
   standing off the machine; the pipe picture shows it open, and vanilla's
-  cover is drawn when nothing is connected. Its own pipe pictures to
+  cover is drawn when nothing is connected. The wall or casing a fitting
+  is set into stands at least the pipe's full diameter at that fitting, or
+  curves round it, so neither the fitting's flange nor the joined pipe
+  overhangs its top edge, and the pipe picture paints nothing over the
+  building. Its own pipe pictures to
   assembler 3's outline; joins checked with `factorio-art-measure`. Before the
   options stage, study how the comparable vanilla buildings meet their
   pipes.
