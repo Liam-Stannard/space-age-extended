@@ -131,43 +131,68 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- calls the crown rising and falling "the entire read". The moving parts -- the
 -- octagonal crown on its racked shank, the two upright gears in their housings
 -- east and west of the collar with the pinions that drive them, and the trip
--- pawl -- are rendered alone, 24 frames of the window round the collar, with
--- their shadows caught on the roof. base.png is the machine WITHOUT them, the
--- collar complete beneath where the crown sits. So the stroke cannot be a
--- working visualisation, which the engine stops drawing when the machine stops:
--- the crusher would stand idle with no weight in it. It is a layer of the main
--- animation, which advances only while crafting, and of the idle animation,
--- held cocked (below). The weight is wound up the rack over 16 frames with the gears
--- turning, the pawl trips, and it falls over 8 with each frame's travel longer
--- than the last. The gears stay meshed with the rack throughout, so they spin
--- back fast as it drops. The packer tracks the crown in every frame against the
--- declared curve (meta.json's `stroke_path_px`).
+-- pawl -- are rendered alone, 44 frames of the window round the collar (22 a
+-- row, two rows), with their shadows caught on the roof. base.png is the
+-- machine WITHOUT them, the collar complete beneath where the crown sits. So
+-- the stroke cannot be a working visualisation, which the engine stops drawing
+-- when the machine stops: the crusher would stand idle with no weight in it. It
+-- is a layer of the main animation, which advances only while crafting, and of
+-- the idle animation, held cocked (below). The gears stay meshed with the rack
+-- throughout, so they spin back fast as it drops. The packer tracks the crown
+-- in every sheet frame against the declared curve (meta.json's
+-- `stroke_path_px`).
 --
--- **The loop starts cocked** (Liam, 2026-10-11): frames 0 to 6 wind up, 6 is
--- the top, where the pawl trips, 7 to 13 fall, 14 lands seated, and 14 to 23
--- and 0 wind up again. Frame 0 is the weight just past halfway up the rack,
--- held by the pawl between two clicks (the model's PHASE: frame n is the old
--- seated-first loop's frame n + 10). It was the seat until the landing had to
--- carry a sound and the engine turned out never to fire one on frame 0 (see
--- "Sound" below); the phase moved rather than the sound.
+-- **The stroke is timed the way the foundry's is** (the animation study,
+-- concept/animation-study/drop-crusher-plan.md, its figures in
+-- drop-crusher-figures.json; Liam, Q14 2026-10-31; spec §9, "The timeline"): a
+-- slow eased wind-up, a hold at the top, a snap trip, a fast fall, a hard stop
+-- and a seated hold. One loop is the 60 entries of a `frame_sequence` over the
+-- sheet's 44 frames: a held entry repeats its sheet frame, so only what moves
+-- was rendered. Entries count from 0, as the accents count them; sheet frames
+-- are numbered from 1, as `frame_sequence` takes them:
 --
--- **Frame 0 is the still**: the weight cocked, checked against a single render
--- of the whole stopped machine: the rest pose is cocked, ready to drop.
+--   entries  sheet    step
+--   0-12     1-13     wind-up, upper half: the crown climbs, the gears turn,
+--                     the pawl ticks over the teeth; even, slowing over the
+--                     last 4
+--   13-19    14       top hold: the pawl holds the crown
+--   20-21    15-16    trip: the pawl kicks clear, the crown still at the top
+--   22-27    17-22    fall: each entry's travel longer than the last (t^2),
+--                     the gears spinning back
+--   28       23       lands seated, the gears stopped dead
+--   29-41    23-26    seated hold: still but for the pawl dropping back onto
+--                     the rack on 36-37 (24, 25), then held in (26)
+--   42-59    27-44    wind-up, lower half: the crown leaves the seat, slow in
+--                     over 4, then even
+--
+-- The fall, from the last entry at the top to the seat, is 28 ticks; the
+-- 24-frame stroke it replaced (2026-10-09 to 2026-11) took 80.
+--
+-- **The loop starts cocked** (Liam, 2026-10-11): entry 0 is the weight at 61 %
+-- of its travel, just past halfway up the rack, held by the pawl between two
+-- clicks. It was the seat until the landing had to carry a sound and the
+-- engine turned out never to fire one on frame 0 (see "Sound" below); the
+-- phase moved rather than the sound, and the landing is on entry 28.
+--
+-- **Sheet frame 1 (entry 0) is the still**: the weight cocked, checked against
+-- a single render of the whole stopped machine (meta.json's `frame0_vs_still`):
+-- the rest pose is cocked, ready to drop.
 --
 -- **The crusher rests cocked, through an `idle_animation`** (Liam, 2026-10-11).
 -- Without one an assembling machine draws `animation` in every state and only
 -- stops advancing it. A placed crusher starts its stroke on a random frame
--- (fresh ones in a client showed 2, 4, 23 and 6), and since one craft is one
--- 240-tick stroke it stops on whatever frame that leaves it on, so the cocked
--- rest pose was only ever seen in the still and the ghost. The idle animation
--- is the same three layers with the stroke held on frame 0: no new sheet,
--- the stroke sheet's first frame by `frame_sequence`. It has to run to the
--- same 24 frames as `animation` -- "Idle animation must have the same frame
--- count as animation" (WorkingVisualisations::idle_animation, which
--- CraftingMachineGraphicsSet inherits: doc-html/types/WorkingVisualisations.html)
--- -- the engine draws whichever of the two is showing at the machine's one
--- frame clock. Every one of the idle's 24 frames is the cocked pose, so
--- whatever frame the clock stopped on, it is cocked.
+-- (fresh ones in a client showed 2, 4, 23 and 6, on the 24-frame stroke), and
+-- since one craft is one 240-tick loop it stops on whatever entry that leaves
+-- it on, so the cocked rest pose was only ever seen in the still and the
+-- ghost. The idle animation is the same three layers with the stroke held
+-- cocked: no new sheet, the stroke sheet's frame 1 by `frame_sequence`. It has
+-- to run to the same 60 entries as `animation` -- "Idle animation must have
+-- the same frame count as animation" (WorkingVisualisations::idle_animation,
+-- which CraftingMachineGraphicsSet inherits:
+-- doc-html/types/WorkingVisualisations.html) -- the engine draws whichever of
+-- the two is showing at the machine's one frame clock. Every one of the idle's
+-- 60 entries is the cocked pose, so whatever entry the clock stopped on, it is
+-- cocked.
 --
 -- **The idle animation does not cover every stopped state.** The docs do not
 -- say when the engine draws it; a client on the Core, 2026-10-11, showed
@@ -197,29 +222,34 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- The switch is a snap, not a fade: when the machine stops, the crown jumps
 -- from wherever the stroke stopped to cocked, and when it starts again it
 -- jumps back to that frame and carries on from there (the clock is not reset;
--- in the client, one stopped on 5 drew 0 and resumed on 5), so a restart can
--- begin mid-fall. Power restored after a cut resumes the frozen frame (one
--- cut on 14 held 14, and stepped to 15 after the power came back).
+-- in the client, on the 24-frame stroke, one stopped on 5 drew 0 and resumed
+-- on 5), so a restart can begin mid-fall. Power restored after a cut resumes
+-- the frozen frame (one cut on 14 held 14, and stepped to 15 after the power
+-- came back).
 --
--- The accents count `animation`'s frames, and its clock advances only while
+-- The accents count `animation`'s entries, and its clock advances only while
 -- the machine crafts, so they fire only while it works (see "Sound" below).
--- Recorded in the same client: one crown at a time (none drawn twice while
--- working); the first drop after start-up on frame 14, on time; nothing fired
--- at the snap to cocked or back; 15 of 15 accents heard.
+-- Recorded in the same client, on the 24-frame stroke: one crown at a time
+-- (none drawn twice while working); the first drop after start-up on its
+-- frame, on time; nothing fired at the snap to cocked or back; 15 of 15
+-- accents heard.
 --
--- **`animation_speed = 0.2` plays at 0.1 frames a tick, and the recipe is
--- timed to that.** A crafting machine advances its animation by
--- `animation_speed x crafting_speed x animation_progress` a tick, and
--- `CraftingMachineGraphicsSet::animation_progress` defaults to 0.5 (prototype
--- docs, doc-html/types/CraftingMachineGraphicsSet.html; vanilla's assembler
--- sets the same 0.5 explicitly, base/prototypes/entity/assembler-pictures.lua).
--- No graphics set in this file sets it. Measured in a client on the Core,
--- 2026-10-10, 720 ticks, one screenshot of the stroke a tick: 72 frame changes,
--- 0.100 frames a tick, a 240-tick stroke -- 3 strokes against 6 crafts of the
--- old 2 s recipe. Liam kept that rate (a 0.2 in game looked too fast), so
--- `sae-crushing` became 4 s instead (recipes.lua): one drop is one craft at
--- crafting speed 1. `constant_speed` is left false on purpose, per §9: modules
--- should make the hammer fall faster.
+-- **`animation_speed = 0.5` plays at 0.25 entries a tick: 4 ticks an entry,
+-- 240 a loop, and the recipe is timed to that.** A crafting machine advances
+-- its animation by `animation_speed x crafting_speed x animation_progress` a
+-- tick, and `CraftingMachineGraphicsSet::animation_progress` defaults to 0.5
+-- (prototype docs, doc-html/types/CraftingMachineGraphicsSet.html; vanilla's
+-- assembler sets the same 0.5 explicitly,
+-- base/prototypes/entity/assembler-pictures.lua). The crusher's graphics set
+-- does not set it. So 60 / (0.5 x 1 x 0.5) = 240 ticks at crafting speed 1.
+-- Measured in a client on the Core, 2026-10-10, on the 24-frame stroke at
+-- 0.2, 720 ticks, one screenshot of the stroke a tick: 72 frame changes, 0.100
+-- frames a tick, a 240-tick stroke -- 3 strokes against 6 crafts of the old
+-- 2 s recipe. Liam kept that rate (a stroke twice as fast looked too fast in
+-- game), so `sae-crushing` became 4 s instead (recipes.lua): one drop is one
+-- craft at crafting speed 1. The 60-entry loop keeps the same 240 ticks; only
+-- the fall is faster. `constant_speed` is left false on purpose, per §9:
+-- modules should make the hammer fall faster.
 --
 -- **The status lamp is cut white and tinted by the engine**: a caged lamp on a
 -- bracket on the roof's kerb at the south-east, where nothing that moves passes
@@ -228,8 +258,23 @@ local crusher = crafter("sae-drop-crusher", "assembling-machine-3", {
 -- fault lamp: it reports every state, working included, in vanilla's
 -- mining-drill colours (below).
 local DC = "__space-age-extended__/graphics/entity/drop-crusher/"
-local DC_FRAMES = 24
-local DC_SPEED = 0.2        -- 0.1 in game: x crafting speed 1 x progress 0.5
+local DC_SHEET_FRAMES = 44  -- the stroke sheet's frames, 22 a row
+local DC_SPEED = 0.5        -- 0.25 entries a tick in game: x crafting speed 1 x progress 0.5
+
+-- The stroke's loop: 60 entries, each a 1-based sheet frame, from meta.json's
+-- `frame_sequence` (= drop-crusher-figures.json's). The comments give each
+-- line's entries, counted from 0 as the accents count them.
+local DC_SEQUENCE =
+{
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,                -- 0-12   wind-up, upper half
+  14, 14, 14, 14, 14, 14, 14,                               -- 13-19  top hold
+  15, 16,                                                   -- 20-21  trip
+  17, 18, 19, 20, 21, 22,                                   -- 22-27  fall
+  23,                                                       -- 28     lands seated
+  23, 23, 23, 23, 23, 23, 23, 24, 25, 26, 26, 26, 26,       -- 29-41  seated hold, pawl back in on 36-37
+  27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44   -- 42-59  wind-up, lower half
+}
+local DC_ENTRIES = #DC_SEQUENCE   -- 60: what every layer runs to, and what the accents count
 
 -- The status lamp's colours: the ones vanilla's electric mining drill uses
 -- (`electric_mining_drill_status_colors`, base/prototypes/entity/mining-drill.lua),
@@ -252,40 +297,42 @@ end
 crusher.icon = "__space-age-extended__/graphics/icons/drop-crusher.png"
 
 -- The crusher's three layers, from sheets/meta.json: the plate, the stroke and
--- the shadow. `held` holds the stroke on its frame 0, cocked, for the idle
--- animation; otherwise it plays.
+-- the shadow. `held` holds the stroke on its sheet frame 1, cocked, for the
+-- idle animation; otherwise it plays the loop.
 local function dc_layers(held)
-  local cocked
+  local sequence = DC_SEQUENCE
   if held then
-    cocked = {}
-    for i = 1, DC_FRAMES do cocked[i] = 1 end   -- 1-based: the sheet's frame 0
+    sequence = {}
+    for i = 1, DC_ENTRIES do sequence[i] = 1 end   -- 1-based: the cocked frame
   end
   return
   {
-    -- The plate, less the moving parts. One frame, repeated to meet the
-    -- stroke's count.
+    -- The plate, less the moving parts. One frame, repeated to the stroke's
+    -- 60 entries, so every layer loops together ("a second layer of 1 frame
+    -- would need repeat_count = 10 to match", AnimationParameters).
     {
       filename = DC .. "base.png",
       priority = "high",
       width = 198, height = 234,
       frame_count = 1,
-      repeat_count = DC_FRAMES,
+      repeat_count = DC_ENTRIES,
       animation_speed = DC_SPEED,
       shift = { 0, -0.28125 },
       scale = 0.5
     },
     -- The weight, the gears, the pinions and the pawl, in the window round the
-    -- collar: one row of 24. Held, `frame_sequence` plays the first of them
-    -- 24 times (AnimationFrameSequence: 1-based indices into the sheet, and
-    -- the animation's length is the sequence's), and the sheet is still
-    -- described as the 24 frames it is.
+    -- collar: 44 frames, 22 a row in two rows. `frame_sequence` plays them as
+    -- the loop's 60 entries or, held, the first of them 60 times
+    -- (AnimationFrameSequence: 1-based indices into the sheet, and the
+    -- animation's length is the sequence's); the sheet is still described as
+    -- the 44 frames it is.
     {
       filename = DC .. "stroke.png",
       priority = "high",
       width = 191, height = 136,
-      frame_count = DC_FRAMES,
-      line_length = 24,
-      frame_sequence = cocked,
+      frame_count = DC_SHEET_FRAMES,
+      line_length = 22,
+      frame_sequence = sequence,
       animation_speed = DC_SPEED,
       shift = { 0.02344, -0.9375 },
       scale = 0.5
@@ -300,12 +347,12 @@ local function dc_layers(held)
       -- Still one frame, rendered with the weight cocked. The shadows the
       -- moving parts throw on the roof are in the stroke layer and travel with
       -- it; the crown's shadow on the ground does not. Cutting the ground
-      -- shadow into 24 frames to move a sliver of it is a second sheet for
+      -- shadow into frames to move a sliver of it is a second sheet for
       -- something no player looks at. Recorded as a choice rather than an
-      -- oversight.
+      -- oversight. Repeated to the 60 entries, as the plate is.
       width = 254, height = 195,
       frame_count = 1,
-      repeat_count = DC_FRAMES,
+      repeat_count = DC_ENTRIES,
       animation_speed = DC_SPEED,
       shift = { 0.46875, -0.00781 },
       scale = 0.5
@@ -369,9 +416,12 @@ derive.own_graphics(crusher,
 -- **The accents name no visualisation, because the stroke is a layer of the
 -- main animation** (see "The stroke is the animation" above), and an accent
 -- with no `play_for_working_visualisation` counts the main animation's frames,
--- as assembler 1's do. Its cycle is 24 frames: the stroke's 24, with the plate
--- and shadow repeated to match. At 0.1 frames a tick a frame is 1/6 s and the
--- stroke four seconds, one drop a craft.
+-- as assembler 1's do. Its cycle is the stroke's 60 entries, with the plate
+-- and shadow repeated to match, and with a `frame_sequence` an accent's `frame`
+-- counts the sequence's entries from 0, not the sheet's frames (measured on
+-- the Reaction Plant's press, T04, and with sound in T10, 2026-10-29). At 0.25
+-- entries a tick an entry is 1/15 s and the loop four seconds, one drop a
+-- craft.
 derive.working_sound(crusher, {
   -- bed.ogg: a low motor hum -- a 47 Hz rotor, a faint pinion whine and
   -- vanilla's crusher loop an octave down. 8 s, two strokes.
@@ -384,36 +434,37 @@ derive.working_sound(crusher, {
   -- drill's ratchet moved to its stroke's frame 0 fell silent too. `frame`
   -- defaults to 0 (doc-html/types/SoundAccent.html), so 0 reads as unset, and
   -- no vanilla accent is cued to it. derive.working_sound now refuses frame 0.
-  -- So the loop starts cocked (above) and the landing falls on frame 14.
+  -- So the loop starts cocked (above) and the landing falls on entry 28.
   max_sounds_per_prototype = 3,
   accents =
   {
-    -- drop.ogg on frame 14: the weight lands seated in the collar there, the end
-    -- of the fall from the top at 6. One craft, one bang: an oxide asteroid
-    -- breaking, the mech armour landing on rock, and pebbles, pitched down 7
-    -- semitones over a 40 Hz iron body; the grit that crackled in its tail is
-    -- gone (round 3 A). Off frame 0 it should play on the first stroke after
-    -- start-up as well as on every wrap; the recording found frame 0 silent in
-    -- both.
+    -- drop.ogg on entry 28: the weight lands seated in the collar there, the
+    -- end of the 28-tick fall the trip on 20 lets go. One craft, one bang: an
+    -- oxide asteroid breaking, the mech armour landing on rock, and pebbles,
+    -- pitched down 7 semitones over a 40 Hz iron body; the grit that crackled
+    -- in its tail is gone (round 3 A). Off entry 0 it should play on the first
+    -- loop after start-up as well as on every wrap; the recording found frame 0
+    -- silent in both.
     { sound = { filename = "__space-age-extended__/sound/drop-crusher/drop.ogg", volume = 0.35,
-                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 14 },
-    -- pawl.ogg on frames 18, 22 and 2: the pawl clicks every fourth frame of
-    -- the wind-up from the seat, 14, 18, 22, 2 and 6. Not on 14 or 6, which
-    -- carry the drop and the trip; a click under either would not be heard.
-    -- Frame 0 falls between 22 and 2, so nothing is lost to it. A cryogenic
-    -- plant gear's tooth, pitched down 8 semitones over a 115 Hz iron body
-    -- (round 2 C).
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 28 },
+    -- pawl.ogg on entries 50, 58 and 6: the pawl ticks over a tooth every 8
+    -- entries of the wind-up, which leaves the seat on 42 and reaches the top
+    -- on 13. Entry 0 falls between 58 and 6, so nothing is lost to it. The
+    -- pawl dropping back onto the rack in the seated hold (36-37) has no sound
+    -- of its own (Q14, 2026-10-31). A cryogenic plant gear's tooth, pitched
+    -- down 8 semitones over a 115 Hz iron body (round 2 C).
     { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
-                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 18 },
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 50 },
     { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
-                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 22 },
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 58 },
     { sound = { filename = "__space-age-extended__/sound/drop-crusher/pawl.ogg", volume = 0.6,
-                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 2 },
-    -- trip.ogg on frame 6: the top of the wind-up, where the pawl kicks clear
-    -- and the weight is let go. The foundry's clamp and a struck-steel click,
-    -- low-passed at 3.5 kHz with its attack rounded (round 1 C, kept in 2 and 3).
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 6 },
+    -- trip.ogg on entry 20: the end of the top hold, where the pawl kicks
+    -- clear and the weight is let go. The foundry's clamp and a struck-steel
+    -- click, low-passed at 3.5 kHz with its attack rounded (round 1 C, kept in
+    -- 2 and 3).
     { sound = { filename = "__space-age-extended__/sound/drop-crusher/trip.ogg", volume = 0.5,
-                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 6 }
+                aggregation = { max_count = 2, remove = true, count_already_playing = true } }, frame = 20 }
   }
 })
 data:extend({ crusher })
@@ -1687,8 +1738,9 @@ reaction_plant.use_mirroring = true
 -- sequence shows the landing at its entries 20 and 21 counted from 0, and the
 -- accent is on 21. Recorded in T10 (2026-10-29): one landing sound per stroke,
 -- half a frame after the cake lands. `sprite`, 10, is kept for reference: the
--- same landing counted in sheet frames, as the Drop Crusher's accent was
--- measured. Never 0: the engine fires nothing there.
+-- same landing counted in sheet frames, as the Drop Crusher's accents were
+-- counted before its stroke took a `frame_sequence` (2026-11). Never 0: the
+-- engine fires nothing there.
 --
 -- The accent's sound is a stand-in, vanilla's landfill inventory sound, until
 -- the plant has its own.

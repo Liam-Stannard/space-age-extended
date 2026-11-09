@@ -4,8 +4,7 @@
 2026-09-09 from a five-option round drawn against itself. The decision record is
 `drop-crusher-options/`, the sheet is `concept/adopted/A-sheet.png`, and the four
 rejected designs are gone, and the plate is cut, measured and in the engine —
-see §13. What is left is the stroke: the crown does not move yet, and §9 records
-exactly what that needs.
+see §13. The stroke is rendered in Blender and in the engine; §9 has its timeline.
 
 **This building is forced, not optional.** Vanilla's `crusher` carries
 `surface_conditions` of `gravity` min 0 **max 0** — it is space-only
@@ -21,7 +20,7 @@ production tree needs and the first thing that should be built.
 | - | ----- | ------ | --------------------- | ----- |
 | 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v10-sheet.png`**, variant B, not yet locked |
 | 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 being locked |
-| 5 | Working animation | — | The drop loop reads as a drop | **built** — derived from the plate by Animatorio, not generated; see §9 |
+| 5 | Working animation | — | The drop loop reads as a drop | **built** — rendered in Blender, the moving parts as a layer over the plate; re-timed 2026-11 to a 60-entry loop over 44 frames, see §9 |
 | 6 | Icon | square | Legible at 32 px | blocked on 1 |
 
 ---
@@ -206,14 +205,11 @@ bolts, while carrying all the **forging** it likes.
 
 ## 3.4 Sound (Liam, 2026-10-11; softened 2026-10-20)
 
-A bed and three accents, cued to the stroke (24 frames, four seconds, one drop
-per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
+A bed and three accents, cued to the stroke (a 60-entry loop, four seconds, one drop per craft). The **bed** is a low motor hum. **The stroke's loop starts cocked
 (2026-10-11):** frame 0 is the weight just past halfway up, held by the pawl.
-Frames 0–6 wind up, 6 is the top, 7–13 fall, 14 lands seated, and 14–23 and 0
-wind up again. **Pawl clicks** tick on the wind-up on frames 18, 22 and 2, heavy
-and low: a gear tooth pitched down over an iron body. The **trip** on frame 6 is
-a rounded steel clack as the pawl kicks clear, its high end cut. The **drop** on
-frame 14, where the weight lands, is a heavy iron impact with rock breaking
+Entries 0–12 wind up, 13–19 hold at the top, 20–21 trip, 22–27 fall, 28 lands seated, 29–41 hold on the seat, and 42–59 wind up again. **Pawl clicks** tick on the wind-up on entries 50, 58 and 6, heavy
+and low: a gear tooth pitched down over an iron body. The **trip** on entry 20 is
+a rounded steel clack as the pawl kicks clear, its high end cut. The **drop** on entry 28, where the weight lands, is a heavy iron impact with rock breaking
 under it, and no grit: one craft, one bang. No sound is cued on frame 0:
 Factorio 2.1.21 never plays one there (it is the unset value), which is why the
 loop does not start at the seat. When the crusher stops working it rests cocked,
@@ -685,14 +681,12 @@ harder. Set `constant_speed = true` only if the fall ever looks silly at speed.
 rate, so a weight that falls at a constant rate looks like it is being *lowered*.
 The acceleration must be baked into **frame spacing**: many frames through the
 slow wind-up, progressively fewer through the fall, and a hard stop at the
-bottom. Budget roughly two thirds of the frame count to the rise and the pawl
-trip, and the last third to the fall and impact.
+bottom. Budget roughly two thirds of the loop to the rise and the pawl trip, and the last third to the fall, the impact and the seated hold.
 
 **One authoring gotcha, from the prototype docs:** `idle_animation` **must have
 the same frame count as `animation`**. So a 24-frame working animation cannot
 pair with a 1-frame idle — the idle would have to be 24 frames of the machine
-sitting still, weight cocked and pawl engaged. **Done 2026-10-11:** the idle
-holds the stroke sheet's frame 0 for 24 frames (`frame_sequence`), so no new
+sitting still, weight cocked and pawl engaged. **Done 2026-10-11:** the idle holds the stroke sheet's frame 0 for the loop's 60 entries (`frame_sequence`), so no new
 sheet; see §3.4 for when it draws.
 
 ### Where this stands — the stroke, and what measuring it overturned
@@ -701,6 +695,8 @@ sheet; see §3.4 for when it draws.
 the icon, all wired in `prototypes/core/machines.lua`. The building no longer
 wears `assembling-machine-3`'s sprites and no longer appears in the data stage's
 placeholder report.
+
+*History: the first stroke, cut with Animatorio before the Blender model. Kept as a record; §13 and the timeline above are current.*
 
 **Shipped 2026-09-10, second pass: the stroke moves.** It came out of
 [Animatorio](https://github.com/Onoulade/Animatorio), a sprite-sheet generator
@@ -752,7 +748,7 @@ is the plate without the moving parts, and frame 0 is the rest pose, the weight
 cocked just past halfway up, held by the pawl. The packer holds the plate plus
 frame 0 to a single render of the stopped machine (`frame0_vs_still`). A placed
 crusher starts on a random frame, so the idle animation (above) is what makes
-it rest cocked. The crown lands seated on frame 14.
+it rest cocked. The crown lands seated on entry 28.
 
 **Drawn the way the biochamber is.** Not 24 copies of a 200 × 206 plate: a static
 housing with a 48 × 54 window punched out and 24 frames of that window over the
@@ -788,45 +784,60 @@ top. The cast shadow is also still one frame; the crown's shadow is a small part
 of a plate nearly twice the machine's width, and cutting it apart is a second
 mask for something no player looks at.
 
+### The timeline (2026-11, from the animation study)
+
+One loop is 60 entries at `animation_speed` 0.5: 240 ticks, one craft. An entry is 4 ticks. Held entries repeat one sheet frame through a `frame_sequence`, so 44 frames are rendered.
+
+| # | Step | Entries | Ticks | What moves | Ease | Accent |
+|---|---|---|---|---|---|---|
+| 1 | Wind-up, upper half | 0–12 | 52 | crown climbs, gears turn, pawl ticks over the teeth | even, slowing over the last 4 | 6 pawl |
+| 2 | Top hold | 13–19 | 28 | nothing; the pawl holds the crown | hold | — |
+| 3 | Trip | 20–21 | 8 | the pawl kicks clear | snap | 20 trip |
+| 4 | Fall | 22–27 | 24 | crown drops, gears spin back | faster every entry (t²) | — |
+| 5 | Land | 28 | 4 | crown seated flush, gears stop dead | hard stop | 28 drop |
+| 6 | Seated hold | 29–41 | 52 | nothing, but the pawl drops back on 36–37 | hold | — |
+| 7 | Wind-up, lower half | 42–59 | 72 | crown leaves the seat | slow in over 4, then even | 50 pawl, 58 pawl |
+
+Entry 0 is the crown at 61 % of its travel, held by the pawl: the cocked rest pose, with no accent. The fall, from the last entry at the top to the seat, is 28 ticks; the 24-frame stroke's was 80. Every figure is in `concept/animation-study/drop-crusher-figures.json`.
+
 ---
 
 # 13. Sprite Dimensions — measured
 
-Every number here was measured off the cut plate, not chosen.
+Every number here was measured off the packed sheets (`concept/drop-crusher/model/sheets/meta.json`), not chosen.
 
 | | |
 | --- | --- |
-| Master render | `concept/master-v1.png`, 1254 × 1254, transparent, trimmed to 1154 × 1175 |
-| Colour plate | `base.png`, **200 × 206**, `scale = 0.5` |
-| Drawn machine | **192 × 196 px** at (4, 5) — **exactly 3.000 tiles wide**, 3.06 tall |
-| Rim | 4 px left and right, 5 px top and bottom; **alpha zero on all four edge rows**, checked |
-| Colour shift | **{ 0, −0.03125 }** |
-| Shadow plate | `base-shadow.png`, **358 × 217**, `draw_as_shadow` |
-| Shadow shift | **{ 1.23438, 0.05469 }** |
-| Status lamp | `status-lamp.png`, 200 × 206 — the plate's own canvas, so it registers by construction. Lens at (93, 81)–(105, 92) |
+| Master render | Model: `concept/drop-crusher/model/drop_crusher.py`, rendered through `tools/blender/render.sh` |
+| Colour plate | `base.png`, **198 × 234**, `scale = 0.5` |
+| Drawn machine | **196 × 232 px** at (1, 1): 3.06 tiles wide, 3.63 tall |
+| Rim | 1 px on every side; **alpha zero on all four edge rows** |
+| Colour shift | **{ 0, −0.28125 }** |
+| Shadow plate | `base-shadow.png`, **254 × 195**, `draw_as_shadow` |
+| Shadow shift | **{ 0.46875, −0.00781 }** |
+| Status lamp | `status-lamp.png`, **13 × 14**, its own shift **{ 0.38281, 0.29688 }** |
 | Icon | `graphics/icons/drop-crusher.png`, 120 × 64 mipmap strip |
-| Stroke housing | `stroke-housing.png`, **200 × 206** — the plate with the window cut out. Same canvas, same `scale` and `shift` as `base.png`, so it needs no numbers of its own |
-| Stroke frames | `stroke.png`, **288 × 216** — 24 frames of 48 × 54, `line_length = 6` |
-| Stroke window | **(79, 0)–(127, 54)** on the plate |
-| Stroke shift | **{ 0.046875, −1.21875 }** |
+| Stroke frames | `stroke.png`, **4202 × 272**: 44 frames of 191 × 136, `line_length = 22`, played as a 60-entry `frame_sequence` at `animation_speed` 0.5 (§9's timeline) |
+| Stroke window | the moving parts rendered alone over the plate, **191 × 136** |
+| Stroke shift | **{ 0.02344, −0.9375 }**, from the packer |
 
-**The stroke layer's shift is arithmetic, not a fit.** The window's centre is
+*History: the Animatorio stroke's window, before the Blender model.* **The stroke layer's shift is arithmetic, not a fit.** The window's centre is
 (103, 27) on a canvas whose centre is (100, 103) — 3 source px right and 76 up.
 At `scale = 0.5` there are 64 source px to the tile, giving 3/64 = 0.046875 and
 −76/64 = −1.1875, and the plate's own −0.03125 adds to the second to make
 −1.21875. Every one of those is an exact sixty-fourth; none was rounded to get
 there, which is the test that the window was placed on whole pixels.
 
-**The window must be even in both axes** or its centre lands on half an in-game
+*History: the Animatorio stroke's window, before the Blender model.* **The window must be even in both axes** or its centre lands on half an in-game
 pixel at `scale = 0.5`. `tools/build-animatorio-layers.py` refuses an odd one.
 
-**Verified in the engine, not just in the tool.** A layered animation whose
+*History: the Animatorio plate, before the Blender model.* **Verified in the engine, not just in the tool.** A layered animation whose
 layers disagree on frame count is a *sprite*-stage failure, and the data stage
 never opens an image — `tools/check-data-stage.sh` passes a mod that cannot draw.
 Loaded the client under a virtual framebuffer instead: **`Sprites loaded` at
 22.4 s, `Factorio initialised`, no error lines.**
 
-**The shift is measured rather than centred, and this is the part worth keeping.**
+*History: the Animatorio plate, before the Blender model.* **The shift is measured rather than centred, and this is the part worth keeping.**
 The building is taller than it is deep, so the drawn 3 × 3 box is bottom-aligned
 inside the content: it occupies rows 9–201 of a plate whose canvas centre is row
 103, putting the footprint's centre 2 source px low. Two source px is one in-game
@@ -834,10 +845,10 @@ px at `scale = 0.5`, which is `1/32` of a tile — hence −0.03125. Centring th
 plate instead would have put the building one screen pixel deep into its own
 southern tile.
 
-`tools/check-footprint.py base.png --tiles 3` reports 0.00 tiles of overhang left
+*History: the Animatorio plate, before the Blender model.* `tools/check-footprint.py base.png --tiles 3` reports 0.00 tiles of overhang left
 and right and passes.
 
-**The icon is derived, not drawn.** It is the crown-and-collar region of the
+*History: the Animatorio plate, before the Blender model.* **The icon is derived, not drawn.** It is the crown-and-collar region of the
 master render, masked to the collar disc plus the crown, run through
 `tools/key-icons.py`. That follows §16's instruction — "the crown standing proud
 of its collar, cropped tight" — and follows this project's habit of deriving a

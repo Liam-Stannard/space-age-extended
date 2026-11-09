@@ -35,6 +35,7 @@ Each line: the standard, Liam's words or the decision, and the date.
   2026-10-11: "There is still a gap between the joints. That is a fail.").
 - Animated parts a player notices at 1x; showpieces have impressive
   animation (Liam, 2026-10-11).
+- A loop is planned as steps before it is modelled: each step's frames, the parts that move, their ease, and the sound it lands on. Every moving part holds still for part of the loop; the steps add up to the loop, and the loop to the recipe's ticks. Holds are played with a `frame_sequence`, not rendered again. (Liam, Drop Crusher re-animation, 2026-11-08, from the animation study of vanilla's foundry.)
 - One building, not units on the ground: the vessels belong to a casing,
   frame or house (Liam, Reaction Plant, 2026-10-21: "it would help if it
   looked more like a building than some tanks on the ground").

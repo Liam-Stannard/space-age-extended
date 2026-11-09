@@ -83,6 +83,7 @@
   "frames": 8,
   "line_length": 8
  },
+ "graphics_set": "none",
  "checks": {
   "vertical": {
    "centre_offset_px": -15.0,

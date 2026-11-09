@@ -49,8 +49,10 @@
    0.78125
   ],
   "frames": 16,
-  "line_length": 16
+  "line_length": 16,
+  "animation_speed": 0.6666666666666666
  },
+ "graphics_set": "crafting-machine",
  "checks": {
   "centre_offset_px": 0.0,
   "edge_alpha_max": 0,

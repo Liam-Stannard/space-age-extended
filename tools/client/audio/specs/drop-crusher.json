@@ -17,7 +17,10 @@
   "mp4": { "lead_seconds": 0.6, "video_bitrate": 800000, "audio_bitrate": 128000 },
   "stroke": {
     "filename": "graphics/entity/drop-crusher/stroke.png",
-    "width": 191, "height": 136, "frame_count": 24, "line_length": 24,
+    "width": 191, "height": 136, "frame_count": 44, "line_length": 22,
+    "frame_sequence": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 14, 14, 14, 14, 14,
+                        15, 16, 17, 18, 19, 20, 21, 22, 23, 23, 23, 23, 23, 23, 23, 23, 24, 25, 26, 26,
+                        26, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ],
     "shift": [ 0.02344, -0.9375 ], "scale": 0.5
   },
   "sounds": {
@@ -26,13 +29,13 @@
     "trip": "sound/drop-crusher/trip.ogg"
   },
   "expect": {
-    "source": "the crusher's accents as agreed (sound-wiring amendment, 2026-10-11; factorio-tools-skills T04): used only to judge the measured frames, never to find them",
+    "source": "the crusher's accents as agreed (spec section 3.4, re-timed in drop-crusher-reanimation T02, 2026-11-08), as frame_sequence entries counted from 0: used only to judge the measured frames, never to find them",
     "accents": [
-      { "sound": "drop", "frame": 14 },
-      { "sound": "pawl", "frame": 18 },
-      { "sound": "pawl", "frame": 22 },
-      { "sound": "pawl", "frame": 2 },
-      { "sound": "trip", "frame": 6 }
+      { "sound": "drop", "frame": 28 },
+      { "sound": "pawl", "frame": 50 },
+      { "sound": "pawl", "frame": 58 },
+      { "sound": "pawl", "frame": 6 },
+      { "sound": "trip", "frame": 20 }
     ],
     "tolerance_frames": 1
   }

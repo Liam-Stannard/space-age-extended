@@ -244,6 +244,24 @@ a pass: everything they act on is declared here.
               pack.py copies them into meta.json, under "lights"; preview.py draws them
               in its night rows (each docstring). When there are lights, no sheet may be
               named "lights" in any direction, which is their meta.json key
+  graphics_set  (optional; left out of render.json when not given) the graphics set the
+              building's prototype draws its animation with, which says the rate the engine
+              plays it at (measure.py's timing model): "crafting-machine" (an assembling
+              machine or a furnace: CraftingMachineGraphicsSet, whose animation_progress the
+              engine takes as 0.5 when the prototype sets none), "mining-drill" (a mining
+              drill, a pumpjack: MiningDrillGraphicsSet, 1) or "none" (a generator, a burner
+              generator: its animation and idle_animation are in no graphics set, so no
+              animation_progress, the rate as declared). Every animated model declares it, as
+              its prototype stands. Not in a resource model: its stateless_visualisation has
+              no graphics set
+  animation_progress  (optional; left out when not given) the graphics set's
+              animation_progress when the prototype sets one (the Reaction Plant's 1): a
+              number above 0, with graphics_set "crafting-machine" or "mining-drill" only.
+              Left out, the engine's default for the set (GRAPHICS_SETS)
+              pack.py copies both into meta.json, under "graphics_set" and
+              "animation_progress", as declared; measure.py plays every layer at them. With
+              graphics_set declared, no sheet may be named either in any direction, as they
+              are meta.json's keys
 
 Run as a script, it lists a render directory's plate renders, one per direction (a
 resource model's stage-0 cells, one per variation: its richest look, measured as a plate is):
@@ -291,6 +309,11 @@ LIGHT_KINDS = {
     "layer": ({"filename", "width", "height", "scale"}, {"tint"}),      # a draw_as_light layer
 }
 LIGHTS_KEY = "lights"                   # meta.json's key for them
+# graphics_set: the animation_progress the engine plays each set at when its prototype sets none (2.1.24 docs:
+# CraftingMachineGraphicsSet and MiningDrillGraphicsSet .animation_progress); "none" has no progress: 1, the rate
+# as declared
+GRAPHICS_SETS = {"crafting-machine": 0.5, "mining-drill": 1, "none": 1}
+GRAPHICS_KEYS = ("graphics_set", "animation_progress")     # render.json's fields, and meta.json's keys for them
 FILE = "render.json"
 
 
@@ -391,7 +414,7 @@ def each_direction(root, directions):
 
 
 def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(), ports=(), cut=None,
-            ports_turn=None, rolloff=None, lights=None):
+            ports_turn=None, rolloff=None, lights=None, graphics_set=None, animation_progress=None):
     """Write render.json into out_dir: called by a model, in Blender, before it renders."""
     import rig          # in Blender only: the packers read the numbers from render.json
     decl = dict(footprint=footprint, canvas=canvas, directions=directions,
@@ -405,6 +428,10 @@ def declare(out_dir, *, footprint, canvas, directions, passes=(), animations=(),
         decl["rolloff"] = rolloff           # likewise
     if lights is not None:
         decl["lights"] = lights             # likewise
+    if graphics_set is not None:
+        decl["graphics_set"] = graphics_set                 # likewise
+    if animation_progress is not None:
+        decl["animation_progress"] = animation_progress     # likewise
     validate(decl, out_dir)
     decl = json.loads(json.dumps(decl))     # as the packers will read it: tuples are lists
     os.makedirs(out_dir, exist_ok=True)
@@ -782,6 +809,8 @@ def validate(decl, where):
         bad("rolloff", f"{decl['rolloff']!r} is not true or false: false opts out of pack.py's highlight roll-off")
     if "lights" in decl:
         _lights(decl, bad)
+    if any(k in decl for k in GRAPHICS_KEYS):
+        _graphics_set(decl, bad, resource)
     missing = [f for f in reached_faces(decl) if f not in faces]
     if missing:
         how = ("ports_turn turns them through all four directions" if decl.get("ports_turn")
@@ -863,6 +892,34 @@ def _lights(decl, bad):
         if any(named(s, d) == LIGHTS_KEY for d in dirs) or s == LIGHTS_KEY:
             bad("lights", f"sheet {s!r} is named {LIGHTS_KEY!r} in one of the model's directions: with lights "
                 f"declared, that is meta.json's key for them")
+
+
+def _graphics_set(decl, bad, resource):
+    """Hold render.json's graphics_set and animation_progress to the contract (the docstring)."""
+    if "graphics_set" not in decl:
+        bad("animation_progress", "is declared without graphics_set: it is a graphics set's animation_progress "
+            "(crafting-machine or mining-drill); declare the set it belongs to")
+    gs = decl["graphics_set"]
+    if not (isinstance(gs, str) and gs in GRAPHICS_SETS):
+        bad("graphics_set", f"{gs!r} is not one of {', '.join(GRAPHICS_SETS)}")
+    if resource:
+        bad("graphics_set", "a resource model declares none: its stateless_visualisation has no graphics set "
+            "(it plays at its own animation_speed)")
+    if "animation_progress" in decl:
+        v = decl["animation_progress"]
+        if gs == "none":
+            bad("animation_progress", "with graphics_set none: a generator's animation is in no graphics set, "
+                "so it has no animation_progress")
+        if not (_number(v) and v > 0):
+            bad("animation_progress", f"{v!r} is not a number above 0: the prototype's animation_progress")
+    dirs = [d for d, _ in DIRECTIONS[decl["directions"]]]
+    sheets = [p["sheet"] for p in decl["passes"] if p["kind"] != "still"] + [a["name"] for a in decl["animations"]] \
+        + [p["glow"]["sheet"] for p in decl["passes"] if "glow" in p]
+    for s in sheets:
+        for key in GRAPHICS_KEYS:
+            if s == key or any(named(s, d) == key for d in dirs):
+                bad("graphics_set", f"sheet {s!r} is named {key!r} in one of the model's directions: with "
+                    f"graphics_set declared, that is meta.json's key for it")
 
 
 def screen(decl, offset, direction):

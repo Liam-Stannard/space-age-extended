@@ -39,7 +39,8 @@
    -2.32031
   ],
   "frames": 5,
-  "line_length": 5
+  "line_length": 5,
+  "animation_speed": 0.5
  },
  "stroke-north": {
   "size": [
@@ -51,7 +52,8 @@
    -0.55469
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "ore-north": {
   "size": [
@@ -63,7 +65,8 @@
    -2.8125
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "dust-north": {
   "size": [
@@ -75,7 +78,8 @@
    -0.52344
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "base-east": {
   "size": [
@@ -117,7 +121,8 @@
    -0.09375
   ],
   "frames": 5,
-  "line_length": 5
+  "line_length": 5,
+  "animation_speed": 0.5
  },
  "stroke-east": {
   "size": [
@@ -129,7 +134,8 @@
    -0.55469
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "ore-east": {
   "size": [
@@ -141,7 +147,8 @@
    -0.0625
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "dust-east": {
   "size": [
@@ -153,7 +160,8 @@
    -0.52344
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "base-south": {
   "size": [
@@ -195,7 +203,8 @@
    2.00781
   ],
   "frames": 5,
-  "line_length": 5
+  "line_length": 5,
+  "animation_speed": 0.5
  },
  "stroke-south": {
   "size": [
@@ -207,7 +216,8 @@
    -0.55469
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "ore-south": {
   "size": [
@@ -219,7 +229,8 @@
    2.69531
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "dust-south": {
   "size": [
@@ -231,7 +242,8 @@
    -0.52344
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "base-west": {
   "size": [
@@ -273,7 +285,8 @@
    -0.09375
   ],
   "frames": 5,
-  "line_length": 5
+  "line_length": 5,
+  "animation_speed": 0.5
  },
  "stroke-west": {
   "size": [
@@ -285,7 +298,8 @@
    -0.55469
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "ore-west": {
   "size": [
@@ -297,7 +311,8 @@
    -0.07812
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
  "dust-west": {
   "size": [
@@ -309,8 +324,10 @@
    -0.52344
   ],
   "frames": 24,
-  "line_length": 24
+  "line_length": 24,
+  "animation_speed": 0.4
  },
+ "graphics_set": "mining-drill",
  "checks": {
   "north": {
    "centre_offset_px": 0.0,

@@ -22,7 +22,11 @@ model also renders the east gear alone (diag-gear-NN), unpacked, in every frame.
    frame to frame; held to the rack's travel since frame 0 over the pitch radius, in
    teeth.
 
-The loop starts cocked (drop_crusher.py's PHASE, 2026-10-11): frame 0 is the weight
+Re-timed 2026-11 (stroke.json's `sequence`): the sheet frames are the 44 distinct poses
+and the 60-entry sequence plays them; `plan` holds every entry's crown height to the
+animation study's (drop-crusher-figures.json, lift_plan) within 1 px.
+
+Before that, the loop started cocked (drop_crusher.py's PHASE, 2026-10-11): frame 0 is the weight
 part-way up, held by the pawl; the top, where the pawl trips, is frame 6 (stroke.json's
 `top`), frames 7-13 fall and 14 (`seat`) lands seated. Every measure is taken against
 frame 0 as drawn, wherever in the stroke that is, and the fall is read from `top` to
@@ -65,7 +69,8 @@ def crown(out, info):
     line = [cx - mx for cx, _ in cs]
     measured = [round(-(cy - cs[0][1]), 2) for _, cy in cs]
     # the fall: from the top, where the pawl trips, round the loop to the seat
-    top, seat = info.get("top", info["rise"]), info.get("seat", 0)
+    top = info["top"] if "top" in info else info["rise"]
+    seat = info.get("seat", 0)
     fall = (seat - top) % n
     frames = [(top + k) % n for k in range(fall + 1)]
     ys = [cs[f][1] for f in frames]
@@ -146,6 +151,35 @@ def gears(out, info):
                 note="the gear's turn against the rack's travel over its pitch radius; within one tooth passes")
 
 
+def plan(c, info):
+    """The re-timed stroke (2026-11): each of the 60 entries' crown height, measured off the
+    sheet frame the sequence plays, against the study's plan (drop-crusher-figures.json,
+    lift_plan), both from entry 0's: within LIMIT_PX."""
+    fig = json.load(open(os.path.join(HERE, "..", "..", "animation-study", "drop-crusher-figures.json")))
+    want_seq = fig["frame_sequence"]["animation"]
+    k = info["px_per_tile"] * info["cos_elevation"] * info["travel"]
+    lp = fig["lift_plan"]
+    rows, worst = [], 0.0
+    for e, f1 in enumerate(info["sequence"]):
+        want = round((lp[e] - lp[0]) * k, 2)
+        got = c["measured_up_px"][f1 - 1]
+        worst = max(worst, abs(got - want))
+        rows.append(dict(entry=e, sheet_frame=f1, plan_share=lp[e], plan_up_px=want, measured_up_px=got,
+                         error_px=round(got - want, 2), pawl_deg=info["pawl_deg"][f1 - 1]))
+    held = {}
+    for e, f1 in enumerate(info["sequence"]):
+        held.setdefault(f1, []).append(e)
+    return dict(sequence_matches_plan=info["sequence"] == want_seq, entries=len(info["sequence"]),
+                sheet_frames=info["frames"], frame0_share=lp[0], max_error_px=round(worst, 2),
+                held=[dict(sheet_frame=f1, entries=es) for f1, es in held.items() if len(es) > 1],
+                per_entry=rows,
+                note="px up the screen from entry 0, plan against measured; held entries play one sheet "
+                     "frame, so they are the same image by construction")
+
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
 def main(out):
     info = json.load(open(os.path.join(out, "hi", "stroke.json")))
     c = crown(out, info)
@@ -154,6 +188,9 @@ def main(out):
                pass_2=(c["off_curve_px"] <= LIMIT_PX and c["off_line_px"] <= LIMIT_PX and c["fall_grows_strictly"]
                        and c["lowest_at_landing"]),
                pass_3=g["max_error_teeth"] <= 1.0)
+    if "sequence" in info:
+        res["plan"] = plan(c, info)
+        res["pass_plan"] = res["plan"]["sequence_matches_plan"] and res["plan"]["max_error_px"] <= LIMIT_PX
     print(json.dumps(res, indent=1))
     with open(os.path.join(out, "stroke-measures.json"), "w") as f:
         json.dump(res, f, indent=1)
