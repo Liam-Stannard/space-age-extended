@@ -30,6 +30,11 @@ or the edge cuts the tail) and <name>_light (frame 0's peak luminance and its co
 and halo shares, as the radiant-look study measured vanilla's glows:
 concept/radiant-look/model/look_common.py).
 
+An animation's frames go into its sheet in order, left to right and then down, in one row
+when they fit in MAX_SHEET_W px; past it, in the fewest rows that fit, the frames spread
+evenly over them (sheet_layout: line_length ceil(frames / rows), the last row the only short
+one), and meta.json's line_length is that.
+
 An animation that declares a frame_sequence or a hold (contract.py) is packed like any
 other, its frames once each in order; its meta.json entry gains frame_sequence, the
 order the engine plays them in (1-based, a hold written out: the prototype's
@@ -229,7 +234,7 @@ LIGHT_SHARE = 0.999
 # 2026-10-15); at 2 the step is under what the eye takes. Noise is still dropped as specks.
 # For that tail it is not cropped to LIGHT_SHARE either: a box cut through a bloom is an edge.
 GLOW_FLOOR = 2
-MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this
+MAX_SHEET_W = 8192  # wrap an animation's frames into rows past this, the rows balanced (sheet_layout)
 # A remnants render's shadow: a shadow catcher's pixels are black, part transparent; a lit
 # part's edge over its own shadow is not (vanilla's remnants' shadows average RGB 1-8)
 SHADOW_RGB = 8
@@ -649,6 +654,22 @@ def reach(bb, decl, direction, canvas):
                 S=round((bb[3] - cy - fh / 2 * ppt) / ppt, 2), W=round((cx - fw / 2 * ppt - bb[0]) / ppt, 2))
 
 
+def sheet_layout(n, fw):
+    """An animation sheet's layout: (line_length, rows) for n frames fw px wide.
+
+    One row when the n frames fit in MAX_SHEET_W. Past it, the fewest rows that fit
+    (ceil(n / the most frames a row holds)), with the frames spread evenly over them:
+    line_length = ceil(n / rows), so the last row is short of the others by fewer frames than
+    there are rows, and no row is empty (drop-crusher-reanimation T04a: the Drop Crusher's
+    stroke, 44 frames of 191 px, packed 42 and 2, an 8022 x 272 sheet with 40 empty cells;
+    now 22 and 22, 4202 x 272). A frame wider than MAX_SHEET_W alone gets a row of its own,
+    as before. test/test_sheet_rows.py holds it."""
+    most = max(1, min(n, MAX_SHEET_W // fw))
+    rows = math.ceil(n / most)
+    line = math.ceil(n / rows)
+    return line, math.ceil(n / line)
+
+
 def centroid(im):
     a = im.getchannel("A")
     px = list(a.get_flattened_data())
@@ -876,8 +897,8 @@ class Packer:
         if u is None:
             sys.exit(f"pack.py: every frame of {contract.named(name, d)} is empty")
         fw, fh = u[2] - u[0], u[3] - u[1]
-        line = max(1, min(n, MAX_SHEET_W // fw))
-        sheet = Image.new("RGBA", (fw * line, fh * math.ceil(n / line)))
+        line, rows = sheet_layout(n, fw)
+        sheet = Image.new("RGBA", (fw * line, fh * rows))
         for i, fr in enumerate(frames):
             sheet.paste(fr.crop(u), ((i % line) * fw, (i // line) * fh))
         stem = contract.named(name, d)
