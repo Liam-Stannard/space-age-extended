@@ -1738,8 +1738,9 @@ reaction_plant.use_mirroring = true
 -- sequence shows the landing at its entries 20 and 21 counted from 0, and the
 -- accent is on 21. Recorded in T10 (2026-10-29): one landing sound per stroke,
 -- half a frame after the cake lands. `sprite`, 10, is kept for reference: the
--- same landing counted in sheet frames, as the Drop Crusher's accent was
--- measured. Never 0: the engine fires nothing there.
+-- same landing counted in sheet frames, as the Drop Crusher's accents were
+-- counted before its stroke took a `frame_sequence` (2026-11). Never 0: the
+-- engine fires nothing there.
 --
 -- The accent's sound is a stand-in, vanilla's landfill inventory sound, until
 -- the plant has its own.

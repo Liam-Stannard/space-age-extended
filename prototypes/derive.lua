@@ -235,10 +235,11 @@ end
 -- in. `frame_sequence` replaces the sheet's order and so its length, and
 -- `repeat_count` stretches a layer to a longer cycle (AnimationParameters, in
 -- the prototype docs); the layers of one animation share one clock, so the
--- cycle is the longest layer's. That an accent's frame counts in that cycle,
--- a sequence's frames rather than the sheet's, is an assumption no client has
--- measured; every vanilla accent, 67 on 12 machines, passes the check below
--- counted this way (2026-10-11).
+-- cycle is the longest layer's. An accent's frame counts in that cycle, a
+-- sequence's entries from 0 rather than the sheet's frames: measured in a
+-- client on the Reaction Plant's press (T04, and with sound in T10,
+-- 2026-10-29), and every vanilla accent, 67 on 12 machines, passes the check
+-- below counted this way (2026-10-11).
 local function cycle_frames(anim)
   if anim.layers then
     local most = 0
