@@ -19,6 +19,9 @@ need no game client.
   entries. On entries 50, 58, 6, 20 and 28 every pass is on time; the trip
   moved 3 entries on is judged late. The same sheet without a frame_sequence,
   its frames played in order, is judged in frames as before.
+- sequence_fit returns the second fit, through the held frames' grabs too,
+  which leaves out a held frame matched where it is not shown; when the fit
+  fails, frames.csv is on disk with the entries blank.
 """
 
 import json
@@ -286,6 +289,51 @@ class FrameSequence(unittest.TestCase):
         self.assertEqual(trip["late"], len(trip["passes"]))
         self.assertEqual(res["stray_labelled_onsets"], [])
         self.check_on_time(res, skip={("trip", 20)})
+
+
+class SequenceFit(unittest.TestCase):
+    """sequence_fit alone, on matched sheet frames made up here: the second
+    fit, through every grab, is the one returned. A grab of held sheet frame
+    13 (entries 13-19) where entry 40 is shown is placed on 19 by the first
+    fit and left out by the second; the first, on single-entry frames only,
+    never sees it."""
+
+    def test_the_second_fit_takes_the_held_frames(self):
+        seq = analyse.sequence_of(json.loads(CRUSHER_SPEC.read_text())["stroke"])
+        times = [(2 * i + 0.5) / 60 for i in range(360)]           # 30 fps, 12 s
+        truth = [int(t * 15) for t in times]                       # 4 ticks an entry
+        frames = [seq[u % 60] for u in truth]
+        bad = next(i for i, u in enumerate(truth) if u >= 60 and u % 60 == 40)
+        frames[bad] = 13
+        fit, entries = analyse.sequence_fit(times, frames, seq, 0.0)
+        first = fit["first_fit_on_those"]
+        held = sum(1 for f in frames if seq.count(f) > 1)
+        self.assertEqual(fit["grabs_of_held_frames"], held)
+        self.assertEqual(fit["frames_used"], len(times) - 1)
+        self.assertEqual(fit["frames_left_out"], 1)
+        self.assertEqual(fit["outlier_times"], [round(times[bad], 3)])
+        self.assertEqual(first["frames_used"] + first["frames_left_out"], len(times) - held)
+        self.assertEqual(first["frames_left_out"], 0)
+        self.assertAlmostEqual(fit["rate_frames_per_s"], 15.0, delta=0.01)
+        self.assertEqual(entries[bad], 19)
+        self.assertEqual([e for i, e in enumerate(entries) if i != bad],
+                         [u % 60 for i, u in enumerate(truth) if i != bad])
+
+
+class FailedFitLeavesFrames(unittest.TestCase):
+    def test_frames_csv_written_before_the_fit(self):
+        # Every sheet frame held for two entries: no frame names one entry, so
+        # sequence_fit fails; the grabs' matches are on disk all the same.
+        spec = synthetic_spec(frame_sequence=[k for k in range(1, 45) for _ in range(2)])
+        analyse.Gst.init(None)
+        with tempfile.TemporaryDirectory(prefix="sae-t06a-audio.") as d:
+            build_run(d, spec, REPO, [], work_ticks=120)
+            with self.assertRaises(analyse.Failed):
+                analyse.run(d, spec, REPO)
+            lines = (Path(d) / "frames.csv").read_text().splitlines()
+        self.assertEqual(lines[0], "i,t_s,frame,score,next_frame,next_score,entry")
+        self.assertGreater(len(lines), 30)
+        self.assertTrue(all(r.endswith(",") for r in lines[1:]))
 
 
 class NoFrameSequence(unittest.TestCase):

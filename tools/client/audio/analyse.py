@@ -41,7 +41,10 @@ next, the rule above) and fitted first. A held sheet frame (on several
 entries) is then told apart by time: it is given the entry of that frame
 nearest the first fit's phase at its grab. The line is fitted again through
 every grab so placed; frames.csv gives each grab's entry beside its sheet
-frame. One entry lasts 1 / (animation_speed x crafting speed x
+frame (written first with the entry blank, so a fit that fails leaves the
+matches behind). A held frame's entry, in frames.csv and in an onset's
+frame_in_last_grab, comes from the fit, not the picture: the picture alone
+names only the sheet frame (sheet_frame_in_last_grab). One entry lasts 1 / (animation_speed x crafting speed x
 animation_progress) ticks: 4 for the Drop Crusher at crafting speed 1.
 
 **Where the sounds start** is read from the audio alone. The mono mix is split
@@ -713,16 +716,22 @@ def run(out, spec, repo):
         order = sorted(range(stroke.n), key=lambda k: sc[k])
         rows.append({"i": i, "t": round(t, 4), "frame": order[0], "score": round(sc[order[0]], 2),
                      "next": order[1], "next_score": round(sc[order[1]], 2)})
+
+    def write_frames():
+        with open(out / "frames.csv", "w") as f:
+            f.write("i,t_s,frame,score,next_frame,next_score" + (",entry" if seq else "") + "\n")
+            for r in rows:
+                f.write(f"{r['i']},{r['t']},{r['frame']},{r['score']},{r['next']},{r['next_score']}"
+                        + (f",{'' if r.get('entry') is None else r['entry']}" if seq else "") + "\n")
+
+    # Written before the fit, which may fail (entries blank until it is made).
+    write_frames()
     if seq:
         fit, entries = sequence_fit(video.t, [r["frame"] for r in rows], seq, t_start + 0.3)
         for r, e in zip(rows, entries):
             r["entry"] = e
-    with open(out / "frames.csv", "w") as f:
-        f.write("i,t_s,frame,score,next_frame,next_score" + (",entry" if seq else "") + "\n")
-        for r in rows:
-            f.write(f"{r['i']},{r['t']},{r['frame']},{r['score']},{r['next']},{r['next_score']}"
-                    + (f",{'' if r['entry'] is None else r['entry']}" if seq else "") + "\n")
-    if not seq:
+        write_frames()
+    else:
         fit = unwrap_fit(video.t, [r["frame"] for r in rows], n, t_start + 0.3)
     rate, c = fit["rate_frames_per_s"], fit["c"]
 
