@@ -804,41 +804,40 @@ Entry 0 is the crown at 61 % of its travel, held by the pawl: the cocked rest po
 
 # 13. Sprite Dimensions — measured
 
-Every number here was measured off the cut plate, not chosen.
+Every number here was measured off the packed sheets (`concept/drop-crusher/model/sheets/meta.json`), not chosen.
 
 | | |
 | --- | --- |
-| Master render | `concept/master-v1.png`, 1254 × 1254, transparent, trimmed to 1154 × 1175 |
-| Colour plate | `base.png`, **200 × 206**, `scale = 0.5` |
-| Drawn machine | **192 × 196 px** at (4, 5) — **exactly 3.000 tiles wide**, 3.06 tall |
-| Rim | 4 px left and right, 5 px top and bottom; **alpha zero on all four edge rows**, checked |
-| Colour shift | **{ 0, −0.03125 }** |
-| Shadow plate | `base-shadow.png`, **358 × 217**, `draw_as_shadow` |
-| Shadow shift | **{ 1.23438, 0.05469 }** |
-| Status lamp | `status-lamp.png`, 200 × 206 — the plate's own canvas, so it registers by construction. Lens at (93, 81)–(105, 92) |
+| Master render | Model: `concept/drop-crusher/model/drop_crusher.py`, rendered through `tools/blender/render.sh` |
+| Colour plate | `base.png`, **198 × 234**, `scale = 0.5` |
+| Drawn machine | **196 × 232 px** at (1, 1): 3.06 tiles wide, 3.63 tall |
+| Rim | 1 px on every side; **alpha zero on all four edge rows** |
+| Colour shift | **{ 0, −0.28125 }** |
+| Shadow plate | `base-shadow.png`, **254 × 195**, `draw_as_shadow` |
+| Shadow shift | **{ 0.46875, −0.00781 }** |
+| Status lamp | `status-lamp.png`, **13 × 14**, its own shift **{ 0.38281, 0.29688 }** |
 | Icon | `graphics/icons/drop-crusher.png`, 120 × 64 mipmap strip |
-| Stroke housing | `stroke-housing.png`, **200 × 206** — the plate with the window cut out. Same canvas, same `scale` and `shift` as `base.png`, so it needs no numbers of its own |
-| Stroke frames | `stroke.png`, **288 × 216** — 24 frames of 48 × 54, `line_length = 6` |
-| Stroke window | **(79, 0)–(127, 54)** on the plate |
-| Stroke shift | **{ 0.046875, −1.21875 }** |
+| Stroke frames | `stroke.png`, **4202 × 272**: 44 frames of 191 × 136, `line_length = 22`, played as a 60-entry `frame_sequence` at `animation_speed` 0.5 (§9's timeline) |
+| Stroke window | the moving parts rendered alone over the plate, **191 × 136** |
+| Stroke shift | **{ 0.02344, −0.9375 }**, from the packer |
 
-**The stroke layer's shift is arithmetic, not a fit.** The window's centre is
+*History: the Animatorio stroke's window, before the Blender model.* **The stroke layer's shift is arithmetic, not a fit.** The window's centre is
 (103, 27) on a canvas whose centre is (100, 103) — 3 source px right and 76 up.
 At `scale = 0.5` there are 64 source px to the tile, giving 3/64 = 0.046875 and
 −76/64 = −1.1875, and the plate's own −0.03125 adds to the second to make
 −1.21875. Every one of those is an exact sixty-fourth; none was rounded to get
 there, which is the test that the window was placed on whole pixels.
 
-**The window must be even in both axes** or its centre lands on half an in-game
+*History: the Animatorio stroke's window, before the Blender model.* **The window must be even in both axes** or its centre lands on half an in-game
 pixel at `scale = 0.5`. `tools/build-animatorio-layers.py` refuses an odd one.
 
-**Verified in the engine, not just in the tool.** A layered animation whose
+*History: the Animatorio plate, before the Blender model.* **Verified in the engine, not just in the tool.** A layered animation whose
 layers disagree on frame count is a *sprite*-stage failure, and the data stage
 never opens an image — `tools/check-data-stage.sh` passes a mod that cannot draw.
 Loaded the client under a virtual framebuffer instead: **`Sprites loaded` at
 22.4 s, `Factorio initialised`, no error lines.**
 
-**The shift is measured rather than centred, and this is the part worth keeping.**
+*History: the Animatorio plate, before the Blender model.* **The shift is measured rather than centred, and this is the part worth keeping.**
 The building is taller than it is deep, so the drawn 3 × 3 box is bottom-aligned
 inside the content: it occupies rows 9–201 of a plate whose canvas centre is row
 103, putting the footprint's centre 2 source px low. Two source px is one in-game
@@ -846,10 +845,10 @@ px at `scale = 0.5`, which is `1/32` of a tile — hence −0.03125. Centring th
 plate instead would have put the building one screen pixel deep into its own
 southern tile.
 
-`tools/check-footprint.py base.png --tiles 3` reports 0.00 tiles of overhang left
+*History: the Animatorio plate, before the Blender model.* `tools/check-footprint.py base.png --tiles 3` reports 0.00 tiles of overhang left
 and right and passes.
 
-**The icon is derived, not drawn.** It is the crown-and-collar region of the
+*History: the Animatorio plate, before the Blender model.* **The icon is derived, not drawn.** It is the crown-and-collar region of the
 master render, masked to the collar disc plus the crown, run through
 `tools/key-icons.py`. That follows §16's instruction — "the crown standing proud
 of its collar, cropped tight" — and follows this project's habit of deriving a
