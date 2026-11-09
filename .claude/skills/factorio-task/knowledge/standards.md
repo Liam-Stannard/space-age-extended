@@ -48,6 +48,10 @@ Each line: the standard, Liam's words or the decision, and the date.
   connected to should be as tall as the diameter of the pipe so the edge
   of the pipe doesnt overhang over the edge of the wall OR the structure
   should curve to cater for where the pipe should be").
+- A pipe-height casing may carry the flow unseen, as vanilla's foundry
+  does; a run that shows is supported plumbing, not loose elbows (Liam,
+  induction foundry, 2026-11-09: "Still don't look like realistic
+  structures"; "Vanilla's way").
 - Clipping is checked by eye as well as by `--collide`, with crops of
   every run's ends (Liam, 2026-10-21: "When the artist reviews can it
   check for clipping").
