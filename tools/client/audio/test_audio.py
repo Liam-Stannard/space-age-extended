@@ -13,9 +13,16 @@ need no game client.
   or the second (the recording), and leaves no raw/ behind. A stand-in for
   launch.sh is used: no Factorio is started. The second case starts the sound
   guard, which only reads (pactl, pw-metadata, pw-dump) and stops its helpers.
+- analyse.run on synthetic recordings (no client): the crusher's stroke sheet
+  drawn grab by grab as its frame_sequence plays it (4 ticks an entry), the
+  markers' flashes and clicks, and the shipped sounds mixed in on their
+  entries. On entries 50, 58, 6, 20 and 28 every pass is on time; the trip
+  moved 3 entries on is judged late. The same sheet without a frame_sequence,
+  its frames played in order, is judged in frames as before.
 """
 
 import json
+import math
 import os
 import signal
 import sys
@@ -96,6 +103,213 @@ class Labels(unittest.TestCase):
         # case above is a real one.
         got, _ = labels(("pawl", "trip"))
         self.assertEqual(got.get(1.805), "pawl")
+
+
+REPO = HERE.parents[2]
+CRUSHER_SPEC = HERE / "specs/drop-crusher.json"
+
+
+def build_run(out, spec, repo, cues, ticks_per_step=4, work_ticks=600, seed=3):
+    """A recording as capture.py leaves it (raw/, geometry.json,
+    probe-status.jsonl), drawn and mixed here instead of by a client.
+
+    The stroke sheet's frames are cut and scaled as Stroke cuts them and laid
+    on a fixed noisy ground, 1 px right and 1 px up of where the spec puts them
+    (for the registration to find). Every 2 ticks a grab (30 fps), half a tick
+    after the tick it shows (grabs are not locked to the game's ticks): before
+    the start the idle (sheet frame 0), from it the animation, one step
+    (entry, or sheet frame without a frame_sequence) every ticks_per_step
+    ticks, from step 0. Markers flash and click on capture ticks 20 and 50,
+    the machine starts on tick 80. cues: [(sound name, step)]: the file is
+    played on the tick each pass of that step starts, 6 ms late (the engine's
+    chain), up to 25 ticks before the recording ends (a pass closer to
+    the end is not judged, so its sound would be a stray)."""
+    from PIL import Image
+    import random
+    out = Path(out)
+    raw = out / "raw"
+    raw.mkdir(parents=True)
+    rnd = random.Random(seed)
+    w, h, cam, fps = 400, 300, (300.0, 230.0), 30
+    st = spec["stroke"]
+    seq = analyse.sequence_of(st) or list(range(st["frame_count"]))
+    k = st["scale"] * spec.get("zoom", 1)
+    sheet = Image.open(repo / st["filename"]).convert("RGBA")
+    sw, sh = max(1, round(st["width"] * k)), max(1, round(st["height"] * k))
+    x0 = int(round(cam[0] + st["shift"][0] * 32 - st["width"] * k / 2)) + 1
+    y0 = int(round(cam[1] + st["shift"][1] * 32 - st["height"] * k / 2)) - 1
+    ground = Image.frombytes("RGB", (w, h), bytes(rnd.randrange(60, 140) for _ in range(w * h * 3)))
+    pictures = []
+    for i in range(st["frame_count"]):
+        col, row = i % st["line_length"], i // st["line_length"]
+        fr = sheet.crop((col * st["width"], row * st["height"], (col + 1) * st["width"], (row + 1) * st["height"]))
+        im = ground.copy()
+        im.paste(fr.resize((sw, sh), Image.BOX), (x0, y0), fr.resize((sw, sh), Image.BOX))
+        pictures.append(im)
+    m = spec["markers"]
+    msz = m.get("size", 2) * 32
+    mx, my = cam[0] + m["offset"][0] * 32, cam[1] + m["offset"][1] * 32
+    marks, start, end = (20, 50), 80, 80 + work_ticks
+    t_video, t_audio = 5.0, 4.98       # the pipeline's clock, s, at capture tick 0
+
+    def step_at(tick):
+        return (tick - start) // ticks_per_step if tick >= start else 0
+
+    frames, vts = bytearray(), []
+    for tick in range(0, end + 1, 60 // fps):
+        im = pictures[seq[step_at(tick) % len(seq)]]
+        if any(mk <= tick < mk + m.get("ticks_shown", 6) for mk in marks):
+            im = im.copy()
+            im.paste((255, 255, 255), (int(mx), int(my), int(mx + msz), int(my + msz)))
+        frames += im.tobytes()
+        vts.append({"pts": int(round((t_video + (tick + 0.5) / 60) * 1e9))})
+    (raw / "video.rgb").write_bytes(bytes(frames))
+    (raw / "video.json").write_text(json.dumps({"width": w, "height": h, "format": "RGB", "frames": vts}))
+
+    n_samples = int((t_video + (end + 30) / 60 - t_audio) * RATE)
+    mix = [rnd.gauss(0, 0.002) for _ in range(n_samples)]
+
+    def place(x, tick, gain):
+        i0 = int(round((t_video + tick / 60 + 0.006 - t_audio) * RATE))
+        for i, v in enumerate(x[:max(0, n_samples - i0)]):
+            mix[i0 + i] += gain * v
+    click = [rnd.uniform(-1, 1) * math.exp(-i / (0.004 * RATE)) for i in range(int(0.03 * RATE))]
+    for mk in marks:
+        place(click, mk, 0.5)
+    files = {name: analyse.decode(repo / p, RATE) for name, p in spec["sounds"].items()}
+    gains = {"drop": 0.35, "pawl": 0.6, "trip": 0.5}
+    loop = len(seq) * ticks_per_step
+    for name, step in cues:
+        tick = start + step * ticks_per_step
+        while tick <= end - 25:
+            place(files[name], tick, gains.get(name, 0.5))
+            tick += loop
+    lr = array("h")
+    for v in mix:
+        s = max(-32767, min(32767, int(round(v * 32767))))
+        lr.extend((s, s))
+    (raw / "audio.s16").write_bytes(lr.tobytes())
+    bufs, pos = [], 0
+    while pos < n_samples:
+        n = min(1024, n_samples - pos)
+        bufs.append({"pts": int(round((t_audio + pos / RATE) * 1e9)), "n": n, "discont": pos == 0})
+        pos += n
+    (raw / "audio.json").write_text(json.dumps({"rate": RATE, "channels": 2, "format": "S16LE", "buffers": bufs}))
+    (out / "geometry.json").write_text(json.dumps({"camera_px_in_box": list(cam)}))
+    game = 1000                         # the game's tick at capture tick 0
+    rows = [{"tick": game + marks[0], "what": "marker 1"}, {"tick": game + marks[1], "what": "marker 2"},
+            {"tick": game + start, "what": "start"}]
+    (out / "probe-status.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+
+
+def synthetic_spec(**stroke):
+    spec = json.loads(CRUSHER_SPEC.read_text())
+    spec["name"] = "synthetic"
+    spec["capture"] = {"width": 400, "height": 300, "fps": 30, "rate": RATE}
+    spec["mp4"] = {"lead_seconds": 0.6, "video_bitrate": 200000, "audio_bitrate": 64000}
+    spec["markers"]["after_ready"] = [20, 50]
+    spec["stroke"].update(stroke)
+    return spec
+
+
+def analysed(spec, cues, **kw):
+    analyse.Gst.init(None)
+    with tempfile.TemporaryDirectory(prefix="sae-t06a-audio.") as d:
+        build_run(d, spec, REPO, cues, **kw)
+        analyse.run(d, spec, REPO)
+        res = json.loads((Path(d) / "accents.json").read_text())
+        res["frames_csv"] = (Path(d) / "frames.csv").read_text().splitlines()
+        return res
+
+
+def describe(res):
+    """What a test prints: the verdict, each cue's timing, the fit."""
+    return (f"pass={res['pass']}  {res['summary']}\n  fit: {res['fit']['rate_frames_per_s']} a second, "
+            f"sd {res['fit']['residual_sd_frames']}, ticks/entry {res.get('ticks_per_entry')}, "
+            f"tolerance {res['tolerance_frames']} = {res.get('tolerance_ticks')} ticks")
+
+
+class FrameSequence(unittest.TestCase):
+    """The crusher's 60-entry frame_sequence over its 44 sheet frames, judged
+    in entries (T06a)."""
+
+    CUES = [("pawl", 50), ("pawl", 58), ("pawl", 6), ("trip", 20), ("drop", 28)]
+
+    def check_on_time(self, res, skip=()):
+        for j in res["accents"]:
+            if (j["sound"], j["frame"]) in skip:
+                continue
+            with self.subTest(sound=j["sound"], entry=j["frame"]):
+                self.assertTrue(j["pass"])
+                self.assertGreaterEqual(len(j["passes"]), 2)
+                for p in j["passes"]:
+                    self.assertTrue(p["found"])
+                    self.assertEqual(p["timing"], "on time")
+                    self.assertLess(abs(p["frames_from_cue"]), 0.5)
+
+    def test_sounds_on_their_entries_are_on_time(self):
+        res = analysed(synthetic_spec(), self.CUES)
+        print("\n[on their entries] " + describe(res))
+        self.assertTrue(res["pass"], res["summary"])
+        self.assertEqual(len(res["accents"]), 5)
+        self.check_on_time(res)
+        self.assertEqual(res["stray_labelled_onsets"], [])
+        self.assertEqual(res["unit"], "frame_sequence entry")
+        self.assertAlmostEqual(res["ticks_per_entry"], 4.0, delta=0.05)
+        self.assertAlmostEqual(res["tolerance_ticks"], 4.0, delta=0.05)
+        self.assertAlmostEqual(res["fit"]["rate_frames_per_s"], 15.0, delta=0.05)
+        # Held frames told apart by time: every grab of sheet frame 13 (14,
+        # 1-based) after the start is on one of entries 13-19, and the
+        # entries are seen through the hold, not one entry for all of it.
+        head = res["frames_csv"][0].split(",")
+        self.assertEqual(head[-1], "entry")
+        start = res["start_s"]
+        held = [int(r.split(",")[-1]) for r in res["frames_csv"][1:]
+                if r.split(",")[2] == "13" and float(r.split(",")[1]) > start + 0.3]
+        self.assertTrue(held)
+        self.assertTrue(set(held) <= set(range(13, 20)), held)
+        self.assertGreaterEqual(len(set(held)), 3, held)
+
+    def test_a_trip_three_entries_on_is_late(self):
+        cues = [c for c in self.CUES if c[0] != "trip"] + [("trip", 23)]
+        res = analysed(synthetic_spec(), cues)
+        print("\n[trip on 23] " + describe(res))
+        self.assertFalse(res["pass"])
+        trip = next(j for j in res["accents"] if j["sound"] == "trip")
+        self.assertFalse(trip["pass"])
+        self.assertGreaterEqual(len(trip["passes"]), 2)
+        for p in trip["passes"]:
+            self.assertTrue(p["found"])
+            self.assertEqual(p["timing"], "late")
+            self.assertAlmostEqual(p["frames_from_cue"], 3.0, delta=0.5)
+            self.assertAlmostEqual(p["ticks_from_cue"], 12.0, delta=2.0)
+        self.assertEqual(trip["late"], len(trip["passes"]))
+        self.assertEqual(res["stray_labelled_onsets"], [])
+        self.check_on_time(res, skip={("trip", 20)})
+
+
+class NoFrameSequence(unittest.TestCase):
+    """Without a frame_sequence the clock counts sheet frames, as before T06a."""
+
+    def test_frames_in_order_judged_in_frames(self):
+        spec = synthetic_spec()
+        del spec["stroke"]["frame_sequence"]
+        spec["expect"]["accents"] = [{"sound": "drop", "frame": 21}, {"sound": "pawl", "frame": 30},
+                                     {"sound": "pawl", "frame": 36}, {"sound": "pawl", "frame": 4},
+                                     {"sound": "trip", "frame": 14}]
+        cues = [(a["sound"], a["frame"]) for a in spec["expect"]["accents"]]
+        res = analysed(spec, cues, ticks_per_step=5, work_ticks=560)
+        print("\n[no frame_sequence] " + describe(res))
+        self.assertTrue(res["pass"], res["summary"])
+        self.assertAlmostEqual(res["fit"]["rate_frames_per_s"], 12.0, delta=0.05)
+        for j in res["accents"]:
+            for p in j["passes"]:
+                self.assertLess(abs(p["frames_from_cue"]), 0.5)
+                self.assertNotIn("timing", p)
+        for key in ("unit", "ticks_per_entry", "tolerance_ticks"):
+            self.assertNotIn(key, res)
+        self.assertNotIn("unit", res["fit"])
+        self.assertEqual(res["frames_csv"][0], "i,t_s,frame,score,next_frame,next_score")
 
 
 FAKE_LAUNCH = """#!/usr/bin/env bash

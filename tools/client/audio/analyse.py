@@ -21,14 +21,28 @@ frame is compared with every one of them where that sheet frame is opaque
 (mean absolute luminance difference, the sprite placed by its shift from the
 camera, which sits on the machine, then registered by a small search). The
 best is the frame shown. Over the working part of the recording the shown
-frame is unwrapped (it only ever steps forward, 0 to 23 and round) and a line
-fitted to it: phase(t) = rate x t + c, phase + 0.5 being the middle of a frame
-shown from phase's whole number to the next. So any time t maps to a
-fractional animation frame, phase(t) mod frame_count; the frame shown at t is
-its whole part. The fit's residuals and the frames that disagree with it are
-reported. Each onset also carries frame_in_last_grab, the frame matched in the
-last video grab at or before it: the picture itself, not the fit, so it can
-trail the phase by up to one grab (1/fps).
+frame is unwrapped (it only ever steps forward, 0 to frame_count - 1 and
+round) and a line fitted to it: phase(t) = rate x t + c, phase + 0.5 being the
+middle of a frame shown from phase's whole number to the next. So any time t
+maps to a fractional animation frame, phase(t) mod frame_count; the frame
+shown at t is its whole part. The fit's residuals and the frames that disagree
+with it are reported. Each onset also carries frame_in_last_grab, the frame
+matched in the last video grab at or before it: the picture itself, not the
+fit, so it can trail the phase by up to one grab (1/fps).
+
+**With a frame_sequence** (spec.stroke.frame_sequence, 1-based sheet frames as
+the prototype's) the animation's clock counts the sequence's entries, not
+sheet frames, and everything above and below reads "entry" for "frame":
+phase, frame_by_phase, frame_in_last_grab and the accents' "frame" are
+entries counted from 0, modulo the sequence's length. Each grab is still
+matched to a sheet frame. A sheet frame shown on one entry only names its
+entry; those are unwrapped (stepping on at most 3 of them from one grab to the
+next, the rule above) and fitted first. A held sheet frame (on several
+entries) is then told apart by time: it is given the entry of that frame
+nearest the first fit's phase at its grab. The line is fitted again through
+every grab so placed; frames.csv gives each grab's entry beside its sheet
+frame. One entry lasts 1 / (animation_speed x crafting speed x
+animation_progress) ticks: 4 for the Drop Crusher at crafting speed 1.
 
 **Where the sounds start** is read from the audio alone. The mono mix is split
 into three bands (below 250 Hz, 250-2500 Hz, above 2500 Hz); each band's RMS
@@ -82,7 +96,17 @@ start as frame F starts, at phase F, so its error is phase - F in frames
 (negative: it sounded before frame F was on screen). Pass: every expected
 accent found on every pass of its frame from the start on (the first stroke
 after start-up included), each within tolerance_frames as recorded, and no
-labelled onset anywhere else.
+labelled onset anywhere else. An onset is looked for within tolerance_frames
++ 1 of each pass.
+
+With a frame_sequence, tolerance_frames counts entries: 1 is +-4 ticks for
+the Drop Crusher (+-1 / (animation_speed x crafting speed x
+animation_progress) ticks in general), and accents.json gives the measured
+figure as tolerance_ticks. An onset is looked for out to half the way to the
+nearest other cue of the same sound (half a loop each way for a sound cued
+once), never less than tolerance_frames + 1, so a sound a few entries off
+is judged "late" or "early" on its own cue rather than missing and stray;
+each pass carries its timing ("on time", "late", "early").
 """
 
 import json
@@ -441,6 +465,13 @@ def unwrap_fit(times, best, n, t_from):
             continue         # a frame that fits neither way: left out
         last = k
         pts.append((t, u))
+    return line_fit(pts, t_from)
+
+
+def line_fit(pts, t_from):
+    """phase = rate * t + c through (t, unwrapped frame) points, each at the
+    middle of its frame (u + 0.5); three rounds, each leaving out the points
+    more than a frame off the line before."""
     if len(pts) < 10:
         raise Failed("too few frames to fit the animation's clock")
     keep = pts
@@ -457,6 +488,76 @@ def unwrap_fit(times, best, n, t_from):
     return {"rate_frames_per_s": rate, "c": c, "residual_sd_frames": sd, "frames_used": len(keep),
             "frames_left_out": len(pts) - len(keep), "outlier_times": outliers[:50],
             "from_s": t_from, "to_s": pts[-1][0]}
+
+
+def sequence_of(stroke):
+    """The stroke's frame_sequence as 0-based sheet frames, or None without one."""
+    seq = stroke.get("frame_sequence")
+    if seq is None:
+        return None
+    n = stroke["frame_count"]
+    bad = [v for v in seq if not (isinstance(v, int) and 1 <= v <= n)]
+    if not seq or bad:
+        raise Failed(f"stroke.frame_sequence must list sheet frames 1..{n} (1-based); bad: {bad[:10]}")
+    return [v - 1 for v in seq]
+
+
+def sequence_fit(times, frames, seq, t_from):
+    """The fit in frame_sequence entries (see the header). seq: each entry's
+    0-based sheet frame; frames: the sheet frame matched in each grab.
+    Returns (fit, each grab's entry, None for a sheet frame the sequence never
+    shows)."""
+    n = len(seq)
+    places = {}
+    for e, k in enumerate(seq):
+        places.setdefault(k, []).append(e)
+    anchors = sorted(es[0] for es in places.values() if len(es) == 1)
+    if len(anchors) < 8:
+        raise Failed(f"the frame_sequence shows only {len(anchors)} sheet frames on one entry each: "
+                     "too few to fit the animation's clock")
+    rank = {e: r for r, e in enumerate(anchors)}
+    a = len(anchors)
+    # The sheet frames shown on one entry only, unwrapped in their own order
+    # (a held frame's entries between two of them count as no step).
+    pts, loop, last = [], 0, None
+    for t, k in zip(times, frames):
+        es = places.get(k, ())
+        if t < t_from or len(es) != 1:
+            continue
+        r = rank[es[0]]
+        if last is not None:
+            d = (r - last) % a
+            if d <= 3:
+                loop += r < last
+            elif d >= a - 3:
+                loop -= r > last
+            else:
+                continue     # a frame that fits neither way: left out
+        last = r
+        pts.append((t, loop * n + es[0]))
+    first = line_fit(pts, t_from)
+    rate, c = first["rate_frames_per_s"], first["c"]
+    # Every grab, held frames included, at its frame's entry nearest that line.
+    entries, pts, held = [], [], 0
+    for t, k in zip(times, frames):
+        es = places.get(k)
+        if not es:
+            entries.append(None)
+            continue
+        ph = rate * t + c
+        u = min((e + n * round((ph - 0.5 - e) / n) for e in es), key=lambda u: abs(u + 0.5 - ph))
+        entries.append(u % n)
+        if t >= t_from:
+            pts.append((t, u))
+            held += len(es) > 1
+    fit = line_fit(pts, t_from)
+    fit.update({"unit": "frame_sequence entry", "entries": n, "sheet_frames_on_one_entry": a,
+                "first_fit_on_those": {"rate_frames_per_s": round(rate, 5), "c": round(c, 5),
+                                       "residual_sd_frames": round(first["residual_sd_frames"], 5),
+                                       "frames_used": first["frames_used"],
+                                       "frames_left_out": first["frames_left_out"]},
+                "grabs_of_held_frames": held})
+    return fit, entries
 
 
 # ---------------------------------------------------------------- markers
@@ -571,7 +672,10 @@ def run(out, spec, repo):
     ticks = {r["what"]: r["tick"] for r in status if r["what"] != "tick"}
     video = Video(raw)
     audio = load_audio(raw)
-    n = spec["stroke"]["frame_count"]
+    # Without a frame_sequence the clock counts sheet frames; with one, its
+    # entries (see the header).
+    seq = sequence_of(spec["stroke"])
+    n = len(seq) if seq else spec["stroke"]["frame_count"]
     if len(video.t) < 30:
         raise Failed(f"only {len(video.t)} video frames were recorded")
 
@@ -606,22 +710,28 @@ def run(out, spec, repo):
     rows = []
     for i, t in enumerate(video.t):
         sc = stroke.scores(stroke.roi(video.image(i)), dx, dy)
-        order = sorted(range(n), key=lambda k: sc[k])
+        order = sorted(range(stroke.n), key=lambda k: sc[k])
         rows.append({"i": i, "t": round(t, 4), "frame": order[0], "score": round(sc[order[0]], 2),
                      "next": order[1], "next_score": round(sc[order[1]], 2)})
+    if seq:
+        fit, entries = sequence_fit(video.t, [r["frame"] for r in rows], seq, t_start + 0.3)
+        for r, e in zip(rows, entries):
+            r["entry"] = e
     with open(out / "frames.csv", "w") as f:
-        f.write("i,t_s,frame,score,next_frame,next_score\n")
+        f.write("i,t_s,frame,score,next_frame,next_score" + (",entry" if seq else "") + "\n")
         for r in rows:
-            f.write(f"{r['i']},{r['t']},{r['frame']},{r['score']},{r['next']},{r['next_score']}\n")
-    fit = unwrap_fit(video.t, [r["frame"] for r in rows], n, t_start + 0.3)
+            f.write(f"{r['i']},{r['t']},{r['frame']},{r['score']},{r['next']},{r['next_score']}"
+                    + (f",{'' if r['entry'] is None else r['entry']}" if seq else "") + "\n")
+    if not seq:
+        fit = unwrap_fit(video.t, [r["frame"] for r in rows], n, t_start + 0.3)
     rate, c = fit["rate_frames_per_s"], fit["c"]
 
     def phase(t):
         return (rate * t + c) % n
 
-    def shown(t):
+    def shown(t, key="entry" if seq else "frame"):
         before = [r for r in rows if r["t"] <= t]
-        return before[-1]["frame"] if before else None
+        return before[-1][key] if before else None
 
     # Label every onset and candidate from the start on, by its waveform: the
     # best match is taken out of the recording, and the rest looked at again.
@@ -635,13 +745,16 @@ def run(out, spec, repo):
     def event(cand, label):
         o, (name, v, start, gain) = cand["o"], cand["now"][0]
         ph = phase(o["t"])
-        return {"t_s": round(o["t"], 4), "since_start_s": round(o["t"] - t_start, 4),
-                "sound": label, "match": round(v, 3), "best_file": name,
-                "matches_in_recording": {r[0]: round(r[1], 3) for r in cand["raw"]},
-                "file_start_s": None if start is None else round(start, 5), "gain": round(gain, 4),
-                "rise_db": o["rise_db"], "level_db": o["level_db"],
-                "phase": round(ph, 3), "frame_by_phase": int(ph), "frame_in_last_grab": shown(o["t"]),
-                "phase_less_chain_delay": round(phase(o["t"] - chain), 3)}
+        e = {"t_s": round(o["t"], 4), "since_start_s": round(o["t"] - t_start, 4),
+             "sound": label, "match": round(v, 3), "best_file": name,
+             "matches_in_recording": {r[0]: round(r[1], 3) for r in cand["raw"]},
+             "file_start_s": None if start is None else round(start, 5), "gain": round(gain, 4),
+             "rise_db": o["rise_db"], "level_db": o["level_db"],
+             "phase": round(ph, 3), "frame_by_phase": int(ph), "frame_in_last_grab": shown(o["t"]),
+             "phase_less_chain_delay": round(phase(o["t"] - chain), 3)}
+        if seq:
+            e["sheet_frame_in_last_grab"] = shown(o["t"], "frame")
+        return e
 
     events = [event(cand, cand["now"][0][0]) for cand in taken]
     explained = []
@@ -661,6 +774,14 @@ def run(out, spec, repo):
     # frames (negative: before frame F was on screen), within tolerance_frames.
     exp = spec.get("expect", {})
     tol = exp.get("tolerance_frames", 1)
+    if seq:
+        # In entries: half the way to the nearest other cue of the same sound,
+        # half a loop for a sound cued once, never under tol + 1 (the header).
+        def reach_of(a):
+            gaps = [abs(circ(b["frame"] - a["frame"], n)) for b in exp.get("accents", [])
+                    if b is not a and b["sound"] == a["sound"]]
+            return max(tol + 1, min(gaps) / 2 if gaps else n / 2)
+        ticks_per_unit = 1 / rate / tick_s
     t_last = video.t[-1]
     judged = []
     labelled = [e for e in events if e["sound"] != "unknown"]
@@ -679,9 +800,10 @@ def run(out, spec, repo):
             passes.append(t_reach)
             k += 1
         hits = []
+        reach = reach_of(a) if seq else tol + 1
         for t_reach in passes:
             cands = [e for e in labelled if e["sound"] == a["sound"] and id(e) not in used
-                     and abs(e["t_s"] - t_reach) <= (tol + 1) / rate]
+                     and abs(e["t_s"] - t_reach) <= reach / rate]
             if not cands:
                 hits.append({"frame_reached_s": round(t_reach, 4), "found": False})
                 continue
@@ -695,11 +817,18 @@ def run(out, spec, repo):
             hits.append({"frame_reached_s": round(t_reach, 4), "found": True, "onset_s": e["t_s"],
                          "phase": e["phase"], "frames_from_cue": off, "frames_from_cue_less_chain_delay": off_c,
                          "frame_in_last_grab": e["frame_in_last_grab"], "within_tolerance": within})
+            if seq:
+                hits[-1]["ticks_from_cue"] = round(off * ticks_per_unit, 2)
+                hits[-1]["timing"] = "on time" if within else ("late" if off > 0 else "early")
         good = bool(hits) and all(h.get("within_tolerance") for h in hits)
         ok = ok and good
         judged.append({"sound": a["sound"], "frame": a["frame"], "passes": hits,
                        "measured_phases": [h["phase"] for h in hits if h["found"]],
                        "missing": sum(1 for h in hits if not h["found"]), "pass": good})
+        if seq:
+            judged[-1]["reach_entries"] = reach
+            for word in ("late", "early"):
+                judged[-1][word] = sum(1 for h in hits if h.get("timing") == word)
     stray = [e for e in labelled if id(e) not in used]
     if stray and exp.get("accents"):
         ok = False
@@ -709,8 +838,10 @@ def run(out, spec, repo):
     mp4 = write_mp4(out / f"{spec.get('name', 'capture')}.mp4", video, audio, t_from, video.t[-1], spec)
 
     summary = "; ".join(
-        f"{j['sound']} {j['frame']}: at {j['measured_phases']}"
-        + (f", {j['missing']} missing" if j["missing"] else "") + ("" if j["pass"] else " FAIL") for j in judged)
+        f"{j['sound']} {'entry ' if seq else ''}{j['frame']}: at {j['measured_phases']}"
+        + (f", {j['missing']} missing" if j["missing"] else "")
+        + "".join(f", {j[w]} {w}" for w in ("late", "early") if j.get(w))
+        + ("" if j["pass"] else " FAIL") for j in judged)
     if stray:
         summary += f"; {len(stray)} labelled onset(s) on no expected frame"
     result = {
@@ -738,6 +869,11 @@ def run(out, spec, repo):
         "tolerance_frames": tol,
         "mp4": mp4,
     }
+    if seq:
+        # What the tolerance is in game ticks, at the rate measured.
+        result["unit"] = "frame_sequence entry"
+        result["ticks_per_entry"] = round(ticks_per_unit, 3)
+        result["tolerance_ticks"] = round(tol * ticks_per_unit, 2)
     (out / "accents.json").write_text(json.dumps(result, indent=1))
     sheet(out, video, stroke, rows, events, dx, dy)
     return {"pass": ok, "summary": summary, "mp4": mp4["path"]}
@@ -765,7 +901,8 @@ def sheet(out, video, stroke, rows, events, dx, dy):
         bg.alpha_composite(pic)
         im.paste(bg.convert("RGB").resize((cw, chh), Image.NEAREST), (cw + 25, y + 18))
         d.text((5, y + 2), f"{e['t_s']:.3f} s  {e['sound']}  phase {e['phase']:.2f}  "
-                           f"recorded | sheet frame {rows[i]['frame']}", fill=(255, 255, 255))
+                           f"recorded | sheet frame {rows[i]['frame']}"
+                           + (f", entry {rows[i]['entry']}" if "entry" in rows[i] else ""), fill=(255, 255, 255))
     im.save(out / "onset-frames.png")
 
 
