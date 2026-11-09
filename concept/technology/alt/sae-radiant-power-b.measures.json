@@ -1,0 +1,77 @@
+{
+ "_note": "radiant blue: opaque pixels (alpha > 200) with B > R + 40 and B > 120; near-white: all channels >= 240, at 256. a is the main entry (strips/sae-radiant-power.png), b the alternate (tech_buildings_alt.json)",
+ "b": {
+  "strip": {
+   "size": [
+    480,
+    256
+   ],
+   "mode": "RGBA",
+   "alpha_outside_levels": 0
+  },
+  "framing": {
+   "opaque_bbox_w": 242,
+   "opaque_bbox_h": 174,
+   "share": 0.425
+  },
+  "tonal": {
+   "p5": 3,
+   "p50": 88,
+   "p95": 179
+  },
+  "shadow_px": 2307,
+  "radiant_blue_px": {
+   "256": 38,
+   "64": 2
+  },
+  "near_white_px_256": 12
+ },
+ "a": {
+  "strip": {
+   "size": [
+    480,
+    256
+   ],
+   "mode": "RGBA",
+   "alpha_outside_levels": 0
+  },
+  "framing": {
+   "opaque_bbox_w": 242,
+   "opaque_bbox_h": 188,
+   "share": 0.399
+  },
+  "tonal": {
+   "p5": 5,
+   "p50": 85,
+   "p95": 178
+  },
+  "shadow_px": 1795,
+  "radiant_blue_px": {
+   "256": 12,
+   "64": 1
+  },
+  "near_white_px_256": 25
+ },
+ "vanilla_range": {
+  "opaque_long_side": [
+   210,
+   248
+  ],
+  "share": [
+   0.373,
+   0.706
+  ],
+  "p50": [
+   68,
+   152
+  ],
+  "p95": [
+   175,
+   236
+  ],
+  "shadow_px": [
+   872,
+   3819
+  ]
+ }
+}

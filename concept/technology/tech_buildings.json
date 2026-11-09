@@ -57,6 +57,22 @@
   "world": 0.5,
   "sun": 1.5
  },
+ "sae-vent-tapping": {
+  "_note": "the Vent Pump (Gas Lift Tower): its icon mode's whole tower, the north variant, working (set_pose 4: the melt in the riser and the helium in its glass lit, a charge's peak), turned corner-on as the others. Sun x2.0, not x1.5: its paints are darker than the others' (its own sun is already 13.5 to the rig's 6), and x1.5 left p95 at 163, p50 62 (world 0.75 instead: 165, 65); x2.0 gives 183, 71, its near-white pixels (143) level with the Drop Crusher's (142)",
+  "model": "concept/vent-pump/model/vent_pump.py",
+  "yaw": 28,
+  "pose": null,
+  "world": 0.5,
+  "sun": 2.0
+ },
+ "sae-radiant-power": {
+  "_note": "the Radiant Generator (Carousel Foundry): its icon mode's whole machine working at frame 0, the windows at radiant.py's working-plate light and the lamps lit, turned corner-on as the others",
+  "model": "concept/radiant-generator/model/radiant_generator.py",
+  "yaw": 28,
+  "pose": null,
+  "world": 0.5,
+  "sun": 1.5
+ },
  "_world_note": "world 0.5: the rig's 0.26 left the buildings' p95 at 137-148, under Space Age's technology icons' 175-236 (round 3); the Gas Pump's icon mode already lifts its own to 0.6",
  "_sun_note": "sun x1.5 (x1.25 the Gas Pump): world 0.5 alone left p95 at 140-152 (round 4), under Space Age's 175-236"
 }

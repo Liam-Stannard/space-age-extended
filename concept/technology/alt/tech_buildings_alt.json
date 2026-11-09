@@ -1,0 +1,33 @@
+{
+ "sae-radiant-power": {
+  "_note": "ALTERNATE b, for Liam to choose against the main entry (concept/technology/tech_buildings.json): the Radiant Generator's icon mode as there (frame 0, windows at radiant.py's working-plate light, lamps lit), but turned -20 deg, corner-on the other way, so the collector head's bullseye port (which faces due south, the camera) stands 20 deg off the camera instead of 28; every window's plate emission x4 (rg_window 2.5, rg_floor 0.6, the tubes 0.09 x their frame-0 chase share, round 7's curves at t=0), set as mat_inputs; sun x1.6 (x1.5 with emission x2.5 gave p95 174, one under Space Age's 175). The well's mouth is not raised: at frame 0 its lid is shut and well_lit(0) is 0. Not emit: the windows' emission colour is radiant.py's ramp, node-linked, so emit would multiply blue by blue (tint and dim), not brighten",
+  "model": "concept/radiant-generator/model/radiant_generator.py",
+  "yaw": -20,
+  "pose": null,
+  "mat_inputs": {
+   "rg_window": {
+    "Emission Strength": 10.0
+   },
+   "rg_floor": {
+    "Emission Strength": 2.4
+   },
+   "rg_tube0": {
+    "Emission Strength": 0.36
+   },
+   "rg_tube1": {
+    "Emission Strength": 0.3227
+   },
+   "rg_tube2": {
+    "Emission Strength": 0.2623
+   },
+   "rg_tube3": {
+    "Emission Strength": 0.2623
+   },
+   "rg_tube4": {
+    "Emission Strength": 0.3227
+   }
+  },
+  "world": 0.5,
+  "sun": 1.6
+ }
+}

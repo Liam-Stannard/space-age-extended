@@ -200,7 +200,8 @@ data:extend({
     {
       { type = "unlock-recipe", recipe = "sae-vent-pump" }
     },
-    { type = "craft-item", item = "sae-vacuum-furnace" }),
+    { type = "craft-item", item = "sae-vacuum-furnace" },
+    "__space-age-extended__/graphics/technology/sae-vent-tapping.png"),
 
   -- Power that does not run out, earned by the first machine that outgrows the
   -- turbines.
@@ -228,7 +229,8 @@ data:extend({
       { type = "unlock-recipe", recipe = "sae-radiant-generator" },
       { type = "unlock-recipe", recipe = "sae-radiant-crushing" }
     },
-    { type = "craft-item", item = "sae-vent-pump" })
+    { type = "craft-item", item = "sae-vent-pump" },
+    "__space-age-extended__/graphics/technology/sae-radiant-power.png")
 })
 
 -- Fulgora <-> Aquilo. Available once both worlds are running, which is what
