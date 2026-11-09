@@ -102,9 +102,11 @@ NF = 24                             # the 24-frame loops (spec 6.2): ~1.7 s at 1
 PRESS_NF = 16                       # the filter press, once per craft
 # each layer's animation_speed, as its prototype sets it (machines.lua, at the graphics set's
 # animation_progress 1): the 24-frame parts RP_SPEED, 14/60 (the main animation's layers and the legs);
-# the press RP_PRESS_SPEED, 7/60, over a 140-entry frame_sequence there (not declared here)
+# the press RP_PRESS_SPEED, 7/60, over RP_PRESS_SEQUENCE: each of its 16 frames twice, then frame 1
+# held 108 times, 140 entries, 1200 ticks, one craft (PRESS_HOLD, the same sequence written short)
 SPEED = 14 / 60
 PRESS_SPEED = 7 / 60
+PRESS_HOLD = dict(frame=1, entries=108, each=2)
 PRESS_LAND = 10                     # the frame the cake lands in the drop box: the sound accent
 STROKE = 0.18                       # the press's opening stroke, tiles, west
 
@@ -210,7 +212,7 @@ DECL = dict(
         # (in a one-direction run of the turned building the path is declared as it moves there,
         # turned as the building is: PRESS_PATH_RUN)
         dict(name="press", frames=PRESS_NF, motion="slide", path=PRESS_PATH_RUN, track="pack",
-             animation_speed=PRESS_SPEED),
+             hold=PRESS_HOLD, animation_speed=PRESS_SPEED),
         *[dict(name=n_, frames=NF, motion="cycle", animation_speed=SPEED) for n_ in GAUGES if n_ not in HIDDEN],
         *([dict(name="drip", frames=NF, motion="cycle", animation_speed=SPEED)] if "drip" not in HIDDEN else []),
     ],
