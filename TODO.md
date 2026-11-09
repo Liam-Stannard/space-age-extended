@@ -47,12 +47,11 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 Each building is modelled through `tools/blender/` from its spec, signed off by
 Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
-- **Radiant Generator** — concept signed off (the Carousel Foundry,
-  round 7); spec wording, then the model, then wiring with an
-  `idle_animation`, so a fuelless generator stops glowing.
-- **Reaction Plant** — re-modelled in four directions so its pipes
-  follow the flow and every connection has a fitting (Liam,
-  2026-10-20), then re-wired (`reaction-plant-wiring`).
+- **The Vulcanus ↔ Fulgora tree wears stand-in art**: the induction
+  foundry, ozone collector and magnetic collector are tinted vanilla
+  buildings; the magnetic chunk is the metallic chunk with a blue rim;
+  obsidian, the tree's items and its eleven technologies wear tinted
+  vanilla icons. Concepts in progress (`vf-tree-concepts`).
 
 ## Blender pipeline
 
@@ -76,11 +75,14 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 ## Trees
 
-- **Four capstones are stubs.** Magnetar alloy, cultured alloy, bio-polymer
-  and cryoprotectant each craft from one iron plate
-  (`prototypes/core/endgame.lua`). Each needs a real tree — an anchor, a chain
-  on each world, a capstone building and 3–10 technologies — with
-  [Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) as the worked example.
+- **Three trees are still to design.** Vulcanus ↔ Gleba (cultured alloy),
+  Gleba ↔ Aquilo (cryoprotectant) and Vulcanus ↔ Aquilo (its capstone to be
+  designed; it takes bio-polymer's place). Their capstones craft from one iron
+  plate (`prototypes/core/endgame.lua`). Each needs a real tree — an anchor, a
+  chain on each world, a capstone building and an estimated 3–10 technologies
+  — with [Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) and
+  [Vulcanus ↔ Fulgora](design/trees/vulcanus-fulgora.md) as the worked
+  examples.
 
 ## Art
 
