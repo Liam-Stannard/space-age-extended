@@ -6,6 +6,8 @@
                                    [--collide-allow <pattern> ...]
                                    [--footprint WxH] [--directions one|four|horizontal-vertical]
                                    [--plate <stem>] [--title <text>] [--max-side <px>]
+                                   [--graphics-set crafting-machine|mining-drill|none]
+                                   [--animation-progress <x>]
 
 <src> is one of
   - render.sh's <out-dir>: its sheets/ (packed sheets and meta.json) and renders/render.json
@@ -70,6 +72,19 @@ Options
                        hold a 4x join panel's caption). ports-vs-assembler-3.png, measure_ports.py's
                        6x picture, is written at its own size (3864 x 960 for four ports), and
                        drawn into the sheet within the limit.
+  --graphics-set G     the graphics set the building's prototype draws its animation with, which
+                       says the animation_progress the engine plays it at when the prototype sets
+                       none (the timing model, below): crafting-machine (an assembling machine, a
+                       furnace: CraftingMachineGraphicsSet, default 0.5), mining-drill
+                       (MiningDrillGraphicsSet, default 1) or none (a generator, a burner
+                       generator: no animation_progress, the rate as declared). Refused for a
+                       resource model (its stateless_visualisation has no graphics set).
+  --animation-progress X  the graphics set's animation_progress as its prototype sets it, a number
+                       above 0 (the Reaction Plant's 1, the electromagnetic plant's 0.25): over
+                       --graphics-set's default. Refused with --graphics-set none and for a
+                       resource model. With neither option the progress is 1 -- the figures as
+                       before this option existed, which for a crafting machine that sets none are
+                       twice the engine's rate -- and measures.json and the output say so.
 
 Exit status: 0 when every gate passes; 1 when a join shows a gap or the collide step finds a clash
 (or cannot run), after measures.json and the sheet are written, naming what failed; 2 on
@@ -124,8 +139,11 @@ The figures, per direction (all at 1x, 64 px a tile; "covered" = alpha > 128):
              with the wrap from the last frame to the first against them, and per layer the
              same moving_pct with that layer alone over the plate, over the frames it shows.
              Timed, it adds timing (loop_ticks, loop_seconds, complete, frame_ticks: the tick
-             each drawn frame starts at, and per layer its entries, animation_speed, the
-             fraction read from it and its own loop in ticks) and, for information,
+             each drawn frame starts at; animation_progress, graphics_set and progress_from,
+             where the progress came from; at_crafting_speed 1; and per layer its entries,
+             animation_speed, the fraction read from it (as_fraction), per_tick (the entries
+             it goes forward a tick: as_fraction times the progress) and its own loop in
+             ticks) and, for information,
              strobe_own_loop_pct and _px: the pixels reversing 3 or more times in their own
              loop (that of the layers drawn at them), not the true loop -- a 24-frame layer
              repeats five times in the Reaction Plant's 3600 ticks, and once a loop five times
@@ -168,10 +186,25 @@ AnimationParameters.animation_speed "the default of `1` means one animation fram
 (60 fps)"; AnimationFrameSequence: "a list of 1-based frame indices into the spritesheet. The
 actual length of the animation will then be the length of the frame_sequence"; the runtime
 docs' LuaRendering.draw_animation: animation_speed "How many frames the animation goes forward
-per tick". So at tick t a layer shows entry floor(t x animation_speed) mod its actual length,
-every layer counted from tick 0 together (the floor and the common start are measure.py's reading:
-the docs give the rate, not the rounding or the phase; the engine's float speed is read as the
-fraction it was written for, 0.11666666666666667 as 7/60: exact_speed). A layer's own loop is
+per tick". A crafting machine's or a mining drill's graphics set scales that by its
+animation_progress (CraftingMachineGraphicsSet.animation_progress, default 0.5;
+MiningDrillGraphicsSet.animation_progress, default 1: the 2.1.24 docs give the defaults and no
+text), every layer of the set alike: the engine advances a crafting machine's animation
+animation_speed x crafting speed x animation_progress entries a tick (knowledge/engine.md,
+measured in a client 2026-10-09; the Drop Crusher's 0.2 played at 0.100 frames a tick, the
+Vacuum Furnace's 0.5 at crafting speed 1.5 at 0.375, machines.lua).
+Vanilla's assembler 3 sets 0.5 (base/prototypes/entity/assembler-pictures.lua), the
+electromagnetic plant 0.25, the electric and big mining drills 1. measure.py takes it from
+--animation-progress, else --graphics-set's default, else 1 (neither given: what it measured
+before it took the progress), and plays every layer at animation_speed x that progress, at
+crafting speed 1. So at tick t a layer shows entry floor(t x animation_speed x
+animation_progress) mod its actual length, every layer counted from tick 0 together (the floor
+and the common start are measure.py's reading: the docs give the rate, not the rounding or the
+phase; the engine's float speed, and the progress, are each read as the fraction they were
+written for, 0.11666666666666667 as 7/60: exact_speed). A progress of 0.5 doubles every tick
+figure (loop_ticks, frame_ticks, a layer's or a glow's own loop) and leaves the frames shown
+alone while a layer goes at most an entry a tick; above that it changes them too: entries
+[0, 1, 2] at speed 2 show frames 0, 2, 1 at progress 1 and 0, 1, 2 at 0.5. A layer's own loop is
 the ticks until entry 0 starts on a tick again; the true loop the least common multiple of the
 layers' own loops; a drawn frame is each tick at which any layer's frame changes (a held entry,
 or a repeated frame, is no change), the first the one showing at tick 0. A layer whose shown
@@ -182,19 +215,22 @@ TICK_CAP (216000) ticks, an hour of the game's: it is measured from tick 0 up to
 loop_complete false, measured_ticks and a note, and no wrap (wrap_px and wrap_within_steps null,
 no reversal counted across it): the cut's end is not a step the engine shows. The same holds for
 a timed glow's flicker and a timed layer alone, over their own loops (200 frames at 7/20 is 1400
-changes). Not modelled, as they scale every layer of a machine
-alike (except a constant_speed working visualisation's): the machine's speed
+changes). Not modelled, as it scales every layer of a machine alike (except a constant_speed
+working visualisation's): the machine's speed, its crafting speed times its modules
 (CraftingMachinePrototype.match_animation_speed_to_activity, "based on the machine's speed
-(boosted or slowed by modules)"; perceived_performance) and the graphics set's
-animation_progress (undocumented; vanilla's assembler 3 sets 0.5, the electromagnetic plant
-0.25). Layers put together in one Animation's `layers` run at the first one's speed
+(boosted or slowed by modules)"; perceived_performance); the figures are at crafting speed 1
+(timing's at_crafting_speed), so a machine of crafting speed 1.5 plays them 1.5 times as
+fast. Nor is a constant_speed working visualisation told apart: render.json does not say
+which layer is one, and the progress is applied to it as to every layer (unverified in a
+client). Layers put together in one Animation's `layers` run at the first one's speed
 (AnimationPrototype.layers: "animation_speed and max_advance of the first layer are used for
 all layers"); a speed of its own is a working visualisation of its own. A layer with neither a
-sequence nor a speed plays one frame a tick in sprite order, so a loop with none of either
-(untimed) is the least common multiple of the frame counts, as before T05b, and gives the same
-measures.json -- except where that multiple is over 240, which was measured over the longest
-layer's frames alone and is now the true loop (up to LOOP_CAP). With any of either (timed),
-motion gains timing, and a timed glow or layer alone its played order.
+sequence nor a speed, at progress 1, plays one frame a tick in sprite order, so a loop with none
+of either and progress 1 (untimed) is the least common multiple of the frame counts, as before
+T05b, and gives the same measures.json -- except where that multiple is over 240, which was
+measured over the longest layer's frames alone and is now the true loop (up to LOOP_CAP). With
+any of either, or a progress other than 1 (timed), motion gains timing, and a timed glow or
+layer alone its played order.
 
 The pipe joins, per connection in each direction. A vanilla straight pipe
 (base/graphics/entity/pipe, vertical for a north or south face, horizontal for east or
@@ -290,7 +326,7 @@ and the glow's addition are emulated here, not taken from a client.
 
 measures.json:
   {"source": {"src", "sheets", "render_json", "directions", "footprint", "px_per_tile",
-              "connections", "vanilla"},
+              "connections", "vanilla", "graphics_set", "animation_progress", "progress_from"},
    "directions": {"<direction>": {"layers": {...kinds...}, "ignored": [...],
                   "coverage": {...}, "tonal": {"plate", "still"}, "finish": {"plate", "still"},
                   "colour": {...}, "glow": {"<layer>": {...}}, "motion": {...} | null,
@@ -361,6 +397,9 @@ MAX_SIDE = 8000
 LOOP_CAP = 1200                     # motion: the most drawn frames of a loop measured (the timing model, above)
 TICK_CAP = 216000                   # motion: the most ticks of a loop measured, an hour of the game's (Timeline)
 SPEED_DEN = 10 ** 6                 # an animation_speed is read as the simplest fraction this close (exact_speed)
+# --graphics-set: the animation_progress the engine plays a set at when its prototype sets none (2.1.24 docs:
+# CraftingMachineGraphicsSet and MiningDrillGraphicsSet .animation_progress); "none" has no progress
+GRAPHICS_SETS = {"crafting-machine": 0.5, "mining-drill": 1, "none": 1}
 STEP_CHANGE = 8                     # layers_alone: a step counts a pixel with a channel or alpha over this apart
 MOST_CHANGE = 24                    # layers_alone: the two most different frames, a pixel more than this apart
 PAIRS_CAP = 120                     # layers_alone: most_changed_px over every pair only up to this many frames
@@ -898,9 +937,10 @@ def pack_checks(meta, dn):
 class Layer:
     """One sheet. Its timing: meta.json's frame_sequence (1-based) and animation_speed, which
     pack.py copies from render.json; declared, render.json's own (contract.sequence and speed),
-    for a meta.json packed before they were copied."""
+    for a meta.json packed before they were copied; progress, the graphics set's
+    animation_progress (a Fraction), which every entry a tick is multiplied by."""
 
-    def __init__(self, stem, kind, meta, working=False, declared=(None, None), at=0):
+    def __init__(self, stem, kind, meta, working=False, declared=(None, None), at=0, progress=Fraction(1)):
         self.stem, self.kind, self.meta, self.working = stem, kind, meta, working
         self.at = at        # its frame 0's place in the sheet: a resource's cell, stage x line_length + variation
         self.frames = int(meta.get("frames", 1))
@@ -914,9 +954,9 @@ class Layer:
                                       and math.isfinite(speed) and speed > 0):
             raise Usage(f"{stem}: animation_speed {speed!r} is not a number above 0")
         self.sequence, self.speed = seq, speed
-        self.timed = seq is not None or speed is not None
-        self.play = Play([k - 1 for k in seq] if seq else range(n),
-                         exact_speed(speed) if speed is not None else Fraction(1))
+        self.timed = seq is not None or speed is not None or progress != 1
+        self.declared_speed = exact_speed(speed) if speed is not None else Fraction(1)
+        self.play = Play([k - 1 for k in seq] if seq else range(n), self.declared_speed * progress)
         self._alone = None
 
     @property
@@ -934,7 +974,7 @@ class Layer:
 class Source:
     """The sheets, what each is, and how to place them."""
 
-    def __init__(self, src, footprint=None, directions=None, plate=None):
+    def __init__(self, src, footprint=None, directions=None, plate=None, graphics_set=None, animation_progress=None):
         src = os.path.abspath(src)
         if os.path.isfile(os.path.join(src, "sheets", "meta.json")):
             self.sheets, renders = os.path.join(src, "sheets"), os.path.join(src, "renders")
@@ -958,6 +998,9 @@ class Source:
             isinstance(m, dict) and m.get("kind") == "resource" for m in self.meta.values())
         if self.resource and directions not in (None, "one"):
             raise Usage(f"--directions {directions!r}: a resource model has one, its cells measured each")
+        self.graphics_set, self.animation_progress, self.progress_from = self.resolve_progress(
+            graphics_set, animation_progress)
+        self.progress = exact_speed(self.animation_progress)    # a Fraction, every Layer's (the timing model)
         self.directions = directions or d.get("directions") or self.infer_directions()
         if self.directions not in contract.DIRECTIONS:
             raise Usage(f"--directions {self.directions!r} is not one of {', '.join(contract.DIRECTIONS)}")
@@ -989,6 +1032,30 @@ class Source:
         self.size = self.canvas_size()
         self.origin = (self.size / 2, self.size / 2)
 
+    def resolve_progress(self, graphics_set, animation_progress):
+        """The graphics set's animation_progress (the timing model in the module docstring): as given
+        (--animation-progress), else --graphics-set's default, else 1. (graphics_set, progress,
+        where it came from)."""
+        if graphics_set is not None and graphics_set not in GRAPHICS_SETS:
+            raise Usage(f"--graphics-set {graphics_set!r} is not one of {', '.join(GRAPHICS_SETS)}")
+        if animation_progress is not None and not (
+                isinstance(animation_progress, (int, float)) and not isinstance(animation_progress, bool)
+                and math.isfinite(animation_progress) and animation_progress > 0):
+            raise Usage(f"--animation-progress {animation_progress!r} is not a number above 0")
+        if self.resource and (graphics_set is not None or animation_progress is not None):
+            raise Usage("--graphics-set and --animation-progress: a resource model has no graphics set (its "
+                        "stateless_visualisation plays at its own animation_speed)")
+        if graphics_set == "none" and animation_progress is not None:
+            raise Usage("--animation-progress with --graphics-set none: that graphics set has no animation_progress")
+        if animation_progress is not None:
+            return graphics_set, animation_progress, "--animation-progress, as the prototype sets it"
+        if graphics_set == "none":
+            return graphics_set, 1, "--graphics-set none: no animation_progress, the rate as declared"
+        if graphics_set is not None:
+            return graphics_set, GRAPHICS_SETS[graphics_set], f"--graphics-set {graphics_set}: the engine's default"
+        return None, 1, ("neither --graphics-set nor --animation-progress given: 1, the rate as declared "
+                         "(a crafting machine whose prototype sets none plays at half of it)")
+
     def infer_directions(self):
         keys = [k for k in self.meta if k != "checks"]
         if any(k.endswith("-vertical") or k.endswith("-horizontal") for k in keys):
@@ -1013,13 +1080,15 @@ class Source:
                     continue
                 stem = contract.named(p["sheet"], dn)
                 if stem in self.meta:
-                    layers.append(Layer(stem, p["kind"], self.meta[stem], working=p["kind"] in ("glow", "paint")))
+                    layers.append(Layer(stem, p["kind"], self.meta[stem], working=p["kind"] in ("glow", "paint"),
+                                        progress=self.progress))
             for a in self.decl["animations"]:
                 stem = contract.named(a["name"], dn)
                 kind = {"paint": "anim", "light": "light", "glow": "glow-anim"}[a.get("kind", "paint")]
                 if stem in self.meta:
                     layers.append(Layer(stem, kind, self.meta[stem], working=a.get("working", False),
-                                        declared=(contract.sequence(self.decl, a), contract.speed(self.decl, a))))
+                                        declared=(contract.sequence(self.decl, a), contract.speed(self.decl, a)),
+                                        progress=self.progress))
         else:
             suffix = f"-{dn}" if dn else ""
             for k, m in self.meta.items():
@@ -1051,7 +1120,7 @@ class Source:
                 else:
                     ignored.append(k)
                     continue
-                layers.append(Layer(k, kind, m, working=kind == "glow"))
+                layers.append(Layer(k, kind, m, working=kind == "glow", progress=self.progress))
         layers.sort(key=lambda lay: lay.kind != "plate")
         ignored += [lay.stem + " (a white cut the engine tints: not drawn here)" for lay in layers
                     if lay.kind == "light"]
@@ -1290,10 +1359,12 @@ def measure_direction(src, dn, conns):
             out["motion"]["timing"] = dict(
                 loop_ticks=tl.ticks, loop_seconds=round(tl.ticks / 60, 3) if tl.ticks <= TICK_CAP else None,
                 complete=tl.complete, measured_ticks=tl.measured_ticks, frame_ticks=tl.frames,
+                animation_progress=src.animation_progress, graphics_set=src.graphics_set,
+                progress_from=src.progress_from, at_crafting_speed=1,
                 layers={lay.stem: dict(entries=lay.play.n, frame_sequence=lay.sequence is not None,
-                                       animation_speed=lay.speed, as_fraction=f"{lay.play.speed}",
-                                       loop_ticks=lay.play.loop, **({"never_changes": True} if lay.play.static
-                                                                    else {}))
+                                       animation_speed=lay.speed, as_fraction=f"{lay.declared_speed}",
+                                       per_tick=f"{lay.play.speed}", loop_ticks=lay.play.loop,
+                                       **({"never_changes": True} if lay.play.static else {}))
                         for lay in sc.moving})
         if not tl.complete:
             out["motion"]["loop_complete"] = False
@@ -2066,7 +2137,9 @@ def build_sheet(title, result, scenes, maps, pictures, refs, ports_png, max_side
     blocks = []
     head = [f"source: {result['source']['src']}", f"directions: {result['source']['directions']}, footprint "
             f"{result['source']['footprint'][0]}x{result['source']['footprint'][1]} (as it faces north), 64 px a tile; "
-            f"ground {GROUND}, shadows at half strength, glow added (emulated, not from a client)"]
+            f"ground {GROUND}, shadows at half strength, glow added (emulated, not from a client)",
+            f"timing: animation_progress {result['source']['animation_progress']:g} "
+            f"({result['source']['progress_from']}), at crafting speed 1"]
     g = result["gates"]
     head.append("gates: joins " + ("none measured" if g["joins"] is None else "PASS" if g["joins"] else "FAIL")
                 + ", collide " + ("not run" if g["collide"] is None else "PASS" if g["collide"] else "FAIL"))
@@ -2184,6 +2257,8 @@ def run(argv):
     ap.add_argument("--plate")
     ap.add_argument("--title")
     ap.add_argument("--max-side", type=int, default=MAX_SIDE)
+    ap.add_argument("--graphics-set")
+    ap.add_argument("--animation-progress", type=float)
     a = ap.parse_args(argv)
     if not 400 <= a.max_side <= MAX_SIDE:
         raise Usage(f"--max-side {a.max_side}: between 400 and {MAX_SIDE}")
@@ -2195,7 +2270,8 @@ def run(argv):
     if a.collide_allow and not a.collide:
         raise Usage("--collide-allow without --collide: nothing to allow")
     allow_patterns(a.collide_allow)
-    src = Source(a.src, parse_footprint(a.footprint) if a.footprint else None, a.directions, a.plate)
+    src = Source(a.src, parse_footprint(a.footprint) if a.footprint else None, a.directions, a.plate,
+                 a.graphics_set, a.animation_progress)
     if src.resource and a.connection:
         raise Usage("--connection: a resource model has no pipe connections to join")
     conns = src.connections([parse_connection(c) for c in a.connection])
@@ -2207,7 +2283,9 @@ def run(argv):
 
     result = dict(source=dict(src=src.src, sheets=src.sheets, render_json=src.render_json,
                               directions=src.directions, footprint=src.footprint, px_per_tile=PPT,
-                              connections=[list(c) for c in conns], vanilla=a.vanilla))
+                              connections=[list(c) for c in conns], vanilla=a.vanilla,
+                              graphics_set=src.graphics_set, animation_progress=src.animation_progress,
+                              progress_from=src.progress_from))
     result["collide"] = collide(a.collide, out, paths.blender(), a.collide_allow) if a.collide else None
 
     result["directions"], scenes, maps, pictures = {}, {}, {}, {}
@@ -2240,6 +2318,8 @@ def run(argv):
         json.dump(result, f, indent=1)
 
     print(f"measures: {os.path.join(out, 'measures.json')}")
+    if any(lay.frames > 1 for dn in src.dirs for lay in src.layers[dn] + src.lights[dn]):
+        print(f"timing: animation_progress {src.animation_progress:g} ({src.progress_from}), at crafting speed 1")
     for s in result["sheets"]:
         print(f"sheet: {s['path']} {s['size'][0]}x{s['size'][1]}")
     failed = []

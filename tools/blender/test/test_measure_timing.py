@@ -50,7 +50,10 @@ is run on them. Exits 0 when every case below comes out as listed, 1 naming thos
                flicker     press-glow: flicker_step_pct 98.3, range_pct 147.5 (its light's mean
                            over time, 1888000 / 232; frame 1 held 220 of its 232 ticks)
                timing      loop_ticks 696, loop_seconds 11.6, complete, frame_ticks from
-                           [0, 3, 4, 6, 8, 9, 12, 15, 16, ...], each layer's entries, speed and loop
+                           [0, 3, 4, 6, 8, 9, 12, 15, 16, ...], each layer's entries, speed, per_tick
+                           (its speed: measure.py run with neither --graphics-set nor
+                           --animation-progress, progress 1; test_measure_progress.py has the rest)
+                           and loop
                alone       press played [0, 1, 2, 3], step_px [36, 36, 36], wrap 36, most changed
                            36 between [2, 3]; press-glow the same with 100; beacon played [0, 1],
                            step_px [16], wrap 16
@@ -202,10 +205,12 @@ def test_fixture(out):
     check("fixture: timing", (tm.get("loop_ticks"), tm.get("loop_seconds"), tm.get("complete"))
           == (696, 11.6, True) and tm.get("frame_ticks") == ticks, f"got {dict(tm, frame_ticks=None)}")
     check("fixture: timing layers", tm.get("layers") == {
-        "press": dict(entries=116, frame_sequence=True, animation_speed=0.5, as_fraction="1/2", loop_ticks=232),
-        "beacon": dict(entries=2, frame_sequence=False, animation_speed=1 / 3, as_fraction="1/3", loop_ticks=6),
+        "press": dict(entries=116, frame_sequence=True, animation_speed=0.5, as_fraction="1/2", per_tick="1/2",
+                      loop_ticks=232),
+        "beacon": dict(entries=2, frame_sequence=False, animation_speed=1 / 3, as_fraction="1/3", per_tick="1/3",
+                       loop_ticks=6),
         "press-glow": dict(entries=116, frame_sequence=True, animation_speed=0.5, as_fraction="1/2",
-                           loop_ticks=232)}, f"got {tm.get('layers')}")
+                           per_tick="1/2", loop_ticks=232)}, f"got {tm.get('layers')}")
     la = r["layers_alone"]
     for stem, px in (("press", 36), ("press-glow", 100)):
         a = la[stem]
