@@ -103,6 +103,8 @@ VANES = 12
 DECL = dict(
     footprint=(3, 5),
     directions="horizontal-vertical",
+    # a generator (crust-tap.lua, from steam-turbine): its animation is in no graphics set
+    graphics_set="none",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

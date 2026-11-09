@@ -51,6 +51,7 @@
   "frames": 16,
   "line_length": 16
  },
+ "graphics_set": "crafting-machine",
  "checks": {
   "centre_offset_px": 0.0,
   "edge_alpha_max": 0,

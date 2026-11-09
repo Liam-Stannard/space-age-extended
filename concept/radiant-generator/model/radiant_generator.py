@@ -100,6 +100,8 @@ window["animation_speed"] = SPEED
 DECL = dict(
     footprint=(5, 5),
     directions="one",               # spec 5: one picture for all four directions
+    # a burner generator (corridor.lua): its animation and idle_animation are in no graphics set
+    graphics_set="none",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

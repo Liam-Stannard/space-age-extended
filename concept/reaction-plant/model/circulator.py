@@ -109,6 +109,9 @@ HIDDEN = ("coupling-compressor",)
 DECL = dict(
     footprint=(5, 5),
     directions="one",               # spec 5: one plate; the engine turns the ports
+    # an assembling machine whose graphics set sets animation_progress = 1 (machines.lua, rp_graphics_set)
+    graphics_set="crafting-machine",
+    animation_progress=1,
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

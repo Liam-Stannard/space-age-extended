@@ -178,6 +178,13 @@ direction, else {direction: [x, y]} for each of its directions (one shift given 
 written out for each); and working, false when not declared. A model without lights has no such key.
 A resource model's are carried the same way, after its sheets and before its "checks".
 
+The graphics set (render.json's graphics_set and animation_progress, contract.py: the graphics set
+the building's prototype draws its animation with, and its animation_progress when the prototype
+sets one): nothing is packed for them, but meta.json carries them as declared, for measure.py to
+play every layer at the rate the engine does -- "graphics_set" and, when declared,
+"animation_progress", after every sheet and the lights and before "checks". A model that declares
+neither has no such keys. A resource model declares neither (contract.py).
+
 Exits 1, naming the animation and the direction, when a turning part's centroid
 drifts by more than LIMIT_PX across its frames, or a sliding part's is more than
 LIMIT_PX off its declared curve or off its line in any frame, measured from frame 0
@@ -1178,6 +1185,7 @@ class Packer:
                                      blend_mode="additive")
         if "lights" in self.decl:
             self.meta[contract.LIGHTS_KEY] = lights_meta(self.decl)
+        self.meta.update(graphics_meta(self.decl))
         self.meta["checks"] = per[""] if dirs == [""] else per
         return self.meta
 
@@ -1200,6 +1208,12 @@ def lights_meta(decl):
         e["working"] = li.get("working", False)
         out[li["name"]] = e
     return out
+
+
+def graphics_meta(decl):
+    """render.json's graphics_set and animation_progress as meta.json carries them (the docstring):
+    each declared one, as declared."""
+    return {k: decl[k] for k in contract.GRAPHICS_KEYS if k in decl}
 
 
 def where(d):

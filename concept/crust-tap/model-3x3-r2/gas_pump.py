@@ -131,6 +131,8 @@ SIDERANE_HEX, HELIUM_HEX = "#A8D929", "#B6A6C8"     # spec 3.3 and A.5: the vent
 DECL = dict(
     footprint=(3, 3),
     directions="four",              # the whole machine turned, the root a quarter a direction
+    # a mining drill (crust-tap.lua, from pumpjack): its graphics set sets no animation_progress (1)
+    graphics_set="mining-drill",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

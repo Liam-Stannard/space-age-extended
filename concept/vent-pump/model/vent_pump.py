@@ -124,6 +124,8 @@ LENSES = ("lens-green", "lens-amber")
 DECL = dict(
     footprint=(3, 3),
     directions="four",              # each direction its own variation (the docstring); none is turned whole
+    # a mining drill (entities.lua, from pumpjack): its graphics set sets no animation_progress (1)
+    graphics_set="mining-drill",
     passes=[
         # the machine stopped: nothing lit, no moving part, the sight glass full and still
         dict(name="idle", kind="plate", sheet="base"),

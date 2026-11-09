@@ -104,6 +104,7 @@
   ],
   "animation_speed": 0.5
  },
+ "graphics_set": "crafting-machine",
  "checks": {
   "centre_offset_px": 0.0,
   "edge_alpha_max": 0,

@@ -282,6 +282,7 @@
    "working": true
   }
  },
+ "graphics_set": "none",
  "checks": {
   "centre_offset_px": -3.5,
   "edge_alpha_max": 0,

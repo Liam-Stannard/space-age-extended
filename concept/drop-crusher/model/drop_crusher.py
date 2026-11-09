@@ -237,6 +237,9 @@ CANVAS = (320, 304)                # entity origin at (160, 152); the shadow rea
 DECL = dict(
     footprint=(3, 3),
     directions="one",              # spec 5: north only
+    # an assembling machine (machines.lua, crafter()): its graphics set sets no animation_progress, so the
+    # engine plays the stroke at 0.5 of its speed (CraftingMachineGraphicsSet), the 240-tick loop
+    graphics_set="crafting-machine",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

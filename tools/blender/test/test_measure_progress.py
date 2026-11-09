@@ -11,7 +11,7 @@ committed sheets are read where they are, and assembler 3's sheets are copied fr
 (tools/paths.conf's FACTORIO_ROOT) under --out. Everything written is kept. Exits 0 when every case
 below comes out as listed, 1 naming those that do not.
 
-  play       entries [0, 1, 2] at speed 2 show frames 0, 2, 1 at progress 1 and 0, 1, 2 over 6 ticks at
+  play       entries [0, 1, 2] at speed 2 show frames 0, 2, 1 at progress 1 and 0, 1, 2 over 3 ticks at
              progress 1/2 (an entry every tick: none skipped); entries [0, 1] at speed 2 never change
              at progress 1, and do at 1/2. A Layer of meta.json speed 0.5 at progress 1/2: per tick 1/4.
   fixture    test_measure_timing.py's timed fixture (press 116 entries at 0.5, its glow, the beacon
@@ -33,7 +33,8 @@ below comes out as listed, 1 naming those that do not.
              --graphics-set none with --animation-progress; either option on a resource model.
   crusher    (T04b criterion 1) concept/drop-crusher/model/sheets, --footprint 3x3, --graphics-set
              crafting-machine: the stroke's 60 entries at 0.5 x 0.5 loop in 240 ticks (4 s), per_tick
-             1/4, 44 drawn frames; with neither option 120 (the figure before T04b); motion
+             1/4, 44 drawn frames; with --animation-progress 1 120 (the figure before T04b, which
+             its meta.json's graphics_set, T04d, now gives with neither option: 240); motion
              otherwise the same.
   assembler  (T04b criterion 2) vanilla's assembler 3, its sheets copied from the game's data: base
              frame 0 the plate, assembling-machine-3-anim 64 frames, 8 a row, the animation. The
@@ -236,7 +237,7 @@ def test_crusher(out):
     sheets = os.path.join(REPO, "concept", "drop-crusher", "model", "sheets")
     code, d, _ = measure_run(sheets, os.path.join(out, "crusher", "crafting"), "3x3",
                              "--graphics-set", "crafting-machine")
-    _, plain, _ = measure_run(sheets, os.path.join(out, "crusher", "plain"), "3x3")
+    _, plain, _ = measure_run(sheets, os.path.join(out, "crusher", "plain"), "3x3", "--animation-progress", "1")
     t = d["motion"]["timing"]
     st = t["layers"]["stroke"]
     print(f"        crusher: loop_ticks {t['loop_ticks']} ({t['loop_seconds']} s), stroke {st}")
@@ -246,7 +247,7 @@ def test_crusher(out):
     check("crusher: 60 entries at 0.5 x 0.5", (st["entries"], st["animation_speed"], st["per_tick"], st["loop_ticks"])
           == (60, 0.5, "1/4", 240), f"got {st}")
     check("crusher: 44 drawn frames", d["motion"]["loop_frames"] == 44, f"got {d['motion']['loop_frames']}")
-    check("crusher: with neither option 120 ticks, as before T04b",
+    check("crusher: at progress 1 120 ticks, as before T04b",
           plain["motion"]["timing"]["loop_ticks"] == 120, f"got {plain['motion']['timing']['loop_ticks']}")
     check("crusher: motion otherwise the same", unticked(d) == unticked(plain))
 

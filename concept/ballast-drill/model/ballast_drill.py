@@ -281,6 +281,8 @@ FACES = "NESW"
 DECL = dict(
     footprint=(5, 5),
     directions="four",
+    # a mining drill (machines.lua, from big-mining-drill): its graphics sets set no animation_progress (1)
+    graphics_set="mining-drill",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

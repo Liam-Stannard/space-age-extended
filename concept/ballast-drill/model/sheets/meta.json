@@ -311,6 +311,7 @@
   "frames": 24,
   "line_length": 24
  },
+ "graphics_set": "mining-drill",
  "checks": {
   "north": {
    "centre_offset_px": 0.0,

@@ -111,6 +111,8 @@
   "frames": 24,
   "line_length": 24
  },
+ "graphics_set": "crafting-machine",
+ "animation_progress": 1,
  "checks": {
   "centre_offset_px": 0.0,
   "edge_alpha_max": 0,

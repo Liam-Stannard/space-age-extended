@@ -615,6 +615,7 @@
   "kind": "glow",
   "animation_speed": 0.4
  },
+ "graphics_set": "mining-drill",
  "checks": {
   "north": {
    "centre_offset_px": 0.0,

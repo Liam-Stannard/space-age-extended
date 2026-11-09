@@ -99,6 +99,8 @@ PORT_CANVAS = (320, 320)              # the pictures reach a tile outside on eve
 DECL = dict(
     footprint=(3, 3),
     directions="one",                 # drawn once; only the input turns (spec 5)
+    # a furnace (machines.lua, from electric-furnace): its graphics set sets no animation_progress (0.5)
+    graphics_set="crafting-machine",
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),

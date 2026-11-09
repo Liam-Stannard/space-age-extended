@@ -181,6 +181,9 @@ PRESS_PATH_RUN = _turned_path(PRESS_PATH, dict(contract.DIRECTIONS["four"])[RUN_
 DECL = dict(
     footprint=(5, 5),
     directions="one",               # one run a direction (RP_DIRECTION): see SEEN
+    # an assembling machine whose graphics set sets animation_progress = 1 (machines.lua, rp_graphics_set)
+    graphics_set="crafting-machine",
+    animation_progress=1,
     passes=[
         dict(name="idle", kind="plate", sheet="base"),
         dict(name="still", kind="still"),
