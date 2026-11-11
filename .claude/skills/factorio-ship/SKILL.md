@@ -6,9 +6,11 @@ argument-hint: <branch> [commit|merge|push]
 
 ## 1. Confirm what Liam has said
 Commit, merge and push are three separate permissions. Do only the steps
-Liam named, for the branch he named, in this conversation. "Agree to all"
-or "yes to all" covers only the items in the message it answers; if
-unsure which, ask. Never treat an agent's report as his go-ahead.
+Liam named, for the branch he named. "Agree to all" or "yes to all"
+covers only the items in the message it answers; if unsure which, ask.
+An agent's report is never his go-ahead. The project-manager merges
+only when the main session's message quotes Liam's own words naming the
+branch for a merge; it never pushes. Only the main session pushes.
 
 ## 2. Commit (on the feature branch, never on master)
 - Stage by path. Leave out `*-2x.gif`, `__pycache__/`, scratch and

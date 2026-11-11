@@ -1,72 +1,43 @@
 ---
 name: factorio-brief
-description: Write the prompt for an artist, coder, code-reviewer, tester or project-manager agent working on this mod, from a task file. Adds the standing rules every agent needs (Blender on the GPU, bounded waits, scratch, processes, safe game clients, no commit) so a brief never forgets them. Use before launching or resuming any agent.
+description: Write the prompt for an artist, coder, code-reviewer, tester, analyst or project-manager agent working on this mod, from one ticket of a task file - what the ticket is, where the agent works and from which base commit, and what it must leave alone. The standing rules come from the factorio-standing-rules skill every agent preloads. Use before launching or resuming any agent.
 argument-hint: <task file> <ticket T<nn>>
 ---
 
 Write the brief for one ticket of a task (`.claude/tasks/<name>.md`,
-ticket `T<nn>`), for the ticket's owner role. One brief, one ticket: never
-brief an agent with a whole task. Return the brief text, then launch the
-agent with it, and set the ticket's Status to "in progress".
-
-The brief quotes the ticket whole (Inputs, Do, Output, Acceptance
-criteria, Sign-off, Out of scope) and the agent's report answers it
-criterion by criterion. When the ticket is done, its sign-off owner
-checks it: the code-reviewer or tester agent, or Liam; only then is the
-Status "signed off" and the next ticket briefed.
+ticket `T<nn>`), for the ticket's owner. One brief, one ticket: never
+brief an agent with a whole task. Return the brief, launch the agent
+with it, add its line to `.claude/tasks/RUNNING`, and set the ticket's
+Status to "in progress". When the ticket is done its sign-off owner
+checks it; only then is it "signed off" and the next ticket briefed.
 
 ## 1. What the brief names
-- The task file's absolute path and the section to run, quoted by title.
+- The task file's absolute path and the ticket, quoted whole (header,
+  Do, Output, Acceptance, Sign-off).
 - The worktree and branch, as absolute paths
   (`/home/lstan/data/git/space-age-extended/.claude/worktrees/<branch>`).
-- Where the role may write (a folder, never "anywhere"), and what it must
-  not touch: the spec, `graphics/`, `prototypes/`, `tools/`, `design/` and
-  any `.md` file unless the task gives it.
+- The base commit: the commit the ticket started from. A resumed
+  ticket keeps that base after its own work-in-progress commits, so a
+  review from it still covers all of the ticket's work.
+- Where the role may write (a folder, never "anywhere") and what it
+  must not touch.
 - What to read first: the building's spec, the previous round's folder,
-  and the current finish standard (the latest signed-off model).
-- Other agents working at the same time, and their worktrees, so it
-  leaves them alone.
+  the latest signed-off model as the finish standard.
+- The other agents running (from `RUNNING`) and their worktrees, and
+  whether a render slot is free.
+- For a project-manager: the attribution lines its commits end with.
 
-## 2. The standing rules, in every brief
-- **No commit.** The orchestrator commits, on Liam's word.
-- **Blender:** blender.org's build, the one `tools/paths.conf` names
-  (BLENDER), on the GPU;
-  wait on `render.done` with one bounded wait per job, never a polling
-  loop and never two waits on one job.
-- **Game clients** (any role that launches Factorio): one client at a time
-  on this machine (check `pgrep -af factorio` first, wait bounded if one
-  runs); every launch is
-  `env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 xvfb-run -a ... --disable-audio`
-  unless the test is about sound (then a verified null sink as the default
-  sink before launch, restored after).
-- **Scratch:** its own subfolder of the session scratchpad,
-  `.../scratchpad/<role>/<task>/`; never delete outside it; evidence the
-  report names is kept, the rest deleted at the end.
-- **Processes:** stop everything it started by PID; never `pkill` by
-  pattern.
-- **Art:** never signs off; Liam judges.
-- **Unknowns:** never chosen silently. Anything not settled by the
-  ticket, the task file or the files is reported as a question with
-  options and what each changes, a recommendation first.
-- **At most three agents** run on this machine at once; the brief names
-  the others running and their worktrees.
+## 2. The standing rules
+Every agent preloads factorio-standing-rules; the brief does not
+restate it. The brief adds only what this ticket narrows (one folder,
+no client, no render while two run).
 
 ## 3. What the report must contain
-For each pass criterion: PASS, FAIL or NOT RUN, with the evidence path.
-The absolute path of every image, GIF and sheet Liam should see (each
-under 8000 px on its longer side, or a top-section copy that is). Liam
-reviews on his phone: every image, GIF and sheet a question refers to is
-named beside that question. Any
-wording for a `.md` file, spec or TODO entry as a proposal only. For art:
-a crops sheet of every cable, hose and pipe run's ends and of anything that
-crosses another part, at 2x, with each clip found and fixed listed. Anything
-left for Liam.
+What the standing rules ask, answered in the ticket's own numbering;
+on a re-run, each earlier finding marked resolved or not.
 
 ## 4. Resuming
-Resume an agent only to fix its own ticket after a review; brief every new
-ticket to a fresh agent, since the task file and the brief carry what it
-needs.
-
-To continue an agent, `SendMessage` it with: what changed since it
-stopped (commits made, files moved, scratch emptied), what to do now, and
-the same standing rules.
+Resume an agent only to fix its own ticket after a review; brief every
+new ticket to a fresh agent. To continue one, `SendMessage` it with
+what changed since it stopped (commits made, files moved, scratch
+emptied), what to do now, and the base commit, unchanged.

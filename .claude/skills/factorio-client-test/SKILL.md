@@ -17,7 +17,8 @@ and everything started is stopped.
   launches, and the recording is refused.
 - `pgrep -af factorio`: if one runs, wait for it (bounded); the launcher's
   lock refuses a second one anyway.
-- Evidence goes to <repo>/evidence/<task>/ (git-ignored); name its paths.
+- Evidence goes to <worktree>/evidence/<task>/ (git-ignored); name
+  its paths.
 
 ## 2. Pick the tool
 - A building in game: `tools/client/shot/shot.sh --task <t> --spec <json>`
@@ -37,15 +38,11 @@ and everything started is stopped.
 - Anything else: `tools/client/launch.sh --task <t> [--audio]` with a probe
   mod of your own in scratch, following shot/'s mod.
 
-## 3. Rules the tools enforce; keep them when you go around them
-- no WAYLAND_DISPLAY; SDL_VIDEO_DRIVER=x11; a private Xvfb;
-- --disable-audio unless the test is about sound, then --audio (null sink
-  verified as default first, restored after);
-- the scratch mod directory only: ~/.factorio/mods is never read;
-- stop by PID, never pkill; a launcher that will not stop is reported
-  (exit 5 and --recover), never killed blind.
+## 3. Going around the tools
+The standing rules' client rules still hold. A launcher that will
+not stop is reported (exit 5 and --recover), never killed blind.
 
 ## 4. Report
 Each criterion PASS, FAIL or NOT RUN with its evidence path; the absolute
 path of every screenshot, sheet and MP4 for Liam; whether anything is left
-running (it must not be). Never judge the look or the sound.
+running (it must not be).
