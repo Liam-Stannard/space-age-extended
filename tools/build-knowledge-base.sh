@@ -21,9 +21,10 @@ set -euo pipefail
 # replaces it once complete, in one atomic exchange (mv --exchange). A folder
 # whose MANIFEST names another version, or has none, is refused even with
 # --force, and no other version's folder is ever touched. A run's hidden
-# working folders (.<version>.building.XXXXXX) left by one that was killed are
-# removed by the next run of that version, under the lock. knowledge-base/ is
-# git-ignored.
+# working folders (.<version>.building.XXXXXX) left by one that was killed, and
+# the .<version>.old.XXXXXX folders left by the two-rename replace of the first
+# version of this script, are removed by the next run of that version, under
+# the lock. knowledge-base/ is git-ignored.
 #
 # Factorio is the one tools/paths.conf names (FACTORIO_ROOT), read through
 # tools/paths.sh; if it is not there (the drive unmounted) this exits 1 naming
