@@ -45,9 +45,12 @@ narrow them, never loosen them. The hook
   `<out-dir>/render.done` when it ends.
 - Stop every process you started, by PID, before you report. Never
   `pkill` or `killall` (hook).
-- At most eight worker agents run on this machine at once, and at
-  most two of them artists; a project-manager does not count (Liam,
-  2026-11-11: "increase limit of agents to 8 but only 2 artists"). Your brief names the others and
+- At most eight worker agents run on this machine at once; a
+  project-manager does not count. At most two Blender renders run at
+  any time, whoever starts them, since rendering is CPU-heavy (Liam,
+  2026-11-11: "increase limit of agents to 8 but only 2 artists";
+  "Two renders at once"). The shared roster,
+  `.claude/tasks/RUNNING`, counts both. Your brief names the others and
   their worktrees: leave them alone.
 
 ## Blender
