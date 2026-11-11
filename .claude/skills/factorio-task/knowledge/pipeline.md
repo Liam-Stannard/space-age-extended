@@ -36,6 +36,11 @@
   dumped graphics, recipes, tech reachability). It takes launch.sh's lock.
   **Lint:** `luacheck .` (1.2.0 on Lua 5.4, in ~/.luarocks/bin, on PATH);
   CI runs the same .luacheckrc.
+- **Game knowledge base:** `tools/build-knowledge-base.sh` builds
+  `knowledge-base/<version>/` in the main checkout (git-ignored): the API
+  JSON, the `--dump-data` prototype dump and the six game mods' prototype
+  Lua, with a MANIFEST of sums; the analyst reads it first.
+  `tools/client/launch.sh --version` prints the installed version.
 - **Agents:** artist, coder, code-reviewer, tester, analyst and
   project-manager (`.claude/agents/`), each preloading the
   `factorio-standing-rules` skill. The `no-ghost-waits` hook blocks

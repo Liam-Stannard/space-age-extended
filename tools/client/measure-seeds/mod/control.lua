@@ -51,6 +51,10 @@ end
 local made = 0
 local function make_surface(seed)
   local mgs = prototypes.space_location[S.planet].map_gen_settings
+  -- The read hands back a fresh table (MapGenSettings is a table concept), so
+  -- these writes change this copy, not the planet, and the copy makes the
+  -- surface. Luacheck takes them for writes into the read-only `prototypes`.
+  -- luacheck: push ignore 122
   mgs.seed = seed
   -- Overrides, one level deep: {"autoplace_controls": {"sae-gas-vent": {...}}}
   -- replaces that one control and leaves the rest as the planet has them.
@@ -61,6 +65,7 @@ local function make_surface(seed)
       mgs[k] = v
     end
   end
+  -- luacheck: pop
   made = made + 1
   local s = game.create_surface(string.format("sae-seed-%d-%d", seed, made), mgs)
   s.request_to_generate_chunks(S.landing, math.ceil(S.radius / 32))
