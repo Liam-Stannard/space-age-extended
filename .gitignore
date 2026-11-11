@@ -17,3 +17,6 @@ evidence/
 
 # Videos (capture.py's MP4s, concept turntables): evidence for review, never shipped
 *.mp4
+
+# Local game knowledge base (tools/build-knowledge-base.sh): built from the install, never committed
+knowledge-base/

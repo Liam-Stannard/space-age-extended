@@ -8,6 +8,7 @@
 # Usage:
 #   tools/client/launch.sh --task NAME [options] [-- factorio-args...]
 #   tools/client/launch.sh --recover RUN_DIR
+#   tools/client/launch.sh --version
 #
 # The client is <FACTORIO_ROOT>/bin/x64/factorio, FACTORIO_ROOT being the one
 # tools/paths.conf names in the repo this script is in (tools/paths.sh); exit 1,
@@ -45,6 +46,13 @@
 #                      sound is touched only once none of them is left, no
 #                      factorio runs and the lock is free. Refuses while that
 #                      launcher still runs. Every run logs its own recover line.
+#   --version          Print the installed binary's own `factorio --version`
+#                      output, and nothing else: alone (no other option). It
+#                      takes the lock and the same refusals as a client (exit 3),
+#                      runs the binary with WAYLAND_DISPLAY unset and nothing
+#                      else started (no Xvfb, no session, no sound, no run
+#                      directory), at most 60 s (124 past that); exit 0, or 1 if
+#                      the binary exits non-zero.
 #
 # Factorio arguments after `--` are an allow-list (anything else is refused):
 #   --load-game FILE, --create FILE, --load-scenario [MOD/]NAME,
@@ -118,7 +126,7 @@ log() {  # to the run's log first, then (if anyone is listening) to stderr
 }
 
 TASK="" WORKTREE="$REPO_ROOT" AUDIO=0 TIMEOUT=600 DONE_FILE="" UNTIL_LOG=""
-SCREEN="1920x1080x24" RECOVER=""
+SCREEN="1920x1080x24" RECOVER="" VERSION_ONLY=0 ARGC=$#
 EXTRA_MODS=() PASS=()
 need() { [ "$2" -ge 2 ] || die "$1 needs a value"; }
 while [ $# -gt 0 ]; do
@@ -132,6 +140,7 @@ while [ $# -gt 0 ]; do
     --until-log) need "$1" $#; UNTIL_LOG="$2"; shift 2 ;;
     --screen) need "$1" $#; SCREEN="$2"; shift 2 ;;
     --recover) need "$1" $#; RECOVER="$2"; shift 2 ;;
+    --version) VERSION_ONLY=1; shift ;;
     -h|--help) usage 0 ;;
     --) shift; PASS=("$@"); break ;;
     *) die "unknown option '$1' (factorio's own arguments go after --)" ;;
@@ -256,6 +265,27 @@ restore_sound() {
   log "AUDIO: default sink after: $(default_sink) (configured $(configured_sink)) -- $SOUND_RESULT"
   return "$rc"
 }
+
+# ---------------------------------------------------------------- --version
+
+if [ "$VERSION_ONLY" = 1 ]; then
+  [ "$ARGC" = 1 ] || die "--version takes no other option"
+  . "$REPO_ROOT/tools/paths.sh"
+  sae_factorio_bin GAME_BIN || exit 1
+  exec 9>>"$LOCK_FILE"
+  if ! flock -n 9; then
+    echo "launch.sh: REFUSED -- another launcher holds $LOCK_FILE (one client at a time)." >&2 2>/dev/null
+    exit 3
+  fi
+  if RUNNING="$(pgrep -a -x factorio)"; then
+    echo "launch.sh: REFUSED -- a factorio process is already running (one client at a time):" >&2 2>/dev/null
+    echo "$RUNNING" >&2 2>/dev/null
+    exit 3
+  fi
+  timeout 60 env -u WAYLAND_DISPLAY -u WAYLAND_SOCKET "$GAME_BIN" --version
+  rc=$?
+  case "$rc" in 0) exit 0 ;; 124) exit 124 ;; *) exit 1 ;; esac
+fi
 
 # ---------------------------------------------------------------- --recover
 

@@ -1,4 +1,4 @@
-# The pipeline, as it is (2026-10-20)
+# The pipeline, as it is (2026-11-11)
 
 - **Repo:** master is checked out in `.claude/worktrees/master-merge`;
   `~/.factorio/mods/space-age-extended` links to it. Every task has its own
@@ -33,10 +33,14 @@
   `tools/audio/.venv` (git-ignored); `derive.working_sound` in
   `prototypes/derive.lua`.
 - **Data stage:** `tools/check-data-stage.sh` (data, graphics, layout,
-  dumped graphics, recipes, tech reachability). luacheck is not installed
-  locally; CI runs it. It takes launch.sh's lock.
-- **Agents:** artist, coder, code-reviewer, tester, project-manager
-  (`.claude/agents/`); the `no-ghost-waits` hook blocks unbounded or
-  duplicate waits and deletes of scratch roots.
+  dumped graphics, recipes, tech reachability). It takes launch.sh's lock.
+  **Lint:** `luacheck .` (1.2.0 on Lua 5.4, in ~/.luarocks/bin, on PATH);
+  CI runs the same .luacheckrc.
+- **Agents:** artist, coder, code-reviewer, tester, analyst and
+  project-manager (`.claude/agents/`), each preloading the
+  `factorio-standing-rules` skill. The `no-ghost-waits` hook blocks
+  sleep loops, deletes above a scratch ticket folder, `pkill`,
+  `killall` and killing by name, and running Factorio outside
+  `tools/client/launch.sh`.
 - **Sending files:** images over 8000 px on the longer side cannot be sent
   to Liam; send a top-section copy.
