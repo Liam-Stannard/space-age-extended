@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Reviews one ticket's work on a task branch of the space-age-extended mod against the ticket, its task file and claude.md, read-only, and returns a verdict with ranked findings. Use after the coder (or, for an art ticket, the artist) finishes and before the tester runs.
+description: Reviews one ticket's work on a task branch of the space-age-extended mod against the ticket, its task file and claude.md, read-only, and returns a verdict with ranked findings. Use after the coder (or, for an art ticket, the artist) finishes, and before the factorio-gameplay-expert (on a gameplay ticket) and the tester.
 model: opus
 effort: high
 tools: Read, Grep, Glob, Bash, Skill

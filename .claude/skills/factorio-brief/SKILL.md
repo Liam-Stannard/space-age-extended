@@ -1,6 +1,6 @@
 ---
 name: factorio-brief
-description: Write the prompt for an artist, coder, code-reviewer, tester, analyst or project-manager agent working on this mod, from one ticket of a task file - what the ticket is, where the agent works and from which base commit, and what it must leave alone. The standing rules come from the factorio-standing-rules skill every agent preloads. Use before launching or resuming any agent.
+description: Write the prompt for an artist, coder, code-reviewer, factorio-gameplay-expert, tester, analyst or project-manager agent working on this mod, from one ticket of a task file - what the ticket is, where the agent works and from which base commit, and what it must leave alone. The standing rules come from the factorio-standing-rules skill every agent preloads. Use before launching or resuming any agent.
 argument-hint: <task file> <ticket T<nn>>
 ---
 
@@ -26,6 +26,10 @@ checks it; only then is it "signed off" and the next ticket briefed.
 - The other agents running (from `RUNNING`) and their worktrees, and
   whether a render slot is free.
 - For a project-manager: the attribution lines its commits end with.
+- For a factorio-gameplay-expert: the dumps to measure (the knowledge
+  base's, and where to keep the mod's), the decisions of Liam's the
+  change rests on, and the vanilla buildings or items it is meant to sit
+  beside.
 
 ## 2. The standing rules
 Every agent preloads factorio-standing-rules; the brief does not

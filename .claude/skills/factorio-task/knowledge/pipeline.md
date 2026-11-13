@@ -37,13 +37,19 @@
   **Lint:** `luacheck .` (1.2.0 on Lua 5.4, in ~/.luarocks/bin, which
   `env.PATH` in `.claude/settings.json` puts on every session's PATH,
   2026-11-13); CI runs the same .luacheckrc.
+- **Gameplay:** `tools/gameplay/graph.py <dump>` (raw cost, research,
+  loops, weight, compare; its header gives the rules);
+  `tools/check-data-stage.sh --keep-dump <path>` keeps the mod's dump.
+  Its weights match the engine's on every vanilla and mod item
+  (2026-11-13).
 - **Game knowledge base:** `tools/build-knowledge-base.sh` builds
   `knowledge-base/<version>/` in the main checkout (git-ignored): the API
   JSON, the `--dump-data` prototype dump and the six game mods' prototype
   Lua, with a MANIFEST of sums; the analyst reads it first.
   `tools/client/launch.sh --version` prints the installed version.
-- **Agents:** artist, coder, code-reviewer, tester, analyst and
-  project-manager (`.claude/agents/`), each preloading the
+- **Agents:** artist, coder, code-reviewer, factorio-gameplay-expert,
+  tester, analyst and project-manager (`.claude/agents/`), each
+  preloading the
   `factorio-standing-rules` skill. The `no-ghost-waits` hook blocks
   sleep loops, deletes above a scratch ticket folder, `pkill`,
   `killall` and killing by name, and running Factorio outside
