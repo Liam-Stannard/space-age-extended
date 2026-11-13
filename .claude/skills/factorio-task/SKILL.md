@@ -27,15 +27,20 @@ in it is a guess.
 ## 1. Research before asking
 Never ask Liam what the files can answer. The analyst agent may do this
 research: brief it with the request and what must be settled; it returns
-facts with sources and the unknowns, no opinions. Read, in this order,
+facts with sources and the unknowns, no opinions. For a gameplay
+request (what the factorio-gameplay-expert's file counts as gameplay),
+the factorio-gameplay-expert then judges the draft's gameplay before
+Liam is asked; its rows and concerns go into the ledger and the
+questions. Read, in this order,
 and note each fact with its source (file and line, or measured):
 0. Whether it is already done: `git log --all -i --grep=<word>` for
    each of the request's key words, and the tickets of earlier task
    files on the subject. If it is done, or partly, ask before
    drafting: say what is done, with the commit or ticket, and what
    the task could be instead.
-1. `knowledge/` beside this file: engine facts, the pipeline and the art
-   standards, each already verified.
+1. `knowledge/` beside this file: engine facts, the pipeline, the art
+   standards and vanilla's gameplay facts (`gameplay.md`), each already
+   verified.
 2. `claude.md`, `TODO.md`, and the parts of `design/` the request touches.
 3. The building or system's own files: `concept/<building>/` (spec,
    sheets, the latest round's report in the task file), the prototype in
@@ -93,8 +98,10 @@ the gates are visible.
     Acceptance: 1. <check> -> <passing result>
     Sign-off: <who>, on <what evidence>
 
-Owner: artist, coder, code-reviewer, tester, analyst, orchestrator or
-Liam. Status: open, in progress, done, passed <first sign-off owner>
+Owner: artist, coder, code-reviewer, factorio-gameplay-expert, tester,
+analyst, orchestrator or Liam. A gameplay ticket's Sign-off names the
+factorio-gameplay-expert: after the code-reviewer and before the tester
+for code, before Liam agrees for wording. Status: open, in progress, done, passed <first sign-off owner>
 (waiting on <the next>), signed off, blocked (<why>), or waiting
 on Liam: Q<n>. Tickets with no dependency on each other may run
 at once, within the standing rules' limits. Each signed-off ticket ends

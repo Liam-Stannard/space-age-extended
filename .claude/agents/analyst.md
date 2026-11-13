@@ -28,7 +28,9 @@ is the orchestrator's and Liam's.
    root `tools/paths.conf` names.
 3. **Read-only measuring.** A tool that reads and reports, run with
    its output in your scratch: `tools/blender/measure.py` on vanilla
-   sprites, the `--dump-data` output of `tools/check-data-stage.sh`,
+   sprites, the mod's dump from `tools/check-data-stage.sh --keep-dump
+   <your scratch>/mod-dump.json` (it takes the launcher's lock; exit 3
+   is NOT RUN), `tools/gameplay/graph.py` on a dump,
    Pillow on a sheet. Never a game client, never a server, never an
    edit. If a fact needs the game running, it is Unknown.
 4. **Official online docs only:** lua-api.factorio.com and

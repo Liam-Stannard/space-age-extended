@@ -41,6 +41,25 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Internal names (`sae-crust-*`) stay. With it, `design/08-core-power.md`
   lines 18 and 24–27: radiant solution is drawn by a vanilla offshore pump
   at the pool, and siderane by the Gas Pump, not one tap drawing both.
+- **Decide the Vacuum Furnace's job.** In the code it runs only `smelting`,
+  so on the Core it is a slower, hungrier electric furnace, and three
+  tooltips claim work it does not have (T09 gameplay review,
+  vacuum-furnace.md concern 1: (a) lock fines smelting to it, (b) base
+  productivity, (c) delete it, (d) rewrite the spec). Then fix the
+  tooltips, `06-core-production-tree.md`'s status table and the unused
+  flux box to match.
+- **Settle two tree-pattern points the V↔F review raised.** The tree opens
+  at the start of both planets' vanilla trees, not their end (principle
+  7), and neither opener needs the other planet (02-tree-pattern §1).
+  Either reword the two documents, or move the openers (T09 gameplay
+  review, vulcanus-fulgora.md FAILs 1-2).
+- **Holmium oxide's productivity.** With productivity modules the oxide
+  route gives +56% to +110% holmium, not +20%. Decide whether to drop
+  productivity on `sae-holmium-oxide` (T09 gameplay review,
+  vulcanus-fulgora.md concern 4).
+- **The magnetite round after railgun damage 2.** Give it a lasting
+  advantage, or call it a bridge in the doc (T09 gameplay review,
+  vulcanus-fulgora.md concern 3).
 
 ## Building art in Blender
 
