@@ -38,8 +38,8 @@ See §19.
 **Building Type:** `accumulator`, deep-copied from vanilla's.
 
 **Purpose:** The Fulgora ↔ Aquilo capstone building, and the first tree's
-payoff. A world of spikes — Fulgora's lightning when it is earned, the Core's
-arc storms at the end — has always wanted somewhere to put a surge that arrives
+payoff. A world of spikes — Fulgora's lightning when it is earned — has
+always wanted somewhere to put a surge that arrives
 faster than anything can spend it. Half a gigajoule, and it will take twenty
 megawatts at once: **twenty times a vanilla accumulator's capacity and four
 times its input limit.** That ratio is the design, and the art has to carry it.

@@ -9,7 +9,7 @@
 **Amended 2026-10-09 (Liam): melt only.** Helium-3 is now drawn by the Gas
 Pump (`concept/crust-tap/building-spec-crust-tap.md`, §A), with every other gas.
 The Vent Pump keeps the melt vent and nothing else: its `resource_categories`
-stays `{ "sae-vent" }`, which now holds only `sae-melt-vent`, while the gas vents
+stays `{ "sae-vent" }`, which now holds only `sae-kamacite-vent`, while the gas vents
 move to `sae-gas`. Its input fluid box, the helium it burns to draw melt, and
 everything else in this spec are unchanged. Where it says the Vent Pump draws
 helium or stands on a gas vent, read the Gas Pump.
@@ -71,7 +71,7 @@ building.
 
 **Planet / Environment:**
 `The Core.` Not gated by a placement rule of its own — it is gated by having
-somewhere to place it. `sae-melt-vent` exists on no other surface, and helium-3
+somewhere to place it. `sae-kamacite-vent` exists on no other surface, and helium-3
 is `auto_barrel = false` so it cannot be imported. A Vent Pump on Nauvis would
 build and then sit idle forever.
 
@@ -79,12 +79,13 @@ build and then sit idle forever.
 Draws **molten kamacite** from a melt vent. Consumes **10 helium-3 per mining
 operation** to do it (`minable.required_fluid`), so the Core's rare vent
 throttles its rich one and the two vent types are a single coupled siting
-problem. This is the first machine the player builds on the Core and the head
-of every chain on the planet.
+problem. Its technology, Vent Tapping, is the fifth of the landing's trigger
+technologies, fired by crafting a Vacuum Furnace, and nothing takes its melt
+yet: the melt line went with the cut back to the landing.
 
 **Technology Unlock:**
-`Core Survey` (tier 0 — see `design/04-the-core.md` §6). Researched on vanilla
-packs, since no geodynamic pack can exist before this building runs.
+`Vent Tapping` (tier 0 — see `design/04-the-core.md` §6), a trigger technology
+fired by crafting a Vacuum Furnace; it also needs uranium mining.
 
 ---
 
@@ -102,7 +103,7 @@ Inherited from `pumpjack` unless stated.
 `[-1.5, -1.5] → [1.5, 1.5]`
 
 **Placement Restrictions:**
-Requires a `sae-melt-vent` resource under it (`resource_categories =
+Requires a `sae-kamacite-vent` resource under it (`resource_categories =
 { "sae-vent" }`). No `surface_conditions` — see §1. `fast_replaceable_group`
 and `next_upgrade` are both cleared, so it never fast-replaces a pumpjack and
 never offers an upgrade path.
@@ -111,7 +112,7 @@ never offers an upgrade path.
 `4-way.` One helium-3 input on the south face and one molten kamacite output on the north face, both on the centre tile, turning with the building as a pair. See §5 and §8.
 
 **Crafting Speed:**
-n/a. `mining_speed = 1`, against `sae-melt-vent`'s `minable.mining_time = 1`
+n/a. `mining_speed = 1`, against `sae-kamacite-vent`'s `minable.mining_time = 1`
 and a yield of 10 molten kamacite, declining with depletion the way crude oil
 does.
 

@@ -15,22 +15,20 @@ fire is not allowed to.
 
 | Fluid | Where | Supply |
 |---|---|---|
-| **Radiant solution** | drawn off the pool's shore with a crust tap | 6–30% of the surface (`map-gen.lua`), abundant |
-| **Crust gas** | drawn off a crust vent with a crust tap | rare and clustered — patches a player travels to |
+| **Radiant solution** | drawn off the pool's shore with a vanilla offshore pump | 6–30% of the surface (`map-gen.lua`), abundant |
+| **Crust gas** | drawn off a crust vent with a gas pump; vents deplete | rare and clustered — patches a player travels to |
 
 The solution is the corridor's isotope in suspension: **it carries the energy**.
 The gas is the reagent that strips it out and drops it as a solid. That is why
 enriching the solution yields more fuel and enriching the gas would not.
 
-One building draws both. A crust tap standing on a vent gives gas; the same tap
-standing on the shore gives solution, because the shore tile carries the fluid the
-way the vent tile carries gas. **There is no extraction building in this document
-that does not already exist.**
+Two buildings draw them: a vanilla offshore pump on the shore gives solution, and
+a gas pump on a vent gives gas, as a pumpjack draws crude oil.
 
 ## 3. The first watt
 
-The **crust turbine** burns crust gas for its `fuel_value` — 1.8 MW, three
-turbines to a tap. It is outside the cycle on purpose, and it is the only power on
+The **crust turbine** burns crust gas for its `fuel_value` — 1.8 MW, one
+turbine to a fresh vent. It is outside the cycle on purpose, and it is the only power on
 the planet that needs no power to make power: the reaction plant is an assembling
 machine, and a recipe taking two fluids cannot be made in a pocket.
 
@@ -52,10 +50,11 @@ Everything else in this document assumes it is standing.
 ```
 
 Burned in the **radiant generator** at 10 MW — 500 MJ a cell, so fifty seconds.
-Its `burnt_result` is a **spent cell**, discarded at this stage.
+Its `burnt_result` is a **spent cell**. Nothing takes one back yet, so it is
+carried, not voided.
 
 Helium-3 appears nowhere in the power line. It keeps one job: throttling the
-melt, and the two cold recipes.
+melt.
 
 ### Stage 2 — solution enrichment
 

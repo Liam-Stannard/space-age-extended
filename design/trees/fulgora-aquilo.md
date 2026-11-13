@@ -66,8 +66,8 @@ wanted:
 
 - **When earned:** Fulgora's lightning arrives faster than anything can spend it.
 - **Getting to the Core:** a platform's draw is uneven, and this smooths it.
-- **On the Core:** arc storms are episodic and a mast loses what it caught unless
-  something can swallow it. This is that something.
+- **On the Core:** none yet. This step was the arc storms', and they were removed;
+  what the store does on the Core is open.
 
 It is an option rather than an upgrade: a vanilla accumulator is far cheaper per
 joule, and this one exists for surge, not for capacity.

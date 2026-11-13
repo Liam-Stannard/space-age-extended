@@ -19,8 +19,8 @@ power plant in which you watch the cell go from the hood to the wire.
 | 1 | Options | Liam picks | **done: round 6, the Carousel Foundry, 2026-10-12** |
 | 2 | Refine | Liam signs off the concept | **done: round 7, 2026-10-19** |
 | 3 | Spec | Wording agreed and written | this document |
-| 4 | Model | Liam signs off the model | next: `radiant-generator-model` |
-| 5 | Wiring | Liam signs off in game | after 4 |
+| 4 | Model | Liam signs off the model | modelled: `radiant-generator-model` |
+| 5 | Wiring | Liam signs off in game | wired 2026-10-27, review PASS (§19) |
 
 **Where it is made.** Blender, through `tools/blender/render.sh --ports --icon`, in
 `concept/radiant-generator/model/`, starting from the round-7 scripts
@@ -59,7 +59,7 @@ changes at wiring.
 
 | | |
 | --- | --- |
-| Tile footprint | **5×5** (Liam, 2026-10-11: "i think the generator should be 5x5"): `collision_box {{-2.2,-2.2},{2.2,2.2}}`, `selection_box {{-2.5,-2.5},{2.5,2.5}}`, the nuclear reactor's. The prototype is still 3×5 until wiring |
+| Tile footprint | **5×5** (Liam, 2026-10-11: "i think the generator should be 5x5"): `collision_box {{-2.2,-2.2},{2.2,2.2}}`, `selection_box {{-2.5,-2.5},{2.5,2.5}}`, the nuclear reactor's |
 | Directions | one picture for all four (§5) |
 | Output | 10 MW, electric, `primary-output` |
 | Fuel | `sae-radiant` only; 2 fuel slots; 1 burnt-result slot, which takes the spent cell (`sae-spent-cell`) |

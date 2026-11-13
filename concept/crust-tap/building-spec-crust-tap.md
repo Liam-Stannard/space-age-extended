@@ -207,7 +207,8 @@ While pumping, the flywheel turns once a loop; both crossheads and their rods go
 **Building Name:** `Siderane Wellhead` (was `Crust Tap`)
 **Internal Prototype Name:** `sae-crust-tap`
 
-**Building Type:** `offshore-pump`. Chosen for one reason: an offshore pump is
+**Building Type:** `offshore-pump` (superseded: the Gas Pump is a `mining-drill`,
+amendment A.2). Chosen for one reason: an offshore pump is
 the only prototype in the game that **produces a fluid from nothing**, which is
 exactly what a bore into a still-pressurised planetary interior should do.
 
@@ -240,7 +241,7 @@ anything."*
 | --- | --- |
 | Tile footprint | 2×2 |
 | Directions | 4 (the outlet faces a different way in each) |
-| Output | `sae-crust-gas`, ~30/s |
+| Output | `sae-crust-gas`, 9/s from a fresh vent (amendment A.3; was ~30/s) |
 | Energy | none — an offshore pump needs no power to run |
 | Surface conditions | `gravity` ≥ 45 — the Core's surface alone |
 | Placement | **on a crust vent tile only** — see below |
@@ -257,7 +258,7 @@ anything."*
 
 **Roughly one turbine per tap, and about 1.8 MW for the pair.** That is deliberate
 and it should stay small: a foothold, not a power strategy. A player who tiles
-fifty taps should still find the melt-and-steam line the better answer by a wide
+fifty taps should still find the radiant line the better answer by a wide
 margin, or the Core's central tension is undercut by its own tutorial.
 
 ### The tap is sited — measured, not assumed
@@ -512,9 +513,8 @@ Where this spec still says "crust gas", read siderane.
   already exists — written for the superseded Quench Turbine — and recolours
   vanilla's steam turbine. Reusing it would make the companion turbine nearly
   free, which is the argument for accepting a second prototype at all.
-- **It must not obsolete the arc masts.** If storms survive I1, a tap that is
-  merely *steadier* than a mast will win on convenience. Keeping the tap small and
-  strictly capped is what preserves both.
+- ~~**It must not obsolete the arc masts.**~~ The arc storms and their masts were
+  removed.
 - **Does the gas want a second use?** A high-pressure inert gas is a plausible
   atmosphere for sealed processes, which `04-the-core.md` §2 currently gives to
   helium-3. Left alone for now — helium is the scarce one and should stay the

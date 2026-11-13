@@ -59,7 +59,7 @@ nothing to seal."*
 | --- | --- |
 | Tile footprint | 3×3 (`collision_box {-1.4,-1.4},{1.4,1.4}`) |
 | Directions | 4 — the body is drawn once; only the flux line turns (§5) |
-| Crafting categories | `smelting` **and** `sae-sintering` |
+| Crafting categories | `smelting` |
 | `source_inventory_size` | 1 (the prototype maximum) |
 | Fluid boxes | 1, a **pass-through** — **phosphide flux**, used by the sintering recipes only |
 | Energy | 1.2 MW, electric |
@@ -74,10 +74,10 @@ what makes it legible when it happens.
 
 ### The exclusive work — the reason it exists
 
-1. **Kamacite fines.** The Drop Crusher's second stream can only be smelted here.
-   Nothing else in the game accepts the item.
-2. **Sintering.** Carbonyl powder pressed into a sintered preform is a
-   `sae-sintering` recipe, and this is the only machine carrying that category.
+1. **Kamacite fines.** Not exclusive: `sae-fines-smelting` is a `smelting` recipe,
+   so any smelting furnace takes fines.
+2. **Sintering.** Cut with the carbonyl line. Neither is exclusive now, and what
+   the furnace is for is undecided (`TODO.md`, "Decide the Vacuum Furnace's job").
 
 Both are powder processes, and both are impossible in an open furnace for the
 same real reason. That is one argument doing two jobs, which is what makes it an
@@ -375,8 +375,8 @@ the grid with no overhang.
 {
   type = "furnace",
   name = "sae-vacuum-furnace",
-  crafting_categories = { "smelting", "sae-sintering" },
-  crafting_speed = 1,
+  crafting_categories = { "smelting" },
+  crafting_speed = 1.5,
   source_inventory_size = 1,
   result_inventory_size = 1,
   energy_usage = "1200kW",

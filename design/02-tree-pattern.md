@@ -108,7 +108,8 @@ The test for a candidate mechanic:
 
 **Power is not on the list.** Vanilla covers it to the Edge and fusion answers
 Aquilo; it only becomes hard past the Edge, where there is no sun and nothing
-burns. That is solved on the corridor by a new asteroid type, not by a pair —
+burns. Past the Edge it is still open: the radiant generator stands on platforms,
+but its fuel is made only on the Core, since nothing yields the radiant chunk —
 see [the corridor](03-corridor.md#3-power-out-there).
 
 ## 5. What a tree owes the Core
@@ -138,15 +139,17 @@ magnetic core, insulation, coolant, frame — and there are five trees, so each
 supplies one. See [the Core](04-the-core.md#stage-1--the-five-integrations) for
 how each is integrated through a different local input.
 
-Every tree now has a mechanic and a capstone product. Each still owes a
+Every tree but Vulcanus ↔ Aquilo now has a mechanic and a capstone product. Each
+still owes a
 **building** made from that product, an **anchor** that forces its crossing, and
-its own technology ladder, an estimated 3–10. The corridor has a mechanic of its own —
-[seeding the field](03-corridor.md#2-seeding-the-field).
+its own technology ladder, an estimated 3–10. The corridor's own mechanic, seeding
+the field, was cut with the landing; for now it has none.
 
-Vulcanus and Aquilo appear twice, Fulgora and Gleba three times; with four
-worlds and five pairs the even loop is not available, and Fulgora carrying three
-is the price of keeping the mid-game populated. Watch that Fulgora does not end
-up doing the same job in all three.
+Vulcanus and Aquilo appear three times, Fulgora and Gleba twice; with four
+worlds and five pairs the even loop is not available. The reason given for the
+old split, Fulgora keeping the mid-game populated, does not carry over, and none
+is written for this one. Watch that Vulcanus and Aquilo do not end up doing the
+same job in all three.
 
 Each row fills in as its tree is designed. The empty columns are the decisions
 this document exists to force: a tree is not ready while any of them is blank.

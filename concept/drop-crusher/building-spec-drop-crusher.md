@@ -9,8 +9,9 @@ see §13. The stroke is rendered in Blender and in the engine; §9 has its timel
 **This building is forced, not optional.** Vanilla's `crusher` carries
 `surface_conditions` of `gravity` min 0 **max 0** — it is space-only
 (`space-age/prototypes/entity/entities.lua:841`). Beneficiation on the Core's
-surface cannot exist without a new crusher, so this is the first thing the
-production tree needs and the first thing that should be built.
+surface cannot exist without a new crusher, so the production tree needs it before
+any plate. In the landing's chain it comes after the Gas Pump, the Siderane
+turbine and the Ballast Drill.
 
 ---
 
@@ -43,9 +44,9 @@ anywhere else.
 load-bearing rather than skippable. It is also the cheapest possible statement of
 the Core's physics — the same gravity that settles the melt breaks the ore.
 
-**Locale:** *"Lifts the ore and lets the planet do the rest."* / *"At fifty
-gravities a drop is cheaper than a mill. Two streams out: the coarse fraction to
-be smelted, the fines to the carbonyl line."*
+**Locale** (locale/en/strings.cfg), item and building: *"Lifts the charge and
+lets the planet do the work."* / *"Breaks ore under its own weight. Needs gravity,
+so it works here and nowhere else."*
 
 ---
 
@@ -406,9 +407,10 @@ neither affects the art.**
   simultaneous or alternate" — and there are no chutes (§8), so it no longer
   touches the plate. A coarse/fine split remains available as a branch if T1
   ever wants one.
-- ~~**Do the fines have a home yet?**~~ **Yes, two.** `sae-fines-smelting` takes
-  4 fines to a kamacite plate, and `sae-metal-carbonyl` takes 4 more into the
-  carbonyl line. T3 exists.
+- ~~**Do the fines have a home yet?**~~ **Yes, one.** `sae-fines-smelting` takes
+  4 fines to a kamacite plate. The carbonyl line went with the cut back to the
+  landing; metal carbonyl is the chosen later sink (`TODO.md`, "Fines need their
+  advanced use").
 
 Still open, and this one is new: **the moving part is about a third of the box**,
 against 72–113 % on the three vanilla machines it stands beside. See the adopted
