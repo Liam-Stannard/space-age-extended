@@ -138,7 +138,11 @@ mkdir -p -- "$KB_ROOT"
 shopt -s nullglob
 for stale in "$KB_ROOT/.$VERSION.building."?????? "$KB_ROOT/.$VERSION.old."??????; do
   if [ -d "$stale" ] && [ ! -L "$stale" ]; then
-    echo "Removing $stale, left by a run that did not finish." >&2
+    case "${stale##*/}" in
+      ".$VERSION.old."??????) why="left by the two-rename replace of the first version of this script" ;;
+      *) why="left by a run that did not finish" ;;
+    esac
+    echo "Removing $stale, $why." >&2
     rm -rf -- "$stale"
   fi
 done
