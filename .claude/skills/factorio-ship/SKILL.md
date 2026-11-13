@@ -22,7 +22,9 @@ branch for a merge; it never pushes. Only the main session pushes.
   in its message.
 
 ## 3. Merge (master-merge worktree)
-- `git merge --no-ff <branch> -m "Merge branch '<branch>'"`.
+- `git merge --no-ff <branch> -m "Merge branch '<branch>'" -m "<the
+  attribution lines>"`: the merge message ends with the attribution
+  lines, as a commit's does.
 - If git merged any file automatically, run `tools/check-data-stage.sh`
   on master and report it; run it anyway if prototypes or graphics
   changed.
