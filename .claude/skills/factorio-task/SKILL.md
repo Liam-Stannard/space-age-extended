@@ -29,6 +29,11 @@ Never ask Liam what the files can answer. The analyst agent may do this
 research: brief it with the request and what must be settled; it returns
 facts with sources and the unknowns, no opinions. Read, in this order,
 and note each fact with its source (file and line, or measured):
+0. Whether it is already done: `git log --all -i --grep=<word>` for
+   each of the request's key words, and the tickets of earlier task
+   files on the subject. If it is done, or partly, ask before
+   drafting: say what is done, with the commit or ticket, and what
+   the task could be instead.
 1. `knowledge/` beside this file: engine facts, the pipeline and the art
    standards, each already verified.
 2. `claude.md`, `TODO.md`, and the parts of `design/` the request touches.
@@ -89,8 +94,9 @@ the gates are visible.
     Sign-off: <who>, on <what evidence>
 
 Owner: artist, coder, code-reviewer, tester, analyst, orchestrator or
-Liam. Status: open, in progress, done, signed off, blocked (<why>), or
-waiting on Liam: Q<n>. Tickets with no dependency on each other may run
+Liam. Status: open, in progress, done, passed <first sign-off owner>
+(waiting on <the next>), signed off, blocked (<why>), or waiting
+on Liam: Q<n>. Tickets with no dependency on each other may run
 at once, within the standing rules' limits. Each signed-off ticket ends
 with a work-in-progress commit on the branch, and its Status is updated
 in the file.
@@ -125,7 +131,8 @@ report), in this shape:
     an explicit "needs a client".
     ## Tickets
 
-The light path's file is Goal, Scope, Pass criteria and its ticket.
+The light path's file is the `# Task:` and `Branch:` lines, Goal,
+Scope, Pass criteria and its ticket.
 When Liam agrees, write it to `.claude/tasks/<branch>.md` (or the
 amendment at the end of the existing file) and create the branch and
 worktree from master. Run by the project-manager, go on to the tickets.
