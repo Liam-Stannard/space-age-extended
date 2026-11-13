@@ -5,11 +5,12 @@
 
 Each row is a Bash command and what the hook must do with it: "allow" (exit 0) or one of the
 blocks (exit 2, its message on stderr): "loop" (a polling loop: while/until/select, or an
-arithmetic for, with sleep in it), "scratch" (a recursive delete above
-scratchpad/<role>/<ticket> under /tmp), "pkill" (pkill/killall), "killname" (kill given
-pgrep/pidof's PIDs), "factorio" (the game binary run directly) or "deep" (nested past the
-hook's MAX_DEPTH). The command goes to the hook as the PreToolUse JSON Claude Code sends, with
-cwd the repo root; nothing in it is run. The block is told apart by the start of its message.
+arithmetic for, with sleep in it), "scratch" (a delete of files or folders, by `rm` or
+`rm -r` alike, above scratchpad/<role>/<ticket> under /tmp), "pkill" (pkill/killall),
+"killname" (kill given pgrep/pidof's PIDs), "factorio" (the game binary run directly) or
+"deep" (nested past the hook's MAX_DEPTH). The command goes to the hook as the PreToolUse
+JSON Claude Code sends, with cwd the repo root; nothing in it is run. The block is told apart
+by the start of its message.
 -v prints every row, not only the failures.
 
 Exits 0 when every row comes out as listed, 1 naming those that do not.
@@ -117,7 +118,7 @@ TABLE = [
     (f"cd {T04} && rm -rf *", "allow"),
     (f"find {SP} -maxdepth 2 -type d", "allow"),               # no delete
     (f"find {SP} -name '*.log' -exec grep -l error {{}} +", "allow"),
-    (f"rm {SP}/coder/note.txt", "allow"),                       # not recursive
+    (f"rm {SP}/coder/note.txt", "allow"),                       # a ticket's level: may go
     ("rm -rf build/ evidence/T04", "allow"),                    # in the repo, not /tmp
     ("rm -rf /home/lstan/tmp/old", "allow"),
     ("rm -rf ~/scratch-old", "allow"),
@@ -218,6 +219,23 @@ TABLE = [
     (f"for d in {SP}/*; do rm -rf \"$d\"; done", "scratch"),
     (f"for d in {SP}/coder/T04 {SP}; do rm -rf $d; done", "scratch"),
     (f"trap 'rm -rf {SP}/coder' EXIT; ls", "scratch"),
+    # a plain rm, of files, under the same rule (agent-setup-followup T05)
+    (f"rm {SP}/note.txt", "scratch"),
+    (f"rm {SP}/*", "scratch"),
+    (f"rm -f {SP}/coder/*", "scratch"),
+    (f"rm {SP}/*/agent-setup-T04/render.done", "scratch"),
+    ("rm -f /tmp/claude-1000/*", "scratch"),
+    (f"rm -- {OTHER_SP}/x", "scratch"),
+    (f"S={SP}; rm \"$S\"/*", "scratch"),
+    (f"cd {SP} && rm *", "scratch"),
+    ("rm /tmp/foo.log", "scratch"),
+    (f"printf '%s\\n' a | xargs rm {SP}/note.txt", "scratch"),   # via xargs, the same
+    (f"rm {T04}/note.txt", "allow"),
+    (f"rm -f {T04}/*", "allow"),
+    (f"rm -f {T04}/renders/take-*.png", "allow"),
+    ("rm build/x evidence/T04/y", "allow"),
+    ("rm ~/x", "allow"),
+    (f"xargs rm -f {T04}/x < list.txt", "allow"),
 
     # ---- pkill / killall
     ("pkill -f blender", "pkill"),

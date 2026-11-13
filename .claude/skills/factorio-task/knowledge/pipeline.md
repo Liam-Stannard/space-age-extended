@@ -34,8 +34,9 @@
   `prototypes/derive.lua`.
 - **Data stage:** `tools/check-data-stage.sh` (data, graphics, layout,
   dumped graphics, recipes, tech reachability). It takes launch.sh's lock.
-  **Lint:** `luacheck .` (1.2.0 on Lua 5.4, in ~/.luarocks/bin, on PATH);
-  CI runs the same .luacheckrc.
+  **Lint:** `luacheck .` (1.2.0 on Lua 5.4, in ~/.luarocks/bin, which
+  `env.PATH` in `.claude/settings.json` puts on every session's PATH,
+  2026-11-13); CI runs the same .luacheckrc.
 - **Game knowledge base:** `tools/build-knowledge-base.sh` builds
   `knowledge-base/<version>/` in the main checkout (git-ignored): the API
   JSON, the `--dump-data` prototype dump and the six game mods' prototype

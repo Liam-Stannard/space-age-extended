@@ -4,9 +4,10 @@
   1. No polling loops: a `while`, `until` or `select` loop, an arithmetic
      `for ((...))` loop, or a `for` over a generated list, with `sleep`
      inside it.
-  2. No deleting across shared scratch: `rm -r`, `find ... -delete` and
-     `find ... -exec rm` under /tmp only two or more levels below a session
-     scratchpad (scratchpad/<role>/<ticket>), never above that.
+  2. No deleting across shared scratch: `rm` (recursive or not), `find ...
+     -delete` and `find ... -exec rm` may delete a file or folder under /tmp
+     only two or more levels below a session scratchpad
+     (scratchpad/<role>/<ticket>), never above that.
   3. No stopping processes by name: `pkill`, `killall`, and `kill` given PIDs
      from `pgrep` or `pidof`.
   4. No running the Factorio binary (any `.../bin/x64/factorio`, which is
@@ -31,15 +32,21 @@ Later the same day an agent told to clear its own superseded scratch ran
 `find <scratchpad> -mindepth 1 -maxdepth 1 ! -name <its folder> -exec rm -rf
 {} +` and deleted every other agent's scratch, including a render that was
 still running. Scratch is laid out scratchpad/<role>/<ticket>/, so a
-recursive delete under /tmp is allowed only on a path at least two levels
-below a session scratchpad (/tmp/claude-<uid>/<project>/<session>/scratchpad),
-every level down to the second spelled out (no glob, no variable; a brace
-list counts as the folders it names). The scratchpad itself, a role
-folder, /tmp/claude-<uid>, /tmp and anything else under /tmp are refused.
-Deletes outside /tmp are not this hook's business. Shell variables assigned
-in the same command are expanded first, so `S=<scratchpad>; rm -rf "$S"/*`
-is caught, and `cd`, `pushd` and `popd` are followed (a `cd` inside
-`( ... )` ends with it), so `cd <scratchpad> && rm -rf *` is too.
+delete of a file or a folder under /tmp is allowed only on a path at least
+two levels below a session scratchpad
+(/tmp/claude-<uid>/<project>/<session>/scratchpad), every level down to the
+second spelled out (no glob, no variable; a brace list counts as the names
+it lists). The scratchpad itself, a role folder, a file directly in the
+scratchpad, /tmp/claude-<uid>, /tmp and anything else under /tmp are
+refused. Until 2026-11-13 this held only for a recursive delete; since then
+(Liam: "Add both the hook and the deny rules for both") a plain `rm` of files
+is held to the same rule, so `rm <scratchpad>/*` and `rm /tmp/foo.log` are
+refused too. A file directly in a role folder (scratchpad/<role>/note.txt) is
+at the level of a ticket folder and passes: the hook cannot tell a file from
+a folder. Deletes outside /tmp are not this hook's business. Shell variables
+assigned in the same command are expanded first, so `S=<scratchpad>; rm -rf
+"$S"/*` is caught, and `cd`, `pushd` and `popd` are followed (a `cd` inside
+`( ... )` ends with it), so `cd <scratchpad> && rm *` is too.
 
 pkill/killall (Liam 2026-11-11, "No pkill/killall") stop every process
 matching a name: other agents' renders and clients, Liam's own game; `kill
@@ -115,13 +122,14 @@ MSG_LOOP = (
     "('exit <code>') when it ends. A fixed number of tries is a word list: `for i in 1 2 3`."
 )
 MSG_SCRATCH = (
-    "this deletes {what}. Under /tmp only a folder two or more levels below the session "
-    "scratchpad may be deleted (scratchpad/<role>/<ticket>, or deeper), every level down to "
-    "that one spelled out: no glob and no variable (a brace list counts as the folders it "
-    "names). Never the scratchpad, a role folder, /tmp/claude-<uid>, /tmp or anything else in "
-    "/tmp: other agents work there. "
-    "Instead: delete the folder you created yourself by its exact path, e.g. "
-    "`rm -r <scratchpad>/<role>/<ticket>`."
+    "this deletes {what}. Under /tmp only a file or folder two or more levels below the "
+    "session scratchpad may be deleted (scratchpad/<role>/<ticket>, or deeper), by `rm` or "
+    "`rm -r` alike, every level down to that one spelled out: no glob and no variable (a "
+    "brace list counts as the names it lists). Never the scratchpad, a role folder, a file "
+    "directly in the scratchpad, /tmp/claude-<uid>, /tmp or anything else in /tmp: other "
+    "agents work there. "
+    "Instead: delete what you created yourself by its exact path, e.g. "
+    "`rm -r <scratchpad>/<role>/<ticket>` or `rm <scratchpad>/<role>/<ticket>/<file>`."
 )
 MSG_STOP = (
     "Instead: stop by PID from your own launch, never by name: `kill <pid>` with the PID "
@@ -446,8 +454,8 @@ def assignment(parts):
 
 # --------------------------------------------------------------------------- checks
 class Ctx:
-    def __init__(self, cwd, depth=0, find_exec=False):
-        self.env, self.cwd, self.depth, self.find_exec = {}, cwd, depth, find_exec
+    def __init__(self, cwd, depth=0):
+        self.env, self.cwd, self.depth = {}, cwd, depth
         self.loops = []         # open loops, innermost last: [keyword, has_sleep, polls]
         self.sleep = False      # a sleep was run anywhere in this text
         self.ran = set()        # every command run in this text (substitutions' too)
@@ -459,7 +467,7 @@ class Ctx:
     def child(self):
         if self.depth >= MAX_DEPTH:
             raise TooDeep()
-        c = Ctx(self.cwd, self.depth + 1, self.find_exec)
+        c = Ctx(self.cwd, self.depth + 1)
         c.env = dict(self.env)
         return c
 
@@ -739,23 +747,18 @@ def is_factorio(cmd, ctx):
 
 
 def check_rm(args, ctx, via_xargs):
-    recursive, targets, opts = ctx.find_exec, [], True     # under find, every rm counts
+    """Every rm, recursive or not, under find -exec or xargs too: each target is checked."""
+    targets, opts = [], True
     for a in args:
         t = a.text
         if opts and t == "--":
             opts = False
-        elif opts and t.startswith("--"):
-            recursive |= t == "--recursive"
-        elif opts and t.startswith("-") and len(t) > 1:
-            recursive |= "r" in t or "R" in t
-        else:
+        elif not (opts and t.startswith("-") and len(t) > 1):
             targets.append(t)
     if via_xargs and ctx.pipe_find:
         targets.extend(ctx.pipe_find)           # find <root> | xargs rm: the root is the target
-        recursive = True
-    if recursive:
-        for t in targets:
-            check_target(t, ctx)
+    for t in targets:
+        check_target(t, ctx)
 
 
 FIND_EXPR = re.compile(r"^[-(!),]")
@@ -797,7 +800,6 @@ def find_exec(run, start, ctx):
     if not run:
         return
     child = ctx.child()
-    child.find_exec = True
     for pos in list("123456789@*"):
         child.env[pos] = Value(start, [])
     words = [[("lit", x.replace("{}", start), True)] for x in run]
@@ -825,7 +827,8 @@ SCRATCH = ("tmp", re.compile(r"claude-\d+\Z"), None, None, "scratchpad", None, N
 
 
 def check_target(t, ctx):
-    """Refuse a recursive delete of t unless it is outside /tmp or deep enough in scratch."""
+    """Refuse a delete of t, file or folder, recursive or not, unless it is outside /tmp or
+    deep enough in scratch."""
     for alt in braces(t):
         check_one(alt, ctx)
 
@@ -842,7 +845,7 @@ def check_one(t, ctx):
         if rest and set(rest) <= set("/*" + VAGUE):
             raise Blocked(MSG_SCRATCH.format(
                 what=f"`{shown(t)}`: every variable in it is one this command does not set, "
-                     "so it is empty, and this is `rm -rf /`, `/*` or `*`"))
+                     "so it is empty, and the target is `/`, `/*` or `*`"))
         return              # where the rest is depends on what it was meant to be
     if t.startswith("~"):
         return                                  # home, not /tmp
@@ -879,7 +882,8 @@ def what_is(comps):
     p = "/" + "/".join(comps)
     names = {1: "/tmp itself", 2: "/tmp/claude-<uid> itself", 3: f"a project's folder ({p})",
              4: f"a session's folder ({p})", 5: f"the session scratchpad ({p})",
-             6: f"a role folder in the scratchpad ({p}), every ticket's scratch in it"}
+             6: f"{p}, directly in a session scratchpad: a role folder, every ticket's "
+                "scratch in it, or a file beside the role folders"}
     return names.get(len(comps), p)
 
 

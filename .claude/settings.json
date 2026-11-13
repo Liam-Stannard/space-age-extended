@@ -11,5 +11,39 @@
         ]
       }
     ]
+  },
+  "env": {
+    "PATH": "/home/lstan/.luarocks/bin:/home/lstan/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/usr/lib/rustup/bin"
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm */scratchpad)",
+      "Bash(rm */scratchpad/)",
+      "Bash(rm */scratchpad/\\**)",
+      "Bash(rm */scratchpad/artist)",
+      "Bash(rm */scratchpad/artist/)",
+      "Bash(rm */scratchpad/artist/\\**)",
+      "Bash(rm */scratchpad/coder)",
+      "Bash(rm */scratchpad/coder/)",
+      "Bash(rm */scratchpad/coder/\\**)",
+      "Bash(rm */scratchpad/code-reviewer)",
+      "Bash(rm */scratchpad/code-reviewer/)",
+      "Bash(rm */scratchpad/code-reviewer/\\**)",
+      "Bash(rm */scratchpad/tester)",
+      "Bash(rm */scratchpad/tester/)",
+      "Bash(rm */scratchpad/tester/\\**)",
+      "Bash(rm */scratchpad/analyst)",
+      "Bash(rm */scratchpad/analyst/)",
+      "Bash(rm */scratchpad/analyst/\\**)",
+      "Bash(rm */scratchpad/project-manager)",
+      "Bash(rm */scratchpad/project-manager/)",
+      "Bash(rm */scratchpad/project-manager/\\**)",
+      "Bash(rm * /tmp)",
+      "Bash(rm * /tmp/)",
+      "Bash(rm * /tmp/\\**)",
+      "Bash(rm */tmp/claude-1000)",
+      "Bash(rm */tmp/claude-1000/)",
+      "Bash(rm */tmp/claude-1000/\\**)"
+    ]
   }
 }
