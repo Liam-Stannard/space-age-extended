@@ -36,7 +36,8 @@ and everything started is stopped.
   --keep-raw; exit 3 when the launcher refuses at either launch; MP4s are
   git-ignored (`*.mp4`).
 - Anything else: `tools/client/launch.sh --task <t> [--audio]` with a probe
-  mod of your own in scratch, following shot/'s mod.
+  mod of your own in scratch, following shot/'s mod; a probe kept in
+  evidence/ must pass `luacheck .` like any other Lua.
 
 ## 3. Going around the tools
 The standing rules' client rules still hold. A launcher that will

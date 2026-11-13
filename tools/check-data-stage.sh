@@ -6,7 +6,13 @@ set -euo pipefail
 # run in CI, since Factorio isn't redistributable to a CI runner -- run it
 # locally before pushing.
 #
-# Usage: tools/check-data-stage.sh
+# Usage: tools/check-data-stage.sh [--keep-dump <path>]
+#
+# --keep-dump <path> copies the run's data-raw dump (vanilla and the mod) to
+# <path>, a file in an existing directory (not a directory itself), as soon as
+# the data stage has passed: before the checks after it and before cleanup
+# deletes it, so it is kept whatever those checks find. For
+# tools/gameplay/graph.py.
 #
 # Factorio is the one tools/paths.conf names (FACTORIO_ROOT), read through
 # tools/paths.sh; the graphics checks below read the game data from it too.
@@ -18,9 +24,16 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MOD_NAME="$(grep -o '"name" *: *"[^"]*"' "$REPO_ROOT/info.json" | head -1 | sed -E 's/.*"([^"]+)"$/\1/')"
 
+KEEP_DUMP=""
 if [ $# -gt 0 ]; then
-  echo "usage: tools/check-data-stage.sh (no arguments: Factorio is the one tools/paths.conf names)" >&2
-  exit 2
+  if [ $# -eq 2 ] && [ "$1" = "--keep-dump" ] && [ -n "$2" ] && [ ! -d "$2" ] \
+     && [ -d "$(dirname -- "$2")" ]; then
+    KEEP_DUMP="$2"
+  else
+    echo "usage: tools/check-data-stage.sh [--keep-dump <path>]" \
+         "(<path> a file in an existing directory; Factorio is the one tools/paths.conf names)" >&2
+    exit 2
+  fi
 fi
 . "$REPO_ROOT/tools/paths.sh"
 sae_factorio_bin GAME_BIN || exit 1
@@ -98,6 +111,12 @@ if [ $STATUS -ne 0 ] || grep -qE '^ *[0-9.]+ Error' "$LOG_FILE"; then
 fi
 
 echo "Data stage OK -- $MOD_NAME loaded cleanly alongside base/space-age."
+
+if [ -n "$KEEP_DUMP" ] && [ -f "$SCRATCH_DATA/script-output/data-raw-dump.json" ]; then
+  cp -- "$SCRATCH_DATA/script-output/data-raw-dump.json" "$KEEP_DUMP" \
+    || { echo "Could not copy the dump to $KEEP_DUMP" >&2; exit 1; }
+  echo "Dump kept at $KEEP_DUMP"
+fi
 
 # The data stage never opens image files, so a mod with broken icon paths passes
 # here and is then refused outright by a client. Check them too.
