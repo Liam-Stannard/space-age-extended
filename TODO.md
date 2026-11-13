@@ -149,16 +149,7 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 - **`changelog.txt` is empty.** Write a 0.3.x entry covering the reset, the cut
   back to the landing, stage 1 of the radiant cycle and the Blender pipeline.
-- **Agent setup: the dry-run follow-up (agent-setup T12, 2026-11-11).** Six
-  fixes the dry run found, each decided by Liam; a task file comes first.
-  A. factorio-task §1 gets a step 0: check the request is not already done
-  (`git log --all --grep`, earlier tickets) and ask before drafting.
-  B. `~/.luarocks/bin` goes on PATH through `.claude/settings.json`'s env, so
-  agents' shells find `luacheck`.
-  C. The hook also blocks a plain `rm` above `scratchpad/<role>/<ticket>/`,
-  with rows in `test/test_hooks.py`.
-  D. factorio-task's light-path template names the `Branch:` line and the
-  Status a ticket carries between two sign-off owners.
-  E. `tools/build-knowledge-base.sh`'s sweep message (line 142) gives the
-  right reason for `.old.*` folders.
-  F. factorio-ship §3's merge command carries the attribution lines.
+- **Hook: deletes that still pass (agent-setup-followup T05 review,
+  2026-11-13).** `unlink`, `rm` fed by `xargs` (piped, `-0`, `-a <file>`),
+  `sh -c 'rm ...'` and `busybox rm` are not checked against the scratch rule; a
+  task file comes first.
