@@ -127,6 +127,8 @@ program, and never run one any other way.
 - Values may not contain a line break. Body, words and reading files may not
   contain a heading line (one starting `# `, `## ` or `### `), since it would
   split the entry.
+- Run each filled command as it stands, one Bash call for each: never inside
+  a shell function, a loop or a script of your own.
 
 Exit status, for all three:
 - 0: done. ADD prints `Q<n>`. ANSWER prints `Q<n> [<state>], line <l>`. TIDY
