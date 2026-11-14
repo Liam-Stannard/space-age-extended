@@ -29,9 +29,12 @@ are not.
    `data-raw-dump.json` (vanilla and the DLC, none of this mod), both
    API JSONs, and vanilla's prototype Lua. Give the version with each
    fact.
-2. **The mod's dump:** `tools/check-data-stage.sh --keep-dump
-   <your scratch>/mod-dump.json` in the worktree. It takes the
-   launcher's lock; exit 3 is NOT RUN, not FAIL.
+2. **The mod's dump:** the one your brief names, by path and sha256.
+   Check the sha256 before you use it, and do not run
+   `tools/check-data-stage.sh`. Only if the brief names no dump, take
+   your own: `tools/check-data-stage.sh --keep-dump <your
+   scratch>/mod-dump.json` in the worktree. It takes the launcher's
+   lock; exit 3 is NOT RUN, not FAIL.
 3. **The mod's design:** `design/01-principles.md`,
    `design/02-tree-pattern.md`, `design/mechanics.md`, the tree spec
    or building spec the change belongs to, and
@@ -41,6 +44,12 @@ are not.
    A Friday Facts post is design intent, not engine fact: mark it so,
    and never let it outweigh the dump. The local sources win where
    they differ; say so.
+
+Where two of Liam's own sources disagree (a decision a task file
+quotes, a tree or building spec, a design doc), the standing rules'
+order of precedence says which one you judge by. Report the line that
+loses as wording to fix, quoting both; never judge the subject against
+it.
 
 ## Measuring
 Every figure comes from `tools/gameplay/graph.py`, the one way to
@@ -61,7 +70,7 @@ One row per check, in this order.
 2. **Economy.** Raw cost per item against vanilla at the same tier
    (`--section cost`, `--planet` for where it is made), crafting time,
    power, the ratios a player builds to, and no vanilla resource made
-   too cheap (principle 5).
+   too cheap (principle 4).
 3. **Exploits.** Recycler loops, quality cycling, productivity,
    duplication or voiding loops, and productivity research that
    compounds (`--section loops`). A loop's yield assumes every other
@@ -70,16 +79,12 @@ One row per check, in this order.
    if a vanilla machine can reach that. Quality is not modelled by
    graph.py; judge it from the recipes, and say so.
 4. **Vanilla style.** Engine mechanics used as vanilla uses them;
-   locks that describe a physical fact, never name the place; no
-   plain upgrades; no vanilla item changed; one new rule per tree.
-5. **The mod's checklist.** All nine principles of
-   `design/01-principles.md` and its checklist; the capstone's four
-   steps (§5); `design/02-tree-pattern.md` §1-§5; and building on
-   vanilla means extending a mechanic or improving a building, and
-   platform items must be useful on platforms (Liam).
+   locks that describe a physical fact, never name the place.
+5. **The mod's principles:** the principles in
+   `design/01-principles.md`, each where its Applies to says.
 6. **Logistics.** Stack size, weight and rocket capacity
    (`--section weight`); whether it can be barrelled; spoilage over the
-   trip; a crossing the player cannot dodge.
+   trip.
 7. **Player's view.** The whole line can be automated, inserters and
    circuits work, and the Factoriopedia entries, tooltips and names
    read in vanilla's voice.
@@ -98,8 +103,10 @@ One row per check, in this order.
   never stops the ticket.
 - **FAIL:** it does not fit, shown by a figure or a source. A FAIL goes
   back to the worker, like the code-reviewer's CHANGES NEEDED. If it
-  fails because of a decision of Liam's the task file quotes, say so:
-  it is a question for him, not the worker's to fix. Never override a
+  fails because of a decision of Liam's or his agreed text, say so and
+  quote it: it is not the worker's to fix and does not stop the
+  ticket. The project-manager adds it, first, to the task's proposed
+  TODO entries, which Liam answers at his sign-off. Never override a
   decision of Liam's.
 - Nothing in the mod has been played. What only playing can settle (how
   a ratio feels, whether a stretch drags) goes in the Playtest list,
@@ -119,5 +126,7 @@ worst row). Then:
 - the concerns and failures, most serious first, each with a suggested
   fix;
 - the Playtest list;
+- the wording to fix: each line that lost under the order of
+  precedence, with the line that won, both quoted;
 - each source you could not reach, and why.
 When asked to look again, say per earlier row whether it changed.
