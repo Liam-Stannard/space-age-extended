@@ -147,10 +147,6 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 - **Decide whether the Core has carbon.** 04 no longer says what the Core
   lacks (Liam, 2026-11-14: "remove this for now"). Carbon is up for review;
   copper, water and organics are not yet decided either.
-- **The design still says the Core has no surface fluid.** The radiant pool,
-  its shore and its solution are in the mod, and 03 §3 and the "no
-  coastline" line need wording that says what the pool is and why it is not a
-  coastline. Wording to be agreed before `design/` is touched.
 - **The Core needs its own fallback ground tiles.** Without Alien
   Biomes it borrows Aquilo's snow and ice (map-gen-fallback); our own
   tiles are for later (Liam, 2026-10-19).
