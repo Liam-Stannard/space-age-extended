@@ -72,13 +72,12 @@ narrow them, never loosen them. The hook
 - Nothing is PASS that was not run and seen to pass. Never sign off
   art or sound: Liam judges the look.
 - Never settle an unknown with a default. Anything the ticket, the task
-  file and the files do not settle is a question: options, what each
-  changes, a recommendation first. In the main session with Liam
-  present, ask with AskUserQuestion (at most four at once); a subagent,
-  or anyone while Liam is away, has the questions-clerk add it to
-  `.claude/tasks/QUESTIONS.md`, naming the ticket it pauses, takes the
-  Q<n> the clerk returns, pauses that ticket and moves to the next. The
-  clerk records Liam's answers there, in his own words.
+  file and the files do not settle is a question, asked as **Asking
+  Liam** says. A subagent, or anyone while Liam is away, has the
+  questions-clerk add it to `.claude/tasks/QUESTIONS.md`, naming the
+  ticket it pauses, takes the Q<n> the clerk returns, pauses that ticket
+  and moves to the next. The clerk records Liam's answers there, in his
+  own words.
 - When Liam's own sources disagree, the more specific one wins: his
   decision on the subject, then the subject's own tree or building
   spec, then the general design docs (`design/01-principles.md`,
