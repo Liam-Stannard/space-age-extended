@@ -61,3 +61,18 @@ saves them is that each integrates through a **different local input**: one
 through settled melt, one through the helium, one through an orbit-only ingot,
 one through combed whiskers, one through felt and raw melt. Then each capstone lands somewhere
 different in the Core's economy, and five reads as five.
+
+---
+
+## From 08, to review
+
+**Moved as it was from `08-core-power.md` §6 (2026-11-14); not yet reviewed.**
+
+**Radiant power is tier 0**, a trigger technology carrying the reaction plant, the
+fuel recipe and the radiant generator together. All three land at once because a
+burner unlocked without its fuel is a recipe in the menu that cannot run.
+
+Stages 2 to 4 are geodynamic technologies: **Solution enrichment**, **Cell
+reprocessing**, **Radiant reactors**. Stage 1 at 10 MW a generator carries the
+whole bootstrap comfortably, so the climb belongs after the science pack rather
+than before it.
