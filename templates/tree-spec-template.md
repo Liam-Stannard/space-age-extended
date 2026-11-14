@@ -13,6 +13,6 @@ Status:
 5. The problem it gives the player (principle 5)
 6. The platform item (principle 3)
 7. The capstone: product and building
-8. Technologies, with prerequisites
+8. Technologies: each under its own heading, with its description, cost, purpose and dependencies
 9. Getting the product to the Core (principle 7)
 10. Open questions
