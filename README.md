@@ -15,7 +15,6 @@ An expansion for Factorio: Space Age 2.1. What the mod is: see
 | [06 — Core production tree](design/06-core-production-tree.md) | Draft of a deeper Core line |
 | [07 — Implementation plan](design/07-roadmap.md) | What gets built, in what order, and how it is proved |
 | [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in four stages |
-| [Mechanics](design/mechanics.md) | One new rule per tree, plus the corridor — to be decided |
 | [Ideas](design/ideas.md) | Proposals nobody has ruled on — **never built without being agreed first** |
 
 Per-tree specifications live in [design/trees/](design/trees/). Only

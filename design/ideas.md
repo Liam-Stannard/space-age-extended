@@ -11,14 +11,13 @@ back to this document and not to a request, it should not have been made.
 
 Reading, researching, costing and arguing with an entry are all fine. Writing
 prototypes, deleting existing mechanics, or folding an entry into
-`04-the-core.md` or `mechanics.md` are not, until it is agreed.
+`04-the-core.md` or a tree spec are not, until it is agreed.
 
 ## How this differs from the neighbouring documents
 
 | Document | Holds | Status of what is in it |
 |---|---|---|
 | [04-the-core.md](04-the-core.md) and the other numbered documents | The design as agreed | **Binding** |
-| [mechanics.md](mechanics.md) | The one new rule each tree teaches | **To be decided** |
 | **ideas.md** (this) | Proposals nobody has ruled on | **Unjudged** — not approved, not rejected |
 
 An entry leaves this file in one of three directions: agreed and moved into the
