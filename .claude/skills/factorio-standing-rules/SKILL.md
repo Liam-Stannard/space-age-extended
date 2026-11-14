@@ -79,6 +79,19 @@ narrow them, never loosen them. The hook
   `.claude/tasks/QUESTIONS.md`, naming the ticket it pauses, takes the
   Q<n> the clerk returns, pauses that ticket and moves to the next. The
   clerk records Liam's answers there, in his own words.
+- When Liam's own sources disagree, the more specific one wins: his
+  decision on the subject, then the subject's own tree or building
+  spec, then the general design docs (`design/01-principles.md`,
+  `design/02-tree-pattern.md`). At the same level, the newer one wins.
+  Report the line that loses as wording to fix, not as a FAIL. On what
+  the game does, the mod's dump and the knowledge base win over any
+  text.
+- **Asking Liam.** Keep each question short: one decision, its context
+  in at most three short lines, each option on one line saying what it
+  changes, the recommended option first. Ask one question at a time,
+  quoting the text it is about. In the main session with Liam present,
+  ask with AskUserQuestion; a subagent, or anyone while Liam is away,
+  sends it to the questions-clerk.
 - Any image a question refers to is sent with it, first.
 
 ## The report
