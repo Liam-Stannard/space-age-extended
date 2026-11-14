@@ -11,7 +11,6 @@ An expansion for Factorio: Space Age 2.1. What the mod is: see
 | [01 — Principles](design/01-principles.md) | The rules every part of the mod meets, and what each applies to |
 | [03 — The corridor](design/03-corridor.md) | The route past the Edge |
 | [04 — The Core](design/04-the-core.md) | The destination, its mechanics, and the sixth tech tree |
-| [05 — What is left on the Core](design/05-core-remaining.md) | The capstone stubs, and why they block the line |
 | [06 — Core production tree](design/06-core-production-tree.md) | Draft of a deeper Core line |
 | [07 — Implementation plan](design/07-roadmap.md) | What gets built, in what order, and how it is proved |
 | [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in four stages |

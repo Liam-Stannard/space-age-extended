@@ -156,7 +156,7 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   Drop Crusher's (the Animatorio stroke) and the Vacuum Furnace's (sintering).
   Wording to be agreed.
 - **Reference tables cut from 01-principles.md.** The platform placement list, the immovable fluids and the planet properties table came out in the principles refactor (2026-11-13). Decide where they live, and re-verify them against 2.1.24.
-- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. README.md, design/04-the-core.md, design/05-core-remaining.md, design/06-core-production-tree.md, design/07-roadmap.md, the three empty pair-tree specs and the two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
+- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. README.md, design/04-the-core.md, design/06-core-production-tree.md, design/07-roadmap.md, the three empty pair-tree specs and the two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
 
 ## Repository
 
