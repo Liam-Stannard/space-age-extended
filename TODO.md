@@ -14,10 +14,10 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 - **Decide what the kamacite vent is for.** Molten kamacite has no consumer,
   and the Vent Pump exists only to trigger Radiant power while the line that
-  used it is gone. Gravity settling (`design/04-the-core.md` §8) is the
+  used it is gone. Gravity settling (in git history, old 04 §8) is the
   candidate on file.
 - **Fines need their advanced use.** Metal carbonyl
-  (`design/06-core-production-tree.md` T3) is the chosen later sink for
+  (in git history, old 06 T3) is the chosen later sink for
   kamacite fines, beside fines smelting. It lands with the next tier of the
   Core's tree.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
@@ -43,8 +43,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   tooltips claim work it does not have (T09 gameplay review,
   vacuum-furnace.md concern 1: (a) lock fines smelting to it, (b) base
   productivity, (c) delete it, (d) rewrite the spec). Then fix the
-  tooltips, `06-core-production-tree.md`'s status table and the unused
-  flux box to match.
+  tooltips and the unused flux box to match.
 - **Holmium oxide's productivity.** With productivity modules the oxide
   route gives +56% to +110% holmium, not +20%. Decide whether to drop
   productivity on `sae-holmium-oxide` (T09 gameplay review,
@@ -157,7 +156,7 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   Drop Crusher's (the Animatorio stroke) and the Vacuum Furnace's (sintering).
   Wording to be agreed.
 - **Reference tables cut from 01-principles.md.** The platform placement list, the immovable fluids and the planet properties table came out in the principles refactor (2026-11-13). Decide where they live, and re-verify them against 2.1.24.
-- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. README.md, design/06-core-production-tree.md, the three empty pair-tree specs and the two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
+- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. README.md, the three empty pair-tree specs and the two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
 
 ## Repository
 

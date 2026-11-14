@@ -68,7 +68,7 @@ needs both. So the player runs one factory in two places.
 
 ## 5. Elsewhere
 
-- The final production line and the Core's mechanics: `06-core-production-tree.md`.
+- The production line: `06-core-production-tree.md`.
 - The Core's tech tree: `09-core-tech-tree.md`.
 - Winning: `00-vision.md`.
 - Power: `08-core-power.md`.
