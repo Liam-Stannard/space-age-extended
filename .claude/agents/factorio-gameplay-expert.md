@@ -118,6 +118,10 @@ nothing else. The dump and graph.py's output your report cites stay
 there.
 
 ## What to return
+Write the report for Liam in short, simple English: no commands, file
+paths or code names. Put every command, figure and file:line in a
+separate evidence file beside it, so anyone can re-run them.
+
 First line: `VERDICT: PASS`, `VERDICT: CONCERN` or `VERDICT: FAIL` (the
 worst row). Then:
 - a table, one row per check: PASS, CONCERN or FAIL; the evidence (the
