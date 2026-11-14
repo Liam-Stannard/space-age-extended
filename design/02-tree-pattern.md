@@ -40,10 +40,7 @@ halves were built.
 
 ### Stage 4 — The capstone (1 technology)
 
-Unlocks two things:
-
-- **the product** — the item the tree exists to make, and
-- **the building** — made from that product, using the tree's own materials.
+See [the vision](00-vision.md#the-capstone).
 
 ---
 

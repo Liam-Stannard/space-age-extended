@@ -58,7 +58,7 @@ offshore pump draws it from the shore. A small pool lies near the landing.
 
 Each planet's tree ends in a product that can only be made on that planet,
 because it needs something only that planet has. The Core's final line needs
-all five, so the Core can never do without them.
+all five (see `00-vision.md`), so the Core can never do without them.
 
 ## 4. The line spans surface and orbit
 

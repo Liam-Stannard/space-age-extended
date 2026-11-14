@@ -1,13 +1,7 @@
 # Space Age Extended
 
-An expansion for Factorio: Space Age 2.1 in which the player builds **cross-planetary
-production lines between pairs of worlds**.
-
-Vanilla gives each planet a self-contained tech tree; nothing on one world genuinely
-needs anything from another. This mod makes the pairs themselves productive — a chain
-that only completes when material from both planets meets in the same recipe. Each pair
-has a small tree of its own ending in a **capstone**, and the five capstones feed a final
-production line on the **Core of the Shattered Planet**, where the game is won.
+An expansion for Factorio: Space Age 2.1. What the mod is: see
+[00 — Vision](design/00-vision.md).
 
 ## The design
 
