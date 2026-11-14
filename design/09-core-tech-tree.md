@@ -1,78 +1,75 @@
 # The Core — tech tree
 
-**Draft, to review.** Moved as it was from `04-the-core.md` §6 (2026-11-14); not yet reviewed.
+The Core has its own tech tree, the sixth after the five planets' trees. Its
+science pack can only be made on the Core.
 
-The Core carries the mod's **sixth technology tree** — twenty-one technologies,
-and the only tree whose research currency is manufactured on site.
+## 1. Geodynamic science
 
-### Geodynamic science
+The geodynamic science pack is made from items of the Core's own line, so the
+tree only advances with a factory running on the Core. Its recipe is locked to
+the Core.
 
-A new science pack, crafted from the **intermediates** of the Core's own line
-(§5) — the same intermediates the end products need.
+## 2. The ladder
 
-### The recipe
+Tier 0, the foothold, is in the mod. The tiers above it wait on
+`06-core-production-tree.md`.
 
-**Geodynamic science pack** — 1 field conductor + 1 reinforced frame +
-4 kamacite whiskers → 5 packs, 20 s, in an assembler, recipe locked to pressure
-1–9. One recipe.
+### Core discovery
 
-The pack touches three of the Core's four mechanics: the conductor carries
-orbital homogenisation, the frame carries whisker growth and the whiskers
-themselves carry the farm's tile. Two rules:
+- **Description:** makes the Core reachable. Until it is researched, no platform
+  can set a course there.
+- **Cost:** 500 units of all eleven vanilla science packs, up to promethium, 60
+  seconds each.
+- **Purpose:** opens the Core as a destination.
+- **Depends on:** Promethium science pack.
 
-- **Locked to pressure 1–9.** Labs carry no surface conditions, so research
-  itself can happen anywhere; the *pack* cannot be made anywhere but here. The
-  tree therefore has to be advanced by a factory genuinely running on the Core.
-  Vanilla gates its own packs the same way — electromagnetic at magnetic field
-  99, metallurgic at pressure 4000, cryogenic at 100–600.
-- **It requires one orbit-made intermediate.** The field conductor needs a
-  homogenised ingot, so the platform overhead is load-bearing from the first
-  geodynamic technology rather than switching on at the end.
+### Hydrogen extraction
 
-### The ladder
+- **Description:** a gas pump and a hydrogen turbine: enough power to begin
+  with, and no more.
+- **Cost:** none. It is a trigger: mine a boulder on the Core.
+- **Purpose:** the Core's first power, and its way back after a blackout.
+- **Depends on:** Core discovery.
 
-Twenty-one technologies in five tiers, shaped so the endgame builds rather
-than arriving flat.
+### Core survey
 
-| Tier | Technologies | Notes |
-|---|---|---|
-| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Crust Tapping (landing-day power, fired by mining a boulder) → Core Survey (the drill) → Gravity Crushing (crusher, smelting) → Vacuum Sintering (the furnace, fines) → Vent Tapping (the vent pump; also needs Uranium Mining) → Radiant Power, each after Crust Tapping a trigger technology fired by the step before it | Core Discovery is researched on packs the player already makes; the rest are triggers, and take none. No geodynamic pack exists yet |
-| **1 — Integration** | Five technologies, one per capstone. **Conductor** and **Frame** come first, on vanilla packs — the two the science pack needs. **Billet**, **Sleeve** and **Coolant** follow, on geodynamic packs, in any order |
-| **2 — Geodynamic Science** | The pack itself | Needs the Conductor and the Frame; required by everything after |
-| **3 — The Core's own goods** | **Field Coils** (coil assembly, coolant loop, the Ring Mast, the ignition charge) · Corridor Seeding · Magnetic Separation · Carbonyl Chemistry · the **sealed roboport** (§9), which needs Field Coils and cold welding | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |
-| **4 — The goal** | Ignition Array, which also unlocks the Field Coil Segment | Costs escalate steeply — the Array's research alone running into thousands of packs |
+- **Description:** the Ballast Drill, the only drill that mines kamacite ore.
+- **Cost:** none. It is a trigger: craft a gas pump.
+- **Purpose:** the first ore out of the ground.
+- **Depends on:** Hydrogen extraction.
 
-### Three things this shape gets right
+### Gravity crushing
 
-**The pack cannot be first.** It is made from intermediates, and intermediates
-need a capstone product plus a local input — so the opening hours run on vanilla
-packs and local bootstrapping, and geodynamic science arrives only once the
-corridor is genuinely delivering. The tree's currency is earned rather than
-granted on landing. Some technologies will be trigger techs to aid players progress through the mod.
+- **Description:** the Drop Crusher, crushing, and kamacite smelting.
+- **Cost:** none. It is a trigger: craft a Ballast Drill.
+- **Purpose:** turns ore into crushed kamacite and fines, and crushed kamacite
+  into plate.
+- **Depends on:** Core survey.
 
-**The climax is the last technologies.** With costs escalating steeply, the
-ramp is felt rather than announced, and the final stretch becomes one sustained
-decision about how to split a single production line between knowing more and
-building more.
+### Vacuum sintering
 
-**The five integration technologies must not be five of the same technology.**
-They share a shape — capstone plus local input yields intermediate — so what
-saves them is that each integrates through a **different local input**: one
-through settled melt, one through the helium, one through an orbit-only ingot,
-one through combed whiskers, one through felt and raw melt. Then each capstone lands somewhere
-different in the Core's economy, and five reads as five.
+- **Description:** the Vacuum Furnace, and fines smelting.
+- **Cost:** none. It is a trigger: craft 50 kamacite fines.
+- **Purpose:** gives the crusher's fines a use.
+- **Depends on:** Gravity crushing.
 
----
+### Vent tapping
 
-## From 08, to review
+- **Description:** the Vent Pump, which draws molten kamacite from a kamacite
+  vent.
+- **Cost:** none. It is a trigger: craft a Vacuum Furnace.
+- **Purpose:** opens the kamacite vents.
+- **Depends on:** Vacuum sintering, and Uranium mining, which the game needs
+  before any drill can mine with a fluid.
 
-**Moved as it was from `08-core-power.md` §6 (2026-11-14); not yet reviewed.**
+### Radiant power
 
-**Radiant power is tier 0**, a trigger technology carrying the reaction plant, the
-fuel recipe and the radiant generator together. All three land at once because a
-burner unlocked without its fuel is a recipe in the menu that cannot run.
+- **Description:** the Reaction Plant, radiant precipitation, the radiant
+  generator, and radiant chunk crushing.
+- **Cost:** none. It is a trigger: craft a Vent Pump.
+- **Purpose:** power that doesn't run out. The plant, the fuel and the generator
+  come together, so the generator never arrives without its fuel.
+- **Depends on:** Vent tapping.
 
-Stages 2 to 4 are geodynamic technologies: **Solution enrichment**, **Cell
-reprocessing**, **Radiant reactors**. Stage 1 at 10 MW a generator carries the
-whole bootstrap comfortably, so the climb belongs after the science pack rather
-than before it.
+Power stages 2 to 4 (`08-core-power.md`) will be geodynamic technologies, placed
+when the tiers above 0 are planned.

@@ -35,7 +35,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   once the docs are rewritten for the rework.
 - **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
   Rename the fluid, its vent and its turbine in the mod and in every
-  document. It replaces the old "crust gas to siderane" rename entry.
+  document. It replaces the old "crust gas to siderane" rename entry. With
+  it, look at the vacuum names (Vacuum sintering, the Vacuum Furnace), which
+  pressure 200 no longer fits.
 - **Decide the Vacuum Furnace's job.** In the code it runs only `smelting`,
   so on the Core it is a slower, hungrier electric furnace, and three
   tooltips claim work it does not have (T09 gameplay review,
