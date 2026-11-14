@@ -66,7 +66,7 @@ Why: the player should still meet vanilla's challenges in vanilla's order. A che
 
 - **Applies to:** every item, building, recipe and mechanic in the mod
 - **Fails when:** something lets the player skip or reorder vanilla's progression, or a resource costs 50% or less of its vanilla raw cost (graph.py, vanilla's route).
-- **Concern when:** a resource is 20% or more cheaper than its vanilla raw cost, or only cheaper with productivity modules.
+- **Concern when:** a resource is 20% or more cheaper than its vanilla raw cost.
 - **Checked by:** graph.py --section tech for when things unlock, and --section cost and --section loops for cost, compared with vanilla.
 - **Vanilla precedent:** none
 - **Exceptions:** the win condition moves to the Core.
