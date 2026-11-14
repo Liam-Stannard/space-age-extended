@@ -7,16 +7,18 @@ An expansion for Factorio: Space Age 2.1. What the mod is: see
 
 | | |
 |---|---|
-| [00 — Vision](design/00-vision.md) | What the mod is, the five pairs, and how it ends |
+| [00 — Vision](design/00-vision.md) | What the mod is, its five trees, and the endgame |
 | [01 — Principles](design/01-principles.md) | The rules every part of the mod meets, and what each applies to |
 | [03 — The corridor](design/03-corridor.md) | The route past the Edge |
-| [04 — The Core](design/04-the-core.md) | The destination, its mechanics, and the sixth tech tree |
+| [04 — The Core](design/04-the-core.md) | The planet, its surface and its resources |
 | [06 — Core production tree](design/06-core-production-tree.md) | The Core's production line, as built |
 | [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in four stages |
+| [09 — The Core's tech tree](design/09-core-tech-tree.md) | Each technology, its cost and what it needs |
 | [Ideas](design/ideas.md) | Proposals nobody has ruled on — **never built without being agreed first** |
 
-Per-tree specifications live in [design/trees/](design/trees/). Only
-[Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) is written.
+Each planet's tree spec lives in [design/trees/](design/trees/) and follows
+[templates/tree-spec-template.md](templates/tree-spec-template.md). The old pair
+specs there are being reworked ([TODO.md](TODO.md)).
 
 How work is done in this repo — where design, concept art, templates and tasks
 live — is set out in [claude.md](claude.md). Outstanding work is in
@@ -24,84 +26,33 @@ live — is set out in [claude.md](claude.md). Outstanding work is in
 
 ## Status
 
-**The mod is being reworked from the ground up, starting at the landing.** It
-carries the three landing technologies (Crust tapping, Core survey, Radiant
-power), the crusher, drill, vacuum furnace and reaction plant, the radiant line
-that fuels the generator, the corridor, and the five cross-planet capstone
-products. Of the cross-planet trees, Fulgora ↔ Aquilo is real and the other four
-craft their capstone from a stub recipe. The melt line, the geodynamic pack and
-the Ignition Array were cut, and nothing yet ends the game.
+The mod is being rebuilt from the landing up, and nothing has been played yet.
+Each design document and tree spec gives its own status.
 
-**Nothing has been played.** Every number in the mod is a first guess, verified against
-the engine but never against a person.
-
-## Layout
+## Checking a change
 
 ```
-design/              the specification — changed only by agreement
-concept/<building>/  every concept; design, never shipped
-templates/           prompt and spec templates
-prototypes/          the data stage, split by area (core/, trees/, corridor.lua)
-graphics/            implementation: signed-off or placeholder art only
-locale/en/           strings
-migrations/          renames across versions
-tools/               data-stage checks, art generation and sprite pipeline
-data.lua             data stage entry point
-control.lua          runtime: the win condition
-TODO.md              every outstanding task
-info.json
+./tools/check-data-stage.sh
 ```
 
-## Verifying a change
+This loads the mod in the real game, then checks its images, graphics paths,
+recipes and technologies. The image check matters: loading the mod never opens
+an image, so a mod with missing icons loads fine and is then refused by the game
+client. `tools/check-graphics.sh` runs the image checks alone.
 
-```
-./tools/check-data-stage.sh     # loads the mod against the real engine, then checks
-                                # images, dumped graphics paths, recipes and
-                                # technology reachability
-```
-
-The image checks matter: the data stage never opens image files, so a mod whose
-icons all point at nothing loads cleanly and is then refused outright by a
-client. `tools/check-graphics.sh` runs on its own too.
-
-Behavioural checks run on a headless server driven over RCON (`tools/rcon.py`).
-Two gotchas that cost time: the server exits on stdin EOF, and with no client
-attached it free-runs, so measure against `game.tick` deltas rather than
-wall-clock sleeps.
+Behaviour is checked on a headless server, driven over RCON (`tools/rcon.py`).
+Two things to know: the server stops when its input closes, and with no player
+connected it runs as fast as it can, so time things in game ticks, not seconds.
 
 ## Building art
 
 Copy [templates/building-spec-template.md](templates/building-spec-template.md)
-to `concept/<building>/building-spec-<building>.md` and fill it in *before* commissioning
-art. Its appendices carry the prompt anatomy, the browser-generation workflow and
-the production pipeline; read them first, since most of what is in them was
-learned the expensive way.
-
-```
-tools/generate-building-art.py <spec> --list     # the prompts, for the browser
-tools/process-building-art.py <plate> --report   # measure a plate; never eyeball one
-tools/process-building-art.py <plate> --dekey    # recover alpha from a flattened export
-tools/derive-glow.py  --lit A --unlit B          # recover the additive glow layer
-```
-
-Every concept goes under `concept/<building>/`. A plate moves to
-`graphics/entity/<building>/` only once it is signed off.
+to `concept/<building>/` and fill it in before any art. Buildings are modelled
+and rendered in Blender (`tools/blender/`). A plate moves to `graphics/` only
+once it is signed off.
 
 ## Icon art
 
-Icons are generated a **production chain at a time**, not one at a time, because
-what matters is whether the icons of a chain read as things made from each other
-— and generated separately they do not.
-[templates/icon-sheet-prompts.md](templates/icon-sheet-prompts.md) sets out the
-method: a labelled review sheet, then a flat-background harvest sheet produced by
-*editing* the approved one, cut and keyed by tools rather than by a generator.
-
-```
-tools/cut-icon-sheet.py <harvest sheet> <dir> name1 name2 ...  # sheet -> one PNG per icon
-tools/key-icons.py graphics/icons <dir>/name1.png:name1 ...    # PNG -> 64px mipmap strip
-```
-
-Two rules worth stating here rather than only in the template: **once a design
-is locked, every later image is an edit of the approved file, never a fresh
-generation**, and **plates are judged by measurement, not by looking at them** —
-a transparent PNG takes the colour of whatever the viewer puts behind it.
+Icons are made a production chain at a time, so a chain's icons look made from
+each other. The method is in
+[templates/icon-sheet-prompts.md](templates/icon-sheet-prompts.md).
