@@ -20,8 +20,8 @@ in it is a guess.
   Scope, Pass criteria and the one ticket, ask what they leave open,
   then §5.
 - **Who asks:** the main session asks with AskUserQuestion. The
-  project-manager cannot: it puts each question in
-  `.claude/tasks/QUESTIONS.md` and returns the draft in its report.
+  project-manager cannot: it has the questions-clerk add each question
+  to `.claude/tasks/QUESTIONS.md` and returns the draft in its report.
   Nothing is written until Liam's agreement comes back, quoted.
 
 ## 1. Research before asking
