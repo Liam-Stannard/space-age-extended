@@ -11,8 +11,8 @@ These are the rules every part of the mod must meet. Each principle says what it
 Why: players can work out physics. "Only on Gleba" teaches them nothing.
 
 - **Applies to:** every building and recipe
-- **Fails when:** a limit is there only to pick one planet.
-- **Concern when:** a physical limit happens to fit only one planet.
+- **Fails when:** the limit names a planet instead of using something physical.
+- **Concern when:** none.
 - **Checked by:** the limits listed in the mod's data dump.
 - **Vanilla precedent:** the biolab works only at Nauvis's air pressure.
 - **Exceptions:** none
@@ -27,6 +27,8 @@ Why: players can work out physics. "Only on Gleba" teaches them nothing.
 > - it gives the player a real choice, better in some cases and worse in others;
 > - it is something that has to be shipped between planets;
 > - it helps the player reach or survive the Core.
+>
+> Fluids count as items.
 
 Why: "the chain feels bigger with another step" is not a purpose.
 
@@ -63,11 +65,11 @@ Why: every planet then plays a part in the journey to the Core, and nothing sits
 Why: the player should still meet vanilla's challenges in vanilla's order. A cheap shortcut removes a challenge instead of adding one.
 
 - **Applies to:** every item, building, recipe and mechanic in the mod
-- **Fails when:** something lets the player skip or reorder vanilla's progression, or makes a resource well under its vanilla cost.
-- **Concern when:** it is a little cheaper, or only cheaper with productivity modules.
+- **Fails when:** something lets the player skip or reorder vanilla's progression, or a resource costs 50% or less of its vanilla raw cost (graph.py, vanilla's route).
+- **Concern when:** a resource is 20% or more cheaper than its vanilla raw cost, or only cheaper with productivity modules.
 - **Checked by:** graph.py --section tech for when things unlock, and --section cost and --section loops for cost, compared with vanilla.
 - **Vanilla precedent:** none
-- **Exceptions:** none
+- **Exceptions:** the win condition moves to the Core.
 - **Source:** Liam, 2026-11-13
 
 ## 5. A tree gives the player a problem to solve
@@ -78,7 +80,7 @@ Why: a flat bonus has no cost to weigh, so there is nothing to design.
 
 - **Applies to:** each planet's tree
 - **Fails when:** the tree's gain is a flat percentage with no cost the player chooses.
-- **Concern when:** the choice exists but one answer is always best.
+- **Concern when:** the choice exists but one answer is always best (judgement or playtest).
 - **Checked by:** reading the tree's spec and recipes for a choice the player makes.
 - **Vanilla precedent:** Gleba's spoilage forces the player to plan for speed.
 - **Exceptions:** none
@@ -86,12 +88,12 @@ Why: a flat bonus has no cost to weigh, so there is nothing to design.
 
 ## 6. Every byproduct has a use
 
-> Every byproduct can be used in at least one way the player can already build. Nothing has to be thrown away.
+> Every byproduct has at least one use in the mod. Recycling it counts as a use only where its spec says recycling is the intended path.
 
 Why: a byproduct with no use is a chore.
 
 - **Applies to:** every chain in the mod, including the Core's
-- **Fails when:** a byproduct has no use, or a loop makes more than can be used, so some must be destroyed.
+- **Fails when:** a byproduct has no use, or a loop makes more than can be used, so some must be destroyed (judgement or playtest).
 - **Concern when:** its only use comes much later than the byproduct does.
 - **Checked by:** the recipes in the mod's data dump that take each byproduct, and graph.py --section loops.
 - **Vanilla precedent:** Fulgora's scrap gives many products, and each has a use.
@@ -106,8 +108,8 @@ Why: the trip to the Core is part of the tree's design, not an afterthought.
 
 - **Applies to:** each planet's tree, and its product
 - **Fails when:** the product's weight is not set on purpose, or it spoils on the trip and the tree has no answer.
-- **Concern when:** the product is very light, so the trip costs almost nothing.
-- **Checked by:** graph.py --section weight for the product; its spoil time against the trip.
+- **Concern when:** more than twice as many fit in a rocket as of the nearest vanilla item of the same kind: a building compared with vanilla buildings, an intermediate like LDS with vanilla intermediates.
+- **Checked by:** graph.py --section weight for the product; its spoil time against the trip (judgement or playtest).
 - **Vanilla precedent:** Gleba's science packs spoil, so the player must ship them fast.
 - **Exceptions:** none
 - **Source:** original principle
@@ -117,9 +119,9 @@ Why: the trip to the Core is part of the tree's design, not an afterthought.
 | # | Principle | Applies to |
 |---|---|---|
 | 1 | Limits use physics, not planet names | every building and recipe |
-| 2 | Every new item has a purpose | every item and building |
+| 2 | Every new item has a purpose | every new item and building |
 | 3 | Each planet's tree extends it | each tree; anything on a platform |
-| 4 | Don't break progression or make resources cheap | everything |
+| 4 | Don't break progression or make resources cheap | every item, building, recipe and mechanic |
 | 5 | A tree gives the player a problem to solve | each tree |
 | 6 | Every byproduct has a use | every chain |
 | 7 | Each tree's product must reach the Core | each tree's product |
