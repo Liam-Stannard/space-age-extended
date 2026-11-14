@@ -23,8 +23,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
   nothing replaces it, so a playthrough never ends.
 - **Re-plan stages 2–4 of the radiant cycle against what exists.** They name
-  geodynamic technologies and machines that were cut
-  (`design/production-line-plan.md` says so). The spent-cell and steam
+  geodynamic technologies and machines that were cut. The spent-cell and steam
   decisions under Power wait on this.
 - **Decide what happens to the cut buildings' art.** `graphics/` still holds
   signed-off art for nine buildings that no longer exist — Bed Tender, Ignition
