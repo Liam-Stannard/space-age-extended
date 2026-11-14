@@ -48,11 +48,17 @@
   Lua, with a MANIFEST of sums; the analyst reads it first.
   `tools/client/launch.sh --version` prints the installed version.
 - **Agents:** artist, coder, code-reviewer, factorio-gameplay-expert,
-  tester, analyst and project-manager (`.claude/agents/`), each
+  questions-clerk, tester, analyst and project-manager
+  (`.claude/agents/`), each
   preloading the
   `factorio-standing-rules` skill. The `no-ghost-waits` hook blocks
   sleep loops, deletes above a scratch ticket folder, `pkill`,
   `killall` and killing by name, and running Factorio outside
   `tools/client/launch.sh`.
+- **Questions:** only the questions-clerk writes
+  `.claude/tasks/QUESTIONS.md`, with three commands (add, answer, tidy)
+  kept in its agent file, each run under
+  `flock -w 60 .claude/tasks/QUESTIONS.lock`; exit 3 means the lock was
+  held and nothing was written (questions-clerk, 2026-11-13).
 - **Sending files:** images over 8000 px on the longer side cannot be sent
   to Liam; send a top-section copy.

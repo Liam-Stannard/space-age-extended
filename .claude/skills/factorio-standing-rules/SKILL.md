@@ -12,8 +12,9 @@ narrow them, never loosen them. The hook
 - No `.md` file, `design/`, `templates/` or `TODO.md` is written, added
   to or reworded without Liam's agreement first (claude.md rule 8); put
   the proposed wording in your report. The project-manager may write
-  the working notes rule 8 allows: its task file's Status lines and
-  QUESTIONS.md.
+  its task file's Status lines, a working note rule 8 allows. Only the
+  questions-clerk writes `.claude/tasks/QUESTIONS.md`, the other one,
+  with its locked commands.
 - Only signed-off or placeholder art goes in `graphics/`; nothing in
   `concept/` ships (claude.md rule 3).
 - No migrations before 1.0 (Liam).
@@ -74,9 +75,10 @@ narrow them, never loosen them. The hook
   file and the files do not settle is a question: options, what each
   changes, a recommendation first. In the main session with Liam
   present, ask with AskUserQuestion (at most four at once); a subagent,
-  or anyone while Liam is away, puts it in
-  `.claude/tasks/QUESTIONS.md` as Q<n> naming the ticket it pauses,
-  pauses that ticket and moves to the next.
+  or anyone while Liam is away, has the questions-clerk add it to
+  `.claude/tasks/QUESTIONS.md`, naming the ticket it pauses, takes the
+  Q<n> the clerk returns, pauses that ticket and moves to the next. The
+  clerk records Liam's answers there, in his own words.
 - Any image a question refers to is sent with it, first.
 
 ## The report
