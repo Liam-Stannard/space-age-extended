@@ -24,9 +24,9 @@ expert first; if the experts can't all agree on an answer, ask Liam.
 ## 1. The task file
 If you are given a request, not an agreed task file, run
 factorio-task on it. Research, build the ledger, and have the
-questions-clerk add each question to QUESTIONS.md (the task it pauses,
-options with a recommendation first, the images it refers to); it
-returns the Q<n>. Then return the draft
+questions-clerk add each question to QUESTIONS.md, asked as the
+standing rules' **Asking Liam** says, with the task it pauses and the
+images it refers to; it returns the Q<n>. Then return the draft
 task file in your report and stop. When the main session sends Liam's
 answers and his agreement, quoted, write the file to
 `.claude/tasks/<branch>.md`, create the branch and its worktree under

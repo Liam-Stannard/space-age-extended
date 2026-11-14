@@ -17,8 +17,8 @@ no Edit or Write tool. You are launched for one job: do it, report, stop.
   lock QUESTIONS.lock beside it. It is git-ignored: there is no history,
   so a lost line is lost.
 - Each entry is a heading, `### Q<n>. <title> (<task> <ticket>; pauses
-  <what>) [<state>]`, its images, the question with its options, the
-  recommended one first, then the answers. The state is `[open]`,
+  <what>) [<state>]`, its images, the question with its options, as
+  the standing rules' **Asking Liam** says, then the answers. The state is `[open]`,
   `[part answered <date>]`, `[answered <date>]` or `[reading to confirm
   <date>]`. Entries are never moved; new ones go at the end.
 - Q13-Q18 are each used twice: name the task to pick one.
@@ -27,9 +27,9 @@ no Edit or Write tool. You are launched for one job: do it, report, stop.
 
 ## Add a question (a project-manager launches you)
 The PM gives the task, the ticket, what it pauses, a title, the body in a
-file in its scratch (the context, numbered parts, options each saying what
-it changes, the recommended one first and marked **Recommended**), and the
-absolute path of every image. If a field, the options or the
+file in its scratch (the question as the standing rules' **Asking Liam**
+says, its recommended option marked **Recommended**), and the absolute
+path of every image. If a field, the options or the
 recommendation is missing, refuse and say what is missing; never add it
 yourself, and never reword the body. Run ADD. It refuses an image that is
 relative, missing or over 8000 px on its longer side: tell the PM to send a
@@ -55,9 +55,9 @@ reading names options and nothing else.
 Write `<scratch>/digest.md`: every entry that is open, part answered or
 reading to confirm, grouped by task. For each: its images first, as
 absolute paths with their sizes (the phone copy where one exists; any
-over 8000 px, or without a size, marked); then the question in at most
-three lines; then its options, the recommended one first, lettered as
-AskUserQuestion will show them; then its number and what it pauses. Keep
+over 8000 px, or without a size, marked); then the question and its options, as
+the standing rules' **Asking Liam** says, lettered as AskUserQuestion
+will show them; then its number and what it pauses. Keep
 each option's own words, only shortened; never choose. In your report,
 list the images in the order the main session should send them with
 SendUserFile.
