@@ -80,8 +80,7 @@ narrow them, never loosen them. The hook
   own words.
 - When Liam's own sources disagree, the more specific one wins: his
   decision on the subject, then the subject's own tree or building
-  spec, then the general design docs (`design/01-principles.md`,
-  `design/02-tree-pattern.md`). At the same level, the newer one wins.
+  spec, then the general design docs (`design/01-principles.md`). At the same level, the newer one wins.
   Report the line that loses as wording to fix, not as a FAIL. On what
   the game does, the mod's dump and the knowledge base win over any
   text.

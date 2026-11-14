@@ -9,7 +9,6 @@ An expansion for Factorio: Space Age 2.1. What the mod is: see
 |---|---|
 | [00 — Vision](design/00-vision.md) | What the mod is, the five pairs, and how it ends |
 | [01 — Principles](design/01-principles.md) | The rules every part of the mod meets, and what each applies to |
-| [02 — The cross-planet tree](design/02-tree-pattern.md) | The repeatable shape, and the register |
 | [03 — The corridor](design/03-corridor.md) | The route past the Edge, and seeding the field |
 | [04 — The Core](design/04-the-core.md) | The destination, its mechanics, and the sixth tech tree |
 | [05 — What is left on the Core](design/05-core-remaining.md) | The capstone stubs, and why they block the line |

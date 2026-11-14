@@ -35,8 +35,7 @@ are not.
    your own: `tools/check-data-stage.sh --keep-dump <your
    scratch>/mod-dump.json` in the worktree. It takes the launcher's
    lock; exit 3 is NOT RUN, not FAIL.
-3. **The mod's design:** `design/01-principles.md`,
-   `design/02-tree-pattern.md`, `design/mechanics.md`, the tree spec
+3. **The mod's design:** `design/01-principles.md`, `design/mechanics.md`, the tree spec
    or building spec the change belongs to, and
    `.claude/skills/factorio-task/knowledge/` (`gameplay.md` first).
 4. **Official online pages**, through WebFetch: wiki.factorio.com,
