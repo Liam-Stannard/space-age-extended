@@ -354,3 +354,147 @@ endgame collapses into a segment grind.
 4. **T4, T6** — orbital crystal and cryogenics. Both need capstones, so they
    follow the four stub chains landing.
 5. **T7–T9** — re-sourcing the existing intermediates onto the new tiers.
+
+---
+
+## From 04, to review
+
+**Moved as it was from `04-the-core.md` §5 and §8 (2026-11-14); not yet reviewed against the rest of this document.**
+
+### 04 §5 — The final production line
+
+The Core has **its own tech tree** — the sixth — and its own multi-stage
+production line. This is the mod's largest chain, and the only one that cannot be
+built anywhere else.
+
+**The five capstone products are inputs to it, not parts of the goal.** Each
+arrives from its own pair of planets and is *consumed* to make an intermediate
+that only the Core can produce, because every intermediate also needs something
+local: the melt, the whiskers, the helium-3, or a step that only runs in orbit.
+
+```
+five capstone products         molten kamacite · whiskers · helium-3 · orbit
+        \                                 /
+         +-------- intermediates --------+        (stage 1: each capstone
+                        |                          consumed with a local input)
+                        v
+                  end products                    (stage 2: intermediates
+                        |                          combined; the Core's own goods)
+                        v
+              Field Coil Segments                 (stage 3: built only from
+                        |                          end products)
+                        v
+                 Ignition Array
+```
+
+### Stage 1 — the five integrations
+
+A field coil has five parts: a conductor, a magnetic core, insulation, a coolant
+and a frame. There are five trees. **Each capstone becomes one part of the coil**,
+and each is integrated through a *different* local input, so the five
+technologies are five different problems rather than one repeated.
+
+| Tree | Capstone product | Local input | Intermediate | Coil part |
+|---|---|---|---|---|
+| Fulgora ↔ Aquilo | **Superconducting winding** | homogenised ingot — made in orbit | **Field conductor** | Conductor |
+| Vulcanus ↔ Fulgora | **Magnetar alloy** | settled melt | **Magnetic core billet** | Core |
+| Vulcanus ↔ Gleba | **Cultured alloy** | whisker tow — combed whiskers | **Reinforced frame** | Frame |
+| Vulcanus ↔ Aquilo | **to be designed** | whisker felt and raw molten kamacite | **Insulation sleeve** | Insulation |
+| Gleba ↔ Aquilo | **Cryoprotectant fluid** | helium-3 | **Coolant charge** | Coolant |
+
+No intermediate is built: they went with the cut back to the landing.
+
+Every capstone is therefore *visibly in the thing being built*. A player looking
+at a Field Coil Segment can trace each of its parts back to a pair of planets and
+the chain that produced it.
+
+### Stage 2 — the end products
+
+| End product | From | Made by |
+|---|---|---|
+| **Coil assembly** | field conductor + magnetic core billet + reinforced frame + insulation sleeve + welded plate | **Cold welding** — joined in vacuum, slowly, at almost no power |
+| **Coolant loop** | coolant charge + kamacite plate | Ordinary assembly on the surface |
+
+Cold welding earns its place here: research uses the material sciences
+(settling, growth, homogenisation), construction uses the joining.
+
+### Stage 3 — the segment
+
+**Field Coil Segment** = coil assembly + coolant loop. Nothing else. The
+capstones are three stages below it, which is what makes the Core a factory
+rather than an assembly point.
+
+Three consequences worth being explicit about:
+
+- **No capstone touches the segment directly.** The dependency runs through two
+  stages of local processing, so the Core is a factory rather than an assembly
+  point, and the final part is genuinely the Core's own product.
+- **Every stage is gated by a Core technology**, so arrival is the beginning of a
+  progression rather than the end of one.
+- **The chain spans surface and orbit** at more than one stage (§4), so both
+  halves are live for the whole endgame rather than at a single hand-off.
+
+### Metal carbonyl — the chemistry that arrives later
+
+Metals dissolve into carbon monoxide as a gas and deposit again as ultra-pure
+powder when it decomposes. It is real industrial chemistry, and mechanically it
+is the most interesting thing available to the Core: **metal that travels
+through pipes.**
+
+It cannot be a vent product, because forming it needs carbon and the Core has
+none — so it is unlocked late, by **Carbonyl Chemistry** after Magnetic
+Separation, and built from **imported carbon**. That is a feature rather than an obstacle: it gives the corridor a
+permanent cargo that has nothing to do with the capstones, and it means the
+Core's best chemistry is paid for with freight from home.
+
+### 04 §8 — The Core's own mechanics
+
+Four rules that exist nowhere else in the game. Between them they give the Core a
+production identity built on **weight, vacuum, time and the absence of gravity**,
+rather than on the heat and electricity every other world runs on.
+
+### Gravity settling — surface only
+
+Molten kamacite separates into a dense fraction and dross **because it is heavy**.
+No energy, no reagent, no catalyst: a tall vessel and time. It works here because
+the Core's gravity is 50, and nowhere else because Vulcanus, the next heaviest
+world, is 40.
+
+*Implementation:* `surface_conditions` gravity ≥ 45 on the recipe. Nothing in
+vanilla uses gravity as a production condition — only as a space-or-ground
+switch.
+
+### Orbital homogenisation — orbit only
+
+The same material, taken up to the platform, alloys **evenly precisely because
+nothing settles**. Gravity is the thing being escaped.
+
+*Implementation:* `surface_conditions` gravity 0, the same lock vanilla puts on
+space science. Paired with settling, it is what makes the surface/orbit lift a
+permanent loop rather than a hand-off (§4).
+
+### Cold welding — vacuum
+
+In real vacuum, clean metal surfaces bond on contact. Joining costs almost no
+power and cannot be hurried: the machine is a clamp, not a furnace.
+
+*Implementation:* `surface_conditions` pressure ≤ 9 with a long
+`energy_required` and negligible machine energy usage. A production step whose
+cost is **place and patience** rather than throughput — the game has never had
+one.
+
+The same condition now carries a second industry. **Vacuum electronics** (§11)
+is the Core's answer to having no copper, and it is only possible where the
+vacuum is free: a sealed emitter facing a gate across nothing at all. Cold
+welding joins in vacuum; field emission *switches* in it.
+
+### Whisker growth — surface, on tiles
+
+Kamacite whiskers crystallise out of the melt over time on seeded plates, and are
+harvested like a crop. Growing area, not machine count, is the throughput.
+
+*Implementation:* the `plant` prototype with `growth_ticks` and a tile
+restriction — measured working on the Core, growing to maturity and yielding its
+products. Vanilla's agricultural tower needs pressure 1000–2000 and is refused
+here, so the mod supplies its own: the **Bed Tender**. Gleba farms food; the
+Core farms metal.

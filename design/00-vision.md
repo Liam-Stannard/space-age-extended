@@ -75,6 +75,10 @@ whose inputs are:
 - **new items found only out there**, on the Core itself or in the promethium
   space between it and the rest of the system.
 
+The win condition is still to be decided. It will mean restarting something at
+the centre of the Core with an extremely powerful machine. Winning leaves a
+final science pack for some of the endless research.
+
 That is the shape of the whole mod in one line: **each pair teaches you to move
 material between two worlds; the Core asks you to do it from every world at
 once, at the far end of the longest supply line in the game.**
