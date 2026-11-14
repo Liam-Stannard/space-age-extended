@@ -34,13 +34,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   `concept/<building>/`; git keeps them either way.
 - **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
   once the docs are rewritten for the rework.
-- **Rename crust gas to siderane in the docs.** The player-facing names
-  changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
-  extraction); `design/` and the other specs still say "crust gas", "crust
-  tap" and "crust turbine" about 50 times. Rewrite them with the rework.
-  Internal names (`sae-crust-*`) stay. With it, `design/08-core-power.md`
-  lines 18 and 24–27: radiant solution is drawn by a vanilla offshore pump
-  at the pool, and siderane by the Gas Pump, not one tap drawing both.
+- **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
+  Rename the fluid, its vent and its turbine in the mod and in every
+  document. It replaces the old "crust gas to siderane" rename entry.
 - **Decide the Vacuum Furnace's job.** In the code it runs only `smelting`,
   so on the Core it is a slower, hungrier electric furnace, and three
   tooltips claim work it does not have (T09 gameplay review,
@@ -148,11 +144,16 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   mechanic, and that must not quietly become a power source again.
   `design/ideas.md` I1 (radiation and decontamination) is the one researched
   candidate on file.
-- **`04-the-core.md` §1 still describes the arc storm as the Core's hazard.**
-  "Life and hazard" needs wording that says the planet has no threat yet.
-  Wording to be agreed before `design/` is touched.
+- **Raise the Core's pressure to 200.** 04 now says 200 (Liam, 2026-11-14).
+  The planet changes, and every Core-only limit moves from 1-9 to 1-299: the
+  Siderane turbine, the Reaction Plant, the siderane recipe and two corridor
+  recipes. Vanilla's boilers, furnaces, burner machines and roboports will
+  then work on the Core.
+- **Decide whether the Core has carbon.** 04 no longer says what the Core
+  lacks (Liam, 2026-11-14: "remove this for now"). Carbon is up for review;
+  copper, water and organics are not yet decided either.
 - **The design still says the Core has no surface fluid.** The radiant pool,
-  its shore and its solution are in the mod, and 04 §2, 03 §3 and the "no
+  its shore and its solution are in the mod, and 03 §3 and the "no
   coastline" line need wording that says what the pool is and why it is not a
   coastline. Wording to be agreed before `design/` is touched.
 - **The Core needs its own fallback ground tiles.** Without Alien
