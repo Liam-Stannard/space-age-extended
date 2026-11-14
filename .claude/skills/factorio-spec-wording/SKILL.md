@@ -13,7 +13,8 @@ latest sheets). Write the draft to the session scratchpad, not the repo:
 - per section that changes: the heading, the current text quoted briefly,
   the proposed replacement in the file's own voice;
 - the sections that stay;
-- numbered open questions, each with a recommendation.
+- numbered open questions, each asked as the standing rules'
+  **Asking Liam** says.
 Send the draft file to Liam and summarise it in the reply.
 
 ## 2. Agree

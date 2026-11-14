@@ -13,8 +13,8 @@ and plant"*). The four plates, glow, lamps and icon are rendered from that model
 through `tools/blender/`. There is no master plate, and nothing is generated.
 
 §1, §2, §8 and §13 are records of `prototypes/core/machines.lua`; where they
-disagree with the code, the code is right. Until the 5×5 is wired, the code is
-still the 3×3 and the 5×5 numbers below are what the wiring task writes into it.
+disagree with the code, the code is right. The 5×5 is wired, so the numbers
+below are the code's.
 
 ---
 
@@ -62,8 +62,8 @@ water reflection.
 **Planet / Environment:** the **Core**, and only its surface.
 `surface_conditions = { pressure min 1, max 9 }` (`CORE_ONLY`) — not `CORE`, so
 unlike the Helium Concentrator it cannot be built on a platform. What gates it
-there is the two fluids: radiant solution off the pool's shore and crust gas off
-a vent, both drawn by a Crust Tap, neither barrelable, neither existing anywhere
+there is the two fluids: radiant solution off the pool's shore, drawn by a
+vanilla offshore pump, and crust gas off a vent, drawn by a Gas Pump, neither barrelable, neither existing anywhere
 else.
 
 **Purpose:** Stage 1 of the radiant cycle, and the Core's entire power supply.
@@ -78,7 +78,7 @@ generators; a crust turbine on a vent is the only way back (`08-core-power.md`
 should look like it carries that.
 
 **Technology Unlock:** `sae-radiant-power`, a **trigger technology** whose only
-prerequisite is `sae-core-survey`, fired by crafting a `sae-vent-pump`. It
+prerequisite is `sae-vent-tapping`, fired by crafting a `sae-vent-pump`. It
 carries the plant, the recipe and the generator together, because none is worth
 anything alone. **Tier 0, the foothold tier** (`08-core-power.md` §6). This is
 the register-setting fact for §4.

@@ -6,15 +6,9 @@ record.** Where the code stands against it, per tier:
 
 | Tier | Built |
 | ---- | ----- |
-| T1 | crushed kamacite, fines, schreibersite concentrate — all in |
-| T2 | plate, settling, cast ingot, phosphide flux — all in |
-| T3 | carbon monoxide, metal carbonyl, carbonyl powder, sintered preform — all in (Carbonyl Chemistry) |
-| T4 | homogenised ingot only; no boule, no wafer |
-| T5 | whisker tow and whisker felt; no prepreg |
-| T6 | nothing |
-| T7 | the five integrations, on their T2/T4/T5 inputs |
-| T8 | insulation sleeve and coolant charge; no lamination, winding pack or vacuum cell |
-| T9–T11 | coil assembly, coolant loop, Field Coil Segment, Ignition Array — all in |
+| T1 | crushed kamacite and fines |
+| T2 | kamacite plate only |
+| T3–T11 | nothing: cut back to the landing |
 
 ---
 
@@ -142,7 +136,7 @@ Mostly built already. One addition and one change.
 auto-select a recipe from one item plus one fluid, which is what lets the Vacuum
 Furnace sinter powder *and* flux while still picking its own recipe from what is
 inserted. The cost is that flux is piped rather than belted, and can be tanked but
-not chested. See `graphics/building-spec-vacuum-furnace.md`.
+not chested. See `concept/vacuum-furnace/building-spec-vacuum-furnace.md`.
 
 **Make the plate recipe consume crushed ore.** *Done.* It was a one-line change
 and it made T1 load-bearing — and it also made the mod unplayable for a while,
@@ -152,8 +146,9 @@ first crusher could never be built.
 
 **The rule that came out of it:** anything on the critical path to the first
 kamacite plate is priced in freight, and everything after it is priced in plate.
-That is the Drop Crusher, the Ballast Drill, the Vent Pump, the Crust Tap and the
-Crust Turbine. It is the same argument this tier already makes about the first
+That is the Gas Pump, the Siderane turbine, the Ballast Drill and the Drop
+Crusher. The Vent Pump now comes after the first plate and is still priced in
+freight. It is the same argument this tier already makes about the first
 electromagnetic plant, applied consistently.
 
 ---

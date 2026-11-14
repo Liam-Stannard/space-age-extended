@@ -1,226 +1,127 @@
 # Principles
 
-Five trees, designed one at a time, have to end up feeling like one mod. These
-are the rules that make that true. Each is written so that a concrete proposal
-can **fail** it — a principle that cannot be failed is decoration.
+These are the rules every part of the mod must meet. Each principle says what it applies to and how it is checked; a rule that does not apply to a subject is not judged against it.
 
 ---
 
-## 1. The crossing must be forced
+## 1. Limits use physics, not planet names
 
-A cross-planet leg only exists if the player **cannot just do the work locally**.
-So it matters exactly what the engine will and will not let them move.
+> A building or recipe can only be limited by something physical, like air pressure or gravity. Never by naming a planet.
 
-### Two separate locks, and they behave differently
+Why: players can work out physics. "Only on Gleba" teaches them nothing.
 
-**Entity placement is gated by surface conditions**, and this is real: a building
-with a pressure or gravity condition cannot be built where the condition fails.
-Measured on a live platform (pressure 0, gravity 0) at a valid foundation tile:
+- **Applies to:** every building and recipe
+- **Fails when:** the limit names a planet instead of using something physical.
+- **Concern when:** none.
+- **Checked by:** the limits listed in the mod's data dump.
+- **Vanilla precedent:** the biolab works only at Nauvis's air pressure.
+- **Exceptions:** none
+- **Source:** original principle
 
-| Placeable on a platform | Refused on a platform |
-|---|---|
-| chemical plant, assembler, foundry, electromagnetic plant, biochamber, recycler, cryogenic plant | boiler, stone and steel furnace, heating tower, rocket silo, roboport, all chests, biolab, agricultural tower |
+## 2. Every new item has a purpose
 
-It separates planets as well as ground from space, and vanilla uses it exactly
-that way: the **biolab** requires pressure 1000 exactly, so it is Nauvis-only;
-the **agricultural tower** requires 1000–2000, so it works on Nauvis and Gleba
-and nowhere else. Both measured.
+> Every new item, whether a product or a building, must have at least one clear purpose:
+> - it brings in a new mechanic;
+> - it fits into a tech tree, as a step the tree needs;
+> - it uses up a byproduct that would otherwise pile up;
+> - it gives the player a real choice, better in some cases and worse in others;
+> - it is something that has to be shipped between planets;
+> - it helps the player reach or survive the Core.
+>
+> Fluids count as items.
 
-**Recipe surface conditions are a second, independent lock**, and this is what
-gates most of the big machines — not where they can stand, but where they can be
-*made*.
+Why: "the chain feels bigger with another step" is not a purpose.
 
-### The four honest anchors
+- **Applies to:** every new item and building
+- **Fails when:** an item has none of these purposes.
+- **Concern when:** its only purpose is being one more step in a chain.
+- **Checked by:** the item's spec says which purpose it serves, and the mod's data dump shows it is used.
+- **Vanilla precedent:** the foundry brings in a new mechanic (casting); the recycler uses up what you don't want.
+- **Exceptions:** none
+- **Source:** Liam, 2026-11-13
 
-A leg is forced when one of these is true, and only then:
+## 3. Each planet's tree extends it
 
-1. **An ingredient that cannot move.** Vanilla marks these `auto_barrel = false`
-   — no barrel, so no rocket:
+> Each planet gets one tree that extends its own vanilla tech tree. Each tree adds at least:
+> - one new building;
+> - one new item that can be used on a space platform to help reach the Core.
+>
+> Anything in the mod that can be placed on a platform must have something to do there.
 
-   | World | Immovable fluids |
-   |---|---|
-   | Vulcanus | `lava`, `molten-iron`, `molten-copper` |
-   | Fulgora | `holmium-solution`, `electrolyte` |
-   | Aquilo | `ammoniacal-solution`, `ammonia`, `fluorine`, `lithium-brine` |
+Why: every planet then plays a part in the journey to the Core, and nothing sits on a platform with no job.
 
-2. **A surface condition on the recipe**, the way vanilla locks
-   `acid-neutralisation` and the bacteria cultivations.
+- **Applies to:** each planet's tree; every building and item that can be placed on a platform
+- **Fails when:** a tree adds no new building, or no item that helps a platform reach the Core; or something can be placed on a platform but nothing it needs can get there (like the Siderane turbine).
+- **Concern when:** the platform item is useful only on the way to the Core, or works on a platform only weakly.
+- **Checked by:** the tree's spec lists its building and platform item; the mod's data dump shows its placement limits, and graph.py --planet space-platform shows its inputs can reach a platform.
+- **Vanilla precedent:** each vanilla planet adds buildings that are useful on platforms, like Fulgora's EM plant and Aquilo's cryogenic plant.
+- **Exceptions:** none
+- **Source:** Liam, 2026-10-29 and 2026-11-13
 
-3. **A surface condition on the building**, the way vanilla locks the biolab to
-   Nauvis and the agricultural tower to Nauvis and Gleba. **This is the mod's
-   strongest tool for its own buildings** — a capstone that only stands where a
-   physical property allows cannot be relocated to dodge the supply line.
+## 4. Don't break progression or make resources cheap
 
-   The properties available to separate the worlds:
+> Changes to items or mechanics must not change vanilla's progression, or make any resource much cheaper to get.
 
-   | | pressure | gravity | magnetic field | solar |
-   |---|---|---|---|---|
-   | Nauvis | 1000 | 10 | 90 | 100 |
-   | Vulcanus | 4000 | 40 | 25 | 400 |
-   | Fulgora | 800 | 8 | **99** | 20 |
-   | Gleba | 2000 | 20 | 25 | 50 |
-   | Aquilo | 300 | 15 | 10 | 1 |
-   | Platform | 0 | 0 | 0 | — |
+Why: the player should still meet vanilla's challenges in vanilla's order. A cheap shortcut removes a challenge instead of adding one.
 
-   Every planet has a unique pressure, so pressure alone can name any one of
-   them, any contiguous range of them, or exclude space.
+- **Applies to:** every item, building, recipe and mechanic in the mod
+- **Fails when:** something lets the player skip or reorder vanilla's progression, or a resource costs 50% or less of its vanilla raw cost (graph.py, vanilla's route).
+- **Concern when:** a resource is 20% or more cheaper than its vanilla raw cost.
+- **Checked by:** graph.py --section tech for when things unlock, and --section cost and --section loops for cost, compared with vanilla.
+- **Vanilla precedent:** none
+- **Exceptions:** the win condition moves to the Core.
+- **Source:** Liam, 2026-11-13
 
-4. **A native process with no equivalent elsewhere** — lightning on Fulgora, lava
-   on Vulcanus, a crop that has to grow on Gleba.
+## 5. A tree gives the player a problem to solve
 
-### The rule that survives all of it
+> A tree makes the player decide something, like a ratio, a route, or what to do with a byproduct. It never just adds a flat bonus.
 
-> **A lock must describe a physical fact about the place, never name it.**
+Why: a flat bonus has no cost to weigh, so there is nothing to design.
 
-Pressure, gravity, magnetic field, an ingredient with no container — these are
-readable, and a player can reason about them. "Craftable only on Gleba" teaches
-nothing even when it produces the same outcome. Vanilla never does it, and
-neither does this mod.
+- **Applies to:** each planet's tree
+- **Fails when:** the tree's gain is a flat percentage with no cost the player chooses.
+- **Concern when:** the choice exists but one answer is always best (judgement or playtest).
+- **Checked by:** reading the tree's spec and recipes for a choice the player makes.
+- **Vanilla precedent:** Gleba's spoilage forces the player to plan for speed.
+- **Exceptions:** none
+- **Source:** original principle
 
-## 2. Both planets sending is the default, not the law
+## 6. Every byproduct has a use
 
-**two-way is the default, and the strongest form is a round trip** — something
-leaves, comes back changed, and leaves again, which keeps both legs alive for as
-long as the player uses the tree rather than only while they build it.
+> Every byproduct has at least one use in the mod. Recycling it counts as a use only where its spec says recycling is the intended path.
 
-But it is not a law. Some pairings are honestly one-directional, and forcing a
-return leg onto them invents a reason to ship something back. Where a tree is
-one-way, that has to be a deliberate answer to "what does the receiving planet
-give back," not an omission — usually the answer is that it gives back the
-capstone itself, which only it can assemble.
+Why: a byproduct with no use is a chore.
 
-## 3. A tree is small and finishable
+- **Applies to:** every chain in the mod, including the Core's
+- **Fails when:** a byproduct has no use, or a loop makes more than can be used, so some must be destroyed (judgement or playtest).
+- **Concern when:** its only use comes much later than the byproduct does.
+- **Checked by:** the recipes in the mod's data dump that take each byproduct, and graph.py --section loops.
+- **Vanilla precedent:** Fulgora's scrap gives many products, and each has a use.
+- **Exceptions:** none
+- **Source:** original principle, edited by Liam, 2026-11-13
 
-**An estimated 3–10 technologies.** A tree is a chapter, not a second planetary tech tree.
-The player should be able to see its end from its beginning.
+## 7. Each tree's product must reach the Core
 
-That budget is spent carefully:
+> The Core needs a product from every tree. Each tree must plan how that product gets to the Core, including its weight and whether it spoils on the way.
 
-- **New items** need a mechanical reason to be separate — it has to be a fluid,
-  or it has to be storable and shippable on its own, or it carries a spoil
-  clock. "The chain feels more substantial with another step" is not a reason.
-- **New buildings** need a mechanical reason to be separate.
-- **No plain upgrades.** An improved vanilla building is allowed only when it
-  carries a trade-off the player can name. It doesn't run vanilla's own recipes.
-  Its gains are modest, and each costs something vanilla doesn't: an extra
-  ingredient, more power, or a narrower job. Never the same behaviour with bigger
-  numbers.
+Why: the trip to the Core is part of the tree's design, not an afterthought.
 
-## 4. The theme has to be unrepeatable
-
-For every tree, name the thing each planet contributes that **the other could
-not obtain by building differently**. If both answers are not specific to those
-two worlds, the tree has not engaged with them.
-
-The test: could this tree be re-skinned onto a different pair by renaming its
-items? If yes, it is generic content wearing a planet's colours, and the pairing
-is doing no work.
-
-## 5. Nothing threatens vanilla balance
-
-The mod **adds**; it does not alter. No vanilla recipe, item or building is
-modified. New recipes that output vanilla items are fine — a new route to a
-known thing is content; changing the known thing is not.
-
-For capstone buildings specifically:
-
-- An option, never a strict upgrade. If installing one makes a vanilla
-  building pointless, it is wrong. It should be better in some circumstances and
-  worse in others, and the player should be able to say which.
-- It must not deflate a vanilla resource. A chain that makes holmium or
-  tungsten trivially abundant has not added a production line, it has removed
-  one.
-- A capstone building has a life across the whole rest of the game, in four
-  steps:
-
-  1. **Useful in the mid-game**, where the tree unlocks, for its own sake. A
-     player who never goes near the Core should still want it.
-  2. **Useful in getting to the Core** — the same capability, applied to the
-     problem of crossing a distance nothing else crosses.
-  3. **Useful in surviving the Core**, where almost nothing works and everything
-     arrives from somewhere else.
-  4. **Expandable out there.** A building may gain a further use on the way to
-     or on the Core — an extension, a second recipe, a mode that only makes
-     sense at the far end.
-
-Step 4 is what keeps the endgame from being a checklist: the buildings the player
-already knows become the tools they solve the Core with, rather than five
-trophies plus a new toolkit.
-
-The single deliberate exception in the whole mod is the win condition, which
-moves to the Core. Everything else vanilla does, it keeps doing.
-
-## 6. The chain poses a problem, not a bonus
-
-A flat multiplier — "+15% when using imported material" — cannot be traded
-against anything, so it creates no factory to design. A tree earns its place by
-making the player decide something: what ratio to run, how much import capacity
-to build, which of two routes a material is worth more in, what to do with what
-comes out that they did not ask for.
-
-Where a chain produces a byproduct, it needs **at least two outlets** the player
-can already build. Never one mandatory sink, and never something that must be
-voided.
-
-## 7. Gated only by vanilla progress
-
-A pair's tree opens when **both its planets' vanilla tech trees are complete**,
-and nothing else gates it. The mod never puts vanilla content behind mod
-content, and never asks the player to detour before they would naturally arrive.
-
-## 8. The capstone product has to reach the Core
-
-The endgame consumes a product from every capstone, on a planet at the far end
-of the longest supply line in the game. That does not dictate what the product
-*is* — it dictates that **getting it there is part of the tree's design, not an
-afterthought**.
-
-A product that spoils is allowed, and may well be the point: a perishable
-capstone turns its delivery into a race and gives its tree a character none of
-the others have. What is not allowed is designing one without deciding how it
-survives the trip. If it spoils, the tree owns that problem — a preserved form,
-a cold chain, a shorter-lived intermediate refreshed at a depot, or a Core line
-that accepts the spoiled result as a legitimate input.
-
-The one thing to get right mechanically is **weight**. The engine derives it
-from the recipe when it is not set, and the default is 100 against a rocket's
-1,000,000 lift — 10,000 items per rocket. A fluid-heavy recipe derives freight
-that is nearly free, which quietly deletes the logistics the tree exists to
-create. Every capstone product sets its weight deliberately, because that number
-*is* the cost of the endgame's supply line.
-
-## 9. The player can see why
-
-The reason a material has to cross should be legible **in the recipe**. A player
-who opens the capstone chain ought to be able to work out, without a wiki, which
-ingredient came from where and why it could not have been made locally.
-
-The same applies to failure: when something does not work, the cause should be
-one identifiable thing.
+- **Applies to:** each planet's tree, and its product
+- **Fails when:** the product's weight is not set on purpose, or it spoils on the trip and the tree has no answer.
+- **Concern when:** more than twice as many fit in a rocket as of the nearest vanilla item of the same kind: a building compared with vanilla buildings, an intermediate like LDS with vanilla intermediates.
+- **Checked by:** graph.py --section weight for the product; its spoil time against the trip (judgement or playtest).
+- **Vanilla precedent:** Gleba's science packs spoil, so the player must ship them fast.
+- **Exceptions:** none
+- **Source:** original principle
 
 ---
 
-## Checklist
-
-Before a tree's recipes are worth tuning, it should answer yes to all of these.
-
-- [ ] Does every crossing trace to a recipe that cannot be completed without a
-      material exclusive to the other planet? *(§1)*
-- [ ] Does every lock describe a physical property or an immovable ingredient,
-      rather than naming a planet? *(§1)*
-- [ ] Does material move both ways — or, if not, is the one-way shape a
-      deliberate answer rather than an omission? *(§2)*
-- [ ] Is it close to the estimated 3–10 technologies, with every new item mechanically justified and at
-      most the one capstone building? *(§3)*
-- [ ] Can you name what each planet contributes that the other could not get by
-      building differently? *(§4)*
-- [ ] Is the capstone building an option rather than a strict upgrade, and does
-      the tree leave every vanilla resource and building as valuable as it
-      found them? *(§5)*
-- [ ] Does the chain create a decision rather than a bonus, and does every
-      byproduct have two outlets? *(§6)*
-- [ ] Does it open on vanilla progress alone? *(§7)*
-- [ ] Does the capstone product have a decided route to the Core, including an
-      answer for spoilage if it spoils, and an explicit weight? *(§8)*
-- [ ] Could a player work out from the recipes why the crossing is necessary?
-      *(§9)*
+| # | Principle | Applies to |
+|---|---|---|
+| 1 | Limits use physics, not planet names | every building and recipe |
+| 2 | Every new item has a purpose | every new item and building |
+| 3 | Each planet's tree extends it | each tree; anything on a platform |
+| 4 | Don't break progression or make resources cheap | every item, building, recipe and mechanic |
+| 5 | A tree gives the player a problem to solve | each tree |
+| 6 | Every byproduct has a use | every chain |
+| 7 | Each tree's product must reach the Core | each tree's product |

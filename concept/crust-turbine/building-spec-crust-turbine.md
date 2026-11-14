@@ -45,7 +45,7 @@ does not have. That difference is the whole machine."*
 | Output | **1.8 MW**, `max_power_output = "1800kW"`, `effectivity = 1` |
 | Fluid | `sae-crust-gas`, filtered, `volume = 200`, `fluid_usage_per_tick = 0.15` (9/s) |
 | Connections | **Two, one at each end of the long axis**, both `input-output` |
-| Surface conditions | `pressure` ≤ 9 — the Core and platforms |
+| Surface conditions | `pressure` ≤ 9 in the code, the Core and platforms. To change: siderane never reaches a platform, and platform items must be useful on platforms (Liam, 2026-10-29), so it must be Core-only; which lock (`pressure` 1–9, as the Reaction Plant, or `gravity` ≥ 45, as the Gas Pump) is for the rerun's TODO entry |
 
 **`burns_fluid` ignores temperature entirely** and takes its power from the
 fluid's `fuel_value`. Measured on the rig: a turbine burning gas at 25 °C with
@@ -56,7 +56,7 @@ why the gas carries no temperature and the tap never declares one.
 stage outright. It does no work in this mode; it still has to be declared.
 
 **The pair is the unit.** Roughly one turbine per tap, about 1.8 MW for the two,
-and a player who tiles fifty taps should still find the melt-and-steam line the
+and a player who tiles fifty taps should still find the radiant line the
 better answer by a wide margin — or the Core's central tension is undercut by its
 own tutorial.
 

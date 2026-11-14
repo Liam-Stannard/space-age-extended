@@ -61,8 +61,7 @@ Build, in the reply, a ledger of everything the task depends on:
 
 ## 3. Question until it is unambiguous
 Check every section of the task against this list; each gap is a
-question (at most four at a time, the recommended option first, each
-option saying what it changes):
+question, asked as the standing rules' "Judging and asking" says.
 - **Outcome:** what is true when it is done, that a tester can check?
 - **Scope:** which files may change; which must not; what is deferred?
 - **Look** (art tasks): the references to measure against and which of

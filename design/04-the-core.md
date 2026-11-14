@@ -32,12 +32,8 @@ chests, cargo landing pad.
 
 ### Life and hazard
 
-Nothing lives here, and nothing attacks. **Provisional:** the hazard is the
-**arc storm** — lightning rarer and far heavier than Fulgora's (600 damage and
-4000 MJ a strike, one every ninety seconds), which unprotected buildings take
-in full and an **Arc Mast** catches and banks. The storm is therefore also half
-the planet's power. It is built and measured (`prototypes/core/storms.lua`), but
-it has not been played, and it is not yet confirmed as the final answer.
+Nothing lives here, and nothing attacks. The arc storms that were the hazard, and
+half the power, were removed; the Core has no threat yet.
 
 
 ## 2. Resources
@@ -74,9 +70,8 @@ what a planetary interior holds. Inert, cryogenic and precious — a scarce reag
 rather than a bulk utility, which is the right character for the rarer of the two
 vents.
 
-It is doubly load-bearing: melt cannot be drawn without it, so the rare resource
-throttles the abundant one. Beyond that it is the atmosphere for sealed processes
-(including the sealed roboport, §9) and an ingredient in the science pack.
+It is load-bearing: melt cannot be drawn without it, so the rare resource
+throttles the abundant one.
 
 ### What the Core never has
 
@@ -173,7 +168,7 @@ technologies are five different problems rather than one repeated.
 | Vulcanus ↔ Aquilo | **to be designed** | whisker felt and raw molten kamacite | **Insulation sleeve** | Insulation |
 | Gleba ↔ Aquilo | **Cryoprotectant fluid** | helium-3 | **Coolant charge** | Coolant |
 
-As built in `prototypes/core/intermediates.lua`.
+No intermediate is built: they went with the cut back to the landing.
 
 Every capstone is therefore *visibly in the thing being built*. A player looking
 at a Field Coil Segment can trace each of its parts back to a pair of planets and
@@ -254,7 +249,7 @@ than arriving flat.
 
 | Tier | Technologies | Notes |
 |---|---|---|
-| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Core Survey (the drill) → Gravity Crushing (crusher, smelting) → Vacuum Sintering (the furnace, fines) → Vent Tapping (the vent pump) → Radiant Power, each a trigger technology fired by the step before it · Crust Tapping (landing-day power) · Gravity Settling (the melt split, and casting) · Whisker Beds (tiles, seeding, harvest) · Arc Masts · Cold Welding · **Orbital Lift** (§11) · **Vacuum Electronics** (§11) | Researched on packs the player already makes, since no geodynamic pack exists yet |
+| **0 — Foothold** | **Core Discovery** (an `unlock-space-location` technology — measured: the planet is unreachable without one) · Crust Tapping (landing-day power, fired by mining a boulder) → Core Survey (the drill) → Gravity Crushing (crusher, smelting) → Vacuum Sintering (the furnace, fines) → Vent Tapping (the vent pump; also needs Uranium Mining) → Radiant Power, each after Crust Tapping a trigger technology fired by the step before it | Core Discovery is researched on packs the player already makes; the rest are triggers, and take none. No geodynamic pack exists yet |
 | **1 — Integration** | Five technologies, one per capstone. **Conductor** and **Frame** come first, on vanilla packs — the two the science pack needs. **Billet**, **Sleeve** and **Coolant** follow, on geodynamic packs, in any order |
 | **2 — Geodynamic Science** | The pack itself | Needs the Conductor and the Frame; required by everything after |
 | **3 — The Core's own goods** | **Field Coils** (coil assembly, coolant loop, the Ring Mast, the ignition charge) · Corridor Seeding · Magnetic Separation · Carbonyl Chemistry · the **sealed roboport** (§9), which needs Field Coils and cold welding | The mid-tree milestone: after hours of belts and personal bots, the Core starts working like a factory |

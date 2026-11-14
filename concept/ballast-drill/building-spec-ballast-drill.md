@@ -35,7 +35,7 @@ here already says Core in its description.
 
 **Purpose:** Works kamacite ore **without wasting it.** It is the Core's only drill and the only machine that works kamacite at all. It mines a little faster than the big mining drill (3.0 against 2.5), draws twice its power (600 kW), and takes half as much out of the patch for every ore it delivers.
 
-**Why it matters:** kamacite patches *genuinely run out* (`decisions.md` D12) and
+**Why it matters:** kamacite patches *genuinely run out* and
 nothing else in the mod cares. This is the only building in the game whose
 argument is "spend electricity to make a finite thing last", and on a planet
 whose central tension is already electricity, that lands the trade in exactly the
@@ -62,8 +62,9 @@ right place.
 
 `resource_drain_rate_percent` is the whole building. It is the one mining-drill
 field that changes what a patch is *worth* rather than how fast it empties, and
-vanilla uses it exactly once. Here it turns ore siting into a decision with a
-cost attached, on the one planet where ore is finite by design.
+vanilla uses it exactly once. Here no other drill mines kamacite, so it sets
+what every patch is worth: half the drain, as vanilla's big mining drill has, for
+twice that drill's power, on the one planet where ore is finite by design.
 
 **The gravity condition is the fiction and the balance in one line.** At 50 g the
 drill can press down with its own mass instead of hammering, which is why it
@@ -298,10 +299,8 @@ plain drill, the icon has failed, because the weight is the entire building.
 
 # 20. Open questions
 
-- **Does it replace the electric drill or sit beside it?** The brief assumes
-  beside: the vanilla drill stays available and stays faster, so the choice is
-  live on every patch. If playtesting shows nobody ever builds the fast one, the
-  fix is to widen the speed gap, not to remove the option.
+- ~~**Does it replace the electric drill or sit beside it?**~~ **It replaces it.**
+  No other drill mines kamacite (§1).
 - **Interaction with mining productivity.** `uses_force_mining_productivity_bonus`
   is on by default, and productivity already reduces effective drain. Check the
   two do not stack into an ore patch that is functionally infinite.

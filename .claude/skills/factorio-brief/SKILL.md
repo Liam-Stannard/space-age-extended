@@ -27,7 +27,8 @@ checks it; only then is it "signed off" and the next ticket briefed.
   whether a render slot is free.
 - For a project-manager: the attribution lines its commits end with.
 - For a factorio-gameplay-expert: the dumps to measure (the knowledge
-  base's, and where to keep the mod's), the decisions of Liam's the
+  base's, and the mod's shared dump by path and sha256, or where to
+  keep its own if there is none), the decisions of Liam's the
   change rests on, and the vanilla buildings or items it is meant to sit
   beside.
 - For the questions-clerk: no ticket of its own. Name the job (add,
