@@ -118,10 +118,10 @@ One stroke: 24 entries in 60 ticks, one second.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Hang | 1–2 | 5 | the ring held at the top | hold | — |
-| 2 | Fall | 3–6 | 10 | the ring falls onto the shoulder; the winch gears spin fast | eased, speeding up | entry 6: the ring lands dead; the frame jolts two pixels; the dust breaks out; a deep thud with a ground rumble |
-| 3 | Settle | 7–13 | 17.5 | the ring rebounds one pixel and seats again; the frame's jolt dies; a slung hose swings and stills; the dust spreads and settles | snap, then hold | — |
-| 4 | Lift | 14–24 | 27.5 | the ring is winched slowly up; the winch gears turn slowly | eased | entry 24: a small ratchet tick at the top of the lift |
+| 1 | Hang | 0–1 | 5 | the ring held at the top | hold | — |
+| 2 | Fall | 2–5 | 10 | the ring falls onto the shoulder; the winch gears spin fast | eased, speeding up | entry 5: the ring lands dead; the frame jolts two pixels; the dust breaks out; a deep thud with a ground rumble |
+| 3 | Settle | 6–12 | 17.5 | the ring rebounds one pixel and seats again; the frame's jolt dies; a slung hose swings and stills; the dust spreads and settles | snap, then hold | — |
+| 4 | Lift | 13–23 | 27.5 | the ring is winched slowly up; the winch gears turn slowly | eased | entry 23: a small ratchet tick at the top of the lift |
 
 The loop is not one craft: the drill mines 3 ore in each one-second stroke.
 While mining, ore falls off the chute's mouth in step with the stroke. Under

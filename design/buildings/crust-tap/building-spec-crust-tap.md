@@ -88,7 +88,7 @@ pipe can join it. No electric or item connections.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Pumping | 1–24 | 60 | the flywheel turns once; both crossheads go out and back, opposed; the engine rockers nod; the lubricator works; the three gauge needles kick on the strokes; gas drifts in the sight glass, tinted by the vent | even | — |
+| 1 | Pumping | 0–23 | 60 | the flywheel turns once; both crossheads go out and back, opposed; the engine rockers nod; the lubricator works; the three gauge needles kick on the strokes; gas drifts in the sight glass, tinted by the vent | even | — |
 
 Idle, everything stops where it is and the glass shows empty.
 

@@ -95,8 +95,8 @@ wires connect to it.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Charging | charge sheet 1–20 | 20 | an arc of light grows clockwise from the north of the ring until it closes into a full circle | even | — |
-| 2 | Discharging | discharge sheet 1–20 | 20 | the same arc, anticlockwise, at a little over half the brightness | even | — |
+| 1 | Charging | charge sheet 0–19 | 20 | an arc of light grows clockwise from the north of the ring until it closes into a full circle | even | — |
+| 2 | Discharging | discharge sheet 0–19 | 20 | the same arc, anticlockwise, at a little over half the brightness | even | — |
 
 Charge and discharge are separate sheets, played while power flows in or out,
 so the loop is not tied to a craft. The sweep runs on 30 ticks after charging

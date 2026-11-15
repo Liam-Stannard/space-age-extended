@@ -153,7 +153,7 @@ No electric connector shows.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Running | 1–16 | 32 | the flywheel turns 60°, a sixth of a turn, which its six spokes make a loop; the gauge needle swings about 14° at its working reading and back, once | wheel even; needle eased | — |
+| 1 | Running | 0–15 | 32 | the flywheel turns 60°, a sixth of a turn, which its six spokes make a loop; the gauge needle swings about 14° at its working reading and back, once | wheel even; needle eased | — |
 
 The loop is 32 ticks at the furnace's crafting speed of 1.5, and 48 at speed 1.
 It is not tied to a craft: the pump runs steadily while the furnace works.

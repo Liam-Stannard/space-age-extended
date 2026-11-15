@@ -147,13 +147,13 @@ ticks are rounded.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Shut | 1–2 | 17 | nothing | hold | — |
-| 2 | Open | 3–10 | 69 | the leaf pack backs off west | eased | — |
-| 3 | Hang | 11–12 | 17 | the cake hangs on its leaf | hold | — |
-| 4 | Fall | 13–20 | 69 | the cake peels away and falls, gathering speed | eased | — |
-| 5 | Land | 21–22 | 17 | the cake lands in the drop box | snap | entry 22; landing sound (stand-in) |
-| 6 | Close | 23–32 | 86 | the leaf pack closes | eased | — |
-| 7 | Hold | 33–140 | 925 | nothing | hold | — |
+| 1 | Shut | 0–1 | 17 | nothing | hold | — |
+| 2 | Open | 2–9 | 69 | the leaf pack backs off west | eased | — |
+| 3 | Hang | 10–11 | 17 | the cake hangs on its leaf | hold | — |
+| 4 | Fall | 12–19 | 69 | the cake peels away and falls, gathering speed | eased | — |
+| 5 | Land | 20–21 | 17 | the cake lands in the drop box | snap | entry 21; landing sound (stand-in) |
+| 6 | Close | 22–31 | 86 | the leaf pack closes | eased | — |
+| 7 | Hold | 32–139 | 925 | nothing | hold | — |
 
 The 140 entries take 1200 ticks, one craft at crafting speed 1.
 

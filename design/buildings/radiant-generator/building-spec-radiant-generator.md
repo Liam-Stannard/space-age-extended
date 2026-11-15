@@ -123,17 +123,17 @@ and hose on it is its own coolant plumbing.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Pick | 1–4 | 16.8 | hoist A lowers, takes the fresh cell from the pocket and rises | eased | — |
-| 2 | Return | 5–10 | 25.2 | the bridge shifts; hoist B lowers the spent cell into the pocket and rises | eased | — |
-| 3 | Run out | 11–16 | 25.2 | the bridge runs east to the crucible; the carousel starts to index | eased | — |
-| 4 | Swap | 17–26 | 42 | hoist B lifts the spent cell from the well; the bridge shifts; hoist A sets the fresh one in | eased | — |
-| 5 | Run back | 27–32 | 25.2 | the bridge runs back to the carousel | eased | — |
+| 1 | Pick | 0–3 | 16.8 | hoist A lowers, takes the fresh cell from the pocket and rises | eased | — |
+| 2 | Return | 4–9 | 25.2 | the bridge shifts; hoist B lowers the spent cell into the pocket and rises | eased | — |
+| 3 | Run out | 10–15 | 25.2 | the bridge runs east to the crucible; the carousel starts to index | eased | — |
+| 4 | Swap | 16–25 | 42 | hoist B lifts the spent cell from the well; the bridge shifts; hoist A sets the fresh one in | eased | — |
+| 5 | Run back | 26–31 | 25.2 | the bridge runs back to the carousel | eased | — |
 
 The loop is 32 entries, one crane cycle, at 4.2 ticks (70 ms) an entry: 134.4
 ticks. It has no craft to match. This is the pace Liam signed off, at full
 output; the engine slows it as output falls. The carousel indexes one pocket
-over entries 12–20, its pinion turning with it, and the port dims to 50 % while
-it does. The well's lid is up over entries 17–27, and the well's light rises
+over entries 11–19, its pinion turning with it, and the port dims to 50 % while
+it does. The well's lid is up over entries 16–26, and the well's light rises
 over three entries as it lifts. Through the loop the commutator turns half a
 turn; the couplings and gauge needles turn; the five tubes swell in turn along
 the row, twice a loop, between 70 and 100 %; the slot's light breathes twice a

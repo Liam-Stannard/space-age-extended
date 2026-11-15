@@ -141,11 +141,11 @@ an operation.
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | Between | 1 | 5 | as step 3 | even | — |
-| 2 | First charge | 2–9 | 40 | the meter races; the line gauge swings; the sight glass drops and flushes pink; the riser's bubbles climb faster; the float lever rocks; the coupling turns; the receiver's gauge swings | eased | entry 2: cold breath off the stop valve, purge puff off the float chamber; no sound |
-| 3 | Between | 10–13 | 20 | the sight glass refills and fades to violet; the bubbles slow but keep climbing; the coupling turns | even | — |
-| 4 | Second charge | 14–21 | 40 | as step 2 | eased | entry 14: as step 2 |
-| 5 | Between | 22–24 | 15 | as step 3 | even | — |
+| 1 | Between | 0 | 5 | as step 3 | even | — |
+| 2 | First charge | 1–8 | 40 | the meter races; the line gauge swings; the sight glass drops and flushes pink; the riser's bubbles climb faster; the float lever rocks; the coupling turns; the receiver's gauge swings | eased | entry 1: cold breath off the stop valve, purge puff off the float chamber; no sound |
+| 3 | Between | 9–12 | 20 | the sight glass refills and fades to violet; the bubbles slow but keep climbing; the coupling turns | even | — |
+| 4 | Second charge | 13–20 | 40 | as step 2 | eased | entry 13: as step 2 |
+| 5 | Between | 21–23 | 15 | as step 3 | even | — |
 
 Idle, everything is still and nothing is lit, except the amber lens when the
 helium is missing. An unpowered, dry pump shows no lens.

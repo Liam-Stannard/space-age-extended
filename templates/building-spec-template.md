@@ -74,9 +74,10 @@ move. One row a step:
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
-| 1 | [name] | [first–last] | [ticks] | [parts] | [even / eased / hold / snap] | [entry and sound, or —] |
+| 1 | [name] | [first–last, from 0] | [ticks] | [parts] | [even / eased / hold / snap] | [entry and sound, or —] |
 
 The steps' entries add up to the loop, with every entry in exactly one step.
+Entries count from 0, as the game's frames do (`engine.md`).
 
 ---
 
