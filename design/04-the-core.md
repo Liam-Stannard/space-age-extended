@@ -44,11 +44,13 @@ together near the landing.
 
 **Helium-3 vent:** a gas. It never runs out, but gives less the more it is
 used. It can't be put in barrels. It is rarer than the kamacite vent. The Gas
-Pump draws it. About 11 vents are near the landing.
+Pump draws it. A full vent gives 10 a second; those near the landing start at
+about 6. Each falls to a fifth as it runs down. About 11 vents are near the landing.
 
 **Hydrogen vent:** a gas that burns. It never runs out, but gives less the more
 it is used. It can't be put in barrels. Its wells stand alone and far apart,
-like crude oil. The Gas Pump draws it. Four wells are near the landing.
+like crude oil. The Gas Pump draws it. A fresh vent gives 9 a second, falling
+to a fifth as it runs down. Four wells are near the landing.
 
 **Radiant pool:** lakes of radiant solution, a liquid that never runs out. They
 cover between 6% and 30% of the ground, depending on the map. A vanilla
