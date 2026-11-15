@@ -1,32 +1,24 @@
-# Factorio Building — Art & Implementation Specification
+# Hydrogen Turbine — building spec
 
-**Hydrogen Turbine.** The Core's first power: it burns hydrogen from a Gas Pump.
-Its look was signed off as a Blender model on 2026-10-11.
-
----
-
-# 1. Building Overview
-
-**Name:** Hydrogen Turbine (was Siderane Turbine, first Crust Turbine).
-**Internal name:** `sae-crust-turbine`.
-
-**Type:** a generator based on the steam turbine, burning its fluid.
-
-**Purpose:** turns hydrogen into electricity; the Core's first power, and its
-restart after a blackout. It is small on purpose, and sets the idea that power
-here is found where the vents are.
-
-**In-game description:** "Burns hydrogen to create electric energy."
+Hydrogen Turbine. The Core's first power: it burns hydrogen from a Gas Pump.
 
 ---
 
-# 2. Gameplay Dimensions
+# 1. Facts
 
-Size 3 × 5, the steam turbine's; 2 directions. Output 1.8 MW. Fuel: hydrogen
-only, 9 a second at 200 kJ each; temperature doesn't matter. One connection at
-each end, so turbines chain end to end. Can be built at pressure 9 or less, so
-today the Core and platforms; it must become Core-only (TODO, pressure 200).
-Cost 20 steel plate, 10 pipe, 20 iron gear wheels; weight 40 kg.
+- **Name:** Hydrogen Turbine
+- **What it does:** burns hydrogen to make electricity.
+- **Size and directions:** 3 × 5, 2 directions.
+- **Where it can be built:** pressure 9 or less, so today the Core and
+  platforms; it must become Core-only (TODO, pressure 200).
+- **Power:** makes up to 1.8 MW.
+- **Inputs and outputs:** hydrogen only, 9 a second, through a connection at
+  each end; turbines chain end to end.
+- **Speed:** full output at 9 hydrogen a second.
+- **Cost:** 20 steel plate, 10 pipe, 20 iron gear wheels; 6 s.
+- **Weight:** 40 kg, stack of 20.
+- **Unlocked by:** Hydrogen extraction.
+- **Art:** being redone.
 
 ---
 
