@@ -14,9 +14,9 @@ Reaction Plant. Turns radiant solution and hydrogen into radiant fuel.
   200).
 - **Power:** uses 1.5 MW of electricity.
 - **Inputs and outputs:** two fluid inputs on the north face and one fluid
-  output on the south face, which no recipe uses yet. 100 radiant solution and
-  100 hydrogen make 1 radiant fuel, which an inserter takes out.
-- **Speed:** crafting speed 1, so one radiant fuel every 20 s; 3 module slots.
+  output on the south face, which no recipe uses yet. An inserter takes out
+  what it makes. Its recipe: `08-core-power.md`, stage 1.
+- **Speed:** crafting speed 1; 3 module slots.
 - **Cost:** 60 kamacite plate, 30 pipe, 20 advanced circuits; 10 s.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Radiant power.

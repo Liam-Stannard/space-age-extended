@@ -17,8 +17,9 @@ comparisons.
 - **Size and directions:**
 - **Where it can be built:**
 - **Power:** what it uses or makes, or "none".
-- **Inputs and outputs:**
-- **Speed:**
+- **Inputs and outputs:** its slots and connections only. Its recipes, with
+  their times, are in the line's document (06 or 08), not here.
+- **Speed:** crafting speed and module slots.
 - **Cost:**
 - **Weight:**
 - **Unlocked by:**

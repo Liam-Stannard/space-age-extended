@@ -16,11 +16,10 @@ Vacuum Furnace. A sealed electric furnace. Its job is still to be decided
   platforms (TODO, pressure 200).
 - **Power:** uses 1.2 MW of electricity.
 - **Inputs and outputs:** one item slot in, one out. It runs every smelting
-  recipe, among them 4 kamacite fines → 1 kamacite plate in 9.6 s, and
-  3 crushed kamacite → 1 kamacite plate in 6.4 s. A fluid line passes through
-  it, north face to south face, and holds 2000; no recipe uses it.
-- **Speed:** crafting speed 1.5, so a plate every 6.4 s from fines and every
-  4.27 s from crushed kamacite. 2 module slots.
+  recipe; the Core's are in `06-core-production-tree.md`, Plate. A fluid line
+  passes through it, north face to south face, and holds 2000; no recipe uses
+  it.
+- **Speed:** crafting speed 1.5; 2 module slots.
 - **Cost:** 50 kamacite plate, 10 processing unit; 10 s.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Vacuum sintering.

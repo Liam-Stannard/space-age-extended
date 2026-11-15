@@ -13,9 +13,9 @@ Drop Crusher. Lifts a heavy weight and drops it on kamacite ore.
   square, runs on electricity and has no fluid box.
 - **Where it can be built:** where gravity is 45 or more, so only the Core.
 - **Power:** 200 kW electric.
-- **Inputs and outputs:** 4 kamacite ore in; 6 crushed kamacite and 2 kamacite
-  fines out. Items only, by inserter from any side.
-- **Speed:** crafting speed 1, one craft in 4 s; 2 module slots.
+- **Inputs and outputs:** one item slot in, one out, by inserter from any side.
+  Its recipe: `06-core-production-tree.md`, Crushing.
+- **Speed:** crafting speed 1; 2 module slots.
 - **Cost:** 40 steel plate, 30 iron gear wheels, 10 advanced circuits; 6 s.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Gravity crushing.

@@ -23,7 +23,7 @@ can start them again.
 ## 3. The cycle
 
 **Stage 1, the basic reaction.** The Reaction Plant turns 100 radiant solution
-and 100 hydrogen into 1 radiant fuel. The radiant generator burns it (its output
+and 100 hydrogen into 1 radiant fuel in 20 s. The radiant generator burns it (its output
 and burn time are in its spec). Each burnt fuel leaves a spent cell, which stage
 3 recycles.
 Helium-3 is not used for power.
