@@ -70,5 +70,5 @@ Tier 0, the foothold, is in the mod. The tiers above it wait on
   come together, so the generator never arrives without its fuel.
 - **Depends on:** Vent tapping.
 
-Power stages 2 to 4 (`08-core-power.md`) will be geodynamic technologies, placed
+Power stage 2 (`08-core-power.md`) will be a geodynamic technology, placed
 when the tiers above 0 are planned.

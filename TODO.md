@@ -23,9 +23,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Core's tree.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
   nothing replaces it, so a playthrough never ends.
-- **Re-plan stages 2–4 of the radiant cycle against what exists.** They name
-  geodynamic technologies and machines that were cut. The spent-cell and steam
-  decisions under Power wait on this.
+- **Plan the radiant cycle past stage 1** (`design/08-core-power.md`). The
+  spent-cell decision under Power waits on this.
 - **Decide what happens to the cut buildings' art.** `graphics/` still holds
   signed-off art for nine buildings that no longer exist — Bed Tender, Ignition
   Array, Dross Classifier, Sealed Roboport, Whisker Plant, Coil Separator,
@@ -35,7 +34,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
   once the docs are rewritten for the rework.
 - **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
-  Rename the fluid, its vent and its turbine in the mod and in every
+  Rename the fluid, its vent, its turbine and its technology in the mod and in every
   document. It replaces the old "crust gas to siderane" rename entry. With
   it, look at the vacuum names (Vacuum sintering, the Vacuum Furnace), which
   pressure 200 no longer fits.
@@ -78,10 +77,6 @@ Stages: see the factorio-building-round skill.
   Generator can be built on space platforms and gives back spent cells (see
   its spec), so every platform accumulates cells nothing reprocesses. Ship them down, or give platforms a
   void (`auto_recycle = false` in `prototypes/core/items.lua` keeps it open).
-- **Decide whether the reactor may make steam.** A `reactor`'s output path is
-  heat → exchanger → steam → turbine, which brings steam back at the top of a
-  ladder that removed it everywhere else. Accept it in the reactor room, or
-  find the reactor another output.
 
 ## Trees
 
@@ -100,9 +95,6 @@ Stages: see the factorio-building-round skill.
   (`concept/kamacite-vent/`, `gas-vent/`, `siderane-vent/`,
   `kamacite-ore/`) and one shared note; then an options round (Liam,
   2026-10-20).
-- **Two power buildings need specs before art**, both for stages the rework
-  is re-planning: `concept/isotope-centrifuge/` and `concept/radiant-reactor/`
-  do not exist yet; both come from `templates/building-spec-template.md`.
 - **Paint accent still to assign** (standards.md, Finish): Gas Pump.
 - **The radiant pool's shore steps on the tile grid.** The edge between
   the open surface and the glowing shore follows tile-aligned steps

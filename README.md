@@ -12,7 +12,7 @@ An expansion for Factorio: Space Age 2.1. What the mod is: see
 | [03 — The corridor](design/03-corridor.md) | The route past the Shattered Planet |
 | [04 — The Core](design/04-the-core.md) | The planet, its surface and its resources |
 | [06 — Core production tree](design/06-core-production-tree.md) | The Core's production line, as built |
-| [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in four stages |
+| [08 — The Core's power](design/08-core-power.md) | The radiant cycle, in two stages |
 | [09 — The Core's tech tree](design/09-core-tech-tree.md) | Each technology, its cost and what it needs |
 | [Ideas](design/ideas.md) | Proposals nobody has ruled on — **never built without being agreed first** |
 
