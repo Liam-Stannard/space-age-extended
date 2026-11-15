@@ -20,7 +20,7 @@ to 20 MW.
 - **Cost:** 10 superconducting winding, 2 accumulator, 20 steel plate; 20 s.
 - **Weight:** 20 kg, stack of 20.
 - **Unlocked by:** Superconducting winding.
-- **Art:** signed off (date not recorded).
+- **Art:** being redone.
 - **Remnants and explosion:** TODO.
 
 ---

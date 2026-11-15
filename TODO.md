@@ -108,6 +108,8 @@ Stages: see the factorio-building-round skill.
   the open surface and the glowing shore follows tile-aligned steps
   (seen on 2.1.22; Liam signed the pool off and asked for this to be
   logged).
+- **Re-render the Reaction Plant's icon.** Liam did not accept the shipped
+  icon (2026-11-15: "Redo it").
 - **The Reaction Plant has no sound of its own.** Its press accent is
   a vanilla stand-in (`landfill-inventory-move`) and its bed is the
   chemical plant's; it needs a design and rounds, as the crusher had.
