@@ -46,7 +46,7 @@ connected it runs as fast as it can, so time things in game ticks, not seconds.
 
 ## Building art
 
-A building's art starts from its spec
+A building's art starts from its spec, in `design/buildings/<building>/`
 ([templates/building-spec-template.md](templates/building-spec-template.md)). Buildings are modelled
 and rendered in Blender (`tools/blender/`). What may go in `graphics/` is set by
 claude.md rule 3.
@@ -54,5 +54,5 @@ claude.md rule 3.
 ## Icon art
 
 Icons are made a production chain at a time, so a chain's icons look made from
-each other. The method is in
-[templates/icon-sheet-prompts.md](templates/icon-sheet-prompts.md).
+each other. They are rendered in Blender; the tools are in
+.claude/skills/factorio-task/knowledge/pipeline.md (Icons).

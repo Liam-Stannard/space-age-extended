@@ -20,6 +20,7 @@ Hydrogen Turbine. The Core's first power: it burns hydrogen from a Gas Pump.
 - **Unlocked by:** Hydrogen extraction.
 - **Art:** being redone.
 - **Remnants and explosion:** Complete.
+- **Art files:** `concept/crust-turbine/`.
 
 ---
 

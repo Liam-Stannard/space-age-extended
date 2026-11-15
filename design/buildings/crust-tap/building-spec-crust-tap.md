@@ -21,6 +21,7 @@ Gas Pump. Draws gas from a vent: hydrogen or helium-3.
 - **Unlocked by:** Hydrogen extraction.
 - **Art:** signed off (2026-10-27).
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/crust-tap/`.
 
 ---
 

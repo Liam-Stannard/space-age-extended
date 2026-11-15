@@ -22,6 +22,7 @@ half the rate.
 - **Unlocked by:** Core survey.
 - **Art:** signed off (2026-10-29).
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/ballast-drill/`.
 
 ---
 

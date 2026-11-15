@@ -23,6 +23,7 @@ cell for each one.
 - **Unlocked by:** Radiant power.
 - **Art:** signed off (2026-10-27).
 - **Remnants and explosion:** Complete.
+- **Art files:** `concept/radiant-generator/`.
 
 ---
 

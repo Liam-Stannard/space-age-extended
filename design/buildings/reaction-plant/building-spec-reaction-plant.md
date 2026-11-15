@@ -23,6 +23,7 @@ Reaction Plant. Turns radiant solution and hydrogen into radiant fuel.
 - **Art:** signed off (2026-10-28; sight glasses and stubs 2026-10-29; press
   2026-10-30).
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/reaction-plant/`.
 
 ---
 

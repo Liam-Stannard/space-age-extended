@@ -26,6 +26,7 @@ Vent Pump. Lifts molten kamacite out of a kamacite vent with helium-3.
 - **Art:** signed off (2026-10-21); the fittings and wire-post mount signed off
   2026-10-27.
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/vent-pump/`.
 
 ---
 

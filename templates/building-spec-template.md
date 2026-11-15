@@ -1,6 +1,6 @@
 # <Building> — building spec
 
-Copy to `concept/<building>/building-spec-<building>.md` and fill it in before
+Copy to `design/buildings/<building>/building-spec-<building>.md` and fill it in before
 any art. §1 is read from the mod; the rest is the art brief. The art bars are in
 `.claude/skills/factorio-task/knowledge/standards.md`, and the stages in the
 factorio-building-round skill.
@@ -25,6 +25,7 @@ comparisons.
 - **Unlocked by:**
 - **Art:** "placeholder", "signed off (date)", or "being redone".
 - **Remnants and explosion:** "Complete", "In Progress" or "TODO".
+- **Art files:** `concept/<building>/`.
 
 ---
 

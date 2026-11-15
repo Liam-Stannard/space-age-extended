@@ -41,8 +41,8 @@ and note each fact with its source (file and line, or measured):
    standards and vanilla's gameplay facts (`gameplay.md`), each already
    verified.
 2. `claude.md`, `TODO.md`, and the parts of `design/` the request touches.
-3. The building or system's own files: `concept/<building>/` (spec,
-   sheets, the latest round's report in the task file), the prototype in
+3. The building or system's own files: its spec in
+   `design/buildings/<building>/`, `concept/<building>/` (sheets, the latest round's report in the task file), the prototype in
    `prototypes/`, its graphics in `graphics/`.
 4. Earlier task files in `.claude/tasks/` on the same subject: what was
    decided, by whom, in which amendment.
@@ -122,7 +122,7 @@ report), in this shape:
     ## Art
     `none`, or which entity needs art; the coder wires
     `derive.placeholder_art` so the task passes without it; whether the
-    building's spec in `concept/<building>/` is agreed.
+    building's spec in `design/buildings/<building>/` is agreed.
     ## Decisions
     Liam's answers, quoted and dated.
     ## Sources

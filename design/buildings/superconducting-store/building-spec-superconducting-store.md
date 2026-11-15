@@ -22,6 +22,7 @@ to 20 MW.
 - **Unlocked by:** Superconducting winding.
 - **Art:** being redone.
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/superconducting-store/`.
 
 ---
 

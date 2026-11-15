@@ -25,6 +25,7 @@ Vacuum Furnace. A sealed electric furnace. Its job is still to be decided
 - **Unlocked by:** Vacuum sintering.
 - **Art:** signed off (2026-10-09).
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/vacuum-furnace/`.
 
 ---
 

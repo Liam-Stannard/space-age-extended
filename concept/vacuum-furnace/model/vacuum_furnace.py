@@ -12,7 +12,7 @@
 The layout is blockout revision 4, approved by Liam 2026-10-07
 (blockout-v4.png, vacuum_furnace_blockout_v4.py); the finish is the first finished
 model's (materials.py's layered finish through this building's concept swatches).
-Spec: concept/vacuum-furnace/building-spec-vacuum-furnace.md -- 3.2 the parts, 3.3
+Spec: design/buildings/vacuum-furnace/building-spec-vacuum-furnace.md -- 3.2 the parts, 3.3
 the palette, 5 four directions and a building that never turns, 6 what moves,
 8 the input.
 

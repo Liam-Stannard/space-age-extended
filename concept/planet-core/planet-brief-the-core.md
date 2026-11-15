@@ -1,7 +1,7 @@
 # Planet brief — The Core
 
 The one asset nothing else in `graphics/` covers. A planet is neither an item
-icon (see [icon-sheet-prompts.md](../../templates/icon-sheet-prompts.md)) nor a building plate
+icon nor a building plate
 (see [building-spec-template.md](../../templates/building-spec-template.md)), so it gets its own
 short brief.
 

@@ -21,6 +21,7 @@ Drop Crusher. Lifts a heavy weight and drops it on kamacite ore.
 - **Unlocked by:** Gravity crushing.
 - **Art:** signed off (2026-10-09).
 - **Remnants and explosion:** TODO.
+- **Art files:** `concept/drop-crusher/`.
 
 ---
 

@@ -24,8 +24,7 @@ when the player earns it and again at the Core.
 ## A new resource on each planet
 
 Each planet's tree adds one new resource that fits its world and has a plain
-name. It is on the planet's map from the start, but only that planet's tree
-gives it a use.
+name. Only that planet's tree gives it a use.
 
 Until each planet has its own tree spec, the names chosen so far are: Vulcanus,
 obsidian; Fulgora, ozone; Gleba, spores; Aquilo, cryolite. Nauvis's is still to

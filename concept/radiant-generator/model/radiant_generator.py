@@ -16,7 +16,7 @@
              (look-NN) and stopped (unlit-NN); the well's light and the other openings' alone (wellglow-NN,
              otherglow-NN); the openings' and the collide fixes' places on the screen (SPOT, REGION lines)
 
-Spec: concept/radiant-generator/building-spec-radiant-generator.md (written 35d626b, Liam
+Spec: design/buildings/radiant-generator/building-spec-radiant-generator.md (written 35d626b, Liam
 "Agreed to all the drafts", 2026-10-20). Built from the signed-off concept, options round 7
 (r7_carousel_foundry.py and r7_kit.py, Liam 2026-10-19 "Sign off"): the same parts in the same
 places, the same finish. What the shipping model changes (task radiant-generator-options, T08):
