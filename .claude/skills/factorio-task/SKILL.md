@@ -102,9 +102,9 @@ factorio-gameplay-expert: after the code-reviewer and before the tester
 for code, before Liam agrees for wording. Status: open, in progress, done, passed <first sign-off owner>
 (waiting on <the next>), signed off, blocked (<why>), or waiting
 on Liam: Q<n>. Tickets with no dependency on each other may run
-at once, within the standing rules' limits. Each signed-off ticket ends
-with a work-in-progress commit on the branch, and its Status is updated
-in the file.
+at once, within the standing rules' limits. A ticket's work-in-progress
+commit is made when it is done (standing rules), and its Status is
+updated in the file.
 
 ## 5. Draft, agree, write
 Draft the file in the reply (or, run by the project-manager, in its
