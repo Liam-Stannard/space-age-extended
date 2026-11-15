@@ -61,7 +61,7 @@ reading the pressure across the burner stage: the output is plainly electricity.
 | Lagging | `#5E584C` | the balance line |
 | Burner glow | pale blue, set in the art round | the burner stage only |
 
-One glow, at the burner stage. The status lens is the only other light.
+One glow, at the burner stage, and no other light. It has no status lens.
 
 ---
 
