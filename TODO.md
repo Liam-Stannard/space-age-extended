@@ -118,7 +118,7 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   whole radiant family is the solution's blue (`#1F63FF` → `#73ADFF`,
   Liam 2026-10-10). They go blue with its four-way model
   (`reaction-plant-wiring`).
-- **Paint accents still to assign** (template Appendix B): Drop Crusher,
+- **Paint accents still to assign** (standards.md, Finish): Drop Crusher,
   Ballast Drill, Vacuum Furnace, Crust Tap.
 - **The radiant pool's shore steps on the tile grid.** The edge between
   the open surface and the glowing shore follows tile-aligned steps

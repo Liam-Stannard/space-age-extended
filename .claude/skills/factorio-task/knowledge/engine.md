@@ -118,3 +118,10 @@ Each line: the fact, then how it was verified and when.
   first.
 - The data-stage check never opens an image; sprite errors need a real
   client load to `Sprites loaded`.
+
+## Sprites and rotation
+- A crafting machine cannot be rotated unless it has a fluid box, a heat
+  energy source, a fluid energy source, or a non-square collision box
+  (`CraftingMachinePrototype`).
+- Sprite size in tiles = source pixels × scale / 32, and `util.by_pixel(x, y)`
+  = `{x/32, y/32}` in game pixels, whatever the sprite's scale.

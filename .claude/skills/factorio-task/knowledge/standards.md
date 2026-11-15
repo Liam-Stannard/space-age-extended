@@ -33,6 +33,14 @@ judgement on the sheets. No figure here signs anything off.
   Checked: rise.
 - **Clutter and asymmetry;** vanilla-like, not machined. Checked: by
   eye.
+- **Never draw the product:** enclose the working chamber; the engine
+  places what a machine makes. Checked: by eye.
+- **Connections on a tile edge:** every connection lands on a tile
+  edge, at ground level. Checked: by eye.
+- **Output ports:** only a machine that outputs by itself, like a
+  mining drill, draws an output port. Checked: by eye.
+- **Inside the box:** nothing crosses the collision box. Checked: by
+  eye.
 
 ## Pipes
 - **Each connection does a job:** it leads to the vessel or device that
@@ -98,6 +106,8 @@ judgement on the sheets. No figure here signs anything off.
   0 px.
 - **No frost or cold in a model;** cold comes from effects (Liam, Vent
   Pump, 2026-10-12). Checked: by eye.
+- **Paint:** every machine has a painted area, so it and its icon can be
+  told apart by colour. Checked: by eye.
 
 ## Light
 - **Radiant:** blue `#1F63FF` → `#73ADFF`, drawn in look B: light

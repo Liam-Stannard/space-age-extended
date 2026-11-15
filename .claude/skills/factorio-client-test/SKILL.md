@@ -24,7 +24,8 @@ and everything started is stopped.
 - A building in game: `tools/client/shot/shot.sh --task <t> --spec <json>`
   -- every direction and state (working, idle, no power, no input), day
   and night, each zoom, a motion series, contact sheets under 8000 px. Any
-  caught error or missing frame fails the run.
+  caught error or missing frame fails the run. Place at least three of
+  the building in a row.
 - Map generation: `tools/client/measure-seeds/measure.py --task <t>
   --seeds-file seeds/pool-placed-30.txt --reference
   reference/pool-placed-30.csv` -- the pool and patches per seed on a local
