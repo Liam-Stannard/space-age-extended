@@ -165,4 +165,5 @@ The effects, each only while working and faded out on stop:
 
 # 14. Icon
 
-Rendered from the model: the tower facing north, working.
+Rendered from the model: the tower facing north, working. Nothing is dropped
+at small sizes.

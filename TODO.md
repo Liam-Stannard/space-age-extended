@@ -103,8 +103,7 @@ Stages: see the factorio-building-round skill.
 - **Two power buildings need specs before art**, both for stages the rework
   is re-planning: `concept/isotope-centrifuge/` and `concept/radiant-reactor/`
   do not exist yet; both come from `templates/building-spec-template.md`.
-- **Paint accents still to assign** (standards.md, Finish): Drop Crusher,
-  Ballast Drill, Vacuum Furnace, Gas Pump.
+- **Paint accent still to assign** (standards.md, Finish): Gas Pump.
 - **The radiant pool's shore steps on the tile grid.** The edge between
   the open surface and the glowing shore follows tile-aligned steps
   (seen on 2.1.22; Liam signed the pool off and asked for this to be
@@ -112,6 +111,9 @@ Stages: see the factorio-building-round skill.
 - **The Reaction Plant has no sound of its own.** Its press accent is
   a vanilla stand-in (`landfill-inventory-move`) and its bed is the
   chemical plant's; it needs a design and rounds, as the crusher had.
+- **The Vent Pump has no sound.** It is silent: the pumpjack's sounds it
+  inherited are stripped and nothing replaces them. It needs a sound cued to
+  its charges, with a design and rounds, as the crusher had.
 - **The Ballast Drill's sounds want the crusher's treatment**: softer
   attacks, less high end, heavier, grouped like vanilla's (Liam,
   2026-10-20: "Crusher first").

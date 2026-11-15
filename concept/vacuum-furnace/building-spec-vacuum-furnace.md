@@ -97,10 +97,9 @@ brown never reads as rust. The temper is paint, never a light.
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Painted area | not yet assigned (TODO) | — |
 | Hull paint | `#3E3B36`, panels `#45433E` | the hull and the pump body |
 | Drum | `#5E584E` | the drum |
-| Temper, hottest to coolest | `#3E4A66` blue → `#5C4A6E` purple → `#8A5A3A` brown → `#B8964A` straw, thin and pale → plain steel | roof, rail, the hull's top course, radiators |
+| Temper, hottest to coolest: the painted area | `#3E4A66` blue → `#5C4A6E` purple → `#8A5A3A` brown → `#B8964A` straw, thin and pale → plain steel | roof, rail, the hull's top course, radiators |
 | Hatch | `#958577`, warm beige | the hatch |
 | Copper | `#94592C` | the dogs (bronze), the deck ring |
 | Brass | `#9C7034` | radiator collars, clamps, gauge line, maker's plate |

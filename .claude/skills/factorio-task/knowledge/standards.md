@@ -61,7 +61,7 @@ judgement on the sheets. No figure here signs anything off.
   Checked: by eye.
 - **Wall fittings:** every connection enters through a fitting set
   into the building's wall or casing (a recessed boss with a sleeve and
-  flanges, as on the Reaction Plant's casing, or similar), never a stub
+  flanges, or similar), never a stub
   standing off the machine; the pipe picture shows it open, and
   vanilla's cover is drawn when nothing is connected (Liam, 2026-10-21:
   "Every building, it doesn't necessarily have to be casing but
@@ -134,11 +134,10 @@ judgement on the sheets. No figure here signs anything off.
   motion, strobe.
 - **Planned as steps:** a loop is planned as steps before it is
   modelled: each step's frames, the parts that move, their ease, and
-  the sound it lands on. Every moving part holds still for part of the
-  loop; the steps add up to the loop, and the loop to the recipe's
-  ticks. Holds are played with a `frame_sequence`, not rendered again
-  (Liam, Drop Crusher re-animation, 2026-11-08). Checked: by eye
-  against the spec's step table.
+  the sound it lands on. The steps add up to the loop. Holds are
+  played with a `frame_sequence`, not rendered again (Liam, Drop
+  Crusher re-animation, 2026-11-08). Checked: by eye against the
+  spec's step table.
 - **Turning:** a building that turns keeps its signature parts facing
   the camera in every direction, with a per-direction variation where
   turning would hide them, as vanilla's chemical plant does. Checked:

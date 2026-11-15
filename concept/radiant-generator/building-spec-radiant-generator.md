@@ -147,4 +147,4 @@ its own later.
 # 14. Icon
 
 Rendered from the model: the whole machine, working, with its openings and
-lamps lit. Kept as rendered.
+lamps lit. Kept as rendered; nothing is dropped at small sizes.

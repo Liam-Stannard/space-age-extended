@@ -67,8 +67,8 @@ player can tell a running crusher from a stopped one across the base.
 | Bare steel | `#9C968C` | where the machine is struck or worked: the buttress edges, the hatch round its dogs, the collar, the deck round the gears |
 | Steel structure | `#4A463F` → `#6E685C` | base plate and roof deck |
 | Lift gear | `#8A857C` | gears, racks, pawl and collar, brighter than the armour |
-| Polished steel | `#9A948A` | the collar's rim, polished by the landing; the palest part |
-| Drop weight | `#2E2C29` body, chamfers up to `#6A6660` | the crown and shank |
+| Polished steel | `#A8A296` | the collar's rim, polished by the landing; the palest part |
+| Drop weight | `#4C4842` body, bevels up to `#D2CCC2` | the crown and shank |
 | Hazard banding | `#C8A23A` | the base plate's edge only |
 | Copper and brass | `#8A5A32` → `#C88A4A` | bands, bus runs, gear furniture, bearing caps, bolt lines; never glows |
 | Status lamp | `#FFFFFF` | the lens, painted white; the engine tints it |
