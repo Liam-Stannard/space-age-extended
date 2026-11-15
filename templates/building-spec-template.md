@@ -105,6 +105,7 @@ comparisons.
 - **Cost:**
 - **Weight:**
 - **Unlocked by:**
+- **Art:** "placeholder", "signed off (date)", or "being redone".
 
 ---
 
