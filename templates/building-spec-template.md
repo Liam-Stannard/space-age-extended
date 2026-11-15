@@ -77,7 +77,6 @@ move. One row a step:
 | 1 | [name] | [first–last] | [ticks] | [parts] | [even / eased / hold / snap] | [entry and sound, or —] |
 
 The steps' entries add up to the loop, with every entry in exactly one step.
-The loop's ticks equal one craft at crafting speed 1, or the spec says why not.
 
 ---
 
