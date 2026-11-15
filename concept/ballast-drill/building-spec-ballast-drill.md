@@ -1,75 +1,26 @@
-# Factorio Building — Art & Implementation Specification
+# Ballast Drill — building spec
 
-**Ballast Drill.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6 stays open; §12 and §13 are filled from the wired sheets (T03b).
-
-**The model, signed off 2026-10-29** (T03m, rig-round-8): the plate, chute ports and wet-only hoses of §3 and §8.
-
-Named for what makes it work rather than for where it stands: the Core's own
-drill, but "Core Drill" reads as a drill *for* cores, and every other building
-here already says Core in its description.
+Ballast Drill. Mines kamacite ore by its own weight, and drains the patch at
+half the rate.
 
 ---
 
-# 0. Generation Contract
+# 1. Facts
 
-| # | Asset | Gate before moving on | State |
-| - | ----- | --------------------- | ----- |
-| 0 | Options and concept | Liam picks | **done: option B, the Ring Press** |
-| 1 | Model | `--collide` 0; support audit 0 floating; coverage ≥ 92 % | **signed off 2026-10-29** (T03m, rig-round-8) |
-| 2 | Connections | vanilla's pipe joins (no gap) at all 4 connections in all 4 directions, 16/16; nothing of vanilla's pipe or cover overhangs the wall | **16/16** |
-| 3 | Animation | the stroke, dust and chute loop as signed off at round 6 | **done** |
-| 4 | Wiring | sheets in `graphics/`, four directions, dry and wet | **in progress** (T03b) |
-| 5 | Icon | legible at 32 px | done, from the round-7 model; re-render after wiring? |
-
----
-
-# 1. Building Overview
-
-**Building Name:** `Ballast Drill`
-**Internal Prototype Name:** `sae-ballast-drill`
-
-**Building Type:** `mining-drill`, built fresh against vanilla's
-`big-mining-drill` as the reference for proportions and for
-`resource_drain_rate_percent`.
-
-**Purpose:** Works kamacite ore **without wasting it.** It is the Core's only drill and the only machine that works kamacite at all. It mines a little faster than the big mining drill (3.0 against 2.5), draws twice its power (600 kW), and takes half as much out of the patch for every ore it delivers.
-
-**Why it matters:** kamacite patches *genuinely run out* and
-nothing else in the mod cares. This is the only building in the game whose
-argument is "spend electricity to make a finite thing last", and on a planet
-whose central tension is already electricity, that lands the trade in exactly the
-right place.
-
-**Locale** (locale/en/strings.cfg), item and building: *"A heavy drill that uses its own weight to mine. Depletes resources at a reduced rate."*
-
----
-
-# 2. Gameplay Dimensions
-
-| | |
-| --- | --- |
-| Tile footprint | 5×5, matching the big mining drill |
-| Directions | 4 |
-| Resource categories | `sae-kamacite` (the only drill that works kamacite) |
-| `mining_speed` | **3.0**, past the big mining drill's 2.5 |
-| `resource_drain_rate_percent` | **50** — vanilla precedent: `big-mining-drill.lua:568` |
-| Energy | **600 kW**, electric, `secondary-input` |
-| Surface conditions | `gravity` ≥ 45 — the Core alone |
-| Module slots | 4 |
-
-### Why it is not a reskin
-
-`resource_drain_rate_percent` is the whole building. It is the one mining-drill
-field that changes what a patch is *worth* rather than how fast it empties, and
-vanilla uses it exactly once. Here no other drill mines kamacite, so it sets
-what every patch is worth: half the drain, as vanilla's big mining drill has, for
-twice that drill's power, on the one planet where ore is finite by design.
-
-**The gravity condition is the fiction and the balance in one line.** At 50 g the
-drill can press down with its own mass instead of hammering, which is why it
-wastes less — and it means the building cannot be carried to a world where ore is
-effectively infinite and used as a straight upgrade.
+- **Name:** Ballast Drill
+- **What it does:** mines kamacite ore over a 13 × 13 area. Each ore it mines
+  takes only half an ore from the patch.
+- **Size and directions:** 5 × 5, 4 directions.
+- **Where it can be built:** on kamacite ore, where gravity is 45 or more, so
+  only the Core.
+- **Power:** uses 600 kW.
+- **Inputs and outputs:** no input; kamacite ore out of a chute on one face.
+  Four fluid connections, which nothing uses today.
+- **Speed:** mining speed 3, so 3 ore a second; 4 module slots.
+- **Cost:** 60 steel plate, 40 iron gear wheels, 15 advanced circuits; 10 s.
+- **Weight:** 40 kg, stack of 20.
+- **Unlocked by:** Core survey.
+- **Art:** signed off (2026-10-29).
 
 ---
 
@@ -77,230 +28,109 @@ effectively infinite and used as a straight upgrade.
 
 ## 3.1 Design Concept
 
-A press, not a hammer. The machine's read is **weight brought to bear**: a broad
-low chassis with a heavy ballast block riding above the cutting head, and legs
-splayed wide enough that it is obviously bracing rather than standing.
-
-**The anti-read is a derrick.** No tower, no headframe, no rotating superstructure.
-Everything about this machine is low and wide, because its argument is mass.
-
-**The whole machine stands on one raised cast plate** (Liam, 2026-10-28: *"Add the drill to a slighty raised plate so the pipe connections go into the wall"*; *"The whole structure should sit on top of the plate … no floating walls"*). The plate fills the footprint to its edge, its top at 0.85 tile, above the fittings. Its wall runs unbroken along all four faces, and the corners stay open, where the splayed legs stand on the ground. Every part stands on the plate top or on a part that does.
+A press, not a hammer: a heavy cast ring is winched up and dropped on a
+shoulder, so the drill works by its own weight. It is low and wide, braced on
+splayed legs. It must not be mistaken for a derrick: no tower, no headframe,
+nothing turning on top.
 
 ## 3.2 Key Visual Features
 
-* A **ballast block** — the tallest element, an unadorned slab of metal riding on
-  four visible guide rails above the head.
-* **Splayed bracing legs** at the four corners, each with a broad foot pad.
-* A **cutting head** under the block, mostly hidden, seen only as a rim of
-  disturbed ground.
-* A **chute through a port in the plate wall** on the face the ore leaves by: a low framed port at ground level, its mouth flush, the plate bridging it, the chute's drive on the plate top over it. The other three faces' ports are shut with a flush bolted hatch.
-* **The raised cast plate** under everything, its wall unbroken, the corners open for the legs.
-* **Hoses only when connected:** on an ore that needs a fluid, a hose leaves each connected fitting over the plate top to where the fluid is used, 0.32 bore as vanilla's, one curve, nozzle down.
+* The **ballast ring**: a cast-iron ring with a hub and six spokes. It rides
+  three guide columns round a fixed, capped central column. It lands on a
+  hammered shoulder, its four lugs on four hydraulic snubbers.
+* The **press frame**: two red-oxide gear-houses on the north columns' heads.
+  Each holds a winch, with a spur gear, a copper drum and a wire rope down to
+  the ring.
+* The **raised cast plate** under everything. It fills the footprint, with its
+  top at 0.85 tile and its wall unbroken on all four faces. The corners are
+  open, and four splayed legs stand there on broad foot pads on the ground.
+  Every other part stands on the plate top, or on a part that does.
+* The **chute**: a framed port in the plate wall at ground level, on the face
+  the ore leaves by. Its mouth is flush, with a short drag chain and its drive
+  on the plate top. The other three ports are shut by flush bolted hatches.
+* **Services and wear**: ribbed hoses, cable bundles, junction boxes, a tank
+  and bottles. The two gear-houses are different castings, and the ore dust
+  lies heavy on every ledge.
 
 ### Signature Feature
 
-**The ballast ring rises slowly and drops hard on the working loop** — a
-one-second stroke: a slow lift, a short hang, a fast fall, and a dead stop on the
-landing shoulder that jolts through the frame. At the landing a low ring of ore
-dust breaks out from under the ring and settles before the next lift; the dust is
-a working layer tinted by the ore, never drawn on an idle drill. It is the
-animation that says *this machine is using gravity*, and it is the reason the
-building reads at a glance.
+The ring rises slowly and drops hard. It lands dead on the shoulder, the frame
+jolts, and a low ring of ore dust breaks out from under it. This shows the
+drill is using its weight.
 
 ## 3.3 Colour Palette
 
-**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
-steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
-Each also carries one material of its own on its main surfaces, so a player tells them
-apart by colour before shape, as vanilla's electric furnace, assembler and foundry
-are told apart. Within the building, variation comes from replacement panels in a
-slightly different shade, small stencilled markings, and rust that differs by place:
-dry orange on tops, dark wet streaks below fittings.
-
-**This building's: raw cast iron.** No paint: the chassis, legs and ring are
-graphite grey `#3A3A3C` → `#5A5A5E` with a faint blue-black mill-scale sheen, and the
-ore dust (`#7A6A55`) settles heavy on every ledge. The heaviest machine is all mass
-and no finish; hazard banding stays on the leg feet only.
-
+Raw cast iron, with no paint but the red oxide.
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Chassis and legs | `#4A463F` → `#6E685C` | the mass of the building |
-| Ballast ring | `#3A3A3C` → `#5A5A5E` | cast iron, the heaviest mass; its top face, wall and well kept apart in value |
-| Press frame accent | `#6A2618` → `#842E1E` | red oxide paint on the gear-houses, drive cabinets, tank and bottles, chipped to the iron |
-| Guide rails | `#8A8580` | four verticals |
-| Hazard banding | `#C8A23A` | leg feet only, sparingly |
-| Ore dust | `#7A6A55` | ground disturbance under the head |
+| Cast iron | `#3A3A3C` → `#5A5A5E` | chassis, legs and ring, with a faint blue-black sheen; the ring's top, wall and well kept apart in value |
+| Red oxide | `#6A2618` → `#842E1E` | the painted area: gear-houses, drive cabinets, tank and bottles, chipped to the iron |
+| Guide columns | `#8A8580` | the three columns, worn bright where the shoes run |
+| Copper | `#8A5A32` | the winch drums |
+| Hazard banding | `#C8A23A` | the leg feet only |
+| Ore dust | `#7A6A55` | settled on ledges and round the shoulder |
+| Working dust and falling ore | neutral pale grey, tinted by the ore | drawn only while mining |
+| Status lamp | white, tinted by state | a lens on the plate top, south-west |
 
-**No glow at all.** Nothing on this machine is hot or energised; it is a weight
-on a rail. A drill that glows would read as a smelter.
+The status lamp is the only glow. It is red when idle or out of ore, yellow
+when blocked, disabled or short of power, green when working, and dark with no
+power. Nothing else glows: nothing here is hot.
 
-## 3.4 Sound (Liam, 2026-10-11)
-
-A bed and two accents, all cued to the stroke (24 frames, one second). The
-**bed** is a low, slow winch drone, the big mining drill's working loop
-pitched down and quieter, heard while the drill works. The **landing** on
-frame 5 is the building's voice: a deep, dead thud with a short ground rumble
-under it, landing with the dust; the heaviest single sound on the Core. A
-small **ratchet tick** on frame 23, at the top of the lift. Built from
-vanilla's big-drill and impact sounds plus scripted layers, matched to the
-big mining drill's loudness, and capped so a row of drills rumbles rather
-than stacks.
+Two replacement panels are a slightly different shade, and there are small
+stencilled markings. Rust is dry orange on tops, with dark wet streaks below
+fittings.
 
 ---
 
 # 4. Factorio Visual Style
 
-## Technology tier and visual register
-
-**Tier 0 — Foothold.** Crude and mechanical: bolted plate, cast legs, exposed guide rails, visible wear on the cutting head. A landing-day machine.
-
-See the template's *"Technology tier sets the visual register"* — the player
-should be able to read their progress off the factory floor without opening the
-tech tree, so this building's surface treatment is set by where it sits on
-`04-the-core.md` §6's ladder, not by taste.
-
-
-
-5×5 and low, so the camera shows a great deal of roof and very little face — the
-ballast block and the four rails carry the whole silhouette. Style reference to
-attach: the **big mining drill**, cropped and upscaled, with the standing
-disclaimer.
-
----
-
-
-# 5. Building Orientation
-
-* [x] North · [x] East · [x] South · [x] West
-
-**Direction count:** `4`. The chute faces a different way in each, and a drill whose chute does not match its belt is the single most confusing thing a
-mining building can do.
+Style reference: vanilla's big mining drill, for its finish, scale and camera,
+and for how it carries its red.
 
 ---
 
 # 8. Connections
 
-| Connection | Where | Notes |
-| ---------- | ----- | ----- |
-| Ore out | `vector_to_place_result` `{ 0, −2.85 }` — the **north** face, centred | must match the chute's mouth in all four directions; `{ 0, −2.85 }` kept (Liam: *"Grow canvas, keep spot"*) |
-| Mining fluid in | four connections, vanilla's big-mining-drill layout | **declared, and nothing uses them yet** |
-| Electric | no visible connector | poles reach it wirelessly |
-| Items in | none | no inserter feeds this building |
-
-```
-          . . O . .        O = ore out, north face, centre
-          . . . . .        W = fluid in, west face, one tile north of centre
-      W . . . . . . E      E = fluid in, east face, one tile north of centre
-          . . . . .        S = fluid in, south face, either side of centre
-          . S . S .
-```
-
-**`vector_to_place_result` is the one number that cannot be guessed.** It has to
-be measured off each directional plate so the ore appears at the chute's mouth and
-not through the chassis.
-
-**This table used to say "Fluids: none; no `input_fluid_box`; this drill takes no
-reagent".** That was true of the mechanic and wrong about the prototype, which
-inherited four connections from the big mining drill all along. They were briefly
-cleared and are now kept deliberately: **a mining fluid for this drill is wanted
-later, and the layout has to be settled before the plate is cut.** A flange added
-to a finished plate is a repaint of all four directions.
-
-**The layout is vanilla's, verbatim**, and that is the reason to use it — a player
-who has plumbed a big mining drill has already learned this one. North takes no
-connection, because north is where the ore comes out.
-
-**Each connection enters a closed fitting in the plate wall**, and vanilla's pipe joins it there. Nothing of vanilla's pipe or cover may overhang the wall or lap onto the plate top (Liam, 2026-10-28: the overhang is *"Where the game pipe joins"*). The south face sits at the footprint edge like the other three (*"A: face back to edge"*).
-
-**The hoses are wet-only.** The drill's dry graphics carry no plumbing. Its `wet_mining_graphics_set`, which the engine draws only on an ore that needs a fluid, adds the hoses from each fitting over the plate top (Liam: *"Keep wet-only, smaller"*). No `pipe_picture`. Vanilla's covers are on unconnected fittings, and north covers are hidden (`secondary_draw_orders = { north = -1 }`; Liam: *"Hide them"*).
-
-So on kamacite today the drill shows its closed fittings in the plate wall and nothing else. The day an ore asks for a fluid, the hoses appear by themselves, in all four directions, and no plate is repainted.
+- **Ore out:** at the middle of the north face, at {0, −2.85}, out of the
+  chute's mouth. It turns with the drill, and so does the chute.
+- **Fluid in:** four fittings, closed, in the plate wall at the footprint
+  edge. West face at {−2, −1}, east face at {2, −1}, and two on the south face
+  at {−1, 2} and {1, 2}. North has none, because the ore comes out there.
+- **On kamacite today** no ore needs a fluid. The drill shows its closed
+  fittings and nothing else: no cover, no hose. A pipe laid beside it ends in
+  vanilla's end cap. Facing east or south, the cap at the west fitting lies
+  over the plate's lower-left corner; this is accepted.
+- **On an ore that needs a fluid**, a pipe joins each fitting at the wall. No
+  part of the pipe or its cover overhangs the wall or lies on the plate top.
+  An unconnected fitting shows vanilla's pipe cover; a cover that faces north
+  is hidden behind the drill. A small hose, of vanilla's pipe bore, runs from
+  each fitting over the plate top in one curve, nozzle down.
+- No electric connector shows. No inserter feeds it.
 
 ---
 
-# 12. Sprite Dimensions and Files
+# 9. Working Animation
 
-Every size and shift is copied from the packer's `meta.json`, never measured off a sheet. **Scale** `0.5`, 64 source px a tile. **Regenerate** with `concept/ballast-drill/model/rig-round-8/take.sh cast <scratch>`. It writes `plate/sheets`, `dry/` and `wet/`, each with its `meta.json`.
+One stroke: 24 entries in 60 ticks, one second.
 
-One file per sheet per direction in `graphics/entity/ballast-drill/`, named `<sheet>-<direction>.png`:
+| # | Step | Entries | Ticks | What moves | Ease | Accent |
+|---|---|---|---|---|---|---|
+| 1 | Hang | 1–2 | 5 | the ring held at the top | hold | — |
+| 2 | Fall | 3–6 | 10 | the ring falls onto the shoulder; the winch gears spin fast | eased, speeding up | entry 6: the ring lands dead; the frame jolts two pixels; the dust breaks out; a deep thud with a ground rumble |
+| 3 | Settle | 7–13 | 17.5 | the ring rebounds one pixel and seats again; the frame's jolt dies; a slung hose swings and stills; the dust spreads and settles | snap, then hold | — |
+| 4 | Lift | 14–24 | 27.5 | the ring is winched slowly up; the winch gears turn slowly | eased | entry 24: a small ratchet tick at the top of the lift |
 
-| Sheet | Frames | North | East | South | West |
-| --- | ---: | --- | --- | --- | --- |
-| `base` | 1 | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) | 330×362 @ (+0, -0.28125) |
-| `base-shadow` | 1 | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) | 370×330 @ (+0.375, -0.0625) |
-| `chute` | 5 | 26×28 @ (-0.1875, -2.75) | 24×30 @ (+2.29688, -0.65625) | 60×58 @ (+0.01562, +2.0625) | 24×30 @ (-2.29688, -0.28125) |
-| `stroke` | 24 | 305×323 @ (+0.13281, -0.61719) | 305×323 @ (+0.13281, -0.61719) | 305×323 @ (+0.13281, -0.61719) | 306×323 @ (+0.125, -0.61719) |
-| `ore` | 24 | 39×11 @ (+0.02344, -2.97656) | 35×44 @ (+2.74219, -0.0625) | 41×39 @ (+0.00781, +2.69531) | 35×42 @ (-2.74219, -0.07812) |
-| `dust` | 24 | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) | 259×271 @ (+0.02344, -0.52344) |
-| `status-lamp` | 1 | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) | 13×13 @ (-1.60156, +0.42969) |
-| `rig` | 1 | 330×82 @ (+0, -1.07812) | 226×166 @ (-0.8125, -1.73438) | 122×87 @ (+0, -2.35156) | 226×166 @ (+0.8125, -1.73438) |
-| `rig-front` | 2 | 191×116 @ (+0.00781, +1.60938) | 259×168 @ (-0.52344, +1.20312) | 326×112 @ (+0, +0.76562) | 258×168 @ (+0.53125, +1.20312) |
-| `rig-shadow` | 1 | 349×250 @ (+0.21094, +0.57812) | 278×332 @ (-0.34375, -0.0625) | 349×276 @ (+0.21094, -0.5) | 282×332 @ (+0.73438, -0.0625) |
-
-The base is the same plate in all four directions. The shadows differ only by what the chute throws. `rig`, `rig-front` and `rig-shadow` are the wet set's alone.
+The loop is not one craft: the drill mines 3 ore in each one-second stroke.
+While mining, ore falls off the chute's mouth in step with the stroke. Under
+the stroke runs a low, slow winch drone. No more than two landings sound at
+once, so a row of drills rumbles rather than stacks. The chute's chain runs
+its own loop: 5 entries, 10 ticks. Idle, the ring stops where it is, and no
+dust or ore is drawn.
 
 ---
 
-# 13. Factorio Prototype
+# 14. Icon
 
-**Prototype Type:** `mining-drill`, derived from vanilla's `big-mining-drill` · **Prototype Name:** `sae-ballast-drill`
-
-```text
-graphics_set               the dry set: what every kamacite drill draws
-  animation                the plate and its shadow, 24 frames held (0.4)
-  working_visualisations   in this order:
-    chute                  always_draw, 5 frames at 0.5 (vanilla's output speed)
-    stroke                 always_draw, 24 frames at 0.4
-    ore                    apply_tint "resource-color", synced_fadeout
-    dust                   apply_tint "resource-color", synced_fadeout
-    status-lamp            always_draw, apply_tint "status", draw_as_glow
-wet_mining_graphics_set    the same, plus the hoses, drawn only on an ore
-                           that asks for a fluid:
-    rig                    always_draw, after the chute
-    rig-front              always_draw, after the dust, with rig-shadow as
-                           its shadow layer
-input_fluid_box            vanilla's four connections; no pipe_picture;
-                           pipe_covers = derive.pipe_covers();
-                           secondary_draw_orders = { north = -1 }
-vector_to_place_result     { 0, -2.85 }
-```
-
-The order follows vanilla's big mining drill: output, fluids, particles, `fluids_front`, then its LEDs. On a dry drill the engine draws no cover, so a pipe laid beside one ends in vanilla's end cap. Facing east and south, the cap at the west connection lies over the plate's lower-left corner, as vanilla's own drill's does (Liam, 2026-10-29: *"Accept"*).
-
----
-
-# 15. Factorio Prototype — sketch
-
-```lua
-{
-  type = "mining-drill",
-  name = "sae-ballast-drill",
-  resource_categories = { "sae-kamacite" },
-  mining_speed = 3.0,
-  resource_drain_rate_percent = 50,   -- big-mining-drill.lua:568 is the precedent
-  energy_usage = "600kW",
-  energy_source = { type = "electric", usage_priority = "secondary-input" },
-  surface_conditions = { { property = "gravity", min = 45 } },
-  module_slots = 4,
-  vector_to_place_result = { 0, -2.85 },   -- the north face; turned by the engine (§8)
-}
-```
-
----
-
-# 16. Icon
-
-The ballast block on its rails, seen square on, with the cutting head as a dark
-rim beneath. Must read at 32 px as *"a weight on a drill"* — if it reads as a
-plain drill, the icon has failed, because the weight is the entire building.
-
----
-
-# 20. Open questions
-
-- ~~**Does it replace the electric drill or sit beside it?**~~ **It replaces it.**
-  No other drill mines kamacite (§1).
-- **Interaction with mining productivity.** `uses_force_mining_productivity_bonus`
-  is on by default, and productivity already reduces effective drain. Check the
-  two do not stack into an ore patch that is functionally infinite.
+Rendered from the model: the whole machine, ring raised, every port shut, no
+hoses. It must read at 32 px as a weight on a drill.

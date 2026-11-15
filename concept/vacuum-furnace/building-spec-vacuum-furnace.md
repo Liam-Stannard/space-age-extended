@@ -1,95 +1,30 @@
-# Factorio Building — Art & Implementation Specification
+# Vacuum Furnace — building spec
 
-**Vacuum Furnace.** First draft — a brief, enough to commission and judge a
-concept sheet. Not a specification: §6, §12 and §13 stay open until a sheet is
-approved and a canonical plate has been measured.
-
-**This building has to justify itself harder than the others in the set,**
-because "a furnace, but sealed" is a reskin of the electric furnace unless it is
-given work nothing else can do. §2 is where that happens; if the exclusive work
-is ever removed, delete the building rather than shipping it.
-
-**Settled 2026-09-06: it stays a `furnace`, and phosphide flux becomes a fluid.**
-Spike S12 proved a furnace can auto-select on one item plus one fluid, so
-sintering keeps its flux without costing the machine its defining trick. The
-consequence outside this document is that `06-core-production-tree.md` T2's flux
-is a fluid now — piped, never belted or chested.
+Vacuum Furnace. A sealed electric furnace. Its job is still to be decided
+(TODO).
 
 ---
 
-# 0. Generation Contract
+# 1. Facts
 
-| # | Asset | Canvas | Gate before moving on | State |
-| - | ----- | ------ | --------------------- | ----- |
-| 0 | Concept sheet | landscape 3:2 | Whole design approved in one review | **draft — `concept/v1-sheet.png`**, not locked |
-| 1 | Canonical view | portrait 2:3 | Silhouette approved against §3 | blocked on 0 |
-| 2 | Idle plate (unlit) | portrait 2:3 | Same machine, cold | blocked on 1 |
-| 4 | Glow plate | portrait 2:3 | Differenced against stage 2 | blocked on 2 |
-| 6 | Icon | square | Legible at 32 px | blocked on 1 |
-
----
-
-# 1. Building Overview
-
-**Building Name:** `Vacuum Furnace`
-**Internal Prototype Name:** `sae-vacuum-furnace`
-
-**Building Type:** `furnace`. Deliberately not an assembling machine: a furnace
-**chooses its recipe from what is inserted**
-(`auxiliary/furnace-recipe-selection.html`), so one building serves the whole
-smelting and sintering line without the player setting a recipe on each.
-
-**Purpose:** The Core's only smelter, and the only machine in the game that can
-process **kamacite fines**. An open furnace loses powder; a sealed one does not,
-and on a world with no atmosphere sealing is free.
-
-**Why it matters:** it is the one place the pressure-5 rule pays the player back
-instead of taking something away. Everywhere else, vacuum is a list of buildings
-that are refused. Here it is the reason a whole material stream exists.
-
-**Locale:** *"Nothing escapes a furnace with no air in it."* / *"Smelts what an
-open furnace would lose. On a world with no atmosphere, a sealed crucible costs
-nothing to seal."*
-
----
-
-# 2. Gameplay Dimensions
-
-| | |
-| --- | --- |
-| Tile footprint | 3×3 (`collision_box {-1.4,-1.4},{1.4,1.4}`) |
-| Directions | 4 — the body is drawn once; only the flux line turns (§5) |
-| Crafting categories | `smelting` |
-| `source_inventory_size` | 1 (the prototype maximum) |
-| Fluid boxes | 1, a **pass-through** — **phosphide flux**, used by the sintering recipes only |
-| Energy | 1.2 MW, electric |
-| Surface conditions | `pressure` ≤ 9 — the Core and platforms |
-| Module slots | 2 |
-
-**The flux box wants a generous volume.** S12 found that a furnace with a fluid
-ingredient refuses its *solid* ingredient outright until the fluid is already in
-the machine. A large buffer against a small per-craft draw makes that latch rare
-after first build; it does not remove it, and §3.2's indicator, the viewport, is
-what makes it legible when it happens.
-
-### The exclusive work — the reason it exists
-
-1. **Kamacite fines.** Not exclusive: `sae-fines-smelting` is a `smelting` recipe,
-   so any smelting furnace takes fines.
-2. **Sintering.** Cut with the carbonyl line. Neither is exclusive now, and what
-   the furnace is for is undecided (`TODO.md`, "Decide the Vacuum Furnace's job").
-
-Both are powder processes, and both are impossible in an open furnace for the
-same real reason. That is one argument doing two jobs, which is what makes it an
-argument rather than an excuse.
-
-### Why it is not a reskin
-
-The electric furnace can be carried here and will smelt plate perfectly well.
-This building does not replace it — it does the two things the electric furnace
-**cannot**, and picks its own recipe while doing them. If a player never builds
-one, they never see the fines line or the carbonyl line, and both are tiers of
-the production tree.
+- **Name:** Vacuum Furnace
+- **What it does:** smelts. It picks its recipe from what it is fed. Today it
+  runs only plain smelting; its job is still to be decided (TODO).
+- **Size and directions:** 3 × 3, 4 directions. One drawing for all four; only
+  the pipe ports turn, so the fluid line runs north–south or east–west.
+- **Where it can be built:** pressure 9 or less, so today the Core and
+  platforms (TODO, pressure 200).
+- **Power:** uses 1.2 MW of electricity.
+- **Inputs and outputs:** one item slot in, one out. It runs every smelting
+  recipe, among them 4 kamacite fines → 1 kamacite plate in 9.6 s, and
+  3 crushed kamacite → 1 kamacite plate in 6.4 s. A fluid line passes through
+  it, north face to south face, and holds 2000; no recipe uses it.
+- **Speed:** crafting speed 1.5, so a plate every 6.4 s from fines and every
+  4.27 s from crushed kamacite. 2 module slots.
+- **Cost:** 50 kamacite plate, 10 processing unit; 10 s.
+- **Weight:** 40 kg, stack of 20.
+- **Unlocked by:** Vacuum sintering.
+- **Art:** signed off (2026-10-09).
 
 ---
 
@@ -97,468 +32,140 @@ the production tree.
 
 ## 3.1 Design Concept
 
-A pressure vessel that is holding nothing in. The read is **sealed** — a squat
-welded drum with no door, no chimney, no visible fire, and a single heavy clamped
-hatch on the roof that is the only way anything gets in or out.
-
-**The anti-read is the electric furnace.** Vanilla's is an open-fronted box with
-a visible glowing throat, and every part of that is wrong here: an open front on
-a sealed machine is a contradiction the player will notice.
+A sealed pressure vessel: a squat welded drum with no door, no chimney and no
+fire showing. A heavy clamped hatch in the roof is the only way in. It must not
+be mistaken for vanilla's electric furnace, with its open front and glowing
+throat.
 
 ## 3.2 Key Visual Features
 
-* A **welded hull**: plates in two courses, every joint a continuous weld bead,
-  stiffened outside by riveted ribs and angle-iron corners. **Every seam is
-  welded, never bolted or gasketed**, because a gasketed seam is a leak and a
-  weld is not. The hatch's six radial seams are welds too: it is built from
-  plates, not cast, and reads as worked rather than perfect (Liam, 2026-10-08).
-* A **clamped roof hatch**, heavy, round and **flat in the roof**: its deck is
-  level with the hull's rail, and it sits on the footprint's centre, so the
-  parapet runs round it evenly. Radial dogs around its rim. No dome, and no
-  lifting eye.
+* A **welded hull** that fills the 3 × 3, with no base. An octagonal hull with
+  walls leaning back, and the round drum on its centre. Plates in two courses,
+  each plate its own tone and standing slightly proud of the next; every seam
+  is a continuous weld, never bolted or gasketed. Bolted stiffeners and bolt
+  rows, angle iron worn bare down every corner, a kerbed, mitre-welded cap
+  rail. Newer replacement panels, and one newer plate bolted on askew on the
+  south-west chamfer.
+* A **flat clamped hatch**, round, on the centre of the roof and level with the
+  rail. It is welded from six plates and held by eight radial dogs, each a few
+  degrees off true. A faded hazard ring runs under the dogs, worn and scuffed
+  where they are worked. No dome and no lifting eye. Off its symmetry: the
+  viewport's cover, hinged on a knuckle and strapped back, its gasket showing;
+  a vacuum-break angle valve with its handwheel and vent; a welded repair patch
+  set askew. A copper ring, clamped in brass, runs round the hatch on the deck.
 * **Three radiator stacks**, at the north-west, north-east and south-west
-  corners, set on the diagonal — the heat has nowhere to go but a radiator,
-  since there is no air to carry it — leaving the middle of every face free for
-  the flux line.
-* A **vacuum pump** in the south-east corner niche, in place of the fourth
-  stack: a squat pump body with an **exposed flywheel** on its shaft. The
-  flywheel is drawn free — a visible gap all round it, its hub on the shaft,
-  nothing bridging it to the body — and the pump body and niche wall behind it
-  are fully modelled, because the turning wheel uncovers them.
-* A **vacuum gauge** on the pump body: a round dial lying flat on the barrel's
-  head, facing up at the roof's angle, set deep in a hooded case, its needle drawn over the dial face (§6). The dial is
-  dull, so the viewport stays the only light.
-* A **sight port** at the **centre of the hatch**: thick, deep glass set flat in
-  the roof. It is the only place any *heat* glow escapes, and it is the
-  building's **indicator** (below). There is no separate lamp.
-* **One flux line, passing through**: a port at the middle of two opposite
-  faces, so flux comes in one side and carries on out the other, and a row of
-  furnaces is fed off one line, as vanilla's boilers are. Its pipe picture is the assembling machine's in shape, size and
-  placement, rendered in the furnace's own metal, and drawn by the engine; its
-  covers are vanilla's; the structure's wall
-  meets the footprint edge at the middle of every face so the stub always has
-  something to butt against. No frost: the input is bare metal in every
-  state.
-* **No base.** The drum and its corner radiators are one structure that fills
-  the 3×3; nothing stands on a slab.
-
-### The working detail
-
-What the finished model adds, so the machine reads as used and maintained
-rather than new. None of it lights, and none of it moves.
-
-* On the roof, off symmetry: a **viewport cover**, hinged on a knuckle and
-  strapped back, its gasket showing; an upright **vacuum-break angle valve** with
-  its handwheel and vent; a **repair patch** set askew, beaded round.
-* A **hazard ring** on the hatch's outer band, worn through where the dogs are
-  worked, and **scuffs** either side of each dog.
-* The **radiator banks** are bulky oval cores with fins, steel caps banded in
-  brass, cap bolts and a bleed plug, on posts with brackets and a top rail. Their
-  **steel loops** rise from nozzles in the hull's cap rail, hug the wall on
-  stand-off brackets and enter each bank's top collar; none touches the copper
-  ring.
-* At the pump: the **suction valve** wheel stands upright toward the south-west; a
-  brass **gauge line** with its gland; a **starter box** with its lid and rivets,
-  and a conduit down to the motor.
-* The **evacuation hose**: a flanged port on the roof, a rigid steel elbow with a
-  brass clamp, then a ribbed hose down the east wall on a rail saddle and brass
-  clips to an inlet low on the flank.
-* A brass **maker's plate** on the near wall, bolt rows at the course line and the
-  foot, mitre-welded kerb round the rail, rust run down from fittings, ground dirt
-  at the foot, and patina on the copper.
+  corners, set into niches on the diagonal. Each is a bulky column of oval fins
+  in brass collars between steel posts, with caps, cap bolts, a bleed plug and
+  a top rail, on a foot block. Each stack's loop is heavy steel pipe in flanged
+  spools: out of a nozzle in the cap rail beside its corner, never the copper
+  ring, over the rail's edge, down the chamfer on a stand-off bracket and into
+  the stack's top collar, with a short return from the foot collar into the
+  hull. No loop crosses the middle of a face.
+* A **vacuum pump** in the south-east niche: a barrel with a heavy flywheel
+  upright in front of it, on its motor's shaft. The wheel stands free, with a
+  gap all round, and the pump and niche behind it are fully modelled. Its rim
+  is turned bright, so the dark spokes read moving against it. A vacuum gauge
+  lies flat on the barrel's head, its dull dial deep in a hood. A suction valve
+  wheel faces south-west; a brass gauge line runs into the hull through a
+  gland; a starter box on the south-east chamfer feeds the motor through a
+  conduit, with thick leads. A ribbed evacuation hose runs from a flanged port
+  on the hatch, through a steel elbow with a brass clamp, over the rail and
+  clipped down to a flanged inlet on the pump; a heavier hose runs from a stub
+  on the east rail, along it and down into the pump's other side.
+* **Services and wear**, laid on in plain view, all lying on the rail, the
+  walls or the ground, so nothing rises above the furnace. A heaped cable
+  bundle in an open tray round the front rail, and a muted, darker bundle in a
+  tray along the north. Two grey-green junction boxes with glands, and drops to
+  clamps on the radiator stacks. A brass maker's plate on the south face, a
+  stencilled number, rust run down from the rail and the fittings, grime
+  rising from the ground, oil soaked into the ground under the pump, and
+  verdigris on the copper. No frost anywhere.
 
 ### Signature Feature
 
-**The sight port.** One small deep-set circle of orange at the centre of the
-hatch, in an otherwise cold dark building. It is how the player tells a running furnace from an idle one at a
-glance, and it is the entire *heat* lighting budget.
-
-### The viewport is the indicator — and the problem it exists to solve
-
-S12's latch is invisible without it. A furnace with no flux **refuses to accept
-powder at all**, so its input slot stays empty and the fault reads as an upstream
-belt problem rather than a machine problem — the player stares at a healthy-looking
-furnace that inserters will not load.
-
-The engine solves this directly, and vanilla proves the pattern on the electric
-mining drill (`base/prototypes/entity/mining-drill.lua:161` and `179`): a
-`working_visualisation` with `apply_tint = "status"` and **`always_draw = true`**,
-plus `status_colors` on the graphics set. What it tints here is the **viewport
-glass**, drawn once in white; there is no separate lens.
-
-| Status | The viewport | Reads as |
-| ------ | ------------ | -------- |
-| `working` | **orange** — the heat glow; the status layer is clear | Working |
-| `full_output` | pale blue | Nothing is taking the output |
-| `idle`, `disabled` | clear — **dark glass** | Off, or nothing to work on |
-| `no_power`, `low_power` | clear | The grid, not the machine |
-
-**The latch has no colour, because the engine has no status for it** (tested
-2026-10-09). A furnace holding powder without flux reports `no_ingredients`,
-exactly as a furnace nobody has fed, and that takes the idle colour: dark glass.
-Colouring idle would colour every unfed furnace. Liam chose to accept it rather
-than add a runtime script: the **pass-through** (§8) keeps every furnace on a
-primed flux line topped up, which makes the latch rare, and a dry line darkens
-every furnace on it at once, which reads as the line rather than one machine.
-
-The building still has exactly one lit circle; its colour is the state.
-`always_draw = true` is **mandatory**: vanilla's own comment says the
-non-working states will not draw without it.
-
-**The indicator sprite is not concept-art work.** It is the viewport glass cut
-white from the model, `draw_as_glow`, and the engine colours it.
+**The sight port.** One small, deep-set circle of orange glass at the centre of
+the hatch, in an otherwise cold, dark building. It tells a running furnace from
+an idle one at a glance.
 
 ## 3.3 Colour Palette
 
-**Signature finish (Liam, 2026-10-09).** Every Core building shares one base — dark
-steel, the shared rust, dust and ground dirt — so they read as one planet's machines.
-Each also carries one material of its own on its main surfaces, so a player tells them
-apart by colour before shape, as vanilla's electric furnace, assembler and foundry
-are told apart. Within the building, variation comes from replacement panels in a
-slightly different shade, small stencilled markings, and rust that differs by place:
-dry orange on tops, dark wet streaks below fittings.
-
-**This building's: heat-tempered steel.** Temper colours graded smoothly away from
-the heat, in the order steel takes them: `#3E4A66` blue nearest, then `#5C4A6E`
-purple, `#8A5A3A` brown, a thin pale `#B8964A` straw, then plain dark steel. Three
-sources: rings out from the hatch flange across the roof and rail, bands down the
-hull's top course, and each radiator from its inlet down. Rust stays out of the
-tempered zones, so the brown cannot read as rust. The metal carries the heat a
-sealed furnace never shows. It is a colour of the steel, never a light: nothing here
-glows, and the viewport stays the one lit circle. Liam chose the bold strength.
-
+The steel carries the heat the sealed furnace never shows: temper colours,
+graded away from the heat, at the bold strength. They run in rings out from the
+hatch across the roof and rail, in bands down the hull's top course, and down
+each radiator from its inlet. Rust stays out of the tempered zones, so the
+brown never reads as rust. The temper is paint, never a light.
 
 | Role | Hex | Where |
 | ---- | --- | ----- |
-| Drum body | `#3E3B36` → `#5E584E` | the mass; darker than the mod's usual chassis |
-| Hatch | `#958577`, warmed toward the adopted roof's beige | roof only |
-| Dogs (hatch clamps) | bronze, as the adopted plate draws them | the hatch rim |
-| Radiator loops | `#6E685C` | three corners |
-| Pump body | the hull's paint, `#3E3B36` | the south-east niche |
-| Flywheel | bare steel, `#77716A` → `#B4AEA4` | the pump |
-| Gauge dial | `#8E877B`, dull, recessed in a hooded case so it never reads as a light | the pump |
-| Gauge needle | `#2B2E33` | the pump |
-| Sight port glow | `#E8A24A` → `#FFD9A0` | the viewport, and nothing else |
-| Viewport glass | `#2B2E33`, dark, unlit | the hatch's centre |
-| Indicator layer | `#FFFFFF` | the viewport glass only — **drawn white, tinted by the engine** |
-| Weld seams | `#7A7268` | fine lines on the drum |
+| Painted area | not yet assigned (TODO) | — |
+| Hull paint | `#3E3B36`, panels `#45433E` | the hull and the pump body |
+| Drum | `#5E584E` | the drum |
+| Temper, hottest to coolest | `#3E4A66` blue → `#5C4A6E` purple → `#8A5A3A` brown → `#B8964A` straw, thin and pale → plain steel | roof, rail, the hull's top course, radiators |
+| Hatch | `#958577`, warm beige | the hatch |
+| Copper | `#94592C` | the dogs (bronze), the deck ring |
+| Brass | `#9C7034` | radiator collars, clamps, gauge line, maker's plate |
+| Radiators and loops | `#6E685C` | the three stacks and their loops |
+| Bare steel | `#77716A` | the cap rail, posts and fittings |
+| Flywheel | spokes `#55504A`, rim `#9A948C`, turned bright | the pump |
+| Gauge | dial `#8E877B`, dull; needle `#2B2E33` | the pump |
+| Hazard ring | `#B8962E`, faded | the hatch, under the dogs |
+| Weld seams | `#7A7268` | fine lines on the hull and hatch |
+| Hoses | `#93603F`, dull rust-brown rubber | the two hoses |
+| Cables | red `#B24C38`, yellow `#CCA848`, blue `#5678A6`, green `#5E8452`; north bundle muted: black `#3A3836`, grey `#4C4A47`, slate `#4A5260` | the trays |
+| Junction boxes | `#5A6052`, grey-green | the two boxes |
+| Rust | dry `#8E4A1E` → `#B4682E` on tops; wet `#1E140E` → `#3A2416` below fittings | outside the tempered zones |
+| Viewport glass | `#26292C`, dark and smoky | the centre of the hatch |
+| Sight-port glow | `#FFD9A0` core → `#E8A24A` → deep red at the edge | the viewport only |
+| Status: output full | `#66B3FF`, pale blue | the viewport glass |
 
-**The heat-glow budget is one circle.** If orange appears anywhere else on this
-building the seal is a lie. The indicator's colours are that same circle, never a
-second light.
+One glow: the sight port, while the furnace works. Through the smoky glass it
+shows a hot bed in uneven clumps with dark gaps, hottest at the centre and deep
+red at the edge, so it reads as a furnace, never as an even lamp. It swells and
+settles, never flickers like a flame, and fades out as the furnace stops. Its
+light on the ground is a deep red-orange. The same glass is the status light:
+pale blue when nothing takes the output; otherwise dark when the furnace is
+not working. Nothing else lights, and the gauge dial stays dull so it never
+reads as a second light.
 
 ---
 
 # 4. Factorio Visual Style
 
-## Technology tier and visual register
-
-**Tier 0–1.** Industrial: welded shell with visible seams, but a clean clamped hatch with its viewport as a proper status light. Built, not improvised.
-
-See the template's *"Technology tier sets the visual register"* — the player
-should be able to read their progress off the factory floor without opening the
-tech tree, so this building's surface treatment is set by where it sits on
-`04-the-core.md` §6's ladder, not by taste.
-
-
-
-3×3 and squat, so the camera shows a great deal of roof — which is why the hatch
-is the roof's feature and has to carry the read from above. Style reference to
-attach: the **foundry**, cropped and upscaled, for weight and finish. **Do not
-attach the electric furnace**; it is the anti-read.
-
----
-
-# 5. Building Orientation
-
-* [x] North · [x] East · [x] South · [x] West
-
-**Direction count:** `4`, **and the building does not turn.** It is drawn once;
-only its flux line turns, between north–south and east–west. The hatch, its
-viewport and the pump keep their places, which is what one direction was for, and the
-line can run either way across it.
-
----
-
-# 6. Animation
-
-Decided at spec time, as the template asks: what moves, and what it uncovers.
-
-| Part | Motion | Frames | While | Made by |
-| ---- | ------ | ------ | ----- | ------- |
-| Flywheel | turns about its shaft | 16 | working; stops where it is otherwise | Blender, the contract's `turn` |
-| Gauge needle | swings between two angles and back | 16, the same loop | working; stops where it is otherwise | Animatorio's `gauge`: the model renders the dial without a needle, and Animatorio draws the needle over it |
-| Viewport glow | swells and settles | — | working only | first the engine's `effect` and `fadeout`; only if neither reads right, Animatorio's `pulse`, clipped to the glass |
-
-* The flywheel is rendered: a spoked wheel in the furnace's own metal, lit by the
-  rig, matches the plate, where Animatorio's `mechanical_rotor` draws flat
-  blades.
-* The needle and any pulse go through `tools/build-animatorio-layers.py`, as the
-  Drop Crusher's stroke did: a housing with a window punched out and the window's
-  frames over it, frame 0 checked against the plate.
-* Both moving parts share one 16-frame loop, so they are layers of one
-  `animation`. Frame 0 is the still the plate was checked against, but a
-  stopped furnace freezes on whatever frame it reached, so the parts must look
-  right at rest on any frame (they do: a wheel and a needle).
-* The glow's effect is **`uranium-glow`**, with `fadeout = true`: a slow swell
-  and settle, heat behind thick glass. `flicker` is vanilla's fire and reads as an
-  open flame, which a sealed furnace has none of (Liam, 2026-10-09).
+Style reference: vanilla's foundry, for weight and finish and its bundled
+cables; vanilla's electromagnetic plant, for its slack corrugated hoses.
 
 ---
 
 # 8. Connections
 
-| Connection | Where | Notes |
-| ---------- | ----- | ----- |
-| Item in | any adjacent tile | `source_inventory_size = 1` |
-| Item out | any adjacent tile | `result_inventory_size = 1` |
-| Fluid through | the middle of two opposite faces, north–south at rest, east–west turned | one box, two connections, both `input-output`: `{0, 1}` facing south and `{0, -1}` facing north at rest; `pipe_picture` is rendered from the model to assembler 3's shape and shifts, all four directions; `pipe_covers` are vanilla's |
-| Electric | no visible connector | poles reach it wirelessly |
-
-**A furnace with one input slot cannot be fed a mixed belt safely.** Nothing in
-the prototype prevents it, but a player who feeds fines and ore onto one belt
-will watch the machine flip recipes. That is vanilla smelting's own behaviour and
-needs no fix, but the locale should not encourage it.
-
-**The line passes through whatever the furnace is smelting.** Tested
-2026-10-08 in a headless 2.1 game: pipe, furnace, pipe in a line, the furnace
-smelting iron (a recipe with no fluid), and the flux reached the far pipe and
-held it full; the engine made the two pipes and the furnace one fluid segment.
-It held with `fluid_boxes_off_when_no_fluid_recipe` both true and false, so the
-prototype may keep it. A port with nothing plumbed to it shows vanilla's pipe
-cover, as an idle chemical plant's do.
-
-**The pass-through softens S12's latch.** Every furnace on a chained line is
-topped up from it, so once the line is primed a furnace is rarely dry when
-powder arrives. It does not remove the latch: a dry line still latches every
-furnace on it, and the viewport still shows it (§3.2).
+One fluid line, through ports at the middle of the north face {0, −1} and the
+south face {0, 1}; each can take fluid in or pass it out. Rotated, it runs
+east–west; the drawing does not turn. Fluid passes straight through whatever
+the furnace is smelting, so a row of furnaces shares one line. The hull's wall
+meets the tile edge at the middle of every face, so the pipe always butts
+against it. The pipe pictures are the model's own, to assembler 3's outline, in
+the furnace's metal; the north one draws behind the building. Vanilla's cover
+caps a port while nothing is joined to it. Items go in and out from any side.
+No electric connector shows.
 
 ---
 
-# 11. Generation Requirements
+# 9. Working Animation
 
-## Concept Sheet Prompt
+| # | Step | Entries | Ticks | What moves | Ease | Accent |
+|---|---|---|---|---|---|---|
+| 1 | Running | 1–16 | 32 | the flywheel turns 60°, a sixth of a turn, which its six spokes make a loop; the gauge needle swings about 14° at its working reading and back, once | wheel even; needle eased | — |
 
-```text
-A single landscape concept-art and asset-breakdown sheet for one Factorio
-Space Age industrial furnace, every panel drawn from the game's characteristic
-45-degree top-down perspective. The machine is a squat sealed three-by-three
-welded drum standing on an airless metallic world. No door and no chimney. A
-heavy clamped circular hatch with radial locking dogs sits on the roof, and a
-small round white lamp lens is set into the hatch rim. Radiator loops run
-along two flanks. A small frost-jacketed pale-blue fluid pipe runs down one
-flank and stops at a flange flush with the ground at the footprint edge. One
-small deep-set thick sight port glows warm orange; no other part of the
-machine glows. Very dark grey-brown welded body with fine visible weld seams,
-pale grey hatch and dogs. No open furnace mouth, no flame, no smoke, no
-chimney, no visible fire. Panels: main view, top-down view emphasising the
-roof hatch and its lamp, side elevation showing the frost-jacketed pipe and
-its ground flange, a detail of the hatch dogs with the lamp lens beside the
-sight port, and a three-state row: RUNNING with the sight port orange and the
-lamp dark, BLOCKED with the sight port dark and the lamp glowing amber, and
-IDLE with both dark. Title the sheet VACUUM FURNACE. Draw no loose material
-anywhere: no ore, powder, fibre, grit, debris or product on the ground, in
-bins, at chutes, on trays or spilling from the machine. Factorio machines
-never show what they make, so every chute, port, bin and tray is drawn as
-empty machinery. Every pipe connection must run down to ground level and stop
-flush at the edge of the tile footprint; no pipe may end in mid-air and none
-may leave the top of the building. Nothing may extend past the tile footprint,
-pipework included, and the tile-grid panel must show the whole machine inside
-the grid with no overhang.
-```
+The loop is 32 ticks at the furnace's crafting speed of 1.5, and 48 at speed 1.
+It is not tied to a craft: the pump runs steadily while the furnace works.
+When it stops, the wheel and the needle hold on the frame they reached, so each
+must look right at rest on any frame. The sight-port glow is not in the loop;
+it swells and settles while working and fades out when the furnace stops.
 
 ---
 
-# 15. Factorio Prototype — sketch
+# 14. Icon
 
-```lua
-{
-  type = "furnace",
-  name = "sae-vacuum-furnace",
-  crafting_categories = { "smelting" },
-  crafting_speed = 1.5,
-  source_inventory_size = 1,
-  result_inventory_size = 1,
-  energy_usage = "1200kW",
-  energy_source = { type = "electric", usage_priority = "secondary-input" },
-  surface_conditions = { { property = "pressure", max = 9 } },
-  module_slots = 2,
-  fluid_boxes = { --[[ 1 pass-through, phosphide flux, generous volume, two input-output connections; see §2, §8 ]] },
-  graphics_set =
-  {
-    animation = { layers = {
-      --[[ base, shadow; flywheel 16f; needle 16f ]]
-    } },
-    status_colors =
-    {
-      working            = { 0, 0, 0, 0 },        -- the orange glow says this
-      full_output        = { 0.4, 0.7, 1, 1 },
-      idle               = { 0, 0, 0, 0 },        -- dark glass
-      disabled           = { 0, 0, 0, 0 },
-      no_power           = { 0, 0, 0, 0 },
-      low_power          = { 0, 0, 0, 0 }
-    },
-    working_visualisations =
-    {
-      { fadeout = true, effect = "uranium-glow", animation = { --[[ the viewport glow ]] } },
-      {
-        apply_tint = "status",
-        always_draw = true,      -- mandatory, or the fault states never draw
-        animation = { --[[ the viewport glass, white, draw_as_glow ]] }
-      }
-    }
-  }
-}
-```
-
-**Verified at the data stage (S13):** the engine loads and retains both
-`status_colors` and `apply_tint = "status"` on a `furnace`, not only on the mining
-drills vanilla uses them on.
-
----
-
-# 16. Icon
-
-The drum seen slightly from above, hatch on top, one orange sight port. Must read
-at 32 px as *"a sealed pot"*. The weld seams and radiator loops will not survive
-and should not be attempted.
-
----
-
-# 20. Decisions and open questions
-
-**Decided 2026-10-02 (Liam):** one rotatable fluid input, four corner
-radiators, and the sight port moved into the roof. Revised the same day: the
-input is vanilla's chemical-plant pipe, not a modelled socket, and the furnace
-has no base slab. This
-replaces the adopted sheet's east flange and flank radiators;
-`concept/vacuum-furnace/model/` is the design from here on.
-
-**Decided 2026-10-07 (Liam):** the hatch is flat and flush with the rail, on the
-footprint's centre; the viewport moves to the hatch's centre and becomes the
-indicator, with magenta for the latch and no separate lamp; the south-east
-radiator stack becomes a vacuum pump with a turning flywheel and a vacuum gauge;
-the viewport's glow pulses while working (§6).
-
-**Decided 2026-10-08 (Liam):** the flux input becomes a pass-through: one box
-with two `input-output` connections on opposite faces, so furnaces chain off one
-line. No new art: the model already renders all four port pictures (§8).
-
-**Decided 2026-10-09 (Liam):** the latch shows no colour of its own (§3.2): the
-engine reports it as `no_ingredients`, the same as an unfed furnace, and a script
-to tell them apart was turned down. The glow's effect is `uranium-glow` (§6). The
-working detail the finished model added is part of the design (§3.2), and the
-hull's and hatch's seams are welds, which is what "a seam is a leak" was about.
-The flywheel and needle stop where they are when the furnace stops, not on frame
-0: a crafting machine's animation freezes on its current frame.
-
-**Settled: it stays a `furnace`, and phosphide flux becomes a fluid.** S12 proved
-the item-plus-fluid selection path; §2 and §8 are written to it. The knock-on is
-in `06-core-production-tree.md` T2, where flux stops being an item.
-
-~~**Settled: the latch is shown in the viewport.**~~ **Withdrawn 2026-10-09**:
-the engine has no status for the latch to colour; see the decision above. The
-viewport still shows working, full output and off.
-
-- **Does it also take `sae-degassing` or `sae-crushing`?** No, and it should not
-  be allowed to drift that way. A furnace that accumulates categories becomes the
-  one machine that does everything, and the point of the Core's buildings is that
-  each says something.
-- **The status tint is proven to load, not proven to render.** S13 read it back out of
-  the data dump; whether the renderer applies the tint on a furnace as it does on
-  a drill needs eyes on a client. It is the cheapest possible check — build one,
-  cut its flux, look at it — and it should happen the first time anyone plays this
-  building rather than being spiked on its own.
-- **Flux as a fluid costs the player a storage option.** It can no longer be
-  belted or chested, only piped and tanked. That is the price of keeping
-  auto-selection, and it is worth re-examining if the sintering line ever turns
-  out to want flux in more than two or three places.
-- ~~**Furnace recipe selection needs one item ingredient**~~ — **spiked (S12),
-  and the furnace path is viable.** A furnace *does* accept `fluid_boxes` and
-  *does* auto-select from one item plus one fluid, disambiguating correctly by the
-  item: powder-a made preform-a, powder-b made preform-b, from the same shared
-  fluid.
-
-  **The decision this leaves is about phosphide flux, not about this building.**
-
-  | Option | What it costs | Status |
-  | ------ | ------------- | ------ |
-  | **Furnace, flux becomes a fluid** | T2's flux recipe changes; flux can no longer be belted or chested, only piped | Proven in S12 |
-  | **Assembling machine, flux stays an item** | Loses auto-selection; the player sets a recipe per machine | Proven a thousand times over |
-
-  Leaning furnace: auto-selection is worth real money on a machine meant to handle
-  several powders, a molten flux is not a strange thing for something whose job is
-  to wet a powder, and piping it adds a routing problem to a line that is otherwise
-  all belts.
-
-- **If it stays a furnace, §3 must account for S12's ordering catch.** A furnace
-  with a fluid ingredient **will not accept its solid until the fluid is already
-  in the machine** — `insert` returns 0 with the fluid box empty, and 5 with it
-  full. A vanilla furnace accepts a new item unconditionally, so this is specific
-  to the fluid path. Two consequences: on first build the player must pipe before
-  they belt, and a dry flux line plus an empty input latches the machine shut until
-  flux returns. It self-heals, and it is invisible while it is happening.
-
-  That argues for the **sight port being visible even when idle-but-blocked**, so a
-  latched machine does not read as a working one. Worth settling before the glow
-  plate is drawn, since §3.2 currently gives the building exactly one lit state.
-
----
-
-# 13. Sprite Dimensions
-
-**Measured off the shipped plates.**
-
-| Plate | Canvas | Drawn content | Shift | Scale |
-| ----- | ------ | ------------- | ----- | ----- |
-| `base.png` | 200 × 194 | 192 × 186 → **3.000 × 2.906 tiles** | `{ 0, 0 }` | 0.5 |
-| `base-shadow.png` | 349 × 205 | sheared off the plate's own alpha | `{ 1.16406, 0.08594 }` | 0.5 |
-| `port-glow.png` | 200 × 194 | the sight port, differenced | `{ 0, 0 }` | 0.5 |
-| `status-lamp.png` | 200 × 194 | the lens, cut white | `{ 0, 0 }` | 0.5 |
-
-Centred to **0.0 px**, alpha `0` on all four edges of every plate, three in a row
-claim **0 px twice**, `check-footprint.py --tiles 3` passes.
-
-### Compared against vanilla, which is the point of this section
-
-| | content | tiles | aspect | luminance | saturation |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| vanilla electric furnace | 208 × 204 | 3.250 × 3.188 | 1:0.98 | 74 | 0.200 |
-| vanilla cryogenic plant | 349 × 360 | 5.453 × 5.625 | 1:1.03 | 81 | 0.271 |
-| **ours** | 192 × 186 | **3.000 × 2.906** | **1:0.97** | **75** | **0.376** |
-
-**Aspect and luminance land on vanilla's own numbers** — 1:0.97 against 1:0.98,
-75 against 74. That is the camera check the Bed Tender failed at 1:0.61.
-
-**Vanilla's electric furnace overhangs its 3-tile footprint by a quarter tile**
-and ours does not. We are the conservative one; the lip
-`check-footprint.py` tolerates is vanilla's own habit, not a concession.
-
-**And the saturation story is the opposite of what the concept round reported.**
-`check-sheet-style.py` measured our *sheets* at 0.14–0.27 and called them under
-vanilla's floor. On the cut plate this building measures **0.376** against
-vanilla's furnace at 0.200 — richer, not poorer. The sheet numbers were a whole
-charcoal page with grey panels being compared against a single sprite. See the
-template's Appendix B 3a, which now says so.
-
----
-
-# 23. What stage 1 found
-
-**A prototype that disagreed with its own art.** The flux inlet was declared on
-the SOUTH face and the adopted plate draws the frost-collared flange low on the
-RIGHT flank. §8 never said which flank, so the concept round pinned it east and
-the prototype now follows the picture. A flange drawn on one face and declared on
-another is the arc mast's `lightning_strike_offset` defect wearing different
-clothes.
-
-**The first fault lamp in the mod.** `apply_tint = "status"` with
-`always_draw = true`, copied from vanilla's electric mining drill, which does
-exactly this. The lens is drawn white on the plate and cut white by
-`tools/cut-status-lamp.py` — new, and reusable for the other eight — because the
-engine multiplies the sprite by the status colour, so a colour baked into the
-plate would be that colour in every state for ever.
-
-**The sight port is `always_draw = false`.** A lit port on an idle machine says
-it is working when it is not, and this building's whole argument is that you can
-only tell what it is doing from the outside.
+Rendered from the model: the drum from slightly above, the hatch on top and
+the orange sight port. It must read at 32 px as a sealed pot. The weld seams
+and the radiator loops are dropped at small sizes.
