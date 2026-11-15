@@ -25,6 +25,7 @@ Vent Pump. Lifts molten kamacite out of a kamacite vent with helium-3.
 - **Unlocked by:** Vent tapping.
 - **Art:** signed off (2026-10-21); the fittings and wire-post mount signed off
   2026-10-27.
+- **Remnants and explosion:** TODO.
 
 ---
 

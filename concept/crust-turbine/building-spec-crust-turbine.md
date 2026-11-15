@@ -19,6 +19,7 @@ Hydrogen Turbine. The Core's first power: it burns hydrogen from a Gas Pump.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Hydrogen extraction.
 - **Art:** being redone.
+- **Remnants and explosion:** Complete.
 
 ---
 

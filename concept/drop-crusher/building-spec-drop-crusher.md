@@ -20,6 +20,7 @@ Drop Crusher. Lifts a heavy weight and drops it on kamacite ore.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Gravity crushing.
 - **Art:** signed off (2026-10-09).
+- **Remnants and explosion:** TODO.
 
 ---
 

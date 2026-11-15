@@ -25,6 +25,7 @@ Vacuum Furnace. A sealed electric furnace. Its job is still to be decided
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Vacuum sintering.
 - **Art:** signed off (2026-10-09).
+- **Remnants and explosion:** TODO.
 
 ---
 

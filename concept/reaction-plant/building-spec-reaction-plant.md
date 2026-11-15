@@ -21,7 +21,8 @@ Reaction Plant. Turns radiant solution and hydrogen into radiant fuel.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Radiant power.
 - **Art:** signed off (2026-10-28; sight glasses and stubs 2026-10-29; press
-  2026-10-30). The remnants and explosion are the oil refinery's for now.
+  2026-10-30).
+- **Remnants and explosion:** TODO.
 
 ---
 

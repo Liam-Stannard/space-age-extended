@@ -22,6 +22,7 @@ cell for each one.
 - **Weight:** 40 kg, stack of 10.
 - **Unlocked by:** Radiant power.
 - **Art:** signed off (2026-10-27).
+- **Remnants and explosion:** Complete.
 
 ---
 

@@ -23,6 +23,7 @@ comparisons.
 - **Weight:**
 - **Unlocked by:**
 - **Art:** "placeholder", "signed off (date)", or "being redone".
+- **Remnants and explosion:** "Complete", "In Progress" or "TODO".
 
 ---
 

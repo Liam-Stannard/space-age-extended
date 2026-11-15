@@ -21,6 +21,7 @@ half the rate.
 - **Weight:** 40 kg, stack of 20.
 - **Unlocked by:** Core survey.
 - **Art:** signed off (2026-10-29).
+- **Remnants and explosion:** TODO.
 
 ---
 

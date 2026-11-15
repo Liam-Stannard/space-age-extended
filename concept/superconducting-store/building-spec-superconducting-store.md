@@ -21,6 +21,7 @@ to 20 MW.
 - **Weight:** 20 kg, stack of 20.
 - **Unlocked by:** Superconducting winding.
 - **Art:** signed off (date not recorded).
+- **Remnants and explosion:** TODO.
 
 ---
 

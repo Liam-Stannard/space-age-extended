@@ -20,6 +20,7 @@ Gas Pump. Draws gas from a vent: hydrogen or helium-3.
 - **Weight:** 20 kg, stack of 20.
 - **Unlocked by:** Hydrogen extraction.
 - **Art:** signed off (2026-10-27).
+- **Remnants and explosion:** TODO.
 
 ---
 
