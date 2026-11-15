@@ -116,8 +116,8 @@ Stages: see the factorio-building-round skill.
 
 - **The Core has no threat.** The arc storms went with the power rework, and
   they were the planet's only hazard. It needs a replacement: something that
-  threatens the factory or the player, that is not a fourth spoil-timer
-  mechanic, and that must not quietly become a power source again.
+  threatens the factory or the player, and that must not quietly become a
+  power source again.
   `design/ideas.md` I1 (radiation and decontamination) is the one researched
   candidate on file.
 - **Raise the Core's pressure to 200.** 04 now says 200 (Liam, 2026-11-14).
