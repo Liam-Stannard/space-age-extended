@@ -90,77 +90,21 @@ the refinement → regenerate. Not "generate until it looks nice".
 
 ---
 
-# 1. Building Overview
+# 1. Facts
 
-**Fill rule:** name the prototype type *and why that type* — the type is
-usually load-bearing for a mechanic, and the art must not contradict it.
+**Fill rule:** every line is a plain fact read from the mod, with no
+comparisons.
 
-**Building Name:**
-`[Name]`
-
-**Internal Prototype Name:**
-`[prototype-name]`
-
-**Building Type:**
-`[assembling-machine / furnace / mining-drill / lightning-attractor / etc.]`
-`[— which vanilla prototype it was modelled on, and what the type buys the mechanic]`
-
-**Planet / Environment:**
-`[Nauvis / Vulcanus / Fulgora / Gleba / Aquilo / custom]`
-`[— and what actually gates it there: surface conditions, a resource, or
-nothing but the absence of anywhere else to put it]`
-
-**Purpose:**
-`[What it does, in the terms the player experiences]`
-
-**Technology Unlock:**
-`[Technology, tier, prerequisites, and what it is researched on]`
-
-**Recipe:**
-`[Ingredients and craft time]`
-
-
----
-
-# 2. Gameplay Dimensions
-
-**Fill rule:** read every line off the prototype. Mark anything inherited as
-inherited. If the sprite is bigger than the footprint — a tall building — say
-so here and not only in §11.
-
-**Tile Size:**
-`[e.g. 3×3 — and the sprite's size, if different]`
-
-**Collision Box:**
-`[x1, y1] → [x2, y2]`
-
-**Selection Box:**
-`[x1, y1] → [x2, y2]`
-
-**Placement Restrictions:**
-`[Surface conditions / resource category / none — and whether fast_replaceable_group
-and next_upgrade are cleared]`
-
-**Rotation:**
-`[4-way / 8-way / none — and what physically moves between directions]`
-
-**Crafting Speed:**
-`[value, or the equivalent rate for this entity type]`
-
-**Energy Consumption:**
-`[working draw, and standby drain]`
-
-**Energy Type:**
-`[electric / fluid / heat / lightning]`
-
-**Health and resistances:**
-`[max_health, resistances]`
-
-**Fluid Connectors:**
-`[Locations of input/outputs for pipes by tile coordinate]`
-
-**Hatch Connectors:**
-`[Locations of outputs for hatches by tile coordinate]`
+- **Name:**
+- **What it does:** one or two sentences.
+- **Size and directions:**
+- **Where it can be built:**
+- **Power:** what it uses or makes, or "none".
+- **Inputs and outputs:**
+- **Speed:**
+- **Cost:**
+- **Weight:**
+- **Unlocked by:**
 
 ---
 
