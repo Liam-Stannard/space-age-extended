@@ -15,8 +15,7 @@ narrow them, never loosen them. The hook
   its task file's Status lines, a working note rule 8 allows. Only the
   questions-clerk writes `.claude/tasks/QUESTIONS.md`, the other one,
   with its locked commands.
-- Only signed-off or placeholder art goes in `graphics/`; nothing in
-  `concept/` ships (claude.md rule 3).
+- What may go in `graphics/`: claude.md rule 3.
 - No migrations before 1.0 (Liam).
 - Sound: vanilla references plus scripted files only.
 
@@ -25,9 +24,7 @@ narrow them, never loosen them. The hook
   push, stash or switch branch.
 - The project-manager, or the orchestrator, makes a work-in-progress
   commit when a ticket is done, on the task's branch.
-- Merge only on Liam's own words naming the branch, relayed verbatim;
-  push only when Liam says push. Commit, merge and push are three
-  separate permissions (factorio-ship).
+- Commit, merge and push: see factorio-ship.
 
 ## Scratch
 - Yours is `<session scratchpad>/<role>/<ticket>/`, e.g.
@@ -63,8 +60,7 @@ narrow them, never loosen them. The hook
 - Every Factorio client goes through `tools/client/launch.sh`, via
   factorio-client-test (hook): no Wayland, a private Xvfb,
   `--disable-audio` unless the test is about sound, a scratch mod
-  directory. One Factorio runs at a time; the launcher's lock refuses a
-  second.
+  directory; one Factorio at a time (see factorio-client-test).
 - `tools/check-data-stage.sh` exiting 3 means the lock was held: the
   data stage was not checked, which is NOT RUN, not FAIL.
 
@@ -80,8 +76,7 @@ narrow them, never loosen them. The hook
   own words.
 - When Liam's own sources disagree, the more specific one wins: his
   decision on the subject, then the subject's own tree or building
-  spec, then the general design docs (`design/01-principles.md`,
-  `design/02-tree-pattern.md`). At the same level, the newer one wins.
+  spec, then the general design docs (`design/01-principles.md`). At the same level, the newer one wins.
   Report the line that loses as wording to fix, not as a FAIL. On what
   the game does, the mod's dump and the knowledge base win over any
   text.

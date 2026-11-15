@@ -1,4 +1,4 @@
-# Engine facts (Factorio 2.1.21-2.1.23), verified in this project
+# Engine facts (Factorio 2.1.21-2.1.24), verified in this project
 
 Each line: the fact, then how it was verified and when.
 
@@ -37,9 +37,11 @@ Each line: the fact, then how it was verified and when.
 ## Map generation
 - Tiles repeat per tile; a sheet cannot carry a depth gradient across a
   pool. Depth needs a second tile placed by map-gen. (2026-10-14.)
-- Without Alien Biomes, the Core's ground falls back to Vulcanus's
-  volcanic tiles, whose expressions step in straight lines on the Core.
-  (2026-10-12.)
+- A vanilla planet's tile expressions do not carry over to another
+  surface. They read that surface's elevation, so on the Core Vulcanus's
+  stepped in straight lines (2026-10-12) and Aquilo's pushed out every
+  other tile (2026-10-27). A tile used elsewhere needs expressions of its
+  own.
 - A resource added to a vanilla planet's map gen reaches new games only. A
   save's existing surface keeps its stored map gen settings, so even new
   chunks get none, until a script adds the autoplace entries to that surface
@@ -114,7 +116,14 @@ Each line: the fact, then how it was verified and when.
   `env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 xvfb-run -a`.
 - PULSE_SINK alone does not stop audio reaching the speakers; use
   `--disable-audio`, or a null sink set as the default sink.
-- One client at a time; a second client's Steam connect can reach the
-  first.
+- A second client's Steam connect can reach the first, which is why one
+  client runs at a time.
 - The data-stage check never opens an image; sprite errors need a real
   client load to `Sprites loaded`.
+
+## Sprites and rotation
+- A crafting machine cannot be rotated unless it has a fluid box, a heat
+  energy source, a fluid energy source, or a non-square collision box
+  (`CraftingMachinePrototype`).
+- Sprite size in tiles = source pixels × scale / 32, and `util.by_pixel(x, y)`
+  = `{x/32, y/32}` in game pixels, whatever the sprite's scale.

@@ -39,13 +39,13 @@ plate beside the adopted one on the same ground at the same scale,
 idle and working, and a frame strip of every animation.
 
 ## Icons
-A production chain at a time (`templates/icon-sheet-prompts.md`):
+A production chain at a time:
 `tools/blender/icon_rig.py`, `icon_post.py`, `render-icons.sh`, then
 `tools/key-icons.py --mips` to 120×64 mipmap strips.
 
 ## Where things go
 Everything you make goes under `concept/<building>/` (claude.md rule
-3). A spec (`concept/<building>/building-spec-<building>.md`, from
+3). A spec (`design/buildings/<building>/building-spec-<building>.md`, from
 `templates/building-spec-template.md`) is a `.md` file: you propose
 its wording in your report, and the orchestrator writes it once Liam
 agrees. Anything that needs a client to check (a sheet loading, an

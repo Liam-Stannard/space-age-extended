@@ -42,7 +42,7 @@ Why: "the chain feels bigger with another step" is not a purpose.
 
 ## 3. Each planet's tree extends it
 
-> Each planet gets one tree that extends its own vanilla tech tree. Each tree adds at least:
+> Each planet's tree (`00-vision.md`) adds at least:
 > - one new building;
 > - one new item that can be used on a space platform to help reach the Core.
 >
@@ -51,7 +51,7 @@ Why: "the chain feels bigger with another step" is not a purpose.
 Why: every planet then plays a part in the journey to the Core, and nothing sits on a platform with no job.
 
 - **Applies to:** each planet's tree; every building and item that can be placed on a platform
-- **Fails when:** a tree adds no new building, or no item that helps a platform reach the Core; or something can be placed on a platform but nothing it needs can get there (like the Siderane turbine).
+- **Fails when:** a tree adds no new building, or no item that helps a platform reach the Core; or something can be placed on a platform but nothing it needs can get there (like the Hydrogen Turbine).
 - **Concern when:** the platform item is useful only on the way to the Core, or works on a platform only weakly.
 - **Checked by:** the tree's spec lists its building and platform item; the mod's data dump shows its placement limits, and graph.py --planet space-platform shows its inputs can reach a platform.
 - **Vanilla precedent:** each vanilla planet adds buildings that are useful on platforms, like Fulgora's EM plant and Aquilo's cryogenic plant.

@@ -33,6 +33,14 @@ judgement on the sheets. No figure here signs anything off.
   Checked: rise.
 - **Clutter and asymmetry;** vanilla-like, not machined. Checked: by
   eye.
+- **Never draw the product:** enclose the working chamber; the engine
+  places what a machine makes. Checked: by eye.
+- **Connections on a tile edge:** every connection lands on a tile
+  edge, at ground level. Checked: by eye.
+- **Output ports:** only a machine that outputs by itself, like a
+  mining drill, draws an output port. Checked: by eye.
+- **Inside the box:** nothing crosses the collision box. Checked: by
+  eye.
 
 ## Pipes
 - **Each connection does a job:** it leads to the vessel or device that
@@ -53,7 +61,7 @@ judgement on the sheets. No figure here signs anything off.
   Checked: by eye.
 - **Wall fittings:** every connection enters through a fitting set
   into the building's wall or casing (a recessed boss with a sleeve and
-  flanges, as on the Reaction Plant's casing, or similar), never a stub
+  flanges, or similar), never a stub
   standing off the machine; the pipe picture shows it open, and
   vanilla's cover is drawn when nothing is connected (Liam, 2026-10-21:
   "Every building, it doesn't necessarily have to be casing but
@@ -98,6 +106,8 @@ judgement on the sheets. No figure here signs anything off.
   0 px.
 - **No frost or cold in a model;** cold comes from effects (Liam, Vent
   Pump, 2026-10-12). Checked: by eye.
+- **Paint:** every machine has a painted area, so it and its icon can be
+  told apart by colour. Checked: by eye.
 
 ## Light
 - **Radiant:** blue `#1F63FF` → `#73ADFF`, drawn in look B: light
@@ -105,7 +115,7 @@ judgement on the sheets. No figure here signs anything off.
   pale cyan top, nothing clipped; C's rising bubbles in glass columns
   only (Liam, 2026-10-12), wherever the isotope is seen. Helper:
   `tools/blender/radiant.py`. Checked: glow, blue share.
-- **Molten kamacite** may glow orange only where melt is seen. Checked:
+- **Molten kamacite** may glow orange only where molten kamacite is seen. Checked:
   glow.
 - **Other glows** when the glow shows the building's work (an energised
   coil, an arc, a lit window), as vanilla's foundry, electromagnetic
@@ -113,7 +123,7 @@ judgement on the sheets. No figure here signs anything off.
   and when it shows, only while working (Liam, induction foundry,
   2026-11-09: "other parts of buildings should be able to glow").
   Checked: glow, against the spec's list.
-- **Thin atmosphere:** the Core's pressure is above 0, so fire and
+- **Thin atmosphere:** the Core has an atmosphere (see 04-the-core.md), so fire and
   explosion flashes are allowed; smoke is decided per effect (Liam,
   turbine, 2026-10-20). Checked: by eye.
 
@@ -124,11 +134,10 @@ judgement on the sheets. No figure here signs anything off.
   motion, strobe.
 - **Planned as steps:** a loop is planned as steps before it is
   modelled: each step's frames, the parts that move, their ease, and
-  the sound it lands on. Every moving part holds still for part of the
-  loop; the steps add up to the loop, and the loop to the recipe's
-  ticks. Holds are played with a `frame_sequence`, not rendered again
-  (Liam, Drop Crusher re-animation, 2026-11-08). Checked: by eye
-  against the spec's step table.
+  the sound it lands on. The steps add up to the loop. Holds are
+  played with a `frame_sequence`, not rendered again (Liam, Drop
+  Crusher re-animation, 2026-11-08). Checked: by eye against the
+  spec's step table.
 - **Turning:** a building that turns keeps its signature parts facing
   the camera in every direction, with a per-direction variation where
   turning would hide them, as vanilla's chemical plant does. Checked:

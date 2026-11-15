@@ -14,7 +14,7 @@
 Round 2 (Liam, 2026-10-11, on round 1's review.png): "Remove the frost from the turbine and
 add some bulk. The 3x5 is fine." Round 1 is kept beside this file in round-1/.
 
-Spec: concept/crust-turbine/building-spec-crust-turbine.md. The design is the adopted
+Spec: design/buildings/crust-turbine/building-spec-crust-turbine.md. The design is the adopted
 Collared Pair (concept/crust-turbine/adopted/E-sheet.png, master-v1.png, master-v2.png),
 read off the plates' plan and made heavier to fill the 3-tile depth:
 

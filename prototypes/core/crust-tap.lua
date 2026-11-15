@@ -1,7 +1,7 @@
 -- N8. The Gas Pump, the siderane vent it stands on, and the turbine that burns
 -- what it draws.
 --
--- concept/crust-tap/building-spec-crust-tap.md, §A. The largest of the nine,
+-- design/buildings/crust-tap/building-spec-crust-tap.md, §A. The largest of the nine,
 -- because it is not one prototype: it is a fluid, a vent resource, the pump and
 -- a companion generator.
 --

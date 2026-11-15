@@ -19,10 +19,9 @@ in it is a guess.
   fix, a check, a message). Skip the ledger and §3's list: draft Goal,
   Scope, Pass criteria and the one ticket, ask what they leave open,
   then §5.
-- **Who asks:** the main session asks with AskUserQuestion. The
-  project-manager cannot: it has the questions-clerk add each question
-  to `.claude/tasks/QUESTIONS.md` and returns the draft in its report.
-  Nothing is written until Liam's agreement comes back, quoted.
+- **Who asks:** see the standing rules, "Asking Liam". The
+  project-manager returns the draft in its report. Nothing is written
+  until Liam's agreement comes back, quoted.
 
 ## 1. Research before asking
 Never ask Liam what the files can answer. The analyst agent may do this
@@ -42,8 +41,8 @@ and note each fact with its source (file and line, or measured):
    standards and vanilla's gameplay facts (`gameplay.md`), each already
    verified.
 2. `claude.md`, `TODO.md`, and the parts of `design/` the request touches.
-3. The building or system's own files: `concept/<building>/` (spec,
-   sheets, the latest round's report in the task file), the prototype in
+3. The building or system's own files: its spec in
+   `design/buildings/<building>/`, `concept/<building>/` (sheets, the latest round's report in the task file), the prototype in
    `prototypes/`, its graphics in `graphics/`.
 4. Earlier task files in `.claude/tasks/` on the same subject: what was
    decided, by whom, in which amendment.
@@ -85,9 +84,9 @@ A ticket is one piece of work one agent finishes in one run and that
 can be signed off on its own. Split until each ticket has one owner,
 inputs that exist before it starts, a named output, acceptance criteria
 someone other than its author can check, and a sign-off owner.
-Typical split for a building: study → options → Liam picks → refine →
-spec wording → Liam agrees → model → Liam signs off → wiring → test →
-Liam signs off in game → ship. Decisions are tickets owned by Liam, so
+For a building, make one ticket for each stage and each gate in
+factorio-building-round (the study sheet and the client test can be
+tickets of their own). Decisions are tickets owned by Liam, so
 the gates are visible.
 
     ### T<nn>: <one line>
@@ -103,9 +102,9 @@ factorio-gameplay-expert: after the code-reviewer and before the tester
 for code, before Liam agrees for wording. Status: open, in progress, done, passed <first sign-off owner>
 (waiting on <the next>), signed off, blocked (<why>), or waiting
 on Liam: Q<n>. Tickets with no dependency on each other may run
-at once, within the standing rules' limits. Each signed-off ticket ends
-with a work-in-progress commit on the branch, and its Status is updated
-in the file.
+at once, within the standing rules' limits. A ticket's work-in-progress
+commit is made when it is done (standing rules), and its Status is
+updated in the file.
 
 ## 5. Draft, agree, write
 Draft the file in the reply (or, run by the project-manager, in its
@@ -123,7 +122,7 @@ report), in this shape:
     ## Art
     `none`, or which entity needs art; the coder wires
     `derive.placeholder_art` so the task passes without it; whether the
-    building's spec in `concept/<building>/` is agreed.
+    building's spec in `design/buildings/<building>/` is agreed.
     ## Decisions
     Liam's answers, quoted and dated.
     ## Sources
