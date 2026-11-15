@@ -42,7 +42,7 @@ Why: "the chain feels bigger with another step" is not a purpose.
 
 ## 3. Each planet's tree extends it
 
-> Each planet gets one tree that extends its own vanilla tech tree. Each tree adds at least:
+> Each planet's tree (`00-vision.md`) adds at least:
 > - one new building;
 > - one new item that can be used on a space platform to help reach the Core.
 >
