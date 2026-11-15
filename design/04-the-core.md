@@ -14,8 +14,8 @@ densest body in the system.
 - **Pressure: 200.** See below.
 - **Gravity: 50.** The heaviest world in the game. Everything that needs
   gravity works: chests, rails, vehicles and the cargo landing pad.
-- **Magnetic field: 0.** A dead dynamo. The electromagnetic plant can't be
-  made here.
+- **Magnetic field: 0.** A dead dynamo. The electromagnetic plant and the
+  recycler can't be made here.
 - **Solar power: 0.** Solar panels make nothing at all.
 - **Day and night: 3 minutes.** A brief flash of light, the rest is night.
 
