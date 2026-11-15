@@ -5,8 +5,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 ## Play
 
 - **Play the landing.** This decides the rest, and the landing is small enough
-  for one sitting: boulder → Crust Tap → survey → Vent Pump → Radiant power.
-  The open questions: whether crust gas or the pool binds first, and whether the
+  for one sitting: from the first boulder to Radiant power (see
+  09-core-tech-tree.md).
+  The open questions: whether hydrogen or the pool binds first, and whether the
   landing reads as a start or as a stop. Then tune ore richness, vent decline
   and the precipitation ratios against it — all calculated, never played.
 
@@ -14,18 +15,16 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 - **Decide what the kamacite vent is for.** Molten kamacite has no consumer,
   and the Vent Pump exists only to trigger Radiant power while the line that
-  used it is gone. Gravity settling (`design/04-the-core.md` §8) is the
+  used it is gone. Gravity settling (in git history, old 04 §8) is the
   candidate on file.
 - **Fines need their advanced use.** Metal carbonyl
-  (`design/06-core-production-tree.md` T3) is the chosen later sink for
+  (in git history, old 06 T3) is the chosen later sink for
   kamacite fines, beside fines smelting. It lands with the next tier of the
   Core's tree.
 - **Decide how the game ends.** Vanilla victory is off in `control.lua` and
   nothing replaces it, so a playthrough never ends.
-- **Re-plan stages 2–4 of the radiant cycle against what exists.** They name
-  geodynamic technologies and machines that were cut
-  (`design/production-line-plan.md` says so). The spent-cell and steam
-  decisions under Power wait on this.
+- **Plan the radiant cycle past stage 1** (`design/08-core-power.md`). The
+  spent-cell decision under Power waits on this.
 - **Decide what happens to the cut buildings' art.** `graphics/` still holds
   signed-off art for nine buildings that no longer exist — Bed Tender, Ignition
   Array, Dross Classifier, Sealed Roboport, Whisker Plant, Coil Separator,
@@ -34,37 +33,28 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   `concept/<building>/`; git keeps them either way.
 - **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
   once the docs are rewritten for the rework.
-- **Rename crust gas to siderane in the docs.** The player-facing names
-  changed on 2026-10-09 (siderane, the Siderane wellhead, turbine, vent and
-  extraction); `design/` and the other specs still say "crust gas", "crust
-  tap" and "crust turbine" about 50 times. Rewrite them with the rework.
-  Internal names (`sae-crust-*`) stay. With it, `design/08-core-power.md`
-  lines 18 and 24–27: radiant solution is drawn by a vanilla offshore pump
-  at the pool, and siderane by the Gas Pump, not one tap drawing both.
+- **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
+  Rename the fluid, its vent, its turbine and its technology in the mod and in every
+  document. It replaces the old "crust gas to siderane" rename entry. With
+  it, look at the vacuum names (Vacuum sintering, the Vacuum Furnace), which
+  pressure 200 no longer fits.
 - **Decide the Vacuum Furnace's job.** In the code it runs only `smelting`,
   so on the Core it is a slower, hungrier electric furnace, and three
   tooltips claim work it does not have (T09 gameplay review,
-  vacuum-furnace.md concern 1: (a) lock fines smelting to it, (b) base
+  evidence/gameplay-audit/T09/vacuum-furnace.md concern 1: (a) lock fines smelting to it, (b) base
   productivity, (c) delete it, (d) rewrite the spec). Then fix the
-  tooltips, `06-core-production-tree.md`'s status table and the unused
-  flux box to match.
-- **Settle two tree-pattern points the V↔F review raised.** The tree opens
-  at the start of both planets' vanilla trees, not their end (principle
-  7), and neither opener needs the other planet (02-tree-pattern §1).
-  Either reword the two documents, or move the openers (T09 gameplay
-  review, vulcanus-fulgora.md FAILs 1-2).
+  tooltips and the unused flux box to match.
 - **Holmium oxide's productivity.** With productivity modules the oxide
   route gives +56% to +110% holmium, not +20%. Decide whether to drop
   productivity on `sae-holmium-oxide` (T09 gameplay review,
-  vulcanus-fulgora.md concern 4).
+  evidence/gameplay-audit/T09/vulcanus-fulgora.md concern 4).
 - **The magnetite round after railgun damage 2.** Give it a lasting
   advantage, or call it a bridge in the doc (T09 gameplay review,
-  vulcanus-fulgora.md concern 3).
+  evidence/gameplay-audit/T09/vulcanus-fulgora.md concern 3).
 
 ## Building art in Blender
 
-Each building is modelled through `tools/blender/` from its spec, signed off by
-Liam, then wired in. Task specs are in `.claude/tasks/` (local).
+Stages: see the factorio-building-round skill.
 
 - **The Vulcanus ↔ Fulgora tree wears stand-in art**: the induction
   foundry, ozone collector and magnetic collector are tinted vanilla
@@ -84,24 +74,13 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 ## Power
 
 - **Decide what happens to spent cells on space platforms.** The Radiant
-  Generator places at pressure ≤ 9 and emits spent cells, so every platform
-  accumulates cells nothing reprocesses. Ship them down, or give platforms a
+  Generator can be built on space platforms and gives back spent cells (see
+  its spec), so every platform accumulates cells nothing reprocesses. Ship them down, or give platforms a
   void (`auto_recycle = false` in `prototypes/core/items.lua` keeps it open).
-- **Decide whether the reactor may make steam.** A `reactor`'s output path is
-  heat → exchanger → steam → turbine, which brings steam back at the top of a
-  ladder that removed it everywhere else. Accept it in the reactor room, or
-  find the reactor another output.
 
 ## Trees
 
-- **Three trees are still to design.** Vulcanus ↔ Gleba (cultured alloy),
-  Gleba ↔ Aquilo (cryoprotectant) and Vulcanus ↔ Aquilo (its capstone to be
-  designed; it takes bio-polymer's place). Their capstones craft from one iron
-  plate (`prototypes/core/endgame.lua`). Each needs a real tree — an anchor, a
-  chain on each world, a capstone building and an estimated 3–10 technologies
-  — with [Fulgora ↔ Aquilo](design/trees/fulgora-aquilo.md) and
-  [Vulcanus ↔ Fulgora](design/trees/vulcanus-fulgora.md) as the worked
-  examples.
+- **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
 
 ## Art
 
@@ -116,26 +95,19 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
   (`concept/kamacite-vent/`, `gas-vent/`, `siderane-vent/`,
   `kamacite-ore/`) and one shared note; then an options round (Liam,
   2026-10-20).
-- **Two technologies wear vanilla icons:** Vent tapping and Radiant
-  power still wear Aquilo's; each waits for its building's model (the
-  Vent Pump, the Radiant Generator). The data-stage placeholder report
-  lists them.
-- **Two power buildings need specs before art**, both for stages the rework
-  is re-planning: `concept/isotope-centrifuge/` and `concept/radiant-reactor/`
-  do not exist yet; both come from `templates/building-spec-template.md`.
-- **The Reaction Plant's sight slots still glow green-white**; the
-  whole radiant family is the solution's blue (`#1F63FF` → `#73ADFF`,
-  Liam 2026-10-10). They go blue with its four-way model
-  (`reaction-plant-wiring`).
-- **Paint accents still to assign** (template Appendix B): Drop Crusher,
-  Ballast Drill, Vacuum Furnace, Crust Tap.
+- **Paint accent still to assign** (standards.md, Finish): Gas Pump.
 - **The radiant pool's shore steps on the tile grid.** The edge between
   the open surface and the glowing shore follows tile-aligned steps
   (seen on 2.1.22; Liam signed the pool off and asked for this to be
   logged).
+- **Re-render the Reaction Plant's icon.** Liam did not accept the shipped
+  icon (2026-11-15: "Redo it").
 - **The Reaction Plant has no sound of its own.** Its press accent is
   a vanilla stand-in (`landfill-inventory-move`) and its bed is the
   chemical plant's; it needs a design and rounds, as the crusher had.
+- **The Vent Pump has no sound.** It is silent: the pumpjack's sounds it
+  inherited are stripped and nothing replaces them. It needs a sound cued to
+  its charges, with a design and rounds, as the crusher had.
 - **The Ballast Drill's sounds want the crusher's treatment**: softer
   attacks, less high end, heavier, grouped like vanilla's (Liam,
   2026-10-20: "Crusher first").
@@ -144,27 +116,25 @@ Liam, then wired in. Task specs are in `.claude/tasks/` (local).
 
 - **The Core has no threat.** The arc storms went with the power rework, and
   they were the planet's only hazard. It needs a replacement: something that
-  threatens the factory or the player, that is not a fourth spoil-timer
-  mechanic, and that must not quietly become a power source again.
+  threatens the factory or the player, and that must not quietly become a
+  power source again.
   `design/ideas.md` I1 (radiation and decontamination) is the one researched
   candidate on file.
-- **`04-the-core.md` §1 still describes the arc storm as the Core's hazard.**
-  "Life and hazard" needs wording that says the planet has no threat yet.
-  Wording to be agreed before `design/` is touched.
-- **The design still says the Core has no surface fluid.** The radiant pool,
-  its shore and its solution are in the mod, and 04 §2, 03 §3 and the "no
-  coastline" line need wording that says what the pool is and why it is not a
-  coastline. Wording to be agreed before `design/` is touched.
+- **Raise the Core's pressure to 200.** 04 now says 200 (Liam, 2026-11-14).
+  The planet changes, and every pressure limit has to move with it. The
+  Core-only limits move from 1-9 to 1-299: the Reaction Plant and the radiant
+  precipitation recipe. The 'pressure 9 or less' limits (the Core and
+  platforms) move to 299 or less: the Radiant Generator and the Vacuum
+  Furnace. The Hydrogen Turbine is 9 or less today and must become Core-only,
+  1-299. What will then work there: see 04-the-core.md, Surface properties.
+- **Decide whether the Core has carbon.** 04 no longer says what the Core
+  lacks (Liam, 2026-11-14: "remove this for now"). Carbon is up for review;
+  copper, water and organics are not yet decided either.
 - **The Core needs its own fallback ground tiles.** Without Alien
-  Biomes it borrows Aquilo's snow and ice (map-gen-fallback); our own
+  Biomes it borrows Aquilo's snow (map-gen-fallback); our own
   tiles are for later (Liam, 2026-10-19).
-- **Five building specs describe a building that is not being built.** The
-  Radiant Generator's (no burnt-result slot; art "blocked"), the Crust Tap's
-  (gas only), the Ballast Drill's (a ballast block, not the Ring Press), the
-  Drop Crusher's (the Animatorio stroke) and the Vacuum Furnace's (sintering).
-  Wording to be agreed.
 - **Reference tables cut from 01-principles.md.** The platform placement list, the immovable fluids and the planet properties table came out in the principles refactor (2026-11-13). Decide where they live, and re-verify them against 2.1.24.
-- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. README.md, design/00-vision.md, design/02-tree-pattern.md, design/04-the-core.md, design/05-core-remaining.md, design/06-core-production-tree.md, design/07-roadmap.md, the three empty pair-tree specs and the two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
+- **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. The two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
 
 ## Repository
 

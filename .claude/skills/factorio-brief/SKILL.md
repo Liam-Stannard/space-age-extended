@@ -9,7 +9,8 @@ ticket `T<nn>`), for the ticket's owner. One brief, one ticket: never
 brief an agent with a whole task. Return the brief, launch the agent
 with it, add its line to `.claude/tasks/RUNNING`, and set the ticket's
 Status to "in progress". When the ticket is done its sign-off owner
-checks it; only then is it "signed off" and the next ticket briefed.
+checks it; only then is it "signed off". Which tickets may be briefed
+while others run: see factorio-task §4.
 
 ## 1. What the brief names
 - The task file's absolute path and the ticket, quoted whole (header,

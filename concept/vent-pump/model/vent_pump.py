@@ -21,7 +21,7 @@
              direction near-<d>.pgm: the parts nearer the camera than the bin's slag by 0.1 tile or more
              (the "before" count for T07c's PIL embers)
 
-Spec: concept/vent-pump/building-spec-vent-pump.md (written 9e067a3): the Gas Lift Tower, round 5,
+Spec: design/buildings/vent-pump/building-spec-vent-pump.md (written 9e067a3): the Gas Lift Tower, round 5,
 variant (a) "Warmer paints" (Liam, 2026-10-20). The geometry and the surfacing are round 5's
 (options/round-5/vpb5_08_gas_lift_tower.py --variant a), built with its kit, copied unchanged into
 kit/ (each kit file's first line says what the copy changed).

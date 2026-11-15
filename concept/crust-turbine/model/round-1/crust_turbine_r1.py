@@ -9,7 +9,7 @@
              and each clash
   $TURBINE_FLAT=1  the blockout: every material a flat colour, so the form is judged alone
 
-Spec: concept/crust-turbine/building-spec-crust-turbine.md. The design is the adopted
+Spec: design/buildings/crust-turbine/building-spec-crust-turbine.md. The design is the adopted
 Collared Pair (concept/crust-turbine/adopted/E-sheet.png) as the two master plates draw it
 (master-v1.png, master-v2.png: the same machine, its camera rejected, spec 12). The model
 reproduces it, read off the plates' plan:

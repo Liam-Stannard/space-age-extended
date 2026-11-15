@@ -33,7 +33,7 @@ at OUTLET_FITTING):
   --tints    no pack: the glass layer rendered in each gas's own paint (siderane #A8D929, helium-3 #B6A6C8),
              north, frames 0 and 12, for the review's check that the engine's tint of the white layer matches
 
-Spec: concept/crust-tap/building-spec-crust-tap.md (written 7bed91d): the Flywheel Compressor, take 2 of the
+Spec: design/buildings/crust-tap/building-spec-crust-tap.md (written 7bed91d): the Flywheel Compressor, take 2 of the
 3x3 round, refined (T04, ba32d3d) and signed off as the concept by Liam on 2026-10-21. The geometry and the
 surfacing are the concept's (options/round-3x3-refine/gp_2_flywheel_compressor.py, built with its kit, copied
 into kit/; each kit file's first line says what the copy changed), copied here verbatim between the marks

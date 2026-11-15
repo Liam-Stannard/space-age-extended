@@ -82,7 +82,7 @@ sheets move to graphics/ only on Liam's sign-off.
 
 The signed-off model's own notes follow.
 
-Spec: concept/reaction-plant/building-spec-reaction-plant.md (agreed 2026-10-11): 0 gates,
+Spec: design/buildings/reaction-plant/building-spec-reaction-plant.md (agreed 2026-10-11): 0 gates,
 3 visual design, 6.2 the six motions, 7 layers, 8 constraints, 11-13 sheets, 15 QA. Built
 from the signed-off concept: options/round-5/r5_circulator.py (the model and its finish,
 "The colours are good") with the animation set as fixed in options/animation/.

@@ -123,7 +123,7 @@ science, and the two shared steps use both. Each also uses the packs those packs
 need: automation, logistic, chemical and space.
 
 Both openers require **both** planets' science packs, so the tree opens only when
-both vanilla trees are done (principle 7). After that, each path needs only its
+both vanilla trees are done. After that, each path needs only its
 own planet's pack.
 
 | # | Technology | Unlocks | Prerequisites | Packs | Count × time |
@@ -145,7 +145,7 @@ E = electromagnetic.
 
 **Total:** 4,550 units across the ten tree techs, and 1,000 for Magnetite rounds.
 
-Magnetite rounds is the one tech outside the estimated 3–10: it waits for the railgun, which waits for Aquilo, so magnetite can be collected long before it's used.
+Magnetite rounds is the one tech outside the range in `00-vision.md`: it waits for the railgun, which waits for Aquilo, so magnetite can be collected long before it's used.
 
 **Against vanilla:**
 
@@ -272,7 +272,7 @@ the iron to slag. Its only use is the convergence.
 
 Six plates per 100 solution, not five: 20% more holmium, paid for in ozone.
 That is the most the tree adds to holmium, so holmium stays scarce
-(principle 5).
+(principle 4).
 
 ### Step 7: Oxide superconductor
 
@@ -352,8 +352,8 @@ So it's slower against everything except the biggest promethium asteroids, and c
 ## 8. Buildings
 
 All three use **tinted vanilla** as stand-in art (derive.placeholder_art): the
-nearest vanilla building, with its own tint. Real art is a separate task for
-each.
+nearest vanilla building, with its own tint. Their real art is outstanding:
+see TODO.md, 'Building art in Blender'.
 
 ### Ozone collector (from the lightning collector)
 
@@ -368,8 +368,8 @@ each.
 | Stand-in tint | pale blue | — |
 
 **The trade-off:** every strike it takes is a strike no collector turns into
-power. Storm spots are shared between power and ozone. How the strike becomes
-ozone (prototypes only, or a small script) is T02's test (a).
+power. Storm spots are shared between power and ozone. A strike becomes ozone
+through a small script; prototypes alone cannot do it (T02 (a)).
 
 ### Induction foundry (from the foundry)
 
@@ -487,12 +487,12 @@ so it is semi-real and fits the planet. Mined by any drill, with no fluid.
 Smaller and fewer patches than tungsten, but richer, because each craft needs
 little (one obsidian per 300 molten iron). There is no starting patch: the
 starting area is long generated, and "New ground only" means it appears in
-chunks generated after the mod loads. T02's test (b) counts patches over five
-seeds.
+chunks generated after the mod loads. T02 (b) counted the patches over five
+seeds; after T04's counts the radius became 25 (section 12, decision 12).
 
 ### Ozone, on Fulgora
 
-| | Proposal |
+| | Value |
 |---|---|
 | Per strike on an ozone collector | **100 ozone** |
 | Collector holds | 1,000 (ten strikes) |
@@ -503,8 +503,8 @@ seeds.
 - one EM plant on oxide superconductor (speed 2): 20 ozone every 2.5 s, so
   **480 a minute**.
 - So a plant needs about five or six strikes a minute, averaged over storm and
-  calm. How many strikes a collector takes in a storm is measured in T02 (a),
-  and ozone per strike is set from that.
+  calm. T02 (a) measured 216 strikes on 50 collectors in one minute of storm,
+  and ozone per strike stayed at 100.
 
 ### Sulfuric acid, on Vulcanus (vanilla)
 
@@ -547,14 +547,7 @@ A new direct route between Vulcanus and Fulgora, 15,000 km. Its ordinary asteroi
 
 ## 11. Still open
 
-**T02 must settle:**
-- **(a) Ozone per strike:** whether a strike can add ozone with prototypes alone
-  or needs a small script, how many strikes a collector takes in a storm, and
-  the UPS cost with 50 collectors. Then the 100 per strike is set.
-- **(b) Obsidian autoplace:** patch counts over five seeds of new Vulcanus
-  ground, and that an old save gets them only in new chunks, without errors.
-
-**Also open:**
+**Open:**
 - **Hot and cold acid in one pipe.** They average. "For now" the player keeps
   the lines apart. Whether that is a fair puzzle or a trap is to watch in play.
   If it is a trap, a later fix is a separate fluid. That is not designed here.
@@ -581,8 +574,9 @@ A new direct route between Vulcanus and Fulgora, 15,000 km. Its ordinary asteroi
    the core casts, each for an extra ingredient, with a slight gain. "It
    shouldn't do vanilla recipes but offer alternative recipes for the cost of
    an extra ingredient with a slight bump in speed and/or productivity, we'd
-   need to run the numbers"; "Per recipe"; "The core casts". Principle 3
-   changes to allow it: "Change the principle" (design/01-principles.md).
+   need to run the numbers"; "Per recipe"; "The core casts". The old principle 3
+   ("No plain upgrades", since cut from design/01-principles.md) was changed to
+   allow it: "Change the principle".
 6. **The ozone collector gives no power.** "Yes, recommended."
 7. **Refined molten iron** has no use before the convergence. "Yes,
    recommended."
@@ -606,8 +600,8 @@ A new direct route between Vulcanus and Fulgora, 15,000 km. Its ordinary asteroi
 15. **Productivity in the field recipes:** molten holmium iron takes the +50%;
     field core and magnetar alloy take none, so one coil makes one alloy.
     "Yes, all three."
-16. **Sulfuric acid's max_temperature is raised to 500**, the tree's one touch
-    to a vanilla prototype; cold acid behaves as before. "Yes, all three."
+16. **Sulfuric acid's max_temperature is raised to 500**, the tree's one change
+    to a vanilla fluid; cold acid behaves as before. "Yes, all three."
 17. **The induction foundry at 4 MW**, with gains of 10% for slag and 17–18% for
     flux and acid, as first guesses. "Yes, all three."
 18. **No induction cast crosses the tree's own recipes:** "Check the new

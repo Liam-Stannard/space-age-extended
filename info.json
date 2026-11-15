@@ -9,5 +9,5 @@
     "space-age >= 2.1.0",
     "? alien-biomes"
   ],
-  "description": "Cross-planet production lines between pairs of worlds -- Vulcanus, Fulgora, Gleba and Aquilo -- each ending in a capstone. The five capstones feed a final production line on the Core of the Shattered Planet, where the game is won."
+  "description": "Each of the five planets gets a tree that extends its own vanilla tech tree. Every tree helps the player reach the Core, a new planet past the Shattered Planet, where the game is won."
 }

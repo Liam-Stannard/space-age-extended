@@ -81,7 +81,7 @@ The loop starts cocked (2026-10-11): 2.1.21 never fires a working-sound accent o
 entry 0, so the landing cannot be there. Entry 0 (sheet frame 0) is the weight at 61 %
 of its travel, between two pawl clicks, held by the pawl: the rest pose, the still and
 the shadow. The icon stays at the top of the stroke with the pawl kicked clear (TOP,
-the shipped pose) until Liam chooses between top, cocked and seated (--icon-pose).
+the shipped pose; Liam chose it on 2026-11-15; --icon-pose still renders the others).
 
 Units are tiles; north is +Y. A model point (x, y, z) lands on screen at
 (x, y + z/2) tiles from the origin.

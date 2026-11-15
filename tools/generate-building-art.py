@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fire a filled-in building spec's image prompts at OpenAI's image API.
 
-The spec documents in concept/<building>/ carry their generation prompts in fenced
+The spec documents in design/buildings/<building>/ carry their generation prompts in fenced
 ```text blocks under known headings (see templates/building-spec-template.md §9 and
 §14). This reads those blocks straight out of the markdown, so the prompts
 that get generated are always the prompts in the document -- there is no
@@ -17,7 +17,7 @@ rounds needed a browser for until now. See each `*-options/README.md` for what
 to attach and why the order matters.
 
 Usage:
-  tools/generate-building-art.py concept/vent-pump/building-spec-vent-pump.md
+  tools/generate-building-art.py design/buildings/vent-pump/building-spec-vent-pump.md
   tools/generate-building-art.py concept/drop-crusher/options/A-*.md \
       --attach ref/assembling-machine-3.png --attach ref/foundry.png \
       --tag A --outdir concept/drop-crusher/options

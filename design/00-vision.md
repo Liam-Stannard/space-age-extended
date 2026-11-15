@@ -1,126 +1,46 @@
 # Vision
 
-An expansion to Factorio: Space Age 2.1 in which the player builds **cross-planetary
-production lines between pairs of planets**.
+An expansion to Factorio: Space Age 2.1. Each of the five planets gets a tree
+that extends its own vanilla tech tree. Every tree helps the player reach the
+Core, a new planet past the Shattered Planet, where the game is won.
 
-Vanilla gives each world a self-contained tech tree. A factory on Vulcanus and a
-factory on Fulgora never need each other; rockets carry finished goods, not
-dependencies. This mod makes the pairs themselves productive — a chain that only
-completes when material from both worlds meets in the same recipe.
+## A tree per planet
 
----
+Each tree has about 3-10 technologies, its own production lines, and new
+mechanics, buildings or items themed to its planet. What every tree must add is
+in principle 3 (`01-principles.md`).
 
-## Five pairs
+## When a tree opens
 
-The worlds that pair are Vulcanus, Fulgora, Gleba and Aquilo. That gives six
-possible pairs, and **five of them get trees**.
-
-## A tree per pair
-
-Each chosen pair gets a **small tree of its own**:
-
-- **An estimated 3–10 technologies.**
-- **Its own production lines**, spanning both worlds, with material physically
-  moving between them.
-- **New mechanics, buildings or items where the pairing calls for them** —
-  themed to those two planets specifically, and to the chain that leads up to
-  them. 
-
-## When a tree becomes available
-
-Progression follows Space Age's own. **A pair's tree opens once the player has
-completed the vanilla tech trees of both its planets.** Nothing new is gated on
-anything but the vanilla progress the player would be making anyway.
-
-That falls out naturally into an order: pairs among the early and mid planets
-become available as the player finishes each of them, and **Aquilo's pairs come
-last**, because Aquilo itself does. The mod's own content spreads across the
-back half of a normal playthrough rather than arriving all at once.
+When each planet's tree opens is decided in that tree's own spec. It may open on
+arrival, partway through the planet's vanilla tree, or once that tree is done.
 
 ## The capstone
 
-Every tree ends in a **capstone technology** that unlocks two things:
-
-1. **A product** — the item the whole tree exists to make.
-2. **A building constructed from that product.**
-
-The building is where the tree pays off. It should **use the elements of the
-tree that caps it** — its materials, its fluids, its mechanic — so that it reads
-as the conclusion of that specific chain rather than a generic reward. It has to
-be **useful at the moment the player earns it**, and **useful again in the
-endgame**, when the final production line is being supplied.
-
-**It must not threaten vanilla Space Age balance.** A capstone building is a new
-option, never a strict upgrade to something vanilla already provides. If
-installing one makes a vanilla building pointless, it is wrong.
-
-The capstone is also what proves both halves of the pair were built out: the
-product cannot exist unless material from both planets met somewhere in the
-chain.
-
-## The endgame
-
-The endgame lies **beyond the Shattered Planet, at the Core** — a real planet
-with a landable surface and its own orbit, past the point where vanilla's route
-gives out.
-
-**The win condition moves there.** Vanilla's ending is the Solar System Edge;
-the mod's is the Core, and the game is finished by what the player builds on it.
-Getting there is the journey; the production line there is the ending. On the Core
-the player builds a **final, complex production line** — the largest in the mod —
-whose inputs are:
-
-- **an item from every capstone**, so the final chain cannot be built without
-  having built the pairs, and
-- **new items found only out there**, on the Core itself or in the promethium
-  space between it and the rest of the system.
-
-That is the shape of the whole mod in one line: **each pair teaches you to move
-material between two worlds; the Core asks you to do it from every world at
-once, at the far end of the longest supply line in the game.**
-
----
-
-## Consequences worth being clear about
-
-**Every tree built is a tree required.** Because the final production line
-consumes an item from every capstone, none of the five is skippable. That is
-what makes the pairs add up to an ending.
-
-**The win condition moving is a real change to vanilla**, and the only one the
-mod makes. Everything else is additive: a player can still reach the Solar
-System Edge exactly as before, it simply is not where the game ends any more.
-
-**The game is won on completion, not on arrival.** Reaching the Core is not the
-ending; the ending is the final production line running and delivering. Arrival
-only earns the right to start building it.
-
-## Which five pairs
-
-| Pair | Available after | Theme, in one phrase |
-|---|---|---|
-| **Vulcanus ↔ Fulgora** | both | Metallurgy against electromagnetics |
-| **Vulcanus ↔ Gleba** | both | The hottest world against the living one |
-| **Vulcanus ↔ Aquilo** | Aquilo | The hottest world against the coldest |
-| **Fulgora ↔ Aquilo** | Aquilo | Electromagnetics against cryogenics |
-| **Gleba ↔ Aquilo** | Aquilo | Living material against a world that freezes it |
-
-Two trees open once the player has developed two of Vulcanus, Fulgora and Gleba; three more open at Aquilo, which is where the run-up to the endgame sits.
+Every tree ends in a capstone technology. It unlocks the tree's product and a
+building made from it. The building uses the tree's own materials, and is useful
+when the player earns it and again at the Core.
 
 ## A new resource on each planet
 
-Each of the four planets gets one new resource, shared by every tree it is in. Each is semi-realistic, fits its world and has a plain name:
+Each planet's tree adds one new resource that fits its world and has a plain
+name. Only that planet's tree gives it a use.
 
-| Planet | Resource | What it is |
-|---|---|---|
-| Vulcanus | **Obsidian** | an ore of fast-cooled volcanic glass at the lava's edge; smelted into obsidian glass |
-| Fulgora | **Ozone** | a fluid made only by lightning, gathered beside the strikes; no barrel |
-| Gleba | **Spores** | gathered from the swamp air; a culture starter that spoils fast |
-| Aquilo | **Cryolite** | an ore of a mineral that forms in cold, fluorine-rich ground; a smelting flux |
+Until each planet has its own tree spec, the names chosen so far are: Vulcanus,
+obsidian; Fulgora, ozone; Gleba, spores; Aquilo, cryolite. Nauvis's is still to
+be decided.
 
-One tech in each tree processes a resource. It is new on that planet's map from the start, but only that tree's techs give it a use.
+## The endgame
 
-## Still open
+The endgame is past the Shattered Planet, at the Core: a planet the player can
+land on, with its own orbit. The game is won there, not at the Solar System
+Edge. On the Core the player builds the mod's largest production line. It needs
+an item from every tree's capstone, and new items found only at the Core or on
+the way there.
 
-- **What each capstone building is.** Per-pair variety is the intent; each is
-  decided with its own tree. Fulgora ↔ Aquilo's is the superconducting store and Vulcanus ↔ Fulgora's the magnetic collector; the other three are undecided.
+The win condition is still to be decided. It will mean restarting something at
+the centre of the Core with an extremely powerful machine. Winning leaves a
+final science pack for some of the endless research.
+
+Each planet's tree helps you reach the Core. The Core then asks for something
+from every world at once, at the far end of the longest supply line in the game.

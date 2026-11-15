@@ -2,7 +2,7 @@
 
 Round 7's kit (options/round-7/r7_kit.py: the Carousel Foundry refined, signed off by Liam
 2026-10-19, "Sign off") copied, its parts and their finish unchanged, with what the shipping
-model needs (spec: concept/radiant-generator/building-spec-radiant-generator.md):
+model needs (spec: design/buildings/radiant-generator/building-spec-radiant-generator.md):
 
   - the light through tools/blender/radiant.py (spec 3.3): round 7's own isotope() materials
     are replaced by radiant.Radiant liquids of its four shapes -- the collector head's

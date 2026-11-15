@@ -8,7 +8,7 @@ It declares itself to the packers in render.json (tools/blender/contract.py): DE
 below is the footprint, directions, passes, animation and ports, and each run
 writes it beside its renders with the canvas that run used.
 
-Units are tiles; north is +Y. Spec: concept/reaction-plant/building-spec-reaction-plant.md
+Units are tiles; north is +Y. Spec: design/buildings/reaction-plant/building-spec-reaction-plant.md
 (section 3.1 bottom to top, 3.3 palette, 6.2 what moves, 8 hard constraints).
 """
 import math

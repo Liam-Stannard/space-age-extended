@@ -1,6 +1,6 @@
 # Fulgora ↔ Aquilo — holmium in the cold
 
-**Built.** The first tree, and the template for the other four.
+**Built.** The first tree.
 
 | | |
 |---|---|
@@ -61,8 +61,9 @@ Fulgora                          Aquilo
 
 ## 5. The capstone building — the superconducting store
 
-500 MJ, taking 20 MW in or out. It is the thing a world of spikes has always
-wanted:
+How much it holds and how fast it charges are in its spec (see
+building-spec-superconducting-store.md). It is the thing a world of spikes has
+always wanted:
 
 - **When earned:** Fulgora's lightning arrives faster than anything can spend it.
 - **Getting to the Core:** a platform's draw is uneven, and this smooths it.
@@ -79,8 +80,8 @@ content.
 
 | Technology | Unlocks |
 |---|---|
-| **Cryogen loop** | cold cryogen, and recovering spent cryogen |
-| **Holmium fluorination** | the Aquilo step |
+| **Cryogen loop** | cold cryogen |
+| **Holmium fluorination** | the Aquilo step, and recovering spent cryogen |
 | **Superconducting winding** | the capstone product and the store |
 
 ## 7. Verified

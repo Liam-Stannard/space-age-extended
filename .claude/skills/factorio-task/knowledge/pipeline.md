@@ -4,10 +4,11 @@
   `~/.factorio/mods/space-age-extended` links to it. Every task has its own
   branch and worktree under `.claude/worktrees/`; nothing is committed on
   master directly (claude.md rule 7).
-- **Blender:** blender.org 5.0.1, at the path `tools/paths.conf` names
-  (BLENDER), GPU (OptiX,
-  RTX 5080) by default via `SAE_BLENDER_DEVICE`; `/usr/bin/blender` has no
-  GPU. `tools/blender/render.sh` writes `<out>/render.done`.
+- **Blender:** blender.org 5.0.1. Which build to use, rendering on the GPU
+  through `render.sh`, and `render.done`: see the standing rules
+  (factorio-standing-rules, "Blender" and "Waiting and processes"). The GPU
+  is OptiX on the RTX 5080, set by `SAE_BLENDER_DEVICE`; `/usr/bin/blender`
+  has no GPU.
 - **Packing:** `tools/blender/pack.py` crops per declared layer, checks
   centre offset, edge alpha, half width, glow white pixels, frame 0 against
   the still, motion paths; refuses an empty layer. Contract flags: cycle,
@@ -24,7 +25,7 @@
   3 or less, meta.json equal but for the light stats (core/halo 0.1,
   peak 1) and the roll-off counts (within 1 % of the larger, or 1). It is
   per device: a GPU and a CPU render of one model fail it.
-  `test/test_repeatable.py` renders the box and radiant box twice on the
+  `tools/blender/test/test_repeatable.py` renders the box and radiant box twice on the
   GPU and holds them to it.
 - **Icons:** `tools/blender/icon_rig.py`, `icon_post.py`,
   `render-icons.sh`, `tools/key-icons.py --mips`; technology icons
@@ -55,10 +56,10 @@
   sleep loops, deletes above a scratch ticket folder, `pkill`,
   `killall` and killing by name, and running Factorio outside
   `tools/client/launch.sh`.
-- **Questions:** only the questions-clerk writes
-  `.claude/tasks/QUESTIONS.md`, with three commands (add, answer, tidy)
-  kept in its agent file, each run under
+- **Questions:** who writes `.claude/tasks/QUESTIONS.md` is in the
+  standing rules. The questions-clerk's three commands (add, answer,
+  tidy) are kept in its agent file, each run under
   `flock -w 60 .claude/tasks/QUESTIONS.lock`; exit 3 means the lock was
   held and nothing was written (questions-clerk, 2026-11-13).
-- **Sending files:** images over 8000 px on the longer side cannot be sent
-  to Liam; send a top-section copy.
+- **Sending files:** the image size limit is in the
+  `factorio-standing-rules` skill, The report.

@@ -35,5 +35,5 @@ own.
 ## Parallel work
 Split options across at most two artists, with filename prefixes and one
 shared decision file for anything they must agree; the second to finish
-builds the combined contact sheet. At most two Blender renders run at
-once, whoever starts them (standing rules).
+builds the combined contact sheet. Render limits: see the standing
+rules.

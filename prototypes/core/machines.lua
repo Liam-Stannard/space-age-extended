@@ -82,7 +82,7 @@ local function crafter(name, from, opts)
 end
 
 --------------------------------------------------------------------------------
--- N1. Drop Crusher -- concept/drop-crusher/building-spec-drop-crusher.md
+-- N1. Drop Crusher -- design/buildings/drop-crusher/building-spec-drop-crusher.md
 --
 -- Breaks ore by dropping a weight on it, so it works only where there is weight
 -- to drop. Vanilla's crusher spins and is locked to zero g; this one drops and
@@ -470,7 +470,7 @@ derive.working_sound(crusher, {
 data:extend({ crusher })
 
 --------------------------------------------------------------------------------
--- N2. Ballast Drill -- concept/ballast-drill/building-spec-ballast-drill.md
+-- N2. Ballast Drill -- design/buildings/ballast-drill/building-spec-ballast-drill.md
 --
 -- `resource_drain_rate_percent` is the whole building. It is the one mining-drill
 -- field that changes what a patch is *worth* rather than how fast it empties,
@@ -926,7 +926,7 @@ drill.moving_sound = nil
 data:extend({ drill })
 
 --------------------------------------------------------------------------------
--- N7. Vacuum Furnace -- concept/vacuum-furnace/building-spec-vacuum-furnace.md
+-- N7. Vacuum Furnace -- design/buildings/vacuum-furnace/building-spec-vacuum-furnace.md
 --
 -- A `furnace`, not an assembling machine, so it picks its own recipe from what
 -- it is fed -- which is what makes a smelter a smelter. It does the two things
@@ -1193,7 +1193,7 @@ derive.own_graphics(furnace,
 data:extend({ furnace })
 
 --------------------------------------------------------------------------------
--- The Reaction Plant -- concept/reaction-plant/building-spec-reaction-plant.md
+-- The Reaction Plant -- design/buildings/reaction-plant/building-spec-reaction-plant.md
 --
 -- No N number: it arrived after the nine above were numbered. It wears its own
 -- art, rendered from a model rather than cut from a plate; see "Art" below.
