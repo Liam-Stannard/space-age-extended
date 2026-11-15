@@ -67,9 +67,7 @@ glass riser.
 
 ## 3.3 Colour Palette
 
-A paint or metal for each unit, worn, with rust only where it forms, in
-vanilla's warmth and saturation. No frost, rime, ice or cold colour anywhere in
-the model: any cold is an effect.
+Finished to the bars in standards.md (Finish).
 
 | Role | Hex | Where |
 | ---- | --- | ----- |

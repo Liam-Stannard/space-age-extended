@@ -19,10 +19,9 @@ in it is a guess.
   fix, a check, a message). Skip the ledger and §3's list: draft Goal,
   Scope, Pass criteria and the one ticket, ask what they leave open,
   then §5.
-- **Who asks:** the main session asks with AskUserQuestion. The
-  project-manager cannot: it has the questions-clerk add each question
-  to `.claude/tasks/QUESTIONS.md` and returns the draft in its report.
-  Nothing is written until Liam's agreement comes back, quoted.
+- **Who asks:** see the standing rules, "Asking Liam". The
+  project-manager returns the draft in its report. Nothing is written
+  until Liam's agreement comes back, quoted.
 
 ## 1. Research before asking
 Never ask Liam what the files can answer. The analyst agent may do this
@@ -85,9 +84,9 @@ A ticket is one piece of work one agent finishes in one run and that
 can be signed off on its own. Split until each ticket has one owner,
 inputs that exist before it starts, a named output, acceptance criteria
 someone other than its author can check, and a sign-off owner.
-Typical split for a building: study → options → Liam picks → refine →
-spec wording → Liam agrees → model → Liam signs off → wiring → test →
-Liam signs off in game → ship. Decisions are tickets owned by Liam, so
+For a building, make one ticket for each stage and each gate in
+factorio-building-round (the study sheet and the client test can be
+tickets of their own). Decisions are tickets owned by Liam, so
 the gates are visible.
 
     ### T<nn>: <one line>

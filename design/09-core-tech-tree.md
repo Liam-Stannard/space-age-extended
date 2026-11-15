@@ -18,8 +18,8 @@ Tier 0, the foothold, is in the mod. The tiers above it wait on
 
 - **Description:** makes the Core reachable. Until it is researched, no platform
   can set a course there.
-- **Cost:** 500 units of all eleven vanilla science packs, up to promethium, 60
-  seconds each.
+- **Cost:** 500 units of every vanilla science pack except military, up to
+  promethium (eleven packs), 60 seconds each.
 - **Purpose:** opens the Core as a destination.
 - **Depends on:** Promethium science pack.
 
@@ -28,12 +28,12 @@ Tier 0, the foothold, is in the mod. The tiers above it wait on
 - **Description:** a gas pump and a hydrogen turbine: enough power to begin
   with, and no more.
 - **Cost:** none. It is a trigger: mine a boulder on the Core.
-- **Purpose:** the Core's first power, and its way back after a blackout.
+- **Purpose:** the Core's first power (see 08-core-power.md, section 2, for restarting after a blackout).
 - **Depends on:** Core discovery.
 
 ### Core survey
 
-- **Description:** the Ballast Drill, the only drill that mines kamacite ore.
+- **Description:** the Ballast Drill (see its spec).
 - **Cost:** none. It is a trigger: craft a gas pump.
 - **Purpose:** the first ore out of the ground.
 - **Depends on:** Hydrogen extraction.
@@ -55,12 +55,11 @@ Tier 0, the foothold, is in the mod. The tiers above it wait on
 
 ### Vent tapping
 
-- **Description:** the Vent Pump, which draws molten kamacite from a kamacite
-  vent.
+- **Description:** the Vent Pump (see its spec).
 - **Cost:** none. It is a trigger: craft a Vacuum Furnace.
 - **Purpose:** opens the kamacite vents.
-- **Depends on:** Vacuum sintering, and Uranium mining, which the game needs
-  before any drill can mine with a fluid.
+- **Depends on:** Vacuum sintering, and Uranium mining (the game needs it; see
+  engine.md).
 
 ### Radiant power
 

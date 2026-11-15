@@ -12,13 +12,12 @@ and everything started is stopped.
 - `tools/check-data-stage.sh` passes on the worktree first. It takes the
   launcher's lock: while a client runs it waits (at most
   SAE_DATA_STAGE_LOCK_WAIT, default 600 s) and exits 3 if the lock is
-  still held: the data stage was not checked, not failed. Do not run it
+  still held (NOT RUN: see the standing rules). Do not run it
   during a capture: it can take the lock between capture.py's two
   launches, and the recording is refused.
 - `pgrep -af factorio`: if one runs, wait for it (bounded); the launcher's
   lock refuses a second one anyway.
-- Evidence goes to <worktree>/evidence/<task>/ (git-ignored); name
-  its paths.
+- Evidence: see the standing rules' Scratch.
 
 ## 2. Pick the tool
 - A building in game: `tools/client/shot/shot.sh --task <t> --spec <json>`
@@ -45,6 +44,4 @@ The standing rules' client rules still hold. A launcher that will
 not stop is reported (exit 5 and --recover), never killed blind.
 
 ## 4. Report
-Each criterion PASS, FAIL or NOT RUN with its evidence path; the absolute
-path of every screenshot, sheet and MP4 for Liam; whether anything is left
-running (it must not be).
+As the standing rules' The report says; also name every MP4 by absolute path.

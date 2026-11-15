@@ -14,8 +14,8 @@ densest body in the system.
 - **Pressure: 200.** See below.
 - **Gravity: 50.** The heaviest world in the game. Everything that needs
   gravity works: chests, rails, vehicles and the cargo landing pad.
-- **Magnetic field: 0.** A dead dynamo. The electromagnetic plant and the
-  recycler can't be made here.
+- **Magnetic field: 0.** A dead dynamo. The electromagnetic plant can't be
+  made here.
 - **Solar power: 0.** Solar panels make nothing at all.
 - **Day and night: 3 minutes.** A brief flash of light, the rest is night.
 
@@ -39,8 +39,9 @@ Only the Ballast Drill mines it.
 
 **Kamacite vent:** molten kamacite, a fluid that never runs out but slows as it
 is drawn, as crude oil does. It can't be barrelled, so it never leaves the
-Core. The Vent Pump draws it, and needs helium-3 to do so. About 11 vents lie
-together near the landing.
+Core. The Vent Pump draws it, and needs helium-3 to do so. A full vent gives 10
+a second; those near the landing start at about 5. Each falls to a fifth as it
+runs down. About 11 vents lie together near the landing.
 
 **Helium-3 vent:** a gas. It never runs out, but gives less the more it is
 used. It can't be put in barrels. It is rarer than the kamacite vent. The Gas

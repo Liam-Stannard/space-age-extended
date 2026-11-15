@@ -58,8 +58,9 @@ the names given, which is the check that the sheet is harvestable at all.
 
 `key-icons.py` then does the rest — keys the flat background out, crops to
 the object's bounding box, squares it, downsamples to 64 px and bakes the
-120×64 mipmap strip the repo's `icon_mipmaps = 4` expects. It also writes a
-keyed 1024 px master under `masters/` so the keying can be judged at full size.
+120×64 mipmap strip vanilla ships; the engine reads the mipmap count from
+the image being wider than the icon. It also writes a keyed 1024 px master
+under `masters/` so the keying can be judged at full size.
 
 Technologies get **their own sheet**, prompted the same way. They were
 originally to be generated one at a time — they are 256 px illustrated scenes

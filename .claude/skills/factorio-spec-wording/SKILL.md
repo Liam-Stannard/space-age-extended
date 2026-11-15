@@ -13,14 +13,14 @@ latest sheets). Write the draft to the session scratchpad, not the repo:
 - per section that changes: the heading, the current text quoted briefly,
   the proposed replacement in the file's own voice;
 - the sections that stay;
-- numbered open questions, each asked as the standing rules'
-  **Asking Liam** says.
-Send the draft file to Liam and summarise it in the reply.
+- numbered open questions.
+Send the draft file to Liam and summarise it in the reply. Put the open
+questions to him as the standing rules' **Asking Liam** says.
 
 ## 2. Agree
-Wait for Liam's answer. "Agreed" covers the draft and the recommended
-answers as sent; anything else, apply his changes and re-send if they are
-more than a line.
+Wait for Liam's answers. "Agreed" covers the draft as sent; each open
+question needs its own answer. For anything else, apply his changes and
+re-send if they are more than a line.
 
 ## 3. Write
 Write exactly the agreed text. Do not add sentences, figures or

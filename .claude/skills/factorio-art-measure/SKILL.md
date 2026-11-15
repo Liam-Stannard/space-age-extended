@@ -23,17 +23,14 @@ measure.py cannot give, and says why.
 The bars, and which figure checks each, are in
 `.claude/skills/factorio-task/knowledge/standards.md`. What is
 measure.py's own:
-- joins: a pipe-body column with a gap of 2 px or more is a gap column;
-  more than 2 fail the join. Beside the pipe is information only.
-- collide: catches loose ends, runs through parts and parts in the
-  ground only for runs the model records with `tools/blender/runs.py`;
-  everything else, and every contact listed as meant, is the by-eye
-  check on the crops sheet.
-- white and clipped: pack.py has rolled highlights off every drawn
-  sheet but light passes since 2026-10-20 (render.json `rolloff`, on by
-  default), so a new sheet has no pixel at 245 or over. Sheets packed
-  before that remain: compare across the date only with the newer
-  sheet packed `rolloff: false`.
+- joins: the bar is in standards.md (Pipes, Joins). Beside the pipe is
+  information only.
+- collide: what it covers, and what is left to the eye, is in
+  standards.md (Hoses and cables, No clipping). The by-eye check is done
+  on the crops sheet.
+- white and clipped: the bar is "No white" in standards.md. Sheets
+  packed before 2026-10-20 were not rolled off, so compare across that
+  date only with the newer sheet packed `rolloff: false`.
 - tonal is still recorded in measures.json; it is not a bar and is not
   quoted.
 

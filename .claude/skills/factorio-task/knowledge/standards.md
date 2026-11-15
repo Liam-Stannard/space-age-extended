@@ -115,7 +115,7 @@ judgement on the sheets. No figure here signs anything off.
   pale cyan top, nothing clipped; C's rising bubbles in glass columns
   only (Liam, 2026-10-12), wherever the isotope is seen. Helper:
   `tools/blender/radiant.py`. Checked: glow, blue share.
-- **Molten kamacite** may glow orange only where melt is seen. Checked:
+- **Molten kamacite** may glow orange only where molten kamacite is seen. Checked:
   glow.
 - **Other glows** when the glow shows the building's work (an energised
   coil, an arc, a lit window), as vanilla's foundry, electromagnetic
@@ -123,7 +123,7 @@ judgement on the sheets. No figure here signs anything off.
   and when it shows, only while working (Liam, induction foundry,
   2026-11-09: "other parts of buildings should be able to glow").
   Checked: glow, against the spec's list.
-- **Thin atmosphere:** the Core's pressure is above 0, so fire and
+- **Thin atmosphere:** the Core has an atmosphere (see 04-the-core.md), so fire and
   explosion flashes are allowed; smoke is decided per effect (Liam,
   turbine, 2026-10-20). Checked: by eye.
 

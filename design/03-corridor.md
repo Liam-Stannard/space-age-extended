@@ -1,12 +1,12 @@
 # The Corridor
 
-The route from the Solar System Edge to [the Core](04-the-core.md), flown on
+The route from the Shattered Planet to [the Core](04-the-core.md), flown on
 space platforms. All the mod's cargo to the Core travels it.
 
 ## 1. What is out there
 
-Past the middle of the route to the Shattered Planet, the mod adds one new
-asteroid and otherwise keeps vanilla's mix. The corridor is difficult to pass.
+Along this route the mod adds one new asteroid, rare near the Shattered Planet
+and more common toward the Core, and otherwise keeps vanilla's mix. The corridor is difficult to pass.
 
 ## 2. Still open
 

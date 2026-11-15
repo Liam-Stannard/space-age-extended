@@ -35,12 +35,12 @@ control-stage script.
 
 | The idea | The feature | Evidence |
 |---|---|---|
-| Items irradiate after a time | `spoil_ticks` + `spoil_result` pointing at an `sae-irradiated-material` item | Native; the same pair maturation already uses |
+| Items irradiate after a time | `spoil_ticks` + `spoil_result` pointing at an `sae-irradiated-material` item | Native; vanilla's spoilage uses the same pair, as on Gleba |
 | Dose accumulates down a chain | `ItemIngredientPrototype::spoil_weight` — a product inherits its ingredients' spoil percentage | Native; this is how Gleba's chain carries freshness |
 | The chamber resets the timer | `ItemProductPrototype::reset_freshness_on_craft = true` on a recipe whose product is its own ingredient | **Vanilla does exactly this** — `space-age/prototypes/recipe.lua:143`, copper bacteria |
 | …paid for in a fluid | An ordinary fluid ingredient on that recipe | Native |
 | Items *pass through*, whatever they are | Build the chamber as a **`furnace`**, not an assembler: furnaces choose their recipe from what is inserted | `auxiliary/furnace-recipe-selection.html` — *"one fluid and one item ingredient"* recipes are selectable, so one recipe per irradiable item and the chamber picks by itself |
-| Not everything irradiates | Give `spoil_ticks` only to the chosen items | Native. **Fluids can never spoil**, so the melt, steam and helium half of the tree is exempt at no cost |
+| Not everything irradiates | Give `spoil_ticks` only to the chosen items | Native. **Fluids can never spoil**, so the Core's fluids (see `04-the-core.md`) are exempt at no cost |
 | Route the hottest stack to the chamber first | `spoil_level` plus inserter spoil priority | Native, and free depth |
 
 ### What it does not give
@@ -77,10 +77,10 @@ radiation that is supposedly causing it.
 **Scarcity has to be a rate, not a stock.** "The starting patch affords only a
 few chambers" gates construction, and any stock gate evaporates the moment the
 corridor can import the material. Gating the *fluid* survives, and helium-3 is
-already the right shape: sited, rare, declining, and already throttling the melt
-(`04-the-core.md` §2). Decontamination throughput then equals the helium rate,
+already the right shape: sited, rare, declining, and already throttling the kamacite
+vent's draw (`04-the-core.md` §2). Decontamination throughput then equals the helium rate,
 which cannot be imported around. The risk runs the other way — helium would be
-load-bearing for melt draw and decontamination at once, which may be one claim
+load-bearing for the kamacite vent's draw and decontamination at once, which may be one claim
 too many on a single vent.
 
 **Terminal products must stay clean.** If the Core's end products can irradiate, a

@@ -83,7 +83,7 @@ to wire visible.
 | Oxide red | `#6E2C1E` | pump |
 | Dark steel | `#3E3934` | decks, frames, foot rings |
 | Copper | `#94592C` | collector plates, tube caps, bus |
-| The isotope's light | `#1F63FF` → `#73ADFF` | bullseye port, plate-rack slot, tube emitters, well's mouth |
+| The isotope's light | the radiant blue (standards.md, Light) | bullseye port, plate-rack slot, tube emitters, well's mouth |
 | Status lamps | green, `#00FF00` tint | the lamps, lit only while working |
 | Night lights | the isotope's blue, steady | one at each of the four openings, while working |
 | Wreck's dying blue | `#1F63FF` → `#0B2A8C`, faint (0.4) | the wreck's well; glows at night |

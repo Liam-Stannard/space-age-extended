@@ -79,7 +79,7 @@ throat.
   clamps on the radiator stacks. A brass maker's plate on the south face, a
   stencilled number, rust run down from the rail and the fittings, grime
   rising from the ground, oil soaked into the ground under the pump, and
-  verdigris on the copper. No frost anywhere.
+  verdigris on the copper.
 
 ### Signature Feature
 
@@ -143,9 +143,8 @@ south face {0, 1}; each can take fluid in or pass it out. Rotated, it runs
 east–west; the drawing does not turn. Fluid passes straight through whatever
 the furnace is smelting, so a row of furnaces shares one line. The hull's wall
 meets the tile edge at the middle of every face, so the pipe always butts
-against it. The pipe pictures are the model's own, to assembler 3's outline, in
-the furnace's metal; the north one draws behind the building. Vanilla's cover
-caps a port while nothing is joined to it. Items go in and out from any side.
+against it. The pipe pictures follow standards.md (Pipes); the north one draws behind the
+building. Items go in and out from any side.
 No electric connector shows.
 
 ---

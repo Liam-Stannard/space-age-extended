@@ -33,7 +33,7 @@ A thermosiphon you watch go round: a foothold crew's kit piled onto one riveted
 casing, with a lead-clad reactor and two glass legs, the blue climbing one and
 falling down the other. It must not be mistaken for vanilla's chemical plant
 (chimneys over a shed), the oil refinery (towers and flare stacks) or a storage
-tank. Nothing burns, so there is no plume: the condenser drips and never steams.
+tank. It burns nothing, so there is no plume: the condenser drips and never steams.
 
 ## 3.2 Key Visual Features
 
