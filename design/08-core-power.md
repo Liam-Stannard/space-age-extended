@@ -17,12 +17,12 @@ hydrogen would not. Where each comes from is in `04-the-core.md`.
 The first power is the hydrogen turbine (its output is in its spec), about one
 to a fresh vent before mining productivity research. It needs no power to make power, so it is
 also how a blacked-out grid restarts. When radiant power browns out, the
-reaction plants stop, then the fuel, then the generators, and only the turbine
+chemical plants stop, then the fuel, then the generators, and only the turbine
 can start them again.
 
 ## 3. The cycle
 
-**Stage 1, the basic reaction.** The Reaction Plant turns 100 radiant solution
+**Stage 1, the basic reaction.** A chemical plant turns 100 radiant solution
 and 100 hydrogen into 1 radiant fuel in 20 s. The radiant generator burns it (its output
 and burn time are in its spec). Each burnt fuel leaves a spent cell, which stage
 2 recycles.

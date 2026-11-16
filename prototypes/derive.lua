@@ -205,9 +205,6 @@ function derive.own_graphics(p, set, field)
   p[field or "graphics_set"] = set
   -- This building has its own art now, so it is no longer a placeholder.
   derive.pending[p.name] = nil
-  -- The ground decal under the vanilla machine was drawn for the vanilla plate.
-  -- The Ballast Drill shipped the big mining drill's for a while, under a plate
-  -- that draws its own base.
   p.integration_patch = nil
   p.integration_patch_render_layer = nil
   local ws = p.working_sound
@@ -231,15 +228,6 @@ function derive.own_graphics(p, set, field)
   return p
 end
 
--- The length of one animation cycle, in frames: what an accent's `frame` counts
--- in. `frame_sequence` replaces the sheet's order and so its length, and
--- `repeat_count` stretches a layer to a longer cycle (AnimationParameters, in
--- the prototype docs); the layers of one animation share one clock, so the
--- cycle is the longest layer's. An accent's frame counts in that cycle, a
--- sequence's entries from 0 rather than the sheet's frames: measured in a
--- client on the Reaction Plant's press (T04, and with sound in T10,
--- 2026-10-29), and every vanilla accent, 67 on 12 machines, passes the check
--- below counted this way (2026-10-11).
 local function cycle_frames(anim)
   if anim.layers then
     local most = 0
@@ -324,15 +312,6 @@ end
 --- of the machine's `graphics_set` (and of `wet_mining_graphics_set`, if it has
 --- one), and the frame must be inside that animation's cycle in every
 --- direction it draws, counting from 0 -- sfx.py's `frame` counts the same way.
----
---- **Frame 0 is refused.** Factorio 2.1.21 never fires an accent on frame 0:
---- `frame` defaults to 0 (SoundAccent, doc-html/types/SoundAccent.html), and
---- the engine treats 0 as unset. Recorded in a client on the Core, 2026-10-11:
---- the Drop Crusher's drop on frame 0 of its main animation was silent on
---- every stroke and at start-up, and the same drop on frame 1 played every
---- stroke; the Ballast Drill's ratchet moved to frame 0 of a working
---- visualisation fell silent too. No vanilla accent is on frame 0. A moment that falls there needs
---- the animation phased so it falls elsewhere, as the Drop Crusher's was.
 ---
 --- **Call it after `derive.own_graphics`**, which strips every accent it finds:
 --- they are checked against the graphics they are cued to, and that has to be

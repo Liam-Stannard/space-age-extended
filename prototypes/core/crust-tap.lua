@@ -304,7 +304,6 @@ pump.module_slots = 0
 -- one turbine's burn and no more. Mining productivity research still applies.
 pump.effect_receiver = { uses_module_effects = false, uses_beacon_effects = false }
 pump.energy_source = { type = "void" }
-pump.surface_conditions = { { property = "gravity", min = 45 } }
 -- Its health, wreck, explosion and wire post are the pumpjack's, inherited
 -- (spec A.5, Liam: "The pumpjack's"): the pumpjack is 3x3, and so is this.
 --
@@ -353,14 +352,6 @@ end
 -- then copy <scratch>/sheets/icon.png to graphics/icons/gas-pump.png, the
 -- base, shadow, mech and glass sheets into graphics/entity/gas-pump/, and the
 -- numbers out of meta.json into the tables below.
---
--- **`animation_speed` is 0.4, and the engine plays 0.4**: 24 frames over 60
--- ticks, one turn a second (Liam: "One turn a second"). A drill is not a
--- crafting machine: `MiningDrillGraphicsSet::animation_progress` defaults to 1
--- (prototype docs, doc-html/types/MiningDrillGraphicsSet.html), and the
--- declared rate is not multiplied by `mining_speed` -- the Ballast Drill's
--- measurement, in machines.lua, and the 2x2 Gas Pump's, 0.400 frames a tick
--- over 720 ticks in a client on the Core, 2026-10-10.
 --
 -- **Idle, everything stops where it is**, as the pumpjack's horsehead does
 -- (spec A.7). The pumpjack draws its nodding head in `graphics_set.animation`
@@ -828,14 +819,6 @@ data:extend({ turbine, turbine_remnants, turbine_sparks, turbine_explosion })
 --
 -- Both are cheap and early on purpose: this is the pair a player builds on
 -- landing day, before there is a smelter to make anything better with.
---
--- **Which means neither can be priced in kamacite plate**, and both were. The
--- technology says as much -- `sae-crust-tapping` hangs off Core Discovery
--- rather than the Survey, "because it needs nothing the survey teaches" -- but
--- the recipes needed 10 and 20 plate, and plate came only after the survey.
--- A player who took the landing-day technology first got two recipes they could
--- not craft. Steel, gears, circuits and pipe come out of the cargo pod, so now
--- they can.
 --------------------------------------------------------------------------------
 
 data:extend({

@@ -43,9 +43,6 @@ data:extend({
 
 data:extend({
   {
-    -- The Drop Crusher's main stream, and what plate smelting should be sourced
-    -- from -- see recipes.lua. If plate can still be made from raw ore, tier one
-    -- is skippable and the crusher is decoration.
     type = "item",
     name = "sae-crushed-kamacite",
     icon = "__space-age-extended__/graphics/icons/crushed-kamacite.png",
@@ -59,9 +56,6 @@ data:extend({
     weight = 2 * kg
   },
   {
-    -- The crusher's second stream. Deliberately
-    -- not waste: the Vacuum Furnace is the only machine in the game that will
-    -- take it, which is that furnace's reason to exist.
     type = "item",
     name = "sae-kamacite-fines",
     icon = "__space-age-extended__/graphics/icons/kamacite-fines.png",

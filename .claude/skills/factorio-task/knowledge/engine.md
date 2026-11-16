@@ -29,6 +29,10 @@ Each line: the fact, then how it was verified and when.
   only speed. (Docs, 2026-10-11.)
 - `two_direction_only` generators collapse south to north and west to
   east. (Client, 2026-10-11.)
+- A mining drill's animation is not sped up by its `mining_speed`:
+  at mining speed 3 and `animation_speed` 0.4 it played 0.400 frames
+  a tick. (Ballast Drill, measured in a client on the Core,
+  2026-10-10.)
 
 ## Neighbour bonus
 - `neighbour_bonus` exists only on `reactor` entities, which output heat,
@@ -100,6 +104,13 @@ Each line: the fact, then how it was verified and when.
 ## Recipes
 - `allow_productivity = false` keeps productivity modules out but doesn't stop a machine's built-in productivity (the foundry's +50 %). To give a recipe none at all, also set `maximum_productivity = 0`. (V↔F T05a, measured in a client, 2026-10-31.)
 - A recipe's surface conditions are checked when a player picks it (or a blueprint is built), not while the machine crafts. A recipe set by script crafts off its planet. Vanilla's lightning collector and foundry recipes behave the same. The 2.1.24 runtime docs word it as 'required to craft'. (V↔F T07a, 2026-10-31.)
+
+## Technologies
+- A `craft-item` research trigger counts what a machine crafts,
+  including a recipe's second result: 50 kamacite fines from a
+  crusher fired Vent tapping on the 50th, with nothing else making
+  fines. (Headless server, 2026-10-10; again in a client with the
+  Heavy crusher, core-vanilla-machines T01, 2026-11-16.)
 
 ## Fluids
 - A fluid's `max_temperature` defaults to its `default_temperature`, so

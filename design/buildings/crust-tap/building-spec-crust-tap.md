@@ -9,8 +9,8 @@ Gas Pump. Draws gas from a vent: hydrogen or helium-3.
 - **Name:** Gas Pump
 - **What it does:** pumps gas from a vent.
 - **Size and directions:** 3 × 3, 4 directions.
-- **Where it can be built:** on a hydrogen or helium-3 vent, where gravity is
-  45 or more, so only the Core.
+- **Where it can be built:** on a hydrogen or helium-3 vent. It has no surface
+  limit of its own, but these vents are found only on the Core.
 - **Power:** none.
 - **Inputs and outputs:** no input; one gas output on the north face.
 - **Speed:** mining speed 1; how much it pumps depends on the vent

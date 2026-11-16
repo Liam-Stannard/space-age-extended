@@ -30,7 +30,7 @@ fi
 
 # 3. Building specs sit in design/buildings/<building>/, never loose.
 if found="$(find . -name 'building-spec-*.md' -not -path './design/buildings/*/*' -not -path './.git/*' \
-    -not -path './.claude/*' -not -name 'building-spec-template.md' 2>/dev/null)" && [ -n "$found" ]; then
+    -not -path './.claude/*' -not -path './archive/*' -not -name 'building-spec-template.md' 2>/dev/null)" && [ -n "$found" ]; then
   echo "building specs outside design/buildings/<building>/:" >&2; echo "$found" >&2; fail=1
 fi
 

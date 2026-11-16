@@ -70,7 +70,7 @@ variance a player cannot plan around is noise rather than a decision.
 belongs to the item, not the surface. An irradiable item decays identically on
 Nauvis, on a platform and inside a cargo pod. It can be made true *in practice*
 by pushing those items' `weight` past `default_rocket_lift_weight` so they
-cannot leave — but `04-the-core.md` §4 requires the surface↔orbit lift, so
+cannot leave — but old `04-the-core.md` §4 (in git history) requires the surface↔orbit lift, so
 anything in that loop stays liftable and keeps ticking in orbit, above the
 radiation that is supposedly causing it.
 

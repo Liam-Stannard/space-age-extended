@@ -84,7 +84,7 @@ class Labels(unittest.TestCase):
         import random
         analyse.Gst.init(None)
         repo = HERE.parents[2]
-        files = {k: analyse.decode(repo / f"sound/drop-crusher/{k}.ogg", RATE) for k in ("drop", "pawl", "trip")}
+        files = {k: analyse.decode(repo / f"archive/sound/drop-crusher/{k}.ogg", RATE) for k in ("drop", "pawl", "trip")}
         rnd = random.Random(9)
         mix = [rnd.gauss(0, 0.002) for _ in range(RATE * 4)]
         for name, at, gain in (("drop", 1.0, 0.35), ("pawl", 1.0 + 4 / 6, 0.6), ("trip", 3.0, 0.5)):

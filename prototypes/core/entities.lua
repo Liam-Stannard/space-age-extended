@@ -279,15 +279,6 @@ local vp_ground_light =
   west_position = { -0.18, 0.36 }
 }
 
--- Each connection is a fitting set into the building's wall, as the Reaction
--- Plant casing's are (Liam, 2026-10-21: "how it has been done for the
--- casing"): the casing, its bolted boss and the flanged sleeve are part of the
--- plate, so the pipe pictures are only the sleeve's open mouth past the
--- footprint's edge (sheets/ports/meta.json, each shift taken from the tile
--- outside the port), drawn whether or not a pipe is joined. Unconnected, the
--- engine adds vanilla's cover over the mouth ("Fitting open + vanilla cover");
--- the model's own blind plates (sheets/ports/cover-*.png) are not used. A north
--- mouth is drawn behind the building, as vanilla's assemblers draw it.
 local function vp_port(face, w, h, shift)
   return
   {
