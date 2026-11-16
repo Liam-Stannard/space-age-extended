@@ -73,7 +73,7 @@ question, asked as the standing rules' "Judging and asking" says.
 - **Pass criteria:** each names the check and the result that passes,
   strong enough to catch the failure it exists for (a join test that
   checks the full pipe width, not the centreline).
-- **Words:** any `.md`, spec or TODO wording is proposed, never written.
+- **Words:** see `DOCUMENTATION-LANGUAGE.md` §8.
 - **Conflicts:** anything in the request that contradicts a spec, a rule
   or an earlier decision is put to Liam, quoting both.
 Ask again after each answer until the list has no gaps. Do not fill a gap
@@ -96,8 +96,7 @@ the gates are visible.
     Acceptance: 1. <check> -> <passing result>
     Sign-off: <who>, on <what evidence>
 
-Owner: artist, coder, code-reviewer, factorio-gameplay-expert, tester,
-analyst, orchestrator or Liam. A gameplay ticket's Sign-off names the
+Owner: artist, coder, code-reviewer, factorio-gameplay-expert, tester, analyst, docs-moderator, orchestrator or Liam. A gameplay ticket's Sign-off names the
 factorio-gameplay-expert: after the code-reviewer and before the tester
 for code, before Liam agrees for wording. Status: open, in progress, done, passed <first sign-off owner>
 (waiting on <the next>), signed off, blocked (<why>), or waiting
@@ -114,7 +113,7 @@ report), in this shape:
     Branch: <lowercase-with-hyphens, named for the work>
 
     ## Goal
-    What is true when this is done, in two or three sentences.
+    What is true when this is done (`DOCUMENTATION-LANGUAGE.md` §7.2).
     ## Scope
     The files and areas that may change.
     ## Out of scope
@@ -124,7 +123,7 @@ report), in this shape:
     `derive.placeholder_art` so the task passes without it; whether the
     building's spec in `design/buildings/<building>/` is agreed.
     ## Decisions
-    Liam's answers, quoted and dated.
+    Liam's answers (§7.2).
     ## Sources
     The ledger's verified facts.
     ## Pass criteria
@@ -146,6 +145,4 @@ the agreed file.
 
 ## 6. Keep the knowledge base true
 When the work proves or disproves an engine fact, a pipeline limit or a
-standard, propose the line to add to or change in `knowledge/` (rule 8:
-wording agreed first); the analyst may draft it. Each entry carries its
-source and date.
+standard, propose the line to add to or change in `knowledge/` (`DOCUMENTATION-LANGUAGE.md` §8); the analyst may draft it. Each entry is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.

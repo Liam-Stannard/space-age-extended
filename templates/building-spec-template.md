@@ -9,16 +9,14 @@ factorio-building-round skill.
 
 # 1. Facts
 
-**Fill rule:** every line is a plain fact read from the mod, with no
-comparisons.
+**Fill rule:** `DOCUMENTATION-LANGUAGE.md` §7.4.
 
 - **Name:**
-- **What it does:** one or two sentences.
+- **What it does:**
 - **Size and directions:**
 - **Where it can be built:**
 - **Power:** what it uses or makes, or "none".
-- **Inputs and outputs:** its slots and connections only. Its recipes, with
-  their times, are in the line's document (06 or 08), not here.
+- **Inputs and outputs:** its slots and connections only.
 - **Speed:** crafting speed and module slots.
 - **Cost:**
 - **Weight:**
@@ -33,11 +31,11 @@ comparisons.
 
 ## 3.1 Design Concept
 
-Two or three lines: what the machine is, and what it must not be mistaken for.
+What the machine is, and what it must not be mistaken for.
 
 ## 3.2 Key Visual Features
 
-Up to five features, each one a thing the model can show.
+Its features.
 
 ### Signature Feature
 
@@ -49,7 +47,7 @@ The one feature that makes it recognisable, ideally one that shows how it works.
 | ---- | --- | ----- |
 | | | |
 
-Name every glow and what it shows, and the painted area.
+
 
 ---
 

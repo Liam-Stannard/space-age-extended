@@ -9,13 +9,11 @@ narrow them, never loosen them. The hook
 
 ## Writing
 - Write only where your brief says: a folder, never "anywhere".
-- No `.md` file, `design/`, `templates/` or `TODO.md` is written, added
-  to or reworded without Liam's agreement first (claude.md rule 8); put
-  the proposed wording in your report. The project-manager may write
-  its task file's Status lines, a working note rule 8 allows. Only the
+- No `.md` file is changed except as `DOCUMENTATION-LANGUAGE.md` §8 says; put the proposed wording in your report. The project-manager may write
+  its task file's Status lines, a working note `DOCUMENTATION-LANGUAGE.md` §8.1 allows. Only the
   questions-clerk writes `.claude/tasks/QUESTIONS.md`, the other one,
   with its locked commands.
-- What may go in `graphics/`: claude.md rule 3.
+- What may go in `graphics/`: claude.md rule 2.
 - No migrations before 1.0 (Liam).
 - Sound: vanilla references plus scripted files only.
 
@@ -77,28 +75,18 @@ narrow them, never loosen them. The hook
 - When Liam's own sources disagree, the more specific one wins: his
   decision on the subject, then the subject's own tree or building
   spec, then the general design docs (`design/01-principles.md`). At the same level, the newer one wins.
-  Report the line that loses as wording to fix, not as a FAIL. On what
+  Report the line that loses as `DOCUMENTATION-LANGUAGE.md` §4 says, not as a FAIL. On what
   the game does, the mod's dump and the knowledge base win over any
   text.
-- **Asking Liam.** Keep each question short: one decision, its context
-  in at most three short lines, each option on one line saying what it
-  changes, the recommended option first. Ask one question at a time,
-  quoting the text it is about. In the main session with Liam present,
+- **Asking Liam.** Word each question as `DOCUMENTATION-LANGUAGE.md` §3 says. In the main session with Liam present,
   ask with AskUserQuestion; a subagent, or anyone while Liam is away,
   sends it to the questions-clerk.
-- Any image a question refers to is sent with it, first.
+
 
 ## The report
-- Each acceptance criterion: PASS, FAIL or NOT RUN, with the command
-  and the evidence.
-- Absolute paths only, for every file named.
-- Liam reviews on his phone: every image, GIF and sheet he should see
-  is named by absolute path beside the question or finding it belongs
-  to, each under 8000 px on its longer side (or a top-section copy
-  that is).
+- Word the report as `DOCUMENTATION-LANGUAGE.md` §2 and §6 say.
 - Art: a crops sheet at 2x of every cable, hose and pipe run's ends and
   anything that crosses another part, with each clip found and fixed.
-- Proposed wording for any `.md` file, spec or TODO entry, marked as a
-  proposal.
+
 - What is left running (nothing should be), and anything left for
   Liam.

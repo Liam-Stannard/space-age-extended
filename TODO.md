@@ -146,7 +146,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Repository
 
-- **Remove the code comments (claude.md rule 9).** A later task removes them, moving any decision they record into its spec or task file.
+- **Remove the code comments (claude.md rule 8).** A later task removes them, moving any decision they record into its spec or task file.
 - **`changelog.txt` is empty.** Write a 0.3.x entry covering the reset, the cut
   back to the landing, stage 1 of the radiant cycle and the Blender pipeline.
 - **Hook: deletes that still pass (agent-setup-followup T05 review,

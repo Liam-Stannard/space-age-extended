@@ -10,9 +10,7 @@ being built.
 
 ## The entry format
 
-Each idea gets a number, a one-line pitch, and four headings: what the game
-already gives, what it doesn't, what it would cost, and its status. Every claim
-about the game names its source, so the research never has to be done twice.
+Each idea is written as `DOCUMENTATION-LANGUAGE.md` §7.6 says, and every claim about the game names its source (§1.3), so the research never has to be done twice.
 
 ---
 

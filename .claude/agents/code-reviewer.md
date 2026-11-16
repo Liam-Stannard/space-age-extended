@@ -50,10 +50,5 @@ return a verdict.
 
 ## What to return
 First line: `VERDICT: PASS` or `VERDICT: CHANGES NEEDED`.
-Then findings, most severe first, each with the file and line, one
-sentence stating the defect, and the concrete input or state that
-makes it go wrong. Only report what you confirmed by reading or
-running; say PLAUSIBLE if you could not. Style remarks go last,
-marked as such, and never on their own turn the verdict to CHANGES
-NEEDED. When asked to re-review, look at what changed since your last
+Then findings, as `DOCUMENTATION-LANGUAGE.md` §6.5 says. Style remarks never on their own turn the verdict to CHANGES NEEDED. When asked to re-review, look at what changed since your last
 look and say, per earlier finding, whether it is resolved.

@@ -52,6 +52,4 @@ agrees. Anything that needs a client to check (a sheet loading, an
 animation playing) is reported as unchecked.
 
 ## Report
-What you made, where it sits, every figure beside vanilla's, the
-crops sheet, any spec wording as a proposal, and what is ready for
-Liam to judge.
+What you made, where it sits, the crops sheet, and what is ready for Liam to judge, worded as `DOCUMENTATION-LANGUAGE.md` §6 says.

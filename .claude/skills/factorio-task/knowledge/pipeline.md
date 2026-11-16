@@ -3,7 +3,7 @@
 - **Repo:** master is checked out in `.claude/worktrees/master-merge`;
   `~/.factorio/mods/space-age-extended` links to it. Every task has its own
   branch and worktree under `.claude/worktrees/`; nothing is committed on
-  master directly (claude.md rule 7).
+  master directly (claude.md rule 6).
 - **Blender:** blender.org 5.0.1. Which build to use, rendering on the GPU
   through `render.sh`, and `render.done`: see the standing rules
   (factorio-standing-rules, "Blender" and "Waiting and processes"). The GPU
@@ -49,7 +49,7 @@
   Lua, with a MANIFEST of sums; the analyst reads it first.
   `tools/client/launch.sh --version` prints the installed version.
 - **Agents:** artist, coder, code-reviewer, factorio-gameplay-expert,
-  questions-clerk, tester, analyst and project-manager
+  questions-clerk, tester, analyst, docs-moderator and project-manager
   (`.claude/agents/`), each
   preloading the
   `factorio-standing-rules` skill. The `no-ghost-waits` hook blocks
