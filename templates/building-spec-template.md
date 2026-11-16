@@ -48,7 +48,6 @@ The one feature that makes it recognisable, ideally one that shows how it works.
 | | | |
 
 
-
 ---
 
 # 4. Factorio Visual Style

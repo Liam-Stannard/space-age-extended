@@ -82,11 +82,9 @@ narrow them, never loosen them. The hook
   ask with AskUserQuestion; a subagent, or anyone while Liam is away,
   sends it to the questions-clerk.
 
-
 ## The report
 - Word the report as `DOCUMENTATION-LANGUAGE.md` §2 and §6 say.
 - Art: a crops sheet at 2x of every cable, hose and pipe run's ends and
   anything that crosses another part, with each clip found and fixed.
-
 - What is left running (nothing should be), and anything left for
   Liam.
