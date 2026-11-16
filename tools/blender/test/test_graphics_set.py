@@ -331,7 +331,7 @@ def test_crafting(out):
 
 
 def test_furnace(out):
-    sheets = os.path.join(REPO, "concept", "vacuum-furnace", "model", "sheets")
+    sheets = os.path.join(REPO, "archive", "concept", "vacuum-furnace", "model", "sheets")
     code, d, src = run(sheets, os.path.join(out, "furnace", "1.5"), "3x3", "--crafting-speed", "1.5")
     t = d["motion"]["timing"]
     fw = t["layers"]["flywheel"]
@@ -352,7 +352,7 @@ def test_furnace(out):
 
 
 def test_crusher(out):
-    sheets = os.path.join(REPO, "concept", "drop-crusher", "model", "sheets")
+    sheets = os.path.join(REPO, "archive", "concept", "drop-crusher", "model", "sheets")
     _, d, src = run(sheets, os.path.join(out, "crusher", "none"), "3x3")
     check("crusher: no option: 240 ticks, crafting-machine from meta.json",
           (d["motion"]["timing"]["loop_ticks"], src["graphics_set"], src["animation_progress"]) == (240, "crafting-machine", 0.5)

@@ -234,7 +234,7 @@ def test_refused(out):
 
 
 def test_crusher(out):
-    sheets = os.path.join(REPO, "concept", "drop-crusher", "model", "sheets")
+    sheets = os.path.join(REPO, "archive", "concept", "drop-crusher", "model", "sheets")
     code, d, _ = measure_run(sheets, os.path.join(out, "crusher", "crafting"), "3x3",
                              "--graphics-set", "crafting-machine")
     _, plain, _ = measure_run(sheets, os.path.join(out, "crusher", "plain"), "3x3", "--animation-progress", "1")

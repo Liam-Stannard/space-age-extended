@@ -10,17 +10,6 @@ This one walks the technology tree and asks, for every technology, with only its
 transitive prerequisites researched: is each recipe it unlocks actually
 craftable? Every ingredient obtainable, and a machine of its category buildable?
 
-**It was written because the answer was no.** Plate smelting had been re-sourced
-onto crushed kamacite so that beneficiation could not be skipped -- correct, and
-one line -- but crushing runs only in the Drop Crusher, crushed kamacite and
-fines are the only two routes to a kamacite plate, and the Drop Crusher cost 40
-kamacite plate. The first crusher could never be built. Nothing else in the game
-makes kamacite plate, so it could not be imported either, and every one of the
-Core's technologies unlocked recipes that were unreachable. The mod loaded, it
-passed every check in the repo, and it could not be played past the landing pad.
-
-Thirty failures on the first run, of which that was one.
-
 What counts as obtainable:
 
   * anything mined from a resource, grown as a plant, or caught as an asteroid

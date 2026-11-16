@@ -16,7 +16,7 @@
   "capture": { "width": 640, "height": 480, "fps": 30, "rate": 48000 },
   "mp4": { "lead_seconds": 0.6, "video_bitrate": 800000, "audio_bitrate": 128000 },
   "stroke": {
-    "filename": "graphics/entity/drop-crusher/stroke.png",
+    "filename": "archive/graphics/entity/drop-crusher/stroke.png",
     "width": 191, "height": 136, "frame_count": 44, "line_length": 22,
     "frame_sequence": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 14, 14, 14, 14, 14,
                         15, 16, 17, 18, 19, 20, 21, 22, 23, 23, 23, 23, 23, 23, 23, 23, 24, 25, 26, 26,
@@ -24,9 +24,9 @@
     "shift": [ 0.02344, -0.9375 ], "scale": 0.5
   },
   "sounds": {
-    "drop": "sound/drop-crusher/drop.ogg",
-    "pawl": "sound/drop-crusher/pawl.ogg",
-    "trip": "sound/drop-crusher/trip.ogg"
+    "drop": "archive/sound/drop-crusher/drop.ogg",
+    "pawl": "archive/sound/drop-crusher/pawl.ogg",
+    "trip": "archive/sound/drop-crusher/trip.ogg"
   },
   "expect": {
     "source": "the crusher's accents as agreed (spec section 3.4, re-timed in drop-crusher-reanimation T02, 2026-11-08), as frame_sequence entries counted from 0: used only to judge the measured frames, never to find them",

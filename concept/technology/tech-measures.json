@@ -21,69 +21,6 @@
    },
    "shadow_px": 3082
   },
-  "sae-core-survey": {
-   "strip": {
-    "size": [
-     480,
-     256
-    ],
-    "mode": "RGBA",
-    "alpha_outside_levels": 0
-   },
-   "framing": {
-    "opaque_bbox_w": 241,
-    "opaque_bbox_h": 208,
-    "share": 0.429
-   },
-   "tonal": {
-    "p5": 6,
-    "p50": 89,
-    "p95": 169
-   },
-   "shadow_px": 3243
-  },
-  "sae-gravity-crushing": {
-   "strip": {
-    "size": [
-     480,
-     256
-    ],
-    "mode": "RGBA",
-    "alpha_outside_levels": 0
-   },
-   "framing": {
-    "opaque_bbox_w": 222,
-    "opaque_bbox_h": 228,
-    "share": 0.454
-   },
-   "tonal": {
-    "p5": 10,
-    "p50": 88,
-    "p95": 176
-   },
-   "shadow_px": 2501
-  },
-  "sae-vacuum-sintering": {
-   "strip": {
-    "size": [
-     480,
-     256
-    ],
-    "mode": "RGBA",
-    "alpha_outside_levels": 0
-   },
-   "framing": {
-    "opaque_bbox_w": 243,
-    "opaque_bbox_h": 212,
-    "share": 0.519
-   },
-   "tonal": {
-    "p5": 13,
-    "p50": 97,
-    "p95": 181
-   },
-   "shadow_px": 1317
-  },
   "sae-vent-tapping": {
    "strip": {
     "size": [
