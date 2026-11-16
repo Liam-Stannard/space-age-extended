@@ -15,9 +15,8 @@ Every rule for how this project's text is worded. Other files point here and do 
 
 1. No commands or code names. Commands, figures and file:line references go in a separate evidence file beside the report.
 2. When a file is named for Liam, name it by its absolute path.
-3. Use lists, not tables: tables do not show in his remote session.
-4. Every image, GIF or sheet he must judge is named by absolute path beside the question or finding it belongs to, is sent to him before the question, and is under 8000 px on its longer side.
-5. Quote the rule, principle or text a finding or question is about, in full.
+3. Every image, GIF or sheet he must judge is named by absolute path beside the question or finding it belongs to, is sent to him before the question, and is under 8000 px on its longer side.
+4. Quote the rule, principle or text a finding or question is about, in full.
 
 ## 3. Questions to Liam
 
