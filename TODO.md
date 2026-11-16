@@ -17,6 +17,14 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   and the Vent Pump exists only to trigger Radiant power while the line that
   used it is gone. Gravity settling (in git history, old 04 §8) is the
   candidate on file.
+- **Decide what kamacite plate is for.** With the Vacuum Furnace and the
+  Reaction Plant gone, nothing uses kamacite plate, and crushed kamacite
+  only makes plate, so both fail principle 2 until this is settled. Done
+  when the plate has one of principle 2's purposes,
+  06-core-production-tree.md says which, and something in the game uses
+  it; or the plate goes, and crushed kamacite gets a use of its own or
+  goes too. Fines smelting ends in the plate too; see
+  "Fines need their advanced use". (Liam, 2026-11-16: "Add a TODO".)
 - **Fines need their advanced use.** Metal carbonyl
   (in git history, old 06 T3) is the chosen later sink for
   kamacite fines, beside fines smelting. It lands with the next tier of the
@@ -38,15 +46,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   once the docs are rewritten for the rework.
 - **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
   Rename the fluid, its vent, its turbine and its technology in the mod and in every
-  document. It replaces the old "crust gas to siderane" rename entry. With
-  it, look at the vacuum names (Vacuum sintering, the Vacuum Furnace), which
-  pressure 200 no longer fits.
-- **Decide the Vacuum Furnace's job.** In the code it runs only `smelting`,
-  so on the Core it is a slower, hungrier electric furnace, and three
-  tooltips claim work it does not have (T09 gameplay review,
-  evidence/gameplay-audit/T09/vacuum-furnace.md concern 1: (a) lock fines smelting to it, (b) base
-  productivity, (c) delete it, (d) rewrite the spec). Then fix the
-  tooltips and the unused flux box to match.
+  document. It replaces the old "crust gas to siderane" rename entry.
 - **Holmium oxide's productivity.** With productivity modules the oxide
   route gives +56% to +110% holmium, not +20%. Decide whether to drop
   productivity on `sae-holmium-oxide` (T09 gameplay review,
@@ -175,17 +175,9 @@ Stages: see the factorio-building-round skill.
   the open surface and the glowing shore follows tile-aligned steps
   (seen on 2.1.22; Liam signed the pool off and asked for this to be
   logged).
-- **Re-render the Reaction Plant's icon.** Liam did not accept the shipped
-  icon (2026-11-15: "Redo it").
-- **The Reaction Plant has no sound of its own.** Its press accent is
-  a vanilla stand-in (`landfill-inventory-move`) and its bed is the
-  chemical plant's; it needs a design and rounds, as the crusher had.
 - **The Vent Pump has no sound.** It is silent: the pumpjack's sounds it
   inherited are stripped and nothing replaces them. It needs a sound cued to
-  its charges, with a design and rounds, as the crusher had.
-- **The Ballast Drill's sounds want the crusher's treatment**: softer
-  attacks, less high end, heavier, grouped like vanilla's (Liam,
-  2026-10-20: "Crusher first").
+  its charges, with a design and rounds, as the Drop Crusher had.
 
 ## Design
 
@@ -197,11 +189,11 @@ Stages: see the factorio-building-round skill.
   candidate on file.
 - **Raise the Core's pressure to 200.** 04 now says 200 (Liam, 2026-11-14).
   The planet changes, and every pressure limit has to move with it. The
-  Core-only limits move from 1-9 to 1-299: the Reaction Plant and the radiant
-  precipitation recipe. The 'pressure 9 or less' limits (the Core and
-  platforms) move to 299 or less: the Radiant Generator and the Vacuum
-  Furnace. The Hydrogen Turbine is 9 or less today and must become Core-only,
-  1-299. What will then work there: see 04-the-core.md, Surface properties.
+  Core-only limit moves from 1-9 to 1-299: the radiant precipitation
+  recipe. The 'pressure 9 or less' limit (the Core and platforms) moves
+  to 299 or less: the Radiant Generator. The Hydrogen Turbine is 9 or
+  less today and must become Core-only, 1-299. What will then work
+  there: see 04-the-core.md, Surface properties.
 - **Decide whether the Core has carbon.** 04 no longer says what the Core
   lacks (Liam, 2026-11-14: "remove this for now"). Carbon is up for review;
   copper, water and organics are not yet decided either.

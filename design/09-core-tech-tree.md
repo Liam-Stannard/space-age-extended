@@ -31,42 +31,30 @@ Tier 0, the foothold, is in the mod. The tiers above it wait on
 - **Purpose:** the Core's first power (see 08-core-power.md, section 2, for restarting after a blackout).
 - **Depends on:** Core discovery.
 
-### Core survey
+### Kamacite processing
 
-- **Description:** the Ballast Drill (see its spec).
-- **Cost:** none. It is a trigger: craft a gas pump.
-- **Purpose:** the first ore out of the ground.
+- **Description:** the Heavy crusher, crushing, kamacite smelting, and
+  fines smelting.
+- **Cost:** none. It is a trigger: mine kamacite ore, which only the big
+  mining drill can.
+- **Purpose:** turns ore into crushed kamacite and fines, and both into
+  plate.
 - **Depends on:** Hydrogen extraction.
-
-### Gravity crushing
-
-- **Description:** the Drop Crusher, crushing, and kamacite smelting.
-- **Cost:** none. It is a trigger: craft a Ballast Drill.
-- **Purpose:** turns ore into crushed kamacite and fines, and crushed kamacite
-  into plate.
-- **Depends on:** Core survey.
-
-### Vacuum sintering
-
-- **Description:** the Vacuum Furnace, and fines smelting.
-- **Cost:** none. It is a trigger: craft 50 kamacite fines.
-- **Purpose:** gives the crusher's fines a use.
-- **Depends on:** Gravity crushing.
 
 ### Vent tapping
 
 - **Description:** the Vent Pump (see its spec).
-- **Cost:** none. It is a trigger: craft a Vacuum Furnace.
+- **Cost:** none. It is a trigger: craft 50 kamacite fines.
 - **Purpose:** opens the kamacite vents.
-- **Depends on:** Vacuum sintering, and Uranium mining (the game needs it; see
-  engine.md).
+- **Depends on:** Kamacite processing, and Uranium mining (the game
+  needs it; see engine.md).
 
 ### Radiant power
 
-- **Description:** the Reaction Plant, radiant precipitation, the radiant
-  generator, and radiant chunk crushing.
+- **Description:** radiant precipitation, the radiant generator, and
+  radiant chunk crushing.
 - **Cost:** none. It is a trigger: craft a Vent Pump.
-- **Purpose:** power that doesn't run out. The plant, the fuel and the generator
+- **Purpose:** power that doesn't run out. The fuel and the generator
   come together, so the generator never arrives without its fuel.
 - **Depends on:** Vent tapping.
 

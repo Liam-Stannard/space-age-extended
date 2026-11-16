@@ -35,7 +35,7 @@ Five resources found on the core.
 
 **Kamacite ore:** few, very rich patches, far apart, that run out. One patch of
 about 120,000 lies near the landing, and the boulders give a little by hand.
-Only the Ballast Drill mines it.
+Only the big mining drill mines it.
 
 **Kamacite vent:** molten kamacite, a fluid that never runs out but slows as it
 is drawn, as crude oil does. It can't be barrelled, so it never leaves the
@@ -62,13 +62,7 @@ offshore pump draws it from the shore. A small pool lies near the landing.
 The Core's final line needs a product from every planet's tree (see
 `00-vision.md`), so the Core can never do without them.
 
-## 4. The line spans surface and orbit
-
-Part of the final line is made on a space platform above the Core. The Core
-has the strongest gravity in the game and the platform has none, and the line
-needs both. So the player runs one factory in two places.
-
-## 5. Elsewhere
+## 4. Elsewhere
 
 - The production line: `06-core-production-tree.md`.
 - The Core's tech tree: `09-core-tech-tree.md`.
