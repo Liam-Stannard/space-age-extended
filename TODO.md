@@ -104,7 +104,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   comes after the railgun. Vanilla's promethium chunk is never met before its
   use. Choose: an early use for the chunk (for example crushing it to iron or
   to magnetite when the tree's last technology opens); or leave it and teach
-  players to filter it (entry 10). (Magnetic collector report, row 5, C3.)
+  players to filter it ("Teach the fast chunk"). (Magnetic collector report,
+  row 5, C3.)
 - **Teach the fast chunk.** One tip, shown when the player first flies the
   route between Vulcanus and Fulgora, saying some chunks there are too fast
   for vanilla arms and can be filtered out until they have a use. Wording for
