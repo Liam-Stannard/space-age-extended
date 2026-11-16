@@ -6,3 +6,4 @@
 6. Prompt templates live in `./templates/`. Nowhere else.
 7. Every piece of work goes on its own feature branch, named for the work. It is merged into `master` once it is ready, and the branch is deleted after the merge. Nothing is committed directly to `master`.
 8. No `.md` file — `TODO.md`, `README.md`, anything in `design/`, `templates/` or `concept/` — is written to, added to or reworded without my explicit agreement first. Propose the wording in the reply; write it only once agreed. Working notes are the exception: a task file's ticket Status lines, entries in `.claude/tasks/QUESTIONS.md`, and my answers recorded there word for word.
+9. No comments in code. Code is made readable by clear names, small functions and plain structure, not by comments.
