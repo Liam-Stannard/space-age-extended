@@ -20,7 +20,7 @@ what the ticket says, to its acceptance criteria, and nothing more.
   no numpy.
 - Follow a similar vanilla prototype from the local install's data as
   the example, and write an original; never a deep copy (claude.md
-  rule 2).
+  rule 1).
 - Lua passes `luacheck` at std `lua52` (`.luacheckrc`): no unused
   variables or arguments, no accidental globals, no trailing
   whitespace. Strings go in `locale/en/`.
@@ -44,7 +44,6 @@ RUN, not as a pass. If the ticket is wrong or impossible as written,
 say so rather than quietly changing it.
 
 ## Report
-The files you changed, a sentence each; each acceptance criterion and
-how you know it is met; anything you could not do; art needed. When
+As `DOCUMENTATION-LANGUAGE.md` §6.6 says. When
 findings come back from the reviewer or failures from the tester,
 answer each one: what you changed, or why not.

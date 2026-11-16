@@ -40,6 +40,5 @@ repo is edited.
 
 ## Report
 One line per criterion: its number, PASS / FAIL / NOT RUN, the
-command, the evidence path. Then anything the criteria do not cover,
-marked as an observation. When asked to re-run, run everything again,
+command, the evidence path. Then any observations (`DOCUMENTATION-LANGUAGE.md` §6.4). When asked to re-run, run everything again,
 not only what failed.

@@ -1,9 +1,8 @@
-1. Do not modify any file in `design/` without explicit agreement from me.
-2. When creating entities or prototypes, use similar vanilla entities or prototypes as examples to follow. Do not just deep-copy one; create an original.
-3. Concept work is design, not implementation. Every concept image and option round lives in `./concept/<building>/`. Only signed-off or placeholder art lives in `./graphics/`; nothing in `./concept/` ships, and nothing in `./graphics/` or `./prototypes/` is a concept. A building's Blender model, the script that renders its plates and anything baked from its concept sheet for it, lives in `./concept/<building>/model/`, because a model is design like the master plate it replaces; the shared render pipeline lives in `./tools/blender/`.
-4. All design documentation lives in `./design/`. Each building's spec (`building-spec-<building>.md`) lives in `./design/buildings/<building>/`.
-5. Every outstanding task is logged in `./TODO.md` and removed once complete. Todos are logged nowhere else.
-6. Prompt templates live in `./templates/`. Nowhere else.
-7. Every piece of work goes on its own feature branch, named for the work. It is merged into `master` once it is ready, and the branch is deleted after the merge. Nothing is committed directly to `master`.
-8. No `.md` file — `TODO.md`, `README.md`, anything in `design/`, `templates/` or `concept/` — is written to, added to or reworded without my explicit agreement first. Propose the wording in the reply; write it only once agreed. Working notes are the exception: a task file's ticket Status lines, entries in `.claude/tasks/QUESTIONS.md`, and my answers recorded there word for word.
-9. No comments in code. Code is made readable by clear names, small functions and plain structure, not by comments.
+1. When creating entities or prototypes, use similar vanilla entities or prototypes as examples to follow. Do not just deep-copy one; create an original.
+2. Concept work is design, not implementation. Every concept image and option round lives in `./concept/<building>/`. Only signed-off or placeholder art lives in `./graphics/`; nothing in `./concept/` ships, and nothing in `./graphics/` or `./prototypes/` is a concept. A building's Blender model, the script that renders its plates and anything baked from its concept sheet for it, lives in `./concept/<building>/model/`, because a model is design like the master plate it replaces; the shared render pipeline lives in `./tools/blender/`.
+3. All design documentation lives in `./design/`. Each building's spec (`building-spec-<building>.md`) lives in `./design/buildings/<building>/`.
+4. Every outstanding task is logged in `./TODO.md` and removed once complete. Todos are logged nowhere else.
+5. Prompt templates live in `./templates/`. Nowhere else.
+6. Every piece of work goes on its own feature branch, named for the work. It is merged into `master` once it is ready, and the branch is deleted after the merge. Nothing is committed directly to `master`.
+7. Every rule for how text is worded, and for how any `.md` file is changed, is in `DOCUMENTATION-LANGUAGE.md`.
+8. No comments in code. Code is made readable by clear names, small functions and plain structure, not by comments.

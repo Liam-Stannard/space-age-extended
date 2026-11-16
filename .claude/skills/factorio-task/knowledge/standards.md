@@ -1,8 +1,7 @@
 # Art standards Liam has set
 
 The one list of bars a building's art is held to, from the options
-stage on. Each line: the standard, Liam's words or the decision and the
-date, and how it is checked. Figures come from
+stage on. Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says. Figures come from
 `tools/blender/measure.py` (factorio-art-measure); "by eye" means Liam's
 judgement on the sheets. No figure here signs anything off.
 

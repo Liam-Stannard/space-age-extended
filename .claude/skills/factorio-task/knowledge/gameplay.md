@@ -1,6 +1,6 @@
 # Gameplay facts (Factorio 2.1.24), verified in this project, 2026-11-13
 
-Each line: the fact, then its source and date. Lua paths are under
+Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says. Lua paths are under
 knowledge-base/2.1.24/data/; "dump" is knowledge-base/2.1.24/data-raw-dump.json.
 "Computed" means worked by hand from the docs, not read from the engine;
 "graph.py" is tools/gameplay/graph.py on the dump.

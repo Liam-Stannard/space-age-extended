@@ -27,7 +27,6 @@ live — is set out in [claude.md](claude.md). Outstanding work is in
 ## Status
 
 The mod is being rebuilt from the landing up, and nothing has been played yet.
-Each design document and tree spec gives its own status.
 
 ## Checking a change
 
@@ -49,7 +48,7 @@ connected it runs as fast as it can, so time things in game ticks, not seconds.
 A building's art starts from its spec, in `design/buildings/<building>/`
 ([templates/building-spec-template.md](templates/building-spec-template.md)). Buildings are modelled
 and rendered in Blender (`tools/blender/`). What may go in `graphics/` is set by
-claude.md rule 3.
+claude.md rule 2.
 
 ## Icon art
 

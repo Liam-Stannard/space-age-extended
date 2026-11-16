@@ -1,6 +1,6 @@
 # Engine facts (Factorio 2.1.21-2.1.24), verified in this project
 
-Each line: the fact, then how it was verified and when.
+Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
 
 ## Animation and sound
 - Crafting machines play `animation_speed × crafting_speed × animation_progress`;

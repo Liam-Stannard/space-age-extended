@@ -41,6 +41,4 @@ frames or an hour of ticks is measured from tick 0 and marked
 loop_complete false: say so when quoting it.
 
 ## 4. Report
-Quote measures.json's figures for the bars standards.md names, beside
-the vanilla ones; name the comparison sheet's absolute path (pages are
-under 8000 px); state any bar not met, and any target (coverage) missed.
+Quote measures.json's figures as `DOCUMENTATION-LANGUAGE.md` §6.7 says, and any target (coverage) missed.

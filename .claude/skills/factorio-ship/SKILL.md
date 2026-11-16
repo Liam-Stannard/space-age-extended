@@ -16,10 +16,8 @@ branch for a merge; it never pushes. Only the main session pushes.
 - Stage by path. Leave out `*-2x.gif`, `__pycache__/`, scratch and
   evidence files; check with `git show --stat HEAD` after committing and
   amend out anything that slipped in.
-- The message says what the player or the next developer will see and
-  why, ending with the attribution lines.
-- A work-in-progress commit is allowed on a branch to protect work; say so
-  in its message.
+- The message is worded as `DOCUMENTATION-LANGUAGE.md` §6.8 says.
+- A work-in-progress commit is allowed on a branch to protect work.
 
 ## 3. Merge (master-merge worktree)
 - `git merge --no-ff <branch> -m "Merge branch '<branch>'" -m "<the

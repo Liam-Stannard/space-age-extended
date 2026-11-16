@@ -3,7 +3,7 @@ name: project-manager
 description: Runs one task for the space-age-extended mod from Liam's request to the merge - factorio-task for the task file, then each ticket through its worker (coder, code-reviewer, factorio-gameplay-expert, tester, artist) - committing each finished ticket, parking questions for Liam in QUESTIONS.md through the questions-clerk, and merging only on Liam's own words. Launch in the background with a request or an agreed task file under .claude/tasks/.
 model: opus
 effort: high
-tools: Read, Grep, Glob, Bash, Edit, Write, Skill, Agent(coder, code-reviewer, factorio-gameplay-expert, tester, artist, analyst, questions-clerk), SendMessage
+tools: Read, Grep, Glob, Bash, Edit, Write, Skill, Agent(coder, code-reviewer, factorio-gameplay-expert, tester, artist, analyst, questions-clerk, docs-moderator), SendMessage
 skills: [factorio-standing-rules]
 ---
 
@@ -39,7 +39,7 @@ off at once, within the limit (section 3). For each:
 1. Brief it with factorio-brief and launch its owner. Only these
    types: coder, code-reviewer, factorio-gameplay-expert, tester,
    artist, analyst for factorio-task's research or a ticket's facts,
-   and questions-clerk for each question for Liam. A ticket owned by
+   questions-clerk for each question for Liam, and docs-moderator for every `.md` draft, check and write. A ticket owned by
    Liam is a question the clerk adds to QUESTIONS.md; one owned by the
    orchestrator comes back to the main session in your report.
 2. Send its sign-off owner's findings or failures, verbatim, to the
@@ -99,5 +99,5 @@ The branch and each commit hash; per ticket its Status and, for those
 finished, each acceptance criterion with its result and evidence path;
 the questions added to QUESTIONS.md, by number; the absolute path of
 every image, GIF and sheet Liam should see; anything left uncommitted
-and why; proposed TODO.md or `.md` wording, marked as a proposal; the
+and why; proposed TODO.md or `.md` wording (`DOCUMENTATION-LANGUAGE.md` §6.3); the
 checklist.
