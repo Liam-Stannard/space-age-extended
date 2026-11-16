@@ -36,24 +36,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   Until then, nothing uses the spent cell and nothing can destroy it, so every
   burnt radiant fuel leaves one to store (Radiant Generator report, row 5, F1;
   the second reading agrees).
-- **Decide what happens to the cut buildings' art.** `graphics/` still holds
-  signed-off art for nine buildings that no longer exist — Bed Tender, Ignition
-  Array, Dross Classifier, Sealed Roboport, Whisker Plant, Coil Separator,
-  Whisker Comber, Helium Concentrator, Ring Mast — plus their item icons and the
-  whisker-bed terrain. Keep them for buildings that may return, or move them to
-  `concept/<building>/`; git keeps them either way.
-- **Rename "melt" to the kamacite vent in the docs.** "Melt" in `design/`,
-  once the docs are rewritten for the rework.
 - **Rename siderane to hydrogen.** 04 now says hydrogen (Liam, 2026-11-14).
   Rename the fluid, its vent, its turbine and its technology in the mod and in every
   document. It replaces the old "crust gas to siderane" rename entry.
-- **Holmium oxide's productivity.** With productivity modules the oxide
-  route gives +56% to +110% holmium, not +20%. Decide whether to drop
-  productivity on `sae-holmium-oxide` (T09 gameplay review,
-  evidence/gameplay-audit/T09/vulcanus-fulgora.md concern 4).
-- **The magnetite round after railgun damage 2.** Give it a lasting
-  advantage, or call it a bridge in the doc (T09 gameplay review,
-  evidence/gameplay-audit/T09/vulcanus-fulgora.md concern 3).
 - **Give radiant chunks a source, or stop unlocking their crushing.** Radiant
   power unlocks crushing radiant chunks, but nothing makes one: the radiant
   asteroid leaves nothing when it is destroyed, and no space route spawns the
@@ -85,45 +70,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   vanilla asteroid, and since it drops nothing it is only a faster hazard that
   costs ammunition. Give it vanilla's speed, or write the reason in the code.
   (Radiant Generator report, row 4, C4, added after reading the first run.)
-- **The magnetic collector's trade-off is thinner than the tree spec says.**
-  The spec's price is "four times the energy per arm move", but the arm moves
-  nearly three times as fast, so a catch at the same distance costs about one
-  and a half times the energy. With power to spare, nothing makes vanilla's
-  collector the better choice. This rests on "Accept tilt" and "Much more
-  power + cost". Choose: keep it and correct the spec's wording; or raise its
-  power so each tile of travel costs four times vanilla's. (Magnetic collector
-  report, row 2, C1.)
-- **The magnetic chunk's tooltip promises a lock.** "Only the magnetic
-  collector can catch it" is not what the game does: it is a strong tilt, and
-  vanilla collectors caught a few in the flight test. It also names a
-  building, which the tooltip rule leaves out. Proposed: "An asteroid chunk
-  found only between Vulcanus and Fulgora, too fast for most collectors'
-  arms." (Magnetic collector report, row 7, C2, and its wording line W3.)
-- **The magnetic chunk arrives long before its use.** Any collector on the
-  route catches it from the first trip, but its only use, the magnetite round,
-  comes after the railgun. Vanilla's promethium chunk is never met before its
-  use. Choose: an early use for the chunk (for example crushing it to iron or
-  to magnetite when the tree's last technology opens); or leave it and teach
-  players to filter it ("Teach the fast chunk"). (Magnetic collector report,
-  row 5, C3.)
-- **Teach the fast chunk.** One tip, shown when the player first flies the
-  route between Vulcanus and Fulgora, saying some chunks there are too fast
-  for vanilla arms and can be filtered out until they have a use. Wording for
-  Liam to agree. (Magnetic collector report, row 8, C5.)
-- **The magnetic collector's Factoriopedia scene.** Vanilla's collector has a
-  short moving scene on its Factoriopedia page; the magnetic one has none.
-  Copy vanilla's scene with the building swapped, as the mod already does for
-  the Core's boulder. (Magnetic collector report, row 7, C4.)
-
-## Building art in Blender
-
-Stages: see the factorio-building-round skill.
-
-- **The Vulcanus ↔ Fulgora tree wears stand-in art**: the induction
-  foundry, ozone collector and magnetic collector are tinted vanilla
-  buildings; the magnetic chunk is the metallic chunk with a blue rim;
-  obsidian, the tree's items and its eleven technologies wear tinted
-  vanilla icons. Concepts in progress (`vf-tree-concepts`).
 
 ## Blender pipeline
 
@@ -144,18 +90,6 @@ Stages: see the factorio-building-round skill.
 ## Trees
 
 - **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
-- **Cold cryogen multiplies itself.** In the recipes the superconducting store
-  is made from, productivity adds to the spent cryogen handed back, and
-  recovery turns it back into cold cryogen at nine tenths. Any bonus above
-  about 11% gives back more than went in, and the electromagnetic plant's
-  built-in 50% passes that with no modules. Mark the returned spent cryogen so
-  productivity does not multiply it, as vanilla's cryogenic science pack does.
-  For the Fulgora-Aquilo tree's review. (Superconducting store report, row 3,
-  C2.)
-- **File the superconducting store with the energy buildings.** In the
-  crafting menu it sits in the row for the Core's buildings; vanilla files the
-  accumulator and the fusion generator in the energy row. Move it there.
-  (Superconducting store report, row 7, C4.)
 
 ## Art
 
