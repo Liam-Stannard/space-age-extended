@@ -25,6 +25,9 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   nothing replaces it, so a playthrough never ends.
 - **Plan the radiant cycle past stage 1** (`design/08-core-power.md`). The
   spent-cell decision under Power waits on this.
+  Until then, nothing uses the spent cell and nothing can destroy it, so every
+  burnt radiant fuel leaves one to store (Radiant Generator report, row 5, F1;
+  the second reading agrees).
 - **Decide what happens to the cut buildings' art.** `graphics/` still holds
   signed-off art for nine buildings that no longer exist — Bed Tender, Ignition
   Array, Dross Classifier, Sealed Roboport, Whisker Plant, Coil Separator,
@@ -51,6 +54,65 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 - **The magnetite round after railgun damage 2.** Give it a lasting
   advantage, or call it a bridge in the doc (T09 gameplay review,
   evidence/gameplay-audit/T09/vulcanus-fulgora.md concern 3).
+- **Give radiant chunks a source, or stop unlocking their crushing.** Radiant
+  power unlocks crushing radiant chunks, but nothing makes one: the radiant
+  asteroid leaves nothing when it is destroyed, and no space route spawns the
+  chunk. Every vanilla chunk comes from its asteroid or from the space around
+  a planet. It was left this way on purpose ("Fine as designed", 2026-10-20).
+  Choose: the asteroid drops a chunk when destroyed, as vanilla's do; or
+  crushing comes out of Radiant power until the chunk has a source. Either fix
+  also stops the technology and Factoriopedia showing a chunk and a recipe the
+  player never meets. If the chunk stays without a source, add it to the
+  exceptions of the rule that every item has a purpose. (Radiant Generator
+  report, row 1, F2, and row 7, C3; the second reading agrees.)
+- **Weights lighter than vanilla, with no reason written down.** The Siderane
+  turbine, the Vent Pump, the Gas Pump and the Radiant Generator each set a
+  weight well under the vanilla building beside them, so 2.5 times as many fit
+  in a rocket: 25 turbines against 10 steam turbines, 50 pumps against 20
+  pumpjacks, 25 generators against 10 steam turbines. For each, write the
+  reason in its spec, or give it a vanilla weight: for the two pumps and the
+  generator, the weight the game works out itself; for the turbine, the steam
+  turbine's weight and stack, as its report suggests. (Siderane turbine
+  report, row 6, C2; Vent Pump report, row 6, C1; Gas Pump report, row 6, C1;
+  Radiant Generator report, row 6, C1.)
+- **Record that the Radiant Generator's power is used first.** The game uses
+  its power before the turbines'. That keeps the turbines idle as backup, as
+  the power document wants, but in vanilla only free power (solar, lightning)
+  goes first, and nothing written records the choice. Say it in the spec's
+  facts: "its power is used before the turbine's". (Radiant Generator report,
+  row 4, C2.)
+- **The radiant asteroid's speed.** It flies three times as fast as every
+  vanilla asteroid, and since it drops nothing it is only a faster hazard that
+  costs ammunition. Give it vanilla's speed, or write the reason in the code.
+  (Radiant Generator report, row 4, C4, added after reading the first run.)
+- **The magnetic collector's trade-off is thinner than the tree spec says.**
+  The spec's price is "four times the energy per arm move", but the arm moves
+  nearly three times as fast, so a catch at the same distance costs about one
+  and a half times the energy. With power to spare, nothing makes vanilla's
+  collector the better choice. This rests on "Accept tilt" and "Much more
+  power + cost". Choose: keep it and correct the spec's wording; or raise its
+  power so each tile of travel costs four times vanilla's. (Magnetic collector
+  report, row 2, C1.)
+- **The magnetic chunk's tooltip promises a lock.** "Only the magnetic
+  collector can catch it" is not what the game does: it is a strong tilt, and
+  vanilla collectors caught a few in the flight test. It also names a
+  building, which the tooltip rule leaves out. Proposed: "An asteroid chunk
+  found only between Vulcanus and Fulgora, too fast for most collectors'
+  arms." (Magnetic collector report, row 7, C2, and its wording line W3.)
+- **The magnetic chunk arrives long before its use.** Any collector on the
+  route catches it from the first trip, but its only use, the magnetite round,
+  comes after the railgun. Vanilla's promethium chunk is never met before its
+  use. Choose: an early use for the chunk (for example crushing it to iron or
+  to magnetite when the tree's last technology opens); or leave it and teach
+  players to filter it (entry 10). (Magnetic collector report, row 5, C3.)
+- **Teach the fast chunk.** One tip, shown when the player first flies the
+  route between Vulcanus and Fulgora, saying some chunks there are too fast
+  for vanilla arms and can be filtered out until they have a use. Wording for
+  Liam to agree. (Magnetic collector report, row 8, C5.)
+- **The magnetic collector's Factoriopedia scene.** Vanilla's collector has a
+  short moving scene on its Factoriopedia page; the magnetic one has none.
+  Copy vanilla's scene with the building swapped, as the mod already does for
+  the Core's boulder. (Magnetic collector report, row 7, C4.)
 
 ## Building art in Blender
 
@@ -81,6 +143,18 @@ Stages: see the factorio-building-round skill.
 ## Trees
 
 - **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
+- **Cold cryogen multiplies itself.** In the recipes the superconducting store
+  is made from, productivity adds to the spent cryogen handed back, and
+  recovery turns it back into cold cryogen at nine tenths. Any bonus above
+  about 11% gives back more than went in, and the electromagnetic plant's
+  built-in 50% passes that with no modules. Mark the returned spent cryogen so
+  productivity does not multiply it, as vanilla's cryogenic science pack does.
+  For the Fulgora-Aquilo tree's review. (Superconducting store report, row 3,
+  C2.)
+- **File the superconducting store with the energy buildings.** In the
+  crafting menu it sits in the row for the Core's buildings; vanilla files the
+  accumulator and the fusion generator in the energy row. Move it there.
+  (Superconducting store report, row 7, C4.)
 
 ## Art
 
@@ -135,6 +209,13 @@ Stages: see the factorio-building-round skill.
   tiles are for later (Liam, 2026-10-19).
 - **Reference tables cut from 01-principles.md.** The platform placement list, the immovable fluids and the planet properties table came out in the principles refactor (2026-11-13). Decide where they live, and re-verify them against 2.1.24.
 - **Trees extend one planet each, not pairs.** The principles changed on 2026-11-13. The two built cross-planet trees (Vulcanus ↔ Fulgora, Fulgora ↔ Aquilo) need reworking to match. A task file comes first.
+- **A Core briefing.** Vanilla gives each planet a briefing when it is
+  discovered; the Core has none. Nothing tells the player that the Gas Pump
+  and the turbine are the first power and the way back after a blackout. Add
+  one briefing on Core discovery, in wording Liam agrees. (Siderane turbine
+  report, row 8, C4. The Reaction Plant report, row 8, C5, and the Ballast
+  Drill report, row 8, C1, asked for the same briefing: the radiant cycle, and
+  that the Core cannot make its machines' parts.)
 
 ## Repository
 
