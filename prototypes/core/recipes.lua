@@ -4,8 +4,6 @@
 -- line, the farm, the lift and the endgame went with the cut.
 
 data:extend({
-  -- Crushed ore, not raw: plate from raw ore made the Drop Crusher skippable,
-  -- and the crusher's own spec says so in as many words.
   {
     type = "recipe",
     name = "sae-kamacite-smelting",
@@ -13,6 +11,8 @@ data:extend({
     energy_required = 6.4,
     ingredients = { { type = "item", name = "sae-crushed-kamacite", amount = 3 } },
     results = { { type = "item", name = "sae-kamacite-plate", amount = 1 } },
+    allow_productivity = true,
+    auto_recycle = false,
     enabled = false
   },
 
@@ -33,23 +33,7 @@ data:extend({
   }
 })
 
---------------------------------------------------------------------------------
--- What the Core's machines run.
---
--- Every category here is private to one building -- see machines.lua for why
--- that matters. The numbers are the "first pass" figures in each building's
--- spec, section 2.
---------------------------------------------------------------------------------
-
 data:extend({
-  -- N1. Crushing. Two streams from one ore, so beneficiation is a choice rather
-  -- than a formality.
-  --
-  -- 4 s and 4 -> 6 + 2 because one craft is one drop of the weight: the
-  -- engine plays the Drop Crusher's 24-frame stroke at 0.1 frames a tick, a
-  -- 240-tick stroke (measured, see DC_SPEED in machines.lua). It was 2 s and
-  -- 2 -> 3 + 1, which was two crafts a drop; doubling time and every amount
-  -- keeps the throughput and the 3:1 split exactly.
   {
     type = "recipe",
     name = "sae-crushing",
@@ -69,10 +53,11 @@ data:extend({
       { type = "item", name = "sae-crushed-kamacite", amount = 6 },
       { type = "item", name = "sae-kamacite-fines", amount = 2 }
     },
+    allow_productivity = true,
+    auto_recycle = false,
     enabled = false
   },
 
-  -- N7. The fines the crusher makes, and the only machine that will take them.
   {
     type = "recipe",
     name = "sae-fines-smelting",
@@ -80,6 +65,8 @@ data:extend({
     energy_required = 9.6,
     ingredients = { { type = "item", name = "sae-kamacite-fines", amount = 4 } },
     results = { { type = "item", name = "sae-kamacite-plate", amount = 1 } },
+    allow_productivity = true,
+    auto_recycle = false,
     enabled = false
   }
 })

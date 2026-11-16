@@ -86,11 +86,8 @@ local MACHINES =
 {
   ["sae-gas-pump"] = "aa",
   ["sae-crust-turbine"] = "ab",
-  ["sae-ballast-drill"] = "ba",
-  ["sae-drop-crusher"] = "bb",
-  ["sae-vacuum-furnace"] = "bc",
+  ["sae-heavy-crusher"] = "bb",
   ["sae-vent-pump"] = "bd",
-  ["sae-reaction-plant"] = "cc",
   ["sae-superconducting-store"] = "eb",
   ["sae-radiant-generator"] = "ec"
 }

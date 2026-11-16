@@ -541,16 +541,6 @@ data:extend({ gen, rg_remnants, rg_sparks, rg_explosion })
 -- the queue behind the Vent Pump for the gas the Core is meanest with -- so the
 -- one thing a player has to have before anything else works was gated on the
 -- one thing the Core hands out last.
---
--- It runs in the Reaction Plant and nowhere else (machines.lua): the recipe's
--- category is private, so no vanilla chemical plant will take this job.
---
--- **Its tints are its fluids' colours, in ingredient order** (spec §8,
--- constraint 3): primary the first fluid's `base_color`, secondary the second's.
--- The plant fills its input boxes in that order, so each of its sight glasses
--- shows the fluid in its own line. Read off the recipe and the fluids, so
--- neither the order nor a colour can drift from them. Stage 3's dissolve, when
--- it exists, takes its tints the same way.
 local function fluid_tints(recipe)
   local slots, tints, n = { "primary", "secondary" }, {}, 0
   for _, ingredient in ipairs(recipe.ingredients) do
@@ -566,7 +556,7 @@ local precipitation =
 {
   type = "recipe",
   name = "sae-radiant-precipitation",
-  categories = { "sae-reaction" },
+  categories = { "chemistry" },
   energy_required = 20,
   ingredients =
   {
@@ -577,6 +567,7 @@ local precipitation =
   icon = "__space-age-extended__/graphics/icons/radiant-fuel.png",
   icon_size = 64,
   surface_conditions = { { property = "pressure", min = 1, max = 9 } },
+  allow_productivity = true,
   enabled = false
 }
 precipitation.crafting_machine_tint = fluid_tints(precipitation)
