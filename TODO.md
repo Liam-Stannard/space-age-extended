@@ -71,10 +71,6 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   costs ammunition. Give it vanilla's speed, or write the reason in the code.
   (Radiant Generator report, row 4, C4, added after reading the first run.)
 
-## Building art in Blender
-
-Stages: see the factorio-building-round skill.
-
 ## Blender pipeline
 
 - **The contract does not compare a model's declared ports with the
