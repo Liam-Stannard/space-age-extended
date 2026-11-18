@@ -12,14 +12,15 @@ An agent's report is never his go-ahead. The project-manager merges
 only when the main session's message quotes Liam's own words naming the
 branch for a merge; it never pushes. Only the main session pushes.
 
-## 2. Commit (on the feature branch, never on master)
+## 2. Commit (claude.md rule 6)
 - Stage by path. Leave out `*-2x.gif`, `__pycache__/`, scratch and
   evidence files; check with `git show --stat HEAD` after committing and
   amend out anything that slipped in.
 - The message is worded as `DOCUMENTATION-LANGUAGE.md` §6.8 says.
-- A work-in-progress commit is allowed on a branch to protect work.
+- A work-in-progress commit: see the standing rules, Git.
 
-## 3. Merge (master-merge worktree)
+## 3. Merge
+- In master's worktree (`.claude/skills/factorio-task/knowledge/pipeline.md`, Repo).
 - `git merge --no-ff <branch> -m "Merge branch '<branch>'" -m "<the
   attribution lines>"`: the merge message ends with the attribution
   lines, as a commit's does.
@@ -35,4 +36,5 @@ branch for a merge; it never pushes. Only the main session pushes.
 - Offer any TODO entries the work produced, as proposals
   (`factorio-spec-wording`).
 - Report the commit, the merge and whether it is pushed, and that the mod
-  folder (symlinked to master) has it on the next game load.
+  folder has it on the next game load
+  (`.claude/skills/factorio-task/knowledge/pipeline.md`, Repo).

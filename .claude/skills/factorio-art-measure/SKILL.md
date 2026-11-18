@@ -13,7 +13,7 @@ measure.py cannot give, and says why.
         [--vanilla <name> ...] [--collide <model.py> [--collide-allow <pattern> ...]]
 - <src>: render.sh's out-dir, or a packed sheets directory (then give
   --footprint WxH, and --directions if the names don't say).
-- --out: always outside concept/ (scratch, or the round's own folder).
+- --out: your scratch, or the round's own folder.
 - --vanilla: the comparable building(s), named in the spec or the task.
 - --collide on every model round; an allow pattern names one meant contact
   as its whole line, never a wildcard.
@@ -23,11 +23,10 @@ measure.py cannot give, and says why.
 The bars, and which figure checks each, are in
 `.claude/skills/factorio-task/knowledge/standards.md`. What is
 measure.py's own:
-- joins: the bar is in standards.md (Pipes, Joins). Beside the pipe is
-  information only.
+- joins: the bar is in standards.md (Pipes, Joins). Its `beside` figure
+  in measures.json is information only.
 - collide: what it covers, and what is left to the eye, is in
-  standards.md (Hoses and cables, No clipping). The by-eye check is done
-  on the crops sheet.
+  standards.md (Hoses and cables, No clipping).
 - white and clipped: the bar is "No white" in standards.md. Sheets
   packed before 2026-10-20 were not rolled off, so compare across that
   date only with the newer sheet packed `rolloff: false`.
@@ -35,10 +34,13 @@ measure.py's own:
   quoted.
 
 ## 3. Timing
-measure.py plays each layer's frame_sequence at its animation_speed, as
-the engine does (render.json; meta.json). A loop longer than 1200 drawn
-frames or an hour of ticks is measured from tick 0 and marked
-loop_complete false: say so when quoting it.
+measure.py plays each layer's frame_sequence (render.json; meta.json) at
+the rate `.claude/skills/factorio-task/knowledge/engine.md` (Animation
+and sound) gives, with the animation progress it is given or the model
+declares, and the crafting speed it is given (default 1). Where it reads
+the docs its own way, or does not model the engine, its header says. A
+loop longer than 1200 drawn frames or an hour of ticks is measured from
+tick 0 and marked loop_complete false: say so when quoting it.
 
 ## 4. Report
-Quote measures.json's figures as `DOCUMENTATION-LANGUAGE.md` §6.7 says, and any target (coverage) missed.
+Quote measures.json's figures as `DOCUMENTATION-LANGUAGE.md` §6.7 says.

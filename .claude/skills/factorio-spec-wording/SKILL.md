@@ -8,16 +8,17 @@ How a `.md` file is changed: `DOCUMENTATION-LANGUAGE.md` §8.
 
 ## 1. Draft
 Read the file and what changed (the task file, Liam's decisions, the
-latest sheets). The docs-moderator writes the draft from the facts it is given (`DOCUMENTATION-LANGUAGE.md` §8.2-8.3). A second docs-moderator checks it before Liam sees it.
+latest sheets). The docs-moderator writes the draft, as `.claude/agents/docs-moderator.md` (Draft) and `DOCUMENTATION-LANGUAGE.md` §8.2-8.3 say. A second docs-moderator checks it before Liam sees it.
 Send the draft file to Liam and summarise it in the reply. Put the open
 questions to him as the standing rules' **Asking Liam** says.
 
 ## 2. Agree
-Wait for Liam's answers. (§8.4) For anything else, apply his changes and
-re-send if they are more than a line.
+Wait for Liam's answers. What his agreement covers is in
+`DOCUMENTATION-LANGUAGE.md` §8.4. Apply any changes he asks for, and
+send the draft again if they are more than a line.
 
 ## 3. Write
-The docs-moderator writes exactly the agreed text (§8.5).
+The docs-moderator writes the agreed text, as `DOCUMENTATION-LANGUAGE.md` §8.5 says.
 
 ## 4. Record
 (§8.6) The commit goes

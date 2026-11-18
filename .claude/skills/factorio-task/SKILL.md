@@ -6,28 +6,20 @@ argument-hint: <the request, in Liam's words>
 
 Request: $ARGUMENTS
 
-The task file is the contract the agents work to. An agent that meets an
-ambiguity guesses; every guess this project has paid for (a weak join
-test, a square deck, a frame-0 sound, wording nobody agreed) started as
-an unasked question. So this skill does not write the file until nothing
-in it is a guess.
+The task file is the contract the agents work to.
 
 ## 0. Which path, and who asks
 - **Full path:** anything with art, a gameplay change, an engine
   behaviour relied on, or more than one ticket: §1-§6.
 - **Light path:** one coder ticket, no art, no gameplay change (a tool
-  fix, a check, a message). Skip the ledger and §3's list: draft Goal,
-  Scope, Pass criteria and the one ticket, ask what they leave open,
-  then §5.
-- **Who asks:** see the standing rules, "Asking Liam". The
-  project-manager returns the draft in its report. Nothing is written
-  until Liam's agreement comes back, quoted.
+  fix, a check, a message). Skip the ledger and §3's list: draft the
+  light path's file (§5), ask what it leaves open, then go on with §5.
+- **Who asks:** see the standing rules, "Asking Liam".
 
 ## 1. Research before asking
 Never ask Liam what the files can answer. The analyst agent may do this
-research: brief it with the request and what must be settled; it returns
-facts with sources and the unknowns, no opinions. For a gameplay
-request (what the factorio-gameplay-expert's file counts as gameplay),
+research: brief it with the request and what must be settled. For a
+gameplay request (what the factorio-gameplay-expert's file counts as gameplay),
 the factorio-gameplay-expert then judges the draft's gameplay before
 Liam is asked; its rows and concerns go into the ledger and the
 questions. Read, in this order,
@@ -38,18 +30,17 @@ and note each fact with its source (file and line, or measured):
    drafting: say what is done, with the commit or ticket, and what
    the task could be instead.
 1. `knowledge/` beside this file: engine facts, the pipeline, the art
-   standards and vanilla's gameplay facts (`gameplay.md`), each already
-   verified.
+   standards and vanilla's gameplay facts (`gameplay.md`).
 2. `claude.md`, `TODO.md`, and the parts of `design/` the request touches.
-3. The building or system's own files: its spec in
-   `design/buildings/<building>/`, `concept/<building>/` (sheets, the latest round's report in the task file), the prototype in
-   `prototypes/`, its graphics in `graphics/`.
+3. The building or system's own files: its spec, its concept sheets,
+   its prototype and its graphics, where claude.md rules 2 and 3 and
+   `.claude/agents/coder.md` (How this repo is built) put them; and the
+   latest round's report, in its task file.
 4. Earlier task files in `.claude/tasks/` on the same subject: what was
    decided, by whom, in which amendment.
 5. Vanilla's data (`<FACTORIO_ROOT>/data`, the root `tools/paths.conf` names)
    and the local docs (`doc-html/`) for any engine behaviour the task
-   relies on. If the docs do not settle it, it becomes a spike criterion,
-   never an assumption.
+   relies on.
 
 ## 2. The ledger
 Build, in the reply, a ledger of everything the task depends on:
@@ -75,9 +66,9 @@ question, asked as the standing rules' "Judging and asking" says.
   checks the full pipe width, not the centreline).
 - **Words:** see `DOCUMENTATION-LANGUAGE.md` §8.
 - **Conflicts:** anything in the request that contradicts a spec, a rule
-  or an earlier decision is put to Liam, quoting both.
-Ask again after each answer until the list has no gaps. Do not fill a gap
-with a default unless Liam says to use the default.
+  or an earlier decision is settled as the standing rules' order of
+  sources says.
+Ask again after each answer until the list has no gaps.
 
 ## 4. Split into tickets
 A ticket is one piece of work one agent finishes in one run and that
@@ -102,7 +93,7 @@ for code, before Liam agrees for wording. Status: open, in progress, done, passe
 (waiting on <the next>), signed off, blocked (<why>), or waiting
 on Liam: Q<n>. Tickets with no dependency on each other may run
 at once, within the standing rules' limits. A ticket's work-in-progress
-commit is made when it is done (standing rules), and its Status is
+commit is made as the standing rules (Git) say, and its Status is
 updated in the file.
 
 ## 5. Draft, agree, write
@@ -140,8 +131,8 @@ Scope, Pass criteria and its ticket.
 When Liam agrees, write it to `.claude/tasks/<branch>.md` (or the
 amendment at the end of the existing file) and create the branch and
 worktree from master. Run by the project-manager, go on to the tickets.
-In the main session, launch the project-manager in the background on
-the agreed file.
+In the main session, launch the project-manager on the agreed file, as
+`.claude/agents/project-manager.md` says.
 
 ## 6. Keep the knowledge base true
 When the work proves or disproves an engine fact, a pipeline limit or a
