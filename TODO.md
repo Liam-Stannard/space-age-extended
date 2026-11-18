@@ -153,3 +153,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   2026-11-13).** `unlink`, `rm` fed by `xargs` (piped, `-0`, `-a <file>`),
   `sh -c 'rm ...'` and `busybox rm` are not checked against the scratch rule; a
   task file comes first.
+- **Move the concept folder to `design/concept/`.** Every path that names
+  `concept/` changes with it, claude.md rule 2's among them. Its task file says
+  whether `archive/concept/` moves too. (Liam, 2026-11-16: "Move concept to be
+  design/concept"; "Own task, after (Recommended)". Liam, 2026-11-18, on when
+  rule 2 changes: "With the move (Recommended)".)

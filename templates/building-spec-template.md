@@ -1,6 +1,6 @@
 # <Building> — building spec
 
-Copy to `design/buildings/<building>/building-spec-<building>.md` and fill it in before
+Copy it to the place claude.md rule 3 gives, and fill it in before
 any art. §1 is read from the mod; the rest is the art brief. The art bars are in
 `.claude/skills/factorio-task/knowledge/standards.md`, and the stages in the
 factorio-building-round skill.

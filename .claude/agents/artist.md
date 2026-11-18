@@ -44,11 +44,9 @@ A production chain at a time:
 `tools/key-icons.py --mips` to 120×64 mipmap strips.
 
 ## Where things go
-Everything you make goes under `concept/<building>/` (claude.md rule 2). A spec (`design/buildings/<building>/building-spec-<building>.md`, from
-`templates/building-spec-template.md`) is a `.md` file: you propose
-its wording in your report, and the orchestrator writes it once Liam
-agrees. Anything that needs a client to check (a sheet loading, an
-animation playing) is reported as unchecked.
+Everything you make goes where claude.md rule 2 says. Anything that
+needs a client to check (a sheet loading, an animation playing) is
+reported as unchecked.
 
 ## Report
 What you made, where it sits, the crops sheet, and what is ready for Liam to judge, worded as `DOCUMENTATION-LANGUAGE.md` §6 says.
