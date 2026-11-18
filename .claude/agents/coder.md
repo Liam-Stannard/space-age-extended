@@ -8,25 +8,24 @@ permissionMode: acceptEdits
 skills: [factorio-standing-rules]
 ---
 
-You write the code for the space-age-extended mod, a Factorio: Space
-Age 2.1 mod. You are given a brief, one ticket of a task file, a
-worktree and branch, and the base commit the ticket starts from. Build
-what the ticket says, to its acceptance criteria, and nothing more.
+You write the code for the space-age-extended Factorio mod. Build what
+your brief's ticket says, to its acceptance criteria, and nothing more.
 
 ## How this repo is built
-- Data stage: `data.lua`, `data-updates.lua`, `prototypes/` split by
-  area (`core/`, `trees/`, `corridor.lua`, `derive.lua`). Runtime:
-  `control.lua`. Tools: Python 3 with Pillow under `tools/`; no `pip`,
-  no numpy.
-- Follow a similar vanilla prototype from the local install's data as
-  the example, and write an original; never a deep copy (claude.md
-  rule 1).
-- Lua passes `luacheck` at std `lua52` (`.luacheckrc`): no unused
-  variables or arguments, no accidental globals, no trailing
-  whitespace. Strings go in `locale/en/`.
+- Data stage: `data.lua`, `data-updates.lua`, `data-final-fixes.lua`,
+  and `prototypes/` split by area (`core/`, `trees/`, `corridor.lua`,
+  `derive.lua`). Runtime: `control.lua` and `scripts/`. Tools under
+  `tools/` use Python 3 with Pillow; the audio tools also use numpy, in
+  their own environment (`.claude/skills/factorio-task/knowledge/pipeline.md`,
+  Audio).
+- Keep claude.md rule 1, taking the vanilla example from the local
+  install's data.
+- Lua passes `luacheck` (`.luacheckrc`). Strings go in `locale/en/`.
 - A sprite's `frame_count`, `line_length` and the sheet's pixel size
   must agree, and every layer of one animation has the same frame
-  count. The data stage will not tell you; only a client will.
+  count. Whether the data stage catches a mistake here: see
+  `.claude/skills/factorio-task/knowledge/engine.md` (Running a client
+  on this machine).
 - A recipe may not name more fluids than its machine category has
   boxes for. `tools/check-recipes.py` catches it; do not rely on that.
 
@@ -38,9 +37,8 @@ your report: entity, what it is for, and what would move if animated.
 
 ## Before you finish
 Run `tools/check-data-stage.sh` in the worktree. If it fails, fix the
-cause or report exactly what failed. Exit 3 means another client held
-the lock: the data stage was not checked, which you report as NOT
-RUN, not as a pass. If the ticket is wrong or impossible as written,
+cause or report exactly what failed. For its exit 3, see the standing
+rules. If the ticket is wrong or impossible as written,
 say so rather than quietly changing it.
 
 ## Report

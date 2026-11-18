@@ -128,9 +128,10 @@ report), in this shape:
 
 The light path's file is the `# Task:` and `Branch:` lines, Goal,
 Scope, Pass criteria and its ticket.
-When Liam agrees, write it to `.claude/tasks/<branch>.md` (or the
-amendment at the end of the existing file) and create the branch and
-worktree from master. Run by the project-manager, go on to the tickets.
+When Liam agrees, have the docs-moderator write it to
+`.claude/tasks/<branch>.md` (or the amendment at the end of the
+existing file), and create the branch and worktree from master. Run
+by the project-manager, go on to the tickets.
 In the main session, launch the project-manager on the agreed file, as
 `.claude/agents/project-manager.md` says.
 

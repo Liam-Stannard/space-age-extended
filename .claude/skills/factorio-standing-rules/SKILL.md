@@ -65,7 +65,8 @@ Agents.
   art or sound: Liam judges how they look and sound.
 - Never settle an unknown with a default. Anything the ticket, the task
   file and the files do not settle is a question, asked as **Asking
-  Liam** says.
+  Liam** says. A project-manager first consults an expert, as
+  `.claude/agents/project-manager.md` says.
 - When Liam's own sources disagree, the more specific one wins: his
   decision on the subject, then the subject's own tree or building
   spec, then the general design docs (`design/01-principles.md`). At the same level, the newer one wins.
