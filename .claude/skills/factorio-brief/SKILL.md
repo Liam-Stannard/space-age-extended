@@ -19,9 +19,8 @@ may be briefed while others run: see factorio-task §4.
 - The base commit: the commit the ticket started from.
 - Where the role may write (a folder, never "anywhere") and what it
   must not touch.
-- What to read first: the building's spec, the previous round's folder,
-  and the finish reference `.claude/skills/factorio-task/knowledge/standards.md`
-  (Finish) names.
+- What to read first: the building's spec and the previous round's
+  folder.
 - What the standing rules (Waiting and processes) say the brief names,
   and whether a render slot is free.
 - For a project-manager: the attribution lines its commits end with.

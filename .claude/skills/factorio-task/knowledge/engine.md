@@ -3,9 +3,12 @@
 Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
 
 ## Animation and sound
-- Crafting machines play `animation_speed × crafting_speed × animation_progress`;
-  `animation_progress` defaults to 0.5. Mining drills use 1. (Measured
-  in a client, 2026-10-09.)
+- Crafting machines play `animation_speed × crafting_speed × animation_progress`
+  (measured in a client on the Core, 2026-10-10, one screenshot a tick for 720
+  ticks: a comment in `prototypes/core/machines.lua` at 677b1ea).
+  `animation_progress` defaults to 0.5, and to 1 for mining drills
+  (prototype-api.json, CraftingMachineGraphicsSet and MiningDrillGraphicsSet;
+  2.1.24, read 2026-11-18).
 - A crafting machine's animation is not reset at the start of a craft; it
   freezes when the machine stops and resumes from that frame. A placed
   machine starts on a random frame. So motion can be rate-locked to crafts,
@@ -29,23 +32,35 @@ Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
   only speed. (Docs, 2026-10-11.)
 - `two_direction_only` generators collapse south to north and west to
   east. (Client, 2026-10-11.)
-- A mining drill's animation is not sped up by its `mining_speed`:
-  at mining speed 3 and `animation_speed` 0.4 it played 0.400 frames
-  a tick. (Ballast Drill, measured in a client on the Core,
-  2026-10-10.)
+- A mining drill's animation is not sped up by its `mining_speed` (Ballast
+  Drill, seen in a client on the Core, 2026-10-10: a comment in
+  `prototypes/core/machines.lua` at 677b1ea, removed in 65db6bc).
 
 ## Neighbour bonus
-- `neighbour_bonus` exists only on `reactor` entities, which output heat,
-  not electricity. Not yet spiked with a custom fuel category.
+- `neighbour_bonus` is a property of `ReactorPrototype`, whose reactors output
+  heat, and of `FusionReactorPrototype`, whose reactors output a fluid
+  (prototype-api.json; 2.1.24, read 2026-11-18). A reactor whose burner takes
+  only `sae-radiant` fuel gets the full bonus, as a vanilla uranium bank does
+  (a spike against the engine, 2026-09-17; its one record is
+  `design/production-line-plan.md` at 35e77fb, a file since removed).
 
 ## Map generation
-- Tiles repeat per tile; a sheet cannot carry a depth gradient across a
-  pool. Depth needs a second tile placed by map-gen. (2026-10-14.)
-- A vanilla planet's tile expressions do not carry over to another
-  surface. They read that surface's elevation, so on the Core Vulcanus's
-  stepped in straight lines (2026-10-12) and Aquilo's pushed out every
-  other tile (2026-10-27). A tile used elsewhere needs expressions of its
-  own.
+- Tiles repeat per tile, so a sheet cannot carry a depth gradient across a
+  pool (one source: the header of `concept/radiant-look-pool-icons/pool_look_b.py`,
+  2026-10-14).
+- A vanilla planet's tile expressions do not carry over to another surface:
+  they read that surface's own inputs, so a tile used elsewhere needs
+  expressions of its own.
+  - Vulcanus's ash tiles read `vulcanus_ashlands_biome`, `aux` and `moisture`
+    (knowledge-base/2.1.24/data/space-age/prototypes/tile/tiles-vulcanus.lua:316-333).
+    The Core's `aux` and `moisture` vary far more slowly than Vulcanus's, so
+    there the tiles' edges stepped in straight lines (seen 2026-10-12; the
+    cause found by the map-gen-fallback task's spike T01, 2026-10-20).
+  - Aquilo's snow expressions add the surface's elevation
+    (knowledge-base/2.1.24/data/space-age/prototypes/planet/planet-aquilo-map-gen.lua:332,
+    :337, :342). On the Core each snow tile's expression came out far higher
+    than those of the pool, shore and glow tiles, so all three vanished
+    (`prototypes/core/map-gen.lua:85-89`, 2026-10-20).
 - A resource added to a vanilla planet's map gen reaches new games only. A
   save's existing surface keeps its stored map gen settings, so even new
   chunks get none, until a script adds the autoplace entries to that surface
@@ -87,9 +102,14 @@ Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
   `on_script_trigger_effect` with the attractor hit as `target_entity`; under
   `source_effects` it gives only the lightning. It fires for every attractor,
   including ruins and vanilla rods. Cost with 50 collectors: 0.0003–0.006
-  ms/tick. (V↔F T02 (a).)
+  ms/tick (V↔F T02 (a), 2026-10-30; in the main checkout's `evidence/vf-t02/`:
+  the benchmark script `probe-mods/bench.sh`, the launcher's run record
+  `client-20261030-221332-1263405/run.json`, and the figures in
+  `summary.txt`).
 - Fulgora's lightning falls only at night: its daytime multiplier is 0. A
-  collector in a storm took about one strike every 14 s. (V↔F T02 (a).)
+  collector in a storm took about one strike every 14 s: 216 strikes on 50
+  collectors in 3600 ticks (V↔F T02 (a), 2026-10-30, the same run:
+  `evidence/vf-t02/summary.txt`).
 - An asteroid collector's catch area is a square, half-side
   `collection_radius`, centred `collection_box_offset` tiles ahead (5 in
   vanilla). No prototype field limits which chunks it takes. Filters are a
@@ -99,18 +119,20 @@ Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
   mode off clears them. (V↔F T02 (c).)
 - Asteroid chunks stack to 1. (V↔F T02 (c).)
 - An entity with no item that places it can't have a ghost. (V↔F T02 (c).)
-- A collector's catch area grows by `QualityPrototype.asteroid_collector_collection_radius_bonus` per quality (by default the quality level: +1 for uncommon … +5 for legendary). A fast chunk can't be caught by an arm at rest, but an arm already out chasing slower chunks can catch it, so chunk speed tilts which collector catches what, but can't lock any out. (V↔F T02e, 2026-10-31.)
+- A collector's catch area grows by `QualityPrototype.asteroid_collector_collection_radius_bonus` per quality (by default the quality level: +1 for uncommon … +5 for legendary). An arm at rest can't catch a fast chunk. An arm already out, chasing slower chunks, can. So chunk speed changes which collector catches what, but no collector is locked out. (V↔F T02e, 2026-10-31.)
 
 ## Recipes
 - `allow_productivity = false` keeps productivity modules out but doesn't stop a machine's built-in productivity (the foundry's +50 %). To give a recipe none at all, also set `maximum_productivity = 0`. (V↔F T05a, measured in a client, 2026-10-31.)
 - A recipe's surface conditions are checked when a player picks it (or a blueprint is built), not while the machine crafts. A recipe set by script crafts off its planet. Vanilla's lightning collector and foundry recipes behave the same. The 2.1.24 runtime docs word it as 'required to craft'. (V↔F T07a, 2026-10-31.)
 
 ## Technologies
-- A `craft-item` research trigger counts what a machine crafts,
-  including a recipe's second result: 50 kamacite fines from a
-  crusher fired Vent tapping on the 50th, with nothing else making
-  fines. (Headless server, 2026-10-10; again in a client with the
-  Heavy crusher, core-vanilla-machines T01, 2026-11-16.)
+- A `craft-item` research trigger counts what a machine crafts, including a
+  recipe's second result: a Heavy crusher's fines fired Vent tapping's trigger
+  (design/09-core-tech-tree.md) once its count was reached, with nothing else
+  making fines (core-vanilla-machines T01, in a client, 2026-11-16:
+  `tools/client/launch.sh` with the probe mod; the probe, the launcher's
+  record and the result in the main checkout's
+  `evidence/core-vanilla-machines/T01/tester/`).
 
 ## Fluids
 - A fluid's `max_temperature` defaults to its `default_temperature`, so
@@ -122,19 +144,33 @@ Each line is worded as `DOCUMENTATION-LANGUAGE.md` §7.1 says.
   base/data-updates.lua, 2026-10-30.)
 
 ## Running a client on this machine
-- `xvfb-run` alone leaves WAYLAND_DISPLAY set: the client opens
-  full-screen on Liam's desktop. Use
-  `env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 xvfb-run -a`.
-- PULSE_SINK alone does not stop audio reaching the speakers; use
-  `--disable-audio`, or a null sink set as the default sink.
-- A second client's Steam connect can reach the first, which is why one
-  client runs at a time.
-- The data-stage check never opens an image; sprite errors need a real
-  client load to `Sprites loaded`.
+- `xvfb-run` alone leaves WAYLAND_DISPLAY set, and the client then opens
+  full-screen on Liam's desktop (seen twice: the crust-tap spike, 2026-10-02,
+  and an icons-wiring test, 2026-10-11).
+- PULSE_SINK alone does not stop a client's sound reaching the speakers:
+  Factorio's own PipeWire output still reached them (one report: a tester's
+  first client run, 2026-10-11).
+- A second client's Steam connect may reach the first: a client once got a
+  join and a quit it did not send, probably from another agent's client (one
+  report, 2026-10-11; the cause is not confirmed).
+- The data-stage check opens no image. The data stage never opens one (one
+  source: `tools/check-data-stage.sh`, its note at line 121, 2026-09-04). The
+  two image checks the script runs only test that the files they name exist
+  (`tools/check-graphics.sh`, `tools/check-dumped-graphics.py`, read
+  2026-11-19).
+  - One source says an animation whose layers disagree on frame count passes
+    the check and fails only when sprites load. The Drop Crusher's stroke was
+    checked by a client load to `Sprites loaded`, with no error
+    (`graphics/building-spec-drop-crusher.md` at bc0f1b4, 2026-09-10; the
+    paragraph was cut in 46aa931).
 
 ## Sprites and rotation
 - A crafting machine cannot be rotated unless it has a fluid box, a heat
-  energy source, a fluid energy source, or a non-square collision box
-  (`CraftingMachinePrototype`).
-- Sprite size in tiles = source pixels × scale / 32, and `util.by_pixel(x, y)`
-  = `{x/32, y/32}` in game pixels, whatever the sprite's scale.
+  energy source, a fluid energy source, or a non-square collision box; one
+  with a non-square collision box can be rotated only before it is placed
+  (prototype-api.json, `CraftingMachinePrototype`; 2.1.24, read 2026-11-18).
+- `util.by_pixel(x, y)` = `{x/32, y/32}`, x and y in game pixels, whatever the
+  sprite's scale: it takes no scale (knowledge-base/2.1.24/data/core/lualib/util.lua:174-176,
+  read 2026-11-18). Sprite size in tiles = source pixels × scale / 32 (one
+  source: a note added to the building-spec template in ef47a72, 2026-09-05,
+  and moved here on 2026-11-15).
