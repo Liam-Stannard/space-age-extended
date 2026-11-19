@@ -8,7 +8,7 @@ How a `.md` file is changed: `DOCUMENTATION-LANGUAGE.md` §8.
 
 ## 1. Draft
 Read the file and what changed (the task file, Liam's decisions, the
-latest sheets). The docs-moderator writes the draft, as `.claude/agents/docs-moderator.md` (Draft) and `DOCUMENTATION-LANGUAGE.md` §8.2-8.3 say. A second docs-moderator checks it before Liam sees it.
+latest sheets). The docs-moderator writes the draft, as `.claude/agents/docs-moderator.md` (Draft) and `DOCUMENTATION-LANGUAGE.md` §8.3 say. A second docs-moderator checks it before Liam sees it.
 Send the draft file to Liam and summarise it in the reply. Put the open
 questions to him as the standing rules' **Asking Liam** says.
 

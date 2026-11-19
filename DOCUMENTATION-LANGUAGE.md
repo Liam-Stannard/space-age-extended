@@ -61,8 +61,8 @@ Every rule for how this project's text is worded. Other files point here and do 
 
 ## 8. Drafts and agreement
 
-1. No `.md` file is written, added to or reworded without Liam's explicit agreement first. Propose the wording; write it only once agreed. The exceptions are a task file's ticket Status lines, entries in QUESTIONS.md, his answers recorded there word for word, and the drafts and the digest §8.2 names.
-2. No new `.md` file is created without his permission. Wording drafts, and the questions-clerk's digest (`.claude/agents/questions-clerk.md`, The digest), are `.md` files in the session scratchpad.
+1. No `.md` file is written, added to or reworded without Liam's explicit agreement first. Propose the wording; write it only once agreed. The exceptions are a task file's ticket Status lines, entries in QUESTIONS.md, his answers recorded there word for word, and an agent's own notes, drafts, reports and digests, where §8.2 lets it create them.
+2. No new `.md` file is added to the repo or its worktrees without his permission: that is, a file git tracks, or one it would commit because it is not ignored. Anywhere else, agents may create `.md` files freely: outside the repo, as in the session scratchpad, or in a folder git ignores, such as `evidence/` and `.claude/tasks/`.
 3. A draft gives, for each section that changes, its heading, the current text quoted briefly and the replacement; then the sections that stay; then numbered open questions.
 4. "Agreed" covers the draft as sent. Each open question needs its own answer.
 5. Write exactly the agreed text. Any wording that was not agreed is listed, quoted, and agreed before it is committed.
