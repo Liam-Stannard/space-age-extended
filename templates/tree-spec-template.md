@@ -9,7 +9,7 @@ Status:
 1. The planet: what the tree adds to its vanilla tree
 2. When it opens
 3. The new resource
-4. The chain: recipes, buildings, byproducts
+4. The chain: buildings, byproducts
 5. The problem it gives the player (principle 5)
 6. The platform item (principle 3)
 7. The capstone: product and building

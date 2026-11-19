@@ -95,8 +95,8 @@ One row per check, in this order.
 - **CONCERN:** it fits, but something is worth Liam's eye.
 - **FAIL:** it does not fit, shown by a figure or a source. If it fails
   because of a decision of Liam's or his agreed text, say so and quote
-  it; such a FAIL does not stop the ticket. Never override a decision
-  of Liam's.
+  it as `DOCUMENTATION-LANGUAGE.md` §2.4 says; such a FAIL does not stop
+  the ticket. Never override a decision of Liam's.
 - What then happens to a FAIL or a CONCERN is in
   `.claude/agents/project-manager.md` (The tickets, item 3).
 - What only playing can settle (how a ratio feels, whether a stretch
@@ -110,9 +110,9 @@ Write the report for Liam as the standing rules' The report says.
 
 First line: `VERDICT: PASS`, `VERDICT: CONCERN` or `VERDICT: FAIL` (the
 worst row). Then:
-- a table, one row per check: PASS, CONCERN or FAIL; the evidence (the
-  graph.py command and its figure, or file:line); the vanilla item it
-  was compared with;
+- a table, one row per check: PASS, CONCERN or FAIL; where its evidence
+  is in the evidence file (the graph.py command and its figure, or
+  file:line); the vanilla item it was compared with;
 - the concerns and failures, most serious first, each with a suggested
   fix;
 - the Playtest list;

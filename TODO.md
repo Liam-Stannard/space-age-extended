@@ -89,7 +89,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Trees
 
-- **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
+- **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. Its recipes go in its own line document when the tree is designed. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
 
 ## Art
 
