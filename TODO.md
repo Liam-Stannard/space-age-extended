@@ -89,7 +89,7 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
 
 ## Trees
 
-- **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
+- **Five trees are still to design, one per planet**: Nauvis, Vulcanus, Fulgora, Gleba and Aquilo (see `design/00-vision.md`). Each starts from `templates/tree-spec-template.md`. Its recipes go in its own line document when the tree is designed. The capstone stubs in `prototypes/core/endgame.lua` still carry the old pair products and craft from one iron plate. Reworking the two pair specs is the Design entry "Trees extend one planet each, not pairs".
 
 ## Art
 
@@ -153,3 +153,8 @@ Every outstanding task, and nowhere else. Remove an entry once it is done.
   2026-11-13).** `unlink`, `rm` fed by `xargs` (piped, `-0`, `-a <file>`),
   `sh -c 'rm ...'` and `busybox rm` are not checked against the scratch rule; a
   task file comes first.
+- **Move the concept folder to `design/concept/`.** Every path that names
+  `concept/` changes with it, claude.md rule 2's among them. Its task file says
+  whether `archive/concept/` moves too. (Liam, 2026-11-16: "Move concept to be
+  design/concept"; "Own task, after (Recommended)". Liam, 2026-11-18, on when
+  rule 2 changes: "With the move (Recommended)".)

@@ -1,50 +1,41 @@
 ---
 name: factorio-brief
-description: Write the prompt for an artist, coder, code-reviewer, factorio-gameplay-expert, questions-clerk, tester, analyst, docs-moderator or project-manager agent working on this mod, from one ticket of a task file - what the ticket is, where the agent works and from which base commit, and what it must leave alone. The standing rules come from the factorio-standing-rules skill every agent preloads. Use before launching or resuming any agent.
+description: Write the prompt for an artist, coder, code-reviewer, factorio-gameplay-expert, questions-clerk, tester, analyst, docs-moderator or project-manager agent working on this mod, from one ticket of a task file - what the ticket is, where the agent works and from which base commit, and what it must leave alone. Use before launching or resuming any agent.
 argument-hint: <task file> <ticket T<nn>>
 ---
 
 Write the brief for one ticket of a task (`.claude/tasks/<name>.md`,
 ticket `T<nn>`), for the ticket's owner. One brief, one ticket: never
 brief an agent with a whole task. Return the brief, launch the agent
-with it, add its line to `.claude/tasks/RUNNING`, and set the ticket's
-Status to "in progress". When the ticket is done its sign-off owner
-checks it; only then is it "signed off". Which tickets may be briefed
-while others run: see factorio-task §4.
+with it as `.claude/agents/project-manager.md` (The limit) says, and set
+the ticket's Status to "in progress". When the ticket is done its
+sign-off owner checks it; only then is it "signed off". Which tickets
+may be briefed while others run: see factorio-task §4.
 
 ## 1. What the brief names
 - The task file's absolute path and the ticket, quoted whole (header,
   Do, Output, Acceptance, Sign-off).
-- The worktree and branch, as absolute paths
-  (`/home/lstan/data/git/space-age-extended/.claude/worktrees/<branch>`).
-- The base commit: the commit the ticket started from. A resumed
-  ticket keeps that base after its own work-in-progress commits, so a
-  review from it still covers all of the ticket's work.
+- The worktree, by absolute path, and its branch.
+- The base commit: the commit the ticket started from.
 - Where the role may write (a folder, never "anywhere") and what it
   must not touch.
-- What to read first: the building's spec, the previous round's folder,
-  the latest signed-off model as the finish standard.
-- The other agents running (from `RUNNING`) and their worktrees, and
-  whether a render slot is free.
+- What to read first: the building's spec and the previous round's
+  folder.
+- What the standing rules (Waiting and processes) say the brief names,
+  and whether a render slot is free.
 - For a project-manager: the attribution lines its commits end with.
-- For a factorio-gameplay-expert: the dumps to measure (the knowledge
-  base's, and the mod's shared dump by path and sha256, or where to
-  keep its own if there is none), the decisions of Liam's the
-  change rests on, and the vanilla buildings or items it is meant to sit
-  beside.
-- For the questions-clerk: no ticket of its own. Name the job (add,
-  answer, digest, audit or tidy), the question's file in your scratch
-  (task, ticket, what it pauses, title, body, the images' absolute
-  paths), or Liam's words as he wrote them, and the target if it is not
-  the live file.
+- For a factorio-gameplay-expert: the mod's shared dump by path and
+  sha256, if there is one; the decisions of Liam's the change rests on;
+  and the vanilla buildings or items it is meant to sit beside.
+- For the questions-clerk: no ticket of its own. Name the job, and what
+  `.claude/agents/questions-clerk.md` says that job is given.
 
 ## 2. The standing rules
-Every agent preloads factorio-standing-rules; the brief does not
-restate it. The brief adds only what this ticket narrows (one folder,
-no client, no render while two run).
+The brief does not restate the standing rules. How a brief may narrow
+them is in their opening.
 
 ## 3. What the report must contain
-What the standing rules ask, worded as `DOCUMENTATION-LANGUAGE.md` §6.1 says.
+As the standing rules' The report says.
 
 ## 4. Resuming
 Resume an agent only to fix its own ticket after a review; brief every

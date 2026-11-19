@@ -172,8 +172,9 @@ collector.
 iron.
 
 **One vanilla fluid changed:** sulfuric acid's max_temperature goes from its
-default (25, the same as its default_temperature) to **500**, so it can be
-heated. Nothing else about it changes.
+default to **500**, so it can be heated (the default:
+`.claude/skills/factorio-task/knowledge/engine.md`, Fluids). Nothing else about
+it changes.
 
 **Machines:** furnace, assembler, foundry (metallurgy), chemical plant
 (chemistry), electromagnetic plant (electromagnetics), induction foundry
@@ -206,12 +207,12 @@ recipe has **no productivity**. The foundry's built-in +50% would otherwise turn
 - the heating recipe's product uses FluidProductPrototype's `temperature = 500`;
 - the flux recipe's ingredient uses FluidIngredientPrototype's
   `minimum_temperature = 500`;
-- FluidPrototype's `max_temperature` defaults to `default_temperature`, which is
-  why the change above is needed.
+- why the change above is needed: `.claude/skills/factorio-task/knowledge/engine.md`
+  (Fluids).
 
-**Hot acid stays on Vulcanus.** The vanilla empty-barrel recipe gives the fluid
-back with no temperature set (base/data-updates.lua), so a barrel brings
-acid back at 25°. Only lava makes it hot again.
+**Hot acid stays on Vulcanus**, for the reason given for barrels in
+`.claude/skills/factorio-task/knowledge/engine.md` (Fluids). Only lava makes it
+hot again.
 
 **Keep hot and cold lines apart.** Hot and cold acid mixed in one pipe average
 their temperatures. A heater's output joined to the geyser line drops below 500°
@@ -522,20 +523,19 @@ A new direct route between Vulcanus and Fulgora, 15,000 km. Its ordinary asteroi
 - **The EM plant's own recipe and the lightning collector's recipe need magnetic
   field 99**; the foundry's recipe needs pressure 4000. The new buildings copy
   these.
-- **Sulfuric acid** (base/prototypes/fluid.lua) has default_temperature 25 and
-  no max_temperature. FluidPrototype's max_temperature defaults to
-  default_temperature, so today it can't be heated. Lava is 1500°.
-- **Temperature fields exist** (prototype-api.json):
-  - FluidIngredientPrototype has `temperature`, `minimum_temperature` and
-    `maximum_temperature`;
-  - FluidProductPrototype has `temperature`.
-- **Barrels drop the temperature:** vanilla's generated empty-barrel recipe sets
-  no temperature on its fluid result (base/data-updates.lua).
+- **Sulfuric acid:** whether vanilla's can be heated, see
+  `.claude/skills/factorio-task/knowledge/engine.md` (Fluids). Lava is 1500°.
+- **Temperature fields exist:** as `.claude/skills/factorio-task/knowledge/engine.md`
+  (Fluids) says; a fluid ingredient also has `temperature` and
+  `maximum_temperature` (prototype-api.json).
+- **Barrels drop the temperature:** see `.claude/skills/factorio-task/knowledge/engine.md`
+  (Fluids).
 - **The vanilla foundry** is speed 4, 2.5 MW, 4 modules, +50% built-in
   productivity. The five casts it has an induction version of are in section 8's table.
-- **The asteroid collector** reaches 7.5 tiles, arm speed 0.2. It has no
-  prototype field limiting which chunks it takes. Filters are runtime only
-  (LuaEntity.set_filter).
+- **The asteroid collector** reaches 7.5 tiles, arm speed 0.2. Which chunks it
+  takes: see `.claude/skills/factorio-task/knowledge/engine.md` (Lightning and
+  asteroid collectors). Its filters are set with LuaEntity.set_filter
+  (runtime-api.json, 2.1.24).
 - **Lightning** carries 1000 MJ. A collector keeps 40%, a rod 20%. Fulgora
   strikes about once per chunk per 10 s while it storms. The attractor has
   strike and hit trigger effects.

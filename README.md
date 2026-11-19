@@ -45,10 +45,9 @@ connected it runs as fast as it can, so time things in game ticks, not seconds.
 
 ## Building art
 
-A building's art starts from its spec, in `design/buildings/<building>/`
-([templates/building-spec-template.md](templates/building-spec-template.md)). Buildings are modelled
-and rendered in Blender (`tools/blender/`). What may go in `graphics/` is set by
-claude.md rule 2.
+A building's spec is made from
+[templates/building-spec-template.md](templates/building-spec-template.md). claude.md rules 2
+and 3 say where the spec, the Blender model, the render pipeline and the art live.
 
 ## Icon art
 

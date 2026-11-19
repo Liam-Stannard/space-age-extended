@@ -58,9 +58,10 @@ knowledge-base/2.1.24/data/; "dump" is knowledge-base/2.1.24/data-raw-dump.json.
 - planet-discovery-aquilo costs 3000 x nine packs, including metallurgic,
   agricultural and electromagnetic, so it needs all three inner planets.
   (space-age/prototypes/technology.lua:467, :495-498; 2.1.24, 2026-11-13.)
-- stellar-discovery-solar-system-edge (fusion-reactor, railgun) adds
-  cryogenic; the promethium-science-pack technology (biter-egg-handling,
-  the edge) unlocks the shattered planet. (space-age/prototypes/technology.lua:2003,
+- stellar-discovery-solar-system-edge (after fusion-reactor and railgun)
+  costs the cryogenic pack as well as planet-discovery-aquilo's nine; the
+  promethium-science-pack technology (after biter-egg-handling and the edge)
+  unlocks the shattered planet. (space-age/prototypes/technology.lua:2003,
   :2038; 2.1.24, 2026-11-13.)
 - Each planet's pack technology is a craft trigger behind that planet's
   discovery: tungsten plate, 100 bioflux, supercapacitor, cryogenic plant.
@@ -75,36 +76,43 @@ knowledge-base/2.1.24/data/; "dump" is knowledge-base/2.1.24/data-raw-dump.json.
 - 277 technologies; 32 are triggers with no packs. Roots: steam-power,
   electronics. Depth (edges on the longest prerequisite chain): inner
   discoveries 19, Aquilo 28, edge 34, research-productivity 36 (the
-  deepest). (dump, analyst T01 run_all.py; 2.1.24, 2026-11-13.)
-- Technologies needing each pack (count; unit count range; depth range):
-  automation 245, 10-5000, 2-36; logistic 230, 20-5000, 3-36; military
-  79, 50-5000, 5-36; chemical 170, 50-5000, 10-36; production 50,
-  50-5000, 12-36; utility 73, 100-5000, 15-36; space 73, 50-5000,
-  18-36; metallurgic 23, 500-5000, 25-36; agricultural 34, 50-5000,
-  26-36; electromagnetic 25, 500-5000, 24-36; cryogenic 12, 500-5000,
-  32-36; promethium 1 (research-productivity). Ranges leave out the
-  count_formula (infinite) ones. (dump, analyst T01 run_all.py; 2.1.24,
-  2026-11-13.)
+  deepest). (dump, by `tools/gameplay/graph.py <dump> --section tech`: its
+  row count, trigger rows, roots at depth 0 and depths; counted 2026-11-13
+  by a script not kept, and read from the tool 2026-11-19, every figure the
+  same; 2.1.24.)
 
 ## Weight and stacks
 - Weights use `default_rocket_lift_weight` = 1 000 000 (1 t); the
   default item weight is 100. A rocket's cargo uses the silo's
   `lift_weight` (default 1 000 000): with the constant at 2e6 and the
   silo at 4e6, weights followed the constant and a rocket took 4000 iron
-  plates. (core/prototypes/utility-constants.lua:555-556; spike load,
-  T04 evidence spike-*.out; 2.1.24, measured in game 2026-11-13.)
+  plates. (core/prototypes/utility-constants.lua:555-556; measured in game
+  2026-11-13 by the factorio-gameplay-expert task's T04:
+  `tools/client/launch.sh` with the probe mods sae-t04-spike and
+  sae-t04-probe; the mods, the launcher's records spike-launch*.out, and the
+  results spike-log.txt and spike-rocket-r2.tsv in the main checkout's
+  `evidence/factorio-gameplay-expert/T04/`; 2.1.24.)
 - The engine stores a weight rounded down to a 1/65536 step, and rounds
   item-weight.html's intermediate result down to a whole number first:
-  processing unit 3333.3333282, artillery wagon 531666. (T04, every item
-  of vanilla and the mod read in game, c6-compare-r2.out; 2.1.24,
-  2026-11-13.)
+  processing unit 3333.3333282, artillery wagon 531666. (the
+  factorio-gameplay-expert task's T04, 2026-11-13: every item of vanilla and
+  of the mod of 2026-11-13 read in game through `tools/client/launch.sh`
+  with its probe mod, the launcher's records c6-*-launch*.out and the values
+  in c6-engine-vanilla-r2.tsv and c6-engine-mod-r2.tsv; compared by
+  compare.py, c6-compare-r2.out; all in the main checkout's
+  `evidence/factorio-gameplay-expert/T04/`; no file there records how
+  compare.py was run; 2.1.24.)
 - Which recipe weighs an item, measured: not hidden and allowing
   decomposition; then named as the item; then not using the item as a
   catalyst; then subgroup, order, and recipe name. Category and
   hand-craftability made no difference, against item-weight.html. An item
   met again inside its own recipe chain takes the default weight for
-  that use only, and is weighed properly later. (T04 spike load,
-  spike-compare.out, spike-loopsim.out; 2.1.24, 2026-11-13.)
+  that use only, and is weighed properly later. (the
+  factorio-gameplay-expert task's T04, 2026-11-13: the spike load through
+  `tools/client/launch.sh`, compared by compare.py and loopsim.py,
+  spike-compare.out and spike-loopsim.out, all in the main checkout's
+  `evidence/factorio-gameplay-expert/T04/`; no file there records how the
+  two scripts were run; 2.1.24.)
 - Every science pack weighs 1 kg (1000) and stacks to 200: 1000 per
   rocket. Space packs stack to 200 in Space Age, 2000 in base.
   (base/prototypes/item.lua:694-695, space-age/base-data-updates.lua:826;
@@ -114,8 +122,10 @@ knowledge-base/2.1.24/data/; "dump" is knowledge-base/2.1.24/data-raw-dump.json.
   (20), tungsten plate 4000 (50), tungsten carbide 2000 (50), holmium
   plate 1000 (100), supercapacitor 2000 (100), carbon fiber 2000 (100),
   bioflux 1000 (100), lithium plate 2000 (100), quantum processor 5000
-  (100), ores 2000 (50). (base/ and space-age/prototypes/item.lua, dump;
-  2.1.24, 2026-11-13.)
+  (100), iron, copper and holmium ore, coal, stone, calcite and scrap 2000
+  (50), uranium ore 5000 (50), tungsten ore 10000 (50). (base/ and
+  space-age/prototypes/item.lua, dump; 2.1.24, 2026-11-13; these raw items
+  read again 2026-11-18.)
 - Computed weights (stack): iron, copper plate and gear 1000 (100);
   steel 2500 (100); electronic circuit 500 (200, the doc's example);
   advanced circuit 1000 (200); processing unit 3333.33 (100), 300 per

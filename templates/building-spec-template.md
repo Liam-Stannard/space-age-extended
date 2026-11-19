@@ -1,6 +1,6 @@
 # <Building> — building spec
 
-Copy to `design/buildings/<building>/building-spec-<building>.md` and fill it in before
+Copy it to the place claude.md rule 3 gives, and fill it in before
 any art. §1 is read from the mod; the rest is the art brief. The art bars are in
 `.claude/skills/factorio-task/knowledge/standards.md`, and the stages in the
 factorio-building-round skill.
@@ -66,14 +66,15 @@ offsets, and how its inputs and outputs read.
 
 # 9. Working Animation
 
-Fill in before modelling, or write `None — [why]` for a building that does not
+Fill in as `.claude/skills/factorio-task/knowledge/standards.md` (Motion,
+Planned as steps) says, or write `None — [why]` for a building that does not
 move. One row a step:
 
 | # | Step | Entries | Ticks | What moves | Ease | Accent |
 |---|---|---|---|---|---|---|
 | 1 | [name] | [first–last, from 0] | [ticks] | [parts] | [even / eased / hold / snap] | [entry and sound, or —] |
 
-The steps' entries add up to the loop, with every entry in exactly one step.
+Every entry is in exactly one step.
 Entries count from 0, as the game's frames do (`engine.md`).
 
 ---
